@@ -10,6 +10,8 @@ public interface PersonService {
     public Person maintainPerson(Person person);
 
     public Person readByPersonById(Long id);
+    
+    public Person readPersonByFirstName(String firstName);
 
     public List<Person> readPersons(Long siteId, Map<String, String> params);
 

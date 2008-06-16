@@ -59,6 +59,18 @@ public class JPAPersonDao implements PersonDao {
         }
         return query.getResultList();
     }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+	public Person readPersonByFirstName(String firstName) {
+		Query query = em.createQuery("SELECT person FROM com.mpower.domain.entity.Person person where person.firstName = :firstName");
+		query.setParameter("firstName", firstName);
+		List<Person> results = query.getResultList();
+		if (results != null && ! results.isEmpty()) {
+			return results.get(0);
+		}
+		return null;
+	}
 
     public static boolean addWhereOrAnd(boolean whereUsed, StringBuffer queryString) {
         if (whereUsed) {

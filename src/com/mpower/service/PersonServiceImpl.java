@@ -59,4 +59,8 @@ public class PersonServiceImpl implements PersonService {
         // TODO: consider caching techniques for the default Person
         return person;
     }
+    
+    public Person readPersonByFirstName(String firstName) {
+    	return personDao.readPersonByFirstName(firstName);
+    }
 }

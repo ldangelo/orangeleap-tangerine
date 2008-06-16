@@ -1,0 +1,94 @@
+body {
+	font-family: Verdana, sans-serif;
+	font-size: 12px;
+	line-height: 1.5em;
+	color: #000;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	background: #333333 url("../images/bodyGradient.gif") repeat-x;
+}
+p {
+	margin: 0 0 15px 0;
+	padding: 0;	
+}
+form {
+	margin: 0;
+	padding: 0;
+}
+select, input, textarea {
+	font-family: Verdana, sans-serif;
+	font-size: 12px;
+	line-height: normal;
+	padding: 1px;
+}
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 22px;
+	line-height: normal;
+	font-weight: normal;
+	padding: 0;
+	margin: 0 0 7px 0;
+}
+h4 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 17px;
+	line-height: 18px;
+	padding: 0;
+	margin: 0 0 5px 0;
+}
+fieldset {
+	border: 1px solid #bbb;
+}
+/*a:link, a:visited, a:active {
+  color: #00f;
+  text-decoration: underline;
+}
+a:hover {
+  background-color: #00f;
+  color: #fff;
+  text-decoration: none;
+}*/
+.clearBoth {
+	clear: both;
+}
+.col60 {
+	width: 60%;
+	margin-top: 18px;
+}
+.columns {
+	padding: 0;
+	margin: 0;
+	clear: both;
+}
+
+.column {
+	float: left;
+	display: inline;
+	padding: 0;
+	margin: 0;
+}
+.columnRight {
+	float: right;
+	display: inline;
+	padding: 0;
+	margin: 0;
+}
+
+.clearColumns {
+	clear: both;
+	height:1px;
+	font-size: 1px;
+	line-height: 1px;
+	min-height: 1px;
+}
+
+.clearFloat {
+	clear: both;
+	height: 0;
+	font-size: 1px;
+	line-height: 0px;
+}
+.positionRelative {
+	position:relative;
+}

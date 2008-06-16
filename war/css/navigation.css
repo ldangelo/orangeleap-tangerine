@@ -1,0 +1,158 @@
+#greeting {
+	padding:1px 10px 1px 1px;
+	color:#d46400;
+}
+#banner {
+	height:120px;
+	width:100%;
+	background:url('../images/mpowerLogo.gif') center left no-repeat;
+}
+#footer {
+	font-size: 11px;
+	border-top: 1px solid #ddd;
+	margin-top: 40px;
+	padding: 20px 0 50px 0;
+}
+#footer .legal {
+	color:#777;
+	text-align:left;
+}
+.navLeftCap {
+	width:26px;
+	height:57px;
+	position:absolute;
+	top:0;
+	left:0;
+	background: #fff url("../images/navGradientBothLeft.gif") no-repeat 6px top;
+}
+.navRightCap {
+	width:26px;
+	height:57px;
+	position:absolute;
+	top:0;
+	right:0;
+	background: #fff url("../images/navGradientBothRight.gif") no-repeat -1px top;
+}
+
+#navmain {
+	position:relative;
+	background: #5987b3 url("../images/navGradientBoth.gif");
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	height:57px;
+	/*padding-top:2px;*/
+}
+#navmain ul {
+	margin: 0;
+	padding: 0;
+}
+#navmain ul li {
+	list-style: none;
+	float: left;
+	/*margin-right: 3px;*/
+}
+#navmain ul li a {
+	/*background-color: #444;*/
+	color: #333;
+	text-decoration: none;
+	line-height: 22px;
+	display: block;
+	padding: 5px 8px 6px;
+	/*border-top:1px solid #5987b3;*/
+	/*margin: 0 0 3px 0;*/
+}
+#navmain ul li a:hover {
+	/*background-color: #ffd3a6;*/
+	background: #444 url("../images/navGradientBlack.gif") repeat-x;
+	color: #fff;
+}
+#navmain ul li a.active {
+	background: #fff url("../images/navGradientGrey.gif") repeat-x;
+	color: #000;
+	border-top: 1px solid #c95d00;
+	border-right: 1px solid #c95d00;
+	border-left: 1px solid #c95d00;
+	border-bottom: 1px solid #969696;
+	padding: 4px 7px 5px;
+	margin: 0;
+}
+#navmain ul li a.active:hover {
+	background: #fff;
+	color: #000;
+}
+#navmain ul.secondaryNav li a {
+	color: #000;
+	line-height: 18px;
+	display: block;
+	padding: 3px 8px 2px;
+	font-size: 11px;
+	font-family:Verdana, sans-serif;
+}
+#navmain ul.secondaryNav li a.active {
+	background: #fff url("../images/navGradientGrey.gif") repeat-x;
+	color: #000;
+	border: 1px solid #666;
+	border-top:none;
+	border-bottom:none;
+	padding: 3px 7px 2px;
+	margin: 0;
+}
+#navmain ul.secondaryNav li a:hover {
+	background: #444 url("../images/secondaryHighlight.gif") repeat-x;
+	color: #000;
+}
+#navmain ul.secondaryNav li a.active:hover {
+	background: #444 url("../images/secondaryHighlight.gif") repeat-x;
+	color: #000;
+}
+#banner ol {
+	font-family:Verdana, sans-serif;
+	font-size: 10px;
+	margin: 0;
+	padding: 8px 20px 0 0;
+	float: right;
+}
+#banner ol li {
+	list-style: none;
+	float: left;
+	margin-left: 1.5em;
+}
+#banner ol li a {
+	color: #333;
+	text-decoration: none;
+	padding: 1px;	
+}
+#banner ol li a:hover {
+	background-color: #ff8518;
+	color: #fff;
+	text-decoration: none;
+}
+#homeMenu {
+	margin-top: 18px;
+}
+#homeMenu a {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: #0075CE;
+	display: block;
+	border-top: 1px solid #ddd;
+	padding: 10px 0 7px 10px;
+	text-decoration: none;
+	width: 465px;
+}
+#homeMenu a.first {
+	border: 0;
+}
+#homeMenu a:hover {
+	background-color: #ffc;
+	color: #000;
+}
+#homeMenu a span {
+	font-family: Verdana, Tahoma, sans-serif;
+	font-size: 11px;
+	color: #777;
+}
+#homeMenu a:hover span {
+	color: #000;
+}

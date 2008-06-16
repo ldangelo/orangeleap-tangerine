@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="lib/war/bin/antlr-2.7.6.jar" sourcepath="lib/war/source/antlr-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/asm.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-beanutils-1.7.jar" sourcepath="lib/war/source/commons-beanutils-1.7.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-codec.jar" sourcepath="lib/war/source/commons-codec-1.3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-collections.jar" sourcepath="lib/war/source/commons-collections-3.2.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-digester-1.8.jar" sourcepath="lib/war/source/commons-digester-1.8-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-httpclient.jar" sourcepath="lib/war/source/commons-httpclient-3.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-io-1.2.jar" sourcepath="lib/war/source/commons-io-1.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-lang-2.3.jar" sourcepath="lib/war/source/commons-lang-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-logging.jar" sourcepath="lib/war/source/commons-logging-1.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-math-1.1.jar" sourcepath="lib/war/source/commons-math-1.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/commons-validator-1.3.0.jar" sourcepath="lib/war/source/commons-validator-1.3.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/ejb3-persistence.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://java.sun.com/javaee/5/docs/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate3.jar" sourcepath="lib/war/source/hibernate3-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-entitymanager.jar" sourcepath="lib/war/source/hibernate-entitymanager-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring.jar" sourcepath="lib/war/source/spring-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-webmvc.jar" sourcepath="lib/war/source/spring-webmvc-sources.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/spring-test.jar" sourcepath="lib/war/source/spring-test-sources.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/mysql-connector-java-5.0.8-bin.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/ant-contrib-1.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/jstl.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/standard.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/testng-5.7-jdk15.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/commons-dbcp.jar"/>
+	<classpathentry kind="lib" path="lib/test/bin/commons-pool.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/jboss-archive-browsing.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/jta.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/tiles-api-2.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/tiles-core-2.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/tiles-jsp-2.0.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

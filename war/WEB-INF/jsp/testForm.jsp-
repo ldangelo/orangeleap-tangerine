@@ -1,0 +1,53 @@
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
+<form>
+	<jsp:include page="personHeader.jsp"/>
+	<br />
+	<h4 class="formSectionHeader"Contact Information</h4>
+	
+	<div class="columns">
+		<div class="column">
+			<ul class="formFields width375" id="orderInformation">
+				<li class="side">
+					<mp:field fieldId="1" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+				<li class="side">
+					<mp:field fieldId="2" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+				<li class="side">
+					<mp:field fieldId="3" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+			</ul>
+		</div>
+		<div class="column">
+			<ul class="formFields width375" id="orderInformation">
+				<li class="side">
+					<mp:field fieldId="4" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+				<li class="side">
+					<mp:field fieldId="5" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+				<li class="side">
+					<mp:field fieldId="6" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+				<li class="side">
+					<mp:field fieldId="7" />
+						<jsp:include page="snippets/input.jsp" />
+				</li>
+			</ul>
+		</div>
+		<div class="clearColumns"></div>
+	</div>
+	
+	<br />
+	
+	<div class="formButtonFooter">
+	<input type="submit" value="Save" />
+	<input type="submit" value="Cancel" />
+	</div>
+</form>

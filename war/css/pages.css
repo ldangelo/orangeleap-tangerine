@@ -1,0 +1,210 @@
+.bodyContent {
+	text-align: left;
+	width: 1000px;
+	margin: 0 auto;
+	background-color:#fff;
+}
+.container {
+	text-align: left;
+	width: 900px;
+	margin: 0 auto;
+}
+.content700 {
+	width: 700px;
+	margin-left: 12px;
+	float:left;
+}
+.content750 {
+	width: 750px;
+	margin-left: 12px;
+	float:left;
+}
+.content760 {
+	width: 780px;
+	margin-left: 12px;
+	float:left;
+}
+.sideBar {
+	width:180px;
+	float:left;
+	margin:12px 0 0 12px;
+}
+.sideBar .wrapper {
+	/*padding-top:6px;
+	background: url(../images/sideBarTop.gif) top right no-repeat;*/*/
+}
+.sideBar .innerContent {
+	background: #ffffff url(../images/sideBarGradient3.gif) repeat-x;
+	padding: 6px;
+	border: 1px solid #AAAAAA;
+	margin-bottom:12px;
+}
+.sideBar h3 {
+	margin:0;
+	color:#525F95;
+	font-family:Arial, sans-serif;
+	font-size:14px;
+}
+.accountOptions {
+	padding-top:2px;
+	margin-top:2px;
+	border-bottom:1px solid #ddd;
+}
+.accountOptions a {
+	border-top:1px solid #ddd;
+	display:block;
+	color:#000;
+	text-decoration:none;
+	padding:0 5px;
+	line-height:1.7em;
+	/*background:transparent url("../images/doublearrow.gif") 97% 50% no-repeat;*/
+	font-size:13px;
+	font-family:Arial, sans-serif;
+}
+.accountOptions a.active,
+.accountOptions a.active:hover {
+	cursor:default;
+	/*background:#fea;*/
+	background:#fea url("../images/doublearrow.gif") 97% 50% no-repeat;
+	font-weight:bold;
+	color:#000;
+}
+.accountOptions a:hover {
+	/*background:#ffbc7e url("../images/doublearrow.gif") 97% 50% no-repeat;*/
+	background:#ffbc7e;
+	color:#000;
+}
+#navmain ul li strong a:hover {
+	background-color:#fff;
+}
+#mainContent {
+	margin-top:18px;
+}
+.additionalInfo {
+	color: #777;
+	font-size: 11px;
+	font-weight: normal;
+	font-family:Verdana,Tahoma,sans-serif;
+}
+table.manageUsersTable {
+	width:80%;
+	border: 1px solid #5987B3;
+}
+table.manageUsersTable  th {
+	background: #5987B3 url(../images/navGradient.gif);
+	color:#fff;
+	padding:4px;
+}
+table.manageUsersTable  td {
+	padding:4px;
+}
+table.manageUsersTable tbody tr:hover td {
+	background-color:#FFF7C0;
+}
+
+table.resolveErrorsTable {
+	width:100%;
+	border: 1px solid #5987B3;
+}
+table.resolveErrorsTable  th {
+	background: #5987B3 url(../images/navGradient.gif);
+	color:#fff;
+	padding:4px;
+}
+table.resolveErrorsTable  td {
+	padding:4px;
+}
+table.resolveErrorsTable tbody tr:hover td {
+	background-color:#FFF7C0;
+}
+form input.file {
+	font-size:13px;
+}
+.mainForm {
+	margin-top:12px;
+}
+.mainForm h1 {
+	font-size:18px;
+	font-weight:bold;
+	margin:0;
+	padding:0 0 6px 0;
+	/*color:#555;*/
+	color:#e52;
+	border-bottom:1px solid #555;
+}
+.mainForm h2 {
+	font-size:20px;
+	margin:8px 0 0 0;
+	color:#525f95;
+}
+.mainForm h3 {
+	font-size:14px;
+	margin:0 0 8px 0;
+	font-family:Arial,Helvetica,sans-serif;
+	color:#000;
+}
+.mainForm h4.searchResults {
+	font-size:14px;
+	font-weight:normal;
+	color: #555;
+	padding:4px 2px 2px 4px;
+	margin:0;
+}
+.searchResultsHeader {
+	border-top:1px solid #ccc;
+	background: #E6EEEE;
+	position:relative;
+}
+.iconHeader {
+	border:1px solid #aaa;
+	background: #eee;
+}
+.iconHeader img {
+	margin:6px 6px 0 2px;
+}
+/* --- pagination --- */
+.pagination {
+	padding: 4px;
+	font-size:85%;
+	position:absolute;
+	right:0;
+	top:0;
+}
+
+.pagination a,
+.pagination span {
+  padding: 2px 5px 2px 5px;
+  margin: 2px;
+  border: 1px solid #777;
+  text-decoration: none;
+  color: #555;
+}
+
+.pagination a:hover, 
+.pagination a:active,
+.pagination span:hover,
+.pagination span:active {
+  border: 1px solid #333;
+  background-color:#b3cfdd;
+}
+
+.pagination span.current {
+  border: 1px solid #333;
+  font-weight: bold;
+  /*background-color:#ffd;*/
+  background-color:#6ea4c0;
+  color: #fff;
+}
+
+.pagination span.disabled {
+  border: 1px solid #ccc;
+  color: #ccc;
+}
+
+.pagination span.disabled:hover {
+  border: 1px solid #ccc;
+  color: #ccc;
+  background:transparent;
+}
+	
+	

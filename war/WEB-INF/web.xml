@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<!-- There is no "root" ApplicationContext getting loaded.  To enable a root
+		context add a <context-param /> and a ContextLoaderListener -->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>mpower</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+		<!--  Without a <init-param /> for contextConfigLocation that explicity
+			spells out the name of the web components context filename, spring
+			defaults to <servlet-name>-servlet.xml.  So in this case, the webApp
+			context file is mpower-servlet.xml -->
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>mpower</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>entityManagerInViewFilter</filter-name>
+		<filter-class>
+			org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+		</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>entityManagerInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/spring</taglib-uri>
+			<taglib-location>
+				/WEB-INF/tld/spring.tld
+			</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>/spring-form</taglib-uri>
+			<taglib-location>
+				/WEB-INF/tld/spring-form.tld
+			</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>/mpower</taglib-uri>
+			<taglib-location>
+				/WEB-INF/tld/mpower.tld
+			</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<resource-ref>
+		<description>DB Connection</description>
+		<res-ref-name>jdbc/MPowerOpen</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+</web-app>

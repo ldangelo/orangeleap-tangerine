@@ -1,0 +1,264 @@
+form ul.formFields {
+	list-style-type:none;
+	margin:0pt;
+	padding:0pt;
+	width:100%;
+}
+form li.fieldGroup {
+	clear:both;
+	margin:0pt;
+	padding:4px 5px 2px 9px;
+	position:relative;
+}
+
+ul.formFields li.side label.desc {
+	float:left;
+	width:30%;
+	text-align:right;
+	padding-right:1%;
+	font-family:Arial, sans-serif;
+	padding-top:2px;
+}
+ul.formFields li.side input,
+ul.formFields li.side select {
+	float:left;
+	width:66%;
+}
+ul.formFields li.side select {
+	width:68.7%;
+}
+ul.formFields li.side textarea {
+	width:66%;
+}
+ul.formFields li.side input.date,
+ul.formFields li.side input.lookup {
+	width:60%;
+}
+li.side {
+	padding:4px 0;
+}
+form li.fieldGroup span.formField {
+	float:left;
+}
+form li.fieldGroup div.formField, form li.fieldGroup span.formField {
+	color:#444444;
+	margin:0pt 4px 0pt 0pt;
+	padding:0pt 0pt 8px;
+}
+form li.fieldGroup div label, form li.fieldGroup span label {
+	clear:both;
+	color:#444444;
+	display:block;
+	font-size:9px;
+	line-height:9px;
+	margin:0pt;
+	padding-top:3px;
+}
+
+form .req {
+	color:red !important;
+	float:none;
+	font-weight:bold;
+	margin:0pt;
+}
+input.medium, select.medium {
+	width:50%;
+}
+input.text, input.file, textarea.textarea, select.select{
+	margin:0;
+	font-size:100%;
+	color:#333;
+}
+input.text, textarea.textarea, .firefox select.select{
+/*	border-top:1px solid #7c7c7c;
+	border-left:1px solid #c3c3c3;
+	border-right:1px solid #c3c3c3;
+	border-bottom:1px solid #ddd;
+	background:#fff url(../images/fieldShadow.gif) repeat-x top;*/
+}
+input.text, input.file, textarea {
+	padding:3px;
+	margin:0;
+}
+.buttons input {
+	margin-right:5px;
+}
+input.btTxt {
+	overflow:visible;
+	padding:0pt 7px;
+	width:auto;
+	font-family:arial,sans-serif;
+}
+.buttons {
+	clear:both;
+	margin-top:10px;
+	padding:4px 5px 2px 8px;
+}
+form li.fieldGroup, form li.buttons {
+	display:block;
+}
+form li:after, .buttons:after{
+	content:"."; 
+	display:block;
+	height:0; 
+	clear:both; 
+	visibility:hidden;
+}
+
+form li, .buttons{display: inline-block;}
+* html form li, * html .buttons{height: 1%;}
+form li, .buttons{display: block;}
+
+* html form li div{
+	display:inline-block;
+}
+form li.focused{
+	background-color:#fff7c0;
+}
+form li.focused .instruct {
+	visibility:visible;
+}
+form li div label, form li span label {
+	clear:both;
+	color:#444444;
+	display:block;
+	font-size:9px;
+	line-height:9px;
+	margin:0pt;
+	padding-top:3px;
+}
+ul.formFields li.field33,
+ul.formFields li.field50,
+ul.formFields li.field100  {
+	display:inline;
+	float:left;
+	clear:none;
+}
+ul.width600 li.field33 {
+	width:150px;
+	margin-right:20px;
+}
+ul.width600 li.field50 {
+	width:235px;
+	margin-right:20px;
+}
+ul.width600 li.field100 {
+	width:490px;	
+}
+* html ul.width600 li.field33 {
+	margin-right:12px;
+}
+* html ul.width600 li.field50 {
+	margin-right:12px;
+}
+ul.formFields li input {
+	width:100%;
+	padding:3px;
+}
+ul.formFields li select {
+	width:100%;
+}
+ul.formFields li.clear {
+	clear:both;
+	font-size:1px;
+	line-height:1px;
+}
+ul.width600 {
+	width:600px;
+}
+form ul.width375 {
+	width:375px;
+}
+span.required {
+	font-weight:bold;
+	color:#f00;
+}
+span.helpText {
+	display: none;
+}
+a.helpLink img {
+	border:none;
+	vertical-align: -20%;
+	background-color: #eee;
+}
+a.helpLink {
+	margin: 0px 2px;
+}
+a.helpLink:hover img {
+	background-color: #ffb;
+}
+h4.formSectionHeader {
+	font-weight:bold;
+	font-family:Arial, sans-serif;
+	font-size:14px;
+	margin:0 0 6px 0;
+	padding:0;
+	color:#777;
+	border-bottom:1px solid #aaa;
+}
+form .formButtonFooter {
+	text-align:center;
+	border-top:1px solid #aaa;
+	padding:6px 0 7px;
+	margin:8px 0 0 0;
+	background: #F6F7FB;
+}
+a.lookupLink {
+	background:transparent url(../images/icons/view.png) no-repeat 0% 0%;
+	display:block;
+	float:left;
+	height:16px;
+	margin:5px 3px 0pt;
+	overflow:hidden;
+	padding:0pt;
+	text-indent:-2000px;
+	width:16px;
+}
+.lookupTable {
+	background:#fff;
+	padding:2px;
+	width:100%;
+}
+.searchSection {
+	background:#f6f7fb;
+	padding-top:10px;
+	border-bottom:1px solid #888;
+}
+.searchPersonButtons {
+	text-align:center;
+	padding:12px;
+	position:relative;
+}
+.personFormButtons {
+	position:relative;
+}
+.personFormButtons input {
+	font-size:14px;
+	padding:3px 4px;
+	margin:0 5px;
+	font-family:arial;
+}
+.searchButton {
+	font-weight:bold;
+	color:#444;
+}
+#savedMarker {
+	background:transparent url(../images/icons/check-eee.gif) no-repeat center left;
+	margin-left:12px;
+	padding-left:18px;
+	color:#080;
+	font-weight:bold;
+	font-size:14px;
+}
+.newAccountButton {
+	position:absolute;
+	bottom:13px;
+	right:8px;
+	color:#525F95;
+	font-weight:bold;
+	font-family:arial;
+	font-size:14px;
+}
+.searchPersonButtons .newAccountButton {
+	bottom:6px;
+}

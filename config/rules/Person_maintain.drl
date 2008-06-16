@@ -1,0 +1,21 @@
+package com.mpower.domain.entity
+
+import com.mpower.domain.entity.Person;
+import com.mpower.service.PersonService;
+
+global org.springframework.context.ApplicationContext applicationContext;
+
+rule "Has Spouse" 
+	when
+		p : Person( spouseFirstName != null )
+	then
+		PersonService personService = (PersonService)applicationContext.getBean("personService");
+		Person spouse = personService.readPersonByFirstName(p.getSpouseFirstName());
+		
+		if (spouse != null) {
+			if (spouse.getSpouseFirstName() == null) {
+				spouse.setSpouseFirstName(p.getFirstName());
+				personService.maintainPerson(spouse);
+			}
+		}
+end

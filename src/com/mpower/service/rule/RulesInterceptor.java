@@ -59,6 +59,8 @@ public class RulesInterceptor implements ApplicationContextAware {
 			
 			boolean foundRule = false;
 			
+			//TODO: Need a better overall strategy for looking up a rule file
+			//Consider checking the database first and then falling back to the file.
 			for (Object entity : entities) {
 				String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.drl";
 				InputStream stream = getClass().getResourceAsStream(name);

@@ -12,9 +12,9 @@ public class PersonValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     private String pageName;
-    
+
     /* This is not implemented yet.  Right now we have static validation rules
      * in place.  We need a PageCustomizationService that will allow for doing
      * dynamic validation
@@ -49,19 +49,20 @@ public class PersonValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 		// TODO Auto-generated method stub
 		logger.info("**** Validating Person from Save person form");
-		
-		Person person = (Person) target;
+
+		@SuppressWarnings("unused")
+        Person person = (Person) target;
 		// get person then get site
 
 		// This is an example of validating that the lastName field in person
 		// is not empty, null, or whitespace.  If it is, we grab the empty msg
 		// from message.properties.
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "empty");
-		
+
 		// This is a different form of validation, very similar to the one above
 		// but if the 3rd arg is not found in our message.properties, we use
 		// 4th param as a default message.
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "cow", 
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "cow",
 				"default message");
 
 		// this is for working towards completely dynamic validation.

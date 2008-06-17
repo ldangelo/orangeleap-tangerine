@@ -7,15 +7,14 @@ global org.springframework.context.ApplicationContext applicationContext;
 
 rule "Has Spouse" 
 	when
-		p : Person( spouseFirstName != null )
+		p : Person(spouseFirstName != null)
 	then
 		PersonService personService = (PersonService)applicationContext.getBean("personService");
-		Person spouse = personService.readPersonByFirstName(p.getSpouseFirstName());
-		
+		Person spouse = personService.matchSpouseLogically(p.getSpouseFirstName(), p.getLastName());
 		if (spouse != null) {
-			if (spouse.getSpouseFirstName() == null) {
+			if ((spouse.getSpouseFirstName() == null) && (spouse.getLastName().equals(p.getLastName()))) {
 				spouse.setSpouseFirstName(p.getFirstName());
 				personService.maintainPerson(spouse);
-			}
+			}	
 		}
 end

@@ -63,4 +63,9 @@ public class PersonServiceImpl implements PersonService {
     public Person readPersonByFirstName(String firstName) {
     	return personDao.readPersonByFirstName(firstName);
     }
+    
+    public Person matchSpouseLogically(String firstName, String lastName) {
+    	return personDao.matchSpouseLogically(firstName, lastName);
+    }
+    
 }

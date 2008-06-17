@@ -16,4 +16,6 @@ public interface PersonService {
     public List<Person> readPersons(Long siteId, Map<String, String> params);
 
     public Person createDefaultPerson(Long siteId);
+    
+    public Person matchSpouseLogically(String firstName, String lastName);
 }

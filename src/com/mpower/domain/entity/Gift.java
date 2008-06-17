@@ -35,7 +35,7 @@ public class Gift implements Serializable {
     private PaymentSource paymentSource;
 
     @Column(name = "VALUE")
-    private BigDecimal gift;
+    private BigDecimal value;
 
     public Long getId() {
         return id;
@@ -61,11 +61,11 @@ public class Gift implements Serializable {
         this.paymentSource = paymentSource;
     }
 
-    public BigDecimal getGift() {
-        return gift;
+    public BigDecimal getValue() {
+        return value;
     }
 
-    public void setGift(BigDecimal gift) {
-        this.gift = gift;
+    public void setValue(BigDecimal value) {
+        this.value = value;
     }
 }

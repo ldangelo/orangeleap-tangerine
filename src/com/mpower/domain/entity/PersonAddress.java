@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,8 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
+
 @Entity
 @Table(name = "PERSON_ADDRESS")
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 public class PersonAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -4,13 +4,17 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
+
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PHONE")
 public class Phone implements Serializable {
 
@@ -18,13 +22,13 @@ public class Phone implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name="PHONE_ID")
+    @Column(name = "PHONE_ID")
     private Long id;
 
-    @Column(name="NUMBER", nullable=false)
+    @Column(name = "NUMBER", nullable = false)
     private String number;
 
-    @Column(name="PHONE_TYPE", nullable=false)
+    @Column(name = "PHONE_TYPE", nullable = false)
     private String phoneType;
 
     public Long getId() {

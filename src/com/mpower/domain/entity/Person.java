@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -21,11 +22,13 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.util.AddressMap;
 import com.mpower.domain.util.CustomFieldMap;
 import com.mpower.domain.util.PhoneMap;
 
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PERSON")
 public class Person implements Serializable {
 
@@ -37,7 +40,7 @@ public class Person implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="SITE_ID")
+    @JoinColumn(name = "SITE_ID")
     private Site site;
 
     @Column(name = "TITLE")

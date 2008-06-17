@@ -105,6 +105,12 @@ public class Person implements Serializable {
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PaymentSource> paymentSources;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Gift> gifts;
+
     public Long getId() {
         return id;
     }
@@ -278,6 +284,22 @@ public class Person implements Serializable {
         this.organizationName = organizationName;
     }
 
+
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSources;
+    }
+
+    public void setPaymentSources(List<PaymentSource> paymentSources) {
+        this.paymentSources = paymentSources;
+    }
+
+    public List<Gift> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(List<Gift> gifts) {
+        this.gifts = gifts;
+    }
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

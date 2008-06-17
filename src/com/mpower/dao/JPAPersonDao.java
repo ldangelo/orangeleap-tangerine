@@ -12,6 +12,7 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.domain.entity.Person;
+import com.mpower.domain.util.EntityUtility;
 
 @Repository("personDao")
 public class JPAPersonDao implements PersonDao {
@@ -42,7 +43,7 @@ public class JPAPersonDao implements PersonDao {
                 key = pair.getKey();
                 value = pair.getValue();
                 if (!GenericValidator.isBlankOrNull(value)) {
-                    whereUsed = addWhereOrAnd(whereUsed, queryString);
+                    whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
                     queryString.append(" person.");
                     queryString.append(key);
                     queryString.append(" LIKE :");
@@ -59,7 +60,7 @@ public class JPAPersonDao implements PersonDao {
         }
         return query.getResultList();
     }
-    
+
     @SuppressWarnings("unchecked")
 	@Override
 	public Person readPersonByFirstName(String firstName) {
@@ -71,13 +72,4 @@ public class JPAPersonDao implements PersonDao {
 		}
 		return null;
 	}
-
-    public static boolean addWhereOrAnd(boolean whereUsed, StringBuffer queryString) {
-        if (whereUsed) {
-            queryString.append(" AND");
-            return whereUsed;
-        }
-        queryString.append(" WHERE");
-        return true;
-    }
 }

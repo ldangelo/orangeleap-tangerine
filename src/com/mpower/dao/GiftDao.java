@@ -8,5 +8,7 @@ public interface GiftDao {
 
     public Gift maintainGift(Gift gift);
 
+    public Gift readGift(Long giftId);
+
     public List<Gift> readGifts(Long personId);
 }

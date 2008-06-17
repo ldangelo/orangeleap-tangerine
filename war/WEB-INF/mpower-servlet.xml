@@ -37,6 +37,21 @@
         <property name="personService" ref="personService" />
     </bean>
 
+    <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
+        <property name="commandName" value="gift"/>
+        <property name="commandClass" value="com.mpower.domain.entity.Gift"/>
+<!--        <property name="validator">
+            <bean class="com.mpower.controller.validator.PersonValidator">
+            	<property name="pageName" value="person" />
+            	<property name="pageCustomizationService" ref="personService"/>
+            </bean>
+        </property> -->
+        <property name="formView" value="gift" />
+        <property name="successView" value="gift" />
+        <property name="giftService" ref="giftService" />
+        <property name="personService" ref="personService" />
+    </bean>
+
 	<!-- Configures the Tiles layout system -->
 	<bean id="tilesConfigurer"
 		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">

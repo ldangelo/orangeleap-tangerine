@@ -11,14 +11,19 @@ import com.mpower.domain.entity.Gift;
 import com.mpower.domain.entity.Person;
 
 @Service("giftService")
-public class GiftImpl implements GiftService {
+public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "giftDao")
     private GiftDao giftDao;
 
     @Override
-    public Gift createGift(Gift gift) {
+    public Gift maintainGift(Gift gift) {
         return giftDao.maintainGift(gift);
+    }
+
+    @Override
+    public Gift readGiftById(Long giftId) {
+        return giftDao.readGift(giftId);
     }
 
     @Override

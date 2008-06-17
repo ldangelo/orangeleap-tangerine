@@ -20,9 +20,14 @@ public class JPAGiftDao implements GiftDao {
     public Gift maintainGift(Gift gift) {
         if (gift.getId() == null) {
             em.persist(gift);
+            return gift;
         }
-        gift = em.merge(gift);
-        return gift;
+        return em.merge(gift);
+    }
+
+    @Override
+    public Gift readGift(Long giftId) {
+        return em.find(Gift.class, giftId);
     }
 
     @SuppressWarnings("unchecked")

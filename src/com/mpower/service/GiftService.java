@@ -7,7 +7,9 @@ import com.mpower.domain.entity.Person;
 
 public interface GiftService {
 
-    public Gift createGift(Gift gift);
+    public Gift maintainGift(Gift gift);
+
+    public Gift readGiftById(Long giftId);
 
     public List<Gift> readGifts(Person person);
 }

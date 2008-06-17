@@ -4,13 +4,17 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
+
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "ADDRESS")
 public class Address implements Serializable {
 

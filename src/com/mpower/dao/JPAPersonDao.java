@@ -31,6 +31,10 @@ public class JPAPersonDao implements PersonDao {
                 iter.remove();
             }
         }
+        if (person.getId() == null) {
+            em.persist(person);
+            return person;
+        }
         return em.merge(person);
     }
 

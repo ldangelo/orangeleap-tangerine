@@ -1,5 +1,6 @@
 package com.mpower.dao;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,27 +9,35 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.domain.entity.Person;
+import com.mpower.domain.entity.PersonPhone;
 import com.mpower.domain.util.EntityUtility;
 
 @Repository("personDao")
 public class JPAPersonDao implements PersonDao {
 
-	@PersistenceContext
+    @PersistenceContext
     private EntityManager em;
 
-	@Override
-	public Person savePerson(Person person) {
-		return em.merge(person);
-	}
+    @Override
+    public Person savePerson(Person person) {
+        for (Iterator<PersonPhone> iter = person.getPersonPhones().iterator(); iter.hasNext();) {
+            PersonPhone personPhone = iter.next();
+            if (personPhone == null || personPhone.getPhone() == null || StringUtils.stripToNull(personPhone.getPhone().getNumber()) == null) {
+                iter.remove();
+            }
+        }
+        return em.merge(person);
+    }
 
-	@Override
-	public Person readPerson(Long id) {
-		return (Person) em.find(Person.class, id);
-	}
+    @Override
+    public Person readPerson(Long id) {
+        return (Person) em.find(Person.class, id);
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -62,14 +71,14 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
-	public Person readPersonByFirstName(String firstName) {
-		Query query = em.createQuery("SELECT person FROM com.mpower.domain.entity.Person person where person.firstName = :firstName");
-		query.setParameter("firstName", firstName);
-		List<Person> results = query.getResultList();
-		if (results != null && ! results.isEmpty()) {
-			return results.get(0);
-		}
-		return null;
-	}
+    @Override
+    public Person readPersonByFirstName(String firstName) {
+        Query query = em.createQuery("SELECT person FROM com.mpower.domain.entity.Person person where person.firstName = :firstName");
+        query.setParameter("firstName", firstName);
+        List<Person> results = query.getResultList();
+        if (results != null && !results.isEmpty()) {
+            return results.get(0);
+        }
+        return null;
+    }
 }

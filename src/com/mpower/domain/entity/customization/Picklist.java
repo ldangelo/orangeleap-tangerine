@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,8 +14,10 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.mpower.domain.entity.Site;
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
 
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PICKLIST")
 public class Picklist implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,7 +30,7 @@ public class Picklist implements Serializable {
     private String picklistName;
 
     @ManyToOne
-    @JoinColumn(name="SITE_ID")
+    @JoinColumn(name = "SITE_ID")
     private Site site;
 
     @Column(name = "MULTISELECT")
@@ -38,7 +41,7 @@ public class Picklist implements Serializable {
     @OrderBy("itemOrder")
     private List<PicklistItem> picklistItems;
 
-	public String getId() {
+    public String getId() {
         return id;
     }
 
@@ -71,10 +74,10 @@ public class Picklist implements Serializable {
     }
 
     public Site getSite() {
-		return site;
-	}
+        return site;
+    }
 
-	public void setSite(Site site) {
-		this.site = site;
-	}
+    public void setSite(Site site) {
+        this.site = site;
+    }
 }

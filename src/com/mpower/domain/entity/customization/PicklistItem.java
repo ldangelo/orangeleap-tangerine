@@ -4,13 +4,17 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
+
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PICKLIST_ITEM")
 public class PicklistItem implements Serializable {
 

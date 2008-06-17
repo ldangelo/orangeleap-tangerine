@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -14,10 +15,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.mpower.domain.entity.Site;
+import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.type.LayoutType;
 import com.mpower.domain.type.PageType;
 
 @Entity
+@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_ID", "SECTION_NAME" }))
 public class SectionDefinition implements Serializable {
 

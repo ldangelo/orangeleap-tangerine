@@ -105,10 +105,10 @@ public class Person implements Serializable {
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<PaymentSource> paymentSources;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Gift> gifts;
 
     public Long getId() {

@@ -39,7 +39,7 @@ public class GiftFormController extends SimpleFormController {
             // create person
             gift = new Gift();
             String personId = request.getParameter("personId");
-            Person person = personService.readByPersonById(new Long(personId));
+            Person person = personService.readPersonById(new Long(personId));
             if (person == null) {
                 logger.error("**** person not found for id: " + personId);
                 return gift;

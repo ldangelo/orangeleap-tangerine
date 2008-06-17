@@ -9,7 +9,7 @@ public interface PersonService {
 
     public Person maintainPerson(Person person);
 
-    public Person readByPersonById(Long id);
+    public Person readPersonById(Long id);
     
     public Person readPersonByFirstName(String firstName);
 

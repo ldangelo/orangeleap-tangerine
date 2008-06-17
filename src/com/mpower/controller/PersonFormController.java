@@ -36,7 +36,7 @@ public class PersonFormController extends SimpleFormController {
 			person = personService.createDefaultPerson(1L);
 		} else {
 			// lookup person
-			person = personService.readByPersonById(new Long(personId));
+			person = personService.readPersonById(new Long(personId));
 		}
 
 		return person;

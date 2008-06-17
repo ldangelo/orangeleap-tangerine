@@ -34,7 +34,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person readByPersonById(Long id) {
+    public Person readPersonById(Long id) {
         return personDao.readPerson(id);
     }
 

@@ -30,8 +30,8 @@ public class PaymentSource implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+    @JoinColumn(name = "PERSON_ID")
+    private Person person;
 
     @OneToMany(mappedBy = "paymentSource", cascade = CascadeType.ALL)
     private List<Gift> gifts;
@@ -47,12 +47,12 @@ public class PaymentSource implements Serializable {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public List<Gift> getGifts() {

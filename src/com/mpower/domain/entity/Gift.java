@@ -35,6 +35,9 @@ public class Gift implements Serializable {
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
     @Column(name = "VALUE")
     private BigDecimal value;
 
@@ -63,6 +66,14 @@ public class Gift implements Serializable {
 
     public void setPaymentSource(PaymentSource paymentSource) {
         this.paymentSource = paymentSource;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public BigDecimal getValue() {

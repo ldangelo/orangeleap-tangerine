@@ -18,6 +18,11 @@ public class JPAGiftDao implements GiftDao {
 
     @Override
     public Gift maintainGift(Gift gift) {
+        if (gift.getPaymentSource() != null) {
+            if (gift.getPaymentSource().getPerson() == null) {
+                gift.getPaymentSource().setPerson(gift.getPerson());
+            }
+        }
         if (gift.getId() == null) {
             em.persist(gift);
             return gift;

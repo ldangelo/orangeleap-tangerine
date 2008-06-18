@@ -19,9 +19,9 @@ public class GiftDataProvider {
         Person person = new Person();
         person.setFirstName("firstname");
         person.setLastName("lastname");
-        person.setSite(site);
 
         Gift gift = new Gift();
+        gift.setDescription("My gift ot you");
         gift.setValue(BigDecimal.valueOf(1000L));
 
         PaymentSource paymentSource = new PaymentSource();

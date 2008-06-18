@@ -27,14 +27,12 @@ public class GiftTest extends BaseTest {
         person.setSite(site);
         em.persist(person);
         paymentSource.setPerson(person);
-        em.persist(paymentSource);
         gift.setPerson(person);
         gift.setPaymentSource(paymentSource);
         gift = giftService.maintainGift(gift);
         Long giftId = gift.getId();
         em.getTransaction().commit();
         em.remove(em.find(Gift.class, giftId));
-        em.remove(paymentSource);
         em.remove(person);
         em.remove(site);
     }

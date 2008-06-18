@@ -96,6 +96,12 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<PersonCustomField> personCustomFields;
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<PaymentSource> paymentSources;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<Gift> gifts;
+
     @Transient
     private Map<String, Address> addressMap = null;
 
@@ -104,12 +110,6 @@ public class Person implements Serializable {
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
-
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<PaymentSource> paymentSources;
-
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<Gift> gifts;
 
     public Long getId() {
         return id;
@@ -300,6 +300,7 @@ public class Person implements Serializable {
     public void setGifts(List<Gift> gifts) {
         this.gifts = gifts;
     }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

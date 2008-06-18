@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.domain.entity.Gift;
@@ -17,6 +19,7 @@ public class GiftServiceImpl implements GiftService {
     private GiftDao giftDao;
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
         return giftDao.maintainGift(gift);
     }

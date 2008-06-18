@@ -79,11 +79,12 @@
 	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/titlePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/paymentTypePicklist.sql"/>
-	     	<!-- Setup payment type picklist and add to gift page -->>
+	     	<!-- Setup payment type picklist and add to gift page -->
 	     	<transaction src="${basedir}/db/prod/entity/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
-	     	<!-- Add development data -->>
+	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup.sql"/>
+	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     </sql>
 	</target>
 

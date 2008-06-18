@@ -6,5 +6,6 @@ public enum EntityType {
 	donation,
 	event,
 	address,
-	phone
+	phone,
+	paymentSource
 }

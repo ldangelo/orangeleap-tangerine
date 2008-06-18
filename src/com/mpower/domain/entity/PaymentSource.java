@@ -3,7 +3,6 @@ package com.mpower.domain.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -32,7 +31,7 @@ public class PaymentSource implements Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @OneToMany(mappedBy = "paymentSource", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paymentSource")
     private List<Gift> gifts;
 
     @Column(name = "PAYMENT_TYPE")

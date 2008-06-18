@@ -50,7 +50,6 @@ public class PersonServiceImpl implements PersonService {
         person.setSite(siteDao.readSite(siteId));
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(person);
 
-        // TODO: this only works for String attributes of Person, not attributes of Address (which is an attribute of Person)
         List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteId, Arrays.asList(new EntityType[] { EntityType.person }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
@@ -59,13 +58,13 @@ public class PersonServiceImpl implements PersonService {
         // TODO: consider caching techniques for the default Person
         return person;
     }
-    
+
     public Person readPersonByFirstName(String firstName) {
     	return personDao.readPersonByFirstName(firstName);
     }
-    
+
     public Person matchSpouseLogically(String firstName, String lastName) {
     	return personDao.matchSpouseLogically(firstName, lastName);
     }
-    
+
 }

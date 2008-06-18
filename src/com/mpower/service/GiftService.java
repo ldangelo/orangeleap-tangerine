@@ -12,4 +12,6 @@ public interface GiftService {
     public Gift readGiftById(Long giftId);
 
     public List<Gift> readGifts(Person person);
+
+    public Gift createDefaultGift(Long siteId);
 }

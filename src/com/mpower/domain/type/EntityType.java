@@ -7,5 +7,5 @@ public enum EntityType {
 	event,
 	address,
 	phone,
-	paymentSource
+	gift
 }

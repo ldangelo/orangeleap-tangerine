@@ -38,6 +38,13 @@ public class PaymentSource implements Serializable {
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
 
+    public PaymentSource() {
+    }
+
+    public PaymentSource(Person person) {
+        this.person = person;
+    }
+
     public Long getId() {
         return id;
     }

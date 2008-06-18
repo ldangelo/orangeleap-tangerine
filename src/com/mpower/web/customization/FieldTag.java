@@ -25,63 +25,62 @@ public class FieldTag extends TagSupport {
 
     private SectionField sectionField;
     private List<SectionField> sectionFieldList;
-	private Object model;
+    private Object model;
 
+    public int doStartTag() throws JspException {
+        ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
+        FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
 
-	public int doStartTag() throws JspException {
-		ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
-		FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
+        FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
+        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionUtils.lookupUser(pageContext.getRequest()));
 
-		FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
-		FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionUtils.lookupUser(pageContext.getRequest()));
+        if (model == null) {
+            model = pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
+        }
 
-		if (model == null) {
-			model = pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
-		}
+        if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
+            try {
+                String fieldProperty = fieldVO.getFieldName();
+                if (fieldProperty.contains("[")) {
+                    fieldProperty = fieldProperty.replaceAll("\\[", ".");
+                    fieldProperty = fieldProperty.replaceAll("\\]", "");
+                }
+                fieldVO.setFieldValue(BeanUtils.getNestedProperty(model, fieldProperty));
+            } catch (IllegalAccessException e) {
+                logger.error(e);
+            } catch (InvocationTargetException e) {
+                logger.error(e);
+            } catch (NoSuchMethodException e) {
+                logger.error(e);
+            } finally {
+                model = null;
+            }
+        }
+        pageContext.getRequest().setAttribute("fieldVO", fieldVO);
+        return Tag.SKIP_BODY;
+    }
 
-		if (! FieldType.SPACER.equals(fieldVO.getFieldType())) {
-			try {
-				String fieldProperty = fieldVO.getFieldName();
-				if (fieldProperty.contains("[")) {
-					fieldProperty = fieldProperty.replaceAll("\\[",".");
-					fieldProperty = fieldProperty.replaceAll("\\]","");
-				}
-				fieldVO.setFieldValue(BeanUtils.getNestedProperty(model, fieldProperty));
-			} catch (IllegalAccessException e) {
-				logger.error(e);
-			} catch (InvocationTargetException e) {
-				logger.error(e);
-			} catch (NoSuchMethodException e) {
-				logger.error(e);
-			} finally {
-				model = null;
-			}
-		}
-		pageContext.getRequest().setAttribute("fieldVO", fieldVO);
-		return Tag.SKIP_BODY;
-	}
-	public Object getModel() {
-		return model;
-	}
+    public Object getModel() {
+        return model;
+    }
 
-	public void setModel(Object model) {
-		this.model = model;
-	}
+    public void setModel(Object model) {
+        this.model = model;
+    }
 
-	public SectionField getSectionField() {
-		return sectionField;
-	}
+    public SectionField getSectionField() {
+        return sectionField;
+    }
 
-	public void setSectionField(SectionField sectionField) {
-		this.sectionField = sectionField;
-	}
+    public void setSectionField(SectionField sectionField) {
+        this.sectionField = sectionField;
+    }
 
-	public List<SectionField> getSectionFieldList() {
-		return sectionFieldList;
-	}
+    public List<SectionField> getSectionFieldList() {
+        return sectionFieldList;
+    }
 
-	public void setSectionFieldList(List<SectionField> sectionFieldList) {
-		this.sectionFieldList = sectionFieldList;
-	}
-
+    public void setSectionFieldList(List<SectionField> sectionFieldList) {
+        this.sectionFieldList = sectionFieldList;
+    }
 }

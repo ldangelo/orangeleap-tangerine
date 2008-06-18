@@ -54,6 +54,9 @@ public class Gift implements Serializable {
     }
 
     public PaymentSource getPaymentSource() {
+        if (paymentSource == null) {
+            paymentSource = new PaymentSource(person);
+        }
         return paymentSource;
     }
 

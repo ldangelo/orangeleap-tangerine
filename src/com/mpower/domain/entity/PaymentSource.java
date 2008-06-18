@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
-import com.mpower.domain.type.PaymentType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
@@ -37,7 +36,7 @@ public class PaymentSource implements Serializable {
     private List<Gift> gifts;
 
     @Column(name = "PAYMENT_TYPE")
-    private PaymentType paymentType;
+    private String paymentType;
 
     public Long getId() {
         return id;
@@ -63,11 +62,11 @@ public class PaymentSource implements Serializable {
         this.gifts = gifts;
     }
 
-    public PaymentType getPaymentType() {
+    public String getPaymentType() {
         return paymentType;
     }
 
-    public void setPaymentType(PaymentType paymentType) {
+    public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
     }
 }

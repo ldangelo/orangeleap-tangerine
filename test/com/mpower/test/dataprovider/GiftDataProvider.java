@@ -8,7 +8,6 @@ import com.mpower.domain.entity.Gift;
 import com.mpower.domain.entity.PaymentSource;
 import com.mpower.domain.entity.Person;
 import com.mpower.domain.entity.Site;
-import com.mpower.domain.type.PaymentType;
 
 public class GiftDataProvider {
 
@@ -26,7 +25,7 @@ public class GiftDataProvider {
         gift.setValue(BigDecimal.valueOf(1000L));
 
         PaymentSource paymentSource = new PaymentSource();
-        paymentSource.setPaymentType(PaymentType.CASH);
+        paymentSource.setPaymentType("Cash");
         return new Object[][] { new Object[] { site, person, gift, paymentSource } };
     }
 }

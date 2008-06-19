@@ -37,24 +37,6 @@ ul.formFields li.side input.lookup {
 li.side {
 	padding:4px 0;
 }
-form li.fieldGroup span.formField {
-	float:left;
-}
-form li.fieldGroup div.formField, form li.fieldGroup span.formField {
-	color:#444444;
-	margin:0pt 4px 0pt 0pt;
-	padding:0pt 0pt 8px;
-}
-form li.fieldGroup div label, form li.fieldGroup span label {
-	clear:both;
-	color:#444444;
-	display:block;
-	font-size:9px;
-	line-height:9px;
-	margin:0pt;
-	padding-top:3px;
-}
-
 form .req {
 	color:red !important;
 	float:none;
@@ -69,30 +51,9 @@ input.text, input.file, textarea.textarea, select.select{
 	font-size:100%;
 	color:#333;
 }
-input.text, textarea.textarea, .firefox select.select{
-/*	border-top:1px solid #7c7c7c;
-	border-left:1px solid #c3c3c3;
-	border-right:1px solid #c3c3c3;
-	border-bottom:1px solid #ddd;
-	background:#fff url(../images/fieldShadow.gif) repeat-x top;*/
-}
 input.text, input.file, textarea {
 	padding:3px;
 	margin:0;
-}
-.buttons input {
-	margin-right:5px;
-}
-input.btTxt {
-	overflow:visible;
-	padding:0pt 7px;
-	width:auto;
-	font-family:arial,sans-serif;
-}
-.buttons {
-	clear:both;
-	margin-top:10px;
-	padding:4px 5px 2px 8px;
 }
 form li.fieldGroup, form li.buttons {
 	display:block;
@@ -105,28 +66,6 @@ form li:after, .buttons:after{
 	visibility:hidden;
 }
 
-form li, .buttons{display: inline-block;}
-* html form li, * html .buttons{height: 1%;}
-form li, .buttons{display: block;}
-
-* html form li div{
-	display:inline-block;
-}
-form li.focused{
-	background-color:#fff7c0;
-}
-form li.focused .instruct {
-	visibility:visible;
-}
-form li div label, form li span label {
-	clear:both;
-	color:#444444;
-	display:block;
-	font-size:9px;
-	line-height:9px;
-	margin:0pt;
-	padding-top:3px;
-}
 ul.formFields li.field33,
 ul.formFields li.field50,
 ul.formFields li.field100  {
@@ -261,4 +200,28 @@ a.lookupLink {
 }
 .searchPersonButtons .newAccountButton {
 	bottom:6px;
+}
+ul.formFields li input.textError {
+	background:#fed;
+	border:1px solid #d00;
+	padding:4px;
+}
+.globalFormErrors h5 {
+	margin:6px 0 4px;
+	font-size:13px;
+	color:#d00;
+}
+.globalFormErrors ul {
+	margin:0;
+	padding-left:30px;
+	list-style-type:disc;
+}
+.globalFormErrors ul li {
+	color:#d00;
+}
+.globalFormErrors {
+	padding-left:36px;
+	margin-left:8px;
+	margin-bottom:12px;
+	background:transparent url(../images/icons/document_forbidden.png) no-repeat center left;
 }

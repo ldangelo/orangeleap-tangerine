@@ -57,12 +57,12 @@ public class PersonValidator implements Validator {
 		// This is an example of validating that the lastName field in person
 		// is not empty, null, or whitespace.  If it is, we grab the empty msg
 		// from message.properties.
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "empty");
+		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "empty.lastName");
 
 		// This is a different form of validation, very similar to the one above
 		// but if the 3rd arg is not found in our message.properties, we use
 		// 4th param as a default message.
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "cow",
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "empty.lastName",
 				"default message");
 
 		// this is for working towards completely dynamic validation.

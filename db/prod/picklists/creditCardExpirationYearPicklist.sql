@@ -1,0 +1,11 @@
+INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME) VALUES ('creditCardExpirationYear', 'creditCardExpirationYear');
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date), year(current_date), 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+1, year(current_date)+1, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+2, year(current_date)+2, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+3, year(current_date)+3, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+4, year(current_date)+4, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+5, year(current_date)+5, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+6, year(current_date)+6, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+7, year(current_date)+7, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+8, year(current_date)+8, 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('creditCardExpirationYear', year(current_date)+9, year(current_date)+9, 1);

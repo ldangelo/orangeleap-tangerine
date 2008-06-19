@@ -25,7 +25,7 @@ public class Phone implements Serializable {
     @Column(name = "PHONE_ID")
     private Long id;
 
-    @Column(name = "NUMBER", nullable = false)
+    @Column(name = "NUMBER")
     private String number;
 
     @Column(name = "PHONE_TYPE", nullable = false)

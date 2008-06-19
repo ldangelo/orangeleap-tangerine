@@ -14,7 +14,9 @@ rule "Has Spouse"
 		if (spouse != null) {
 			if ((spouse.getSpouseFirstName() == null) && (spouse.getLastName().equals(p.getLastName()))) {
 				spouse.setSpouseFirstName(p.getFirstName());
+				p.setSpouseFirstName(spouse.getFirstName());
 				personService.maintainPerson(spouse);
+				personService.maintainPerson(p);
 			}	
 		}
 end

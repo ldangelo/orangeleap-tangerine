@@ -1,0 +1,17 @@
+/*	hasLayout bugs affect IE6 and IE7.
+	Techniques for giving layout:
+	{ height:1% }, {zoom: 1}
+*/
+.personFormButtons {
+	zoom: 1;
+}
+.iconHeader {
+	zoom: 1;
+}
+
+/* input button widths with padding are weird in IE.
+input.iebuttonfix {
+    width: auto;
+    overflow: visible;
+}
+*/

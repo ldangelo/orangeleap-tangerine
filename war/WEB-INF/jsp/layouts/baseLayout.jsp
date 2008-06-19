@@ -20,10 +20,8 @@
 				<tiles:putAttribute name="secondaryNav" value="${secondaryNav}" />					
 			</tiles:insertAttribute>
 			<div class="clearBoth"></div>
-			<div class="positionRelative">
 				<tiles:insertAttribute name="sideContent" />
 				<tiles:insertAttribute name="mainContent" />
-			</div>
 			<div class="clearBoth"></div>
 			<tiles:insertAttribute name="footer" />
 		</div>

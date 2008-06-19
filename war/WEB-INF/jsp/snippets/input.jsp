@@ -12,7 +12,7 @@
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" />
+    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 	  <input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly"/>
@@ -59,5 +59,4 @@
 	<c:out value="Field type ${fieldVO.fieldType} not yet implemented." />
 </c:otherwise>
 </c:choose>
-	<form:errors path="${fieldVO.fieldName}" cssClass="error"/>
 </li>

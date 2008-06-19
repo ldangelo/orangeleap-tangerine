@@ -5,5 +5,5 @@
 
 <c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 	<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${person}"/>
-	<td>${fieldVO.fieldValue}</td>
+	<td><c:choose><c:when test="${!empty fieldVO.fieldValue}">${fieldVO.fieldValue}</c:when><c:otherwise>&nbsp;</c:otherwise></c:choose></td>
 </c:forEach>

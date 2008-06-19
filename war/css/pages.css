@@ -23,11 +23,13 @@
 	width: 780px;
 	margin-left: 12px;
 	float:left;
+	display:inline;
 }
 .sideBar {
 	width:180px;
 	float:left;
 	margin:12px 0 0 12px;
+	display:inline;
 }
 .sideBar .wrapper {
 	/*padding-top:6px;
@@ -158,6 +160,7 @@ form input.file {
 .iconHeader {
 	border:1px solid #aaa;
 	background: #eee;
+	margin-bottom:12px;
 }
 .iconHeader img {
 	margin:6px 6px 0 2px;

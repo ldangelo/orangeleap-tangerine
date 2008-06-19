@@ -2,8 +2,6 @@ package com.mpower.domain.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -57,13 +55,28 @@ public class Gift implements Serializable {
     @Column(name = "CREDIT_CARD_EXPIRATION_DATE")
     private Date creditCardExpirationDate;
 
+    @Column(name = "CHECK_NUMBER")
+    private Integer checkNumber;
+
+    @Column(name = "ACH_TYPE")
+    private String achType;
+
+    @Column(name = "ACH_ROUTING_NUMBER")
+    private String achRoutingNumber;
+
+    @Column(name = "ACH_ACCOUNT_NUMBER")
+    private String achAccountNumber;
+
     @Column(name = "GIFT_ENTERED_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
     private Date giftEnteredDate;
 
     @Transient
-    private String creditCardExpiration;
+    private Integer creditCardExpirationMonth;
+
+    @Transient
+    private Integer creditCardExpirationYear;
 
     public Long getId() {
         return id;
@@ -129,33 +142,51 @@ public class Gift implements Serializable {
         this.creditCardExpirationDate = creditCardExpirationDate;
     }
 
-    public String getCreditCardExpiration() {
-        if (creditCardExpiration == null) {
-            if (getCreditCardExpirationDate() != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(creditCardExpirationDate);
-                creditCardExpiration = "" + (calendar.get(Calendar.MONTH + 1)) + "/" + calendar.get(Calendar.YEAR);
-            }
+    public Integer getCreditCardExpirationMonth() {
+        if (creditCardExpirationDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(creditCardExpirationDate);
+            creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
         }
-        return creditCardExpiration;
+        return creditCardExpirationMonth;
     }
 
-    public void setCreditCardExpiration(String creditCardExpiration) {
-        SimpleDateFormat format = new SimpleDateFormat("MM/yyyy");
-        try {
+    public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
+        setExpirationDate(creditCardExpirationMonth, null);
+        this.creditCardExpirationMonth = creditCardExpirationMonth;
+    }
+
+    public Integer getCreditCardExpirationYear() {
+        if (creditCardExpirationDate != null) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(format.parse(creditCardExpiration));
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
-            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMaximum(Calendar.HOUR_OF_DAY));
-            calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
-            calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
-            calendar.set(Calendar.MILLISECOND, calendar.getMaximum(Calendar.MILLISECOND));
-            creditCardExpirationDate = calendar.getTime();
-            this.creditCardExpiration = creditCardExpiration;
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            calendar.setTime(creditCardExpirationDate);
+            creditCardExpirationYear = calendar.get(Calendar.YEAR);
         }
+        return creditCardExpirationYear;
+    }
+
+    public void setCreditCardExpirationYear(Integer creditCardExpirationYear) {
+        setExpirationDate(null, creditCardExpirationYear);
+        this.creditCardExpirationYear = creditCardExpirationYear;
+    }
+
+    private void setExpirationDate(Integer month, Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        if (creditCardExpirationDate != null) {
+            calendar.setTime(creditCardExpirationDate);
+        }
+        if (month != null) {
+            calendar.set(Calendar.MONTH, month - 1);
+        }
+        if (year != null) {
+            calendar.set(Calendar.YEAR, year);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR, calendar.getMaximum(Calendar.HOUR));
+        calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+        creditCardExpirationDate = calendar.getTime();
+        this.creditCardExpirationDate = calendar.getTime();
     }
 
     public Date getGiftEnteredDate() {
@@ -164,5 +195,37 @@ public class Gift implements Serializable {
 
     public void setGiftEnteredDate(Date giftEnteredDate) {
         this.giftEnteredDate = giftEnteredDate;
+    }
+
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
+    }
+
+    public String getAchType() {
+        return achType;
+    }
+
+    public void setAchType(String achType) {
+        this.achType = achType;
+    }
+
+    public String getAchRoutingNumber() {
+        return achRoutingNumber;
+    }
+
+    public void setAchRoutingNumber(String achRoutingNumber) {
+        this.achRoutingNumber = achRoutingNumber;
+    }
+
+    public String getAchAccountNumber() {
+        return achAccountNumber;
+    }
+
+    public void setAchAccountNumber(String achAccountNumber) {
+        this.achAccountNumber = achAccountNumber;
     }
 }

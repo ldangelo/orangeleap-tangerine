@@ -134,7 +134,7 @@ public class Gift implements Serializable {
             if (getCreditCardExpirationDate() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(creditCardExpirationDate);
-                creditCardExpiration = ""+(calendar.get(Calendar.MONTH+1))+"/"+calendar.get(Calendar.YEAR);
+                creditCardExpiration = "" + (calendar.get(Calendar.MONTH + 1)) + "/" + calendar.get(Calendar.YEAR);
             }
         }
         return creditCardExpiration;
@@ -146,6 +146,10 @@ public class Gift implements Serializable {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(format.parse(creditCardExpiration));
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
+            calendar.set(Calendar.HOUR_OF_DAY, calendar.getMaximum(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+            calendar.set(Calendar.MILLISECOND, calendar.getMaximum(Calendar.MILLISECOND));
             creditCardExpirationDate = calendar.getTime();
             this.creditCardExpiration = creditCardExpiration;
         } catch (ParseException e) {

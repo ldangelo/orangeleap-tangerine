@@ -43,8 +43,8 @@ public class PaymentSource implements Serializable {
     @Column(name = "CREDIT_CARD_NUMBER")
     private String creditCardNumber;
 
-    @Column(name = "CREDIT_CARD_EXPIRATION")
-    private Date creditCardExpiration;
+    @Column(name = "CREDIT_CARD_EXPIRATION_DATE")
+    private Date creditCardExpirationDate;
 
     // absolutely don't store this in the db - see VISA merchant rules
     // only used for processing
@@ -98,12 +98,12 @@ public class PaymentSource implements Serializable {
         this.creditCardNumber = creditCardNumber;
     }
 
-    public Date getCreditCardExpiration() {
-        return creditCardExpiration;
+    public Date getCreditCardExpirationDate() {
+        return creditCardExpirationDate;
     }
 
-    public void setCreditCardExpiration(Date creditCardExpiration) {
-        this.creditCardExpiration = creditCardExpiration;
+    public void setCreditCardExpirationDate(Date creditCardExpirationDate) {
+        this.creditCardExpirationDate = creditCardExpirationDate;
     }
 
     public String getCreditCardSecurityCode() {

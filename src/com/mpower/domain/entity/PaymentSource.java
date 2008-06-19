@@ -1,7 +1,7 @@
 package com.mpower.domain.entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
 
@@ -31,11 +34,22 @@ public class PaymentSource implements Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @OneToMany(mappedBy = "paymentSource")
-    private List<Gift> gifts;
-
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
+
+    @Column(name = "CREDIT_CARD_TYPE")
+    private String creditCardType;
+
+    @Column(name = "CREDIT_CARD_NUMBER")
+    private String creditCardNumber;
+
+    @Column(name = "CREDIT_CARD_EXPIRATION")
+    private Date creditCardExpiration;
+
+    // absolutely don't store this in the db - see VISA merchant rules
+    // only used for processing
+    @Transient
+    private String creditCardSecurityCode;
 
     public PaymentSource() {
     }
@@ -60,19 +74,60 @@ public class PaymentSource implements Serializable {
         this.person = person;
     }
 
-    public List<Gift> getGifts() {
-        return gifts;
-    }
-
-    public void setGifts(List<Gift> gifts) {
-        this.gifts = gifts;
-    }
-
     public String getPaymentType() {
         return paymentType;
     }
 
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public String getCreditCardType() {
+        return creditCardType;
+    }
+
+    public void setCreditCardType(String creditCardType) {
+        this.creditCardType = creditCardType;
+    }
+
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        this.creditCardNumber = creditCardNumber;
+    }
+
+    public Date getCreditCardExpiration() {
+        return creditCardExpiration;
+    }
+
+    public void setCreditCardExpiration(Date creditCardExpiration) {
+        this.creditCardExpiration = creditCardExpiration;
+    }
+
+    public String getCreditCardSecurityCode() {
+        return creditCardSecurityCode;
+    }
+
+    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
+        this.creditCardSecurityCode = creditCardSecurityCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof PaymentSource == false) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        PaymentSource rhs = (PaymentSource) obj;
+        return new EqualsBuilder().append(person, rhs.person).append(paymentType, rhs.paymentType).append(creditCardType, rhs.creditCardType).append(creditCardNumber, rhs.creditCardNumber).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(person).append(paymentType).append(creditCardType).append(creditCardNumber).toHashCode();
     }
 }

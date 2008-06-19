@@ -7,7 +7,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.mpower.domain.entity.Gift;
-import com.mpower.domain.entity.PaymentSource;
 import com.mpower.domain.entity.Person;
 import com.mpower.domain.entity.Site;
 import com.mpower.service.GiftService;
@@ -20,15 +19,13 @@ public class GiftTest extends BaseTest {
     private GiftService giftService;
 
     @Test(dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
-    public void createGift(Site site, Person person, Gift gift, PaymentSource paymentSource) {
+    public void createGift(Site site, Person person, Gift gift) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
         person.setSite(site);
         em.persist(person);
-        paymentSource.setPerson(person);
         gift.setPerson(person);
-        gift.setPaymentSource(paymentSource);
         gift = giftService.maintainGift(gift);
         Long giftId = gift.getId();
         em.getTransaction().commit();

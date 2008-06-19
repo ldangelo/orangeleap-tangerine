@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.testng.annotations.DataProvider;
 
 import com.mpower.domain.entity.Gift;
-import com.mpower.domain.entity.PaymentSource;
 import com.mpower.domain.entity.Person;
 import com.mpower.domain.entity.Site;
 
@@ -21,11 +20,10 @@ public class GiftDataProvider {
         person.setLastName("lastname");
 
         Gift gift = new Gift();
-        gift.setDescription("My gift ot you");
+        gift.setComments("My gift to you");
+        gift.setPaymentType("Cash");
         gift.setValue(BigDecimal.valueOf(1000L));
 
-        PaymentSource paymentSource = new PaymentSource();
-        paymentSource.setPaymentType("Cash");
-        return new Object[][] { new Object[] { site, person, gift, paymentSource } };
+        return new Object[][] { new Object[] { site, person, gift } };
     }
 }

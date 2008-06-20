@@ -13,6 +13,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 public class AES {
@@ -50,16 +51,16 @@ public class AES {
     /**
      * Encrypt the bytes using a key in the <code>KEY_FILE_PATH</code>
      * @param clearBytes the clear text to encrypt
-     * @return the encrypted bytes
+     * @return the encrypted hex string
      * @throws AESException
      */
-    public static byte[] encrypt(byte[] clearBytes) throws AESException {
+    public static String encrypt(String clearString) throws AESException {
         FileInputStream keyInputStream = null;
         try {
             keyInputStream = new FileInputStream(KEY_FILE_PATH);
             PropertyResourceBundle bundle = new PropertyResourceBundle(keyInputStream);
             String key = bundle.getString(SECRET_KEY_KEY);
-            return encrypt(clearBytes, new BigInteger(key, 16).toByteArray());
+            return new String(Base64.encodeBase64(encrypt(clearString.getBytes(), new BigInteger(key, 16).toByteArray())));
         } catch (FileNotFoundException e) {
             throw new AESException("No key file found at " + KEY_FILE_PATH, e);
         } catch (IOException e) {
@@ -93,13 +94,13 @@ public class AES {
      * @return the decrypted <code>byte</code>[]
      * @throws AESException
      */
-    public static byte[] decrypt(byte[] encryptedBytes) throws AESException {
+    public static String decrypt(String encryptedString) throws AESException {
         FileInputStream keyInputStream = null;
         try {
             keyInputStream = new FileInputStream(KEY_FILE_PATH);
             PropertyResourceBundle bundle = new PropertyResourceBundle(keyInputStream);
             String key = bundle.getString(SECRET_KEY_KEY);
-            return decrypt(encryptedBytes, new BigInteger(key, 16).toByteArray());
+            return new String(decrypt(Base64.decodeBase64(encryptedString.getBytes()), new BigInteger(key, 16).toByteArray()));
         } catch (FileNotFoundException e) {
             throw new AESException("No key file found at " + KEY_FILE_PATH, e);
         } catch (IOException e) {

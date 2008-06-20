@@ -44,6 +44,7 @@ public class RulesInterceptor implements ApplicationContextAware {
 		}
 		workingMemory.setGlobal("applicationContext", applicationContext);
 		
+		logger.info("*** firing all rules");
 		workingMemory.fireAllRules();
 		
 		return pjp.proceed(args);

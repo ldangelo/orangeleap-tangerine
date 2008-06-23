@@ -75,31 +75,19 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
-	public Person readPersonByFirstName(String firstName) {
-		Query query = em.createQuery("SELECT person FROM com.mpower.domain.entity.Person person where person.firstName = :firstName");
-		query.setParameter("firstName", firstName);
-		List<Person> results = query.getResultList();
-		if (results != null && ! results.isEmpty()) {
-			return results.get(0);
-		}
-		return null;
-	}
-    
-    @SuppressWarnings("unchecked")
-	@Override
-	public Person matchSpouseLogically(String firstName, String lastName) {
-		Query query = em.createQuery("SELECT person FROM com.mpower.domain.entity.Person person WHERE (person.firstName = :firstName AND person.lastName = :lastName)");
-		query.setParameter("firstName", firstName);
-		query.setParameter("lastName", lastName);
-		List<Person> results = query.getResultList();
-		if (results != null && ! results.isEmpty()) {
-			if (results.size() == 1) {
-				return results.get(0);
-			} else {
+    @Override
+    public Person matchSpouseLogically(String firstName, String lastName) {
+        Query query = em.createNamedQuery("READ_PERSON_BY_FIRST_AND_LAST");
+        query.setParameter("firstName", firstName);
+        query.setParameter("lastName", lastName);
+        List<Person> results = query.getResultList();
+        if (results != null && !results.isEmpty()) {
+            if (results.size() == 1) {
+                return results.get(0);
+            } else {
 
-			}
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 }

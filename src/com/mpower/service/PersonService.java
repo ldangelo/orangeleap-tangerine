@@ -10,12 +10,10 @@ public interface PersonService {
     public Person maintainPerson(Person person);
 
     public Person readPersonById(Long id);
-    
-    public Person readPersonByFirstName(String firstName);
 
     public List<Person> readPersons(Long siteId, Map<String, String> params);
 
     public Person createDefaultPerson(Long siteId);
-    
+
     public Person matchSpouseLogically(String firstName, String lastName);
 }

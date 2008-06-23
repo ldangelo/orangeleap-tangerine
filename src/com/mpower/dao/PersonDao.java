@@ -7,13 +7,11 @@ import com.mpower.domain.entity.Person;
 
 public interface PersonDao {
 
-	public Person savePerson(Person person);
+    public Person savePerson(Person person);
 
-	public Person readPerson(Long id);
-	
-	public Person readPersonByFirstName(String firstName);
+    public Person readPerson(Long id);
 
     public List<Person> readPersons(Long siteId, Map<String, String> params);
-    
+
     public Person matchSpouseLogically(String firstName, String lastName);
 }

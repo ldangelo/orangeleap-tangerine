@@ -2,10 +2,35 @@ package com.mpower.domain.entity
 
 import com.mpower.domain.entity.Person;
 import com.mpower.service.PersonService;
+import com.mpower.service.rule.SpouseMatchNotFound;
 
 global org.springframework.context.ApplicationContext applicationContext;
 
-rule "Has Spouse" 
+rule "Person - Save Changes - Spouse Match Not Found"
+	no-loop true
+	when
+		s : SpouseMatchNotFound()
+		p : Person(spouseFirstName != null)
+	then
+		String title;
+		if (p.getTitle().equals("Mr.")) {
+			title = "Mrs.";
+		} else {
+			title = "Mr.";
+		}
+		PersonService personService = (PersonService)applicationContext.getBean("personService");
+		Person spouse = personService.createDefaultPerson(1L);
+		spouse.setTitle(title);
+		spouse.setFirstName(p.getSpouseFirstName());
+		spouse.setLastName(p.getLastName());
+		spouse.setMaritalStatus("Married");
+		spouse.setSpouseFirstName(p.getFirstName());	 
+		personService.maintainPerson(spouse);
+		retract(s);
+end
+
+rule "Person - Save Changes - Spouse Match Found" 
+	no-loop true
 	when
 		p : Person(spouseFirstName != null)
 	then
@@ -15,8 +40,25 @@ rule "Has Spouse"
 			if ((spouse.getSpouseFirstName() == null) && (spouse.getLastName().equals(p.getLastName()))) {
 				spouse.setSpouseFirstName(p.getFirstName());
 				p.setSpouseFirstName(spouse.getFirstName());
+				p.setMaritalStatus("Married");
+				spouse.setMaritalStatus("Married");
 				personService.maintainPerson(spouse);
 				personService.maintainPerson(p);
 			}	
+		} else {
+			insert(new SpouseMatchNotFound(false));
 		}
 end
+
+rule "Person - Save Changes - Single Yet Has Spouse" 
+	when
+		p : Person(spouseFirstName != null, maritalStatus == "Single")
+	then
+		PersonService personService = (PersonService)applicationContext.getBean("personService");
+		p.setMaritalStatus("Married");
+		personService.maintainPerson(p);
+end
+
+
+
+

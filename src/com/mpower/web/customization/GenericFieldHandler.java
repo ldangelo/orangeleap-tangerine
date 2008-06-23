@@ -17,53 +17,53 @@ import com.mpower.service.customization.MessageService;
 
 public class GenericFieldHandler implements FieldHandler {
 
-	protected FieldService fieldService;
-	protected MessageService messageService;
+    protected FieldService fieldService;
+    protected MessageService messageService;
 
-	public GenericFieldHandler(ApplicationContext appContext) {
-		messageService = (MessageService) appContext.getBean("messageService");
-		fieldService = (FieldService) appContext.getBean("fieldService");
-	}
+    public GenericFieldHandler(ApplicationContext appContext) {
+        messageService = (MessageService) appContext.getBean("messageService");
+        fieldService = (FieldService) appContext.getBean("fieldService");
+    }
 
-	public String getFieldLabelName(SectionField sectionField) {
-		return sectionField.getFieldLabelName();
-	}
+    public String getFieldLabelName(SectionField sectionField) {
+        return sectionField.getFieldLabelName();
+    }
 
-	public String getFieldRequiredName(SectionField sectionField) {
-		return sectionField.getFieldRequiredName();
-	}
+    public String getFieldRequiredName(SectionField sectionField) {
+        return sectionField.getFieldRequiredName();
+    }
 
-	public String getFieldPropertyName(SectionField sectionField) {
-		String fieldPropertyName = sectionField.getFieldPropertyName();
+    public String getFieldPropertyName(SectionField sectionField) {
+        String fieldPropertyName = sectionField.getFieldPropertyName();
 
-		if (sectionField.getFieldDefinition().isCustom()) {
-			fieldPropertyName += ".value";
-		}
-		return fieldPropertyName;
-	}
+        if (sectionField.getFieldDefinition().isCustom()) {
+            fieldPropertyName += ".value";
+        }
+        return fieldPropertyName;
+    }
 
-	public FieldType getFieldType(SectionField sectionField) {
-		return sectionField.getFieldType();
-	}
+    public FieldType getFieldType(SectionField sectionField) {
+        return sectionField.getFieldType();
+    }
 
-	public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
-		FieldVO fieldVO = new FieldVO();
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
+        FieldVO fieldVO = new FieldVO();
 
-		fieldVO.setFieldName(getFieldPropertyName(currentField));
-		fieldVO.setFieldType(getFieldType(currentField));
+        fieldVO.setFieldName(getFieldPropertyName(currentField));
+        fieldVO.setFieldType(getFieldType(currentField));
 
-		String fieldLabelName = getFieldLabelName(currentField);
-		fieldVO.setHelpText(messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_HELP, fieldLabelName, locale));
-		fieldVO.setHelpAvailable(! GenericValidator.isBlankOrNull(fieldVO.getHelpText()));
+        String fieldLabelName = getFieldLabelName(currentField);
+        fieldVO.setHelpText(messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_HELP, fieldLabelName, locale));
+        fieldVO.setHelpAvailable(!GenericValidator.isBlankOrNull(fieldVO.getHelpText()));
 
-		String labelText = messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
-		if (GenericValidator.isBlankOrNull(labelText)) {
-			if (! currentField.isCompoundField()) {
-				labelText = currentField.getFieldDefinition().getDefaultLabel();
-			} else {
-				labelText = currentField.getSecondaryFieldDefinition().getDefaultLabel();
-			}
-		}
+        String labelText = messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
+        if (GenericValidator.isBlankOrNull(labelText)) {
+            if (!currentField.isCompoundField()) {
+                labelText = currentField.getFieldDefinition().getDefaultLabel();
+            } else {
+                labelText = currentField.getSecondaryFieldDefinition().getDefaultLabel();
+            }
+        }
         fieldVO.setLabelText(labelText);
 
         fieldVO.setRequired(fieldService.lookupFieldRequired(user.getSite(), currentField));
@@ -71,13 +71,9 @@ public class GenericFieldHandler implements FieldHandler {
         if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
             String fieldProperty = fieldVO.getFieldName();
             BeanWrapper personBeanWrapper = new BeanWrapperImpl(model);
-            try {
-                fieldVO.setFieldValue((String) personBeanWrapper.getPropertyValue(fieldProperty));
-            } finally {
-                model = null;
-            }
+            fieldVO.setFieldValue((String) personBeanWrapper.getPropertyValue(fieldProperty));
         }
 
-		return fieldVO;
-	}
+        return fieldVO;
+    }
 }

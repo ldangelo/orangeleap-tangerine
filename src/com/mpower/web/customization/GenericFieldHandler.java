@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.entity.User;
@@ -44,7 +46,7 @@ public class GenericFieldHandler implements FieldHandler {
 		return sectionField.getFieldType();
 	}
 
-	public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user) {
+	public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
 		FieldVO fieldVO = new FieldVO();
 
 		fieldVO.setFieldName(getFieldPropertyName(currentField));
@@ -65,6 +67,16 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setLabelText(labelText);
 
         fieldVO.setRequired(fieldService.lookupFieldRequired(user.getSite(), currentField));
+
+        if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
+            String fieldProperty = fieldVO.getFieldName();
+            BeanWrapper personBeanWrapper = new BeanWrapperImpl(model);
+            try {
+                fieldVO.setFieldValue((String) personBeanWrapper.getPropertyValue(fieldProperty));
+            } finally {
+                model = null;
+            }
+        }
 
 		return fieldVO;
 	}

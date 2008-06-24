@@ -51,6 +51,7 @@ rule "Person - Save Changes - Spouse Match Found"
 end
 
 rule "Person - Save Changes - Single Yet Has Spouse" 
+	no-loop true
 	when
 		p : Person(spouseFirstName != null, maritalStatus == "Single")
 	then

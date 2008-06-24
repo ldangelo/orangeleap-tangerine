@@ -12,16 +12,19 @@
 
 	<body>
 	
-		<div class="bodyContent ">
+		<div class="bodyContent">
 			<tiles:useAttribute name="primaryNav" />
 			<tiles:useAttribute name="secondaryNav" />
+			<tiles:useAttribute name="sidebarNav" ignore="true" />
 			<tiles:insertAttribute name="navigation">
 				<tiles:putAttribute name="primaryNav" value="${primaryNav}" />
 				<tiles:putAttribute name="secondaryNav" value="${secondaryNav}" />					
 			</tiles:insertAttribute>
 			<div class="clearBoth"></div>
-				<tiles:insertAttribute name="sideContent" />
-				<tiles:insertAttribute name="mainContent" />
+			<tiles:insertAttribute name="sideContent">
+				<tiles:putAttribute name="sidebarNav" value="${sidebarNav}" />
+			</tiles:insertAttribute>
+			<tiles:insertAttribute name="mainContent" />
 			<div class="clearBoth"></div>
 			<tiles:insertAttribute name="footer" />
 		</div>

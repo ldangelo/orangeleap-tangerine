@@ -15,13 +15,13 @@
 	    {
 	        $("#myTable").tablesorter( { sortList: [[2,0], [3,0]] , headers:{0:{sorter:false}} } );
 
-			$(".accountOptions a").click(function() {
-				this.blur();
-	        	$(".accountOptions a").removeClass("active");
-				$(this).addClass("active");
-				$("#currentFunctionTitle").html($(this).html());
-				return false;
-			});
+			//$(".accountOptions a").click(function() {
+			//	this.blur();
+	        //	$(".accountOptions a").removeClass("active");
+			//	$(this).addClass("active");
+			//	$("#currentFunctionTitle").html($(this).html());
+			//	return false;
+			//});
 			
 			$("table.tablesorter tbody td").hover(function() {
 				$(this).parent().addClass("highlight");

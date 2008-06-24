@@ -2,7 +2,7 @@ package com.mpower.web.customization;
 
 import java.util.List;
 
-import com.mpower.domain.type.FieldType;
+import com.mpower.type.FieldType;
 
 public class FieldVO {
     public List<String> codes;

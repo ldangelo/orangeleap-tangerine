@@ -10,10 +10,10 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.type.MessageResourceType;
 import com.mpower.entity.User;
 import com.mpower.entity.customization.SectionDefinition;
 import com.mpower.service.customization.MessageService;
+import com.mpower.type.MessageResourceType;
 import com.mpower.web.common.SessionUtils;
 
 public class SectionHeaderTag extends TagSupport {

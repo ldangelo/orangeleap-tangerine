@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.MessageDao;
-import com.mpower.domain.type.MessageResourceType;
 import com.mpower.entity.Site;
+import com.mpower.type.MessageResourceType;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {

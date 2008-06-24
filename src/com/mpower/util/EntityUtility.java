@@ -1,4 +1,4 @@
-package com.mpower.domain.util;
+package com.mpower.util;
 
 public class EntityUtility {
 

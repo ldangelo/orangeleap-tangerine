@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
 	<named-query name="READ_MESSAGE" >
-		<query>SELECT msg FROM com.mpower.domain.entity.customization.MessageResource msg
+		<query>SELECT msg FROM com.mpower.entity.customization.MessageResource msg
 		WHERE msg.messageResourceType = :messageResourceType
 		AND msg.messageKey = :messageKey
 		AND msg.languageAbbreviation = :language

@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PersonDao;
 import com.mpower.dao.SiteDao;
-import com.mpower.domain.type.EntityType;
 import com.mpower.entity.Person;
 import com.mpower.entity.customization.EntityDefault;
+import com.mpower.type.EntityType;
 
 @Service("personService")
 public class PersonServiceImpl implements PersonService {

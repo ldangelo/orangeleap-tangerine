@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.mpower.domain.type.EntityType;
+import com.mpower.type.EntityType;
 
 @Entity
 @Table(name = "ENTITY_DEFAULT", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_ID", "ENTITY_FIELD_NAME" }) })

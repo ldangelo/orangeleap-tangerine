@@ -13,9 +13,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.util.EntityUtility;
 import com.mpower.entity.Person;
 import com.mpower.entity.PersonPhone;
+import com.mpower.util.EntityUtility;
 
 @Repository("personDao")
 public class JPAPersonDao implements PersonDao {

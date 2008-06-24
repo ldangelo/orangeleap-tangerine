@@ -8,10 +8,10 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.type.PageType;
 import com.mpower.entity.User;
 import com.mpower.entity.customization.SectionDefinition;
 import com.mpower.service.customization.PageCustomizationService;
+import com.mpower.type.PageType;
 import com.mpower.web.common.SessionUtils;
 
 public class PageTag extends TagSupport {

@@ -13,7 +13,7 @@
 
     <bean name="/personSearch.htm" class="com.mpower.controller.PersonSearchFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.entity.Person"/>
+        <property name="commandClass" value="com.mpower.entity.Person"/>
 <!--        <property name="validator">-->
 <!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
 <!--        </property>-->
@@ -25,7 +25,7 @@
 
     <bean name="/person.htm" class="com.mpower.controller.PersonFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.entity.Person"/>
+        <property name="commandClass" value="com.mpower.entity.Person"/>
         <property name="validator">
             <bean class="com.mpower.controller.validator.PersonValidator">
             	<property name="pageName" value="person" />
@@ -39,7 +39,7 @@
 
     <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.entity.Gift"/>
+        <property name="commandClass" value="com.mpower.entity.Gift"/>
 <!--        <property name="validator">
             <bean class="com.mpower.controller.validator.PersonValidator">
             	<property name="pageName" value="person" />
@@ -54,7 +54,7 @@
 
     <bean name="/test_giftform.htm" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.entity.Gift"/>
+        <property name="commandClass" value="com.mpower.entity.Gift"/>
 <!--        <property name="validator">
             <bean class="com.mpower.controller.validator.PersonValidator">
             	<property name="pageName" value="person" />

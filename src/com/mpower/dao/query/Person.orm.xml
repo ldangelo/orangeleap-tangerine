@@ -5,7 +5,7 @@
 
 	<named-query name="READ_PERSON_BY_FIRST_AND_LAST" >
 		<query>
-		    SELECT person FROM com.mpower.domain.entity.Person person
+		    SELECT person FROM com.mpower.entity.Person person
 		    WHERE (person.firstName = :firstName
 		    AND person.lastName = :lastName)
 		</query>

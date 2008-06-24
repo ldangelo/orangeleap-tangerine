@@ -22,10 +22,10 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.mpower.domain.util.AddressMap;
-import com.mpower.domain.util.CustomFieldMap;
-import com.mpower.domain.util.PhoneMap;
 import com.mpower.entity.listener.EmptyStringNullifyerListener;
+import com.mpower.util.AddressMap;
+import com.mpower.util.CustomFieldMap;
+import com.mpower.util.PhoneMap;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })

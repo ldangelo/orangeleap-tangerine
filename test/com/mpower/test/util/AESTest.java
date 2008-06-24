@@ -3,7 +3,7 @@ package com.mpower.test.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mpower.domain.util.AES;
+import com.mpower.util.AES;
 
 public class AESTest {
     public static Logger logger = Logger.getLogger(AES.class.getName());

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.type.FieldType;
 import com.mpower.entity.customization.SectionField;
+import com.mpower.type.FieldType;
 
 public class FieldHandlerHelper {
 	private static Map<FieldType, FieldHandler> fieldTypeToHandlerMap = new HashMap<FieldType, FieldHandler>();

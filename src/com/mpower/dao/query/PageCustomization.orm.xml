@@ -5,28 +5,28 @@
 
 	<named-query name="READ_OUT_OF_BOX_SECTION_DEFINITIONS" >
 		<query>
-		    SELECT sectionDefinition FROM com.mpower.domain.entity.customization.SectionDefinition sectionDefinition
+		    SELECT sectionDefinition FROM com.mpower.entity.customization.SectionDefinition sectionDefinition
 		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.id is null
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_DEFINITIONS" >
 		<query>
-		    SELECT sectionDefinition FROM com.mpower.domain.entity.customization.SectionDefinition sectionDefinition
+		    SELECT sectionDefinition FROM com.mpower.entity.customization.SectionDefinition sectionDefinition
 		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.id = :siteId
 		</query>
 	</named-query>
 
 	<named-query name="READ_OUT_OF_BOX_SECTION_FIELDS" >
 		<query>
-		    SELECT sectionField FROM com.mpower.domain.entity.customization.SectionField sectionField
+		    SELECT sectionField FROM com.mpower.entity.customization.SectionField sectionField
 		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.id is null
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_FIELDS" >
 		<query>
-		    SELECT sectionField FROM com.mpower.domain.entity.customization.SectionField sectionField
+		    SELECT sectionField FROM com.mpower.entity.customization.SectionField sectionField
 		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.id is :siteId
 		</query>
 	</named-query>

@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.SiteDao;
-import com.mpower.domain.type.EntityType;
 import com.mpower.entity.Gift;
 import com.mpower.entity.Person;
 import com.mpower.entity.customization.EntityDefault;
+import com.mpower.type.EntityType;
 
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {

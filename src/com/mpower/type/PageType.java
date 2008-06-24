@@ -1,4 +1,4 @@
-package com.mpower.domain.type;
+package com.mpower.type;
 
 public enum PageType {
 	person,

@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
 	<named-query name="READ_USER_BY_AND_USERNAME_AND_PASSWORD" >
-		<query>SELECT user FROM com.mpower.domain.entity.User user
+		<query>SELECT user FROM com.mpower.entity.User user
 		WHERE UPPER(user.userName) = UPPER(:userName) AND user.password = :password</query>
 	</named-query>
-	
+
 </entity-mappings>

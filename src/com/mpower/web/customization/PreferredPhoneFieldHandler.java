@@ -7,11 +7,11 @@ import java.util.Locale;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.type.FieldType;
-import com.mpower.domain.type.MessageResourceType;
 import com.mpower.entity.User;
 import com.mpower.entity.customization.FieldDefinition;
 import com.mpower.entity.customization.SectionField;
+import com.mpower.type.FieldType;
+import com.mpower.type.MessageResourceType;
 
 public class PreferredPhoneFieldHandler extends GenericFieldHandler {
 

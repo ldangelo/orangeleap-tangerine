@@ -1,4 +1,4 @@
-package com.mpower.domain.util;
+package com.mpower.util;
 
 import java.util.ArrayList;
 import java.util.List;

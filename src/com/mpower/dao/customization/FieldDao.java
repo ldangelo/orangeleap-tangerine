@@ -1,7 +1,7 @@
 package com.mpower.dao.customization;
 
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.Picklist;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.Picklist;
 
 public interface FieldDao {
     public FieldDefinition readFieldById(String fieldId);

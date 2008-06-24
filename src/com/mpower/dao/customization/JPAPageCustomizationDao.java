@@ -8,9 +8,9 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.entity.customization.SectionDefinition;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.PageType;
+import com.mpower.entity.customization.SectionDefinition;
+import com.mpower.entity.customization.SectionField;
 
 @Repository("pageCustomizationDao")
 public class JPAPageCustomizationDao implements PageCustomizationDAO {

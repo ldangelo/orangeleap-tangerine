@@ -8,9 +8,9 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.FieldRequired;
-import com.mpower.domain.entity.customization.Picklist;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.FieldRequired;
+import com.mpower.entity.customization.Picklist;
 
 @Repository("fieldDao")
 public class JPAFieldDao implements FieldDao {

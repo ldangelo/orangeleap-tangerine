@@ -3,9 +3,9 @@ package com.mpower.domain.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mpower.domain.entity.Person;
-import com.mpower.domain.entity.PersonPhone;
-import com.mpower.domain.entity.Phone;
+import com.mpower.entity.Person;
+import com.mpower.entity.PersonPhone;
+import com.mpower.entity.Phone;
 
 @SuppressWarnings("unchecked")
 public class PhoneMap extends AbstractInstanceValuesMap {

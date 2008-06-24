@@ -1,4 +1,4 @@
-package com.mpower.domain.entity.annotation;
+package com.mpower.entity.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

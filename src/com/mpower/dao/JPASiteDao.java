@@ -8,9 +8,9 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.entity.Site;
-import com.mpower.domain.entity.customization.EntityDefault;
 import com.mpower.domain.type.EntityType;
+import com.mpower.entity.Site;
+import com.mpower.entity.customization.EntityDefault;
 
 @Repository("siteDao")
 public class JPASiteDao implements SiteDao {

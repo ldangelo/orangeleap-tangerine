@@ -1,4 +1,4 @@
-package com.mpower.domain.entity.key;
+package com.mpower.entity.key;
 
 import java.io.Serializable;
 

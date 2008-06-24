@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.entity.Gift;
-import com.mpower.domain.entity.Person;
-import com.mpower.domain.entity.Site;
+import com.mpower.entity.Gift;
+import com.mpower.entity.Person;
+import com.mpower.entity.Site;
 
 public class GiftDataProvider {
 

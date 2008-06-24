@@ -1,4 +1,4 @@
-package com.mpower.domain.entity.customization;
+package com.mpower.entity.customization;
 
 import java.io.Serializable;
 

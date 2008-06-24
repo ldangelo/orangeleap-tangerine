@@ -2,8 +2,8 @@ package com.mpower.web.customization;
 
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.SectionField;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.SectionField;
 
 public class PhoneFieldHandler extends GenericFieldHandler {
 

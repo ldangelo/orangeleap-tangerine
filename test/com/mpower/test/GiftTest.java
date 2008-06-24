@@ -6,9 +6,9 @@ import javax.persistence.EntityManagerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.entity.Gift;
-import com.mpower.domain.entity.Person;
-import com.mpower.domain.entity.Site;
+import com.mpower.entity.Gift;
+import com.mpower.entity.Person;
+import com.mpower.entity.Site;
 import com.mpower.service.GiftService;
 import com.mpower.test.dataprovider.GiftDataProvider;
 

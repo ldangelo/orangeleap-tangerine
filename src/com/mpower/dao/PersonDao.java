@@ -3,7 +3,7 @@ package com.mpower.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.entity.Person;
+import com.mpower.entity.Person;
 
 public interface PersonDao {
 

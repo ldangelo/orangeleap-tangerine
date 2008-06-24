@@ -13,8 +13,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.domain.entity.Person;
-import com.mpower.domain.entity.User;
+import com.mpower.entity.Person;
+import com.mpower.entity.User;
 import com.mpower.service.PersonService;
 import com.mpower.web.common.SessionUtils;
 

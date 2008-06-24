@@ -8,11 +8,11 @@ import java.util.Locale;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.entity.User;
-import com.mpower.domain.entity.customization.Picklist;
-import com.mpower.domain.entity.customization.PicklistItem;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.MessageResourceType;
+import com.mpower.entity.User;
+import com.mpower.entity.customization.Picklist;
+import com.mpower.entity.customization.PicklistItem;
+import com.mpower.entity.customization.SectionField;
 
 public class PicklistFieldHandler extends GenericFieldHandler {
 

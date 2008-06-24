@@ -1,4 +1,4 @@
-package com.mpower.domain.entity.customization;
+package com.mpower.entity.customization;
 
 import java.io.Serializable;
 
@@ -14,10 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.mpower.domain.entity.Site;
-import com.mpower.domain.entity.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.type.LayoutType;
 import com.mpower.domain.type.PageType;
+import com.mpower.entity.Site;
+import com.mpower.entity.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })

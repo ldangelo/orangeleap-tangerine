@@ -2,9 +2,9 @@ package com.mpower.dao.customization;
 
 import java.util.List;
 
-import com.mpower.domain.entity.customization.SectionDefinition;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.PageType;
+import com.mpower.entity.customization.SectionDefinition;
+import com.mpower.entity.customization.SectionField;
 
 
 public interface PageCustomizationDAO {

@@ -6,10 +6,10 @@ import javax.persistence.EntityManagerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.entity.Site;
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.FieldRequired;
-import com.mpower.domain.entity.customization.SectionField;
+import com.mpower.entity.Site;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.FieldRequired;
+import com.mpower.entity.customization.SectionField;
 import com.mpower.service.customization.FieldService;
 import com.mpower.test.dataprovider.FieldRequiredDataProvider;
 

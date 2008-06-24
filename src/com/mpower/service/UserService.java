@@ -1,6 +1,6 @@
 package com.mpower.service;
 
-import com.mpower.domain.entity.User;
+import com.mpower.entity.User;
 
 public interface UserService {
 

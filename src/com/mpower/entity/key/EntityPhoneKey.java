@@ -1,11 +1,11 @@
-package com.mpower.domain.entity.key;
+package com.mpower.entity.key;
 
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class EntityAddressKey implements Serializable {
+public class EntityPhoneKey implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

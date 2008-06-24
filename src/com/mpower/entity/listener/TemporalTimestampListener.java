@@ -1,4 +1,4 @@
-package com.mpower.domain.entity.listener;
+package com.mpower.entity.listener;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;
@@ -13,7 +13,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.mpower.domain.entity.annotation.AutoPopulate;
+import com.mpower.entity.annotation.AutoPopulate;
 
 public class TemporalTimestampListener {
 

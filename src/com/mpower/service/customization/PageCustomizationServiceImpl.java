@@ -10,10 +10,10 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.PageCustomizationDAO;
-import com.mpower.domain.entity.Site;
-import com.mpower.domain.entity.customization.SectionDefinition;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.PageType;
+import com.mpower.entity.Site;
+import com.mpower.entity.customization.SectionDefinition;
+import com.mpower.entity.customization.SectionField;
 
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {

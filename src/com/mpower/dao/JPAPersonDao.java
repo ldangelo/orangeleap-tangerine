@@ -13,9 +13,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.entity.Person;
-import com.mpower.domain.entity.PersonPhone;
 import com.mpower.domain.util.EntityUtility;
+import com.mpower.entity.Person;
+import com.mpower.entity.PersonPhone;
 
 @Repository("personDao")
 public class JPAPersonDao implements PersonDao {
@@ -47,7 +47,7 @@ public class JPAPersonDao implements PersonDao {
     @Override
     public List<Person> readPersons(Long siteId, Map<String, String> params) {
         boolean whereUsed = true;
-        StringBuffer queryString = new StringBuffer("SELECT person FROM com.mpower.domain.entity.Person person WHERE person.site.id = :siteId");
+        StringBuffer queryString = new StringBuffer("SELECT person FROM com.mpower.entity.Person person WHERE person.site.id = :siteId");
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;

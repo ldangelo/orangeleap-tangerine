@@ -3,9 +3,9 @@ package com.mpower.web.customization;
 import java.util.List;
 import java.util.Locale;
 
-import com.mpower.domain.entity.User;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.FieldType;
+import com.mpower.entity.User;
+import com.mpower.entity.customization.SectionField;
 
 public class SpacerFieldHandler implements FieldHandler {
 

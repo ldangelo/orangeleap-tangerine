@@ -2,10 +2,10 @@ package com.mpower.service.customization;
 
 import java.util.Locale;
 
-import com.mpower.domain.entity.Site;
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.Picklist;
-import com.mpower.domain.entity.customization.SectionField;
+import com.mpower.entity.Site;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.Picklist;
+import com.mpower.entity.customization.SectionField;
 
 
 public interface FieldService {

@@ -8,10 +8,10 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.entity.User;
-import com.mpower.domain.entity.customization.SectionField;
 import com.mpower.domain.type.FieldType;
 import com.mpower.domain.type.MessageResourceType;
+import com.mpower.entity.User;
+import com.mpower.entity.customization.SectionField;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
 

@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.UserDao;
-import com.mpower.domain.entity.User;
+import com.mpower.entity.User;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {

@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.entity.customization.FieldDefinition;
-import com.mpower.domain.entity.customization.SectionField;
+import com.mpower.entity.customization.FieldDefinition;
+import com.mpower.entity.customization.SectionField;
 import com.mpower.web.common.SessionUtils;
 
 public class FieldTag extends TagSupport {

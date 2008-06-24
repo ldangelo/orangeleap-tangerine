@@ -102,6 +102,9 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Gift> gifts;
 
+    @Column(name = "MAJOR_DONOR")
+    private boolean majorDonor = false;
+
     @Transient
     private Map<String, Address> addressMap = null;
 
@@ -299,6 +302,14 @@ public class Person implements Serializable {
 
     public void setGifts(List<Gift> gifts) {
         this.gifts = gifts;
+    }
+
+    public boolean isMajorDonor() {
+        return majorDonor;
+    }
+
+    public void setMajorDonor(boolean majorDonor) {
+        this.majorDonor = majorDonor;
     }
 
     @Override

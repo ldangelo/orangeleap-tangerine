@@ -148,16 +148,25 @@ public class Gift implements Serializable {
         return creditCardExpiration;
     }
 
-    public void setCreditCardExpiration(String creditCardExpiration) {
-        try {
-            creditCardExpirationDate = new SimpleDateFormat("MM/yy").parse(creditCardExpiration);
+    public void setCreditCardExpiration(String creditCardExpiration) throws ParseException {
+        Date date = null;
+        if (creditCardExpiration != null) {
+            creditCardExpiration = creditCardExpiration.replace("/", "");
+            if (creditCardExpiration.length() == 6) {
+                date = new SimpleDateFormat("MMyyyy").parse(creditCardExpiration);
+            } else if (creditCardExpiration.length() == 5) {
+                date = new SimpleDateFormat("Myyyy").parse(creditCardExpiration);
+            } else if (creditCardExpiration.length() == 4) {
+                date = new SimpleDateFormat("MMyy").parse(creditCardExpiration);
+            } else {
+                date = new SimpleDateFormat("Myy").parse(creditCardExpiration);
+            }
+        }
+        if (date != null) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime(creditCardExpirationDate);
+            cal.setTime(date);
             cal.set(Calendar.DAY_OF_MONTH, cal.getMaximum(Calendar.DAY_OF_MONTH));
             creditCardExpirationDate = cal.getTime();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 

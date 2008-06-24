@@ -151,7 +151,7 @@ public class Gift implements Serializable {
     public void setCreditCardExpiration(String creditCardExpiration) throws ParseException {
         Date date = null;
         if (creditCardExpiration != null) {
-            creditCardExpiration = creditCardExpiration.replace("/", "");
+            creditCardExpiration = creditCardExpiration.replaceAll("[/-]", "");
             if (creditCardExpiration.length() == 6) {
                 date = new SimpleDateFormat("MMyyyy").parse(creditCardExpiration);
             } else if (creditCardExpiration.length() == 5) {

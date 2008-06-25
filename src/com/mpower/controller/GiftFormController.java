@@ -9,8 +9,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.entity.Gift;
-import com.mpower.entity.Person;
+import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 

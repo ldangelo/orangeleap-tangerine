@@ -9,7 +9,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.entity.customization.MessageResource;
+import com.mpower.domain.customization.MessageResource;
 import com.mpower.type.MessageResourceType;
 
 @Repository("messageDao")

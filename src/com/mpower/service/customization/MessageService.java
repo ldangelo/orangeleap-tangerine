@@ -2,7 +2,7 @@ package com.mpower.service.customization;
 
 import java.util.Locale;
 
-import com.mpower.entity.Site;
+import com.mpower.domain.Site;
 import com.mpower.type.MessageResourceType;
 
 public interface MessageService {

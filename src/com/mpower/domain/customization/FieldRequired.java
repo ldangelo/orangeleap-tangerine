@@ -1,4 +1,4 @@
-package com.mpower.entity.customization;
+package com.mpower.domain.customization;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.mpower.entity.listener.EmptyStringNullifyerListener;
+import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })

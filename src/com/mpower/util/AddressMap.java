@@ -3,9 +3,9 @@ package com.mpower.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mpower.entity.Address;
-import com.mpower.entity.Person;
-import com.mpower.entity.PersonAddress;
+import com.mpower.domain.Address;
+import com.mpower.domain.Person;
+import com.mpower.domain.PersonAddress;
 
 @SuppressWarnings("unchecked")
 public class AddressMap extends AbstractInstanceValuesMap {

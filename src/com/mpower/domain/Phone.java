@@ -1,4 +1,4 @@
-package com.mpower.entity;
+package com.mpower.domain;
 
 import java.io.Serializable;
 
@@ -11,25 +11,25 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.mpower.entity.listener.EmptyStringNullifyerListener;
+import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "CUSTOM_FIELD")
-public class CustomField implements Serializable {
+@Table(name = "PHONE")
+public class Phone implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
-    @Column(name = "CUSTOM_FIELD_ID")
+    @Column(name = "PHONE_ID")
     private Long id;
 
-    @Column(name = "FIELD_NAME", nullable = false)
-    private String name;
+    @Column(name = "NUMBER")
+    private String number;
 
-    @Column(name = "FIELD_VALUE", nullable = false)
-    private String value;
+    @Column(name = "PHONE_TYPE", nullable = false)
+    private String phoneType;
 
     public Long getId() {
         return id;
@@ -39,20 +39,20 @@ public class CustomField implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNumber() {
+        return number;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public String getValue() {
-        return value;
+    public String getPhoneType() {
+        return phoneType;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setPhoneType(String phoneType) {
+        this.phoneType = phoneType;
     }
 
     @Override

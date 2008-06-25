@@ -3,7 +3,7 @@ package com.mpower.test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.entity.User;
+import com.mpower.domain.User;
 import com.mpower.service.UserService;
 
 public class UserTest extends BaseTest {

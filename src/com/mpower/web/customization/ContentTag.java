@@ -9,7 +9,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.entity.User;
+import com.mpower.domain.User;
 import com.mpower.service.customization.MessageService;
 import com.mpower.type.MessageResourceType;
 import com.mpower.web.common.SessionUtils;

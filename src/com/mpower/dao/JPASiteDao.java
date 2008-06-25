@@ -8,8 +8,8 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.entity.Site;
-import com.mpower.entity.customization.EntityDefault;
+import com.mpower.domain.Site;
+import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
 @Repository("siteDao")

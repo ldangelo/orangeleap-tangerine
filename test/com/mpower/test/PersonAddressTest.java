@@ -11,10 +11,10 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.entity.Address;
-import com.mpower.entity.Person;
-import com.mpower.entity.PersonAddress;
-import com.mpower.entity.Site;
+import com.mpower.domain.Address;
+import com.mpower.domain.Person;
+import com.mpower.domain.PersonAddress;
+import com.mpower.domain.Site;
 import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonAddressTest extends BaseTest {

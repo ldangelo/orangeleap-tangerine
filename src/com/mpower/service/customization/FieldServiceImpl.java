@@ -7,10 +7,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.FieldDao;
-import com.mpower.entity.Site;
-import com.mpower.entity.customization.FieldDefinition;
-import com.mpower.entity.customization.Picklist;
-import com.mpower.entity.customization.SectionField;
+import com.mpower.domain.Site;
+import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.customization.Picklist;
+import com.mpower.domain.customization.SectionField;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
 @Service("fieldService")

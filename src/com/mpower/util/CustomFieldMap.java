@@ -3,9 +3,9 @@ package com.mpower.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mpower.entity.CustomField;
-import com.mpower.entity.Person;
-import com.mpower.entity.PersonCustomField;
+import com.mpower.domain.CustomField;
+import com.mpower.domain.Person;
+import com.mpower.domain.PersonCustomField;
 
 @SuppressWarnings("unchecked")
 public class CustomFieldMap extends AbstractInstanceValuesMap {

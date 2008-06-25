@@ -1,4 +1,4 @@
-package com.mpower.entity;
+package com.mpower.domain;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.mpower.entity.listener.EmptyStringNullifyerListener;
+import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })

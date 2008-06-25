@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.entity.Person;
+import com.mpower.domain.Person;
 
 public class PersonValidator implements Validator {
 

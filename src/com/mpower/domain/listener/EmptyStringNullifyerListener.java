@@ -1,4 +1,4 @@
-package com.mpower.entity.listener;
+package com.mpower.domain.listener;
 
 import java.lang.reflect.Field;
 

@@ -2,8 +2,8 @@ package com.mpower.service;
 
 import java.util.List;
 
-import com.mpower.entity.Gift;
-import com.mpower.entity.Person;
+import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
 
 public interface GiftService {
 

@@ -1,4 +1,4 @@
-package com.mpower.entity;
+package com.mpower.domain;
 
 import java.io.Serializable;
 
@@ -13,18 +13,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.mpower.entity.listener.EmptyStringNullifyerListener;
+import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "PERSON_CUSTOM_FIELD")
-public class PersonCustomField implements Serializable {
+@Table(name = "PERSON_PHONE")
+public class PersonPhone implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
-    @Column(name = "PERSON_CUSTOM_FIELD_ID")
+    @Column(name = "PERSON_PHONE_ID")
     private Long id;
 
     @ManyToOne
@@ -32,15 +32,15 @@ public class PersonCustomField implements Serializable {
     private Person person;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "CUSTOM_FIELD_ID")
-    private CustomField customField;
+    @JoinColumn(name = "PHONE_ID")
+    private Phone phone;
 
-    public PersonCustomField() {
+    public PersonPhone() {
     }
 
-    public PersonCustomField(Person person, CustomField customField) {
+    public PersonPhone(Person person, Phone phone) {
         this.person = person;
-        this.customField = customField;
+        this.phone = phone;
     }
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class PersonCustomField implements Serializable {
         this.person = person;
     }
 
-    public CustomField getCustomField() {
-        return customField;
+    public Phone getPhone() {
+        return phone;
     }
 
-    public void setCustomField(CustomField customField) {
-        this.customField = customField;
+    public void setPhone(Phone phone) {
+        this.phone = phone;
     }
 }

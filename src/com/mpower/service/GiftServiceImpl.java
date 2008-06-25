@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.SiteDao;
-import com.mpower.entity.Gift;
-import com.mpower.entity.Person;
-import com.mpower.entity.customization.EntityDefault;
+import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
+import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
 @Service("giftService")

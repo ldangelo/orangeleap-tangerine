@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.entity.User;
+import com.mpower.domain.User;
 
 @Repository("userDao")
 public class JPAUserDao implements UserDao {

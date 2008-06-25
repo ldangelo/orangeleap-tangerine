@@ -2,7 +2,7 @@ package com.mpower.dao;
 
 import java.util.List;
 
-import com.mpower.entity.Gift;
+import com.mpower.domain.Gift;
 
 public interface GiftDao {
 

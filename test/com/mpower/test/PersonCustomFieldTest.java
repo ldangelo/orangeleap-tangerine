@@ -11,10 +11,10 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.entity.CustomField;
-import com.mpower.entity.Person;
-import com.mpower.entity.PersonCustomField;
-import com.mpower.entity.Site;
+import com.mpower.domain.CustomField;
+import com.mpower.domain.Person;
+import com.mpower.domain.PersonCustomField;
+import com.mpower.domain.Site;
 import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonCustomFieldTest extends BaseTest {

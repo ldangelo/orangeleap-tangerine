@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.entity.customization.SectionField;
+import com.mpower.domain.customization.SectionField;
 import com.mpower.type.FieldType;
 
 public class FieldHandlerHelper {

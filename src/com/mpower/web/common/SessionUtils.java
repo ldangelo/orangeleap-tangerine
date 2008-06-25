@@ -3,8 +3,8 @@ package com.mpower.web.common;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import com.mpower.entity.Site;
-import com.mpower.entity.User;
+import com.mpower.domain.Site;
+import com.mpower.domain.User;
 
 public class SessionUtils {
 

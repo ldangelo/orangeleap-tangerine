@@ -2,11 +2,11 @@ package com.mpower.test.dataprovider;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.entity.Address;
-import com.mpower.entity.CustomField;
-import com.mpower.entity.Person;
-import com.mpower.entity.Phone;
-import com.mpower.entity.Site;
+import com.mpower.domain.Address;
+import com.mpower.domain.CustomField;
+import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
+import com.mpower.domain.Site;
 
 public class PersonDataProvider {
 

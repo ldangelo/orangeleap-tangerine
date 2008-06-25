@@ -9,7 +9,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.entity.Person;
+import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
 
 public class PersonFormController extends SimpleFormController {

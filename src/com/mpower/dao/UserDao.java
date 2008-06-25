@@ -1,6 +1,6 @@
 package com.mpower.dao;
 
-import com.mpower.entity.User;
+import com.mpower.domain.User;
 
 public interface UserDao {
 

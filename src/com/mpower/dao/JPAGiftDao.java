@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.mpower.entity.Gift;
+import com.mpower.domain.Gift;
 
 @Repository("giftDao")
 public class JPAGiftDao implements GiftDao {

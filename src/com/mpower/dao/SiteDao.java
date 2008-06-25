@@ -2,8 +2,8 @@ package com.mpower.dao;
 
 import java.util.List;
 
-import com.mpower.entity.Site;
-import com.mpower.entity.customization.EntityDefault;
+import com.mpower.domain.Site;
+import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
 public interface SiteDao {

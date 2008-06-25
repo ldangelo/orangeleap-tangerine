@@ -68,9 +68,9 @@
 	          encoding="UTF-8"
 	          classpath="${basedir}/lib/compile/bin/mysql-connector-java-5.0.8-bin.jar">
 	     	<transaction src="${basedir}/db/clearTable.sql"/>
-	     	<transaction src="${basedir}/db/prod/entity/address.sql"/>
-	     	<transaction src="${basedir}/db/prod/entity/common.sql"/>
-	     	<transaction src="${basedir}/db/prod/entity/person.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
@@ -81,7 +81,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/paymentTypePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/creditCardTypePicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
-	     	<transaction src="${basedir}/db/prod/entity/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup.sql"/>

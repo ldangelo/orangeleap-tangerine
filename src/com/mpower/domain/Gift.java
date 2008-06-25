@@ -1,4 +1,4 @@
-package com.mpower.entity;
+package com.mpower.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,9 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.mpower.entity.annotation.AutoPopulate;
-import com.mpower.entity.listener.EmptyStringNullifyerListener;
-import com.mpower.entity.listener.TemporalTimestampListener;
+import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.listener.EmptyStringNullifyerListener;
+import com.mpower.domain.listener.TemporalTimestampListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })

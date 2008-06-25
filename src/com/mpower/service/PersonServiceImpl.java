@@ -16,6 +16,8 @@ import com.mpower.dao.PersonDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
+import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.validation.PersonValidator;
 import com.mpower.type.EntityType;
 
 @Service("personService")
@@ -29,7 +31,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional(propagation=Propagation.SUPPORTS)
-    public Person maintainPerson(Person person) {
+    public Person maintainPerson(Person person) throws PersonValidationException {
+        PersonValidator.validatePerson(person);
         return personDao.savePerson(person);
     }
 

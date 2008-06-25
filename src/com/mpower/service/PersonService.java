@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Person;
+import com.mpower.service.exception.PersonValidationException;
 
 public interface PersonService {
 
-    public Person maintainPerson(Person person);
+    public Person maintainPerson(Person person) throws PersonValidationException;
 
     public Person readPersonById(Long id);
 

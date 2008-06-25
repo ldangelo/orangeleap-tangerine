@@ -7,7 +7,6 @@ import com.mpower.domain.Address;
 import com.mpower.domain.Person;
 import com.mpower.domain.PersonAddress;
 
-@SuppressWarnings("unchecked")
 public class AddressMap extends AbstractInstanceValuesMap {
 
     private static final long serialVersionUID = 1L;

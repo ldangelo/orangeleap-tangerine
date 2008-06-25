@@ -10,6 +10,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public abstract class AbstractInstanceValuesMap extends HashMap {
 
+	private static final long serialVersionUID = 1L;
 	private List originalList;
     private Map internalMap = new LinkedHashMap();
 

@@ -7,7 +7,6 @@ import com.mpower.domain.Person;
 import com.mpower.domain.PersonPhone;
 import com.mpower.domain.Phone;
 
-@SuppressWarnings("unchecked")
 public class PhoneMap extends AbstractInstanceValuesMap {
 
     private static final long serialVersionUID = 1L;

@@ -2,16 +2,20 @@ package com.mpower.entity
 
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
+import com.mpower.service.GiftService;
 import com.mpower.service.rule.SpouseMatchNotFound;
+import java.util.Date;
+import java.util.
 
 global org.springframework.context.ApplicationContext applicationContext;
-
+/*
 rule "Person - Save Changes - Spouse Match Not Found"
 	no-loop true
 	when
-		s : SpouseMatchNotFound()
+		SpouseMatchNotFound()
 		p : Person(spouseFirstName != null)
 	then
+		System.out.println("rule 1");
 		String title;
 		if (p.getTitle().equals("Mr.")) {
 			title = "Mrs.";
@@ -26,14 +30,15 @@ rule "Person - Save Changes - Spouse Match Not Found"
 		spouse.setMaritalStatus("Married");
 		spouse.setSpouseFirstName(p.getFirstName());
 		personService.maintainPerson(spouse);
-		retract(s);
+		retract(SpouseMatchNotFound);
 end
 
 rule "Person - Save Changes - Spouse Match Found"
 	no-loop true
 	when
-		p : Person(spouseFirstName != null)
+		p : Person(spouseFirstName != null) 
 	then
+		System.out.println("Rule 2");
 		PersonService personService = (PersonService)applicationContext.getBean("personService");
 		Person spouse = personService.matchSpouseLogically(p.getSpouseFirstName(), p.getLastName());
 		if (spouse != null) {
@@ -55,11 +60,36 @@ rule "Person - Save Changes - Single Yet Has Spouse"
 	when
 		p : Person(spouseFirstName != null, maritalStatus == "Single")
 	then
+		System.out.println("rule 3");
 		PersonService personService = (PersonService)applicationContext.getBean("personService");
 		p.setMaritalStatus("Married");
 		personService.maintainPerson(p);
 end
 
+rule "Person - Save Changes - Single"
+	no-loop true
+	when
+		p : Person(spouseFirstName == null)
+	then
+		System.out.println("Single");
+end
+
+#Person 'x' makes a donation has been made
+#Person 'x' has donated 'y' amount over a period of 'n' (number) 't' (units of time)
+*/
+rule "Gift - Donation Made - Analyze Major Donor"
+	when
+		$g : Gift($personId : personId)
+	then
+		PersonService personService = (PersonService)applicationContext.getBean("personService");
+		GiftService giftService = (GiftService)applicationContext.getBean("giftService");
+		int totalDonations = giftService.analyzeMajorDonor($personId,  "2008-01-01", "2008-06-01");
+		if (totalDonation > 500) {
+			Person person = personService.readPersonById($personId);
+			person.setMajorDonor(true);
+			personService.maintainPerson(person);
+		}
+end
 
 
 

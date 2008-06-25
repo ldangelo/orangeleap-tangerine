@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
+import com.mpower.service.exception.PersonValidationException;
 
 public class PersonFormController extends SimpleFormController {
 
@@ -49,7 +50,12 @@ public class PersonFormController extends SimpleFormController {
 
 		logger.info("**** p's first name is: " + p.getFirstName());
 
-		Person current = personService.maintainPerson(p);
+		Person current = null;
+        try {
+            current = personService.maintainPerson(p);
+        } catch (PersonValidationException e) {
+            e.createMessages(errors);
+        }
 
 		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 		mav.addObject("saved", true);

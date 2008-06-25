@@ -71,7 +71,7 @@ public class GenericFieldHandler implements FieldHandler {
         if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
             String fieldProperty = fieldVO.getFieldName();
             BeanWrapper personBeanWrapper = new BeanWrapperImpl(model);
-            fieldVO.setFieldValue((String) personBeanWrapper.getPropertyValue(fieldProperty));
+            fieldVO.setFieldValue(personBeanWrapper.getPropertyValue(fieldProperty));
         }
 
         return fieldVO;

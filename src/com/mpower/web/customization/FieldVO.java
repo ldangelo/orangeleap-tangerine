@@ -2,6 +2,8 @@ package com.mpower.web.customization;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mpower.type.FieldType;
 
 public class FieldVO {
@@ -11,7 +13,7 @@ public class FieldVO {
     private Long id;
     private Long siteId;
     private String fieldName;
-    private String fieldValue;
+    private Object fieldValue;
     private String helpText;
     private String labelText;
     private String validationExpression;
@@ -106,11 +108,15 @@ public class FieldVO {
         this.validationExpression = validationExpression;
     }
 
-	public String getFieldValue() {
-		return fieldValue;
-	}
+    public Object getFieldValue() {
+        return fieldValue;
+    }
 
-	public void setFieldValue(String fieldValue) {
-		this.fieldValue = fieldValue;
-	}
+    public void setFieldValue(Object fieldValue) {
+        if (fieldValue instanceof String) {
+            this.fieldValue = StringUtils.trimToNull((String) fieldValue);
+        } else {
+            this.fieldValue = fieldValue;
+        }
+    }
 }

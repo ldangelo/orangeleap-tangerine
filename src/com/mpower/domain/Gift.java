@@ -19,6 +19,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.listener.TemporalTimestampListener;
@@ -150,7 +152,7 @@ public class Gift implements Serializable {
 
     public void setCreditCardExpiration(String creditCardExpiration) throws ParseException {
         Date date = null;
-        if (creditCardExpiration != null) {
+        if (StringUtils.trimToNull(creditCardExpiration) != null) {
             creditCardExpiration = creditCardExpiration.replaceAll("[/-]", "");
             if (creditCardExpiration.length() == 6) {
                 date = new SimpleDateFormat("MMyyyy").parse(creditCardExpiration);

@@ -5,7 +5,7 @@
 
 	<named-query name="READ_GIFT_BY_PERSON" >
 		<query>
-		    SELECT gift FROM com.mpower.entity.Gift gift
+		    SELECT gift FROM com.mpower.domain.Gift gift
 		    WHERE gift.person.id = personId
 		</query>
 	</named-query>

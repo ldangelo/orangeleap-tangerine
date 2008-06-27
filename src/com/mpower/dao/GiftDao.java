@@ -1,8 +1,6 @@
 package com.mpower.dao;
 
 import java.util.List;
-import java.util.Date;
-
 
 import com.mpower.domain.Gift;
 

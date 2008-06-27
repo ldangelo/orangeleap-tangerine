@@ -1,7 +1,6 @@
 package com.mpower.service;
 
 import java.util.List;
-import java.util.Date;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;

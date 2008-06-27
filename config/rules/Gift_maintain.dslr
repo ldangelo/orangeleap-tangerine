@@ -7,6 +7,7 @@ import com.mpower.domain.Person;
 import java.util.Date;
 import com.mpower.service.rule.DummyPersonDonation;
 import java.util.Calendar;
+import java.math.BigDecimal;
 
 global org.springframework.context.ApplicationContext applicationContext;
 
@@ -24,8 +25,9 @@ rule "Gift - Donation Made - Step 2"
 		A donation has been made
 		The person who made that donation has been found
 	then
-		Get the persons total donations over the past "12" "MONTHS"	
+		Get the persons total donations over the past 12 "MONTHS"	
 		Setup person donation object
+		
 end
 
 rule "Gift - Donation Made - Step 3"
@@ -44,7 +46,12 @@ end
 function Date getCurrentDate() {
 	Calendar cal = Calendar.getInstance();
 	return cal.getTime();
-	
+}
+
+function Date getBeginningOfYearDate() {
+	Calendar cal = Calendar.getInstance();
+	cal.set(Calendar.YEAR, 0, 0, 0, 0, 0);
+	return cal.getTime();
 }
 
 function Date getBeginDate(int number, String timeUnit) {

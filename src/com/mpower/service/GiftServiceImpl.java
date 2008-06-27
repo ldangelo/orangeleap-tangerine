@@ -2,6 +2,7 @@ package com.mpower.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -21,9 +22,6 @@ import com.mpower.type.EntityType;
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
 
-    @Resource(name = "creditCardService")
-    private CreditCardService creditCardService;
-
     @Resource(name = "giftDao")
     private GiftDao giftDao;
 
@@ -33,7 +31,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
-        return giftDao.maintainGift(creditCardService.processCreditCard(gift));
+        return giftDao.maintainGift(gift);
     }
 
     @Override
@@ -62,7 +60,7 @@ public class GiftServiceImpl implements GiftService {
     }
     
     @Override
-    public double analyzeMajorDonor(Long personId, String beginDate, String currentDate) {
+    public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
         return giftDao.analyzeMajorDonor(personId, beginDate, currentDate);
     }
 }

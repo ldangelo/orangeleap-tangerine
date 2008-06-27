@@ -6,7 +6,14 @@
 	<named-query name="READ_GIFT_BY_PERSON" >
 		<query>
 		    SELECT gift FROM com.mpower.domain.Gift gift
-		    WHERE gift.person.id = personId
+		    WHERE gift.person.id = :personId
+		</query>
+	</named-query>
+	
+	<named-query name="ANALYZE_FOR_MAJOR_DONOR" >
+		<query>
+			SELECT SUM(gift.value) FROM com.mpower.domain.Gift gift
+			WHERE (gift.person.id = :personId AND (gift.giftEnteredDate BETWEEN :beginDate AND :currentDate)) 
 		</query>
 	</named-query>
 

@@ -1,6 +1,10 @@
 package com.mpower.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.math.BigDecimal;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,5 +40,23 @@ public class JPAGiftDao implements GiftDao {
         Query query = em.createNamedQuery("READ_GIFT_BY_PERSON");
         query.setParameter("personId", personId);
         return query.getResultList();
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public double analyzeMajorDonor(Long personId, String beginDate, String currentDate) {
+    	try {
+			Query query = em.createNamedQuery("ANALYZE_FOR_MAJOR_DONOR");
+			query.setParameter("personId", personId);
+			query.setParameter("beginDate", new SimpleDateFormat("yyyy-MM-dd").parse(beginDate));
+			query.setParameter("currentDate", new SimpleDateFormat("yyyy-MM-dd").parse(currentDate));
+			if (query.getSingleResult() != null) {
+				return ((BigDecimal)query.getSingleResult()).doubleValue();
+			}	
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0.00;
     }
 }

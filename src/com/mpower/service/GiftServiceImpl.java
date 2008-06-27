@@ -2,6 +2,7 @@ package com.mpower.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -56,5 +57,10 @@ public class GiftServiceImpl implements GiftService {
 
         // TODO: consider caching techniques for the default Person
         return gift;
+    }
+    
+    @Override
+    public double analyzeMajorDonor(Long personId, String beginDate, String currentDate) {
+        return giftDao.analyzeMajorDonor(personId, beginDate, currentDate);
     }
 }

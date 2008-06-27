@@ -32,16 +32,19 @@ public class RulesInterceptor implements ApplicationContextAware {
 	@Around(value="execution(* com.mpower.service..*.maintain*(..)) " +
 			"|| execution(* com.mpower.service..*.save*(..))")
 	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
+		
 		Object[] args = pjp.getArgs();
 		
 		RuleBase ruleBase = loadRules(args);
 		if (ruleBase == null) {
 			return pjp.proceed();
 		}
+		
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 		for (Object entity : args) {
 			workingMemory.insert(entity);
 		}
+		
 		workingMemory.setGlobal("applicationContext", applicationContext);
 		
 		logger.info("*** firing all rules");
@@ -55,7 +58,6 @@ public class RulesInterceptor implements ApplicationContextAware {
 			if (entities == null || entities.length == 0) {
 				return null;
 			}
-			
 			PackageBuilder builder = new PackageBuilder();
 			
 			boolean foundRule = false;
@@ -63,19 +65,25 @@ public class RulesInterceptor implements ApplicationContextAware {
 			//TODO: Need a better overall strategy for looking up a rule file
 			//Consider checking the database first and then falling back to the file.
 			for (Object entity : entities) {
-				String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.drl";
+				String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.dslr";
+				System.out.println(name);
 				InputStream stream = getClass().getResourceAsStream(name);
+				System.out.println("b4");
 				if (stream == null) {
 					continue;
 				}
+				System.out.println("h");
 				foundRule = true;
-				builder.addPackageFromDrl(new InputStreamReader(stream));
+				String dslName = "/rules/Site1Language.dsl";
+				InputStream dslStream = getClass().getResourceAsStream(dslName);
+				builder.addPackageFromDrl(new InputStreamReader(stream), new InputStreamReader(dslStream));
 				IOUtils.closeQuietly(stream);
 			}
-			
+			System.out.println("Before");
 			if (! foundRule) {
 				return null;
 			}
+			System.out.println("after");
 			
 			if (builder.hasErrors()) {
 				PackageBuilderErrors errors = builder.getErrors();

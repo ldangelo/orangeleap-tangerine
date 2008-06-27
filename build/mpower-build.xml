@@ -111,6 +111,8 @@
 				<include name="**/*.properties" />
 				<include name="**/*.xml" />
 				<include name="**/*.drl" />
+				<include name="**/*.dslr" />
+				<include name="**/*.dsl" />
 			</fileset>
 		</copy>
 		
@@ -153,6 +155,8 @@
 			<include name="**/*.properties" />
 			<include name="**/*.xml" />
 			<include name="**/*.drl" />
+			<include name="**/*.dslr" />
+			<include name="**/*.dsl" />
 			<include name="META-INF/**" />
 			<exclude name="**/test/**/*.class" />
 		</jar>

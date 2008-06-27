@@ -2,10 +2,10 @@ package com.mpower.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
@@ -80,7 +78,10 @@ public class Gift implements Serializable {
     private String confirmation;
 
     @Transient
-    private String creditCardExpiration;
+    private Integer creditCardExpirationMonth;
+
+    @Transient
+    private Integer creditCardExpirationYear;
 
     public Long getId() {
         return id;
@@ -146,33 +147,51 @@ public class Gift implements Serializable {
         this.creditCardExpirationDate = creditCardExpirationDate;
     }
 
-    public String getCreditCardExpiration() {
+    public Integer getCreditCardExpirationMonth() {
         if (creditCardExpirationDate != null) {
-            return new SimpleDateFormat("MM/yy").format(creditCardExpirationDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(creditCardExpirationDate);
+            creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
         }
-        return creditCardExpiration;
+        return creditCardExpirationMonth;
     }
 
-    public void setCreditCardExpiration(String creditCardExpiration) throws ParseException {
-        Date date = null;
-        if (StringUtils.trimToNull(creditCardExpiration) != null) {
-            creditCardExpiration = creditCardExpiration.replaceAll("[/-]", "");
-            if (creditCardExpiration.length() == 6) {
-                date = new SimpleDateFormat("MMyyyy").parse(creditCardExpiration);
-            } else if (creditCardExpiration.length() == 5) {
-                date = new SimpleDateFormat("Myyyy").parse(creditCardExpiration);
-            } else if (creditCardExpiration.length() == 4) {
-                date = new SimpleDateFormat("MMyy").parse(creditCardExpiration);
-            } else {
-                date = new SimpleDateFormat("Myy").parse(creditCardExpiration);
-            }
+    public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
+        setExpirationDate(creditCardExpirationMonth, null);
+        this.creditCardExpirationMonth = creditCardExpirationMonth;
+    }
+
+    public Integer getCreditCardExpirationYear() {
+        if (creditCardExpirationDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(creditCardExpirationDate);
+            creditCardExpirationYear = calendar.get(Calendar.YEAR);
         }
-        if (date != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            cal.set(Calendar.DAY_OF_MONTH, cal.getMaximum(Calendar.DAY_OF_MONTH));
-            creditCardExpirationDate = cal.getTime();
+        return creditCardExpirationYear;
+    }
+
+    public void setCreditCardExpirationYear(Integer creditCardExpirationYear) {
+        setExpirationDate(null, creditCardExpirationYear);
+        this.creditCardExpirationYear = creditCardExpirationYear;
+    }
+
+    private void setExpirationDate(Integer month, Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        if (creditCardExpirationDate != null) {
+            calendar.setTime(creditCardExpirationDate);
         }
+        if (month != null) {
+            calendar.set(Calendar.MONTH, month - 1);
+        }
+        if (year != null) {
+            calendar.set(Calendar.YEAR, year);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR, calendar.getMaximum(Calendar.HOUR));
+        calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+        creditCardExpirationDate = calendar.getTime();
+        this.creditCardExpirationDate = calendar.getTime();
     }
 
     public Date getGiftEnteredDate() {
@@ -221,5 +240,26 @@ public class Gift implements Serializable {
 
     public void setConfirmation(String confirmation) {
         this.confirmation = confirmation;
+    }
+
+    public List<String> getExpirationMonthList() {
+        List<String> monthList = new ArrayList<String>();
+        for (int i = 1; i <= 12; i++) {
+            String month = String.valueOf(i);
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            monthList.add(month);
+        }
+        return monthList;
+    }
+
+    public List<String> getExpirationYearList() {
+        List<String> yearList = new ArrayList<String>();
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 0; i < 10; i++) {
+            yearList.add(String.valueOf(year + i));
+        }
+        return yearList;
     }
 }

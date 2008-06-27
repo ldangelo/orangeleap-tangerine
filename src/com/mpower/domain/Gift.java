@@ -76,6 +76,9 @@ public class Gift implements Serializable {
     @AutoPopulate
     private Date giftEnteredDate;
 
+    @Column(name = "CONFIRMATION")
+    private String confirmation;
+
     @Transient
     private String creditCardExpiration;
 
@@ -210,5 +213,13 @@ public class Gift implements Serializable {
 
     public void setAchAccountNumber(String achAccountNumber) {
         this.achAccountNumber = achAccountNumber;
+    }
+
+    public String getConfirmation() {
+        return confirmation;
+    }
+
+    public void setConfirmation(String confirmation) {
+        this.confirmation = confirmation;
     }
 }

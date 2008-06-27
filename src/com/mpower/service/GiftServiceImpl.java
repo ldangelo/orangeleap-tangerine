@@ -21,6 +21,9 @@ import com.mpower.type.EntityType;
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
 
+    @Resource(name = "creditCardService")
+    private CreditCardService creditCardService;
+
     @Resource(name = "giftDao")
     private GiftDao giftDao;
 
@@ -30,7 +33,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
-        return giftDao.maintainGift(gift);
+        return giftDao.maintainGift(creditCardService.processCreditCard(gift));
     }
 
     @Override

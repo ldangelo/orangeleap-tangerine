@@ -1,7 +1,8 @@
 package com.mpower.service;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
@@ -14,7 +15,9 @@ public interface GiftService {
 
     public List<Gift> readGifts(Person person);
 
+    public List<Gift> readGifts(Long siteId, Map<String, String> params);
+
     public Gift createDefaultGift(Long siteId);
-    
+
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
 }

@@ -28,8 +28,11 @@ public class PicklistItem implements Serializable {
     @Column(name = "ITEM_NAME")
     private String itemName;
 
-    @Column(name = "DEFAULT_DISPLAY_VALUE", nullable = false)
+    @Column(name = "DEFAULT_DISPLAY_VALUE")
     private String defaultDisplayValue;
+
+    @Column(name = "REFERENCE_VALUE")
+    private String referenceValue;
 
     @Column(name = "ITEM_ORDER")
     private Integer itemOrder;
@@ -54,6 +57,22 @@ public class PicklistItem implements Serializable {
         this.itemName = itemName;
     }
 
+    public String getDefaultDisplayValue() {
+        return defaultDisplayValue;
+    }
+
+    public void setDefaultDisplayValue(String defaultDisplayValue) {
+        this.defaultDisplayValue = defaultDisplayValue;
+    }
+
+    public String getReferenceValue() {
+        return referenceValue;
+    }
+
+    public void setReferenceValue(String referenceValue) {
+        this.referenceValue = referenceValue;
+    }
+
     public Integer getItemOrder() {
         return itemOrder;
     }
@@ -68,13 +87,5 @@ public class PicklistItem implements Serializable {
 
     public void setPicklist(Picklist picklist) {
         this.picklist = picklist;
-    }
-
-    public String getDefaultDisplayValue() {
-        return defaultDisplayValue;
-    }
-
-    public void setDefaultDisplayValue(String defaultDisplayValue) {
-        this.defaultDisplayValue = defaultDisplayValue;
     }
 }

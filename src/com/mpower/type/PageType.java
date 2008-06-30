@@ -4,8 +4,9 @@ public enum PageType {
 	person,
 	personSearch,
 	personSearchResults,
-    gift,
+	gift,
     giftList,
     giftSearch,
-    giftSearchResults
+    giftSearchResults,
+	viewGift
 }

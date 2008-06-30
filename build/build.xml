@@ -71,17 +71,18 @@
 	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/viewGift.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/maritalStatusPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/titlePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/paymentTypePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/creditCardTypePicklist.sql"/>
-	     	<!-- Setup payment type picklist and add to gift page -->
-	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
+	     	<!-- Setup payment type picklist and add to gift page --> 	
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
 	     	<!-- Add development data -->

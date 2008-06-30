@@ -46,9 +46,9 @@ public class JPAGiftDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(Long siteId, Map<String, String> params) {
+    public List<Gift> readGifts(Long personId, Map<String, String> params) {
         boolean whereUsed = true;
-        StringBuffer queryString = new StringBuffer("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
+        StringBuffer queryString = new StringBuffer("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.id = :personId");
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;
@@ -61,18 +61,20 @@ public class JPAGiftDao implements GiftDao {
                     queryString.append(" gift.");
                     queryString.append(key);
                     queryString.append(" LIKE :");
-                    queryString.append(key);
-                    parameterMap.put(key, value + "%");
+                    String paramName = key.replace(".", "_");
+                    queryString.append(paramName);
+                    parameterMap.put(paramName, value + "%");
                 }
             }
         }
         Query query = em.createQuery(queryString.toString());
 
-        query.setParameter("siteId", siteId);
+        query.setParameter("personId", personId);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
-        return query.getResultList();
+        List giftList = query.getResultList();
+        return giftList;
     }
 
     @Override

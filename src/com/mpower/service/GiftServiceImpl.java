@@ -42,7 +42,12 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public List<Gift> readGifts(Person person) {
-        return giftDao.readGifts(person.getId());
+        return readGifts(person.getId());
+    }
+
+    @Override
+    public List<Gift> readGifts(Long personId) {
+        return giftDao.readGifts(personId);
     }
 
     @Override

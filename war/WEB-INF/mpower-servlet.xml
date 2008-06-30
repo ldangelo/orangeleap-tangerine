@@ -37,18 +37,6 @@
         <property name="personService" ref="personService" />
     </bean>
 
-    <bean name="/giftSearch.htm" class="com.mpower.controller.GiftSearchFormController">
-        <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.Gift"/>
-<!--        <property name="validator">-->
-<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
-<!--        </property>-->
-        <property name="formView" value="giftSearch"/>
-        <property name="successView" value="giftSearch"/>
-        <property name="giftService" ref="giftService"/>
-    </bean>
-
-
     <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
@@ -63,6 +51,28 @@
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
     </bean>
+
+    <bean name="/giftSearch.htm" class="com.mpower.controller.GiftSearchFormController">
+        <property name="commandName" value="gift"/>
+        <property name="commandClass" value="com.mpower.domain.Gift"/>
+<!--        <property name="validator">-->
+<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
+<!--        </property>-->
+        <property name="formView" value="giftSearch"/>
+        <property name="successView" value="giftSearch"/>
+        <property name="giftService" ref="giftService"/>
+    </bean>
+
+
+    <bean name="/giftList.htm" class="com.mpower.controller.GiftListController">
+        <property name="commandName" value="gift"/>
+        <property name="commandClass" value="com.mpower.domain.Gift"/>
+<!--        <property name="validator">-->
+<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
+<!--        </property>-->
+        <property name="giftService" ref="giftService"/>
+    </bean>
+
 
 	<!-- Configures the Tiles layout system -->
 	<bean id="tilesConfigurer"

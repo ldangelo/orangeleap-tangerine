@@ -81,8 +81,9 @@
 	     	<transaction src="${basedir}/db/prod/picklists/paymentTypePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/creditCardTypePicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
-	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>

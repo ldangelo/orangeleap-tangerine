@@ -15,6 +15,8 @@ public interface GiftService {
 
     public List<Gift> readGifts(Person person);
 
+    public List<Gift> readGifts(Long personId);
+
     public List<Gift> readGifts(Long siteId, Map<String, String> params);
 
     public Gift createDefaultGift(Long siteId);

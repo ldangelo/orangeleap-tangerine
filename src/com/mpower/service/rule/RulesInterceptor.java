@@ -26,65 +26,60 @@ import org.springframework.stereotype.Component;
 public class RulesInterceptor implements ApplicationContextAware {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
-	
+
 	private ApplicationContext applicationContext;
-	
+
 	@Around(value="execution(* com.mpower.service..*.maintain*(..)) " +
 			"|| execution(* com.mpower.service..*.save*(..))")
 	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
-		
+
 		Object[] args = pjp.getArgs();
-		
+
 		RuleBase ruleBase = loadRules(args);
 		if (ruleBase == null) {
 			return pjp.proceed();
 		}
-		
+
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 		for (Object entity : args) {
 			workingMemory.insert(entity);
 		}
-		
+
 		workingMemory.setGlobal("applicationContext", applicationContext);
-		
+
 		logger.info("*** firing all rules");
 		workingMemory.fireAllRules();
-		
+
 		return pjp.proceed(args);
 	}
-	
+
 	private RuleBase loadRules(Object[] entities) throws Exception {
 		try {
 			if (entities == null || entities.length == 0) {
 				return null;
 			}
 			PackageBuilder builder = new PackageBuilder();
-			
+
 			boolean foundRule = false;
-			
+
 			//TODO: Need a better overall strategy for looking up a rule file
 			//Consider checking the database first and then falling back to the file.
 			for (Object entity : entities) {
 				String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.dslr";
-				System.out.println(name);
 				InputStream stream = getClass().getResourceAsStream(name);
-				System.out.println("b4");
 				if (stream == null) {
 					continue;
 				}
-				System.out.println("h");
 				foundRule = true;
 				String dslName = "/rules/Site1Language.dsl";
 				InputStream dslStream = getClass().getResourceAsStream(dslName);
 				builder.addPackageFromDrl(new InputStreamReader(stream), new InputStreamReader(dslStream));
 				IOUtils.closeQuietly(stream);
 			}
-			System.out.println("Before");
 			if (! foundRule) {
 				return null;
 			}
-			System.out.println("after");
-			
+
 			if (builder.hasErrors()) {
 				PackageBuilderErrors errors = builder.getErrors();
 				StringBuffer buff = new StringBuffer("An error occured loading Drools: ").append(System.getProperty("line.separator"));
@@ -94,9 +89,9 @@ public class RulesInterceptor implements ApplicationContextAware {
 				}
 				logger.error(buff.toString());
 			}
-			
+
 			Package pkg = builder.getPackage();
-			
+
 			//add the package to a rule base.
 			RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 			ruleBase.addPackage(pkg);
@@ -104,7 +99,7 @@ public class RulesInterceptor implements ApplicationContextAware {
 		} finally {
 			//
 		}
-		
+
 	}
 
 	@Override
@@ -112,5 +107,5 @@ public class RulesInterceptor implements ApplicationContextAware {
 			throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-	
+
 }

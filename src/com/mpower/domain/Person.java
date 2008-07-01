@@ -272,6 +272,9 @@ public class Person implements Serializable {
     }
 
     public String getAccountNumber() {
+        if (accountNumber == null) {
+            accountNumber = String.valueOf(id);
+        }
         return accountNumber;
     }
 
@@ -286,7 +289,6 @@ public class Person implements Serializable {
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
     }
-
 
     public List<PaymentSource> getPaymentSources() {
         return paymentSources;

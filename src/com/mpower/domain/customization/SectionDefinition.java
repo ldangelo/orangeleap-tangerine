@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.mpower.domain.Site;
@@ -54,15 +53,8 @@ public class SectionDefinition implements Serializable {
 	@JoinColumn(name = "SITE_ID")
 	private Site site;
 
-	@Transient
-	private String sectionHtmlName;
-
 	public String getSectionHtmlName() {
-		return this.sectionName.replace('.', '_');
-	}
-
-	public void setSectionHtmlName(String sectionHtmlName) {
-		this.sectionHtmlName = sectionHtmlName;
+		return sectionName.replace('.', '_');
 	}
 
 	public LayoutType getLayoutType() {

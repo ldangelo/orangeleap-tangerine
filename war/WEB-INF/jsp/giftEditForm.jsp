@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 
 <mp:page pageName='gift' />
+<c:set var="person" value="${gift.person}" scope="request" />
 
 <form:form method="post" commandName="gift">
 	<c:if test="${id != null}">
@@ -26,23 +27,25 @@
 		</c:otherwise>
 		</c:choose>
 			<h3 id="currentFunctionTitle" class="personEdit">
-				Profile<c:if test="${saved}"><span id="savedMarker">Saved</span></c:if>
+				Enter Gift
 			</h3>
 		</div>
 		<div class="columnRight" style="padding:19px 19px 0 0;">
-			<input type="submit" value="Save Changes" />
+			<input type="submit" value="Submit Payment" />
 		</div>
 		<div class="clearColumns"></div>
 	</div>
 
-	<br />
-
-	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-		<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-		<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-	</c:forEach>
-	<div class="formButtonFooter personFormButtons">
-		<input type="submit" value="Save Changes" class="saveButton" />
-		<a class="newAccountButton" href="person.htm">Create Another Person » </a>
+	<div class="columns">
+		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
+			<div class="paymentType">
+				<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
+			</div>
+		</c:forEach>
+		<div class="clearColumns"></div>
 	</div>
+	<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
 </form:form>
+<script type="text/javascript">
+	$("." + $('#paymentType').attr('value')).show();
+</script>

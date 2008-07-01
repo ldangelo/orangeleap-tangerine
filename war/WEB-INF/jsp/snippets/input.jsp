@@ -11,6 +11,9 @@
 <c:when test="${fieldVO.fieldType == 'DATE'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
 </c:when>
+<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
+    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
+</c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>
@@ -39,7 +42,7 @@
 	&nbsp;
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-	<select name="${fieldVO.fieldName}">
+	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
        <c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
            <c:choose>
                <c:when test="${fieldVO.fieldValue eq code}">
@@ -49,7 +52,7 @@
                    <c:set var="selected" value="" scope="page"/>
                </c:otherwise>
            </c:choose>
-		   <option value="${code}" ${selected}>
+		   <option reference="${fieldVO.referenceValues[status.index]}" value="${code}" ${selected}>
 			   ${fieldVO.displayValues[status.index]}
 		   </option>
       </c:forEach>

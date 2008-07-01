@@ -60,7 +60,7 @@ public class GiftFormController extends SimpleFormController {
         Gift current = giftService.maintainGift(gift);
 
         ModelAndView mav = new ModelAndView("redirect:/viewGift.htm", errors.getModel());
-        mav.addObject("personId", current.getPerson().getId());
+        mav.addObject("giftId", current.getId());
         return mav;
     }
 }

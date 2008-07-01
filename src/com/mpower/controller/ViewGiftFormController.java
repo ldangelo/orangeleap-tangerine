@@ -12,21 +12,19 @@ import com.mpower.service.GiftService;
 
 public class ViewGiftFormController extends SimpleFormController {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private GiftService giftService;
+    private GiftService giftService;
 
-	public void setGiftService(GiftService giftService) {
-		this.giftService = giftService;
-	}
+    public void setGiftService(GiftService giftService) {
+        this.giftService = giftService;
+    }
 
-	@Override
-	protected Object formBackingObject(HttpServletRequest request)
-			throws ServletException {
-
-		String giftId = request.getParameter("giftId");
-		Gift gift = giftService.readGiftById(new Long(giftId));
-		return gift;
-	}
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        String giftId = request.getParameter("giftId");
+        Gift gift = giftService.readGiftById(Long.valueOf(giftId));
+        return gift;
+    }
 }

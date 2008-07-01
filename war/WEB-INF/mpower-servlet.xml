@@ -74,7 +74,7 @@
     </bean>
     
     <bean name="/viewGift.htm" class="com.mpower.controller.ViewGiftFormController">
-    	<property name="commandName" value="viewGift" />
+    	<property name="commandName" value="gift" />
     	<property name="commandClass" value="com.mpower.domain.Gift" />
     	<property name="formView" value="viewGift" />
         <property name="successView" value="viewGift" />

@@ -31,6 +31,14 @@
 					<a href="#">Subscriptions</a>
 				</div>
 			</c:if>
+			<h3>
+				My Tasks
+			</h3>
+			<div class="myTasks">
+				<a href="#">Due Today <span href="#" class="taskCount">(1)</span></a>
+				<a href="#">New Tasks <span href="#" class="taskCount">(3)</span></a>
+				<a href="#">All Tasks (9)</a>
+			</div>
 		</div>
 	</div>
 </div>

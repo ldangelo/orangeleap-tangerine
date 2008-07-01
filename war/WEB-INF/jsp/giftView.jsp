@@ -6,7 +6,7 @@
 	<tiles:putAttribute name="sidebarNav" value="Profile" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm test">
-			<jsp:include page="viewGiftForm.jsp"/>
+			<jsp:include page="giftViewForm.jsp"/>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

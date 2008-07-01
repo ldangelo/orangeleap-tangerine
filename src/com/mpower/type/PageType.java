@@ -8,5 +8,5 @@ public enum PageType {
     giftList,
     giftSearch,
     giftSearchResults,
-	viewGift
+	giftView
 }

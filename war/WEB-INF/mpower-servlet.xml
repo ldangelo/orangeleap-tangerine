@@ -47,7 +47,7 @@
             </bean>
         </property>-->
         <property name="formView" value="gift" />
-        <property name="successView" value="viewGift" />
+        <property name="successView" value="giftView" />
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
     </bean>
@@ -73,11 +73,11 @@
         <property name="giftService" ref="giftService"/>
     </bean>
     
-    <bean name="/viewGift.htm" class="com.mpower.controller.ViewGiftFormController">
+    <bean name="/giftView.htm" class="com.mpower.controller.GiftViewFormController">
     	<property name="commandName" value="gift" />
     	<property name="commandClass" value="com.mpower.domain.Gift" />
-    	<property name="formView" value="viewGift" />
-        <property name="successView" value="viewGift" />
+    	<property name="formView" value="giftView" />
+        <property name="successView" value="giftView" />
         <property name="giftService" ref="giftService" />
     </bean>
 

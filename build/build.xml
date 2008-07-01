@@ -75,7 +75,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/viewGift.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/maritalStatusPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>

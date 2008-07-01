@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<mp:page pageName='viewGift'/>
+<mp:page pageName='giftView'/>
 
 <form:form method="post" commandName="gift">
 
@@ -9,7 +9,7 @@
 		</h1>
 		<div class="searchSection">
 			<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-			<a href="viewGift.htm?giftId=${gift.id}" class="newAccountButton">Create New Gift &raquo; </a>
+			<a href="giftView.htm?giftId=${gift.id}" class="newAccountButton">Create New Gift &raquo; </a>
 		</div>
 	</c:forEach>
 	

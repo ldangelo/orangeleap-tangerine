@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.Gift;
 import com.mpower.service.GiftService;
 
-public class ViewGiftFormController extends SimpleFormController {
+public class GiftViewFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

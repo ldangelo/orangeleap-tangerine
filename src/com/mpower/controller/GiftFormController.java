@@ -31,6 +31,7 @@ public class GiftFormController extends SimpleFormController {
         this.personService = personService;
     }
 
+    @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
 
         String giftId = request.getParameter("giftId");
@@ -39,7 +40,7 @@ public class GiftFormController extends SimpleFormController {
             // create person
             gift = giftService.createDefaultGift(1L);
             String personId = request.getParameter("personId");
-            Person person = personService.readPersonById(Long.parseLong(personId));
+            Person person = personService.readPersonById(Long.valueOf(personId));
             if (person == null) {
                 logger.error("**** person not found for id: " + personId);
                 return gift;
@@ -53,12 +54,13 @@ public class GiftFormController extends SimpleFormController {
         return gift;
     }
 
+    @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Gift gift = (Gift) command;
         Gift current = giftService.maintainGift(gift);
 
-        ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-        mav.addObject("id", current.getId());
+        ModelAndView mav = new ModelAndView("redirect:/viewGift.htm", errors.getModel());
+        mav.addObject("personId", current.getPerson().getId());
         return mav;
     }
 }

@@ -10,7 +10,7 @@
 	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 		<table id="myTable" class="tablesorter" cellspacing="0" cellpadding="0"> 
 			<thead> 
-				<c:forEach items="${personList}" var="person" begin="0" end="0">
+				<c:forEach items="${personList}" var="row" begin="0" end="0">
 					<tr>
 						<th>&nbsp;</th>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
@@ -18,9 +18,9 @@
 				</c:forEach>
 			</thead> 
 			<tbody> 
-				<c:forEach items="${personList}" var="person">
+				<c:forEach items="${personList}" var="row">
 					<tr>
-						<td><a href="person.htm?personId=${person.id}">Edit</a></td>
+						<td><a href="person.htm?personId=${row.id}">Edit</a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>
 				</c:forEach>

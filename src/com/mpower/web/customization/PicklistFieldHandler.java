@@ -24,6 +24,7 @@ public class PicklistFieldHandler extends GenericFieldHandler {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, user, model);
         fieldVO.codes = new ArrayList<String>();
         fieldVO.displayValues = new ArrayList<String>();
+        fieldVO.referenceValues = new ArrayList<String>();
         Picklist picklist = fieldService.readPicklistBySiteAndFieldName(user.getSite(), currentField.getPicklistName());
         if (picklist != null) {
             for (Iterator<PicklistItem> iterator = picklist.getPicklistItems().iterator(); iterator.hasNext();) {
@@ -34,6 +35,7 @@ public class PicklistFieldHandler extends GenericFieldHandler {
                     displayValue = item.getDefaultDisplayValue();
                 }
                 fieldVO.displayValues.add(displayValue);
+                fieldVO.referenceValues.add(item.getReferenceValue());
             }
         }
         return fieldVO;

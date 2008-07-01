@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.FieldType;
 
 public class FieldVO {
+	public List<String> referenceValues;
     public List<String> codes;
     public List<String> displayValues;
     private FieldType fieldType;
@@ -119,4 +121,12 @@ public class FieldVO {
             this.fieldValue = fieldValue;
         }
     }
+
+	public List<String> getReferenceValues() {
+		return referenceValues;
+	}
+
+	public void setReferenceValues(List<String> referenceValues) {
+		this.referenceValues = referenceValues;
+	}
 }

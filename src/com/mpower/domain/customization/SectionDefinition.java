@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.mpower.domain.Site;
@@ -21,90 +22,102 @@ import com.mpower.type.PageType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_ID", "SECTION_NAME" }))
+@Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = {
+		"SITE_ID", "SECTION_NAME" }))
 public class SectionDefinition implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
-    @Column(name = "SECTION_DEFINITION_ID")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "SECTION_DEFINITION_ID")
+	private Long id;
 
-    @Column(name = "PAGE_TYPE")
-    @Enumerated(EnumType.STRING)
-    private PageType pageType;
+	@Column(name = "PAGE_TYPE")
+	@Enumerated(EnumType.STRING)
+	private PageType pageType;
 
-    @Column(name = "SECTION_NAME")
-    private String sectionName;
+	@Column(name = "SECTION_NAME")
+	private String sectionName;
 
-    @Column(name = "DEFAULT_LABEL", nullable = false)
-    private String defaultLabel;
+	@Column(name = "DEFAULT_LABEL", nullable = false)
+	private String defaultLabel;
 
-    @Column(name = "LAYOUT_TYPE")
-    @Enumerated(EnumType.STRING)
-    private LayoutType layoutType;
+	@Column(name = "LAYOUT_TYPE")
+	@Enumerated(EnumType.STRING)
+	private LayoutType layoutType;
 
-    @Column(name = "SECTION_ORDER")
-    private Integer sectionOrder;
+	@Column(name = "SECTION_ORDER")
+	private Integer sectionOrder;
 
-    @ManyToOne
-    @JoinColumn(name = "SITE_ID")
-    private Site site;
+	@ManyToOne
+	@JoinColumn(name = "SITE_ID")
+	private Site site;
 
-    public LayoutType getLayoutType() {
-        return layoutType;
-    }
+	@Transient
+	private String sectionHtmlName;
 
-    public void setLayoutType(LayoutType layoutType) {
-        this.layoutType = layoutType;
-    }
+	public String getSectionHtmlName() {
+		return this.sectionName.replace('.', '_');
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setSectionHtmlName(String sectionHtmlName) {
+		this.sectionHtmlName = sectionHtmlName;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public LayoutType getLayoutType() {
+		return layoutType;
+	}
 
-    public Site getSite() {
-        return site;
-    }
+	public void setLayoutType(LayoutType layoutType) {
+		this.layoutType = layoutType;
+	}
 
-    public void setSite(Site site) {
-        this.site = site;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public PageType getPageType() {
-        return pageType;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setPageType(PageType pageType) {
-        this.pageType = pageType;
-    }
+	public Site getSite() {
+		return site;
+	}
 
-    public String getSectionName() {
-        return sectionName;
-    }
+	public void setSite(Site site) {
+		this.site = site;
+	}
 
-    public void setSectionName(String sectionName) {
-        this.sectionName = sectionName;
-    }
+	public PageType getPageType() {
+		return pageType;
+	}
 
-    public Integer getSectionOrder() {
-        return sectionOrder;
-    }
+	public void setPageType(PageType pageType) {
+		this.pageType = pageType;
+	}
 
-    public void setSectionOrder(Integer sectionOrder) {
-        this.sectionOrder = sectionOrder;
-    }
+	public String getSectionName() {
+		return sectionName;
+	}
 
-    public String getDefaultLabel() {
-        return defaultLabel;
-    }
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
 
-    public void setDefaultLabel(String defaultLabel) {
-        this.defaultLabel = defaultLabel;
-    }
+	public Integer getSectionOrder() {
+		return sectionOrder;
+	}
+
+	public void setSectionOrder(Integer sectionOrder) {
+		this.sectionOrder = sectionOrder;
+	}
+
+	public String getDefaultLabel() {
+		return defaultLabel;
+	}
+
+	public void setDefaultLabel(String defaultLabel) {
+		this.defaultLabel = defaultLabel;
+	}
 }

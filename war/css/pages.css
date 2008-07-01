@@ -51,6 +51,7 @@
 	padding-top:2px;
 	margin-top:2px;
 	border-bottom:1px solid #ddd;
+	margin-bottom:12px;
 }
 .accountOptions a {
 	border-top:1px solid #ddd;
@@ -75,6 +76,25 @@
 	/*background:#ffbc7e url("../images/doublearrow.gif") 97% 50% no-repeat;*/
 	background:#ffbc7e;
 	color:#000;
+}
+.myTasks {
+	border-top:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	margin-bottom:12px;
+	margin-top:2px;
+	padding-top:2px;
+}
+.myTasks a {
+	font-size:13px;
+	font-family:Arial, sans-serif;
+	display:block;
+	line-height:1.7em;
+	padding:0pt 5px;
+	text-decoration:none;
+	color:#000;
+}
+.myTasks a:hover {
+	text-decoration:underline;
 }
 #navmain ul li strong a:hover {
 	background-color:#fff;
@@ -209,5 +229,8 @@ form input.file {
   color: #ccc;
   background:transparent;
 }
-	
+.taskCount {
+	color:red;
+	font-weight:normal;
+}
 	

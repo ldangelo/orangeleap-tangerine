@@ -32,7 +32,7 @@ public class FieldHandlerHelper {
 		fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
-
+		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION, genericFieldHandler);
 
 		PhoneFieldHandler phoneFieldHandler = new PhoneFieldHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.PHONE, phoneFieldHandler);

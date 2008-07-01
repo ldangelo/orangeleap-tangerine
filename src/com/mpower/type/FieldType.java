@@ -12,5 +12,6 @@ public enum FieldType {
 	PHONE,
 	LONG_TEXT,
 	NUMBER,
-	SPACER
+	SPACER,
+	CC_EXPIRATION
 }

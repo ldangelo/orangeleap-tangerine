@@ -69,7 +69,7 @@ public class Gift implements Serializable {
     @Column(name = "ACH_ACCOUNT_NUMBER")
     private String achAccountNumber;
 
-    @Column(name = "GIFT_ENTERED_DATE", updatable = false)
+    @Column(name = "TRANSACTION_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
     private Date giftEnteredDate;

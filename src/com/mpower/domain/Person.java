@@ -73,9 +73,6 @@ public class Person implements Serializable {
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
 
-    @Column(name = "ACCOUNT_NUMBER")
-    private String accountNumber;
-
     @Column(name = "BIRTHDATE")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
@@ -269,17 +266,6 @@ public class Person implements Serializable {
 
     public void setSpouseFirstName(String spouseFirstName) {
         this.spouseFirstName = spouseFirstName;
-    }
-
-    public String getAccountNumber() {
-        if (accountNumber == null) {
-            accountNumber = String.valueOf(id);
-        }
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public String getOrganizationName() {

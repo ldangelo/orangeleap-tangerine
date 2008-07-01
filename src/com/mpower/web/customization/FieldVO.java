@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.FieldType;
 
 public class FieldVO {

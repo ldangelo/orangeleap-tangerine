@@ -9,10 +9,7 @@
 		</h1>
 		<div class="searchSection">
 			<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-			    <div class="personFormButtons searchPersonButtons">
-				<input class="searchButton" type="submit" value="Search" />
-				<a href="person.htm" class="newAccountButton">Create New Person &raquo; </a>
-			</div>
+			<a href="viewGift.htm?giftId=${gift.id}" class="newAccountButton">Create New Gift &raquo; </a>
 		</div>
 	</c:forEach>
 	

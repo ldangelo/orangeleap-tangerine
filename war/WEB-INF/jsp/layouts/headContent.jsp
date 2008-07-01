@@ -1,4 +1,4 @@
-<%@ include file="/WEB-INF/jsp/include.jsp" %>
+	<%@ include file="/WEB-INF/jsp/include.jsp" %>
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="css/screen.css" />
 		<link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
 		<!--[if lte IE 6]>
@@ -16,7 +16,9 @@
 	    {
 	        $("#myTable").tablesorter( { sortList: [[2,0], [3,0]] , headers:{0:{sorter:false}} } );
 
-			//$(".accountOptions a").click(function() {
+        	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
+
+        	//$(".accountOptions a").click(function() {
 			//	this.blur();
 	        //	$(".accountOptions a").removeClass("active");
 			//	$(this).addClass("active");

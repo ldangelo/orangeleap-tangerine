@@ -72,12 +72,8 @@
 <!--        </property>-->
         <property name="giftService" ref="giftService"/>
     </bean>
-    
-    <bean name="/giftView.htm" class="com.mpower.controller.GiftViewFormController">
-    	<property name="commandName" value="gift" />
-    	<property name="commandClass" value="com.mpower.domain.Gift" />
-    	<property name="formView" value="giftView" />
-        <property name="successView" value="giftView" />
+
+    <bean name="/giftView.htm" class="com.mpower.controller.GiftViewController">
         <property name="giftService" ref="giftService" />
     </bean>
 

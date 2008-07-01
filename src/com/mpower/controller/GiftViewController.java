@@ -1,16 +1,17 @@
 package com.mpower.controller;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import com.mpower.domain.Gift;
 import com.mpower.service.GiftService;
 
-public class GiftViewFormController extends SimpleFormController {
+public class GiftViewController implements Controller {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -22,9 +23,9 @@ public class GiftViewFormController extends SimpleFormController {
     }
 
     @Override
-    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String giftId = request.getParameter("giftId");
         Gift gift = giftService.readGiftById(Long.valueOf(giftId));
-        return gift;
+        return new ModelAndView("giftView", "gift", gift);
     }
 }

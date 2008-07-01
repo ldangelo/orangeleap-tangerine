@@ -26,6 +26,30 @@
 			<div class="clearColumns"></div>
 		</div>
 	</c:when>
+	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN'}">
+		<div class="column ${sectionDefinition.sectionHtmlName}" style="padding-right:8px;">
+			<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			<ul class="formFields width375">
+				<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+					<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+					<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+				</c:forEach>
+				<li class="clear"></li>
+			</ul>
+		</div>
+	</c:when>
+	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
+		<div class="column ${sectionDefinition.sectionHtmlName}" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			<ul class="formFields width375">
+				<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+					<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+					<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+				</c:forEach>
+				<li class="clear"></li>
+			</ul>
+		</div>
+	</c:when>
 <c:otherwise>
 </c:otherwise>
 </c:choose>

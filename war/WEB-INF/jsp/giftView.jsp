@@ -34,8 +34,14 @@
 
 		<div class="clearColumns"></div>
 	</div>
-	
-	<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+	<c:choose>
+		<c:when test="${gift.originalGift == null}">
+			<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+		</c:when>
+		<c:otherwise>
+			<h3 style="color:#070;">This is a reversal of a <a href="giftView.htm?giftId=${gift.originalGift.id}">previously entered gift</a>, reversed on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+		</c:otherwise>
+	</c:choose>
 		<div class="columns">
 			<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
 					<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>

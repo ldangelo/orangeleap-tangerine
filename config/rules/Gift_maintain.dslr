@@ -16,7 +16,7 @@ expander Site1Language.dsl
 /*
 rule "One Time Donation - Major Donor"
 	when
-		A donation has been made
+		A gift has been donated
 			of at least 1000 dollars
 	then
 		Flag the person as a major donor
@@ -25,26 +25,25 @@ end
 
 rule "Gift - Donation Made"
 	when
-		A donation has been made
+		A gift has been donated
 	then
 		Find the person who donated that gift
 end
 
 rule "Gift - Donation Made - Step 2"
 	when
-		A donation has been made
-		The person who made that donation has been found
+		A gift has been donated
+		The person who donated that gift has been found
 	then
-		Get the persons total donations over the past 12 "MONTHS"	
-		Setup person donation object
-		
+		Get the dollar value of the persons total donations over the past 12 "months"	
+		Setup the person donation object
 end
 
 rule "Gift - Donation Made - Step 3"
 	when 
-		A donation has been made
-		The person who made that donation has been found
-		Person donation object exists
+		A gift has been donated
+		The person who donated that gift has been found
+		The person donation object exists
 		The person has donated at least 5000 dollars over the time period
 	then
 		Flag the person as a major donor

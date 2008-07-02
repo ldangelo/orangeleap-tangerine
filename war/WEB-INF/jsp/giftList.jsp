@@ -48,18 +48,18 @@
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<table id="giftListTable" class="tablesorter" cellspacing="0" cellpadding="0">
 						<thead>
-							<c:forEach items="${giftList}" var="gift" begin="0" end="0">
+							<c:forEach items="${giftList}" var="row" begin="0" end="0">
 								<tr>
 									<th>&nbsp;</th>
-									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeaderGift.jsp" %>
+									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
 								</tr>
 							</c:forEach>
 						</thead>
 						<tbody>
-							<c:forEach items="${giftList}" var="gift">
+							<c:forEach items="${giftList}" var="row">
 								<tr>
-									<td><a href="giftView.htm?giftId=${gift.id}">View</a></td>
-									<%@ include file="/WEB-INF/jsp/snippets/gridResultsGift.jsp" %>
+									<td><a href="giftView.htm?giftId=${row.id}">View</a></td>
+									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 								</tr>
 							</c:forEach>
 						</tbody>

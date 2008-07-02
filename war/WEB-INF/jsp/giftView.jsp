@@ -8,7 +8,7 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='giftView'/>
 			<c:set var="person" value="${gift.person}" scope="request" />
-
+			
 	<div class="columns iconHeader">
 		<div class="column">
 			<img src="images/dude2.gif" />
@@ -34,20 +34,26 @@
 
 		<div class="clearColumns"></div>
 	</div>
-
-			<c:if test="${gift.refundable}">
-				<a href="giftRefund.htm?giftId=${gift.id}" class="newAccountButton">Refund Gift &raquo; </a>
-			</c:if>
-			<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-				<h1>
-					<mp:sectionHeader sectionDefinition="${sectionDefinition}"/>
-				</h1>
-				<div class="searchSection">
+	
+	<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+		<div class="columns">
+			<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
 					<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-				</div>
-				<div class="formButtonFooter personFormButtons">
-				</div>
 			</c:forEach>
+			<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1">
+				<c:if test="${sectionDefinition.defaultLabel==gift.paymentType}">
+					<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
+				</c:if>
+			</c:forEach>
+			<div class="clearColumns"></div>
+		</div>
+			<div class="formButtonFooter">
+				<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
+				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>
+				<c:if test="${gift.refundable}">
+					<a class="actionLink" href="giftRefund.htm?giftId=${gift.id}">Reverse this gift</a>
+				</c:if>
+			</div>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

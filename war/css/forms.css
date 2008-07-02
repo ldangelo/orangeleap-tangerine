@@ -1,10 +1,10 @@
-form ul.formFields {
+ul.formFields {
 	list-style-type:none;
 	margin:0pt;
 	padding:0pt;
 	width:100%;
 }
-form li.fieldGroup {
+li.fieldGroup {
 	clear:both;
 	margin:0pt;
 	padding:4px 5px 2px 9px;
@@ -111,7 +111,7 @@ ul.formFields li.clear {
 ul.width600 {
 	width:600px;
 }
-form ul.width375 {
+ul.width375 {
 	width:375px;
 }
 span.required {
@@ -141,7 +141,7 @@ h4.formSectionHeader {
 	color:#777;
 	border-bottom:1px solid #aaa;
 }
-form .formButtonFooter {
+.formButtonFooter {
 	text-align:center;
 	border-top:1px solid #aaa;
 	padding:6px 0 7px;

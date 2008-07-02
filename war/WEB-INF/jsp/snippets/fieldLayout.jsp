@@ -28,7 +28,9 @@
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN'}">
 		<div class="column ${sectionDefinition.sectionHtmlName}" style="padding-right:8px;">
-			<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			<c:if test="${!empty sectionDefinition.defaultLabel}">
+				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			</c:if>
 			<ul class="formFields width375">
 				<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 					<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
@@ -40,7 +42,9 @@
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
 		<div class="column ${sectionDefinition.sectionHtmlName}" style="display:none;padding-right:8px;">
-			<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			<c:if test="${!empty sectionDefinition.defaultLabel}">
+				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+			</c:if>
 			<ul class="formFields width375">
 				<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 					<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />

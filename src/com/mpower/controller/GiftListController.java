@@ -13,39 +13,52 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
+import com.mpower.service.PersonService;
 
 public class GiftListController implements Controller {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+	/** Logger for this class and subclasses */
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    private GiftService giftService;
+	private GiftService giftService;
 
-    public void setGiftService(GiftService giftService) {
-        this.giftService = giftService;
-    }
+	private PersonService personService;
 
-    @Override
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        logger.info("**** in handleRequest()");
+	public void setGiftService(GiftService giftService) {
+		this.giftService = giftService;
+	}
 
-        String personId = request.getParameter("personId");
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
 
-        Map<String, String> params = new HashMap<String, String>();
+	@Override
+	public ModelAndView handleRequest(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		logger.info("**** in handleRequest()");
 
-        System.out.println("*** map has: " + params);
+		String personId = request.getParameter("personId");
 
-        List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
-        System.out.println("**** list size: " + giftList.size());
-        System.out.println("**** Gift List" + giftList);
+		Map<String, String> params = new HashMap<String, String>();
 
-        // Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-        // form to post results back to the same page. We need to get the
-        // command from errors and then add our search results to the model.
-        ModelAndView mav = new ModelAndView("giftList");
-        mav.addObject("giftList", giftList);
-        mav.addObject("giftListSize", giftList.size());
-        return mav;
-    }
+		System.out.println("*** map has: " + params);
+
+		List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
+		Person person = personService.readPersonById(Long.valueOf(personId));
+		System.out.println("**** list size: " + giftList.size());
+		System.out.println("**** Gift List" + giftList);
+
+		// Adding errors.getModel() to our ModelAndView is a "hack" to allow our
+		// form to post results back to the same page. We need to get the
+		// command from errors and then add our search results to the model.
+		ModelAndView mav = new ModelAndView("giftList");
+		if (person != null) {
+			mav.addObject("person", person);
+		}
+		mav.addObject("giftList", giftList);
+		mav.addObject("giftListSize", giftList.size());
+		return mav;
+	}
 }

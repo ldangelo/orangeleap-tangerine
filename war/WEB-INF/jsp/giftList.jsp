@@ -6,6 +6,37 @@
 	<tiles:putAttribute name="sidebarNav" value="List Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
+			<mp:page pageName='giftList' />
+			<c:set var="person" value="${person}" scope="request" />
+			
+						
+				
+	<div class="columns iconHeader">
+		<div class="column">
+			<img src="images/dude2.gif" />
+		</div>
+		<div class="column">
+		<c:choose>
+		<c:when test="${param.personId!=null || id != null}">
+			<c:set scope="request" var="viewingAccount" value="true" />
+			<h2 class="personEdit">
+				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}
+			</h2>
+		</c:when>
+		<c:otherwise>
+			<h2 class="personEdit">
+				New Person
+			</h2>
+		</c:otherwise>
+		</c:choose>
+			<h3 id="currentFunctionTitle" class="personEdit">
+				Gift History
+			</h3>
+		</div>
+		<div class="clearColumns"></div>
+	</div>
+			
+			
 			<c:choose>
 			<c:when test="${!empty giftList}">
 				<div class="searchResultsHeader">
@@ -39,7 +70,7 @@
 
 			</c:when>
 			<c:when test="${giftList ne null}">
-				<p style="margin:8px 0 6px 0;">Your search returned no results.</p>
+				<p style="margin:8px 0 6px 0;">No gifts have been entered for this person.</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

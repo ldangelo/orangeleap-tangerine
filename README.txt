@@ -21,7 +21,8 @@ Tomcat:
 9.  Open the build/build.xml file from this project in the Eclipse ant view
 10. Execute the 'Deploy War' task
 11. Execute the 'Start Tomcat...' task.
-12. Create a file /key.txt with the following line in it to add the cryptography key
-	SECRET_KEY=1d8ef739bd58294c6ee43b2b3bc7a26c
+12. Create a file /key.txt with the following line in it to add the cryptography 
+    key: SECRET_KEY=1d8ef739bd58294c6ee43b2b3bc7a26c
 
-You can now query the database and see that tables have been created for the application.
+You can now query the database and see that tables have been created for the 
+application.

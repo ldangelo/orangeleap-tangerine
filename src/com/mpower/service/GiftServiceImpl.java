@@ -81,12 +81,15 @@ public class GiftServiceImpl implements GiftService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift refundGift(Long giftId) {
         Gift gift = giftDao.readGift(giftId);
+        gift.setRefundable(false);
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(gift);
             refundGift.setId(null);
             refundGift.setGiftEnteredDate(null);
             refundGift.setCreditCardExpirationDate(null);
             refundGift.setValue(gift.getValue().negate());
+            refundGift.setOriginalGift(gift);
+            refundGift.setRefundable(false);
             return giftDao.maintainGift(refundGift);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException();

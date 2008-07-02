@@ -8,7 +8,7 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='giftView'/>
 			<c:set var="person" value="${gift.person}" scope="request" />
-			
+
 	<div class="columns iconHeader">
 		<div class="column">
 			<img src="images/dude2.gif" />
@@ -34,7 +34,10 @@
 
 		<div class="clearColumns"></div>
 	</div>
-			
+
+			<c:if test="${gift.refundable}">
+				<a href="giftRefund.htm?giftId=${gift.id}" class="newAccountButton">Refund Gift &raquo; </a>
+			</c:if>
 			<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 				<h1>
 					<mp:sectionHeader sectionDefinition="${sectionDefinition}"/>
@@ -44,7 +47,6 @@
 				</div>
 				<div class="formButtonFooter personFormButtons">
 				</div>
-				<a href="giftRefund.htm?giftId=${gift.id}" class="newAccountButton">Refund Gift &raquo; </a>
 			</c:forEach>
 		</div>
 	</tiles:putAttribute>

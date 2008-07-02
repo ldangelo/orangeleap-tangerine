@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -76,6 +77,13 @@ public class Gift implements Serializable {
 
     @Column(name = "CONFIRMATION")
     private String confirmation;
+
+    @OneToOne
+    @JoinColumn(name = "REFUND_GIFT_ID")
+    private Gift originalGift;
+
+    @Column(name = "REFUNDABLE")
+    private boolean refundable = true;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -261,5 +269,21 @@ public class Gift implements Serializable {
             yearList.add(String.valueOf(year + i));
         }
         return yearList;
+    }
+
+    public Gift getOriginalGift() {
+        return originalGift;
+    }
+
+    public void setOriginalGift(Gift originalGift) {
+        this.originalGift = originalGift;
+    }
+
+    public boolean isRefundable() {
+        return refundable;
+    }
+
+    public void setRefundable(boolean refundable) {
+        this.refundable = refundable;
     }
 }

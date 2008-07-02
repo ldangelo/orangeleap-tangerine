@@ -79,11 +79,12 @@ public class Gift implements Serializable {
     private String confirmation;
 
     @OneToOne
-    @JoinColumn(name = "REFUND_GIFT_ID")
+    @JoinColumn(name = "ORIGINAL_GIFT_ID")
     private Gift originalGift;
 
-    @Column(name = "REFUNDABLE")
-    private boolean refundable = true;
+    @OneToOne
+    @JoinColumn(name = "REFUND_GIFT_ID")
+    private Gift refundGift;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -279,11 +280,11 @@ public class Gift implements Serializable {
         this.originalGift = originalGift;
     }
 
-    public boolean isRefundable() {
-        return refundable;
+    public Gift getRefundGift() {
+        return refundGift;
     }
 
-    public void setRefundable(boolean refundable) {
-        this.refundable = refundable;
+    public void setRefundGift(Gift refundGift) {
+        this.refundGift = refundGift;
     }
 }

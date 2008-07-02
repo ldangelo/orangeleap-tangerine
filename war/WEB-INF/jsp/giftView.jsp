@@ -8,7 +8,7 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='giftView'/>
 			<c:set var="person" value="${gift.person}" scope="request" />
-			
+
 	<div class="columns iconHeader">
 		<div class="column">
 			<img src="images/dude2.gif" />
@@ -56,7 +56,7 @@
 			<div class="formButtonFooter">
 				<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
 				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>
-				<c:if test="${gift.refundable}">
+				<c:if test="${gift.originalGift ne null and gift.refundGift ne null}">
 					<a class="actionLink" href="giftRefund.htm?giftId=${gift.id}">Reverse this gift</a>
 				</c:if>
 			</div>

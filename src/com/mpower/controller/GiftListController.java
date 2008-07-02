@@ -1,8 +1,6 @@
 package com.mpower.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,46 +17,38 @@ import com.mpower.service.PersonService;
 
 public class GiftListController implements Controller {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private GiftService giftService;
+    private GiftService giftService;
 
-	private PersonService personService;
+    private PersonService personService;
 
-	public void setGiftService(GiftService giftService) {
-		this.giftService = giftService;
-	}
+    public void setGiftService(GiftService giftService) {
+        this.giftService = giftService;
+    }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	@Override
-	public ModelAndView handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		logger.info("**** in handleRequest()");
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        logger.info("**** in handleRequest()");
+        String personId = request.getParameter("personId");
 
-		String personId = request.getParameter("personId");
+        List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
+        Person person = personService.readPersonById(Long.valueOf(personId));
 
-		Map<String, String> params = new HashMap<String, String>();
-
-		System.out.println("*** map has: " + params);
-
-		List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
-		Person person = personService.readPersonById(Long.valueOf(personId));
-		System.out.println("**** list size: " + giftList.size());
-		System.out.println("**** Gift List" + giftList);
-
-		// Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-		// form to post results back to the same page. We need to get the
-		// command from errors and then add our search results to the model.
-		ModelAndView mav = new ModelAndView("giftList");
-		if (person != null) {
-			mav.addObject("person", person);
-		}
-		mav.addObject("giftList", giftList);
-		mav.addObject("giftListSize", giftList.size());
-		return mav;
-	}
+        // Adding errors.getModel() to our ModelAndView is a "hack" to allow our
+        // form to post results back to the same page. We need to get the
+        // command from errors and then add our search results to the model.
+        ModelAndView mav = new ModelAndView("giftList");
+        if (person != null) {
+            mav.addObject("person", person);
+        }
+        mav.addObject("giftList", giftList);
+        mav.addObject("giftListSize", giftList.size());
+        return mav;
+    }
 }

@@ -45,7 +45,6 @@ public class GiftSearchFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         logger.info("**** in onSubmit()");
-
         Map<String, String> params = new HashMap<String, String>();
         Gift gift = (Gift) command;
 
@@ -53,12 +52,7 @@ public class GiftSearchFormController extends SimpleFormController {
             params.put("id", gift.getId().toString());
         }
 
-        System.out.println("*** map has: " + params);
-
         List<Gift> giftList = giftService.readGifts(1l, params);
-        System.out.println("**** list size: " + giftList.size());
-        System.out.println("**** Person List" + giftList);
-
         // Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -74,4 +75,18 @@ public class GiftServiceImpl implements GiftService {
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
         return giftDao.analyzeMajorDonor(personId, beginDate, currentDate);
     }
+
+	@Override
+	public Gift refundGift(Long giftId) {
+		
+		Gift gift = giftDao.readGift(giftId);
+		BigDecimal amount = gift.getValue();
+		System.out.println(amount);
+		amount = amount.negate();
+		System.out.println(amount);
+		
+		gift.setValue(amount);
+		
+		return giftDao.maintainGift(gift);
+	}
 }

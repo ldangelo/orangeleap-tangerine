@@ -52,6 +52,11 @@
         <property name="personService" ref="personService" />
     </bean>
 
+    <bean name="/giftRefund.htm" class="com.mpower.controller.RefundGiftController">
+        <property name="giftService" ref="giftService" />
+    </bean>
+
+
     <bean name="/giftSearch.htm" class="com.mpower.controller.GiftSearchFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>

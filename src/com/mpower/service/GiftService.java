@@ -22,4 +22,6 @@ public interface GiftService {
     public Gift createDefaultGift(Long siteId);
 
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
+    
+    public Gift refundGift(Long giftId);
 }

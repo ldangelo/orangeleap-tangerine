@@ -46,9 +46,9 @@ public class JPAGiftDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(Long personId, Map<String, String> params) {
+    public List<Gift> readGifts(Long siteId, Map<String, String> params) {
         boolean whereUsed = true;
-        StringBuffer queryString = new StringBuffer("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.id = :personId");
+        StringBuffer queryString = new StringBuffer("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;
@@ -69,7 +69,7 @@ public class JPAGiftDao implements GiftDao {
         }
         Query query = em.createQuery(queryString.toString());
 
-        query.setParameter("personId", personId);
+        query.setParameter("siteId", siteId);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -79,13 +79,13 @@ public class JPAGiftDao implements GiftDao {
 
     @Override
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
-			Query query = em.createNamedQuery("ANALYZE_FOR_MAJOR_DONOR");
-			query.setParameter("personId", personId);
-			query.setParameter("beginDate", beginDate);
-			query.setParameter("currentDate", currentDate);
-			if (query.getSingleResult() != null) {
-				return ((BigDecimal)query.getSingleResult()).doubleValue();
-			}
-		return 0.00;
+        Query query = em.createNamedQuery("ANALYZE_FOR_MAJOR_DONOR");
+        query.setParameter("personId", personId);
+        query.setParameter("beginDate", beginDate);
+        query.setParameter("currentDate", currentDate);
+        if (query.getSingleResult() != null) {
+            return ((BigDecimal) query.getSingleResult()).doubleValue();
+        }
+        return 0.00;
     }
 }

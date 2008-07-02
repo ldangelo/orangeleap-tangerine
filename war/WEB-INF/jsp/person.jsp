@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Person" />
+	<tiles:putAttribute name="browserTitle" value="Person Profile" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Profile" />

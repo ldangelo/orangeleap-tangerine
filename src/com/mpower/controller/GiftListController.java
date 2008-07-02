@@ -40,9 +40,6 @@ public class GiftListController implements Controller {
         List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
         Person person = personService.readPersonById(Long.valueOf(personId));
 
-        // Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-        // form to post results back to the same page. We need to get the
-        // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView("giftList");
         if (person != null) {
             mav.addObject("person", person);

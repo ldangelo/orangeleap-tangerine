@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.web.common.SessionUtils;
 
 public class PersonFormController extends SimpleFormController {
 
@@ -27,15 +28,10 @@ public class PersonFormController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String personId = request.getParameter("personId");
-
         Person person = null;
-
         if (personId == null) {
-            // create person
-            // TODO: get current user's site
-            person = personService.createDefaultPerson(1L);
+            person = personService.createDefaultPerson(SessionUtils.lookupUser(request).getSite().getId());
         } else {
-            // lookup person
             person = personService.readPersonById(new Long(personId));
         }
 
@@ -45,9 +41,7 @@ public class PersonFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Person p = (Person) command;
-
         logger.info("**** p's first name is: " + p.getFirstName());
-
         Person current = null;
         try {
             current = personService.maintainPerson(p);
@@ -55,6 +49,9 @@ public class PersonFormController extends SimpleFormController {
             e.createMessages(errors);
         }
 
+        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
+        // form to post results back to the same page. We need to get the
+        // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
         mav.addObject("saved", true);
         mav.addObject("id", current.getId());

@@ -13,6 +13,7 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
+import com.mpower.web.common.SessionUtils;
 
 public class GiftFormController extends SimpleFormController {
 
@@ -37,7 +38,7 @@ public class GiftFormController extends SimpleFormController {
         Gift gift = null;
         if (giftId == null) {
             // create person
-            gift = giftService.createDefaultGift(1L);
+            gift = giftService.createDefaultGift(SessionUtils.lookupUser(request).getSite().getId());
             String personId = request.getParameter("personId");
             Person person = personService.readPersonById(Long.valueOf(personId));
             if (person == null) {
@@ -46,7 +47,6 @@ public class GiftFormController extends SimpleFormController {
             }
             gift.setPerson(person);
         } else {
-            // lookup gift
             gift = giftService.readGiftById(new Long(giftId));
         }
 
@@ -58,6 +58,9 @@ public class GiftFormController extends SimpleFormController {
         Gift gift = (Gift) command;
         Gift current = giftService.maintainGift(gift);
 
+        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
+        // form to post results back to the same page. We need to get the
+        // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView("redirect:/giftView.htm", errors.getModel());
         mav.addObject("giftId", current.getId());
         return mav;

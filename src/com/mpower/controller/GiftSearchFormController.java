@@ -32,8 +32,7 @@ public class GiftSearchFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-
-        logger.info("**** in formBackingObj");
+        logger.info("**** in formBackingObject");
 
         Person p = new Person();
         User user = SessionUtils.lookupUser(request);
@@ -45,7 +44,6 @@ public class GiftSearchFormController extends SimpleFormController {
 
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-
         logger.info("**** in onSubmit()");
 
         Map<String, String> params = new HashMap<String, String>();

@@ -33,7 +33,6 @@ public class GiftFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-
         String giftId = request.getParameter("giftId");
         Gift gift = null;
         if (giftId == null) {

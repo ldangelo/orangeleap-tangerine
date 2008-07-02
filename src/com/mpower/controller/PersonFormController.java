@@ -15,51 +15,49 @@ import com.mpower.service.exception.PersonValidationException;
 
 public class PersonFormController extends SimpleFormController {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private PersonService personService;
+    private PersonService personService;
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	protected Object formBackingObject(HttpServletRequest request)
-			throws ServletException {
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        String personId = request.getParameter("personId");
 
-		String personId = request.getParameter("personId");
+        Person person = null;
 
-		Person person = null;
+        if (personId == null) {
+            // create person
+            // TODO: get current user's site
+            person = personService.createDefaultPerson(1L);
+        } else {
+            // lookup person
+            person = personService.readPersonById(new Long(personId));
+        }
 
-		if (personId == null) {
-			// create person
-			// TODO: get current user's site
-			person = personService.createDefaultPerson(1L);
-		} else {
-			// lookup person
-			person = personService.readPersonById(new Long(personId));
-		}
+        return person;
+    }
 
-		return person;
-	}
+    @Override
+    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
+        Person p = (Person) command;
 
-	public ModelAndView onSubmit(Object command, BindException errors)
-			throws ServletException {
+        logger.info("**** p's first name is: " + p.getFirstName());
 
-		Person p = (Person) command;
-
-		logger.info("**** p's first name is: " + p.getFirstName());
-
-		Person current = null;
+        Person current = null;
         try {
             current = personService.maintainPerson(p);
         } catch (PersonValidationException e) {
             e.createMessages(errors);
         }
 
-		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-		mav.addObject("saved", true);
-		mav.addObject("id", current.getId());
-		return mav;
-	}
+        ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
+        mav.addObject("saved", true);
+        mav.addObject("id", current.getId());
+        return mav;
+    }
 }

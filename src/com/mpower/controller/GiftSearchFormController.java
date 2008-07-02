@@ -49,7 +49,9 @@ public class GiftSearchFormController extends SimpleFormController {
         Map<String, String> params = new HashMap<String, String>();
         Gift gift = (Gift) command;
 
-        params.put("id", gift.getId().toString());
+        if (gift.getId() != null) {
+            params.put("id", gift.getId().toString());
+        }
 
         System.out.println("*** map has: " + params);
 

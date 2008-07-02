@@ -26,7 +26,7 @@
 				<a href="personSearch.htm" class="${primaryNav=='People'?'active':''}">People</a>
 			</li>
 			<li>
-				<a href="#">Gifts</a>
+				<a href="giftSearch.htm" class="${primaryNav=='Gifts'?'active':''}">Gifts</a>
 			</li>
 			<li>
 				<a href="#">Administration</a>

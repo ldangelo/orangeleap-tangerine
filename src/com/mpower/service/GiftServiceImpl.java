@@ -1,6 +1,6 @@
 package com.mpower.service;
 
-import java.math.BigDecimal;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
@@ -76,17 +77,25 @@ public class GiftServiceImpl implements GiftService {
         return giftDao.analyzeMajorDonor(personId, beginDate, currentDate);
     }
 
-	@Override
-	public Gift refundGift(Long giftId) {
-		
-		Gift gift = giftDao.readGift(giftId);
-		BigDecimal amount = gift.getValue();
-		System.out.println(amount);
-		amount = amount.negate();
-		System.out.println(amount);
-		
-		gift.setValue(amount);
-		
-		return giftDao.maintainGift(gift);
-	}
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Gift refundGift(Long giftId) {
+        Gift gift = giftDao.readGift(giftId);
+        try {
+            Gift refundGift = (Gift) BeanUtils.cloneBean(gift);
+            refundGift.setId(null);
+            refundGift.setGiftEnteredDate(null);
+            refundGift.setCreditCardExpirationDate(null);
+            refundGift.setValue(gift.getValue().negate());
+            return giftDao.maintainGift(refundGift);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException();
+        } catch (InstantiationException e) {
+            throw new IllegalStateException();
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException();
+        }
+    }
 }

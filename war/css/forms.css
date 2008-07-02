@@ -27,6 +27,12 @@ ul.formFields li.side select {
 ul.formFields li.side select {
 	width:68.7%;
 }
+ul.formFields li.side select.expMonth {
+	width:23.8%;
+}
+ul.formFields li.side select.expYear {
+	width:43.8%;
+}
 ul.formFields li.side textarea {
 	width:66%;
 }

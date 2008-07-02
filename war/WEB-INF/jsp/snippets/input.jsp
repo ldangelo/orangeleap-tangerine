@@ -11,8 +11,20 @@
 <c:when test="${fieldVO.fieldType == 'DATE'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
 </c:when>
+<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY'}">
+	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" />
+</c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
+	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
+		<c:forEach var="opt" varStatus="status" items="${gift.expirationMonthList}">
+			   <option value="${opt}">${opt}</option>
+	    </c:forEach>
+	</select>
+	<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
+		<c:forEach var="opt" varStatus="status" items="${gift.expirationYearList}">
+			   <option value="${opt}">${opt}</option>
+	    </c:forEach>
+    </select>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />

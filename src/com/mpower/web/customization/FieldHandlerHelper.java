@@ -30,9 +30,11 @@ public class FieldHandlerHelper {
 		fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
+		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
-		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION, genericFieldHandler);
+		ExpirationFieldHandler expirationFieldHandler = new ExpirationFieldHandler(appContext);
+		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION, expirationFieldHandler);
 
 		PhoneFieldHandler phoneFieldHandler = new PhoneFieldHandler(appContext);
 		fieldTypeToHandlerMap.put(FieldType.PHONE, phoneFieldHandler);

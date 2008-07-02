@@ -7,5 +7,5 @@
 [consequence][]Flag the person as a major donor=PersonService personService = (PersonService)applicationContext.getBean("personService"); Person person = personService.readPersonById($gift.getPerson().getId()); person.setMajorDonor(true); personService.maintainPerson(person);
 [consequence][]Get the persons total donations over the past {number} "{timeUnit}"=GiftService giftService = (GiftService)applicationContext.getBean("giftService"); double totalAmount = $gift.getValue().doubleValue() + giftService.analyzeMajorDonor($gift.getPerson().getId(), getBeginDate({number}, "{timeUnit}"), getCurrentDate()); System.out.println(totalAmount);
 [condition][]The person has donated at least {amount} dollars over the time period=DummyPersonDonation(donationAmount >= {amount})
-[condition][]of at least {amount} dollars=($gift.amount >= {amount})
+[condition][]of at least {amount} dollars=Gift($gift.value >= {amount})
 [consequence][]Get the persons total donations over the year to date=GiftService giftService = (GiftService)applicationContext.getBean("giftService"); double totalAmount = $gift.getValue().doubleValue() + giftService.analyzeMajorDonor($gift.getPerson().getId(), getBeginningOfYearDate(), getCurrentDate());

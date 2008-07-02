@@ -22,7 +22,8 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
     /**
      * Reads each field on the page to get a list of phones types that are used to build the drop-down.
      */
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
+    @Override
+	public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, user, model);
         fieldVO.codes = new ArrayList<String>();
         fieldVO.codes.add("");
@@ -33,7 +34,7 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
                 FieldDefinition currentFieldDefinition = currentSectionField.getFieldDefinition();
                 String displayValue = messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_LABEL, currentSectionField.getFieldLabelName(), locale);
                 if (GenericValidator.isBlankOrNull(displayValue)) {
-                    displayValue = currentField.getFieldDefinition().getDefaultLabel();
+                    displayValue = currentSectionField.getFieldDefinition().getDefaultLabel();
                 }
                 fieldVO.displayValues.add(displayValue);
 

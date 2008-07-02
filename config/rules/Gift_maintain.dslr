@@ -13,6 +13,16 @@ global org.springframework.context.ApplicationContext applicationContext;
 
 expander Site1Language.dsl
 
+/*
+rule "One Time Donation - Major Donor"
+	when
+		A donation has been made
+			of at least 1000 dollars
+	then
+		Flag the person as a major donor
+end
+*/
+
 rule "Gift - Donation Made"
 	when
 		A donation has been made

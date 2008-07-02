@@ -65,11 +65,6 @@
 
 
     <bean name="/giftList.htm" class="com.mpower.controller.GiftListController">
-        <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.Gift"/>
-<!--        <property name="validator">-->
-<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
-<!--        </property>-->
         <property name="giftService" ref="giftService"/>
     </bean>
 

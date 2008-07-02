@@ -52,7 +52,7 @@
         <property name="personService" ref="personService" />
     </bean>
 
-    <bean name="/giftRefund.htm" class="com.mpower.controller.RefundGiftController">
+    <bean name="/giftRefund.htm" class="com.mpower.controller.GiftRefundController">
         <property name="giftService" ref="giftService" />
     </bean>
 
@@ -60,9 +60,6 @@
     <bean name="/giftSearch.htm" class="com.mpower.controller.GiftSearchFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
-<!--        <property name="validator">-->
-<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
-<!--        </property>-->
         <property name="formView" value="giftSearch"/>
         <property name="successView" value="giftSearch"/>
         <property name="giftService" ref="giftService"/>

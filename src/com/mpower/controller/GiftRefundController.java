@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import com.mpower.domain.Gift;
 import com.mpower.service.GiftService;
 
-public class RefundGiftController implements Controller {
+public class GiftRefundController implements Controller {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -25,9 +25,9 @@ public class RefundGiftController implements Controller {
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String giftId = request.getParameter("giftId");
-        //Gift gift = giftService.readGiftById(Long.valueOf(giftId));
         Gift gift = giftService.refundGift(Long.valueOf(giftId));
- 
-        return new ModelAndView("giftView", "gift", gift);
+        ModelAndView mav = new ModelAndView("redirect:/giftView.htm", "gift", gift);
+        mav.addObject("giftId", gift.getId());
+        return mav;
     }
 }

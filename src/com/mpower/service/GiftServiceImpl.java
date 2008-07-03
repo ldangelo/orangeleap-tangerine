@@ -87,9 +87,9 @@ public class GiftServiceImpl implements GiftService {
             refundGift.setGiftEnteredDate(null);
             refundGift.setCreditCardExpirationDate(null);
             refundGift.setValue(originalGift.getValue().negate());
-            refundGift.setOriginalGift(originalGift);
+            refundGift.setOriginalGiftId(originalGift.getId());
             refundGift = giftDao.maintainGift(refundGift);
-            originalGift.setRefundGift(refundGift);
+            originalGift.setRefundGiftId(refundGift.getId());
             giftDao.maintainGift(originalGift);
             return refundGift;
         } catch (IllegalAccessException e) {

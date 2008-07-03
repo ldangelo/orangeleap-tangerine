@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -82,13 +81,11 @@ public class Gift implements Serializable {
     @Column(name = "CONFIRMATION")
     private String confirmation;
 
-    @OneToOne
-    @JoinColumn(name = "ORIGINAL_GIFT_ID")
-    private Gift originalGift;
+    @Column(name = "ORIGINAL_GIFT_ID")
+    private Long originalGiftId;
 
-    @OneToOne
-    @JoinColumn(name = "REFUND_GIFT_ID")
-    private Gift refundGift;
+    @Column(name = "REFUND_GIFT_ID")
+    private Long refundGiftId;
 
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<GiftCustomField> giftCustomFields;
@@ -282,20 +279,20 @@ public class Gift implements Serializable {
         return yearList;
     }
 
-    public Gift getOriginalGift() {
-        return originalGift;
+    public Long getOriginalGiftId() {
+        return originalGiftId;
     }
 
-    public void setOriginalGift(Gift originalGift) {
-        this.originalGift = originalGift;
+    public void setOriginalGiftId(Long originalGiftId) {
+        this.originalGiftId = originalGiftId;
     }
 
-    public Gift getRefundGift() {
-        return refundGift;
+    public Long getRefundGiftId() {
+        return refundGiftId;
     }
 
-    public void setRefundGift(Gift refundGift) {
-        this.refundGift = refundGift;
+    public void setRefundGiftId(Long refundGiftId) {
+        this.refundGiftId = refundGiftId;
     }
 
     public List<GiftCustomField> getGiftCustomFields() {

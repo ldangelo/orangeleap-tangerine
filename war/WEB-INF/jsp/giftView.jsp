@@ -58,7 +58,7 @@
 			<div class="formButtonFooter">
 				<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
 				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>
-				<c:if test="${gift.originalGift ne null and gift.refundGift ne null}">
+				<c:if test="${gift.originalGift eq null and gift.refundGift eq null}">
 					<a class="actionLink" href="giftRefund.htm?giftId=${gift.id}">Reverse this gift</a>
 				</c:if>
 			</div>

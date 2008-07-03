@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -14,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,6 +26,7 @@ import javax.persistence.Transient;
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.listener.TemporalTimestampListener;
+import com.mpower.util.GiftCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })
@@ -86,11 +90,17 @@ public class Gift implements Serializable {
     @JoinColumn(name = "REFUND_GIFT_ID")
     private Gift refundGift;
 
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<GiftCustomField> giftCustomFields;
+
     @Transient
     private Integer creditCardExpirationMonth;
 
     @Transient
     private Integer creditCardExpirationYear;
+
+    @Transient
+    private Map<String, CustomField> customFieldMap = null;
 
     public Long getId() {
         return id;
@@ -286,5 +296,20 @@ public class Gift implements Serializable {
 
     public void setRefundGift(Gift refundGift) {
         this.refundGift = refundGift;
+    }
+
+    public List<GiftCustomField> getGiftCustomFields() {
+        if (giftCustomFields == null) {
+            giftCustomFields = new ArrayList<GiftCustomField>();
+        }
+        return giftCustomFields;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, CustomField> getCustomFieldMap() {
+        if (customFieldMap == null) {
+            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getGiftCustomFields(), this);
+        }
+        return customFieldMap;
     }
 }

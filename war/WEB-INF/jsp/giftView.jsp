@@ -9,6 +9,7 @@
 			<mp:page pageName='giftView'/>
 			<c:set var="person" value="${gift.person}" scope="request" />
 
+<form:form method="post" commandName="gift">
 	<div class="columns iconHeader">
 		<div class="column">
 			<img src="images/dude2.gif" />
@@ -53,6 +54,7 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
+</form:form>
 			<div class="formButtonFooter">
 				<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
 				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>

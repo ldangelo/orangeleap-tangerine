@@ -20,7 +20,7 @@
 			<tbody>
 				<c:forEach items="${giftList}" var="row">
 					<tr>
-						<td><a href="gift.htm?giftId=${gift.id}">Edit</a></td>
+						<td><a href="giftView.htm?giftId=${row.id}">Edit</a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>
 				</c:forEach>

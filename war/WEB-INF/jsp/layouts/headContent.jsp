@@ -15,7 +15,7 @@
 		$(document).ready(function()
 	    {
 	        $("#myTable").tablesorter( { sortList: [[2,0], [3,0]] , headers:{0:{sorter:false}} } );
-
+			//.tablesorterPager({container: $("#pager"),positionFixed: false})
         	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 
         	//$(".accountOptions a").click(function() {

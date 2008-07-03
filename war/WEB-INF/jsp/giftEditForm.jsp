@@ -17,7 +17,7 @@
 		<c:when test="${param.personId!=null || id != null}">
 			<c:set scope="request" var="viewingAccount" value="true" />
 			<h2 class="personEdit">
-				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}
+				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
 			</h2>
 		</c:when>
 		<c:otherwise>
@@ -35,6 +35,17 @@
 		</div>
 		<div class="clearColumns"></div>
 	</div>
+	
+	<form:errors path="*">
+		<div class="globalFormErrors">
+			<h5>Please correct the following errors on this page:</h5>
+			<ul>
+			<c:forEach items="${messages}" var="message">
+				<li>${message}</li>
+			</c:forEach>
+			</ul>
+		</div>
+	</form:errors>
 
 	<div class="columns">
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -47,5 +58,6 @@
 	<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
 </form:form>
 <script type="text/javascript">
-	$("." + $('#paymentType').attr('value')).show();
+	var elem=document.getElementById("paymentType");
+	$("." + elem[elem.selectedIndex].getAttribute('reference')).show();
 </script>

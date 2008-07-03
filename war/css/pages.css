@@ -248,3 +248,9 @@ a.actionLink {
 a.actionLink:hover {
 	background: #eee url(../images/buttonGradientBlue.gif) repeat-x;
 }
+span.majorDonor {
+	font-size:14px;
+	font-weight:bold;
+	color:#e50;
+	padding-left:10px;
+}

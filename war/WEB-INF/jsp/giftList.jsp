@@ -20,7 +20,7 @@
 		<c:when test="${param.personId!=null || id != null}">
 			<c:set scope="request" var="viewingAccount" value="true" />
 			<h2 class="personEdit">
-				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}
+				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
 			</h2>
 		</c:when>
 		<c:otherwise>
@@ -40,7 +40,6 @@
 			<c:choose>
 			<c:when test="${!empty giftList}">
 				<div class="searchResultsHeader">
-					<div class="pagination"><span class="disabled">« Previous</span> <span class="current">1</span> <a href="#">2</a> <a href="#">3</a> <a href="#">Next »</a></div>
 					<h4 class="searchResults">Gifts <strong>1 - ${giftListSize}</strong> of <strong>${giftListSize}</strong></h4>
 				</div>
 
@@ -65,16 +64,16 @@
 						</tbody>
 					</table>
 				</c:forEach>
-
-
-
+				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="gift.htm?personId=${person.id}">Enter a New Gift » </a></p>
 			</c:when>
 			<c:when test="${giftList ne null}">
 				<p style="margin:8px 0 6px 0;">No gifts have been entered for this person.</p>
+				<p>Would you like to <a href="gift.htm?personId=${person.id}">create a new gift</a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>
 			</c:choose>
+
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

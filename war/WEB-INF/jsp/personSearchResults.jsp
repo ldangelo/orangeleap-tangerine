@@ -26,7 +26,9 @@
 				</c:forEach>
 			</tbody>
 		</table>
+		
 	</c:forEach>
+
 	
 	
 	

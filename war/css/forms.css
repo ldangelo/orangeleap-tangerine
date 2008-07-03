@@ -207,6 +207,12 @@ a.lookupLink {
 .searchPersonButtons .newAccountButton {
 	bottom:6px;
 }
+.newLink {
+	color:#525F95;
+	font-family:arial;
+	font-size:14px;
+	font-weight:bold;
+}
 ul.formFields li input.textError {
 	background:#fed;
 	border:1px solid #d00;

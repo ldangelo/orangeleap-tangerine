@@ -10,6 +10,9 @@ body {
 	height:100%;
 	width:100%;
 }
+a, a:visited {
+	color:#525F95;
+}
 p {
 	margin: 0 0 15px 0;
 	padding: 0;	

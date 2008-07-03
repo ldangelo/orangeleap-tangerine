@@ -142,6 +142,7 @@
 			this.construct = function(settings) {
 				
 				return this.each(function() {	
+					//if(!this.tHead || !this.tBodies) return;
 					
 					config = $.extend(this.config, $.tablesorterPager.defaults, settings);
 					

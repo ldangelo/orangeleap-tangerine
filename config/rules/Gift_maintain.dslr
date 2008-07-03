@@ -13,16 +13,6 @@ global org.springframework.context.ApplicationContext applicationContext;
 
 expander Site1Language.dsl
 
-/*
-rule "One Time Donation - Major Donor"
-	when
-		A gift has been donated
-			of at least 1000 dollars
-	then
-		Flag the person as a major donor
-end
-*/
-
 rule "Gift - Donation Made"
 	when
 		A gift has been donated
@@ -65,9 +55,9 @@ function Date getBeginningOfYearDate() {
 
 function Date getBeginDate(int number, String timeUnit) {
 	Calendar cal = Calendar.getInstance();
-	StringBuilder args = new StringBuilder(timeUnit);
-	if (timeUnit.toUpperCase().equals("MONTHS") || timeUnit.toUpperCase().equals("YEARS")) {
-		args.deleteCharAt(timeUnit.length()-1);
+	StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
+	if (args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
+		args.deleteCharAt(args.length()-1);
 	}
 	if (args.toString().equals("MONTH")) {
 		cal.add(Calendar.MONTH, -(number));

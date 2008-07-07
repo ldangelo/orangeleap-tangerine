@@ -14,7 +14,7 @@ public interface GiftDao {
 
     public List<Gift> readGifts(Long personId);
 
-    public List<Gift> readGifts(Long siteId, Map<String, String> params);
+    public List<Gift> readGifts(Long siteId, Map<String, Object> params);
 
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
 }

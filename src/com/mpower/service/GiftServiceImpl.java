@@ -53,7 +53,7 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public List<Gift> readGifts(Long siteId, Map<String, String> params) {
+    public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
         return giftDao.readGifts(siteId, params);
     }
 

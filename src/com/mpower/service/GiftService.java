@@ -17,11 +17,11 @@ public interface GiftService {
 
     public List<Gift> readGifts(Long personId);
 
-    public List<Gift> readGifts(Long siteId, Map<String, String> params);
+    public List<Gift> readGifts(Long siteId, Map<String, Object> params);
 
     public Gift createDefaultGift(Long siteId);
 
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
-    
+
     public Gift refundGift(Long giftId);
 }

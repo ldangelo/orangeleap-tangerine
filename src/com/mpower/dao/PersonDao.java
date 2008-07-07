@@ -11,7 +11,7 @@ public interface PersonDao {
 
     public Person readPerson(Long id);
 
-    public List<Person> readPersons(Long siteId, Map<String, String> params);
+    public List<Person> readPersons(Long siteId, Map<String, Object> params);
 
     public Person matchSpouseLogically(String firstName, String lastName);
 }

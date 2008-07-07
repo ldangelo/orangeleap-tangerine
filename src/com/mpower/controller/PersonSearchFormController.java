@@ -45,9 +45,10 @@ public class PersonSearchFormController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Person p = (Person) command;
-        BeanWrapper bw = new BeanWrapperImpl(p);
-        Map<String, String> params = new HashMap<String, String>();
+        logger.info("**** in onSubmit()");
+        Person person = (Person) command;
+        BeanWrapper bw = new BeanWrapperImpl(person);
+        Map<String, Object> params = new HashMap<String, Object>();
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
@@ -61,7 +62,6 @@ public class PersonSearchFormController extends SimpleFormController {
                 }
             }
         }
-        logger.info("**** in onSubmit()");
 
         List<Person> personList = personService.readPersons(SessionUtils.lookupUser(request).getSite().getId(), params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our

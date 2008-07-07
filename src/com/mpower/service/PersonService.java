@@ -12,7 +12,7 @@ public interface PersonService {
 
     public Person readPersonById(Long id);
 
-    public List<Person> readPersons(Long siteId, Map<String, String> params);
+    public List<Person> readPersons(Long siteId, Map<String, Object> params);
 
     public Person createDefaultPerson(Long siteId);
 

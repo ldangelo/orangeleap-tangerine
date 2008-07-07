@@ -28,7 +28,7 @@ public class PersonTest extends BaseTest {
         em.persist(site);
         em.persist(person);
         em.getTransaction().commit();
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("lastName", "last");
         List<Person> persons = personService.readPersons(site.getId(), params);
         assert persons.size() == 1;

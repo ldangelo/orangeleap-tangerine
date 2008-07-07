@@ -42,7 +42,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<Person> readPersons(Long siteId, Map<String, String> params) {
+    public List<Person> readPersons(Long siteId, Map<String, Object> params) {
         return personDao.readPersons(siteId, params);
     }
 

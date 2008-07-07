@@ -46,24 +46,37 @@ public class JPAGiftDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(Long siteId, Map<String, String> params) {
+    public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
         boolean whereUsed = true;
         StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;
-            String value;
-            for (Map.Entry<String, String> pair : params.entrySet()) {
+            Object value;
+            for (Map.Entry<String, Object> pair : params.entrySet()) {
                 key = pair.getKey();
                 value = pair.getValue();
-                if (!GenericValidator.isBlankOrNull(value)) {
-                    whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
-                    queryString.append(" gift.");
-                    queryString.append(key);
-                    queryString.append(" LIKE :");
-                    String paramName = key.replace(".", "_");
-                    queryString.append(paramName);
-                    parameterMap.put(paramName, value + "%");
+                boolean isString = true;
+                if (value instanceof String) {
+                    if (GenericValidator.isBlankOrNull((String) value)) {
+                        continue;
+                    }
+                } else {
+                    if (value == null) {
+                        continue;
+                    }
+                    isString = false;
+                }
+                whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
+                queryString.append(" gift.");
+                queryString.append(key);
+                queryString.append(" LIKE :");
+                String paramName = key.replace(".", "_");
+                queryString.append(paramName);
+                if (isString) {
+                    parameterMap.put(paramName, "%" + value + "%");
+                } else {
+                    parameterMap.put(paramName, value);
                 }
             }
         }

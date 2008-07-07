@@ -30,7 +30,7 @@ import com.mpower.util.GiftCustomFieldMap;
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })
 @Table(name = "GIFT")
-public class Gift implements Serializable {
+public class Gift implements Customizable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -295,7 +295,7 @@ public class Gift implements Serializable {
         this.refundGiftId = refundGiftId;
     }
 
-    public List<GiftCustomField> getGiftCustomFields() {
+    public List<GiftCustomField> getCustomFields() {
         if (giftCustomFields == null) {
             giftCustomFields = new ArrayList<GiftCustomField>();
         }
@@ -305,7 +305,7 @@ public class Gift implements Serializable {
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getGiftCustomFields(), this);
+            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
         }
         return customFieldMap;
     }

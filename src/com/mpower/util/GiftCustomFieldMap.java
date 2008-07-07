@@ -28,7 +28,7 @@ public class GiftCustomFieldMap extends AbstractInstanceValuesMap {
     public Object createObject(Object key) {
         CustomField newCustomField = new CustomField();
         newCustomField.setName((String) key);
-        gift.getGiftCustomFields().add(new GiftCustomField(gift, newCustomField));
+        gift.getCustomFields().add(new GiftCustomField(gift, newCustomField));
         return newCustomField;
     }
 

@@ -30,7 +30,7 @@ import com.mpower.util.PhoneMap;
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PERSON")
-public class Person implements Serializable {
+public class Person implements Customizable, Serializable {
 
     private static final long serialVersionUID = 1L;
 

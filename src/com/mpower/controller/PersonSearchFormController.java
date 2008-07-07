@@ -1,14 +1,19 @@
 package com.mpower.controller;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -37,19 +42,28 @@ public class PersonSearchFormController extends SimpleFormController {
         return p;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-        logger.info("**** in onSubmit()");
-        Map<String, String> params = new HashMap<String, String>();
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Person p = (Person) command;
+        BeanWrapper bw = new BeanWrapperImpl(p);
+        Map<String, String> params = new HashMap<String, String>();
+        Enumeration<String> enu = request.getParameterNames();
+        while (enu.hasMoreElements()) {
+            String param = enu.nextElement();
+            if (StringUtils.trimToNull(request.getParameter(param)) != null) {
+                try {
+                    String obj = (String) bw.getPropertyValue(param);
+                    params.put(param, obj);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        logger.info("**** in onSubmit()");
 
-        params.put("lastName", p.getLastName());
-        params.put("firstName", p.getFirstName());
-        params.put("middleName", p.getMiddleName());
-        params.put("email", p.getEmail());
-        params.put("organizationName", p.getOrganizationName());
-
-        List<Person> personList = personService.readPersons(p.getSite().getId(), params);
+        List<Person> personList = personService.readPersons(SessionUtils.lookupUser(request).getSite().getId(), params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

@@ -48,7 +48,7 @@ public class JPAGiftDao implements GiftDao {
     @Override
     public List<Gift> readGifts(Long siteId, Map<String, String> params) {
         boolean whereUsed = true;
-        StringBuffer queryString = new StringBuffer("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
+        StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;

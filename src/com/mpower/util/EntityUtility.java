@@ -5,7 +5,7 @@ public class EntityUtility {
     private EntityUtility() {
     }
 
-    public static boolean addWhereOrAnd(boolean whereUsed, StringBuffer queryString) {
+    public static boolean addWhereOrAnd(boolean whereUsed, StringBuilder queryString) {
         if (whereUsed) {
             queryString.append(" AND");
             return whereUsed;

@@ -10,7 +10,7 @@
 		    AND person.lastName = :lastName)
 		</query>
 	</named-query>
-	
+
 	<named-query name="ANALYZE_FOR_LAPSED_DONOR" >
 		<query>
 			UPDATE com.mpower.domain.Person person
@@ -18,7 +18,7 @@
 			WHERE person.id NOT IN(
 				SELECT gift.person.id
 				FROM com.mpower.domain.Gift gift
-				WHERE gift.value > 0 AND (gift.giftEnteredDate BETWEEN :beginDate AND :currentDate))
+				WHERE gift.value > 0 AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
 		</query>
 	</named-query>
 

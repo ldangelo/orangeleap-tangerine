@@ -43,8 +43,8 @@
 			<h3 style="color:#070;">This is a refund of a <a href="giftView.htm?giftId=${gift.originalGiftId}">previously entered gift</a>, refunded on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${gift.refundGift != null}">
-		<h3 style="color:#070;">This gift was <a href="giftView.htm?giftId=${gift.refundGift.id}">refunded</a> on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.refundGift.giftEnteredDate}" type="time" />.</h3>
+	<c:if test="${gift.refundGiftId != null}">
+		<h3 style="color:#070;">This gift was <a href="giftView.htm?giftId=${gift.refundGiftId}">refunded</a> on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
 	</c:if>
 		<div class="columns">
 			<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">

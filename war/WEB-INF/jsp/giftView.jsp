@@ -5,9 +5,13 @@
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="sidebarNav" value="" />
 	<tiles:putAttribute name="mainContent" type="string">
+		<mp:page pageName='giftView'/>
+		<c:set var="person" value="${gift.person}" scope="request" />
+		<c:if test="${person.id!=null}">
+			<c:set var="viewingPerson" value="true" scope="request" />
+		</c:if>
+		
 		<div class="content760 mainForm">
-			<mp:page pageName='giftView'/>
-			<c:set var="person" value="${gift.person}" scope="request" />
 
 <form:form method="post" commandName="gift">
 	<div class="columns iconHeader">
@@ -16,8 +20,7 @@
 		</div>
 		<div class="column">
 		<c:choose>
-		<c:when test="${param.personId!=null || id != null || person.id != null}">
-			<c:set scope="request" var="viewingAccount" value="true" />
+		<c:when test="${viewingPerson}">
 			<h2 class="personEdit">
 				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
 			</h2>

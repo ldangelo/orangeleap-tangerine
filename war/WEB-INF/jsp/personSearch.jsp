@@ -4,7 +4,7 @@
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="mainContent" type="string">
-		<div class="content760 mainForm test">
+		<div class="content760 mainForm">
 			<jsp:include page="personSearchForm.jsp"/>
 			<jsp:include page="personSearchResults.jsp"/>
 		</div>

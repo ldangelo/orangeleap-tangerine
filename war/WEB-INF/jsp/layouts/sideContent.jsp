@@ -13,7 +13,7 @@
 			<a style="font-size:10px;" href="personSearch.htm">Advanced Search</a>
 			<br />
 			<br />
-			<c:if test="${viewingAccount && sidebarNav != null}">
+			<c:if test="${viewingPerson}">
 				<h3>
 					Person Options
 				</h3>

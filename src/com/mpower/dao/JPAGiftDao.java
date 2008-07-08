@@ -2,6 +2,7 @@ package com.mpower.dao;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.persistence.Query;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
+import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Gift;
 import com.mpower.util.EntityUtility;
 
@@ -49,6 +51,7 @@ public class JPAGiftDao implements GiftDao {
     public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
         boolean whereUsed = true;
         StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
+        Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             String key;
@@ -67,21 +70,26 @@ public class JPAGiftDao implements GiftDao {
                     }
                     isString = false;
                 }
-                whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
-                queryString.append(" gift.");
-                queryString.append(key);
-                queryString.append(" LIKE :");
-                String paramName = key.replace(".", "_");
-                queryString.append(paramName);
-                if (isString) {
-                    parameterMap.put(paramName, "%" + value + "%");
+                if (key.startsWith("customFieldMap[")) {
+                    customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), (String) value);
                 } else {
-                    parameterMap.put(paramName, value);
+                    whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
+                    queryString.append(" gift.");
+                    queryString.append(key);
+                    queryString.append(" LIKE :");
+                    String paramName = key.replace(".", "_");
+                    queryString.append(paramName);
+                    if (isString) {
+                        parameterMap.put(paramName, "%" + value + "%");
+                    } else {
+                        parameterMap.put(paramName, value);
+                    }
                 }
             }
         }
-        Query query = em.createQuery(queryString.toString());
+        queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
 
+        Query query = em.createQuery(queryString.toString());
         query.setParameter("siteId", siteId);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());

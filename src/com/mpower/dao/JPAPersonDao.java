@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
+import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Person;
 import com.mpower.domain.PersonPhone;
 import com.mpower.util.EntityUtility;
@@ -51,6 +52,7 @@ public class JPAPersonDao implements PersonDao {
         StringBuilder queryString = new StringBuilder("SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteId");
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
+        Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
             for (Map.Entry<String, Object> pair : params.entrySet()) {
@@ -70,7 +72,9 @@ public class JPAPersonDao implements PersonDao {
                 if (key.startsWith("addressMap[")) {
                     addressParams.put(key.substring(key.indexOf('.') + 1), value);
                 } else if (key.startsWith("phoneMap[")) {
-                    addressParams.put(key.substring(key.indexOf('.' + 1)), value);
+                    phoneParams.put(key.substring(key.indexOf('.') + 1), value);
+                } else if (key.startsWith("customFieldMap[")) {
+                    customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), (String) value);
                 } else {
                     whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
                     queryString.append(" person.");
@@ -86,14 +90,10 @@ public class JPAPersonDao implements PersonDao {
                 }
             }
         }
-        if (!addressParams.isEmpty()) {
-            whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
-            queryString.append(getAddressString(addressParams, parameterMap));
-        }
-        if (!phoneParams.isEmpty()) {
-            whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
-            queryString.append(getPhoneString(phoneParams, parameterMap));
-        }
+        queryString.append(QueryUtil.getAddressString(addressParams, parameterMap));
+        queryString.append(QueryUtil.getPhoneString(phoneParams, parameterMap));
+        queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
+
         Query query = em.createQuery(queryString.toString());
         query.setParameter("siteId", siteId);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
@@ -117,45 +117,5 @@ public class JPAPersonDao implements PersonDao {
             }
         }
         return null;
-    }
-
-    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
-        StringBuilder addressString = new StringBuilder(" EXISTS ( SELECT personAddress FROM com.mpower.domain.PersonAddress personAddress WHERE personAddress.person.id = person.id ");
-        for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
-            String key = pair.getKey();
-            Object value = pair.getValue();
-            addressString.append("AND personAddress.address.");
-            addressString.append(key);
-            addressString.append(" LIKE :");
-            String paramName = key.replace(".", "_");
-            addressString.append(paramName);
-            if (value instanceof String) {
-                parameterMap.put(paramName, "%" + value + "%");
-            } else {
-                parameterMap.put(paramName, value);
-            }
-        }
-        addressString.append(")");
-        return addressString;
-    }
-
-    private StringBuilder getPhoneString(Map<String, Object> phoneParams, LinkedHashMap<String, Object> parameterMap) {
-        StringBuilder phoneString = new StringBuilder(" EXISTS ( SELECT personPhone FROM com.mpower.domain.PersonPhone personPhone WHERE personPhone.person.id = person.id ");
-        for (Map.Entry<String, Object> pair : phoneParams.entrySet()) {
-            String key = pair.getKey();
-            Object value = pair.getValue();
-            phoneString.append("AND personPhone.phone.");
-            phoneString.append(key);
-            phoneString.append(" LIKE :");
-            String paramName = key.replace(".", "_");
-            phoneString.append(paramName);
-            if (value instanceof String) {
-                parameterMap.put(paramName, "%" + value + "%");
-            } else {
-                parameterMap.put(paramName, value);
-            }
-        }
-        phoneString.append(")");
-        return phoneString;
     }
 }

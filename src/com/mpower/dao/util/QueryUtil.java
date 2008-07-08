@@ -15,16 +15,15 @@ public class QueryUtil {
                 String key = pair.getKey();
                 Object value = pair.getValue();
                 customString.append(" AND EXISTS ( SELECT giftCustomField.id FROM com.mpower.domain.GiftCustomField giftCustomField WHERE giftCustomField.gift.id = gift.id AND (");
-                customString.append("(giftCustomField.customField.name = :name");
+                customString.append("giftCustomField.customField.name = :name");
                 customString.append(paramCount);
                 customString.append(" AND giftCustomField.customField.value LIKE :value");
                 customString.append(paramCount);
-                customString.append(")");
                 parameterMap.put("name" + paramCount, key);
                 parameterMap.put("value" + paramCount, "%" + value + "%");
+                customString.append("))");
                 paramCount++;
             }
-            customString.append("))");
         }
         return customString;
     }

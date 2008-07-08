@@ -51,6 +51,7 @@ public class JPAGiftDao implements GiftDao {
     public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
         boolean whereUsed = true;
         StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
+        Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
@@ -70,7 +71,9 @@ public class JPAGiftDao implements GiftDao {
                     }
                     isString = false;
                 }
-                if (key.startsWith("customFieldMap[")) {
+                if (key.startsWith("person.addressMap[")) {
+                    addressParams.put(key.substring(key.lastIndexOf('.') + 1), value);
+                } else if (key.startsWith("customFieldMap[")) {
                     customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), (String) value);
                 } else {
                     whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
@@ -87,6 +90,7 @@ public class JPAGiftDao implements GiftDao {
                 }
             }
         }
+        queryString.append(getAddressString(addressParams, parameterMap));
         queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
 
         Query query = em.createQuery(queryString.toString());
@@ -108,5 +112,28 @@ public class JPAGiftDao implements GiftDao {
             return ((BigDecimal) query.getSingleResult()).doubleValue();
         }
         return 0.00;
+    }
+
+    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
+        StringBuilder addressString = new StringBuilder();
+        if (addressParams != null && !addressParams.isEmpty()) {
+            addressString.append(" AND EXISTS ( SELECT personAddress FROM com.mpower.domain.PersonAddress personAddress WHERE personAddress.person.id = gift.person.id ");
+            for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
+                String key = pair.getKey();
+                Object value = pair.getValue();
+                addressString.append("AND personAddress.address.");
+                addressString.append(key);
+                addressString.append(" LIKE :");
+                String paramName = key.replace(".", "_");
+                addressString.append(paramName);
+                if (value instanceof String) {
+                    parameterMap.put(paramName, "%" + value + "%");
+                } else {
+                    parameterMap.put(paramName, value);
+                }
+            }
+            addressString.append(")");
+        }
+        return addressString;
     }
 }

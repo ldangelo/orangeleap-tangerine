@@ -84,12 +84,13 @@ public class GiftServiceImpl implements GiftService {
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
             refundGift.setId(null);
-            refundGift.setGiftEnteredDate(null);
+            refundGift.setTransactionDate(null);
             refundGift.setCreditCardExpirationDate(null);
             refundGift.setValue(originalGift.getValue().negate());
             refundGift.setOriginalGiftId(originalGift.getId());
             refundGift = giftDao.maintainGift(refundGift);
             originalGift.setRefundGiftId(refundGift.getId());
+            originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
             giftDao.maintainGift(originalGift);
             return refundGift;
         } catch (IllegalAccessException e) {

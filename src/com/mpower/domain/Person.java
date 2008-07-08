@@ -114,6 +114,10 @@ public class Person implements Customizable, Serializable {
     public Long getId() {
         return id;
     }
+    
+    public Long getAccountNumber() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;

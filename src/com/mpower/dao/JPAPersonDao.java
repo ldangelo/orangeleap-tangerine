@@ -1,5 +1,6 @@
 package com.mpower.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -163,5 +164,13 @@ public class JPAPersonDao implements PersonDao {
             phoneString.append(")");
         }
         return phoneString;
+    }
+
+    @Override
+    public void analyzeLapsedDonor(Date beginDate, Date currentDate) {
+        Query query = em.createNamedQuery("ANALYZE_FOR_LAPSED_DONOR");
+        query.setParameter("beginDate", beginDate);
+        query.setParameter("currentDate", currentDate);
+        query.executeUpdate();
     }
 }

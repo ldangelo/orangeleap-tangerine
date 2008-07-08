@@ -43,7 +43,7 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 
 		builder.addPackageFromDrl(new InputStreamReader(stream), new InputStreamReader(dslStream));
 
-		boolean hasErrors = builder.hasErrors();
+		builder.hasErrors();
 
 		Package pkg = builder.getPackage();
 

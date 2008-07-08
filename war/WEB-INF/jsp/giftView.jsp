@@ -40,14 +40,14 @@
 	</div>
 	<c:choose>
 		<c:when test="${gift.originalGiftId == null}">
-			<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+			<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.transactionDate}"/> at <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
 		</c:when>
 		<c:otherwise>
-			<h3 style="color:#070;">This is a refund of a <a href="giftView.htm?giftId=${gift.originalGiftId}">previously entered gift</a>, refunded on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+			<h3 style="color:#070;">This is a refund of a <a href="giftView.htm?giftId=${gift.originalGiftId}">previously entered gift</a>, refunded on <fmt:formatDate value="${gift.transactionDate}"/> at <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
 		</c:otherwise>
 	</c:choose>
 	<c:if test="${gift.refundGiftId != null}">
-		<h3 style="color:#070;">This gift was <a href="giftView.htm?giftId=${gift.refundGiftId}">refunded</a> on <fmt:formatDate value="${gift.giftEnteredDate}"/> at <fmt:formatDate value="${gift.giftEnteredDate}" type="time" />.</h3>
+		<h3 style="color:#070;">This gift was <a href="giftView.htm?giftId=${gift.refundGiftId}">refunded</a> on <fmt:formatDate value="${gift.refundGiftTransactionDate}"/> at <fmt:formatDate value="${gift.refundGiftTransactionDate}" type="time" />.</h3>
 	</c:if>
 		<div class="columns">
 			<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">

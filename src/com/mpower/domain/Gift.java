@@ -76,7 +76,7 @@ public class Gift implements Customizable, Serializable {
     @Column(name = "TRANSACTION_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
-    private Date giftEnteredDate;
+    private Date transactionDate;
 
     @Column(name = "CONFIRMATION")
     private String confirmation;
@@ -86,6 +86,10 @@ public class Gift implements Customizable, Serializable {
 
     @Column(name = "REFUND_GIFT_ID")
     private Long refundGiftId;
+
+    @Column(name = "REFUND_GIFT_TRANSACTION_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date refundGiftTransactionDate;
 
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<GiftCustomField> giftCustomFields;
@@ -210,12 +214,12 @@ public class Gift implements Customizable, Serializable {
         this.creditCardExpirationDate = calendar.getTime();
     }
 
-    public Date getGiftEnteredDate() {
-        return giftEnteredDate;
+    public Date getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setGiftEnteredDate(Date giftEnteredDate) {
-        this.giftEnteredDate = giftEnteredDate;
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
     }
 
     public Integer getCheckNumber() {
@@ -293,6 +297,14 @@ public class Gift implements Customizable, Serializable {
 
     public void setRefundGiftId(Long refundGiftId) {
         this.refundGiftId = refundGiftId;
+    }
+
+    public Date getRefundGiftTransactionDate() {
+        return refundGiftTransactionDate;
+    }
+
+    public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
+        this.refundGiftTransactionDate = refundGiftTransactionDate;
     }
 
     public List<GiftCustomField> getCustomFields() {

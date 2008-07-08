@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,4 +18,6 @@ public interface PersonService {
     public Person createDefaultPerson(Long siteId);
 
     public Person matchSpouseLogically(String firstName, String lastName);
+
+    public void analyzeLapsedDonor(Date beginDate, Date currentDate);
 }

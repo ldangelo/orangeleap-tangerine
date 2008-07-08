@@ -98,5 +98,21 @@
         <property name="prefix" value="/WEB-INF/jsp/"></property>
        <property name="suffix" value=".jsp"></property>
     </bean>
+    
+    <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+    	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
+  	</bean>
+  	
+  	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="dailyRuleFiringJob"/>
+  		<property name="cronExpression" value="0 21 * * * ? *" />
+  	</bean>
 
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+		<list>
+			<ref bean="cronRuleTrigger"/>
+		</list>
+		</property>
+	</bean>
 </beans>

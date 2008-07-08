@@ -44,6 +44,7 @@ public class RulesInterceptor implements ApplicationContextAware {
 		for (Object entity : args) {
 			workingMemory.insert(entity);
 		}
+		workingMemory.insert(new ScheduledMaintenance(true));
 
 		workingMemory.setGlobal("applicationContext", applicationContext);
 
@@ -65,6 +66,7 @@ public class RulesInterceptor implements ApplicationContextAware {
 			//TODO: Need a better overall strategy for looking up a rule file
 			//Consider checking the database first and then falling back to the file.
 			for (Object entity : entities) {
+
 				String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.dslr";
 				InputStream stream = getClass().getResourceAsStream(name);
 				if (stream == null) {

@@ -1,6 +1,7 @@
 package com.mpower.service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,14 @@ public class PersonServiceImpl implements PersonService {
         return person;
     }
 
+    @Override
     public Person matchSpouseLogically(String firstName, String lastName) {
     	return personDao.matchSpouseLogically(firstName, lastName);
+    }
+
+    @Override
+    @Transactional(propagation=Propagation.SUPPORTS)
+    public void analyzeLapsedDonor(Date beginDate, Date currentDate) {
+    	personDao.analyzeLapsedDonor(beginDate, currentDate);
     }
 }

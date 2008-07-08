@@ -9,3 +9,9 @@
 [condition][]The person has donated at least {amount} dollars over the time period=DummyPersonDonation(donationAmount >= {amount})
 [condition][]of at least {amount} dollars=Gift($gift.value >= {amount})
 [consequence][]Get the persons total donations over the year to date=GiftService giftService = (GiftService)applicationContext.getBean("giftService"); double totalAmount = $gift.getValue().doubleValue() + giftService.analyzeMajorDonor($gift.getPerson().getId(), getBeginningOfYearDate(), getCurrentDate());  System.out.println(totalAmount);
+[consequence][]Flag the person as a lapsed donor=
+[condition][]There is a person=$person : Person($personId = id)
+[consequence][]Flag the people who have not made a donation in the past {number} "{timeUnit}"=System.out.println(getBeginDate({number}, "{timeUnit}") + " CURRENT: " +  getCurrentDate()); PersonService personService = (PersonService)applicationContext.getBean("personService"); personService.analyzeLapsedDonor(getBeginDate({number}, "{timeUnit}"), getCurrentDate()); 
+[condition][]Scheduled maintenance needs to be done=ScheduledMaintenance()
+[*][]Update the person donation object=update($pdo);
+[condition][]- to analyze for lapsed donors=analyzeLapsedDonors == true

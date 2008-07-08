@@ -1,12 +1,23 @@
 package com.mpower.service.rule;
 
+
 public class DummyPersonDonation {
 	private double donationAmount;
 	private int number;
 	private String timeUnit;
 	private Long personId;
-	
-	
+
+
+	public DummyPersonDonation() {
+		super();
+	}
+
+	public DummyPersonDonation(int number, String timeUnit) {
+		super();
+		this.timeUnit = timeUnit;
+		this.number = number;
+	}
+
 	public DummyPersonDonation(double donationAmount, Long personId) {
 		super();
 		this.donationAmount = donationAmount;

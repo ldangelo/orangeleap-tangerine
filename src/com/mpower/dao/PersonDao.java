@@ -1,5 +1,6 @@
 package com.mpower.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,4 +15,7 @@ public interface PersonDao {
     public List<Person> readPersons(Long siteId, Map<String, Object> params);
 
     public Person matchSpouseLogically(String firstName, String lastName);
+
+    public void analyzeLapsedDonor(Date beginDate, Date currentDate);
+
 }

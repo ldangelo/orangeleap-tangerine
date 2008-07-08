@@ -52,5 +52,6 @@
 	<classpathentry kind="lib" path="lib/war/bin/tiles-jsp-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/drools-core.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/drools-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/compile/bin/quartz.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

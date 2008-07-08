@@ -30,7 +30,7 @@ import com.mpower.util.PhoneMap;
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PERSON")
-public class Person implements Customizable, Serializable {
+public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -101,6 +101,9 @@ public class Person implements Customizable, Serializable {
 
     @Column(name = "MAJOR_DONOR")
     private boolean majorDonor = false;
+
+    @Column(name = "LAPSED_DONOR")
+    private boolean lapsedDonor = false;
 
     @Transient
     private Map<String, Address> addressMap = null;
@@ -308,4 +311,12 @@ public class Person implements Customizable, Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+	public boolean isLapsedDonor() {
+		return lapsedDonor;
+	}
+
+	public void setLapsedDonor(boolean lapsedDonor) {
+		this.lapsedDonor = lapsedDonor;
+	}
 }

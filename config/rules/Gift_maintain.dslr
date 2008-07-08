@@ -39,6 +39,14 @@ rule "Gift - Donation Made - Step 3"
 		Flag the person as a major donor
 end
 
+rule "Lapsed Donor"
+	when
+		#There is a person
+		>$person : Person()
+		#Who has not donated a gift over a certain period of time
+	then
+		Flag the person as a lapsed donor
+end
 
 
 

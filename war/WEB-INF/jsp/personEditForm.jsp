@@ -11,43 +11,12 @@
 		<input type="hidden" name="id" value="${id}" />
 	</c:if>
 
-	<div class="columns iconHeader">
-		<div class="column">
-			<img src="images/dude2.gif" />
-		</div>
-		<div class="column">
-		<c:choose>
-		<c:when test="${viewingPerson}">
-			<h2 class="personEdit">
-				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
-			</h2>
-		</c:when>
-		<c:otherwise>
-			<h2 class="personEdit">
-				New Person
-			</h2>
-		</c:otherwise>
-		</c:choose>
-			<h3 id="currentFunctionTitle" class="personEdit">
-				Profile<c:if test="${saved}"><span id="savedMarker">Saved</span></c:if>
-			</h3>
-		</div>
-		<div class="columnRight" style="padding:19px 19px 0 0;">
-			<input type="submit" value="Save Changes" />
-		</div>
-		<div class="clearColumns"></div>
-	</div>
+	<jsp:include page="snippets/personHeader.jsp">
+		<jsp:param name="currentFunctionTitleText" value="Profile" />
+		<jsp:param name="submitButtonText" value="Save Changes" />
+	</jsp:include>
 	
-	<form:errors path="*">
-		<div class="globalFormErrors">
-			<h5>Please correct the following errors on this page:</h5>
-			<ul>
-			<c:forEach items="${messages}" var="message">
-				<li>${message}</li>
-			</c:forEach>
-			</ul>
-		</div>
-	</form:errors>
+	<jsp:include page="snippets/standardFormErrors.jsp"/>
 
 	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 		<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>

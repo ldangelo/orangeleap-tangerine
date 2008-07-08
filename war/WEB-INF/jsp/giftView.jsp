@@ -14,30 +14,11 @@
 		<div class="content760 mainForm">
 
 <form:form method="post" commandName="gift">
-	<div class="columns iconHeader">
-		<div class="column">
-			<img src="images/dude2.gif" />
-		</div>
-		<div class="column">
-		<c:choose>
-		<c:when test="${viewingPerson}">
-			<h2 class="personEdit">
-				${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
-			</h2>
-		</c:when>
-		<c:otherwise>
-			<h2 class="personEdit">
-				New Person
-			</h2>
-		</c:otherwise>
-		</c:choose>
-			<h3 id="currentFunctionTitle" class="personEdit">
-				View Gift
-			</h3>
-		</div>
 
-		<div class="clearColumns"></div>
-	</div>
+	<jsp:include page="snippets/personHeader.jsp">
+		<jsp:param name="currentFunctionTitleText" value="View Gift" />
+	</jsp:include>
+	
 	<c:choose>
 		<c:when test="${gift.originalGiftId == null}">
 			<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.transactionDate}"/> at <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>

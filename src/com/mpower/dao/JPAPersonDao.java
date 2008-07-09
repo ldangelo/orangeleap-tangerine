@@ -127,7 +127,7 @@ public class JPAPersonDao implements PersonDao {
             for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                addressString.append("AND personAddress.address.");
+                addressString.append(" AND personAddress.address.");
                 addressString.append(key);
                 addressString.append(" LIKE :");
                 String paramName = key.replace(".", "_");
@@ -150,7 +150,7 @@ public class JPAPersonDao implements PersonDao {
             for (Map.Entry<String, Object> pair : phoneParams.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                phoneString.append("AND personPhone.phone.");
+                phoneString.append(" AND personPhone.phone.");
                 phoneString.append(key);
                 phoneString.append(" LIKE :");
                 String paramName = key.replace(".", "_");

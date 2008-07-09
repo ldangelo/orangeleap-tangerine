@@ -52,6 +52,14 @@
 	<classpathentry kind="lib" path="lib/war/bin/tiles-jsp-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/drools-core.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/drools-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-security-acl-2.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-security-core-2.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-security-core-tiger-2.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-security-taglibs-2.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/quartz-all-1.6.1-RC1.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/slf4j-api-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/slf4j-log4j12-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

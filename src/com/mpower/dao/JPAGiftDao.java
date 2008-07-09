@@ -79,12 +79,14 @@ public class JPAGiftDao implements GiftDao {
                     whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
                     queryString.append(" gift.");
                     queryString.append(key);
-                    queryString.append(" LIKE :");
                     String paramName = key.replace(".", "_");
-                    queryString.append(paramName);
                     if (isString) {
+                        queryString.append(" LIKE :");
+                        queryString.append(paramName);
                         parameterMap.put(paramName, "%" + value + "%");
                     } else {
+                        queryString.append(" = :");
+                        queryString.append(paramName);
                         parameterMap.put(paramName, value);
                     }
                 }

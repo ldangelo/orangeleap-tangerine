@@ -80,12 +80,14 @@ public class JPAPersonDao implements PersonDao {
                     whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
                     queryString.append(" person.");
                     queryString.append(key);
-                    queryString.append(" LIKE :");
                     String paramName = key.replace(".", "_");
-                    queryString.append(paramName);
                     if (isString) {
+                        queryString.append(" LIKE :");
+                        queryString.append(paramName);
                         parameterMap.put(paramName, "%" + value + "%");
                     } else {
+                        queryString.append(" = :");
+                        queryString.append(paramName);
                         parameterMap.put(paramName, value);
                     }
                 }

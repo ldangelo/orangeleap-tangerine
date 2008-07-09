@@ -26,9 +26,9 @@
 			<attribute name="javadoc_location" value="http://java.sun.com/javaee/5/docs/api/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/war/bin/hibernate3.jar" sourcepath="lib/war/source/hibernate3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/war/bin/hibernate-annotations.jar"/>
-	<classpathentry kind="lib" path="lib/war/bin/hibernate-entitymanager.jar" sourcepath="lib/war/source/hibernate-entitymanager-sources.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate3.jar" sourcepath="lib/war/source/hibernate-core-3.3.0.CR1-sources.zip"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-annotations.jar" sourcepath="lib/war/source/hibernate-annotations-3.4.0.CR1-sources.zip"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-entitymanager.jar" sourcepath="lib/war/source/hibernate-entitymanager-3.4.0.CR1-sources.zip"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring.jar" sourcepath="lib/war/source/spring-sources.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-webmvc.jar" sourcepath="lib/war/source/spring-webmvc-sources.jar"/>
 	<classpathentry kind="lib" path="lib/test/bin/spring-test.jar" sourcepath="lib/war/source/spring-test-sources.jar"/>
@@ -57,7 +57,7 @@
 	<classpathentry kind="lib" path="lib/war/bin/spring-security-core-tiger-2.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-security-taglibs-2.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/quartz-all-1.6.1-RC1.jar"/>
-	<classpathentry kind="lib" path="lib/war/bin/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/hibernate-commons-annotations.jar" sourcepath="lib/war/source/hibernate-commons-annotations-3.1.0.CR1-sources.zip"/>
 	<classpathentry kind="lib" path="lib/war/bin/slf4j-api-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/slf4j-log4j12-1.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/log4j-1.2.15.jar"/>

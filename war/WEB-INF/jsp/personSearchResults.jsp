@@ -28,10 +28,6 @@
 		</table>
 		
 	</c:forEach>
-
-	
-	
-	
 </c:when>
 <c:when test="${personList ne null}">
 	<p style="margin:8px 0 6px 0;">Your search returned no results.</p>

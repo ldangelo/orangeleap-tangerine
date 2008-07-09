@@ -12,12 +12,11 @@
 		</c:if>
 		<div class="content760 mainForm">
 
-	<jsp:include page="snippets/personHeader.jsp">
-		<jsp:param name="currentFunctionTitleText" value="Gift History" />
-	</jsp:include>
+		<jsp:include page="snippets/personHeader.jsp">
+			<jsp:param name="currentFunctionTitleText" value="Gift History" />
+		</jsp:include>
 			
-			
-			<c:choose>
+		<c:choose>
 			<c:when test="${!empty giftList}">
 				<div class="searchResultsHeader">
 					<h4 class="searchResults">Gifts <strong>1 - ${giftListSize}</strong> of <strong>${giftListSize}</strong></h4>
@@ -52,7 +51,7 @@
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>
-			</c:choose>
+		</c:choose>
 
 		</div>
 	</tiles:putAttribute>

@@ -8,14 +8,6 @@
 
 	<global-method-security secured-annotations="enabled" />
 
-	<!--
-    <http auto-config="true">
-        <intercept-url pattern="/person.htm" access="ROLE_TELLER" />
-        <intercept-url pattern="/*.htm" access="ROLE_USER" />
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-    </http>
-    -->
-
     <http auto-config="true">
         <!-- Restrict URLs based on role -->
         <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -32,6 +24,15 @@
         <logout logout-url="/logout" logout-success-url="/logoutSuccess.jsp" />
     </http>
 
+	<!--
+    <beans:bean id="myAuthProvider" class="com.mpower.controller.MpowerAuthenticationProvider">
+        <custom-authentication-provider/>
+        <beans:property name="userDetailsService" ref="userService"/>
+    </beans:bean>
+	-->
+
+    <authentication-provider user-service-ref="userService"/>
+
     <!--
     Usernames/Passwords are
         rod/koala
@@ -39,8 +40,8 @@
         scott/wombat
         peter/opal
     -->
-    <authentication-provider user-service-ref="userService">
     	<!--
+    <authentication-provider user-service-ref="userService">
         <jdbc-user-service data-source-ref="dataSource" />
         <password-encoder hash="md5"/>
         <user-service>
@@ -49,7 +50,7 @@
             <user name="scott" password="2b58af6dddbd072ed27ffc86725d7d3a" authorities="ROLE_USER" />
             <user name="peter" password="22b5c9accc6e1ba628cedc63a72d57f8" authorities="ROLE_USER" />
 	    </user-service>
-        -->
 	</authentication-provider>
+        -->
 
 </beans:beans>

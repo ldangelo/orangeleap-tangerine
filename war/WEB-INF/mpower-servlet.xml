@@ -99,13 +99,15 @@
        <property name="suffix" value=".jsp"></property>
     </bean>
     
+<!-- 
+    
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
   	
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob"/>
-  		<property name="cronExpression" value="0 21 * * * ? *" />
+  		<property name="cronExpression" value="0 5 * * * ? *" />
   	</bean>
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -114,5 +116,11 @@
 			<ref bean="cronRuleTrigger"/>
 		</list>
 		</property>
+		<property name="applicationContextSchedulerContextKey">
+	    	<value>applicationContext</value>
+	   	</property>
 	</bean>
+
+-->
+	
 </beans>

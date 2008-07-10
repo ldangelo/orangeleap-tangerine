@@ -1,6 +1,9 @@
 -- Create a new site crederaDev
 INSERT INTO SITE (SITE_ID, SITE_NAME, PARENT_SITE_ID) VALUES ('1', 'CrederaDev', NULL);
 
+-- Create a new user
+INSERT INTO MPOWER_USER (USER_NAME, PASSWORD, SITE_ID) VALUES ('test', 'test', 1);
+
 -- Create test people entries into system
 
 INSERT INTO PERSON (TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL, SUFFIX, MARITAL_STATUS, SPOUSE_FIRST_NAME, ORGANIZATION_NAME, SITE_ID, MAJOR_DONOR, LAPSED_DONOR) VALUES ('Mr.', 'Adam', 'Jay', 'Smith', 'thepatriarch@gmail.com', null, 'Single', 'Eve', 'Alpha Omega Inc.', 1, false, false);

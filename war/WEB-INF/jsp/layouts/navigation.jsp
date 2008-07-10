@@ -1,4 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <tiles:useAttribute name="primaryNav" />
 <tiles:useAttribute name="secondaryNav" />
 <div id="banner">
@@ -13,7 +15,7 @@
 			<a href="#">Help</a>
 		</li>
 		<li>
-			<a href="#">Logout</a>
+			<a href="<c:url value="/logout"/>"><fmt:message key="button.logout"/></a>
 		</li>
 	</ol>
 </div>

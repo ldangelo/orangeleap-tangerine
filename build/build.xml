@@ -93,7 +93,7 @@
 	     </sql>
 	</target>
 
-	<target name="app.synch" description="Synchs the XMHTML, JSP, JS, CSS, and Images of the project with a running application.">
+	<target name="app.synch" description="Syncs the XHTML, JSP, JS, CSS, and Images of the project with a running application.">
 		<ant antfile="${internal.build.file}" target="app.synch" />
 	</target>
 

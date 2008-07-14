@@ -12,7 +12,9 @@
         <!-- Restrict URLs based on role -->
         <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/css/login.css" filters="none" />
+        <intercept-url pattern="/images/signInBox.gif" filters="none" />
+        <intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
         <intercept-url pattern="/**" access="ROLE_USER" />
         <intercept-url pattern="/person.htm" access="ROLE_TELLER" />
 

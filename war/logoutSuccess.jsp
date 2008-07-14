@@ -1,35 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+
 
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Simple Form with Spring Security</title>
-<link rel="stylesheet" type="text/css" href="<c:url value="/css/main.css"/>" />
+<title>MPower Login</title>
+<link href="<c:url value='/css/login.css' />" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<div id="header">
-    <div id="headerTitle">Simple Form with Spring Security</div>
-</div>
-<div id="menu">
-    
-
-
-<div id="side-bar">
-    <a href="<c:url value="/"/>">Home</a>
-</div>
-
-</div>
-<div id="content">
-    <div class="section">
-    	<h1>Logout</h1>
-    	<p>You have successfully logged out.</p>
-    </div>
-</div>
-
-<div id="footer">
-    
+<div class="loginPane">
+<div class="loginContent">
+    <img src="images/mpowerLogo.gif" />
+    <br /><br />
+    <h1 class="loginHeader">You have successfully logged out.</h1>
+    <p style="padding:8px;">
+    <a style="font-size:14px;" href="login.jsp">Return to the login page</a>
+    </p>
 </div>
 </div>
 </body>
 </html>
-    

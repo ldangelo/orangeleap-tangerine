@@ -15,8 +15,9 @@
         <intercept-url pattern="/css/login.css" filters="none" />
         <intercept-url pattern="/images/signInBox.gif" filters="none" />
         <intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
-        <intercept-url pattern="/**" access="ROLE_USER" />
+        <intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/person.htm" access="ROLE_TELLER" />
+        <intercept-url pattern="/**" access="ROLE_USER" />
 
         <!-- Override default login and logout pages -->
         <form-login login-page="/login.jsp"
@@ -24,35 +25,24 @@
                              default-target-url="/index.jsp"
                              authentication-failure-url="/login.jsp?login_error=1" />
         <logout logout-url="/logout" logout-success-url="/logoutSuccess.jsp" />
+        <anonymous/>
+        <concurrent-session-control max-sessions="1"/>
+        <remember-me/>
     </http>
-
-	<!--
-    <beans:bean id="myAuthProvider" class="com.mpower.controller.MpowerAuthenticationProvider">
-        <custom-authentication-provider/>
-        <beans:property name="userDetailsService" ref="userService"/>
-    </beans:bean>
-	-->
-
-    <authentication-provider user-service-ref="userService"/>
 
     <!--
     Usernames/Passwords are
         rod/koala
         dianne/emu
         scott/wombat
-        peter/opal
     -->
-    	<!--
-    <authentication-provider user-service-ref="userService">
-        <jdbc-user-service data-source-ref="dataSource" />
-        <password-encoder hash="md5"/>
-        <user-service>
-            <user name="rod" password="a564de63c2d0da68cf47586ee05984d7" authorities="ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER" />
-	        <user name="dianne" password="65d15fe9156f9c4bbffd98085992a44e" authorities="ROLE_USER,ROLE_TELLER" />
-            <user name="scott" password="2b58af6dddbd072ed27ffc86725d7d3a" authorities="ROLE_USER" />
-            <user name="peter" password="22b5c9accc6e1ba628cedc63a72d57f8" authorities="ROLE_USER" />
-	    </user-service>
-	</authentication-provider>
-        -->
+	<ldap-server url="ldap://10.0.2.143:10389/o=mpowerOpen" />
+    <ldap-authentication-provider
+        group-search-filter="member={0}"
+        group-search-base="ou=groups"
+        user-search-base="ou=people"
+        user-search-filter="uid={0}"
+        user-details-class="person"
+    />
 
 </beans:beans>

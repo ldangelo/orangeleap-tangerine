@@ -11,11 +11,11 @@
 	<div class="loginContent">
 	    <img src="images/mpowerLogo.gif" />
 	    <h1 class="loginHeader">Please sign in.</h1>
-	    
+
     	<c:if test="${not empty param.login_error}">
     		<p style="color:red;padding:0;margin:0;">The information you provided could not be validated.</p>
     	</c:if>
-    
+
     	<form name="f" action="<c:url value="/loginProcess" />" method="post">
 			<table class="loginInfo">
 				<tr>
@@ -42,5 +42,9 @@
     	</form>
 	</div>
 </div>
+Username/Password/Roles:<br/>
+rod/koala/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
+dianne/emu/ROLE_USER, ROLE_TELLER<br/>
+scott/wombat/ROLE_USER
 </body>
 </html>

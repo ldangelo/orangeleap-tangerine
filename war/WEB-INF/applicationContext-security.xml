@@ -15,6 +15,7 @@
         <intercept-url pattern="/css/login.css" filters="none" />
         <intercept-url pattern="/images/signInBox.gif" filters="none" />
         <intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
+        <intercept-url pattern="/images/favicon.ico" filters="none" />
         <intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/person.htm" access="ROLE_TELLER" />
         <intercept-url pattern="/**" access="ROLE_USER" />

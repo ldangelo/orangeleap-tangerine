@@ -43,6 +43,9 @@
     	</form>
 	</div>
 </div>
+<br />
+<br />
+<h5>Cheat Sheet</h5>
 Username/Password/Roles:<br/>
 rod/koala/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
 dianne/emu/ROLE_USER, ROLE_TELLER<br/>

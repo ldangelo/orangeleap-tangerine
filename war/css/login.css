@@ -134,6 +134,10 @@ table.loginInfo {
 	padding:3px;
 	font-size:12px;
 }
+.loginInfo td label {
+	font-size:14px;
+	color:#444;
+}
 .loginField {
 	padding:3px;
 	margin:0;

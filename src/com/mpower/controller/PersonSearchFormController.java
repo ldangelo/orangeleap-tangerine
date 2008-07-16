@@ -54,7 +54,7 @@ public class PersonSearchFormController extends SimpleFormController {
             String param = enu.nextElement();
             if (StringUtils.trimToNull(request.getParameter(param)) != null) {
                 try {
-                    String obj = (String) bw.getPropertyValue(param);
+                    Object obj = bw.getPropertyValue(param);
                     params.put(param, obj);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

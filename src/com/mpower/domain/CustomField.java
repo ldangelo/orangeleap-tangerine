@@ -28,7 +28,7 @@ public class CustomField implements Serializable {
     @Column(name = "FIELD_NAME", nullable = false)
     private String name;
 
-    @Column(name = "FIELD_VALUE", nullable = false)
+    @Column(name = "FIELD_VALUE")
     private String value;
 
     public Long getId() {

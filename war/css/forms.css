@@ -21,7 +21,7 @@ ul.formFields li.side label.desc {
 }
 ul.formFields li.side input,
 ul.formFields li.side select {
-	/*float:left;*/
+	float:left;
 	width:66%;
 }
 ul.formFields li.side select {

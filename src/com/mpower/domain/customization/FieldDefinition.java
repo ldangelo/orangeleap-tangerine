@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import com.mpower.domain.Site;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
@@ -20,7 +19,7 @@ import com.mpower.type.FieldType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "FIELD_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_ID", "FIELD_NAME" }))
+@Table(name = "FIELD_DEFINITION")
 public class FieldDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -10,4 +10,9 @@
 		<put-attribute name="sideContent" value="/WEB-INF/jsp/layouts/sideContent.jsp" />
 		<put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
 	</definition>
+	<definition name="baseNoSide" template="/WEB-INF/jsp/layouts/baseLayoutNoSide.jsp">
+		<put-attribute name="headContent" value="/WEB-INF/jsp/layouts/headContent.jsp" />
+		<put-attribute name="navigation" value="/WEB-INF/jsp/layouts/navigation.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/layouts/footer.jsp" />
+	</definition>
 </tiles-definitions>

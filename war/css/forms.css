@@ -238,3 +238,26 @@ ul.formFields li input.textError {
 	background:transparent url(../images/icons/document_forbidden.png) no-repeat left 10px;
 	padding-bottom:4px;
 }
+.accountForm h1 {
+	margin:12px 0 0 0;
+	color:#EE5522;
+	font-size:22px;
+	background:#eee;
+	border:1px solid #aaa;
+	padding:8px 8px 10px;
+}
+table.formTable {
+	margin:10px 50px;
+}
+.formTable td {
+	padding:3px;
+	font-size:12px;
+}
+.formTable td label {
+	font-size:14px;
+	color:#444;
+}
+.formTable input {
+	padding:3px;
+	margin:0;
+}

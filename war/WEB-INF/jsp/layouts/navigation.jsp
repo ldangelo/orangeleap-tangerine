@@ -8,7 +8,7 @@
 			<span id="greeting">Logged in as RSMITH</span>
 		</li>
 		<li>
-			<a href="#">Your Account</a>
+			<a href="account.htm">My Account</a>
 		</li>
 		<li>
 			<a href="#">Help</a>

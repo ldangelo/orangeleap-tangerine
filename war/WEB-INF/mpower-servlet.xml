@@ -36,6 +36,19 @@
         <property name="successView" value="person" />
         <property name="personService" ref="personService" />
     </bean>
+    
+    <bean name="/account.htm" class="com.mpower.controller.AccountFormController">
+        <property name="commandName" value="person"/>
+        <property name="commandClass" value="com.mpower.domain.Person"/>
+        <property name="validator">
+            <bean class="com.mpower.controller.validator.PersonValidator">
+            	<property name="pageName" value="person" />
+            </bean>
+        </property>
+        <property name="formView" value="account" />
+        <property name="successView" value="account" />
+        <property name="personService" ref="personService" />
+    </bean>
 
     <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>

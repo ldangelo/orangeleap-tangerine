@@ -6,7 +6,7 @@
 }
 .container {
 	text-align: left;
-	width: 900px;
+	width: 930px;
 	margin: 0 auto;
 }
 .content700 {
@@ -24,6 +24,10 @@
 	margin-left: 12px;
 	float:left;
 	display:inline;
+}
+.contentFull {
+	width: 960px;
+	margin-left: 20px;
 }
 .sideBar {
 	width:180px;

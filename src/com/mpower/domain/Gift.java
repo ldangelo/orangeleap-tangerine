@@ -78,8 +78,8 @@ public class Gift implements Customizable, Serializable {
     @AutoPopulate
     private Date transactionDate;
 
-    @Column(name = "CONFIRMATION")
-    private String confirmation;
+    @Column(name = "AUTH_CODE")
+    private String authCode;
 
     @Column(name = "ORIGINAL_GIFT_ID")
     private Long originalGiftId;
@@ -254,12 +254,12 @@ public class Gift implements Customizable, Serializable {
         this.achAccountNumber = achAccountNumber;
     }
 
-    public String getConfirmation() {
-        return confirmation;
+    public String getAuthCode() {
+        return authCode;
     }
 
-    public void setConfirmation(String confirmation) {
-        this.confirmation = confirmation;
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
     }
 
     public List<String> getExpirationMonthList() {

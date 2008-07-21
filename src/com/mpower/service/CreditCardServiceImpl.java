@@ -12,7 +12,7 @@ public class CreditCardServiceImpl implements CreditCardService {
         // TODO: implement call to processing system and get a confirmation
         // local validation should already be done to minimize charges
         String confirmation = null;
-        gift.setConfirmation(confirmation);
+        gift.setAuthCode(confirmation);
         return gift;
     }
 }

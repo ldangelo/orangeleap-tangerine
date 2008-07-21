@@ -9,6 +9,9 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ import com.mpower.type.EntityType;
 
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
+	
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name = "giftDao")
     private GiftDao giftDao;
@@ -34,6 +40,13 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
+    	
+    	if (gift.getPaymentType().equals("Credit Card") || 
+    			gift.getPaymentType().equals("ACH")) {
+    		
+    		gift.setAuthCode(RandomStringUtils.randomAlphabetic(6));
+    	}
+    	
         return giftDao.maintainGift(gift);
     }
 

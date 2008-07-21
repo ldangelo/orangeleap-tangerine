@@ -44,7 +44,7 @@ public class GiftServiceImpl implements GiftService {
     	if (gift.getPaymentType().equals("Credit Card") || 
     			gift.getPaymentType().equals("ACH")) {
     		
-    		gift.setAuthCode(RandomStringUtils.randomAlphabetic(6));
+    		gift.setAuthCode(RandomStringUtils.randomNumeric(6));
     	}
     	
         return giftDao.maintainGift(gift);

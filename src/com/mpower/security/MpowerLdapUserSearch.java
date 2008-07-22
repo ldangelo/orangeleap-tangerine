@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.security;
 
 import javax.naming.directory.SearchControls;
 
@@ -12,8 +12,6 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.util.Assert;
 
 public class MpowerLdapUserSearch implements LdapUserSearch {
-
-    // ~ Instance fields ================================================================================================
 
     private ContextSource contextSource;
 

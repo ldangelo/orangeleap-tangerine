@@ -33,7 +33,7 @@
     </beans:bean>
 
     <beans:bean id="mpowerAuthenticationProcessingFilter"
-          class="com.mpower.controller.MpowerAuthenticationProcessingFilter">
+          class="com.mpower.security.MpowerAuthenticationProcessingFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
         <beans:property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
         <beans:property name="defaultTargetUrl" value="/index.jsp"/>
@@ -67,30 +67,28 @@
     	<beans:constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen"/>
 	</beans:bean>
 
-    <beans:bean id="mpowerAuthenticationProvider" class="com.mpower.controller.MpowerAuthenticationProvider">
+    <beans:bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
     	<beans:constructor-arg ref="bindAuthenticator"/>
     	<beans:constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
         <custom-authentication-provider/>
     </beans:bean>
 
-    <beans:bean id="anonymousAuthenticationProvider"
-          class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
+    <beans:bean id="anonymousAuthenticationProvider" class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
         <beans:property name="key" value="anonymous"/>
     </beans:bean>
 
-	<beans:bean id="ldapUserSearch"
-	    class="com.mpower.controller.MpowerLdapUserSearch">
+	<beans:bean id="ldapUserSearch" class="com.mpower.security.MpowerLdapUserSearch">
 	  <beans:constructor-arg index="0" value=""/>
 	  <beans:constructor-arg index="1" value="(uid={0})"/>
 	  <beans:constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
 	</beans:bean>
 
-	<beans:bean id="bindAuthenticator" class="com.mpower.controller.MpowerBindAuthenticator">
+	<beans:bean id="bindAuthenticator" class="com.mpower.security.MpowerBindAuthenticator">
     	<beans:constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<beans:property name="userSearch" ref="ldapUserSearch"/>
 	</beans:bean>
 
-	<beans:bean id="defaultLdapAuthoritiesPopulator" class="com.mpower.controller.MpowerLdapAuthoritiesPopulator">
+	<beans:bean id="defaultLdapAuthoritiesPopulator" class="com.mpower.security.MpowerLdapAuthoritiesPopulator">
     	<beans:constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<beans:constructor-arg value="ou=roles"/>
     	<beans:property name="searchSubtree" value="true"/>

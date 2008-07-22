@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.security;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,11 +18,7 @@ import org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulat
 import org.springframework.util.Assert;
 
 public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
-    //~ Static fields/initializers =====================================================================================
-
     private static final Log logger = LogFactory.getLog(DefaultLdapAuthoritiesPopulator.class);
-
-    //~ Instance fields ================================================================================================
 
     /**
      * A default role which will be assigned to all authenticated users if set
@@ -34,8 +30,7 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
     private SpringSecurityLdapTemplate ldapTemplate;
 
     /**
-     * Controls used to determine whether group searches should be performed over the full sub-tree from the
-     * base DN. Modified by searchSubTree property
+     * Controls used to determine whether group searches should be performed over the full sub-tree from the base DN. Modified by searchSubTree property
      */
     private SearchControls searchControls = new SearchControls();
 
@@ -58,32 +53,26 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
      * Attributes of the User's LDAP Object that contain role name information.
      */
 
-//    private String[] userRoleAttributes = null;
+    // private String[] userRoleAttributes = null;
     private String rolePrefix = "ROLE_";
     private boolean convertToUpperCase = true;
 
-    //~ Constructors ===================================================================================================
+    // ~ Constructors ===================================================================================================
 
     /**
-     * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be
-     * set as a property.
-     *
+     * Constructor for group search scenarios. <tt>userRoleAttributes</tt> may still be set as a property.
      * @param contextSource supplies the contexts used to search for user roles.
-     * @param groupSearchBase          if this is an empty string the search will be performed from the root DN of the
-     *                                 context factory.
+     * @param groupSearchBase if this is an empty string the search will be performed from the root DN of the context factory.
      */
     public MpowerLdapAuthoritiesPopulator(ContextSource contextSource, String groupSearchBase) {
         this.setContextSource(contextSource);
         this.setGroupSearchBase(groupSearchBase);
     }
 
-    //~ Methods ========================================================================================================
+    // ~ Methods ========================================================================================================
 
     /**
-     * This method should be overridden if required to obtain any additional
-     * roles for the given user (on top of those obtained from the standard
-     * search implemented by this class).
-     *
+     * This method should be overridden if required to obtain any additional roles for the given user (on top of those obtained from the standard search implemented by this class).
      * @param user the context representing the user who's roles are required
      * @return the extra roles which will be merged with those returned by the group search
      */
@@ -94,9 +83,7 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
     }
 
     /**
-     * Obtains the authorities for the user who's directory entry is represented by
-     * the supplied LdapUserDetails object.
-     *
+     * Obtains the authorities for the user who's directory entry is represented by the supplied LdapUserDetails object.
      * @param user the user who's authorities are required
      * @return the set of roles granted to the user.
      */
@@ -113,13 +100,11 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Searching for roles for user '" + username + "', DN = " + "'" + userDn + "', with filter "
-                    + groupSearchFilter + " in search base '" + getGroupSearchBase() + "'");
+            logger.debug("Searching for roles for user '" + username + "', DN = " + "'" + userDn + "', with filter " + groupSearchFilter + " in search base '" + getGroupSearchBase() + "'");
         }
 
-        String searchBase = getGroupSearchBase() + ",o="+site;
-        Set userRoles = ldapTemplate.searchForSingleAttributeValues(searchBase, groupSearchFilter,
-                new String[]{userDn, username}, groupRoleAttribute);
+        String searchBase = getGroupSearchBase() + ",o=" + site;
+        Set userRoles = ldapTemplate.searchForSingleAttributeValues(searchBase, groupSearchFilter, new String[] { userDn, username }, groupRoleAttribute);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Roles from search: " + userRoles);
@@ -146,7 +131,6 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
 
     /**
      * Set the {@link ContextSource}
-     *
      * @param contextSource supplies the contexts used to search for user roles.
      */
     private void setContextSource(ContextSource contextSource) {
@@ -159,9 +143,7 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
 
     /**
      * Set the group search base (name to search under)
-     *
-     * @param groupSearchBase if this is an empty string the search will be performed from the root DN of the context
-     *                        factory.
+     * @param groupSearchBase if this is an empty string the search will be performed from the root DN of the context factory.
      */
     private void setGroupSearchBase(String groupSearchBase) {
         Assert.notNull(groupSearchBase, "The groupSearchBase (name to search under), must not be null.");
@@ -181,7 +163,6 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
 
     /**
      * The default role which will be assigned to all users.
-     *
      * @param defaultRole the role name, including any desired prefix.
      */
     public void setDefaultRole(String defaultRole) {
@@ -200,8 +181,7 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
     }
 
     /**
-     * Sets the prefix which will be prepended to the values loaded from the directory.
-     * Defaults to "ROLE_" for compatibility with <tt>RoleVoter/tt>.
+     * Sets the prefix which will be prepended to the values loaded from the directory. Defaults to "ROLE_" for compatibility with <tt>RoleVoter/tt>.
      */
     public void setRolePrefix(String rolePrefix) {
         Assert.notNull(rolePrefix, "rolePrefix must not be null");
@@ -210,7 +190,6 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
 
     /**
      * If set to true, a subtree scope search will be performed. If false a single-level search is used.
-     *
      * @param searchSubtree set to true to enable searching of the entire tree below the <tt>groupSearchBase</tt>.
      */
     public void setSearchSubtree(boolean searchSubtree) {

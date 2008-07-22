@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.security;
 
 import java.util.Iterator;
 
@@ -18,34 +18,24 @@ import org.springframework.security.providers.ldap.authenticator.AbstractLdapAut
 import org.springframework.util.Assert;
 
 public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
-    //~ Static fields/initializers =====================================================================================
-
     private static final Log logger = LogFactory.getLog(MpowerBindAuthenticator.class);
-
-    //~ Constructors ===================================================================================================
 
     /**
      * Create an initialized instance using the {@link SpringSecurityContextSource} provided.
-     *
-     * @param contextSource the SpringSecurityContextSource instance against which bind operations will be
-     * performed.
-     *
+     * @param contextSource the SpringSecurityContextSource instance against which bind operations will be performed.
      */
     public MpowerBindAuthenticator(SpringSecurityContextSource contextSource) {
         super(contextSource);
     }
 
-    //~ Methods ========================================================================================================
-
     @SuppressWarnings("unchecked")
     public DirContextOperations authenticate(Authentication authentication) {
         DirContextOperations user = null;
-        Assert.isInstanceOf(MpowerAuthenticationToken.class, authentication,
-                "Can only process MpowerAuthenticationToken objects");
+        Assert.isInstanceOf(MpowerAuthenticationToken.class, authentication, "Can only process MpowerAuthenticationToken objects");
 
         String username = authentication.getName();
-        String password = (String)authentication.getCredentials();
-        String site = ((MpowerAuthenticationToken)authentication).getSite();
+        String password = (String) authentication.getCredentials();
+        String site = ((MpowerAuthenticationToken) authentication).getSite();
 
         // If DN patterns are configured, try authenticating with them directly
         Iterator dns = getUserDns(username).iterator();
@@ -57,21 +47,19 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
         // Otherwise use the configured locator to find the user
         // and authenticate with the returned DN.
         if (user == null && getUserSearch() != null) {
-            DirContextOperations userFromSearch = ((MpowerLdapUserSearch)getUserSearch()).searchForUser(username, site);
+            DirContextOperations userFromSearch = ((MpowerLdapUserSearch) getUserSearch()).searchForUser(username, site);
             user = bindWithDn(userFromSearch.getDn().toString(), username, password);
         }
 
         if (user == null) {
-            throw new BadCredentialsException(
-                    messages.getMessage("BindAuthenticator.badCredentials", "Bad credentials"));
+            throw new BadCredentialsException(messages.getMessage("BindAuthenticator.badCredentials", "Bad credentials"));
         }
 
         return user;
     }
 
     private DirContextOperations bindWithDn(String userDn, String username, String password) {
-        SpringSecurityLdapTemplate template = new SpringSecurityLdapTemplate(
-                new BindWithSpecificDnContextSource((SpringSecurityContextSource) getContextSource(), userDn, password));
+        SpringSecurityLdapTemplate template = new SpringSecurityLdapTemplate(new BindWithSpecificDnContextSource((SpringSecurityContextSource) getContextSource(), userDn, password));
 
         try {
             return template.retrieveEntry(userDn, getUserAttributes());
@@ -87,8 +75,7 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
     }
 
     /**
-     * Allows subclasses to inspect the exception thrown by an attempt to bind with a particular DN.
-     * The default implementation just reports the failure to the debug log.
+     * Allows subclasses to inspect the exception thrown by an attempt to bind with a particular DN. The default implementation just reports the failure to the debug log.
      */
     protected void handleBindException(String userDn, String username, Throwable cause) {
         if (logger.isDebugEnabled()) {
@@ -116,5 +103,4 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
             return getReadOnlyContext();
         }
     }
-
 }

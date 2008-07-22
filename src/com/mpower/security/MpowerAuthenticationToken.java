@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.security;
 
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.security;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

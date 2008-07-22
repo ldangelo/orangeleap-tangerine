@@ -46,9 +46,9 @@
 <br />
 <br />
 <h5>Cheat Sheet</h5>
-Username/Password/Roles:<br/>
-rod/koala/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
-dianne/emu/ROLE_USER, ROLE_TELLER<br/>
-scott/wombat/ROLE_USER
+Username/Password/Organization/Roles:<br/>
+rod/koala/company1/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
+dianne/emu/company1/ROLE_USER, ROLE_TELLER<br/>
+scott/wombat/company1/ROLE_USER
 </body>
 </html>

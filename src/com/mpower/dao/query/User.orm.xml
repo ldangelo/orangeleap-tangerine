@@ -3,9 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
-	<named-query name="READ_USER_BY_USERNAME_AND_PASSWORD" >
+	<named-query name="READ_USER_BY_USERNAME_AND_NULL_SITE" >
 		<query>SELECT user FROM com.mpower.domain.User user
-		WHERE UPPER(user.userName) = UPPER(:userName) AND user.password = :password</query>
+		WHERE UPPER(user.userName) = UPPER(:userName)
+		AND user.site = null</query>
+	</named-query>
+
+	<named-query name="READ_USER_BY_USERNAME_AND_SITE" >
+		<query>SELECT user FROM com.mpower.domain.User user
+		WHERE UPPER(user.userName) = UPPER(:userName)
+		AND user.site.name = :siteName</query>
 	</named-query>
 
 	<named-query name="READ_USER_BY_USERNAME" >

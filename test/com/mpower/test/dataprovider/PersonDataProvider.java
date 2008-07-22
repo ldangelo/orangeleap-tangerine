@@ -13,7 +13,7 @@ public class PersonDataProvider {
     @DataProvider(name = "setupCreateSite")
     public static Object[][] setupCreateSite() {
         Site site = new Site();
-        site.setName("site 1");
+        site.setName("setupCreateSite");
 
         return new Object[][] { new Object[] { site } };
     }
@@ -21,7 +21,7 @@ public class PersonDataProvider {
     @DataProvider(name = "setupCreatePerson")
     public static Object[][] setupCreatePerson() {
         Site site = new Site();
-        site.setName("site 1");
+        site.setName("setupCreatePerson");
 
         Person person = new Person();
         person.setFirstName("firstname");
@@ -34,7 +34,7 @@ public class PersonDataProvider {
     @DataProvider(name = "setupCreatePersonAndAddress")
     public static Object[][] setupCreatePersonAndAddress() {
         Site site = new Site();
-        site.setName("site 1");
+        site.setName("setupCreatePersonAndAddress");
 
         Person person = new Person();
         person.setFirstName("firstname");

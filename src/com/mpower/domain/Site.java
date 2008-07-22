@@ -25,7 +25,7 @@ public class Site implements Serializable {
     @Column(name = "SITE_ID")
     private Long id;
 
-    @Column(name = "SITE_NAME")
+    @Column(name = "SITE_NAME", nullable = false, unique = true)
     private String name;
 
     @ManyToOne

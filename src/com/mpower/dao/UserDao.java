@@ -4,10 +4,7 @@ import com.mpower.domain.User;
 
 public interface UserDao {
 
-	public User readUserByUserNameAndPassword(String userName, String password);
+    public User readUserByUserNameAndSite(String userName, String siteName);
 
-	public User saveUser(User user);
-
-    public User getUserByLogin(String login);
-
+    public User saveUser(User user);
 }

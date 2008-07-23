@@ -1,101 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-    xmlns:beans="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.2.xsd">
 
-	<global-method-security secured-annotations="enabled" />
+	<sec:global-method-security secured-annotations="enabled" />
 
-    <http entry-point-ref="authenticationProcessingFilterEntryPoint">
+    <sec:http entry-point-ref="authenticationProcessingFilterEntryPoint">
         <!-- Restrict URLs based on role -->
-        <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/css/login.css" filters="none" />
-        <intercept-url pattern="/images/signInBox.gif" filters="none" />
-        <intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
-        <intercept-url pattern="/images/favicon.ico" filters="none" />
-        <intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/person.htm" access="ROLE_TELLER" />
-        <intercept-url pattern="/**" access="ROLE_USER" />
-    </http>
+        <sec:intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/css/login.css" filters="none" />
+        <sec:intercept-url pattern="/images/signInBox.gif" filters="none" />
+        <sec:intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
+        <sec:intercept-url pattern="/images/favicon.ico" filters="none" />
+        <sec:intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/person.htm" access="ROLE_TELLER" />
+        <sec:intercept-url pattern="/**" access="ROLE_USER" />
 
-    <beans:bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
-        <beans:constructor-arg value="/logoutSuccess.jsp"/>
-        <beans:constructor-arg>
-            <beans:list>
-                <beans:bean class="org.springframework.security.ui.logout.SecurityContextLogoutHandler"/>
-            </beans:list>
-        </beans:constructor-arg>
-        <beans:property name="filterProcessesUrl" value="/logout"/>
-        <custom-filter position="LOGOUT_FILTER"/>
-    </beans:bean>
+        <sec:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>
+    </sec:http>
 
-    <beans:bean id="mpowerAuthenticationProcessingFilter"
-          class="com.mpower.security.MpowerAuthenticationProcessingFilter">
-        <beans:property name="authenticationManager" ref="authenticationManager"/>
-        <beans:property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
-        <beans:property name="defaultTargetUrl" value="/index.jsp"/>
-        <beans:property name="filterProcessesUrl" value="/loginProcess"/>
-        <custom-filter position="AUTHENTICATION_PROCESSING_FILTER"/>
-    </beans:bean>
+    <bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
+        <constructor-arg value="/logoutSuccess.jsp"/>
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.ui.logout.SecurityContextLogoutHandler"/>
+            </list>
+        </constructor-arg>
+        <property name="filterProcessesUrl" value="/logout"/>
+        <sec:custom-filter position="LOGOUT_FILTER"/>
+    </bean>
 
-    <beans:bean id="anonymousProcessingFilter" class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
-        <beans:property name="key" value="anonymous"/>
-        <beans:property name="userAttribute" value="anonymous,ROLE_ANONYMOUS"/>
-        <custom-filter position="ANONYMOUS_FILTER"/>
-    </beans:bean>
+    <bean id="mpowerAuthenticationProcessingFilter" class="com.mpower.security.MpowerAuthenticationProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
+        <property name="defaultTargetUrl" value="/index.jsp"/>
+        <property name="filterProcessesUrl" value="/loginProcess"/>
+        <sec:custom-filter position="AUTHENTICATION_PROCESSING_FILTER"/>
+    </bean>
 
-    <beans:bean id="authenticationProcessingFilterEntryPoint"
-          class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
-        <beans:property name="loginFormUrl" value="/login.jsp"/>
-        <beans:property name="forceHttps" value="false"/>
+    <bean id="anonymousProcessingFilter" class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
+        <property name="key" value="anonymous"/>
+        <property name="userAttribute" value="anonymous,ROLE_ANONYMOUS"/>
+        <sec:custom-filter position="ANONYMOUS_FILTER"/>
+    </bean>
 
-    </beans:bean>
+    <bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+        <property name="loginFormUrl" value="/login.jsp"/>
+        <property name="forceHttps" value="false"/>
+    </bean>
 
-    <beans:bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
-        <beans:property name="providers">
-            <beans:list>
-                <beans:ref local="mpowerAuthenticationProvider"/>
-                <beans:ref local="anonymousAuthenticationProvider"/>
-            </beans:list>
-        </beans:property>
-    </beans:bean>
+    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
+        <property name="providers">
+            <list>
+                <ref local="mpowerAuthenticationProvider"/>
+                <ref local="anonymousAuthenticationProvider"/>
+            </list>
+        </property>
+    </bean>
 
-	<beans:bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-    	<beans:constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen"/>
-	</beans:bean>
+	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+    	<constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen"/>
+	</bean>
 
-    <beans:bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
-    	<beans:constructor-arg ref="bindAuthenticator"/>
-    	<beans:constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
-        <custom-authentication-provider/>
-    </beans:bean>
+    <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
+    	<constructor-arg ref="bindAuthenticator"/>
+    	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
+        <sec:custom-authentication-provider/>
+    </bean>
 
-    <beans:bean id="anonymousAuthenticationProvider" class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
-        <beans:property name="key" value="anonymous"/>
-    </beans:bean>
+    <bean id="anonymousAuthenticationProvider" class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
+        <property name="key" value="anonymous"/>
+    </bean>
 
-	<beans:bean id="ldapUserSearch" class="com.mpower.security.MpowerLdapUserSearch">
-	  <beans:constructor-arg index="0" value=""/>
-	  <beans:constructor-arg index="1" value="(uid={0})"/>
-	  <beans:constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
-	</beans:bean>
+	<bean id="ldapUserSearch" class="com.mpower.security.MpowerLdapUserSearch">
+	  <constructor-arg index="0" value=""/>
+	  <constructor-arg index="1" value="(uid={0})"/>
+	  <constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
+	</bean>
 
-	<beans:bean id="bindAuthenticator" class="com.mpower.security.MpowerBindAuthenticator">
-    	<beans:constructor-arg ref="defaultSpringSecurityContextSource"/>
-    	<beans:property name="userSearch" ref="ldapUserSearch"/>
-	</beans:bean>
+	<bean id="bindAuthenticator" class="com.mpower.security.MpowerBindAuthenticator">
+    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
+    	<property name="userSearch" ref="ldapUserSearch"/>
+	</bean>
 
-	<beans:bean id="defaultLdapAuthoritiesPopulator" class="com.mpower.security.MpowerLdapAuthoritiesPopulator">
-    	<beans:constructor-arg ref="defaultSpringSecurityContextSource"/>
-    	<beans:constructor-arg value="ou=roles"/>
-    	<beans:property name="searchSubtree" value="true"/>
-	</beans:bean>
+	<bean id="defaultLdapAuthoritiesPopulator" class="com.mpower.security.MpowerLdapAuthoritiesPopulator">
+    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
+    	<constructor-arg value="ou=roles"/>
+    	<property name="searchSubtree" value="true"/>
+	</bean>
 
     <!-- This bean definition must be available to ApplicationContext.getBean() so StartupListener
          can look for it and detect if password encryption is turned on or not
 	-->
-    <beans:bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
-</beans:beans>
+    <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
+</beans>

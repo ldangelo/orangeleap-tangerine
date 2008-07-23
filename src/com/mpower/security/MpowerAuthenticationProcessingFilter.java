@@ -81,7 +81,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         this.siteParameter = siteParameter;
     }
 
-    String getSiteParameter() {
+    public String getSiteParameter() {
         return siteParameter;
     }
 }

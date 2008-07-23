@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/applicationContext.xml,
+			/WEB-INF/applicationContext-security.xml
+		</param-value>
+	</context-param>
 
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
 
-    <param-value>
-      /WEB-INF/applicationContext.xml,
-      /WEB-INF/applicationContext-security.xml
-    </param-value>
-  </context-param>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-  <filter>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy
-		</filter-class>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-
-	<!-- There is no "root" ApplicationContext getting loaded.  To enable a root
-		context add a <context-param /> and a ContextLoaderListener -->
 	<listener>
-		<listener-class>
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
+		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
+	</listener>
+
+	<!--
+		There is no "root" ApplicationContext getting loaded. To enable a root
+		context add a <context-param /> and a ContextLoaderListener
+	-->
+	<listener>
+		<listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
 	<servlet>
 		<servlet-name>mpower</servlet-name>
-		<servlet-class>
-			org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>
+		<servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
-		<!--  Without a <init-param /> for contextConfigLocation that explicity
+		<!--
+			Without a <init-param /> for contextConfigLocation that explicity
 			spells out the name of the web components context filename, spring
-			defaults to <servlet-name>-servlet.xml.  So in this case, the webApp
-			context file is mpower-servlet.xml -->
+			defaults to <servlet-name>-servlet.xml. So in this case, the webApp
+			context file is mpower-servlet.xml
+		-->
 	</servlet>
 
 	<servlet-mapping>
@@ -70,21 +69,15 @@
 	<jsp-config>
 		<taglib>
 			<taglib-uri>/spring</taglib-uri>
-			<taglib-location>
-				/WEB-INF/tld/spring.tld
-			</taglib-location>
+			<taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
 		</taglib>
 		<taglib>
 			<taglib-uri>/spring-form</taglib-uri>
-			<taglib-location>
-				/WEB-INF/tld/spring-form.tld
-			</taglib-location>
+			<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
 		</taglib>
 		<taglib>
 			<taglib-uri>/mpower</taglib-uri>
-			<taglib-location>
-				/WEB-INF/tld/mpower.tld
-			</taglib-location>
+			<taglib-location>/WEB-INF/tld/mpower.tld</taglib-location>
 		</taglib>
 	</jsp-config>
 

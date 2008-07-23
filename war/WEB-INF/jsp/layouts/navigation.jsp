@@ -1,11 +1,12 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <tiles:useAttribute name="primaryNav" />
 <tiles:useAttribute name="secondaryNav" />
 <div id="banner">
 	<ol>
 		<li>
-			<span id="greeting">Logged in as RSMITH</span>
+			<span id="greeting">Logged in as <security:authentication property="principal.username" /></span>
 		</li>
 		<li>
 			<a href="account.htm">My Account</a>

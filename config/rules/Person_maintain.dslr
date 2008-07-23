@@ -6,19 +6,10 @@ import com.mpower.service.GiftService;
 import com.mpower.domain.Gift;
 import java.util.Calendar;
 import java.util.Date;
-import com.mpower.service.rule.ScheduledMaintenance;
 
 expander Site1Language.dsl
 
 global org.springframework.context.ApplicationContext applicationContext;
-
-rule "Analyze Lapsed Donor"
-	when
-		Scheduled maintenance needs to be done	
-	then
-		Flag the people who have not made a donation in the past 12 "months"
-		>System.out.println("hia");
-end
 
 function Date getBeginDate(int number, String timeUnit) {
 	Calendar cal = Calendar.getInstance();

@@ -2,6 +2,8 @@ package com.mpower.service.rule;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -20,6 +22,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+
+import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
+import com.mpower.service.GiftService;
+import com.mpower.service.PersonService;
 
 @Aspect
 @Component("rulesInterceptor")
@@ -41,13 +48,36 @@ public class RulesInterceptor implements ApplicationContextAware {
 		}
 
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+		@SuppressWarnings("unused")
+		PersonService ps = (PersonService)applicationContext.getBean("personService");
+		GiftService gs = (GiftService)applicationContext.getBean("giftService");
+
 		for (Object entity : args) {
+
 			workingMemory.insert(entity);
+
+			try {
+
+				Gift gift = (Gift)entity;
+				List<Gift> gifts = gs.readGiftsByPersonId(gift.getPerson().getId());
+				Iterator<Gift> giftsIter = gifts.iterator();
+				while (giftsIter.hasNext()){
+					workingMemory.insert(giftsIter.next());
+				}
+
+				Person person = gift.getPerson();
+				workingMemory.insert(person);
+
+			} catch(Exception ex){}
+
 		}
-		workingMemory.insert(new ScheduledMaintenance(true));
+
+
+
+
 
 		workingMemory.setGlobal("applicationContext", applicationContext);
-
 		logger.info("*** firing all rules");
 		workingMemory.fireAllRules();
 

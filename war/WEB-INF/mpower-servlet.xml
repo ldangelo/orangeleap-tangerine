@@ -112,7 +112,6 @@
        <property name="suffix" value=".jsp"></property>
     </bean>
     
-<!-- 
     
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
@@ -134,6 +133,5 @@
 	   	</property>
 	</bean>
 
--->
 	
 </beans>

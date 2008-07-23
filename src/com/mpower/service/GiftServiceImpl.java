@@ -27,7 +27,7 @@ import com.mpower.type.EntityType;
 
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
-	
+
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -40,13 +40,13 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
-    	
-    	if (gift.getPaymentType().equals("Credit Card") || 
+
+    	if (gift.getPaymentType().equals("Credit Card") ||
     			gift.getPaymentType().equals("ACH")) {
-    		
+
     		gift.setAuthCode(RandomStringUtils.randomNumeric(6));
     	}
-    	
+
         return giftDao.maintainGift(gift);
     }
 
@@ -116,4 +116,15 @@ public class GiftServiceImpl implements GiftService {
             throw new IllegalStateException();
         }
     }
+
+	@Override
+	public List<Gift> readGiftsByPersonId(Long personId) {
+		return giftDao.readGiftsByPersonId(personId);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<Gift> readAllGifts() {
+		return giftDao.readAllGifts();
+	}
 }

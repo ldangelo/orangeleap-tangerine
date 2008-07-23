@@ -64,13 +64,19 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person matchSpouseLogically(String firstName, String lastName) {
-    	return personDao.matchSpouseLogically(firstName, lastName);
+    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
+    	return personDao.analyzeLapsedDonor(beginDate, currentDate);
     }
 
-    @Override
-    @Transactional(propagation=Propagation.SUPPORTS)
-    public void analyzeLapsedDonor(Date beginDate, Date currentDate) {
-    	personDao.analyzeLapsedDonor(beginDate, currentDate);
-    }
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public List<Person> readAllPeople() {
+		return personDao.readAllPeople();
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void setLapsedDonor(Long personId) {
+		personDao.setLapsedDonor(personId);
+	}
 }

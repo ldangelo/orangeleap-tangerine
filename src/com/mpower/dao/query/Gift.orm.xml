@@ -17,5 +17,20 @@
 			WHERE (gift.person.id = :personId AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
 		</query>
 	</named-query>
+	
+	<named-query name="READ_GIFTS_BY_PERSON_ID" >
+		<query>
+			SELECT gift
+			FROM com.mpower.domain.Gift gift
+			WHERE gift.person.id = :personId
+		</query>
+	</named-query>
+	
+	<named-query name="READ_ALL_GIFTS">
+		<query>
+			SELECT gift
+			FROM com.mpower.domain.Gift gift
+		</query>
+	</named-query>
 
 </entity-mappings>

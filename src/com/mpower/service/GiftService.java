@@ -24,4 +24,9 @@ public interface GiftService {
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
 
     public Gift refundGift(Long giftId);
+
+    public List<Gift> readGiftsByPersonId(Long personId);
+
+    public List<Gift> readAllGifts();
+
 }

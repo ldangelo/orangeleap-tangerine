@@ -14,8 +14,10 @@ public interface PersonDao {
 
     public List<Person> readPersons(Long siteId, Map<String, Object> params);
 
-    public Person matchSpouseLogically(String firstName, String lastName);
+    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
-    public void analyzeLapsedDonor(Date beginDate, Date currentDate);
+    public List<Person> readAllPeople();
+
+    public void setLapsedDonor(Long personId);
 
 }

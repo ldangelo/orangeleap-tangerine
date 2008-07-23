@@ -105,23 +105,6 @@ public class JPAPersonDao implements PersonDao {
         return query.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Person matchSpouseLogically(String firstName, String lastName) {
-        Query query = em.createNamedQuery("READ_PERSON_BY_FIRST_AND_LAST");
-        query.setParameter("firstName", firstName);
-        query.setParameter("lastName", lastName);
-        List<Person> results = query.getResultList();
-        if (results != null && !results.isEmpty()) {
-            if (results.size() == 1) {
-                return results.get(0);
-            } else {
-
-            }
-        }
-        return null;
-    }
-
     private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
         StringBuilder addressString = new StringBuilder();
         if (addressParams != null && !addressParams.isEmpty()) {
@@ -169,10 +152,23 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @Override
-    public void analyzeLapsedDonor(Date beginDate, Date currentDate) {
+    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
         Query query = em.createNamedQuery("ANALYZE_FOR_LAPSED_DONOR");
         query.setParameter("beginDate", beginDate);
         query.setParameter("currentDate", currentDate);
-        query.executeUpdate();
+        return query.getResultList();
     }
+
+	@Override
+	public List<Person> readAllPeople() {
+		Query query = em.createNamedQuery("READ_ALL_PEOPLE");
+		return query.getResultList();
+	}
+
+	@Override
+	public void setLapsedDonor(Long personId) {
+		Query query = em.createNamedQuery("SET_LAPSED_DONOR");
+		query.setParameter("personId", personId);
+		query.executeUpdate();
+	}
 }

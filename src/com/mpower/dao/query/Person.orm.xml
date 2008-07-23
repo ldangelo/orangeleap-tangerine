@@ -3,22 +3,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
-	<named-query name="READ_PERSON_BY_FIRST_AND_LAST" >
-		<query>
-		    SELECT person FROM com.mpower.domain.Person person
-		    WHERE (person.firstName = :firstName
-		    AND person.lastName = :lastName)
-		</query>
-	</named-query>
-
 	<named-query name="ANALYZE_FOR_LAPSED_DONOR" >
 		<query>
-			UPDATE com.mpower.domain.Person person
-			SET person.lapsedDonor = true
-			WHERE person.id NOT IN(
 				SELECT gift.person.id
 				FROM com.mpower.domain.Gift gift
 				WHERE gift.value > 0 AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
+		</query>
+	</named-query>
+	
+	<named-query name="READ_ALL_PEOPLE">
+		<query>
+			SELECT person
+			FROM com.mpower.domain.Person person
+		</query>
+	</named-query>
+	
+	<named-query name="SET_LAPSED_DONOR">
+		<query>
+			UPDATE com.mpower.domain.Person person
+			SET person.lapsedDonor = TRUE
+			WHERE person.id = :personId
 		</query>
 	</named-query>
 

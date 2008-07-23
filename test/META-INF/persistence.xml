@@ -38,9 +38,9 @@
 	        <property name="hibernate.connection.autocommit" value="true"/>
 	        <property name="hibernate.cache.use_query_cache" value="false"/>
 	        <property name="hibernate.connection.pool_size" value="1"/>
-	        <property name="hibernate.connection.username" value="mpowerMP"/>
-	        <property name="hibernate.connection.password" value="MP0wer0pen"/>
-	        <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/mpoweropen"/>
+	        <property name="hibernate.connection.username" value="mpower"/>
+	        <property name="hibernate.connection.password" value="mpower"/>
+	        <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/mpoweropen?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8"/>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect"/>
 		</properties>
 

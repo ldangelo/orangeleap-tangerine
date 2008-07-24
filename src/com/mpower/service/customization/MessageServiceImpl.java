@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.MessageDao;
-import com.mpower.domain.Site;
 import com.mpower.type.MessageResourceType;
 
 @Service("messageService")
@@ -20,7 +19,7 @@ public class MessageServiceImpl implements MessageService {
 		this.messageDao = messageDao;
 	}
 
-	public String lookupMessage(Site site, MessageResourceType messageResourceType, String messageKey, Locale language) {
-		return messageDao.readMessage(site.getName(), messageResourceType, messageKey, language);
+	public String lookupMessage(String siteName, MessageResourceType messageResourceType, String messageKey, Locale language) {
+		return messageDao.readMessage(siteName, messageResourceType, messageKey, language);
 	}
 }

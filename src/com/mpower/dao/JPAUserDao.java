@@ -37,6 +37,11 @@ public class JPAUserDao implements UserDao {
     }
 
     @Override
+    public User readUserById(Long userId) {
+        return em.find(User.class, userId);
+    }
+
+    @Override
     public User saveUser(User user) {
         return em.merge(user);
     }

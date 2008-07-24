@@ -8,7 +8,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.User;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
@@ -46,17 +45,17 @@ public class GenericFieldHandler implements FieldHandler {
         return sectionField.getFieldType();
     }
 
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, User user, Object model) {
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Long userId, Object model) {
         FieldVO fieldVO = new FieldVO();
 
         fieldVO.setFieldName(getFieldPropertyName(currentField));
         fieldVO.setFieldType(getFieldType(currentField));
 
         String fieldLabelName = getFieldLabelName(currentField);
-        fieldVO.setHelpText(messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_HELP, fieldLabelName, locale));
+        fieldVO.setHelpText(messageService.lookupMessage(siteName, MessageResourceType.FIELD_HELP, fieldLabelName, locale));
         fieldVO.setHelpAvailable(!GenericValidator.isBlankOrNull(fieldVO.getHelpText()));
 
-        String labelText = messageService.lookupMessage(user.getSite(), MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
+        String labelText = messageService.lookupMessage(siteName, MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
         if (GenericValidator.isBlankOrNull(labelText)) {
             if (!currentField.isCompoundField()) {
                 labelText = currentField.getFieldDefinition().getDefaultLabel();
@@ -66,7 +65,7 @@ public class GenericFieldHandler implements FieldHandler {
         }
         fieldVO.setLabelText(labelText);
 
-        fieldVO.setRequired(fieldService.lookupFieldRequired(user.getSite(), currentField));
+        fieldVO.setRequired(fieldService.lookupFieldRequired(siteName, currentField));
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
             String fieldProperty = fieldVO.getFieldName();

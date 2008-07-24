@@ -2,7 +2,6 @@ package com.mpower.service.customization;
 
 import java.util.Locale;
 
-import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.SectionField;
@@ -11,9 +10,9 @@ import com.mpower.domain.customization.SectionField;
 public interface FieldService {
 	public FieldDefinition readFieldById(String fieldId);
 
-	public Picklist readPicklistBySiteAndFieldName(Site site, String fieldName);
+	public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
 
-    public boolean lookupFieldRequired(Site site, SectionField currentField);
+    public boolean lookupFieldRequired(String siteName, SectionField currentField);
 
-    public Object lookupFieldDefaultValue(Site site, Locale locale, String fieldId);
+    public Object lookupFieldDefaultValue(String siteName, Locale locale, String fieldId);
 }

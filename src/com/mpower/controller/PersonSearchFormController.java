@@ -20,7 +20,8 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
-import com.mpower.web.common.SessionUtils;
+import com.mpower.service.SessionService;
+import com.mpower.service.SessionServiceImpl;
 
 public class PersonSearchFormController extends SimpleFormController {
 
@@ -33,12 +34,18 @@ public class PersonSearchFormController extends SimpleFormController {
         this.personService = personService;
     }
 
+    private SessionService sessionService;
+
+    public void setSessionService(SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         logger.info("**** in formBackingObject");
 
         Person p = new Person();
-        p.setSite(SessionUtils.lookupUser(request).getSite());
+        p.setSite(sessionService.lookupUser(request).getSite());
         return p;
     }
 
@@ -63,7 +70,7 @@ public class PersonSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Person> personList = personService.readPersons(SessionUtils.lookupUser(request).getSite().getName(), params);
+        List<Person> personList = personService.readPersons(SessionServiceImpl.lookupUserSiteName(request), params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

@@ -21,6 +21,10 @@ public class UserServiceImpl implements UserService {
         return userDao.readUserByUserNameAndSite(userName, siteName);
     }
 
+    public User getUser(Long userId) {
+        return userDao.readUserById(userId);
+    }
+
     @Override
     public User maintainUser(User user) {
         return userDao.saveUser(user);

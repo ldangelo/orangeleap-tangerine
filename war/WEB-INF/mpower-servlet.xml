@@ -20,6 +20,7 @@
         <property name="formView" value="personSearch"/>
         <property name="successView" value="personSearch"/>
         <property name="personService" ref="personService"/>
+        <property name="sessionService" ref="sessionService"/>
     </bean>
 
 
@@ -36,7 +37,7 @@
         <property name="successView" value="person" />
         <property name="personService" ref="personService" />
     </bean>
-    
+
     <bean name="/account.htm" class="com.mpower.controller.AccountFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
@@ -76,6 +77,7 @@
         <property name="formView" value="giftSearch"/>
         <property name="successView" value="giftSearch"/>
         <property name="giftService" ref="giftService"/>
+        <property name="sessionService" ref="sessionService"/>
     </bean>
 
 
@@ -94,7 +96,7 @@
         <property name="successView" value="giftView"/>
         <property name="giftService" ref="giftService" />
     </bean>
-    
+
     <bean name="/personView.htm" class="com.mpower.controller.PersonViewController">
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
@@ -115,12 +117,12 @@
         <property name="prefix" value="/WEB-INF/jsp/"></property>
        <property name="suffix" value=".jsp"></property>
     </bean>
-    
-    
+
+
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
-  	
+
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob"/>
   		<property name="cronExpression" value="0,30 * * * * ? *" />
@@ -137,5 +139,5 @@
 	   	</property>
 	</bean>
 
-	
+
 </beans>

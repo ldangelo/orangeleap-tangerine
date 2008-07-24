@@ -9,10 +9,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.User;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.MessageService;
 import com.mpower.type.MessageResourceType;
-import com.mpower.web.common.SessionUtils;
 
 public class ContentTag extends TagSupport {
 
@@ -20,12 +19,12 @@ public class ContentTag extends TagSupport {
 	private String messageKey;
 	private MessageService messageService;
 
+    @Override
     public int doStartTag() throws JspException {
     	messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
     	Locale locale = pageContext.getRequest().getLocale();
-        User user = SessionUtils.lookupUser(pageContext.getRequest());
-		String messageValue = messageService.lookupMessage(user.getSite(), MessageResourceType.CONTENT, messageKey, locale);
+		String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.CONTENT, messageKey, locale);
 		try {
 			pageContext.getOut().write(messageValue);
 		} catch (IOException e) {

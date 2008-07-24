@@ -8,32 +8,31 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.User;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.PageCustomizationService;
-import com.mpower.web.common.SessionUtils;
 
 public class SectionTag extends TagSupport {
 
-	private static final long serialVersionUID = 1L;
-	private SectionDefinition sectionDefinition;
-	private PageCustomizationService pageCustomizationService;
+    private static final long serialVersionUID = 1L;
+    private SectionDefinition sectionDefinition;
+    private PageCustomizationService pageCustomizationService;
 
+    @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        User user = SessionUtils.lookupUser(pageContext.getRequest());
-        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(user.getSite(), sectionDefinition.getSectionName());
-		pageContext.getRequest().setAttribute("sectionFieldList", sectionFields);
-		pageContext.getRequest().setAttribute("sectionFieldCount", sectionFields.size());
+        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), sectionDefinition.getSectionName());
+        pageContext.getRequest().setAttribute("sectionFieldList", sectionFields);
+        pageContext.getRequest().setAttribute("sectionFieldCount", sectionFields.size());
         return Tag.EVAL_BODY_INCLUDE;
     }
 
-	public SectionDefinition getSectionDefinition() {
-		return sectionDefinition;
-	}
+    public SectionDefinition getSectionDefinition() {
+        return sectionDefinition;
+    }
 
-	public void setSectionDefinition(SectionDefinition sectionDefinition) {
-		this.sectionDefinition = sectionDefinition;
-	}
+    public void setSectionDefinition(SectionDefinition sectionDefinition) {
+        this.sectionDefinition = sectionDefinition;
+    }
 }

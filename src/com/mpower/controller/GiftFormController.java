@@ -13,7 +13,7 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
-import com.mpower.web.common.SessionUtils;
+import com.mpower.service.SessionServiceImpl;
 
 public class GiftFormController extends SimpleFormController {
 
@@ -38,7 +38,7 @@ public class GiftFormController extends SimpleFormController {
         Gift gift = null;
         if (giftId == null) {
             // create person
-            gift = giftService.createDefaultGift(SessionUtils.lookupUser(request).getSite().getName());
+            gift = giftService.createDefaultGift(SessionServiceImpl.lookupUserSiteName(request));
             String personId = request.getParameter("personId");
             Person person = personService.readPersonById(Long.valueOf(personId));
             if (person == null) {

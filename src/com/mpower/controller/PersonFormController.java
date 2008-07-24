@@ -11,8 +11,8 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.exception.PersonValidationException;
-import com.mpower.web.common.SessionUtils;
 
 public class PersonFormController extends SimpleFormController {
 
@@ -30,7 +30,7 @@ public class PersonFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         Person person = null;
         if (personId == null) {
-            person = personService.createDefaultPerson(SessionUtils.lookupUser(request).getSite().getName());
+            person = personService.createDefaultPerson(SessionServiceImpl.lookupUserSiteName(request));
         } else {
             person = personService.readPersonById(new Long(personId));
         }

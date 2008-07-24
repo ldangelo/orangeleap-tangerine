@@ -13,7 +13,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.SectionField;
-import com.mpower.web.common.SessionUtils;
+import com.mpower.service.SessionServiceImpl;
 
 public class FieldTag extends TagSupport {
     private static final long serialVersionUID = 1L;
@@ -24,13 +24,14 @@ public class FieldTag extends TagSupport {
     private List<SectionField> sectionFieldList;
     private Object model;
 
+    @Override
     public int doStartTag() throws JspException {
         ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
         FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
         FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
 
         Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
-        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionUtils.lookupUser(pageContext.getRequest()), modelParam);
+        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), SessionServiceImpl.lookupUserId(pageContext.getRequest()), modelParam);
 
         pageContext.getRequest().setAttribute("fieldVO", fieldVO);
         return Tag.SKIP_BODY;

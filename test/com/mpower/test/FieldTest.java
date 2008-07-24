@@ -39,7 +39,7 @@ public class FieldTest extends BaseTest {
         modifiedField.setSiteName(siteName);
         em.persist(modifiedField);
 
-        assert fieldService.lookupFieldRequired(em.find(Site.class, siteName), em.find(SectionField.class, sectionFieldId)) == expectedValue;
+        assert fieldService.lookupFieldRequired(siteName, em.find(SectionField.class, sectionFieldId)) == expectedValue;
         em.getTransaction().rollback();
     }
 

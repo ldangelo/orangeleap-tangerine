@@ -7,4 +7,6 @@ public interface UserService {
 	public User authenticateUser(String userName, String siteName);
 
 	public User maintainUser(User user);
+
+	public User getUser(Long userId);
 }

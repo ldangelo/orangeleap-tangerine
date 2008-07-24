@@ -10,40 +10,39 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.User;
 import com.mpower.domain.customization.SectionDefinition;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.MessageService;
 import com.mpower.type.MessageResourceType;
-import com.mpower.web.common.SessionUtils;
 
 public class SectionHeaderTag extends TagSupport {
 
-	private static final long serialVersionUID = 1L;
-	private SectionDefinition sectionDefinition;
-	private MessageService messageService;
+    private static final long serialVersionUID = 1L;
+    private SectionDefinition sectionDefinition;
+    private MessageService messageService;
 
+    @Override
     public int doStartTag() throws JspException {
-    	messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
+        messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
-    	Locale locale = pageContext.getRequest().getLocale();
-        User user = SessionUtils.lookupUser(pageContext.getRequest());
-		String messageValue = messageService.lookupMessage(user.getSite(), MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
-		if (GenericValidator.isBlankOrNull(messageValue)) {
-			messageValue = sectionDefinition.getDefaultLabel();
-		}
-		try {
-			pageContext.getOut().write(messageValue);
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
+        Locale locale = pageContext.getRequest().getLocale();
+        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
+        if (GenericValidator.isBlankOrNull(messageValue)) {
+            messageValue = sectionDefinition.getDefaultLabel();
+        }
+        try {
+            pageContext.getOut().write(messageValue);
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
         return Tag.SKIP_BODY;
     }
 
-	public SectionDefinition getSectionDefinition() {
-		return sectionDefinition;
-	}
+    public SectionDefinition getSectionDefinition() {
+        return sectionDefinition;
+    }
 
-	public void setSectionDefinition(SectionDefinition sectionDefinition) {
-		this.sectionDefinition = sectionDefinition;
-	}
+    public void setSectionDefinition(SectionDefinition sectionDefinition) {
+        this.sectionDefinition = sectionDefinition;
+    }
 }

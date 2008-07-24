@@ -8,11 +8,10 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.User;
 import com.mpower.domain.customization.SectionDefinition;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.PageCustomizationService;
 import com.mpower.type.PageType;
-import com.mpower.web.common.SessionUtils;
 
 public class PageTag extends TagSupport {
 
@@ -20,10 +19,10 @@ public class PageTag extends TagSupport {
 	private String pageName;
 	private PageCustomizationService pageCustomizationService;
 
+    @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        User user = SessionUtils.lookupUser(pageContext.getRequest());
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(user.getSite(), PageType.valueOf(pageName));
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), PageType.valueOf(pageName));
 		pageContext.getRequest().setAttribute("sectionDefinitions", sectionDefinitions);
         return Tag.EVAL_BODY_INCLUDE;
     }

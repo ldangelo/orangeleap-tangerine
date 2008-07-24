@@ -9,36 +9,35 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.User;
+import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.MessageService;
 import com.mpower.type.MessageResourceType;
-import com.mpower.web.common.SessionUtils;
 
 public class PageTitleTag extends TagSupport {
 
-	private static final long serialVersionUID = 1L;
-	private String pageName;
-	private MessageService messageService;
+    private static final long serialVersionUID = 1L;
+    private String pageName;
+    private MessageService messageService;
 
+    @Override
     public int doStartTag() throws JspException {
-    	messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
+        messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
-    	Locale locale = pageContext.getRequest().getLocale();
-        User user = SessionUtils.lookupUser(pageContext.getRequest());
-		String messageValue = messageService.lookupMessage(user.getSite(), MessageResourceType.TITLE, pageName, locale);
-		try {
-			pageContext.getOut().write(messageValue);
-		} catch (IOException e) {
-			throw new JspException(e);
-		}
+        Locale locale = pageContext.getRequest().getLocale();
+        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.TITLE, pageName, locale);
+        try {
+            pageContext.getOut().write(messageValue);
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
         return Tag.SKIP_BODY;
     }
 
-	public String getPageName() {
-		return pageName;
-	}
+    public String getPageName() {
+        return pageName;
+    }
 
-	public void setPageName(String messageKey) {
-		this.pageName = messageKey;
-	}
+    public void setPageName(String messageKey) {
+        this.pageName = messageKey;
+    }
 }

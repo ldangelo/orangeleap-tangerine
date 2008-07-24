@@ -22,7 +22,8 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.User;
 import com.mpower.service.GiftService;
-import com.mpower.web.common.SessionUtils;
+import com.mpower.service.SessionService;
+import com.mpower.service.SessionServiceImpl;
 
 public class GiftSearchFormController extends SimpleFormController {
 
@@ -35,12 +36,18 @@ public class GiftSearchFormController extends SimpleFormController {
         this.giftService = giftService;
     }
 
+    private SessionService sessionService;
+
+    public void setSessionService(SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         logger.info("**** in formBackingObject");
 
         Person p = new Person();
-        User user = SessionUtils.lookupUser(request);
+        User user = sessionService.lookupUser(request);
         p.setSite(user.getSite());
         Gift g = new Gift();
         g.setPerson(p);
@@ -68,7 +75,7 @@ public class GiftSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Gift> giftList = giftService.readGifts(SessionUtils.lookupUser(request).getSite().getName(), params);
+        List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(request), params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

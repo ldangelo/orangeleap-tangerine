@@ -7,4 +7,6 @@ public interface UserDao {
     public User readUserByUserNameAndSite(String userName, String siteName);
 
     public User saveUser(User user);
+
+    public User readUserById(Long userId);
 }

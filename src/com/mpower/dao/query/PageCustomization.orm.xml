@@ -6,28 +6,28 @@
 	<named-query name="READ_OUT_OF_BOX_SECTION_DEFINITIONS" >
 		<query>
 		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.id is null
+		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.name is null
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_DEFINITIONS" >
 		<query>
 		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.id = :siteId
+		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.name = :siteName
 		</query>
 	</named-query>
 
 	<named-query name="READ_OUT_OF_BOX_SECTION_FIELDS" >
 		<query>
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.id is null
+		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.name is null
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_FIELDS" >
 		<query>
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.id is :siteId
+		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.name is :siteName
 		</query>
 	</named-query>
 

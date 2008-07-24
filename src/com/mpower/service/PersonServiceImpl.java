@@ -43,18 +43,18 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<Person> readPersons(Long siteId, Map<String, Object> params) {
-        return personDao.readPersons(siteId, params);
+    public List<Person> readPersons(String siteName, Map<String, Object> params) {
+        return personDao.readPersons(siteName, params);
     }
 
     @Override
-    public Person createDefaultPerson(Long siteId) {
+    public Person createDefaultPerson(String siteName) {
         // get initial person with built-in defaults
         Person person = new Person();
-        person.setSite(siteDao.readSite(siteId));
+        person.setSite(siteDao.readSite(siteName));
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(person);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteId, Arrays.asList(new EntityType[] { EntityType.person }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteName, Arrays.asList(new EntityType[] { EntityType.person }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }

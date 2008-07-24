@@ -12,7 +12,7 @@ public class FieldVO {
     public List<String> displayValues;
     private FieldType fieldType;
     private Long id;
-    private Long siteId;
+    private String siteName;
     private String fieldName;
     private Object fieldValue;
     private String helpText;
@@ -49,8 +49,8 @@ public class FieldVO {
         return labelText;
     }
 
-    public Long getSiteId() {
-        return siteId;
+    public String getSiteName() {
+        return siteName;
     }
 
     public String getValidationExpression() {
@@ -101,8 +101,8 @@ public class FieldVO {
         this.required = required;
     }
 
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     public void setValidationExpression(String validationExpression) {

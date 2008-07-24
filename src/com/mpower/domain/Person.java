@@ -40,7 +40,7 @@ public class Person implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_ID")
+    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
     @Column(name = "TITLE")
@@ -117,7 +117,7 @@ public class Person implements Serializable {
     public Long getId() {
         return id;
     }
-    
+
     public Long getAccountNumber() {
         return id;
     }

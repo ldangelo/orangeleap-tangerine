@@ -43,7 +43,7 @@ public class FieldDefinition implements Serializable {
     private FieldType fieldType;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_ID")
+    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
     /**

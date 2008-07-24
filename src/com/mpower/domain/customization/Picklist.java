@@ -30,7 +30,7 @@ public class Picklist implements Serializable {
     private String picklistName;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_ID")
+    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
     @Column(name = "MULTISELECT")

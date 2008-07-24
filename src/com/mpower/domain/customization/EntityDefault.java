@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 import com.mpower.type.EntityType;
 
 @Entity
-@Table(name = "ENTITY_DEFAULT", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_ID", "ENTITY_FIELD_NAME" }) })
+@Table(name = "ENTITY_DEFAULT", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "ENTITY_FIELD_NAME" }) })
 public class EntityDefault implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,8 +24,8 @@ public class EntityDefault implements Serializable {
     @Column(name = "ENTITY_DEFAULT_ID")
     private Long id;
 
-    @Column(name = "SITE_ID")
-    private Long siteId;
+    @Column(name = "SITE_NAME")
+    private String siteName;
 
     @Column(name="ENTITY_TYPE")
     @Enumerated(EnumType.STRING)
@@ -48,12 +48,12 @@ public class EntityDefault implements Serializable {
         this.id = id;
     }
 
-    public Long getSiteId() {
-        return siteId;
+    public String getSiteName() {
+        return siteName;
     }
 
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     public EntityType getEntityType() {

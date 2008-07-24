@@ -14,7 +14,7 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "FIELD_REQUIRED", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_ID", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
+@Table(name = "FIELD_REQUIRED", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
 public class FieldRequired implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,8 +24,8 @@ public class FieldRequired implements Serializable {
     @Column(name = "FIELD_REQUIRED_ID")
     private Long id;
 
-    @Column(name = "SITE_ID")
-    private Long siteId;
+    @Column(name = "SITE_NAME")
+    private String siteName;
 
     @Column(name = "SECTION_NAME")
     private String sectionName;
@@ -47,12 +47,12 @@ public class FieldRequired implements Serializable {
         this.id = id;
     }
 
-    public Long getSiteId() {
-        return siteId;
+    public String getSiteName() {
+        return siteName;
     }
 
-    public void setSiteId(Long siteId) {
-        this.siteId = siteId;
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 
     public String getSectionName() {

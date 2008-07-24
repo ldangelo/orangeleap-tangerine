@@ -26,9 +26,9 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
 	}
 
     @SuppressWarnings("unchecked")
-	public List<SectionDefinition> readCustomizedSectionDefinitions(Long siteId, PageType pageType) {
+	public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType) {
 		Query query = em.createNamedQuery("READ_CUSTOMIZED_SECTION_DEFINITIONS");
-		query.setParameter("siteId", siteId);
+		query.setParameter("siteName", siteName);
 		query.setParameter("pageType", pageType);
 		return query.getResultList();
     }
@@ -41,9 +41,9 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<SectionField> readCustomizedSectionFields(Long siteId, String sectionName) {
+    public List<SectionField> readCustomizedSectionFields(String siteName, String sectionName) {
 		Query query = em.createNamedQuery("READ_CUSTOMIZED_SECTION_FIELDS");
-		query.setParameter("siteId", siteId);
+		query.setParameter("siteName", siteName);
 		query.setParameter("sectionName", sectionName);
 		return query.getResultList();
     }

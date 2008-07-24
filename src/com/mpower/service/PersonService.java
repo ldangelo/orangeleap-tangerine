@@ -13,9 +13,9 @@ public interface PersonService {
 
     public Person readPersonById(Long id);
 
-    public List<Person> readPersons(Long siteId, Map<String, Object> params);
+    public List<Person> readPersons(String siteName, Map<String, Object> params);
 
-    public Person createDefaultPerson(Long siteId);
+    public Person createDefaultPerson(String siteName);
 
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 

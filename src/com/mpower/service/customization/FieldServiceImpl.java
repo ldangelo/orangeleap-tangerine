@@ -25,7 +25,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     public boolean lookupFieldRequired(Site site, SectionField currentField) {
-        return fieldDao.readFieldRequired(site.getId(), currentField.getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
+        return fieldDao.readFieldRequired(site.getName(), currentField.getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
     }
 
     public FieldDefinition readFieldById(String fieldId) {
@@ -33,6 +33,6 @@ public class FieldServiceImpl implements FieldService {
     }
 
     public Picklist readPicklistBySiteAndFieldName(Site site, String fieldName) {
-        return fieldDao.readPicklistBySiteAndFieldName(site.getId(), fieldName);
+        return fieldDao.readPicklistBySiteAndFieldName(site.getName(), fieldName);
     }
 }

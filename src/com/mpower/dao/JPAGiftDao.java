@@ -48,9 +48,9 @@ public class JPAGiftDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
+    public List<Gift> readGifts(String siteName, Map<String, Object> params) {
         boolean whereUsed = true;
-        StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.id = :siteId");
+        StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.name = :siteName");
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
@@ -96,7 +96,7 @@ public class JPAGiftDao implements GiftDao {
         queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
 
         Query query = em.createQuery(queryString.toString());
-        query.setParameter("siteId", siteId);
+        query.setParameter("siteName", siteName);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }

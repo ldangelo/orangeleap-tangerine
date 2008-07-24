@@ -7,14 +7,14 @@
 		<query>
 		    SELECT picklist FROM com.mpower.domain.customization.Picklist picklist
 		    WHERE (picklist.picklistName = :fieldName AND
-		           (picklist.site.id = :siteId OR picklist.site.id is null))
+		           (picklist.site.name = :siteName OR picklist.site.name is null))
 		</query>
 	</named-query>
 
 	<named-query name="QUERY_FIELD_REQUIRED_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION" >
 		<query>
 		    SELECT fieldRequired FROM com.mpower.domain.customization.FieldRequired fieldRequired
-		    WHERE ((fieldRequired.siteId = :siteId) OR (fieldRequired.siteId = null))
+		    WHERE ((fieldRequired.siteName = :siteName) OR (fieldRequired.siteName = null))
 		    AND fieldRequired.sectionName = :sectionName
 		    AND fieldRequired.fieldDefinitionId = :fieldDefinitionId
 		    AND fieldRequired.secondaryFieldDefinitionId IS NULL
@@ -24,7 +24,7 @@
 	<named-query name="QUERY_FIELD_REQUIRED_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEF_AND_SECONDARY_FIELD_DEF" >
 		<query>
 		    SELECT fieldRequired FROM com.mpower.domain.customization.FieldRequired fieldRequired
-		    WHERE ((fieldRequired.siteId = :siteId) OR (fieldRequired.siteId = null))
+		    WHERE ((fieldRequired.siteName = :siteName) OR (fieldRequired.siteName = null))
 		    AND fieldRequired.sectionName = :sectionName
 		    AND fieldRequired.fieldDefinitionId = :fieldDefinitionId
 		    AND fieldRequired.secondaryFieldDefinitionId = :secondaryFieldDefinitionId

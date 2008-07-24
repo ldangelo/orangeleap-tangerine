@@ -30,7 +30,7 @@ public class AccountFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         Person person = null;
         if (personId == null) {
-            person = personService.createDefaultPerson(SessionUtils.lookupUser(request).getSite().getId());
+            person = personService.createDefaultPerson(SessionUtils.lookupUser(request).getSite().getName());
         } else {
             person = personService.readPersonById(new Long(personId));
         }

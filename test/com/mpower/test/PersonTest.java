@@ -30,7 +30,7 @@ public class PersonTest extends BaseTest {
         em.getTransaction().commit();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("lastName", "last");
-        List<Person> persons = personService.readPersons(site.getId(), params);
+        List<Person> persons = personService.readPersons(site.getName(), params);
         assert persons.size() == 1;
         em.remove(person);
         em.remove(site);
@@ -41,13 +41,14 @@ public class PersonTest extends BaseTest {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
-        Long siteId = site.getId();
-        Person person = personService.createDefaultPerson(site.getId());
+        String siteName = site.getName();
+        Person person = personService.createDefaultPerson(site.getName());
+        person.setSite(site);
         em.persist(person);
         Long personId = person.getId();
         em.getTransaction().commit();
         assert em.find(Person.class, personId) != null;
-        assert em.find(Person.class, personId).getSite().getId() == siteId;
+        assert em.find(Person.class, personId).getSite().getName().equals(siteName);
         em.remove(person);
         em.remove(site);
     }

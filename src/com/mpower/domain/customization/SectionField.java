@@ -18,7 +18,7 @@ import com.mpower.type.FieldType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "SECTION_FIELD", uniqueConstraints = @UniqueConstraint(columnNames = { "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID", "SITE_ID" }))
+@Table(name = "SECTION_FIELD", uniqueConstraints = @UniqueConstraint(columnNames = { "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID", "SITE_NAME" }))
 public class SectionField implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +37,7 @@ public class SectionField implements Serializable {
     private FieldDefinition secondaryFieldDefinition;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_ID")
+    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
     @Column(name = "SECTION_NAME")

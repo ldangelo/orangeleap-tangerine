@@ -10,9 +10,9 @@ import com.mpower.type.PageType;
 public interface PageCustomizationDAO {
 	public List<SectionDefinition> readOutOfBoxSectionDefinitions(PageType pageType);
 
-    public List<SectionDefinition> readCustomizedSectionDefinitions(Long siteId, PageType pageType);
+    public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType);
 
     public List<SectionField> readOutOfBoxSectionFields(String sectionName);
 
-    public List<SectionField> readCustomizedSectionFields(Long siteId, String sectionName);
+    public List<SectionField> readCustomizedSectionFields(String siteName, String sectionName);
 }

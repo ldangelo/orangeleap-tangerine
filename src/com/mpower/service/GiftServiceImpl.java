@@ -66,17 +66,17 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public List<Gift> readGifts(Long siteId, Map<String, Object> params) {
-        return giftDao.readGifts(siteId, params);
+    public List<Gift> readGifts(String siteName, Map<String, Object> params) {
+        return giftDao.readGifts(siteName, params);
     }
 
     @Override
-    public Gift createDefaultGift(Long siteId) {
+    public Gift createDefaultGift(String siteName) {
         // get initial gift with built-in defaults
         Gift gift = new Gift();
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(gift);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteId, Arrays.asList(new EntityType[] { EntityType.gift }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteName, Arrays.asList(new EntityType[] { EntityType.gift }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }

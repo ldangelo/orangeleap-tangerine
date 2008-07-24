@@ -27,7 +27,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 			Site site, PageType pageType) {
 		List<SectionDefinition> returnSections;
 		List<SectionDefinition> outOfBoxSectionDefinitions = pageCustomizationDao.readOutOfBoxSectionDefinitions(pageType);
-		List<SectionDefinition> customSectionDefinitions = pageCustomizationDao.readCustomizedSectionDefinitions(site.getId(), pageType);
+		List<SectionDefinition> customSectionDefinitions = pageCustomizationDao.readCustomizedSectionDefinitions(site.getName(), pageType);
 		if (customSectionDefinitions.isEmpty()) {
 			 returnSections = outOfBoxSectionDefinitions;
 		} else {
@@ -49,7 +49,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 			Site site, String sectionName) {
 		List<SectionField> returnFields;
 		List<SectionField> outOfBoxSectionFields = pageCustomizationDao.readOutOfBoxSectionFields(sectionName);
-		List<SectionField> customSectionFields = pageCustomizationDao.readCustomizedSectionFields(site.getId(), sectionName);
+		List<SectionField> customSectionFields = pageCustomizationDao.readCustomizedSectionFields(site.getName(), sectionName);
 		if (customSectionFields.isEmpty()) {
 			returnFields = outOfBoxSectionFields;
 		} else {

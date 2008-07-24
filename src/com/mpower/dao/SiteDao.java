@@ -8,7 +8,7 @@ import com.mpower.type.EntityType;
 
 public interface SiteDao {
 
-	public Site readSite(Long siteId);
+	public Site readSite(String siteName);
 
-	public List<EntityDefault> readEntityDefaults(Long siteId, List<EntityType> entityTypes);
+	public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
 }

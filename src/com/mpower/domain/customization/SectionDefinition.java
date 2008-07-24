@@ -22,7 +22,7 @@ import com.mpower.type.PageType;
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"SITE_ID", "SECTION_NAME" }))
+		"SITE_NAME", "SECTION_NAME" }))
 public class SectionDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,7 +50,7 @@ public class SectionDefinition implements Serializable {
 	private Integer sectionOrder;
 
 	@ManyToOne
-	@JoinColumn(name = "SITE_ID")
+	@JoinColumn(name = "SITE_NAME")
 	private Site site;
 
 	public String getSectionHtmlName() {

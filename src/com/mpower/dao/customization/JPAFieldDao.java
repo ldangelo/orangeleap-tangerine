@@ -23,9 +23,9 @@ public class JPAFieldDao implements FieldDao {
     }
 
     @SuppressWarnings("unchecked")
-    public Picklist readPicklistBySiteAndFieldName(Long siteId, String fieldName) {
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName) {
         Query query = em.createNamedQuery("READ_PICKLIST_BY_SITE_AND_FIELDNAME");
-        query.setParameter("siteId", siteId);
+        query.setParameter("siteName", siteName);
         query.setParameter("fieldName", fieldName);
         List<Picklist> picklists = query.getResultList();
         if (picklists.size() > 0) {
@@ -44,16 +44,16 @@ public class JPAFieldDao implements FieldDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean readFieldRequired(Long siteId, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    public boolean readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         Query query = null;
         if (secondaryFieldDefinitionId == null) {
             query = em.createNamedQuery("QUERY_FIELD_REQUIRED_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION");
-            query.setParameter("siteId", siteId);
+            query.setParameter("siteName", siteName);
             query.setParameter("sectionName", sectionName);
             query.setParameter("fieldDefinitionId", fieldDefinitionId);
         } else {
             query = em.createNamedQuery("QUERY_FIELD_REQUIRED_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEF_AND_SECONDARY_FIELD_DEF");
-            query.setParameter("siteId", siteId);
+            query.setParameter("siteName", siteName);
             query.setParameter("sectionName", sectionName);
             query.setParameter("fieldDefinitionId", fieldDefinitionId);
             query.setParameter("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
@@ -64,7 +64,7 @@ public class JPAFieldDao implements FieldDao {
                 return fields.get(0).isRequired();
             } else {
                 for (FieldRequired fr : fields) {
-                    if (fr.getSiteId() != null) {
+                    if (fr.getSiteName() != null) {
                         return fr.isRequired();
                     }
                 }

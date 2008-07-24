@@ -49,7 +49,7 @@
 Username/Password/Organization/Roles:<br/>
 rod/koala/company1/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
 dianne/emu/company1/ROLE_USER, ROLE_TELLER<br/>
-scott/wombat/company1/ROLE_USER
+scott/wombat/company1/ROLE_USER<br/>
 jack/jack/company2/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
 locke/locke/company2/ROLE_USER, ROLE_TELLER<br/>
 hurley/hurley/company2/ROLE_USER

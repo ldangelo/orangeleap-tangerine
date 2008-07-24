@@ -12,7 +12,7 @@ public interface PersonDao {
 
     public Person readPerson(Long id);
 
-    public List<Person> readPersons(Long siteId, Map<String, Object> params);
+    public List<Person> readPersons(String siteName, Map<String, Object> params);
 
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 

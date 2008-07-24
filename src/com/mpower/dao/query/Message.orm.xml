@@ -8,7 +8,7 @@
 		WHERE msg.messageResourceType = :messageResourceType
 		AND msg.messageKey = :messageKey
 		AND msg.languageAbbreviation = :language
-		AND (msg.site.id = :siteId OR msg.site.id is null))
+		AND (msg.site.name = :siteName OR msg.site.name is null))
 		</query>
 	</named-query>
 

@@ -48,9 +48,9 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readPersons(Long siteId, Map<String, Object> params) {
+    public List<Person> readPersons(String siteName, Map<String, Object> params) {
         boolean whereUsed = true;
-        StringBuilder queryString = new StringBuilder("SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteId");
+        StringBuilder queryString = new StringBuilder("SELECT person FROM com.mpower.domain.Person person WHERE person.site.name = :siteName");
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
@@ -98,7 +98,7 @@ public class JPAPersonDao implements PersonDao {
         queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
 
         Query query = em.createQuery(queryString.toString());
-        query.setParameter("siteId", siteId);
+        query.setParameter("siteName", siteName);
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }

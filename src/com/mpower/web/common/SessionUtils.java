@@ -14,7 +14,7 @@ public class SessionUtils {
 		User u = new User();
 		u.setId(new Long(1));
 		Site s = new Site();
-		s.setId(new Long(1));
+		s.setName("1");
 		u.setSite(s);
 		storeUser(request, u);
 		// -- Remove once login has been implemented

@@ -6,7 +6,7 @@ import com.mpower.domain.customization.Picklist;
 public interface FieldDao {
     public FieldDefinition readFieldById(String fieldId);
 
-    public Picklist readPicklistBySiteAndFieldName(Long siteId, String fieldName);
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
 
-    public boolean readFieldRequired(Long siteId, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
+    public boolean readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
 }

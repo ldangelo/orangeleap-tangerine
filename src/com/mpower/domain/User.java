@@ -29,7 +29,7 @@ public class User implements Serializable {
     private String userName;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_ID")
+    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
     public Long getId() {

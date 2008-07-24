@@ -21,6 +21,6 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	public String lookupMessage(Site site, MessageResourceType messageResourceType, String messageKey, Locale language) {
-		return messageDao.readMessage(site.getId(), messageResourceType, messageKey, language);
+		return messageDao.readMessage(site.getName(), messageResourceType, messageKey, language);
 	}
 }

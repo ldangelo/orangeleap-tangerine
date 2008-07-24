@@ -5,7 +5,7 @@
 
 	<named-query name="READ_ENTITY_DEFAULTS_BY_SITE_AND_ENTITY_FIELD_NAME" >
 		<query>SELECT entityDefault FROM com.mpower.domain.customization.EntityDefault entityDefault
-		WHERE entityDefault.siteId = :siteId
+		WHERE entityDefault.siteName = :siteName
 		AND entityDefault.entityType IN (:entityTypes)</query>
 	</named-query>
 

@@ -19,10 +19,10 @@ public class JPAMessageDao implements MessageDao {
 	private EntityManager em;
 
 	@SuppressWarnings("unchecked")
-	public String readMessage(Long siteId, MessageResourceType messageResourceType, String messageKey, Locale language) {
+	public String readMessage(String siteName, MessageResourceType messageResourceType, String messageKey, Locale language) {
 		String result = "";
 		Query query = em.createNamedQuery("READ_MESSAGE");
-		query.setParameter("siteId", siteId);
+		query.setParameter("siteName", siteName);
 		query.setParameter("messageResourceType", messageResourceType);
 		query.setParameter("messageKey", messageKey);
 		query.setParameter("language", language.getLanguage());

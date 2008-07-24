@@ -24,7 +24,7 @@ public class FieldTest extends BaseTest {
     public void insertRequiredField(Site site, FieldDefinition fieldDefinition, SectionField sectionField, FieldRequired defaultField, FieldRequired modifiedField, boolean expectedValue) {
         em.getTransaction().begin();
         em.persist(site);
-        Long siteId = site.getId();
+        String siteName = site.getName();
 
         fieldDefinition.setSite(site);
         em.persist(fieldDefinition);
@@ -36,10 +36,10 @@ public class FieldTest extends BaseTest {
 
         em.persist(defaultField);
 
-        modifiedField.setSiteId(siteId);
+        modifiedField.setSiteName(siteName);
         em.persist(modifiedField);
 
-        assert fieldService.lookupFieldRequired(em.find(Site.class, siteId), em.find(SectionField.class, sectionFieldId)) == expectedValue;
+        assert fieldService.lookupFieldRequired(em.find(Site.class, siteName), em.find(SectionField.class, sectionFieldId)) == expectedValue;
         em.getTransaction().rollback();
     }
 

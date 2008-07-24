@@ -15,10 +15,12 @@ global org.springframework.context.ApplicationContext applicationContext;
 rule "Analyze Lapsed Donor"
 	when
 		There is a person
-			who has not made a donation in the past 2 "months"
+		who has not made a donation in the past 2 "months"
 	then
 		Set the person as a lapsed donor
 end
+
+
 
 function Date getBeginDate(int number, String timeUnit) {
 	Calendar cal = Calendar.getInstance();
@@ -33,6 +35,13 @@ function Date getBeginDate(int number, String timeUnit) {
 		cal.add(Calendar.YEAR, -(number));
 	}
 		return cal.getTime();
+}
+
+function Date getBeginningOfMonthDate(int number) {
+	Calendar cal = Calendar.getInstance();
+	cal.add(Calendar.MONTH, -(number));
+	cal.set(Calendar.YEAR, Calendar.MONTH, 0, 0, 0, 0);
+	return cal.getTime();
 }
 
 function Date getCurrentDate() {

@@ -15,17 +15,10 @@ expander Site1Language.dsl
 rule "Gift - Donation Made - Analyze Major Donor - Set Major Donor"
 	when
 		There is a person
-			who has donated at least 5000 dollars over the past 6 "months"
+			- who is not a major donor
+		who has donated at least 5000 dollars over the past 12 "months"
 	then
 		Set the person as a major donor
-end
-
-rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
-	when
-		There is a person
-			who has not donated at least 5000 dollars over the past 12 "months"
-	then
-		Ensure that the person is not a major donor
 end
 
 rule "Gift - Donation Made - Analyze Lapsed Donor - Unset Lapsed Donor"
@@ -38,6 +31,30 @@ rule "Gift - Donation Made - Analyze Lapsed Donor - Unset Lapsed Donor"
 		Unset the person as a lapsed donor
 end
 
+rule "Gift - Donation Made - 1st Time Donor"
+	when
+		There is a person
+		who has donated 1 gifts
+	then
+		Write "Person has donated 1 time"
+end
+
+rule "Gift - Donation Made - 2nd Time Donor"
+	when
+		There is a person
+		who has donated 2 gifts
+	then
+		Write "Peron has donated 2 times"
+end
+
+rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
+	when
+		There is a person
+			- who is a major donor
+		who has not donated at least 5000 dollars over the past 12 "months"
+	then
+		Unset the person as a major donor
+end
 
 
 function Date getCurrentDate() {

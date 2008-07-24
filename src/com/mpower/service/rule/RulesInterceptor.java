@@ -37,11 +37,12 @@ public class RulesInterceptor implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
 	@Around(value="execution(* com.mpower.service..*.maintain*(..)) " +
-			"|| execution(* com.mpower.service..*.save*(..))")
+			"|| execution(* com.mpower.service..*.save*(..))" + 
+			"|| execution(* com.mpower.service..*.refund*(..))")
 	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
 
 		Object[] args = pjp.getArgs();
-
+		
 		RuleBase ruleBase = loadRules(args);
 		if (ruleBase == null) {
 			return pjp.proceed();

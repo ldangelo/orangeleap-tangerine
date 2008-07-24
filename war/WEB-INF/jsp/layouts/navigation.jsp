@@ -6,7 +6,7 @@
 <div id="banner">
 	<ol>
 		<li>
-			<span id="greeting">Logged in as <security:authentication property="principal.username" /></span>
+			<span id="greeting">Logged into <b><security:authentication property="site" /></b> as <b><security:authentication property="principal.username" /></b></span>
 		</li>
 		<li>
 			<a href="account.htm">My Account</a>

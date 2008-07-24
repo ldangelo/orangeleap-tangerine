@@ -2,6 +2,9 @@
 	padding:1px 10px 1px 1px;
 	color:#d46400;
 }
+#greeting .userName {
+	font-weight:bold;
+}
 #banner {
 	height:120px;
 	width:100%;

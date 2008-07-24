@@ -151,6 +151,7 @@ public class JPAPersonDao implements PersonDao {
         return phoneString;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
         Query query = em.createNamedQuery("ANALYZE_FOR_LAPSED_DONOR");
@@ -159,16 +160,17 @@ public class JPAPersonDao implements PersonDao {
         return query.getResultList();
     }
 
-	@Override
-	public List<Person> readAllPeople() {
-		Query query = em.createNamedQuery("READ_ALL_PEOPLE");
-		return query.getResultList();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Person> readAllPeople() {
+        Query query = em.createNamedQuery("READ_ALL_PEOPLE");
+        return query.getResultList();
+    }
 
-	@Override
-	public void setLapsedDonor(Long personId) {
-		Query query = em.createNamedQuery("SET_LAPSED_DONOR");
-		query.setParameter("personId", personId);
-		query.executeUpdate();
-	}
+    @Override
+    public void setLapsedDonor(Long personId) {
+        Query query = em.createNamedQuery("SET_LAPSED_DONOR");
+        query.setParameter("personId", personId);
+        query.executeUpdate();
+    }
 }

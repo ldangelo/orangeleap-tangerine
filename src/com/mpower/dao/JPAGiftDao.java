@@ -139,20 +139,20 @@ public class JPAGiftDao implements GiftDao {
         return addressString;
     }
 
-	@Override
-	public List<Gift> readGiftsByPersonId(Long personId) {
-		Query query = em.createNamedQuery("READ_GIFTS_BY_PERSON_ID");
-		query.setParameter("personId", personId);
-		List<Gift> giftList = query.getResultList();
-		return giftList;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readGiftsByPersonId(Long personId) {
+        Query query = em.createNamedQuery("READ_GIFTS_BY_PERSON_ID");
+        query.setParameter("personId", personId);
+        List<Gift> giftList = query.getResultList();
+        return giftList;
+    }
 
-	@Override
-	public List<Gift> readAllGifts() {
-		Query query = em.createNamedQuery("READ_ALL_GIFTS");
-		List<Gift> lg = query.getResultList();
-		return lg;
-	}
-
-
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readAllGifts() {
+        Query query = em.createNamedQuery("READ_ALL_GIFTS");
+        List<Gift> lg = query.getResultList();
+        return lg;
+    }
 }

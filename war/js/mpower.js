@@ -80,12 +80,12 @@ $(document).ready(function()
 		}
 	});
 	
-	 $(".personRow").cluetip({
-		cluetipClass:'default',
-		showTitle: false,
-		dropShadow: false,
-		waitImage: false
-	 });
+//	 $(".personRow").cluetip({
+//		cluetipClass:'default',
+//		showTitle: false,
+//		dropShadow: false,
+//		waitImage: false
+//	 });
 	
    }
 );

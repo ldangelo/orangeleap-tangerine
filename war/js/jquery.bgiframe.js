@@ -2,17 +2,17 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * $LastChangedDate$
- * $Rev$
+ * $LastChangedDate: 2007-06-19 20:23:36 -0500 (Tue, 19 Jun 2007) $
+ * $Rev: 2110 $
  *
- * Version 2.1.1
+ * Version 2.1
  */
 
 (function($){
 
 /**
  * The bgiframe is chainable and applies the iframe hack to get 
- * around zIndex issues in IE6. It will only apply itself in IE6 
+ * around zIndex issues in IE6. It will only apply itself in IE 
  * and adds a class to the iframe called 'bgiframe'. The iframe
  * is appeneded as the first child of the matched element(s) 
  * with a tabIndex and zIndex of -1.
@@ -71,7 +71,7 @@
  */
 $.fn.bgIframe = $.fn.bgiframe = function(s) {
 	// This is only for IE6
-	if ( $.browser.msie && /6.0/.test(navigator.userAgent) ) {
+	if ( $.browser.msie && parseInt($.browser.version) <= 6 ) {
 		s = $.extend({
 			top     : 'auto', // auto == .currentStyle.borderTopWidth
 			left    : 'auto', // auto == .currentStyle.borderLeftWidth
@@ -96,5 +96,9 @@ $.fn.bgIframe = $.fn.bgiframe = function(s) {
 	}
 	return this;
 };
+
+// Add browser.version if it doesn't exist
+if (!$.browser.version)
+	$.browser.version = navigator.userAgent.toLowerCase().match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)[1];
 
 })(jQuery);

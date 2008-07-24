@@ -19,7 +19,7 @@
 			</thead> 
 			<tbody> 
 				<c:forEach items="${personList}" var="row">
-					<tr>
+					<tr class="personRow" rel="personView.htm?personId=${row.id}">
 						<td><a href="person.htm?personId=${row.id}">Edit</a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>

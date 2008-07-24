@@ -94,7 +94,11 @@
         <property name="successView" value="giftView"/>
         <property name="giftService" ref="giftService" />
     </bean>
-
+    
+    <bean name="/personView.htm" class="com.mpower.controller.PersonViewController">
+        <property name="personService" ref="personService"/>
+        <property name="giftService" ref="giftService" />
+    </bean>
 
 	<!-- Configures the Tiles layout system -->
 	<bean id="tilesConfigurer"

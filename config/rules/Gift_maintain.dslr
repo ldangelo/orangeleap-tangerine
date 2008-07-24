@@ -47,6 +47,14 @@ rule "Gift - Donation Made - 2nd Time Donor"
 		Write "Peron has donated 2 times"
 end
 
+
+
+
+
+
+
+
+
 rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
 	when
 		There is a person
@@ -55,6 +63,10 @@ rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
 	then
 		Unset the person as a major donor
 end
+
+
+
+
 
 
 function Date getCurrentDate() {

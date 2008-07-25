@@ -21,16 +21,6 @@ public class SessionServiceImpl implements SessionService {
     private SiteDao siteDao;
 
     public User lookupUser(ServletRequest request) {
-		// -- Remove once login has been implemented
-//		System.out.println("WARNING: lookup user hard-coded.  Remove once login has been implemented");
-//		User u = new User();
-//		u.setId(new Long(1));
-//		Site s = new Site();
-//		s.setName("1");
-//		u.setSite(s);
-//		storeUser(request, u);
-		// -- Remove once login has been implemented
-//		return (User) lookupValue((HttpServletRequest) request, SessionValue.USER);
         return userService.getUser(lookupUserId(request));
 	}
 

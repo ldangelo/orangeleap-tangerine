@@ -66,7 +66,7 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${basedir}/lib/compile/bin/mysql-connector-java-5.0.8-bin.jar">
+	          classpath="${mysql.db.classpath}">
 	     	<transaction src="${basedir}/db/clearTable.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>

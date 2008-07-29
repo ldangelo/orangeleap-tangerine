@@ -172,7 +172,7 @@
 				<property name="debug.compile" value="true" />
 			</then>
 			<elseif>
-				<equals arg1="${build.env}" arg2="test" />
+				<equals arg1="${build.env}" arg2="unit-test" />
 				<then>
 					<property name="debug.compile" value="true" />
 				</then>

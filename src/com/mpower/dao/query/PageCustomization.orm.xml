@@ -6,28 +6,35 @@
 	<named-query name="READ_OUT_OF_BOX_SECTION_DEFINITIONS" >
 		<query>
 		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.name is null
+		    WHERE sectionDefinition.pageType = :pageType
+		    AND sectionDefinition.site is null
+		    AND (sectionDefinition.role is null OR sectionDefinition.role IN (:roles))
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_DEFINITIONS" >
 		<query>
 		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType AND sectionDefinition.site.name = :siteName
+		    WHERE sectionDefinition.pageType = :pageType
+		    AND sectionDefinition.site.name = :siteName
+		    AND (sectionDefinition.role is null OR sectionDefinition.role IN (:roles))
 		</query>
 	</named-query>
 
 	<named-query name="READ_OUT_OF_BOX_SECTION_FIELDS" >
 		<query>
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.name is null
+		    WHERE sectionField.sectionDefinition.sectionName = :sectionName
+		    AND sectionField.sectionDefinition.site is null
+		    AND sectionField.site is null
 		</query>
 	</named-query>
 
 	<named-query name="READ_CUSTOMIZED_SECTION_FIELDS" >
 		<query>
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionName = :sectionName AND sectionField.site.name is :siteName
+		    WHERE sectionField.sectionDefinition.id = :sectionDefinitionId
+		    AND sectionField.site.name is :siteName
 		</query>
 	</named-query>
 

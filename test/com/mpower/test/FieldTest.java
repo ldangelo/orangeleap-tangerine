@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.service.customization.FieldService;
 import com.mpower.test.dataprovider.FieldRequiredDataProvider;
@@ -21,7 +22,7 @@ public class FieldTest extends BaseTest {
     private FieldService fieldService;
 
     @Test(dataProvider = "testFieldRequired", dataProviderClass = FieldRequiredDataProvider.class)
-    public void insertRequiredField(Site site, FieldDefinition fieldDefinition, SectionField sectionField, FieldRequired defaultField, FieldRequired modifiedField, boolean expectedValue) {
+    public void insertRequiredField(Site site, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition, SectionField sectionField, FieldRequired defaultField, FieldRequired modifiedField, boolean expectedValue) {
         em.getTransaction().begin();
         em.persist(site);
         String siteName = site.getName();
@@ -29,8 +30,9 @@ public class FieldTest extends BaseTest {
         fieldDefinition.setSite(site);
         em.persist(fieldDefinition);
 
+        em.persist(sectionDefinition);
+
         sectionField.setFieldDefinition(fieldDefinition);
-        sectionField.setSite(site);
         em.persist(sectionField);
         Long sectionFieldId = sectionField.getId();
 

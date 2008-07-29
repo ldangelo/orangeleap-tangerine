@@ -21,95 +21,105 @@ import com.mpower.type.PageType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"SITE_NAME", "SECTION_NAME" }))
+@Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "ROLE" }))
 public class SectionDefinition implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue
-	@Column(name = "SECTION_DEFINITION_ID")
-	private Long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "SECTION_DEFINITION_ID")
+    private Long id;
 
-	@Column(name = "PAGE_TYPE")
-	@Enumerated(EnumType.STRING)
-	private PageType pageType;
+    @Column(name = "PAGE_TYPE")
+    @Enumerated(EnumType.STRING)
+    private PageType pageType;
 
-	@Column(name = "SECTION_NAME")
-	private String sectionName;
+    @Column(name = "SECTION_NAME")
+    private String sectionName;
 
-	@Column(name = "DEFAULT_LABEL", nullable = false)
-	private String defaultLabel;
+    @Column(name = "DEFAULT_LABEL", nullable = false)
+    private String defaultLabel;
 
-	@Column(name = "LAYOUT_TYPE")
-	@Enumerated(EnumType.STRING)
-	private LayoutType layoutType;
+    @Column(name = "LAYOUT_TYPE")
+    @Enumerated(EnumType.STRING)
+    private LayoutType layoutType;
 
-	@Column(name = "SECTION_ORDER")
-	private Integer sectionOrder;
+    @Column(name = "SECTION_ORDER")
+    private Integer sectionOrder;
 
-	@ManyToOne
-	@JoinColumn(name = "SITE_NAME")
-	private Site site;
+    @ManyToOne
+    @JoinColumn(name = "SITE_NAME")
+    private Site site;
 
-	public String getSectionHtmlName() {
-		return sectionName.replace('.', '_');
-	}
+    @Column(name = "ROLE")
+    private String role;
 
-	public LayoutType getLayoutType() {
-		return layoutType;
-	}
+    public String getSectionHtmlName() {
+        return sectionName.replace('.', '_');
+    }
 
-	public void setLayoutType(LayoutType layoutType) {
-		this.layoutType = layoutType;
-	}
+    public LayoutType getLayoutType() {
+        return layoutType;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setLayoutType(LayoutType layoutType) {
+        this.layoutType = layoutType;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Site getSite() {
-		return site;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setSite(Site site) {
-		this.site = site;
-	}
+    public Site getSite() {
+        return site;
+    }
 
-	public PageType getPageType() {
-		return pageType;
-	}
+    public void setSite(Site site) {
+        this.site = site;
+    }
 
-	public void setPageType(PageType pageType) {
-		this.pageType = pageType;
-	}
+    public PageType getPageType() {
+        return pageType;
+    }
 
-	public String getSectionName() {
-		return sectionName;
-	}
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
+    }
 
-	public void setSectionName(String sectionName) {
-		this.sectionName = sectionName;
-	}
+    public String getSectionName() {
+        return sectionName;
+    }
 
-	public Integer getSectionOrder() {
-		return sectionOrder;
-	}
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
 
-	public void setSectionOrder(Integer sectionOrder) {
-		this.sectionOrder = sectionOrder;
-	}
+    public Integer getSectionOrder() {
+        return sectionOrder;
+    }
 
-	public String getDefaultLabel() {
-		return defaultLabel;
-	}
+    public void setSectionOrder(Integer sectionOrder) {
+        this.sectionOrder = sectionOrder;
+    }
 
-	public void setDefaultLabel(String defaultLabel) {
-		this.defaultLabel = defaultLabel;
-	}
+    public String getDefaultLabel() {
+        return defaultLabel;
+    }
+
+    public void setDefaultLabel(String defaultLabel) {
+        this.defaultLabel = defaultLabel;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

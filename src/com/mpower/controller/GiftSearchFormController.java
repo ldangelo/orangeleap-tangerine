@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
-import com.mpower.domain.User;
 import com.mpower.service.GiftService;
 import com.mpower.service.SessionService;
 import com.mpower.service.SessionServiceImpl;
@@ -47,8 +46,7 @@ public class GiftSearchFormController extends SimpleFormController {
         logger.info("**** in formBackingObject");
 
         Person p = new Person();
-        User user = sessionService.lookupUser(request);
-        p.setSite(user.getSite());
+        p.setSite(sessionService.lookupSite(request));
         Gift g = new Gift();
         g.setPerson(p);
         return g;

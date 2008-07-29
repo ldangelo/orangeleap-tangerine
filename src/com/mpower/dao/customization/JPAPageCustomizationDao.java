@@ -19,17 +19,19 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
 	private EntityManager em;
 
 	@SuppressWarnings("unchecked")
-	public List<SectionDefinition> readOutOfBoxSectionDefinitions(PageType pageType) {
+	public List<SectionDefinition> readOutOfBoxSectionDefinitions(PageType pageType, List<String> roles) {
 		Query query = em.createNamedQuery("READ_OUT_OF_BOX_SECTION_DEFINITIONS");
 		query.setParameter("pageType", pageType);
+        query.setParameter("roles", roles);
 		return query.getResultList();
 	}
 
     @SuppressWarnings("unchecked")
-	public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType) {
+	public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType, List<String> roles) {
 		Query query = em.createNamedQuery("READ_CUSTOMIZED_SECTION_DEFINITIONS");
 		query.setParameter("siteName", siteName);
 		query.setParameter("pageType", pageType);
+        query.setParameter("roles", roles);
 		return query.getResultList();
     }
 
@@ -41,10 +43,10 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<SectionField> readCustomizedSectionFields(String siteName, String sectionName) {
+    public List<SectionField> readCustomizedSectionFields(String siteName, Long sectionDefinitionId) {
 		Query query = em.createNamedQuery("READ_CUSTOMIZED_SECTION_FIELDS");
 		query.setParameter("siteName", siteName);
-		query.setParameter("sectionName", sectionName);
+		query.setParameter("sectionDefinitionId", sectionDefinitionId);
 		return query.getResultList();
     }
 }

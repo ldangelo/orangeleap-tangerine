@@ -47,11 +47,11 @@
 <br />
 <h5>Cheat Sheet</h5>
 Username/Password/Organization/Roles:<br/>
-rod/koala/company1/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
-dianne/emu/company1/ROLE_USER, ROLE_TELLER<br/>
+rod/koala/company1/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
+dianne/emu/company1/ROLE_USER, ROLE_MANAGER<br/>
 scott/wombat/company1/ROLE_USER<br/>
-jack/jack/company2/ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER<br/>
-locke/locke/company2/ROLE_USER, ROLE_TELLER<br/>
+jack/jack/company2/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
+locke/locke/company2/ROLE_USER, ROLE_MANAGER<br/>
 hurley/hurley/company2/ROLE_USER
 </body>
 </html>

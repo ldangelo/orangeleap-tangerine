@@ -45,7 +45,7 @@ public class PersonSearchFormController extends SimpleFormController {
         logger.info("**** in formBackingObject");
 
         Person p = new Person();
-        p.setSite(sessionService.lookupUser(request).getSite());
+        p.setSite(sessionService.lookupSite(request));
         return p;
     }
 

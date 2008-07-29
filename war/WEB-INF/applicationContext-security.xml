@@ -17,7 +17,7 @@
         <sec:intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
         <sec:intercept-url pattern="/images/favicon.ico" filters="none" />
         <sec:intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/person.htm" access="ROLE_TELLER" />
+        <sec:intercept-url pattern="/person.htm" access="ROLE_MANAGER" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
 
         <sec:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>
@@ -63,7 +63,7 @@
     </bean>
 
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-    	<constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen"/>
+    	<constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen-dev"/>
 	</bean>
 
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
@@ -97,4 +97,17 @@
          can look for it and detect if password encryption is turned on or not
 	-->
     <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
+
+     <!-- concurrent session filter -->
+        <!--  having only one user at a time -->
+    <bean id="concurrentSessionFilter" class="org.springframework.security.concurrent.ConcurrentSessionFilter">
+      <property name="expiredUrl" value="/security/sessionExpire"/>
+      <property name="sessionRegistry" ref="sessionRegistry"/>
+    </bean>
+    <bean id="concurrentSessionController" class="org.springframework.security.concurrent.ConcurrentSessionControllerImpl">
+           <property name="maximumSessions" value="1"/>
+           <property name="sessionRegistry" ref="sessionRegistry"/>
+           <property name="exceptionIfMaximumExceeded" value="true"/>
+    </bean>
+    <bean id="sessionRegistry" class="org.springframework.security.concurrent.SessionRegistryImpl"/>
 </beans>

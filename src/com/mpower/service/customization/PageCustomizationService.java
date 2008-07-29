@@ -7,7 +7,7 @@ import com.mpower.domain.customization.SectionField;
 import com.mpower.type.PageType;
 
 public interface PageCustomizationService {
-    public List<SectionDefinition> readSectionDefinitionsBySiteAndPageType(String siteName, PageType pageType);
+    public List<SectionDefinition> readSectionDefinitionsBySiteAndPageType(String siteName, PageType pageType, List<String> roles);
 
-    public List<SectionField> readSectionFieldsBySiteAndSectionName(String siteName, String sectionName);
+    public List<SectionField> readSectionFieldsBySiteAndSectionName(String siteName, SectionDefinition sectionDefinition);
 }

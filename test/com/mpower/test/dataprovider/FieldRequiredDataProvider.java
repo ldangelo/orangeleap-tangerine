@@ -5,6 +5,7 @@ import org.testng.annotations.DataProvider;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 
 public class FieldRequiredDataProvider {
@@ -14,8 +15,12 @@ public class FieldRequiredDataProvider {
         Site site1 = new Site();
         site1.setName("site 1");
 
+        SectionDefinition sectionDefinition = new SectionDefinition();
+        sectionDefinition.setSectionName("section 1");
+        sectionDefinition.setDefaultLabel("section 1");
+
         SectionField sectionField = new SectionField();
-        sectionField.setSectionName("section 1");
+        sectionField.setSectionDefinition(sectionDefinition);
 
         FieldDefinition fieldDefinition = new FieldDefinition();
         fieldDefinition.setFieldName("field 1");
@@ -23,15 +28,15 @@ public class FieldRequiredDataProvider {
         fieldDefinition.setDefaultLabel("field 1");
 
         FieldRequired defaultField = new FieldRequired();
-        defaultField.setSectionName(sectionField.getSectionName());
+        defaultField.setSectionName(sectionField.getSectionDefinition().getSectionName());
         defaultField.setFieldDefinitionId(fieldDefinition.getFieldName());
         defaultField.setRequired(false);
 
         FieldRequired modifiedField = new FieldRequired();
-        modifiedField.setSectionName(sectionField.getSectionName());
+        modifiedField.setSectionName(sectionField.getSectionDefinition().getSectionName());
         modifiedField.setFieldDefinitionId(fieldDefinition.getFieldName());
         modifiedField.setRequired(true);
 
-        return new Object[][] { new Object[] { site1, fieldDefinition, sectionField, defaultField, modifiedField, true } };
+        return new Object[][] { new Object[] { site1, fieldDefinition, sectionDefinition, sectionField, defaultField, modifiedField, true } };
     }
 }

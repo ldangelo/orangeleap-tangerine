@@ -6,13 +6,12 @@ import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.PageType;
 
-
 public interface PageCustomizationDAO {
-	public List<SectionDefinition> readOutOfBoxSectionDefinitions(PageType pageType);
+    public List<SectionDefinition> readOutOfBoxSectionDefinitions(PageType pageType, List<String> roles);
 
-    public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType);
+    public List<SectionDefinition> readCustomizedSectionDefinitions(String siteName, PageType pageType, List<String> roles);
 
     public List<SectionField> readOutOfBoxSectionFields(String sectionName);
 
-    public List<SectionField> readCustomizedSectionFields(String siteName, String sectionName);
+    public List<SectionField> readCustomizedSectionFields(String siteName, Long sectionDefinitionId);
 }

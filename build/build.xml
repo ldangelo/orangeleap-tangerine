@@ -89,7 +89,6 @@
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
-	     	<transaction src="${basedir}/db/dev/devSetup/userSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/personSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/phoneSetup.sql"/>

@@ -6,5 +6,5 @@ import java.util.Locale;
 import com.mpower.domain.customization.SectionField;
 
 public interface FieldHandler {
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Long userId, Object model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model);
 }

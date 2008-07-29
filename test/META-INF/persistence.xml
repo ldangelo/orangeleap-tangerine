@@ -6,7 +6,6 @@
 	<persistence-unit name="MPowerUnitTestPu" transaction-type="RESOURCE_LOCAL">
 		<!-- This is the test file!!!!! -->
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <mapping-file>com/mpower/dao/query/User.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/Message.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/PageCustomization.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/Field.orm.xml</mapping-file>
@@ -24,7 +23,6 @@
 	<persistence-unit name="MPowerDevPu" transaction-type="RESOURCE_LOCAL">
 		<!-- This is the test file!!!!! -->
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <mapping-file>com/mpower/dao/query/User.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/Message.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/PageCustomization.orm.xml</mapping-file>
       	<mapping-file>com/mpower/dao/query/Field.orm.xml</mapping-file>

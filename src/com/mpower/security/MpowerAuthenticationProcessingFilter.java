@@ -51,6 +51,12 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
     }
 
     @Override
+    protected void onPreAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+        HttpUtil.removeCookie("siteCookie", response);
+        super.onPreAuthentication(request, response);
+    }
+
+    @Override
     protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authResult) throws IOException {
         super.onSuccessfulAuthentication(request, response, authResult);
         HttpUtil.setCookie("siteCookie", obtainSite(request), Integer.MAX_VALUE, response);

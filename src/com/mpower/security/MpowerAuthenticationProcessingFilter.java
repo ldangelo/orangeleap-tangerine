@@ -1,6 +1,9 @@
 package com.mpower.security;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.Authentication;
@@ -8,6 +11,8 @@ import org.springframework.security.AuthenticationException;
 import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
 import org.springframework.security.util.TextUtils;
 import org.springframework.util.Assert;
+
+import com.mpower.util.HttpUtil;
 
 public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
@@ -43,6 +48,12 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         // Allow subclasses to set the "details" property
         setDetails(request, authRequest);
         return getAuthenticationManager().authenticate(authRequest);
+    }
+
+    @Override
+    protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authResult) throws IOException {
+        super.onSuccessfulAuthentication(request, response, authResult);
+        HttpUtil.setCookie("siteCookie", obtainSite(request), Integer.MAX_VALUE, response);
     }
 
     protected String obtainSite(HttpServletRequest request) {

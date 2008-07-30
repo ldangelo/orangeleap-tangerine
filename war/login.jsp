@@ -6,6 +6,8 @@
 	<title>MPower Login</title>
 	<link href="<c:url value='/css/login.css' />" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
 </head>
 <body>
 <div class="loginPane">
@@ -53,5 +55,12 @@ scott/wombat/company1/ROLE_USER<br/>
 jack/jack/company2/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
 locke/locke/company2/ROLE_USER, ROLE_MANAGER<br/>
 hurley/hurley/company2/ROLE_USER
+<script type="text/javascript">
+     $(document).ready(function() {
+         if ($.cookie('siteCookie') != null && $.cookie('siteCookie') != "") {
+        	 $("#sitename").attr("value",$.cookie('siteCookie'));
+         }
+     });
+</script>
 </body>
 </html>

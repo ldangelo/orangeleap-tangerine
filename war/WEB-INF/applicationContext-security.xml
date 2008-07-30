@@ -17,6 +17,8 @@
         <sec:intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
         <sec:intercept-url pattern="/images/favicon.ico" filters="none" />
         <sec:intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/js/jquery.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/person.htm" access="ROLE_MANAGER" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
 
@@ -63,7 +65,7 @@
     </bean>
 
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-    	<constructor-arg value="ldap://10.0.2.143:10389/o=mpowerOpen-dev"/>
+    	<constructor-arg value="ldap://localhost:10389/o=mpowerOpen-dev"/>
 	</bean>
 
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">

@@ -93,6 +93,9 @@ public class Gift implements Customizable, Serializable {
 
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<GiftCustomField> giftCustomFields;
+    
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<DistributionLine> distributionLines;
 
     @Transient
     private Integer creditCardExpirationMonth;

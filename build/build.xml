@@ -54,7 +54,7 @@
 				<antcall target="5. Stop Tomcat"/>
 			</try>
 		</trycatch>
-		<sleep seconds="5"/>
+		<sleep seconds="25"/>
 		<antcall target="3. Undeploy War"/>
 		<antcall target="1. Deploy Exploded War"/>
 		<antcall target="4. Start Tomcat - Debug Mode"/>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -17,6 +18,7 @@
 
     	<c:if test="${not empty param.login_error}">
     		<p style="color:red;padding:0;margin:0;">The information you provided could not be validated.</p>
+    		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION}"/></p>
     	</c:if>
 
     	<form name="f" action="<c:url value="/loginProcess" />" method="post">

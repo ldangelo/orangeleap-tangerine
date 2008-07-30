@@ -62,6 +62,7 @@
                 <ref local="anonymousAuthenticationProvider"/>
             </list>
         </property>
+        <property name="sessionController" ref="concurrentSessionController"/>
     </bean>
 
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
@@ -100,7 +101,7 @@
 	-->
     <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
 
-     <!-- concurrent session filter -->
+    <!-- concurrent session filter -->
         <!--  having only one user at a time -->
     <bean id="concurrentSessionFilter" class="org.springframework.security.concurrent.ConcurrentSessionFilter">
       <property name="expiredUrl" value="/security/sessionExpire"/>

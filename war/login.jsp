@@ -58,11 +58,12 @@ jack/jack/company2/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
 locke/locke/company2/ROLE_USER, ROLE_MANAGER<br/>
 hurley/hurley/company2/ROLE_USER
 <script type="text/javascript">
-     $(document).ready(function() {
-         if ($.cookie('siteCookie') != null && $.cookie('siteCookie') != "") {
-        	 $("#sitename").attr("value",$.cookie('siteCookie'));
-         }
-     });
+	$(document).ready(function() {
+		var savedOrgName = $.cookie('siteCookie');
+		if (savedOrgName != null && savedOrgName != "") {
+			$("#sitename").attr("value",savedOrgName);
+		}
+	});
 </script>
 </body>
 </html>

@@ -93,7 +93,7 @@ public class Gift implements Customizable, Serializable {
 
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<GiftCustomField> giftCustomFields;
-    
+
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<DistributionLine> distributionLines;
 
@@ -323,5 +323,13 @@ public class Gift implements Customizable, Serializable {
             customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
         }
         return customFieldMap;
+    }
+
+    public List<DistributionLine> getDistributionLines() {
+        return distributionLines;
+    }
+
+    public void setDistributionLines(List<DistributionLine> distributionLines) {
+        this.distributionLines = distributionLines;
     }
 }

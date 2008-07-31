@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.SiteDao;
+import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
@@ -80,6 +81,11 @@ public class GiftServiceImpl implements GiftService {
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
+
+        // TODO: remove after get this working
+        gift.addDistributionLine(new DistributionLine(gift));
+        gift.addDistributionLine(new DistributionLine(gift));
+        gift.addDistributionLine(new DistributionLine(gift));
 
         // TODO: consider caching techniques for the default Person
         return gift;

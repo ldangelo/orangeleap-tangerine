@@ -326,10 +326,17 @@ public class Gift implements Customizable, Serializable {
     }
 
     public List<DistributionLine> getDistributionLines() {
+        if (distributionLines == null) {
+            distributionLines = new ArrayList<DistributionLine>();
+        }
         return distributionLines;
     }
 
     public void setDistributionLines(List<DistributionLine> distributionLines) {
         this.distributionLines = distributionLines;
+    }
+
+    public void addDistributionLine(DistributionLine distributionLine) {
+        getDistributionLines().add(distributionLine);
     }
 }

@@ -36,22 +36,29 @@ public class DistributionLine implements Customizable, Serializable {
 
     @Column(name = "AMOUNT")
     private BigDecimal amount;
-    
+
     @Column(name = "PROJECT_CODE")
     private String projectCode;
-    
-    @Column(name = "MOTIVATION_CODE")    
+
+    @Column(name = "MOTIVATION_CODE")
     private String motivationCode;
-    
+
     @OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
     private List<DistributionLineCustomField> distributionLineCustomFields;
-    
+
     @ManyToOne
     @JoinColumn(name = "GIFT_ID")
     private Gift gift;
-    
+
     @Transient
     private Map<String, CustomField> customFieldMap = null;
+
+    public DistributionLine() {
+    }
+
+    public DistributionLine(Gift gift) {
+        this.gift = gift;
+    }
 
     public Long getId() {
         return id;
@@ -60,7 +67,7 @@ public class DistributionLine implements Customizable, Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public BigDecimal getAmount() {
         return amount;
     }
@@ -70,22 +77,22 @@ public class DistributionLine implements Customizable, Serializable {
     }
 
     public String getProjectCode() {
-		return projectCode;
-	}
+        return projectCode;
+    }
 
-	public void setProjectCode(String projectCode) {
-		this.projectCode = projectCode;
-	}
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
 
-	public String getMotivationCode() {
-		return motivationCode;
-	}
+    public String getMotivationCode() {
+        return motivationCode;
+    }
 
-	public void setMotivationCode(String motivationCode) {
-		this.motivationCode = motivationCode;
-	}
+    public void setMotivationCode(String motivationCode) {
+        this.motivationCode = motivationCode;
+    }
 
-	public List<DistributionLineCustomField> getCustomFields() {
+    public List<DistributionLineCustomField> getCustomFields() {
         if (distributionLineCustomFields == null) {
             distributionLineCustomFields = new ArrayList<DistributionLineCustomField>();
         }
@@ -100,12 +107,12 @@ public class DistributionLine implements Customizable, Serializable {
         return customFieldMap;
     }
 
-	public Gift getGift() {
-		return gift;
-	}
+    public Gift getGift() {
+        return gift;
+    }
 
-	public void setGift(Gift gift) {
-		this.gift = gift;
-	}
+    public void setGift(Gift gift) {
+        this.gift = gift;
+    }
 
 }

@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.Site;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.FieldType;
@@ -21,6 +24,10 @@ import com.mpower.type.FieldType;
 @Table(name = "SECTION_FIELD", uniqueConstraints = @UniqueConstraint(columnNames = { "SECTION_DEFINITION_ID", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID", "SITE_NAME" }))
 public class SectionField implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
@@ -17,6 +20,10 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @Table(name = "FIELD_REQUIRED", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
 public class FieldRequired implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

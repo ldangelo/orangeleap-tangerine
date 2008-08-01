@@ -1,7 +1,14 @@
 package com.mpower.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class AESException extends RuntimeException {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     /**
      * Serial Version ID
      */

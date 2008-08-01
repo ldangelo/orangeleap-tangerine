@@ -3,6 +3,8 @@ package com.mpower.web.customization;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -16,6 +18,10 @@ import com.mpower.type.MessageResourceType;
 
 public class GenericFieldHandler implements FieldHandler {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     protected FieldService fieldService;
     protected MessageService messageService;
 

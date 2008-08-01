@@ -12,17 +12,24 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Person;
 import com.mpower.domain.PersonPhone;
+import com.mpower.domain.Site;
 import com.mpower.util.EntityUtility;
 
 @Repository("personDao")
 public class JPAPersonDao implements PersonDao {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     @PersistenceContext
     private EntityManager em;
 
@@ -173,4 +180,12 @@ public class JPAPersonDao implements PersonDao {
         query.setParameter("personId", personId);
         query.executeUpdate();
     }
+
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<Person> readAllPeopleBySite(Site site) {
+		Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE");
+		query.setParameter("site", site);
+		return query.getResultList();
+	}
 }

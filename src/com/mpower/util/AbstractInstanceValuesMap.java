@@ -7,8 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @SuppressWarnings("unchecked")
 public abstract class AbstractInstanceValuesMap extends HashMap {
+	
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
 
 	private static final long serialVersionUID = 1L;
 	private List originalList;

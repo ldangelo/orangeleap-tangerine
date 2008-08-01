@@ -13,10 +13,17 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.annotation.AutoPopulate;
 
 public class TemporalTimestampListener {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     @PrePersist
     @PreUpdate
     public void setTimestamps(Object entity) throws Exception {

@@ -4,9 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Embeddable
 public class EntityCustomFieldKey implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
 	private static final long serialVersionUID = 1L;
 
 	private Long entityId;

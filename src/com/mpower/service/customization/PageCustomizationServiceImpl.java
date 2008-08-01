@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.PageCustomizationDAO;
@@ -19,7 +21,12 @@ import com.mpower.type.RoleType;
 
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {
-    private static final Integer ZERO = Integer.valueOf(0);
+  
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
+	private static final Integer ZERO = Integer.valueOf(0);
 
     @Resource(name = "pageCustomizationDao")
     private PageCustomizationDAO pageCustomizationDao;

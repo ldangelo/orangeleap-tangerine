@@ -1,0 +1,96 @@
+package com.mpower.domain
+
+import com.mpower.service.GiftService;
+import com.mpower.service.PersonService;
+import com.mpower.domain.Gift;
+import com.mpower.domain.Person;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.ArrayList;
+
+global org.springframework.context.ApplicationContext applicationContext;
+
+expander company2_Language.dsl
+
+rule "Gift - Donation Made - Analyze Major Donor - Set Major Donor"
+	when
+		There is a person
+			- who is not a major donor
+		who has donated at least 2000 dollars over the past 12 "months"
+	then
+		Set the person as a major donor
+end
+
+rule "Gift - Donation Made - Analyze Lapsed Donor - Unset Lapsed Donor"
+	when
+		There is a person
+			- who is a lapsed donor
+		who just donated a gift
+			- with a positive value
+	then
+		Unset the person as a lapsed donor
+end
+
+rule "Gift - Donation Made - 1st Time Donor"
+	when
+		There is a person
+		who has donated 1 gifts
+	then
+		Write "Person has donated 1 time"
+end
+
+rule "Gift - Donation Made - 2nd Time Donor"
+	when
+		There is a person
+		who has donated 2 gifts
+	then
+		Write "Person has donated 2 times"
+end
+
+
+
+
+
+
+
+
+
+rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
+	when
+		There is a person
+			- who is a major donor
+		who has not donated at least 5000 dollars over the past 12 "months"
+	then
+		Unset the person as a major donor
+end
+
+
+
+
+
+function Date getCurrentDate() {
+	Calendar cal = Calendar.getInstance();
+	return cal.getTime();
+}
+
+function Date getBeginningOfYearDate() {
+	Calendar cal = Calendar.getInstance();
+	cal.set(Calendar.YEAR, 0, 0, 0, 0, 0);
+	return cal.getTime();
+}
+
+function Date getBeginDate(int number, String timeUnit) {
+	Calendar cal = Calendar.getInstance();
+	StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
+	if (args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
+		args.deleteCharAt(args.length()-1);
+	}
+	if (args.toString().equals("MONTH")) {
+		cal.add(Calendar.MONTH, -(number));
+	}
+	if (args.toString().equals("YEAR")) {
+		cal.add(Calendar.YEAR, -(number));
+	}
+		return cal.getTime();
+}
+

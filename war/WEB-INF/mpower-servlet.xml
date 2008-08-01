@@ -122,6 +122,8 @@
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
+  	
+  	
 
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob"/>

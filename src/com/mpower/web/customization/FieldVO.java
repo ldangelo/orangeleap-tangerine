@@ -3,10 +3,17 @@ package com.mpower.web.customization;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.mpower.type.FieldType;
 
 public class FieldVO {
+	
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
 	public List<String> referenceValues;
     public List<String> codes;
     public List<String> displayValues;

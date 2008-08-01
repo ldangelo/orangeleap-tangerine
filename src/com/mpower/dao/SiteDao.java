@@ -11,4 +11,7 @@ public interface SiteDao {
 	public Site readSite(String siteName);
 
 	public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
+	
+	public List<Site> readSites();
+	
 }

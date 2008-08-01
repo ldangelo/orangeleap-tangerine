@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.Site;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.LayoutType;
@@ -24,6 +27,10 @@ import com.mpower.type.PageType;
 @Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "ROLE" }))
 public class SectionDefinition implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

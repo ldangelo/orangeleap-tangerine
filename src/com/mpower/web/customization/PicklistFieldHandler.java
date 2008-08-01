@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
@@ -15,6 +17,10 @@ import com.mpower.type.MessageResourceType;
 
 public class PicklistFieldHandler extends GenericFieldHandler {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     public PicklistFieldHandler(ApplicationContext appContext) {
         super(appContext);
     }

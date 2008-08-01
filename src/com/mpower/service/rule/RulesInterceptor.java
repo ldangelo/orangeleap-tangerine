@@ -21,10 +21,12 @@ import org.drools.rule.Package;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 
@@ -35,7 +37,7 @@ public class RulesInterceptor implements ApplicationContextAware {
     private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
     private ApplicationContext applicationContext;
-
+    
     @Around(value = "execution(* com.mpower.service..*.maintain*(..)) " +
                  "|| execution(* com.mpower.service..*.save*(..))" +
     		     "|| execution(* com.mpower.service..*.refund*(..))")
@@ -73,13 +75,15 @@ public class RulesInterceptor implements ApplicationContextAware {
 
         workingMemory.setGlobal("applicationContext", applicationContext);
         logger.info("*** firing all rules");
+ 
         workingMemory.fireAllRules();
 
         return pjp.proceed(args);
     }
 
     private RuleBase loadRules(Object[] entities) throws Exception {
-        try {
+    	
+    	try {
             if (entities == null || entities.length == 0) {
                 return null;
             }
@@ -91,13 +95,14 @@ public class RulesInterceptor implements ApplicationContextAware {
             // Consider checking the database first and then falling back to the file.
             for (Object entity : entities) {
 
-                String name = "/rules/" + entity.getClass().getSimpleName() + "_maintain.dslr";
+                String site = ((MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getSite();
+                String name = "/rules/" + site + "_" + entity.getClass().getSimpleName() + "_maintain.dslr";
                 InputStream stream = getClass().getResourceAsStream(name);
                 if (stream == null) {
                     continue;
                 }
                 foundRule = true;
-                String dslName = "/rules/Site1Language.dsl";
+                String dslName = "/rules/" + site + "_Language.dsl";
                 InputStream dslStream = getClass().getResourceAsStream(dslName);
                 builder.addPackageFromDrl(new InputStreamReader(stream), new InputStreamReader(dslStream));
                 IOUtils.closeQuietly(stream);

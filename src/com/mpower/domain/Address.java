@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
@@ -17,6 +19,10 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "ADDRESS")
 public class Address implements Serializable {
+	
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
 
     private static final long serialVersionUID = 1L;
 

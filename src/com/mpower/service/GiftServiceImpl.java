@@ -124,6 +124,7 @@ public class GiftServiceImpl implements GiftService {
     }
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public List<Gift> readGiftsByPersonId(Long personId) {
 		return giftDao.readGiftsByPersonId(personId);
 	}
@@ -133,4 +134,5 @@ public class GiftServiceImpl implements GiftService {
 	public List<Gift> readAllGifts() {
 		return giftDao.readAllGifts();
 	}
+	
 }

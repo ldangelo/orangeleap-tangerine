@@ -3,6 +3,8 @@ package com.mpower.service;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,10 @@ import com.mpower.security.MpowerAuthenticationToken;
 @Component("sessionService")
 public class SessionServiceImpl implements SessionService {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 

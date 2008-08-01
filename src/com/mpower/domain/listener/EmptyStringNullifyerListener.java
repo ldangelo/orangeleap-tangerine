@@ -7,8 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class EmptyStringNullifyerListener {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     @PrePersist
     @PreUpdate
     public void nullifyEmptyString(Object entity) throws Exception {

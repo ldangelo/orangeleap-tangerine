@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.PersonDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Person;
+import com.mpower.domain.Site;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.service.validation.PersonValidator;
@@ -24,6 +27,10 @@ import com.mpower.type.EntityType;
 @Service("personService")
 public class PersonServiceImpl implements PersonService {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     @Resource(name = "personDao")
     private PersonDao personDao;
 
@@ -78,5 +85,11 @@ public class PersonServiceImpl implements PersonService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void setLapsedDonor(Long personId) {
 		personDao.setLapsedDonor(personId);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public List<Person> readAllPeopleBySite(Site site) {
+		return personDao.readAllPeopleBySite(site);
 	}
 }

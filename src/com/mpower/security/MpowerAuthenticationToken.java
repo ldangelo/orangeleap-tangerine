@@ -1,10 +1,17 @@
 package com.mpower.security;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 
 public class MpowerAuthenticationToken extends UsernamePasswordAuthenticationToken {
-    private static final long serialVersionUID = 1L;
+    
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
+	private static final long serialVersionUID = 1L;
     private String site;
 
     public MpowerAuthenticationToken(Object principal, Object credentials, String site) {

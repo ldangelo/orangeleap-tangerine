@@ -11,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +22,10 @@ import com.mpower.util.EntityUtility;
 
 @Repository("giftDao")
 public class JPAGiftDao implements GiftDao {
+	
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
 
     @PersistenceContext
     private EntityManager em;
@@ -155,4 +161,5 @@ public class JPAGiftDao implements GiftDao {
         List<Gift> lg = query.getResultList();
         return lg;
     }
+
 }

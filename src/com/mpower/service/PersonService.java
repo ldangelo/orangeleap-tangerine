@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Person;
+import com.mpower.domain.Site;
 import com.mpower.service.exception.PersonValidationException;
 
 public interface PersonService {
@@ -22,5 +23,7 @@ public interface PersonService {
     public List<Person> readAllPeople();
 
     public void setLapsedDonor(Long personId);
+    
+    public List<Person> readAllPeopleBySite(Site site);
 
 }

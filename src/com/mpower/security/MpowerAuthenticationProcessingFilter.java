@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
@@ -16,6 +18,10 @@ import com.mpower.util.HttpUtil;
 
 public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     public static final String SITE_KEY = "sitename";
 
     private String siteParameter = SITE_KEY;

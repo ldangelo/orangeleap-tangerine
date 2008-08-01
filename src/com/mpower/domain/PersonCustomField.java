@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
 @Entity
@@ -20,6 +23,10 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @Table(name = "PERSON_CUSTOM_FIELD")
 public class PersonCustomField implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

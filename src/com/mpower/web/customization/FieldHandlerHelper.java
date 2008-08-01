@@ -3,12 +3,19 @@ package com.mpower.web.customization;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.FieldType;
 
 public class FieldHandlerHelper {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
 	private static Map<FieldType, FieldHandler> fieldTypeToHandlerMap = new HashMap<FieldType, FieldHandler>();
 	private static boolean initialized;
 

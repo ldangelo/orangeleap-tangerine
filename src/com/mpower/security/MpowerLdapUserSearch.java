@@ -2,6 +2,8 @@ package com.mpower.security;
 
 import javax.naming.directory.SearchControls;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
@@ -13,7 +15,11 @@ import org.springframework.util.Assert;
 
 public class MpowerLdapUserSearch implements LdapUserSearch {
 
-    private ContextSource contextSource;
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
+	private ContextSource contextSource;
 
     /**
      * The LDAP SearchControls object used for the search. Shared between searches so shouldn't be modified once the bean has been configured.

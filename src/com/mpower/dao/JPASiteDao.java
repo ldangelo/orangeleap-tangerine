@@ -6,7 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.EntityDefault;
@@ -15,6 +19,10 @@ import com.mpower.type.EntityType;
 @Repository("siteDao")
 public class JPASiteDao implements SiteDao {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
 	@PersistenceContext
     private EntityManager em;
 
@@ -31,4 +39,12 @@ public class JPASiteDao implements SiteDao {
         query.setParameter("entityTypes", entityTypes);
         return query.getResultList();
     }
+
+	@SuppressWarnings("unchecked")
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public List<Site> readSites() {
+		Query query = em.createNamedQuery("READ_SITES");
+		return query.getResultList();
+	}
 }

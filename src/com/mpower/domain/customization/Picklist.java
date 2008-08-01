@@ -13,6 +13,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.Site;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
@@ -20,7 +23,12 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PICKLIST")
 public class Picklist implements Serializable {
-    private static final long serialVersionUID = 1L;
+   
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
+	private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "PICKLIST_ID")

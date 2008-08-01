@@ -7,6 +7,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -17,6 +19,10 @@ import com.mpower.type.MessageResourceType;
 
 public class SectionHeaderTag extends TagSupport {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
     private SectionDefinition sectionDefinition;
     private MessageService messageService;

@@ -1,4 +1,4 @@
-[condition][]A gift has been donated=$gift : Gift()
+[condition][com.mpower.domain.Gift]There is a gift=$gift : Gift($giftId : id)
 [consequence][]Write "{x}"=System.out.println("{x}");
 [consequence][]Set the person as a major donor=$person.setMajorDonor(true);
 [condition][com.mpower.domain.Person]There is a person=$person : Person($personId : id)
@@ -16,3 +16,5 @@
 [condition][com.mpower.domain.Gift]- with a positive value=value > 0
 [condition][com.mpower.domain.Person]- who is a major donor=majorDonor == true
 [condition][com.mpower.domain.Person]- who is not a major donor=majorDonor == false
+[condition][]who has donated in {x} out of the last {y} months=$gifts : ArrayList(size >= {x}) from collect(Gift(person.id == $personId)) eval(analyzeMonthlyDonor($gifts, {x}, {y}))
+[condition][]who has donated al {number} gifts=$totalGifts : ArrayList(size >= {number}) from collect (Gift(value > 0, person.id == $personId))

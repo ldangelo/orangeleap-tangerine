@@ -1,0 +1,128 @@
+package com.mpower.domain
+
+import com.mpower.service.PersonService;
+import com.mpower.service.GiftService;
+import com.mpower.domain.Person;
+import com.mpower.domain.Gift;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.ArrayList;
+
+expander company2_Language.dsl
+
+global org.springframework.context.ApplicationContext applicationContext;
+
+rule "Analyze Lapsed Donor"
+	when
+		There is a person
+		>$totalGifts : ArrayList(size >= 1) from collect (Gift(value > 0, person.id == $personId))
+		who has not made a donation in the past 2 "months"
+	then
+		Set the person as a lapsed donor
+end
+
+rule "Set Monthly Donors"
+	when
+		There is a person
+		who has donated in 4 out of the last 4 months
+	then
+		>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
+end
+
+rule "GIFT"
+	when
+		There is a person
+	then
+		>System.out.println($personId);
+end
+
+
+
+
+
+
+
+function boolean analyzeMonthlyDonor(ArrayList giftObjects, int numberOfMatches, int numberOfMonths) {
+	
+	int numMatches = 0;
+	
+	ArrayList<Gift> gifts = new ArrayList<Gift>();
+	
+	Gift gift = null;
+	
+	for(Object g : giftObjects) {		
+		if(g instanceof Gift) {
+			gift = (Gift)g;	
+			gifts.add(gift);
+		}
+	}
+	
+	# Cycle through the last x months
+	for (int i = 0; i < numberOfMonths; i++) {
+		# For each gift
+		for (Gift g : gifts) {
+			# If there is a gift in month x, add to number of matches
+			if((g.getTransactionDate().after(getBeginningOfMonthDate(i))) && (g.getTransactionDate().before(getEndOfMonthDate(i)))) {
+				numMatches += 1;
+				if(numberOfMatches == numMatches) { 
+					return true;
+				}
+				break;
+			}
+			
+		}
+		
+	}
+	return false;
+
+}
+
+
+
+function Date getBeginDate(int number, String timeUnit) {
+	Calendar cal = Calendar.getInstance();
+	StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
+	if (args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
+		args.deleteCharAt(args.length()-1);
+	}
+	if (args.toString().equals("MONTH")) {
+		cal.add(Calendar.MONTH, -(number));
+	}
+	if (args.toString().equals("YEAR")) {
+		cal.add(Calendar.YEAR, -(number));
+	}
+		return cal.getTime();
+}
+
+function int getMonthOfTransaction(Date date) {
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(date);
+	return cal.get(Calendar.MONTH);
+}
+
+function Date getBeginningOfMonthDate(int number) {
+	Calendar cal = Calendar.getInstance();
+	cal.add(Calendar.MONTH, -(number));
+	cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.getMinimum(Calendar.DAY_OF_MONTH), 0, 0, 0);
+	return cal.getTime();
+}
+
+function Date getEndOfMonthDate(int number) {
+	Calendar cal = Calendar.getInstance();
+	cal.add(Calendar.MONTH, -(number));
+	cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.getMaximum(Calendar.DAY_OF_MONTH), 0, 0, 0);
+	return cal.getTime();
+}
+
+function Date getDateWindowForMonthlyDonor(Date date) {
+	Calendar cal = Calendar.getInstance();
+	cal.setTime(date);
+	cal.add(Calendar.DATE, -35);
+	System.out.println(cal.getTime());
+	return cal.getTime();	
+}
+
+function Date getCurrentDate() {
+	Calendar cal = Calendar.getInstance();
+	return cal.getTime();
+}

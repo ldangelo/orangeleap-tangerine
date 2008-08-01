@@ -44,7 +44,7 @@ rule "Gift - Donation Made - 2nd Time Donor"
 		There is a person
 		who has donated 2 gifts
 	then
-		Write "Peron has donated 2 times"
+		Write "Person has donated 2 times"
 end
 
 
@@ -63,7 +63,6 @@ rule "Gift - Donation Made - Analyze Major Donor - Unset Major Donor"
 	then
 		Unset the person as a major donor
 end
-
 
 
 

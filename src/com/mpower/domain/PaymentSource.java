@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 
@@ -23,6 +25,10 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @Table(name = "PAYMENT_SOURCE")
 public class PaymentSource implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

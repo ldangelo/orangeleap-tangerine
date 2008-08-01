@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.Site;
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.MessageResourceType;
@@ -24,6 +27,10 @@ import com.mpower.type.MessageResourceType;
 @Table(name = "MESSAGE_RESOURCE", uniqueConstraints = { @UniqueConstraint(columnNames = { "MESSAGE_KEY", "LANGUAGE_ABBREVIATION", "MESSAGE_RESOURCE_TYPE", "SITE_NAME" }) })
 public class MessageResource implements Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id

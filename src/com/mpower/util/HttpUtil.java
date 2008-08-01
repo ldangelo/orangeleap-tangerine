@@ -4,8 +4,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class HttpUtil {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     public static String getCookieValue(String name, HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

@@ -8,5 +8,12 @@
 		WHERE entityDefault.siteName = :siteName
 		AND entityDefault.entityType IN (:entityTypes)</query>
 	</named-query>
+	
+	<named-query name="READ_SITES">
+		<query>
+			SELECT site
+			FROM com.mpower.domain.Site site
+		</query>
+	</named-query>
 
 </entity-mappings>

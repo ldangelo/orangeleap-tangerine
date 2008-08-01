@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Person;
+import com.mpower.domain.Site;
 
 public interface PersonDao {
 
@@ -19,5 +20,7 @@ public interface PersonDao {
     public List<Person> readAllPeople();
 
     public void setLapsedDonor(Long personId);
+    
+    public List<Person> readAllPeopleBySite(Site site);
 
 }

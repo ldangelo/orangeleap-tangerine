@@ -18,6 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.DistributionLineCustomFieldMap;
@@ -27,6 +30,10 @@ import com.mpower.util.DistributionLineCustomFieldMap;
 @Table(name = "DISTRO_LINE")
 public class DistributionLine implements Customizable, Serializable {
 
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+	
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -57,7 +64,6 @@ public class DistributionLine implements Customizable, Serializable {
     }
 
     public DistributionLine(Gift gift) {
-        this();
         this.gift = gift;
     }
 

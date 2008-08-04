@@ -24,7 +24,7 @@ import com.mpower.util.EntityUtility;
 public class JPAGiftDao implements GiftDao {
 	
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = LogFactory.getLog(getClass());
 
 
     @PersistenceContext

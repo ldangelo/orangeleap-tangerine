@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,11 +26,11 @@ import com.mpower.type.FieldType;
 @Table(name = "FIELD_DEFINITION")
 public class FieldDefinition implements Serializable {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-	
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Id
     @Column(name = "FIELD_DEFINITION_ID")

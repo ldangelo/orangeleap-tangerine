@@ -35,11 +35,11 @@ import com.mpower.util.GiftCustomFieldMap;
 @Table(name = "GIFT")
 public class Gift implements Customizable, Serializable {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-	
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Id
     @GeneratedValue

@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
@@ -20,11 +21,11 @@ import com.mpower.type.EntityType;
 @Table(name = "ENTITY_DEFAULT", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "ENTITY_FIELD_NAME" }) })
 public class EntityDefault implements Serializable {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-	
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Id
     @GeneratedValue

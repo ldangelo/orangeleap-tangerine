@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
@@ -20,11 +21,11 @@ import com.mpower.domain.listener.EmptyStringNullifyerListener;
 @Table(name = "PHONE")
 public class Phone implements Serializable {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-	
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Id
     @GeneratedValue

@@ -34,11 +34,11 @@ import com.mpower.util.PhoneMap;
 @Table(name = "PERSON")
 public class Person implements Serializable {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-	
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
     @Id
     @GeneratedValue

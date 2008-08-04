@@ -17,8 +17,7 @@
 	    <h1 class="loginHeader">Please sign in.</h1>
 
     	<c:if test="${not empty param.login_error}">
-    		<p style="color:red;padding:0;margin:0;">The information you provided could not be validated.</p>
-    		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION}"/></p>
+    		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/></p>
     	</c:if>
 
     	<form name="f" action="<c:url value="/loginProcess" />" method="post">

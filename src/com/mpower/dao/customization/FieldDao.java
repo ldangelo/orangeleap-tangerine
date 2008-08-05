@@ -9,4 +9,6 @@ public interface FieldDao {
     public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
 
     public boolean readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
+
+    public String readFieldValidation(String siteName, Long sectionFieldId);
 }

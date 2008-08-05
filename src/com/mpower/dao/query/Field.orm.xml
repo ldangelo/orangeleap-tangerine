@@ -31,4 +31,12 @@
 		</query>
 	</named-query>
 
+	<named-query name="QUERY_VALIDATION_BY_SITE_AND_SECTION_FIELD" >
+		<query>
+		    SELECT validation.regex FROM com.mpower.domain.customization.Validation validation
+		    WHERE ((validation.siteName IS NULL) OR (validation.siteName = :siteName))
+		    AND validation.sectionField.id = :sectionFieldId
+		</query>
+	</named-query>
+
 </entity-mappings>

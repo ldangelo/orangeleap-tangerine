@@ -13,10 +13,11 @@ import org.springframework.stereotype.Repository;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.Picklist;
+import com.mpower.domain.customization.Validation;
 
 @Repository("fieldDao")
 public class JPAFieldDao implements FieldDao {
-	
+
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -77,5 +78,24 @@ public class JPAFieldDao implements FieldDao {
             }
         }
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public String readFieldValidation(String siteName, Long sectionFieldId) {
+        Query query = em.createNamedQuery("QUERY_VALIDATION_BY_SECTION_FIELD");
+        List<Validation> validations = query.getResultList();
+        if (validations.size() > 0) {
+            if (validations.size() == 1) {
+                return validations.get(0).getRegex();
+            } else {
+                for (Validation v : validations) {
+                    if (v.getSiteName() != null) {
+                        return v.getRegex();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

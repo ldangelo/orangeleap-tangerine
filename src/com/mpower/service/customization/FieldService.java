@@ -15,4 +15,6 @@ public interface FieldService {
     public boolean lookupFieldRequired(String siteName, SectionField currentField);
 
     public Object lookupFieldDefaultValue(String siteName, Locale locale, String fieldId);
+
+    public String lookupFieldValidation(String siteName, SectionField currentField);
 }

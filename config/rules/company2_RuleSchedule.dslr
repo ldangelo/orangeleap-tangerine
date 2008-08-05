@@ -1,4 +1,4 @@
-package com.mpower.domain
+package com.mpower.rules
 
 import com.mpower.service.PersonService;
 import com.mpower.service.GiftService;
@@ -7,6 +7,8 @@ import com.mpower.domain.Gift;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 expander company2_Language.dsl
 
@@ -15,7 +17,7 @@ global org.springframework.context.ApplicationContext applicationContext;
 rule "Analyze Lapsed Donor"
 	when
 		There is a person
-		>$totalGifts : ArrayList(size >= 1) from collect (Gift(value > 0, person.id == $personId))
+		who donated at least 1 gifts
 		who has not made a donation in the past 2 "months"
 	then
 		Set the person as a lapsed donor
@@ -26,15 +28,9 @@ rule "Set Monthly Donors"
 		There is a person
 		who has donated in 4 out of the last 4 months
 	then
-		>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
+		#>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
 end
 
-rule "GIFT"
-	when
-		There is a person
-	then
-		>System.out.println($personId);
-end
 
 
 

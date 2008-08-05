@@ -17,4 +17,5 @@
 [condition][com.mpower.domain.Person]- who is a major donor=majorDonor == true
 [condition][com.mpower.domain.Person]- who is not a major donor=majorDonor == false
 [condition][]who has donated in {x} out of the last {y} months=$gifts : ArrayList(size >= {x}) from collect(Gift(person.id == $personId)) eval(analyzeMonthlyDonor($gifts, {x}, {y}))
-[condition][]who has donated at least {number} gifts=$gifts : ArrayList(size>={number}) from collect ($gift : Gift(value > 0, person.id == $personId))
+[condition][]who donated at least {number} gifts=$totalGifts : ArrayList(size>={number}) from collect ($gift : Gift(value > 0, person.id == $personId))
+[condition][com.mpower.domain.Person]- who is not a lapsed donor=lapsedDonor == false

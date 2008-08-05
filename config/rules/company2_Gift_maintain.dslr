@@ -1,4 +1,4 @@
-package com.mpower.domain
+package com.mpower.rules
 
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
@@ -36,7 +36,7 @@ rule "Gift - Donation Made - 1st Time Donor"
 		There is a person
 		who has donated 1 gifts
 	then
-		Write "Person has donated 1 time"
+		#Write "Person has donated 1 time"
 end
 
 rule "Gift - Donation Made - 2nd Time Donor"
@@ -44,7 +44,7 @@ rule "Gift - Donation Made - 2nd Time Donor"
 		There is a person
 		who has donated 2 gifts
 	then
-		Write "Person has donated 2 times"
+	   #Write "Person has donated 2 times"
 end
 
 

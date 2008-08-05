@@ -80,7 +80,6 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 	
 	            workingMemory.setGlobal("applicationContext", applicationContext);
 	            workingMemory.fireAllRules();
-	            System.out.println(siteName);
 	
 	        } catch (Throwable t) {
 	            t.printStackTrace();

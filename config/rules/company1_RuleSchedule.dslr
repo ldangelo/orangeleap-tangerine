@@ -1,4 +1,4 @@
-package com.mpower.domain
+package com.mpower.rules
 
 import com.mpower.service.PersonService;
 import com.mpower.service.GiftService;
@@ -15,6 +15,8 @@ global org.springframework.context.ApplicationContext applicationContext;
 rule "Analyze Lapsed Donor"
 	when
 		There is a person
+		- who is not a lapsed donor
+		who donated at least 1 gifts
 		who has not made a donation in the past 2 "months"
 	then
 		Set the person as a lapsed donor
@@ -23,16 +25,10 @@ end
 rule "Set Monthly Donors"
 	when
 		There is a person
+		
 		who has donated in 4 out of the last 4 months
 	then
-		>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
-end
-
-rule "GIFT"
-	when
-		There is a person
-	then
-		>System.out.println($personId);
+		#>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
 end
 
 

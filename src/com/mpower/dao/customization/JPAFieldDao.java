@@ -12,8 +12,10 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
-import com.mpower.domain.customization.Validation;
+import com.mpower.domain.customization.RequiredField;
+import com.mpower.type.EntityType;
 
 @Repository("fieldDao")
 public class JPAFieldDao implements FieldDao {
@@ -82,20 +84,19 @@ public class JPAFieldDao implements FieldDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public String readFieldValidation(String siteName, Long sectionFieldId) {
-        Query query = em.createNamedQuery("QUERY_VALIDATION_BY_SECTION_FIELD");
-        List<Validation> validations = query.getResultList();
-        if (validations.size() > 0) {
-            if (validations.size() == 1) {
-                return validations.get(0).getRegex();
-            } else {
-                for (Validation v : validations) {
-                    if (v.getSiteName() != null) {
-                        return v.getRegex();
-                    }
-                }
-            }
-        }
-        return null;
+    public List<RequiredField> readRequiredFields(String siteName, EntityType entityType) {
+        Query query = em.createNamedQuery("QUERY_REQUIRED_FIELDS_BY_SITE_NAME_AND_ENTITY_TYPE");
+        query.setParameter("siteName", siteName);
+        query.setParameter("entityType", entityType);
+        return query.getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<FieldValidation> readFieldValidations(String siteName, EntityType entityType) {
+        Query query = em.createNamedQuery("QUERY_FIELD_VALIDATIONS_BY_SITE_NAME_AND_ENTITY_TYPE");
+        query.setParameter("siteName", siteName);
+        query.setParameter("entityType", entityType);
+        return query.getResultList();
     }
 }

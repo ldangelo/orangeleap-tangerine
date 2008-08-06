@@ -32,11 +32,6 @@ public class FieldServiceImpl implements FieldService {
         return fieldDao.readFieldRequired(siteName, currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
     }
 
-    @Override
-    public String lookupFieldValidation(String siteName, SectionField currentField) {
-        return fieldDao.readFieldValidation(siteName, currentField.getId());
-    }
-
     public FieldDefinition readFieldById(String fieldId) {
         return fieldDao.readFieldById(fieldId);
     }

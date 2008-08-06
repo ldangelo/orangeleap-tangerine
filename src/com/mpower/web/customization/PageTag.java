@@ -23,7 +23,7 @@ public class PageTag extends TagSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     private static final long serialVersionUID = 1L;
     private String pageName;
     private PageCustomizationService pageCustomizationService;
@@ -32,7 +32,6 @@ public class PageTag extends TagSupport {
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        // List<Role> roles = user.get
         List<String> roleList = null;
         if (authorities != null) {
             roleList = new ArrayList<String>();

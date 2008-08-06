@@ -1,5 +1,7 @@
 package com.mpower.controller.validator;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
@@ -22,10 +24,10 @@ public class PersonValidator implements Validator {
 	 */
 	/*
 	 * private PageCustomizationService pageCustomizationService;
-	 * 
+	 *
 	 * public PageCustomizationService getPageCustomizationService() { return
 	 * pageCustomizationService; }
-	 * 
+	 *
 	 * public void setPageCustomizationService( PageCustomizationService
 	 * pageCustomizationService) { this.pageCustomizationService =
 	 * pageCustomizationService; }
@@ -50,8 +52,11 @@ public class PersonValidator implements Validator {
 		// TODO Auto-generated method stub
 		logger.info("**** Validating Person from Save person form");
 
-		@SuppressWarnings("unused")
 		Person person = (Person) target;
+		@SuppressWarnings("unused")
+        Map<String, String> validationsMap = person.getValidationMap();
+        @SuppressWarnings("unused")
+        Map<String, Boolean> requiredsMap = person.getRequiredFieldMap();
 		// get person then get site
 
 		// This is an example of validating that the lastName field in person

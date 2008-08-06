@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.type.EntityType;
 
 public interface PersonService {
 
@@ -23,7 +24,10 @@ public interface PersonService {
     public List<Person> readAllPeople();
 
     public void setLapsedDonor(Long personId);
-    
+
     public List<Person> readAllPeopleBySite(Site site);
 
+    public Map<String, Boolean> readPersonRequireds(String siteName, EntityType entityType);
+
+    public Map<String, String> readPersonValidations(String siteName, EntityType entityType);
 }

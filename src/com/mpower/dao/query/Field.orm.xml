@@ -31,11 +31,19 @@
 		</query>
 	</named-query>
 
-	<named-query name="QUERY_VALIDATION_BY_SITE_AND_SECTION_FIELD" >
+	<named-query name="QUERY_REQUIRED_FIELDS_BY_SITE_NAME_AND_ENTITY_TYPE" >
 		<query>
-		    SELECT validation.regex FROM com.mpower.domain.customization.Validation validation
+		    SELECT required FROM com.mpower.domain.customization.RequiredField required
+		    WHERE ((required.siteName IS NULL) OR (required.siteName = :siteName))
+		    AND required.entityType = :entityType
+		</query>
+	</named-query>
+
+	<named-query name="QUERY_FIELD_VALIDATIONS_BY_SITE_NAME_AND_ENTITY_TYPE" >
+		<query>
+		    SELECT validation FROM com.mpower.domain.customization.FieldValidation validation
 		    WHERE ((validation.siteName IS NULL) OR (validation.siteName = :siteName))
-		    AND validation.sectionField.id = :sectionFieldId
+		    AND validation.entityType = :entityType
 		</query>
 	</named-query>
 

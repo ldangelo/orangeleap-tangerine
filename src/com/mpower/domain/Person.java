@@ -120,6 +120,12 @@ public class Person implements Serializable {
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
+    @Transient
+    private Map<String, Boolean> requiredFieldMap = null;
+
+    @Transient
+    private Map<String, String> validationMap = null;
+
     public Long getId() {
         return id;
     }
@@ -325,4 +331,20 @@ public class Person implements Serializable {
 	public void setLapsedDonor(boolean lapsedDonor) {
 		this.lapsedDonor = lapsedDonor;
 	}
+
+    public Map<String, Boolean> getRequiredFieldMap() {
+        return requiredFieldMap;
+    }
+
+    public void setRequiredFieldMap(Map<String, Boolean> requiredFieldMap) {
+        this.requiredFieldMap = requiredFieldMap;
+    }
+
+    public Map<String, String> getValidationMap() {
+        return validationMap;
+    }
+
+    public void setValidationMap(Map<String, String> validationMap) {
+        this.validationMap = validationMap;
+    }
 }

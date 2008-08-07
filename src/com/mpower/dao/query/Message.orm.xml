@@ -5,10 +5,9 @@
 
 	<named-query name="READ_MESSAGE" >
 		<query>SELECT msg FROM com.mpower.domain.customization.MessageResource msg
-		WHERE msg.messageResourceType = :messageResourceType
-		AND msg.messageKey = :messageKey
+		WHERE msg.messageKey = :messageKey
 		AND msg.languageAbbreviation = :language
-		AND (msg.site.name = :siteName OR msg.site.name is null))
+		AND (msg.site.name = :siteName OR msg.site IS NULL)
 		</query>
 	</named-query>
 

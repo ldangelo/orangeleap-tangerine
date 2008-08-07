@@ -1,7 +1,5 @@
 package com.mpower.controller;
 
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,10 +35,8 @@ public class PersonFormController extends SimpleFormController {
         } else {
             person = personService.readPersonById(new Long(personId));
         }
-        Map<String, Boolean> requiredFieldsMap = personService.readPersonRequireds(SessionServiceImpl.lookupUserSiteName(request), EntityType.person);
-        person.setRequiredFieldMap(requiredFieldsMap);
-        Map<String, String> validationMap = personService.readPersonValidations(SessionServiceImpl.lookupUserSiteName(request), EntityType.person);
-        person.setValidationMap(validationMap);
+        person.setRequiredFieldMap(personService.readPersonRequireds(SessionServiceImpl.lookupUserSiteName(request), EntityType.person));
+        person.setValidationMap(personService.readPersonValidations(SessionServiceImpl.lookupUserSiteName(request), EntityType.person));
 
         return person;
     }

@@ -16,35 +16,34 @@ import com.mpower.type.MessageResourceType;
 
 @Repository("messageDao")
 public class JPAMessageDao implements MessageDao {
-	
+
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @PersistenceContext
+    private EntityManager em;
 
-	@PersistenceContext
-	private EntityManager em;
+    @SuppressWarnings("unchecked")
+    public String readMessage(String siteName, MessageResourceType messageResourceType, String messageKey, Locale language) {
+        String result = null;
+        Query query = em.createNamedQuery("READ_MESSAGE");
+        query.setParameter("siteName", siteName);
+        query.setParameter("messageResourceType", messageResourceType);
+        query.setParameter("messageKey", messageKey);
+        query.setParameter("language", language.toString());
 
-	@SuppressWarnings("unchecked")
-	public String readMessage(String siteName, MessageResourceType messageResourceType, String messageKey, Locale language) {
-		String result = "";
-		Query query = em.createNamedQuery("READ_MESSAGE");
-		query.setParameter("siteName", siteName);
-		query.setParameter("messageResourceType", messageResourceType);
-		query.setParameter("messageKey", messageKey);
-		query.setParameter("language", language.getLanguage());
-
-		List<MessageResource> results = query.getResultList();
-		if (! results.isEmpty()) {
-			if (results.size() == 1) {
-				result = results.get(0).getMessageValue();
-			} else {
+        List<MessageResource> results = query.getResultList();
+        if (!results.isEmpty()) {
+            if (results.size() == 1) {
+                result = results.get(0).getMessageValue();
+            } else {
                 for (MessageResource messageResource : results) {
                     if (messageResource.getSite() != null) {
                         result = messageResource.getMessageValue();
                     }
                 }
-			}
-		}
-		return result;
-	}
+            }
+        }
+        return result;
+    }
 }

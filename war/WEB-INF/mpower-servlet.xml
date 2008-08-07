@@ -7,9 +7,9 @@
 
     <!-- the application context definition for the mpower DispatcherServlet -->
 
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basename" value="messages"/>
-    </bean>
+    <bean id="messageSource" class="com.mpower.controller.validator.MpowerMessageSource">
+        <property name="messageService" ref="messageService"/>
+	</bean>
 
     <bean name="/personSearch.htm" class="com.mpower.controller.PersonSearchFormController">
         <property name="commandName" value="person"/>
@@ -122,8 +122,8 @@
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
-  	
-  	
+
+
 
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob"/>

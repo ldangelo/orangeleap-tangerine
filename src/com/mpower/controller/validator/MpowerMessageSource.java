@@ -1,0 +1,31 @@
+package com.mpower.controller.validator;
+
+import java.text.MessageFormat;
+import java.util.Locale;
+
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.support.AbstractMessageSource;
+import org.springframework.core.io.ResourceLoader;
+
+import com.mpower.service.customization.MessageService;
+import com.mpower.type.MessageResourceType;
+
+public class MpowerMessageSource extends AbstractMessageSource implements ResourceLoaderAware {
+
+    private MessageService messageService;
+
+    public void setMessageService(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    @Override
+    protected MessageFormat resolveCode(String code, Locale locale) {
+        String key = code.substring(0, code.indexOf('.'));
+        String message = messageService.lookupMessage("company1", MessageResourceType.FIELD_VALIDATION, key, locale);
+        return createMessageFormat(message, locale);
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+    }
+}

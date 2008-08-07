@@ -1,7 +1,6 @@
 package com.mpower.service;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,15 +17,15 @@ public class SessionServiceImpl implements SessionService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
-    public Site lookupSite(ServletRequest request) {
-        return siteDao.readSite(lookupUserSiteName(request));
+    public Site lookupSite() {
+        return siteDao.readSite(lookupUserSiteName());
     }
 
-    public static String lookupUserSiteName(ServletRequest request) {
+    public static String lookupUserSiteName() {
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         return authentication.getSite();
     }

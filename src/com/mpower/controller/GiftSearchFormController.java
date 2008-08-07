@@ -46,7 +46,7 @@ public class GiftSearchFormController extends SimpleFormController {
         logger.info("**** in formBackingObject");
 
         Person p = new Person();
-        p.setSite(sessionService.lookupSite(request));
+        p.setSite(sessionService.lookupSite());
         Gift g = new Gift();
         g.setPerson(p);
         return g;
@@ -73,7 +73,7 @@ public class GiftSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(request), params);
+        List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(), params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

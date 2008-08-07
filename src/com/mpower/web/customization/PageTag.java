@@ -39,7 +39,7 @@ public class PageTag extends TagSupport {
                 roleList.add(authority.getAuthority());
             }
         }
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), PageType.valueOf(pageName), roleList);
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(pageName), roleList);
         pageContext.getRequest().setAttribute("sectionDefinitions", sectionDefinitions);
         return Tag.EVAL_BODY_INCLUDE;
     }

@@ -20,7 +20,7 @@ public class SectionTag extends TagSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     private static final long serialVersionUID = 1L;
     private SectionDefinition sectionDefinition;
     private PageCustomizationService pageCustomizationService;
@@ -28,7 +28,7 @@ public class SectionTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), sectionDefinition);
+        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(SessionServiceImpl.lookupUserSiteName(), sectionDefinition);
         pageContext.getRequest().setAttribute("sectionFieldList", sectionFields);
         pageContext.getRequest().setAttribute("sectionFieldCount", sectionFields.size());
         return Tag.EVAL_BODY_INCLUDE;

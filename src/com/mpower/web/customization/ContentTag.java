@@ -20,7 +20,7 @@ public class ContentTag extends TagSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
 	private static final long serialVersionUID = 1L;
 	private String messageKey;
 	private MessageService messageService;
@@ -30,7 +30,7 @@ public class ContentTag extends TagSupport {
     	messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
     	Locale locale = pageContext.getRequest().getLocale();
-		String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.CONTENT, messageKey, locale);
+		String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.CONTENT, messageKey, locale);
 		try {
 			pageContext.getOut().write(messageValue);
 		} catch (IOException e) {

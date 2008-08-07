@@ -20,7 +20,7 @@ public class PageTitleTag extends TagSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     private static final long serialVersionUID = 1L;
     private String pageName;
     private MessageService messageService;
@@ -30,7 +30,7 @@ public class PageTitleTag extends TagSupport {
         messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
         Locale locale = pageContext.getRequest().getLocale();
-        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.TITLE, pageName, locale);
+        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.TITLE, pageName, locale);
         try {
             pageContext.getOut().write(messageValue);
         } catch (IOException e) {

@@ -31,7 +31,7 @@ public class FieldTag extends TagSupport {
         FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
 
         Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
-        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), modelParam);
+        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionServiceImpl.lookupUserSiteName(), modelParam);
 
         pageContext.getRequest().setAttribute("fieldVO", fieldVO);
         return Tag.SKIP_BODY;

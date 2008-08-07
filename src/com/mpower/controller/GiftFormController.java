@@ -38,7 +38,7 @@ public class GiftFormController extends SimpleFormController {
         Gift gift = null;
         if (giftId == null) {
             // create person
-            gift = giftService.createDefaultGift(SessionServiceImpl.lookupUserSiteName(request));
+            gift = giftService.createDefaultGift(SessionServiceImpl.lookupUserSiteName());
             String personId = request.getParameter("personId");
             Person person = personService.readPersonById(Long.valueOf(personId));
             if (person == null) {

@@ -22,7 +22,7 @@ public class SectionHeaderTag extends TagSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     private static final long serialVersionUID = 1L;
     private SectionDefinition sectionDefinition;
     private MessageService messageService;
@@ -32,7 +32,7 @@ public class SectionHeaderTag extends TagSupport {
         messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
         Locale locale = pageContext.getRequest().getLocale();
-        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(pageContext.getRequest()), MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
+        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
         if (GenericValidator.isBlankOrNull(messageValue)) {
             messageValue = sectionDefinition.getDefaultLabel();
         }

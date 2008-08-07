@@ -31,12 +31,12 @@ public class PersonFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         Person person = null;
         if (personId == null) {
-            person = personService.createDefaultPerson(SessionServiceImpl.lookupUserSiteName(request));
+            person = personService.createDefaultPerson(SessionServiceImpl.lookupUserSiteName());
         } else {
             person = personService.readPersonById(new Long(personId));
         }
-        person.setRequiredFieldMap(personService.readPersonRequireds(SessionServiceImpl.lookupUserSiteName(request), EntityType.person));
-        person.setValidationMap(personService.readPersonValidations(SessionServiceImpl.lookupUserSiteName(request), EntityType.person));
+        person.setRequiredFieldMap(personService.readPersonRequireds(SessionServiceImpl.lookupUserSiteName(), EntityType.person));
+        person.setValidationMap(personService.readPersonValidations(SessionServiceImpl.lookupUserSiteName(), EntityType.person));
 
         return person;
     }

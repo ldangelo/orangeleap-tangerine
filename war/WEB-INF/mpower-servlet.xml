@@ -21,6 +21,7 @@
         <property name="successView" value="personSearch"/>
         <property name="personService" ref="personService"/>
         <property name="sessionService" ref="sessionService"/>
+        <property name="pageCustomizationService" ref="pageCustomizationService"/>
     </bean>
 
 

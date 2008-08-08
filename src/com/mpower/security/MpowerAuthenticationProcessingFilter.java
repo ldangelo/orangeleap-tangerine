@@ -1,6 +1,9 @@
 package com.mpower.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,10 +13,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
+import org.springframework.security.GrantedAuthority;
 import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
 import org.springframework.security.util.TextUtils;
 import org.springframework.util.Assert;
 
+import com.mpower.service.customization.PageCustomizationService;
+import com.mpower.type.AccessType;
 import com.mpower.util.HttpUtil;
 
 public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
@@ -21,10 +27,15 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
     public static final String SITE_KEY = "sitename";
 
     private String siteParameter = SITE_KEY;
+
+    private PageCustomizationService pageCustomizationService;
+
+    public void setPageCustomizationService(PageCustomizationService pageCustomizationService) {
+        this.pageCustomizationService = pageCustomizationService;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request) throws AuthenticationException {
@@ -66,6 +77,13 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
     protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, Authentication authResult) throws IOException {
         super.onSuccessfulAuthentication(request, response, authResult);
         HttpUtil.setCookie("siteCookie", obtainSite(request), Integer.MAX_VALUE, response);
+        GrantedAuthority[] authorities = authResult.getAuthorities();
+        List<String> roles = new ArrayList<String>();
+        for (int i = 0; i < authorities.length; i++) {
+            roles.add(authorities[i].getAuthority());
+        }
+        Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(((MpowerAuthenticationToken) authResult).getSite(), roles);
+        request.getSession().setAttribute("pageAccess", pageAccess);
     }
 
     protected String obtainSite(HttpServletRequest request) {

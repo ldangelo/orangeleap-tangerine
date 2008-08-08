@@ -3,21 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
-	<named-query name="READ_OUT_OF_BOX_SECTION_DEFINITIONS" >
+	<named-query name="READ_SECTION_DEFINITIONS" >
 		<query>
-		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType
-		    AND sectionDefinition.site is null
-		    AND (sectionDefinition.role is null OR sectionDefinition.role IN (:roles))
-		</query>
-	</named-query>
-
-	<named-query name="READ_CUSTOMIZED_SECTION_DEFINITIONS" >
-		<query>
-		    SELECT sectionDefinition FROM com.mpower.domain.customization.SectionDefinition sectionDefinition
-		    WHERE sectionDefinition.pageType = :pageType
-		    AND sectionDefinition.site.name = :siteName
-		    AND (sectionDefinition.role is null OR sectionDefinition.role IN (:roles))
+		    SELECT sd FROM com.mpower.domain.customization.SectionDefinition sd
+		    WHERE sd.pageType = :pageType
+		    AND (sd.site IS NULL OR sd.site.name = :siteName)
+		    AND (sd.role IS NULL OR sd.role IN (:roles))
 		</query>
 	</named-query>
 
@@ -35,6 +26,14 @@
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
 		    WHERE sectionField.sectionDefinition.id = :sectionDefinitionId
 		    AND sectionField.site.name is :siteName
+		</query>
+	</named-query>
+
+	<named-query name="READ_PAGE_DEFINITIONS" >
+		<query>
+		    SELECT pd FROM com.mpower.domain.customization.PageDefinition pd
+		    WHERE ((pd.site IS NULL OR pd.site.name = :siteName))
+		    AND (pd.role IS NULL OR pd.role IN (:roles))
 		</query>
 	</named-query>
 

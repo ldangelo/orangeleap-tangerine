@@ -1,1 +1,1 @@
-INSERT INTO FIELD_VALIDATION (ENTITY_TYPE, VALIDATION_REGEX, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID) VALUES ("person", "/d{5}", "company1", "person.addressMap[primaryAddress]", "address.postalCode");
+INSERT INTO FIELD_VALIDATION (ENTITY_TYPE, VALIDATION_REGEX, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID) VALUES ("person", "^\d{5}$", "company1", "person.addressMap[primaryAddress]", "address.postalCode");

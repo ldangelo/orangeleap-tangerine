@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.FactoryUtils;
+import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -338,12 +340,13 @@ public class Gift implements Customizable, Serializable {
 		return customFieldMap;
 	}
 
+    @SuppressWarnings("unchecked")
 	public List<DistributionLine> getDistributionLines() {
-		if (distributionLines == null) {
-			distributionLines = new ArrayList<DistributionLine>();
-		}
-		return distributionLines;
-	}
+        if (distributionLines == null) {
+        	distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[]{Gift.class}, new Object[]{this}));
+        }
+        return distributionLines;
+    }
 
 	public void setDistributionLines(List<DistributionLine> distributionLines) {
 		this.distributionLines = distributionLines;

@@ -54,6 +54,28 @@
 			</ul>
 		</div>
 	</c:when>
+	<c:when test="${sectionDefinition.layoutType eq 'GRID'}">
+		<c:if test="${!empty sectionDefinition.defaultLabel}">
+			<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+		</c:if>
+		
+		<table class="tablesorter" cellspacing="0" cellpadding="0"> 
+			<thead> 
+				<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
+					<tr>
+						<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
+					</tr>
+				</c:forEach>
+			</thead>
+			<tbody>
+				<c:forEach items="${gridCollection}" var="row" varStatus="status">
+					<tr rowindex="${status.index}">
+					<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</c:when>
 <c:otherwise>
 </c:otherwise>
 </c:choose>

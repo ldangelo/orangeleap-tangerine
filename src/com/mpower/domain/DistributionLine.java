@@ -70,6 +70,7 @@ public class DistributionLine implements Customizable, Serializable {
 	}
 
 	public DistributionLine(Gift gift) {
+		this();
 		this.gift = gift;
 	}
 

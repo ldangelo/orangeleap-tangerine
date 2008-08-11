@@ -18,6 +18,14 @@ $(document).ready(function()
 			$(this).parent().removeClass("highlight");
 	});
 	
+	$("table.tablesorter tbody td input").focus(function() {
+		$(this).parent().parent().addClass("focused");console.log("focused");
+	});
+	
+	$("table.tablesorter tbody td input").blur(function() {
+		$(this).parent().parent().removeClass("focused");console.log("blurred");
+	});
+	
 	//$(".secondaryNav li a").click(function() {
 	//	this.blur();
        //	$(".secondaryNav li a").removeClass("active");
@@ -86,6 +94,26 @@ $(document).ready(function()
 //		dropShadow: false,
 //		waitImage: false
 //	 });
-	
+
    }
 );
+
+function callServer() {
+    Server.echo("DWR", callback);
+}
+function callback(data) {
+    alert("Hi from " + data);
+}
+function addDistributionLine() {
+	var newRow = $(".tablesorter tr:last").clone(true);
+	var newRowHtml = newRow.html();
+	var i = newRow.attr("rowindex");
+	var j = parseInt(i) + 1;
+	newRow.attr("rowindex",j);
+	var findString = new RegExp("\\["+i+"\\]","gi");
+	newRowHtml = newRowHtml.replace(findString, "["+j+"]");
+	newRow.html(newRowHtml);
+	//newRow.css("display","none");
+	$(".tablesorter").append(newRow);
+	//newRow.fadeIn("slow");
+}

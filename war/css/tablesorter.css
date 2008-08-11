@@ -38,6 +38,9 @@ table.tablesorter tbody td a {
 table.tablesorter tbody tr.highlight td {
 	background-color:#ffd;
 }
+table.tablesorter tbody tr.focused td {
+	background-color:#FFEEAA;
+}
 table.tablesorter tbody tr.odd td {
 	background-color:#F0F0F6;
 }

@@ -141,6 +141,15 @@ h4.formSectionHeader {
 	color:#777;
 	border-bottom:1px solid #aaa;
 }
+h4.gridSectionHeader {
+	font-weight:bold;
+	font-family:Arial, sans-serif;
+	font-size:14px;
+	margin:0;
+	padding:10px 0 0 0;
+	color:#777;
+	border-bottom:1px solid #aaa;
+}
 .formButtonFooter {
 	text-align:center;
 	border-top:1px solid #aaa;
@@ -260,4 +269,9 @@ table.formTable {
 .formTable input {
 	padding:3px;
 	margin:0;
+}
+.tablesorter td input {
+	margin:0;
+	padding:0;
+	width:100%;
 }

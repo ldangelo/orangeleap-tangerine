@@ -50,12 +50,15 @@
 <br />
 <h5>Cheat Sheet</h5>
 Username/Password/Organization/Roles:<br/>
-rod/koala/company1/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
-dianne/emu/company1/ROLE_USER, ROLE_MANAGER<br/>
-scott/wombat/company1/ROLE_USER<br/>
-jack/jack/company2/ROLE_ADMIN, ROLE_USER, ROLE_MANAGER<br/>
-locke/locke/company2/ROLE_USER, ROLE_MANAGER<br/>
-hurley/hurley/company2/ROLE_USER
+nolan/ryan/company1/<b>ROLE_SUPER_ADMIN</b>, ROLE_ADMIN, ROLE_SUPER_MANAGER, ROLE_MANAGER, ROLE_SUPER_USER, ROLE_USER<br/>
+rod/koala/company1/<b>ROLE_ADMIN</b>, ROLE_SUPER_MANAGER, ROLE_MANAGER, ROLE_SUPER_USER, ROLE_USER<br/>
+randy/johnson/company1/<b>ROLE_SUPER_MANAGER</b>, ROLE_MANAGER, ROLE_SUPER_USER, ROLE_USER<br/>
+dianne/emu/company1/<b>ROLE_MANAGER</b>, ROLE_SUPER_USER, ROLE_USER<br/>
+greg/maddux/company1/<b>ROLE_SUPER_USER</b>, ROLE_USER<br/>
+scott/wombat/company1/<b>ROLE_USER</b><br/></br>
+jack/jack/company2/<b>ROLE_ADMIN</b>, ROLE_USER, ROLE_MANAGER<br/>
+locke/locke/company2/<b>ROLE_USER</b>, ROLE_MANAGER<br/>
+hurley/hurley/company2/<b>ROLE_USER</b>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var savedOrgName = $.cookie('siteCookie');

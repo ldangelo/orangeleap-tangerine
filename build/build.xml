@@ -99,6 +99,7 @@
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/giftSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/dev/fieldValidation.sql"/>
 	     </sql>
 	</target>
 

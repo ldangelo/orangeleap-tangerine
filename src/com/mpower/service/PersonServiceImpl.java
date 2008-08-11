@@ -2,7 +2,6 @@ package com.mpower.service;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PersonDao;
 import com.mpower.dao.SiteDao;
-import com.mpower.dao.customization.FieldDao;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.EntityDefault;
-import com.mpower.domain.customization.FieldValidation;
-import com.mpower.domain.customization.RequiredField;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.service.validation.PersonValidator;
 import com.mpower.type.EntityType;
@@ -33,9 +29,6 @@ public class PersonServiceImpl implements PersonService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    @Resource(name = "fieldDao")
-    private FieldDao fieldDao;
 
     @Resource(name = "personDao")
     private PersonDao personDao;
@@ -97,41 +90,5 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Person> readAllPeopleBySite(Site site) {
         return personDao.readAllPeopleBySite(site);
-    }
-
-    @Override
-    public Map<String, Boolean> readPersonRequireds(String siteName, EntityType entityType) {
-        Map<String, Boolean> returnMap = new HashMap<String, Boolean>();
-        List<RequiredField> requiredFields = fieldDao.readRequiredFields(siteName, entityType);
-        if (requiredFields != null) {
-            for (RequiredField rf : requiredFields) {
-                String key = rf.getFieldDefinition().getFieldName();
-                if (rf.getSecondaryFieldDefinition() != null) {
-                    key += "." + rf.getSecondaryFieldDefinition().getFieldName();
-                }
-                if (returnMap.get(key) == null || rf.getSiteName() != null) {
-                    returnMap.put(key, rf.isRequired());
-                }
-            }
-        }
-        return returnMap;
-    }
-
-    @Override
-    public Map<String, String> readPersonValidations(String siteName, EntityType entityType) {
-        Map<String, String> returnMap = new HashMap<String, String>();
-        List<FieldValidation> validations = fieldDao.readFieldValidations(siteName, entityType);
-        if (validations != null) {
-            for (FieldValidation v : validations) {
-                String key = v.getFieldDefinition().getFieldName();
-                if (v.getSecondaryFieldDefinition() != null) {
-                    key += "." + v.getSecondaryFieldDefinition().getFieldName();
-                }
-                if (returnMap.get(key) == null || v.getSiteName() != null) {
-                    returnMap.put(key, v.getRegex());
-                }
-            }
-        }
-        return returnMap;
     }
 }

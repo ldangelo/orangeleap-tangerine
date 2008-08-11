@@ -37,6 +37,7 @@
         <property name="formView" value="person" />
         <property name="successView" value="person" />
         <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean name="/account.htm" class="com.mpower.controller.AccountFormController">
@@ -65,6 +66,7 @@
         <property name="successView" value="giftView" />
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean name="/giftRefund.htm" class="com.mpower.controller.GiftRefundController">

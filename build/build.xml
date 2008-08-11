@@ -97,6 +97,8 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/validationSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearch.sql"/>
+	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/dev/customRoleTest/giftSearchResults.sql"/>
 	     </sql>
 	</target>
 

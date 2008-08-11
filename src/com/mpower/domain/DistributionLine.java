@@ -30,96 +30,122 @@ import com.mpower.util.DistributionLineCustomFieldMap;
 @Table(name = "DISTRO_LINE")
 public class DistributionLine implements Customizable, Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
-    private final Log logger = LogFactory.getLog(getClass());
+	@SuppressWarnings("unused")
+	@Transient
+	private final Log logger = LogFactory.getLog(getClass());
 
-    @Id
-    @GeneratedValue
-    @Column(name = "DISTRO_LINE_ID")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "DISTRO_LINE_ID")
+	private Long id;
 
-    @Column(name = "AMOUNT")
-    private BigDecimal amount;
+	@Column(name = "AMOUNT")
+	private BigDecimal amount;
 
-    @Column(name = "PROJECT_CODE")
-    private String projectCode;
+	@Column(name = "PROJECT_CODE")
+	private String projectCode;
 
-    @Column(name = "MOTIVATION_CODE")
-    private String motivationCode;
+	@Column(name = "MOTIVATION_CODE")
+	private String motivationCode;
 
-    @OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
-    private List<DistributionLineCustomField> distributionLineCustomFields;
+	@OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
+	private List<DistributionLineCustomField> distributionLineCustomFields;
 
-    @ManyToOne
-    @JoinColumn(name = "GIFT_ID")
-    private Gift gift;
+	@ManyToOne
+	@JoinColumn(name = "GIFT_ID")
+	private Gift gift;
 
-    @Transient
-    private Map<String, CustomField> customFieldMap = null;
+	@Transient
+	private Map<String, CustomField> customFieldMap = null;
 
-    public DistributionLine() {
-    }
+	@Transient
+	private Map<String, Boolean> requiredFieldMap = null;
 
-    public DistributionLine(Gift gift) {
-        this.gift = gift;
-    }
+	@Transient
+	private Map<String, String> validationMap = null;
 
-    public Long getId() {
-        return id;
-    }
+	public DistributionLine() {
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public DistributionLine(Gift gift) {
+		this.gift = gift;
+	}
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getProjectCode() {
-        return projectCode;
-    }
+	public BigDecimal getAmount() {
+		return amount;
+	}
 
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
-    }
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 
-    public String getMotivationCode() {
-        return motivationCode;
-    }
+	public String getProjectCode() {
+		return projectCode;
+	}
 
-    public void setMotivationCode(String motivationCode) {
-        this.motivationCode = motivationCode;
-    }
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
+	}
 
-    public List<DistributionLineCustomField> getCustomFields() {
-        if (distributionLineCustomFields == null) {
-            distributionLineCustomFields = new ArrayList<DistributionLineCustomField>();
-        }
-        return distributionLineCustomFields;
-    }
+	public String getMotivationCode() {
+		return motivationCode;
+	}
 
-    @SuppressWarnings("unchecked")
-    public Map<String, CustomField> getCustomFieldMap() {
-        if (customFieldMap == null) {
-            customFieldMap = DistributionLineCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
-        }
-        return customFieldMap;
-    }
+	public void setMotivationCode(String motivationCode) {
+		this.motivationCode = motivationCode;
+	}
 
-    public Gift getGift() {
-        return gift;
-    }
+	public List<DistributionLineCustomField> getCustomFields() {
+		if (distributionLineCustomFields == null) {
+			distributionLineCustomFields = new ArrayList<DistributionLineCustomField>();
+		}
+		return distributionLineCustomFields;
+	}
 
-    public void setGift(Gift gift) {
-        this.gift = gift;
-    }
+	@SuppressWarnings("unchecked")
+	public Map<String, CustomField> getCustomFieldMap() {
+		if (customFieldMap == null) {
+			customFieldMap = DistributionLineCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
+		}
+		return customFieldMap;
+	}
+
+	public Gift getGift() {
+		return gift;
+	}
+
+	public void setGift(Gift gift) {
+		this.gift = gift;
+	}
+
+	@Override
+	public Map<String, Boolean> getRequiredFieldMap() {
+		return requiredFieldMap;
+	}
+
+	@Override
+	public Map<String, String> getValidationMap() {
+		return validationMap;
+	}
+
+	@Override
+	public void setRequiredFieldMap(Map<String, Boolean> requiredFieldMap) {
+		this.requiredFieldMap = requiredFieldMap;
+	}
+
+	@Override
+	public void setValidationMap(Map<String, String> validationMap) {
+		this.validationMap = validationMap;
+	}
 
 }

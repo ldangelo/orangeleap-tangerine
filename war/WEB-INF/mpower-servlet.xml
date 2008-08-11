@@ -29,7 +29,7 @@
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
-            <bean class="com.mpower.controller.validator.PersonValidator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
             	<property name="pageName" value="person" />
 <!--            	<property name="pageCustomizationService" ref="personService"/>-->
             </bean>
@@ -43,7 +43,7 @@
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
-            <bean class="com.mpower.controller.validator.PersonValidator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
             	<property name="pageName" value="person" />
             </bean>
         </property>
@@ -55,12 +55,12 @@
     <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
-<!--        <property name="validator">
-            <bean class="com.mpower.controller.validator.PersonValidator">
-            	<property name="pageName" value="person" />
-            	<property name="pageCustomizationService" ref="personService"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+            	<property name="pageName" value="gift" />
+           <!--<property name="pageCustomizationService" ref="personService"/>-->
             </bean>
-        </property>-->
+        </property>
         <property name="formView" value="gift" />
         <property name="successView" value="giftView" />
         <property name="giftService" ref="giftService" />

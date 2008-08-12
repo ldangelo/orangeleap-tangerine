@@ -14,7 +14,7 @@
         <property name="messageService" ref="messageService"/>
 	</bean>
 
-    <bean name="/personSearch.htm" class="com.mpower.controller.PersonSearchFormController">
+    <bean id="personSearch" class="com.mpower.controller.PersonSearchFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
 <!--        <property name="validator">-->
@@ -28,7 +28,7 @@
     </bean>
 
 
-    <bean name="/person.htm" class="com.mpower.controller.PersonFormController">
+    <bean id="person" class="com.mpower.controller.PersonFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
@@ -43,7 +43,7 @@
         <property name="siteService" ref="siteService" />
     </bean>
 
-    <bean name="/account.htm" class="com.mpower.controller.AccountFormController">
+    <bean id="account" class="com.mpower.controller.AccountFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
@@ -56,7 +56,7 @@
         <property name="personService" ref="personService" />
     </bean>
 
-    <bean name="/gift.htm" class="com.mpower.controller.GiftFormController">
+    <bean id="gift" class="com.mpower.controller.GiftFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validator">
@@ -72,12 +72,12 @@
         <property name="siteService" ref="siteService" />
     </bean>
 
-    <bean name="/giftRefund.htm" class="com.mpower.controller.GiftRefundController">
+    <bean id="giftRefund" class="com.mpower.controller.GiftRefundController">
         <property name="giftService" ref="giftService" />
     </bean>
 
 
-    <bean name="/giftSearch.htm" class="com.mpower.controller.GiftSearchFormController">
+    <bean id="giftSearch" class="com.mpower.controller.GiftSearchFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
         <property name="formView" value="giftSearch"/>
@@ -87,15 +87,12 @@
     </bean>
 
 
-    <bean name="/giftList.htm" class="com.mpower.controller.GiftListController">
+    <bean id="giftList" class="com.mpower.controller.GiftListController">
         <property name="giftService" ref="giftService"/>
         <property name="personService" ref="personService"/>
     </bean>
 
-<!--    <bean name="/giftView.htm" class="com.mpower.controller.GiftViewController">-->
-<!--        <property name="giftService" ref="giftService" />-->
-<!--    </bean>-->
-    <bean name="/giftView.htm" class="com.mpower.controller.GiftViewFormController2">
+    <bean id="giftView" class="com.mpower.controller.GiftViewFormController2">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
         <property name="formView" value="giftView"/>
@@ -103,10 +100,33 @@
         <property name="giftService" ref="giftService" />
     </bean>
 
-    <bean name="/personView.htm" class="com.mpower.controller.PersonViewController">
+    <bean id="personView" class="com.mpower.controller.PersonViewController">
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
     </bean>
+   
+   <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="0" />
+      <property name="alwaysUseFullPath" value="true" />
+        <property name="mappings">
+            <props>
+                <prop key="/dwr/**">dwrController</prop>
+                <prop key="/account.htm">account</prop>
+                <prop key="/person.htm">person</prop>
+                <prop key="/personSearch.htm">personSearch</prop>
+                <prop key="/personView.htm">personView</prop>
+                <prop key="/gift.htm">gift</prop>
+                <prop key="/giftList.htm">giftList</prop>
+                <prop key="/giftRefund.htm">giftRefund</prop>
+                <prop key="/giftSearch.htm">giftSearch</prop>
+                <prop key="/giftView.htm">giftView</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="beanNameUrlMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+      <property name="order" value="1" />
+   </bean>
 
 	<!-- Configures the Tiles layout system -->
 	<bean id="tilesConfigurer"
@@ -129,8 +149,6 @@
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
 
-
-
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob"/>
   		<property name="cronExpression" value="0,30 * * * * ? *" />
@@ -145,20 +163,6 @@
 		<property name="applicationContextSchedulerContextKey">
 	    	<value>applicationContext</value>
 	   	</property>
-	</bean>
-	
-	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="order" value="0" />
-		<property name="alwaysUseFullPath" value="true" />
-        <property name="mappings">
-            <props>
-                <prop key="/dwr/**">dwrController</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="beanNameUrlMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-		<property name="order" value="1" />
 	</bean>
 	
 	<dwr:controller id="dwrController" debug="true" />

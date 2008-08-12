@@ -1,10 +1,10 @@
-INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldRequiredFailure.person.addressMap[primaryAddress].postalCode', 'FIELD_VALIDATION', 'Zip Code is required');
-INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldValidationFailure.person.addressMap[primaryAddress].postalCode', 'FIELD_VALIDATION', 'Zip Code value is incorrect');
+-- add messages for required field (required field not entered) and bad field (entered value doesn't pass validation)
+INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldRequiredFailure', 'FIELD_VALIDATION', '{0} is required');
+INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldValidationFailure', 'FIELD_VALIDATION', '{0} value is incorrect');
 
-INSERT INTO REQUIRED_FIELD (ENTITY_TYPE, REQUIRED, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID) values ('person', true, 'company1', 'person.addressMap[primaryAddress]', 'address.postalCode');
+-- make zip code required, and contain 5 digits, for company1
+INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'person.contactInfo', 'person.addressMap[primaryAddress]', 'address.postalCode', '^\\d{5}$');
+INSERT INTO FIELD_REQUIRED (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES ('company1', 'person.contactInfo', 'person.addressMap[primaryAddress]', 'address.postalCode', TRUE);
 
-
-INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldRequiredFailure.gift.value', 'FIELD_VALIDATION', 'Amount is required');
-INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldValidationFailure.gift.value', 'FIELD_VALIDATION', 'Amount value is incorrect');
-
-INSERT INTO REQUIRED_FIELD (ENTITY_TYPE, REQUIRED, SITE_NAME, FIELD_DEFINITION_ID) values ('gift', true, 'company1', 'gift.value');
+-- make gift value required for company1
+INSERT INTO FIELD_REQUIRED (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES ('company1', 'gift.info', 'gift.value', null, TRUE);

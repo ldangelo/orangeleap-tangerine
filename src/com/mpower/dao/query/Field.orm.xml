@@ -31,19 +31,23 @@
 		</query>
 	</named-query>
 
-	<named-query name="QUERY_REQUIRED_FIELDS_BY_SITE_NAME_AND_ENTITY_TYPE" >
+	<named-query name="QUERY_FIELD_VALIDATION_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION" >
 		<query>
-		    SELECT required FROM com.mpower.domain.customization.RequiredField required
-		    WHERE ((required.siteName IS NULL) OR (required.siteName = :siteName))
-		    AND required.entityType = :entityType
+		    SELECT fv FROM com.mpower.domain.customization.FieldValidation fv
+		    WHERE ((fv.siteName = :siteName) OR (fv.siteName = null))
+		    AND fv.sectionName = :sectionName
+		    AND fv.fieldDefinitionId = :fieldDefinitionId
+		    AND fv.secondaryFieldDefinitionId IS NULL
 		</query>
 	</named-query>
 
-	<named-query name="QUERY_FIELD_VALIDATIONS_BY_SITE_NAME_AND_ENTITY_TYPE" >
+	<named-query name="QUERY_FIELD_VALIDATION_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEF_AND_SECONDARY_FIELD_DEF" >
 		<query>
-		    SELECT validation FROM com.mpower.domain.customization.FieldValidation validation
-		    WHERE ((validation.siteName IS NULL) OR (validation.siteName = :siteName))
-		    AND validation.entityType = :entityType
+		    SELECT fv FROM com.mpower.domain.customization.FieldValidation fv
+		    WHERE ((fv.siteName = :siteName) OR (fv.siteName = null))
+		    AND fv.sectionName = :sectionName
+		    AND fv.fieldDefinitionId = :fieldDefinitionId
+		    AND fv.secondaryFieldDefinitionId = :secondaryFieldDefinitionId
 		</query>
 	</named-query>
 

@@ -12,9 +12,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
-import com.mpower.service.SiteService;
 import com.mpower.service.exception.PersonValidationException;
-import com.mpower.type.EntityType;
 
 public class PersonFormController extends SimpleFormController {
 
@@ -23,14 +21,8 @@ public class PersonFormController extends SimpleFormController {
 
     private PersonService personService;
 
-    private SiteService siteService;
-
     public void setPersonService(PersonService personService) {
         this.personService = personService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
     }
 
     @Override
@@ -42,9 +34,6 @@ public class PersonFormController extends SimpleFormController {
         } else {
             person = personService.readPersonById(new Long(personId));
         }
-        person.setRequiredFieldMap(siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), EntityType.person));
-        person.setValidationMap(siteService.readValidations(SessionServiceImpl.lookupUserSiteName(), EntityType.person));
-
         return person;
     }
 

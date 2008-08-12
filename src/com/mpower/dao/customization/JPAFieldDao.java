@@ -14,8 +14,6 @@ import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
-import com.mpower.domain.customization.RequiredField;
-import com.mpower.type.EntityType;
 
 @Repository("fieldDao")
 public class JPAFieldDao implements FieldDao {
@@ -84,19 +82,32 @@ public class JPAFieldDao implements FieldDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<RequiredField> readRequiredFields(String siteName, EntityType entityType) {
-        Query query = em.createNamedQuery("QUERY_REQUIRED_FIELDS_BY_SITE_NAME_AND_ENTITY_TYPE");
-        query.setParameter("siteName", siteName);
-        query.setParameter("entityType", entityType);
-        return query.getResultList();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<FieldValidation> readFieldValidations(String siteName, EntityType entityType) {
-        Query query = em.createNamedQuery("QUERY_FIELD_VALIDATIONS_BY_SITE_NAME_AND_ENTITY_TYPE");
-        query.setParameter("siteName", siteName);
-        query.setParameter("entityType", entityType);
-        return query.getResultList();
+    public String readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+        Query query = null;
+        if (secondaryFieldDefinitionId == null) {
+            query = em.createNamedQuery("QUERY_FIELD_VALIDATION_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION");
+            query.setParameter("siteName", siteName);
+            query.setParameter("sectionName", sectionName);
+            query.setParameter("fieldDefinitionId", fieldDefinitionId);
+        } else {
+            query = em.createNamedQuery("QUERY_FIELD_VALIDATION_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEF_AND_SECONDARY_FIELD_DEF");
+            query.setParameter("siteName", siteName);
+            query.setParameter("sectionName", sectionName);
+            query.setParameter("fieldDefinitionId", fieldDefinitionId);
+            query.setParameter("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
+        }
+        List<FieldValidation> fields = query.getResultList();
+        if (fields.size() > 0) {
+            if (fields.size() == 1) {
+                return fields.get(0).getRegex();
+            } else {
+                for (FieldValidation fr : fields) {
+                    if (fr.getSiteName() != null) {
+                        return fr.getRegex();
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

@@ -8,11 +8,13 @@ import com.mpower.domain.customization.SectionField;
 
 
 public interface FieldService {
-	public FieldDefinition readFieldById(String fieldId);
+    public FieldDefinition readFieldById(String fieldId);
 
-	public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
 
     public boolean lookupFieldRequired(String siteName, SectionField currentField);
+
+    public String lookupFieldValidation(String siteName, SectionField currentField);
 
     public Object lookupFieldDefaultValue(String siteName, Locale locale, String fieldId);
 }

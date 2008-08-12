@@ -16,86 +16,97 @@ import org.springframework.validation.Validator;
 import com.mpower.domain.Customizable;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SiteService;
+import com.mpower.type.PageType;
 
 public class EntityValidator implements Validator {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected String pageName;
+    private PageType pageType;
 
-	public String getPageName() {
-		return pageName;
-	}
+    private SiteService siteService;
 
-	public void setPageName(String pageName) {
-		this.pageName = pageName;
-	}
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public boolean supports(Class clazz) {
-		return Person.class.equals(clazz) || Gift.class.equals(clazz);
-	}
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
-	@Override
-	public void validate(Object target, Errors errors) {
-		Customizable customizableEntity = (Customizable) target;
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean supports(Class clazz) {
+        return Person.class.equals(clazz) || Gift.class.equals(clazz);
+    }
 
-		// used as a cache to prevent having to use reflection if the value has already been read
-		Map<String, Object> fieldValueMap = new HashMap<String, Object>();
+    @Override
+    public void validate(Object target, Errors errors) {
+        Customizable customizableEntity = (Customizable) target;
 
-		// used to know that a field already has an error, so don't add another
-		Set<String> errorSet = new HashSet<String>();
+        Map<String, Boolean> requiredFieldMap = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
 
-		// validate required fields
-		Map<String, Boolean> requiredsMap = customizableEntity.getRequiredFieldMap();
-		if (requiredsMap != null) {
-			for (String key : requiredsMap.keySet()) {
-				if (errorSet.contains(key)) {
-					continue;
-				}
-				Object property = fieldValueMap.get(key);
-				if (property == null) {
-					BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
-					property = beanWrapper.getPropertyValue(key);
-					fieldValueMap.put(key, property);
-				}
-				if (property != null) {
-					String propertyString = property.toString();
-					boolean bool = requiredsMap.get(key);
-					if (bool && StringUtils.isEmpty(propertyString) && !errorSet.contains(key)) {
-						errors.rejectValue(key, "fieldRequiredFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldRequiredFailure");
-						errorSet.add(key);
-					}
-				}
-			}
-		}
+        Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), null);
 
-		// validate regex
-		Map<String, String> validationsMap = customizableEntity.getValidationMap();
-		if (validationsMap != null) {
-			for (String key : validationsMap.keySet()) {
-				if (errorSet.contains(key)) {
-					continue;
-				}
-				Object property = fieldValueMap.get(key);
-				if (property == null) {
-					BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
-					property = beanWrapper.getPropertyValue(key);
-					fieldValueMap.put(key, property);
-				}
-				if (property != null) {
-					String propertyString = property.toString();
-					String regex = validationsMap.get(key);
-					boolean matches = propertyString.matches(regex);
-					if (!matches && !errorSet.contains(key)) {
-						// String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
-						errors.rejectValue(key, "fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
-						// errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
-					}
-				}
-			}
-		}
-	}
+        Map<String, String> fieldValidationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+
+        // used as a cache to prevent having to use reflection if the value has already been read
+        Map<String, Object> fieldValueMap = new HashMap<String, Object>();
+
+        // used to know that a field already has an error, so don't add another
+        Set<String> errorSet = new HashSet<String>();
+
+        // validate required fields
+        if (requiredFieldMap != null) {
+            for (String key : requiredFieldMap.keySet()) {
+                if (errorSet.contains(key)) {
+                    continue;
+                }
+                Object property = fieldValueMap.get(key);
+                if (property == null) {
+                    BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
+                    property = beanWrapper.getPropertyValue(key);
+                    fieldValueMap.put(key, property);
+                }
+                if (property != null) {
+                    String propertyString = property.toString();
+                    boolean bool = requiredFieldMap.get(key);
+                    if (bool && StringUtils.isEmpty(propertyString) && !errorSet.contains(key)) {
+                        errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldRequiredFailure");
+                        errorSet.add(key);
+                    }
+                }
+            }
+        }
+
+        // validate regex
+        if (fieldValidationMap != null) {
+            for (String key : fieldValidationMap.keySet()) {
+                if (errorSet.contains(key)) {
+                    continue;
+                }
+                Object property = fieldValueMap.get(key);
+                if (property == null) {
+                    BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
+                    property = beanWrapper.getPropertyValue(key);
+                    fieldValueMap.put(key, property);
+                }
+                if (property != null) {
+                    String propertyString = property.toString();
+                    String regex = fieldValidationMap.get(key);
+                    if (regex != null) {
+                        boolean matches = propertyString.matches(regex);
+                        if (!matches && !errorSet.contains(key)) {
+                            // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
+                            errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
+                            // errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

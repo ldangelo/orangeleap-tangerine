@@ -1,6 +1,5 @@
 package com.mpower.web.customization;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -9,8 +8,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mpower.domain.customization.SectionDefinition;
@@ -31,15 +28,7 @@ public class PageTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        List<String> roleList = null;
-        if (authorities != null) {
-            roleList = new ArrayList<String>();
-            for (GrantedAuthority authority : authorities) {
-                roleList.add(authority.getAuthority());
-            }
-        }
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(pageName), roleList);
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(pageName), SessionServiceImpl.lookupUserRoles());
         pageContext.getRequest().setAttribute("sectionDefinitions", sectionDefinitions);
         return Tag.EVAL_BODY_INCLUDE;
     }

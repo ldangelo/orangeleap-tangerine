@@ -1,9 +1,13 @@
 package com.mpower.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -30,15 +34,27 @@ public class SessionServiceImpl implements SessionService {
         return authentication.getSite();
     }
 
-//	private static void storeUser(ServletRequest request, User user) {
-//		storeValue((HttpServletRequest) request, SessionValue.USER, user);
-//	}
+    public static List<String> lookupUserRoles() {
+        GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        List<String> roleList = null;
+        if (authorities != null) {
+            roleList = new ArrayList<String>();
+            for (GrantedAuthority authority : authorities) {
+                roleList.add(authority.getAuthority());
+            }
+        }
+        return roleList;
+    }
 
-//	private static Object lookupValue(HttpServletRequest request, SessionValue name) {
-//		return request.getSession(true).getAttribute(name.toString());
-//	}
+    //	private static void storeUser(ServletRequest request, User user) {
+    //		storeValue((HttpServletRequest) request, SessionValue.USER, user);
+    //	}
 
-//	private static void storeValue(HttpServletRequest request, SessionValue name, Object value) {
-//		request.getSession(true).setAttribute(name.toString(), value);
-//	}
+    //	private static Object lookupValue(HttpServletRequest request, SessionValue name) {
+    //		return request.getSession(true).getAttribute(name.toString());
+    //	}
+
+    //	private static void storeValue(HttpServletRequest request, SessionValue name, Object value) {
+    //		request.getSession(true).setAttribute(name.toString(), value);
+    //	}
 }

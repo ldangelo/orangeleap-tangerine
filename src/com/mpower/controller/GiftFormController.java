@@ -14,8 +14,6 @@ import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
-import com.mpower.service.SiteService;
-import com.mpower.type.EntityType;
 
 public class GiftFormController extends SimpleFormController {
 
@@ -26,18 +24,12 @@ public class GiftFormController extends SimpleFormController {
 
     private PersonService personService;
 
-    private SiteService siteService;
-
     public void setGiftService(GiftService giftService) {
         this.giftService = giftService;
     }
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
     }
 
     @Override
@@ -57,9 +49,6 @@ public class GiftFormController extends SimpleFormController {
         } else {
             gift = giftService.readGiftById(new Long(giftId));
         }
-        gift.setRequiredFieldMap(siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), EntityType.gift));
-        gift.setValidationMap(siteService.readValidations(SessionServiceImpl.lookupUserSiteName(), EntityType.gift));
-
         return gift;
     }
 

@@ -33,8 +33,8 @@
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
-            	<property name="pageName" value="person" />
-<!--            	<property name="pageCustomizationService" ref="personService"/>-->
+            	<property name="pageType" value="person" />
+            	<property name="siteService" ref="siteService"/>
             </bean>
         </property>
         <property name="formView" value="person" />
@@ -46,11 +46,6 @@
     <bean id="account" class="com.mpower.controller.AccountFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
-        <property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
-            	<property name="pageName" value="person" />
-            </bean>
-        </property>
         <property name="formView" value="account" />
         <property name="successView" value="account" />
         <property name="personService" ref="personService" />
@@ -61,8 +56,8 @@
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
-            	<property name="pageName" value="gift" />
-           <!--<property name="pageCustomizationService" ref="personService"/>-->
+            	<property name="pageType" value="gift" />
+            	<property name="siteService" ref="siteService"/>
             </bean>
         </property>
         <property name="formView" value="gift" />

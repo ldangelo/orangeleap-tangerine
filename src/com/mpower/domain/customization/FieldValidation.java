@@ -5,12 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -19,11 +15,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.listener.EmptyStringNullifyerListener;
-import com.mpower.type.EntityType;
 
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class })
-@Table(name = "FIELD_VALIDATION", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "ENTITY_TYPE", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
+@Table(name = "FIELD_VALIDATION", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
 public class FieldValidation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,51 +35,24 @@ public class FieldValidation implements Serializable {
     @Column(name = "SITE_NAME")
     private String siteName;
 
-    @Column(name = "ENTITY_TYPE")
-    @Enumerated(EnumType.STRING)
-    private EntityType entityType;
+    @Column(name = "SECTION_NAME")
+    private String sectionName;
 
-    @ManyToOne
-    @JoinColumn(name = "FIELD_DEFINITION_ID")
-    private FieldDefinition fieldDefinition;
+    @Column(name = "FIELD_DEFINITION_ID")
+    private String fieldDefinitionId;
 
-    @ManyToOne
-    @JoinColumn(name = "SECONDARY_FIELD_DEFINITION_ID")
-    private FieldDefinition secondaryFieldDefinition;
+    @Column(name = "SECONDARY_FIELD_DEFINITION_ID")
+    private String secondaryFieldDefinitionId;
 
     @Column(name = "VALIDATION_REGEX")
     private String regex;
 
-    public EntityType getEntityType() {
-        return entityType;
+    public String getSectionName() {
+        return sectionName;
     }
 
-    public void setEntityType(EntityType entityType) {
-        this.entityType = entityType;
-    }
-
-    public FieldDefinition getFieldDefinition() {
-        return fieldDefinition;
-    }
-
-    public void setFieldDefinition(FieldDefinition fieldDefinition) {
-        this.fieldDefinition = fieldDefinition;
-    }
-
-    public FieldDefinition getSecondaryFieldDefinition() {
-        return secondaryFieldDefinition;
-    }
-
-    public void setSecondaryFieldDefinition(FieldDefinition secondaryFieldDefinition) {
-        this.secondaryFieldDefinition = secondaryFieldDefinition;
-    }
-
-    public String getRegex() {
-        return regex;
-    }
-
-    public void setRegex(String regex) {
-        this.regex = regex;
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 
     public Long getId() {
@@ -101,5 +69,29 @@ public class FieldValidation implements Serializable {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
+    }
+
+    public String getFieldDefinitionId() {
+        return fieldDefinitionId;
+    }
+
+    public void setFieldDefinitionId(String fieldDefinitionId) {
+        this.fieldDefinitionId = fieldDefinitionId;
+    }
+
+    public String getSecondaryFieldDefinitionId() {
+        return secondaryFieldDefinitionId;
+    }
+
+    public void setSecondaryFieldDefinitionId(String secondaryFieldDefinitionId) {
+        this.secondaryFieldDefinitionId = secondaryFieldDefinitionId;
+    }
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
     }
 }

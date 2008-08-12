@@ -1,6 +1,5 @@
 package com.mpower.controller;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -15,19 +14,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Person;
-import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionService;
 import com.mpower.service.SessionServiceImpl;
-import com.mpower.service.customization.PageCustomizationService;
-import com.mpower.type.AccessType;
 
 public class PersonSearchFormController extends SimpleFormController {
 
@@ -46,28 +40,9 @@ public class PersonSearchFormController extends SimpleFormController {
         this.sessionService = sessionService;
     }
 
-    private PageCustomizationService pageCustomizationService;
-
-    public void setPageCustomizationService(PageCustomizationService pageCustomizationService) {
-        this.pageCustomizationService = pageCustomizationService;
-    }
-
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         logger.info("**** in formBackingObject");
-
-
-        // TODO: remove after find out how to call a stupid session attribute from the page
-        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        GrantedAuthority[] authorities = authentication.getAuthorities();
-        List<String> roles = new ArrayList<String>();
-        for (int i = 0; i < authorities.length; i++) {
-            roles.add(authorities[i].getAuthority());
-        }
-        Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(authentication.getSite(), roles);
-        request.getSession().setAttribute("personPermissions", pageAccess);
-
-
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
         return p;

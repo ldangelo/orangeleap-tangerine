@@ -17,6 +17,8 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator;
 import org.springframework.util.Assert;
 
+import com.mpower.type.RoleType;
+
 public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
     private static final Log logger = LogFactory.getLog(DefaultLdapAuthoritiesPopulator.class);
 
@@ -212,6 +214,19 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
         if (extraRoles != null) {
             roles.addAll(extraRoles);
         }
+
+        Set allRoles = new HashSet();
+        Iterator iter = roles.iterator();
+        while (iter.hasNext()){
+            GrantedAuthority ga = (GrantedAuthority) iter.next();
+            RoleType[] roleTypes = RoleType.values();
+            for (int i = 0; i < roleTypes.length; i++) {
+                if (roleTypes[i].getRoleRank() <= (RoleType.valueOf(ga.getAuthority())).getRoleRank()) {
+                    allRoles.add(new GrantedAuthorityImpl(roleTypes[i].getName()));
+                }
+            }
+        }
+        roles = allRoles;
 
         if (defaultRole != null) {
             roles.add(defaultRole);

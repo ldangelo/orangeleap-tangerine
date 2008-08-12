@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Site;
 import com.mpower.security.MpowerAuthenticationToken;
+import com.mpower.type.RoleType;
 
 @Component("sessionService")
 public class SessionServiceImpl implements SessionService {
@@ -36,14 +37,22 @@ public class SessionServiceImpl implements SessionService {
 
     public static List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        List<String> roleList = null;
-        if (authorities != null) {
-            roleList = new ArrayList<String>();
-            for (GrantedAuthority authority : authorities) {
-                roleList.add(authority.getAuthority());
+        RoleType greatestRoleType = null;
+        for (int i = 0; i < authorities.length; i++) {
+            RoleType tempRoleType = RoleType.valueOf(authorities[i].getAuthority());
+            if (greatestRoleType == null || greatestRoleType.getRoleRank() < tempRoleType.getRoleRank()) {
+                greatestRoleType = tempRoleType;
             }
         }
-        return roleList;
+
+        List<String> roles = new ArrayList<String>();
+        RoleType[] roleTypes = RoleType.values();
+        for (int i = 0; i < roleTypes.length; i++) {
+            if (roleTypes[i].getRoleRank() <= greatestRoleType.getRoleRank()) {
+                roles.add(roleTypes[i].getName());
+            }
+        }
+        return roles;
     }
 
     //	private static void storeUser(ServletRequest request, User user) {

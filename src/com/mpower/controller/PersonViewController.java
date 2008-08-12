@@ -18,32 +18,32 @@ import com.mpower.service.PersonService;
 
 public class PersonViewController implements Controller {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private GiftService giftService;
+    private GiftService giftService;
 
-	private PersonService personService;
+    private PersonService personService;
 
-	public void setGiftService(GiftService giftService) {
-		this.giftService = giftService;
-	}
+    public void setGiftService(GiftService giftService) {
+        this.giftService = giftService;
+    }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	@Override
-	public ModelAndView handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String personId = request.getParameter("personId");
-		Person person = personService.readPersonById(Long.valueOf(personId));
-		BigDecimal totalGiving = new BigDecimal(0);
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String personId = request.getParameter("personId");
+        Person person = personService.readPersonById(Long.valueOf(personId));
+        BigDecimal totalGiving = new BigDecimal(0);
 
-		List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
-		for (Gift gft : giftList)
-			totalGiving = totalGiving.add(gft.getValue());
-		
+        List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
+        for (Gift gft : giftList) {
+            totalGiving = totalGiving.add(gft.getValue() == null ? BigDecimal.ZERO : gft.getValue());
+        }
+
         ModelAndView mav = new ModelAndView("personView");
         if (person != null) {
             mav.addObject("person", person);
@@ -51,5 +51,5 @@ public class PersonViewController implements Controller {
         mav.addObject("totalGiving", totalGiving);
         mav.addObject("numberOfGifts", giftList.size());
         return mav;
-	}
+    }
 }

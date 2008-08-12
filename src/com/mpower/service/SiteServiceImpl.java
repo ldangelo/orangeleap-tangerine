@@ -2,12 +2,15 @@ package com.mpower.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
@@ -41,7 +44,7 @@ public class SiteServiceImpl implements SiteService {
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
-    private List<SectionField> sectionFields;
+    private Map<PageType, List<SectionField>> sectionFieldsMap = new HashMap<PageType, List<SectionField>>();
 
     @Override
     public List<Site> readSites() {
@@ -49,17 +52,19 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, Boolean> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
-        Map<String, Boolean> returnMap = new HashMap<String, Boolean>();
-        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
-        if (sfs != null) {
-            for (SectionField sectionField : sectionFields) {
+    public Set<String> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
+        Set<String> returnMap = new HashSet<String>();
+        List<SectionField> fields = getSectionFields(siteName, pageType, roles);
+        if (fields != null) {
+            for (SectionField sectionField : fields) {
                 boolean required = fieldService.lookupFieldRequired(siteName, sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
                 }
-                returnMap.put(key, required);
+                if (required) {
+                    returnMap.add(key);
+                }
             }
         }
         return returnMap;
@@ -73,7 +78,7 @@ public class SiteServiceImpl implements SiteService {
             for (SectionField sectionField : sfs) {
                 String labelText = null;
                 // TODO: find out how to get current locale
-                if (locale != null){
+                if (locale != null) {
                     labelText = messageService.lookupMessage(siteName, MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), locale);
                 }
                 if (GenericValidator.isBlankOrNull(labelText)) {
@@ -96,33 +101,36 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public Map<String, String> readFieldValidations(String siteName, PageType pageType, List<String> roles) {
         Map<String, String> returnMap = new HashMap<String, String>();
-        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
-        if (sfs != null) {
-            for (SectionField sectionField : sectionFields) {
+        List<SectionField> fields = getSectionFields(siteName, pageType, roles);
+        if (fields != null) {
+            for (SectionField sectionField : fields) {
                 String regex = fieldService.lookupFieldValidation(siteName, sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
                 }
-                returnMap.put(key, regex);
+                if (!StringUtils.isEmpty(regex)) {
+                    returnMap.put(key, regex);
+                }
             }
         }
         return returnMap;
     }
 
     private List<SectionField> getSectionFields(String siteName, PageType pageType, List<String> roles) {
-        if (sectionFields == null) {
-            sectionFields = new ArrayList<SectionField>();
+        if (sectionFieldsMap.get(pageType) == null) {
+            List<SectionField> fields = new ArrayList<SectionField>();
             List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(siteName, pageType, roles);
             if (sectionDefinitions != null) {
                 for (SectionDefinition sectionDefinition : sectionDefinitions) {
                     List<SectionField> currentSectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(siteName, sectionDefinition);
                     if (currentSectionFields != null) {
-                        sectionFields.addAll(currentSectionFields);
+                        fields.addAll(currentSectionFields);
                     }
                 }
             }
+            sectionFieldsMap.put(pageType, fields);
         }
-        return sectionFields;
+        return sectionFieldsMap.get(pageType);
     }
 }

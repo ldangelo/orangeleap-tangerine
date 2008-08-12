@@ -47,7 +47,7 @@ public class EntityValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Customizable customizableEntity = (Customizable) target;
 
-        Map<String, Boolean> requiredFieldMap = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+        Set<String> requiredFieldSet = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
 
         Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), null);
 
@@ -60,8 +60,8 @@ public class EntityValidator implements Validator {
         Set<String> errorSet = new HashSet<String>();
 
         // validate required fields
-        if (requiredFieldMap != null) {
-            for (String key : requiredFieldMap.keySet()) {
+        if (requiredFieldSet != null) {
+            for (String key : requiredFieldSet) {
                 if (errorSet.contains(key)) {
                     continue;
                 }
@@ -71,13 +71,10 @@ public class EntityValidator implements Validator {
                     property = beanWrapper.getPropertyValue(key);
                     fieldValueMap.put(key, property);
                 }
-                if (property != null) {
-                    String propertyString = property.toString();
-                    boolean bool = requiredFieldMap.get(key);
-                    if (bool && StringUtils.isEmpty(propertyString) && !errorSet.contains(key)) {
-                        errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldRequiredFailure");
-                        errorSet.add(key);
-                    }
+                String propertyString = property == null ? "" : property.toString();
+                if (StringUtils.isEmpty(propertyString) && !errorSet.contains(key)) {
+                    errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
+                    errorSet.add(key);
                 }
             }
         }
@@ -94,17 +91,13 @@ public class EntityValidator implements Validator {
                     property = beanWrapper.getPropertyValue(key);
                     fieldValueMap.put(key, property);
                 }
-                if (property != null) {
-                    String propertyString = property.toString();
-                    String regex = fieldValidationMap.get(key);
-                    if (regex != null) {
-                        boolean matches = propertyString.matches(regex);
-                        if (!matches && !errorSet.contains(key)) {
-                            // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
-                            errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
-                            // errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
-                        }
-                    }
+                String propertyString = property == null ? "" : property.toString();
+                String regex = fieldValidationMap.get(key);
+                boolean matches = propertyString.matches(regex);
+                if (!matches && !errorSet.contains(key)) {
+                    // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
+                    errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
+                    // errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
                 }
             }
         }

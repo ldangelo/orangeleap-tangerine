@@ -24,7 +24,6 @@
         <property name="successView" value="personSearch"/>
         <property name="personService" ref="personService"/>
         <property name="sessionService" ref="sessionService"/>
-        <property name="pageCustomizationService" ref="pageCustomizationService"/>
     </bean>
 
 
@@ -40,7 +39,6 @@
         <property name="formView" value="person" />
         <property name="successView" value="person" />
         <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="account" class="com.mpower.controller.AccountFormController">
@@ -64,7 +62,6 @@
         <property name="successView" value="giftView" />
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="giftRefund" class="com.mpower.controller.GiftRefundController">
@@ -99,7 +96,7 @@
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
     </bean>
-   
+
    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="order" value="0" />
       <property name="alwaysUseFullPath" value="true" />
@@ -159,11 +156,11 @@
 	    	<value>applicationContext</value>
 	   	</property>
 	</bean>
-	
+
 	<dwr:controller id="dwrController" debug="true" />
-	
+
 	<dwr:configuration />
-	
+
 	<bean id="echo" class="com.mpower.web.remote.HelloImpl">
         <dwr:remote javascript="Hello">
             <dwr:include method="greet" />

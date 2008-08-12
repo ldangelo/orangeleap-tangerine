@@ -17,9 +17,6 @@
 						<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 					    <div class="personFormButtons searchPersonButtons">
 							<input class="searchButton" type="submit" value="Search" />
-<security:authentication property="pageAccess" />
-<c:set var="foo"><security:authentication property="pageAccess" /></c:set>
-<c:out value="${foo}" />
 							<a href="person.htm" class="newAccountButton">Create New Person &raquo; </a>
 						</div>
 					</div>

@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import com.mpower.service.customization.PageCustomizationService;
 import com.mpower.type.AccessType;
+import com.mpower.type.RoleType;
 import com.mpower.util.HttpUtil;
 
 public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessingFilter {
@@ -78,9 +79,20 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         super.onSuccessfulAuthentication(request, response, authResult);
         HttpUtil.setCookie("siteCookie", obtainSite(request), Integer.MAX_VALUE, response);
         GrantedAuthority[] authorities = authResult.getAuthorities();
-        List<String> roles = new ArrayList<String>();
+        RoleType greatestRoleType = null;
         for (int i = 0; i < authorities.length; i++) {
-            roles.add(authorities[i].getAuthority());
+            RoleType tempRoleType = RoleType.valueOf(authorities[i].getAuthority());
+            if (greatestRoleType == null || greatestRoleType.getRoleRank() < tempRoleType.getRoleRank()) {
+                greatestRoleType = tempRoleType;
+            }
+        }
+
+        List<String> roles = new ArrayList<String>();
+        RoleType[] roleTypes = RoleType.values();
+        for (int i = 0; i < roleTypes.length; i++) {
+            if (roleTypes[i].getRoleRank() <= greatestRoleType.getRoleRank()) {
+                roles.add(roleTypes[i].getName());
+            }
         }
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(((MpowerAuthenticationToken) authResult).getSite(), roles);
         request.getSession().setAttribute("pageAccess", pageAccess);

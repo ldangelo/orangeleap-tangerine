@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="Search People" />
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -17,7 +16,7 @@
 						<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 					    <div class="personFormButtons searchPersonButtons">
 							<input class="searchButton" type="submit" value="Search" />
-							<a href="person.htm" class="newAccountButton">Create New Person &raquo; </a>
+							<a href="person.htm" class="newAccountButton">Add New Person &raquo; </a>
 						</div>
 					</div>
 				</c:forEach>

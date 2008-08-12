@@ -30,7 +30,7 @@
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
-					<a class="newAccountButton" href="person.htm">Create Another Person » </a>
+					<a class="newAccountButton" href="person.htm">Add New Person » </a>
 				</div>
 			</form:form>
 		</div>

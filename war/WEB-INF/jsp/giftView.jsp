@@ -32,13 +32,34 @@
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
 								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 						</c:forEach>
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1">
+						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1" end="3">
 							<c:if test="${sectionDefinition.defaultLabel==gift.paymentType}">
 								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 							</c:if>
 						</c:forEach>
 						<div class="clearColumns"></div>
 					</div>
+					<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="4">
+						<c:if test="${!empty sectionDefinition.defaultLabel}">
+							<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+						</c:if>
+						<table class="tablesorter" cellspacing="0" cellpadding="0"> 
+							<thead> 
+								<c:forEach items="${gift.distributionLines}" var="row" begin="0" end="0">
+									<tr>
+										<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
+									</tr>
+								</c:forEach>
+							</thead> 
+							<tbody> 
+								<c:forEach items="${gift.distributionLines}" var="row">
+									<tr>
+										<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					</c:forEach>
 			</form:form>
  			
 			<div class="formButtonFooter">

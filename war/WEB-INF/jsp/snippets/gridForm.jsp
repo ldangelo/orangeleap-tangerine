@@ -7,7 +7,7 @@
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM-dd-yy h:mm a" />
 	</c:when>
 	<c:otherwise>
-	<input value="${fieldVO.fieldValue}" class="text" name="${gridCollectionName}[${status.index}].${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text ${fieldVO.fieldName}" name="${gridCollectionName}[${status.index}].${fieldVO.fieldName}" />
 	</c:otherwise>
 	</c:choose></td>
 </c:forEach>

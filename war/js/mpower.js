@@ -1,29 +1,30 @@
 $(document).ready(function()
    {
-       $("#myTable").tablesorter( { sortList: [[2,0], [3,0]] , headers:{0:{sorter:false}} } );
+	$("#myTable").tablesorter( { sortList: [[2,0], [3,0]] , headers:{0:{sorter:false}} } );
 	//.tablesorterPager({container: $("#pager"),positionFixed: false})
-      	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
+	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 
       	//$(".accountOptions a").click(function() {
 	//	this.blur();
-       //	$(".accountOptions a").removeClass("active");
+    //	$(".accountOptions a").removeClass("active");
 	//	$(this).addClass("active");
 	//	$("#currentFunctionTitle").html($(this).html());
 	//	return false;
 	//});
 	
-	$("table.tablesorter tbody td").hover(function() {
-		$(this).parent().addClass("highlight");
-		}, function() {
-			$(this).parent().removeClass("highlight");
-	});
+	// Disabled because hover event is sticky on fast mouse movement
+	//$("table.tablesorter tbody tr").hover(function() {
+	//	$(this).addClass("highlight");
+	//	}, function() {
+	//		$(this).removeClass("highlight");
+	//});
 	
 	$("table.tablesorter tbody td input").focus(function() {
-		$(this).parent().parent().addClass("focused");console.log("focused");
+		$(this).parent().parent().addClass("focused");
 	});
 	
 	$("table.tablesorter tbody td input").blur(function() {
-		$(this).parent().parent().removeClass("focused");console.log("blurred");
+		$(this).parent().parent().removeClass("focused");
 	});
 	
 	//$(".secondaryNav li a").click(function() {
@@ -95,25 +96,75 @@ $(document).ready(function()
 //		waitImage: false
 //	 });
 
+//	$("table#gift_distribution input.amount").keydown(function(){
+//		console.log("yo");
+//	});
+	
+	$("table#gift_distribution input.amount").bind("keyup change", updateTotals);
+	
+	$("form#gift input#value").bind("keyup change",function(){
+		var amounts=$("table#gift_distribution input.amount");
+		if(amounts.length == 1) {
+			amounts.val($("input#value").val());
+		}
+		updateTotals();
+	});
+	
+	rowCloner("#gift_distribution tr:last");
+	
+	$("#gift_distribution td .deleteButton").click(function(){
+		deleteRow($(this).parent().parent());
+	});
+
    }
 );
-
-function callServer() {
-    Server.echo("DWR", callback);
+function updateTotals() {
+		var subTotal = 0;
+		$("table#gift_distribution input.amount").each(function(){
+			var rowVal=parseInt($(this).val());
+			if(!isNaN(rowVal)) subTotal += rowVal;
+		}); 
+		$("#subTotal span").html(subTotal.toString());
+		
+		if (subTotal==parseInt($("input#value").val())) {
+			$("#subTotal").removeClass("warning");
+		} else {
+			$("#subTotal").addClass("warning");
+		}
+}
+function rowCloner(selector) {
+	$(selector).one("keyup",function(){
+		addNewRow();
+		rowCloner(selector);
+	});
+}
+function callServer(name) {
+    Hello.greet(name, callback);
 }
 function callback(data) {
-    alert("Hi from " + data);
+    alert("AJAX Response:" + data);
 }
-function addDistributionLine() {
+function addNewRow() {
+	$(".tablesorter tr:last .deleteButton").show();
 	var newRow = $(".tablesorter tr:last").clone(true);
-	var newRowHtml = newRow.html();
+	newRow.find(".deleteButton").hide();
 	var i = newRow.attr("rowindex");
 	var j = parseInt(i) + 1;
 	newRow.attr("rowindex",j);
-	var findString = new RegExp("\\["+i+"\\]","gi");
-	newRowHtml = newRowHtml.replace(findString, "["+j+"]");
-	newRow.html(newRowHtml);
-	//newRow.css("display","none");
+	var findExp = new RegExp("\\["+i+"\\]","gi");
+	newRow.find("input").each(function(){
+			var field = $(this);
+			var nameString = field.attr('name').replace(findExp, "["+j+"]");
+			field.attr('name',nameString);
+			field.val("");
+		});
+	newRow.removeClass("focused highlight");
 	$(".tablesorter").append(newRow);
-	//newRow.fadeIn("slow");
+}
+function deleteRow(row) {
+	if($(".tablesorter tbody tr").length > 1) {
+		row.fadeOut("slow",function(){$(this).remove();updateTotals();})
+	} else {
+		alert("Sorry, you cannot delete that row since it's the only remaining row.")
+	};
 }

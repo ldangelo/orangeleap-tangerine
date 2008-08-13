@@ -40,7 +40,7 @@
 					<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 						<c:if test="${sectionDefinition.layoutType eq 'GRID'}">
 							<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
-							<a class="actionLink" onclick="addDistributionLine();return false;" href="#">New line</a>
+							<p class="gridActions">&nbsp;<span id="subTotal">Subtotal: <span>0</span></span></p>
 						</c:if>
 					</c:forEach>
 					<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>

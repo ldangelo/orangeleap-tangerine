@@ -59,11 +59,12 @@
 			<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 		</c:if>
 		
-		<table class="tablesorter" cellspacing="0" cellpadding="0"> 
+		<table class="tablesorter" id="${sectionDefinition.sectionHtmlName}" cellspacing="0" cellpadding="0"> 
 			<thead> 
 				<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 					<tr>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
+						<th class="actionColumn">&nbsp;</th>
 					</tr>
 				</c:forEach>
 			</thead>
@@ -71,6 +72,7 @@
 				<c:forEach items="${gridCollection}" var="row" varStatus="status">
 					<tr rowindex="${status.index}">
 					<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
+					<td><img style="cursor:pointer;display:none;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
 					</tr>
 				</c:forEach>
 			</tbody>

@@ -275,3 +275,28 @@ table.formTable {
 	padding:0;
 	width:100%;
 }
+p.gridActions {
+	margin:6px 0;
+	position:relative;
+}
+.gridActions #subTotal {
+	position:absolute;
+	right:27px;
+}
+.gridActions .warning {
+	padding-left:20px;
+	background:transparent url(../images/icons/warning.png) no-repeat left 1px;
+}
+#gift_distribution input.amount {
+	text-align:right;
+}
+#gift_distribution thead tr th {
+	background-color:#E6EEEE;
+	color:#000;
+	font-size:11px;
+	font-weight:bold;
+	padding:2px 0px 2px 5px;
+}
+table#gift_distribution thead th.actionColumn {
+	width:19px;
+}

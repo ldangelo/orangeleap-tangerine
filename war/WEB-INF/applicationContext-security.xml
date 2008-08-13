@@ -19,7 +19,6 @@
         <sec:intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/js/jquery.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/person.htm" access="ROLE_MANAGER" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
 
         <sec:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>

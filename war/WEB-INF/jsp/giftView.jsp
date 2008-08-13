@@ -40,8 +40,11 @@
 						<div class="clearColumns"></div>
 					</div>
 			</form:form>
+ 			
 			<div class="formButtonFooter">
-				<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
+				<c:if test="${pageAccess['giftList']!='DENIED'}">
+					<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
+				</c:if>
 				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>
 				<c:if test="${gift.originalGiftId == null && gift.refundGiftId == null}">
 					<a class="actionLink" onclick="return(confirm('Are you sure you want to refund this gift?'));" href="giftRefund.htm?giftId=${gift.id}">Refund this gift</a>

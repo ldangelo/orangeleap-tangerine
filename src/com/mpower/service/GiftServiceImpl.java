@@ -1,6 +1,7 @@
 package com.mpower.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -42,11 +43,10 @@ public class GiftServiceImpl implements GiftService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
 
-    	if (gift.getPaymentType().equals("Credit Card") ||
-    			gift.getPaymentType().equals("ACH")) {
+        if (gift.getPaymentType().equals("Credit Card") || gift.getPaymentType().equals("ACH")) {
 
-    		gift.setAuthCode(RandomStringUtils.randomNumeric(6));
-    	}
+            gift.setAuthCode(RandomStringUtils.randomNumeric(6));
+        }
 
         return giftDao.maintainGift(gift);
     }
@@ -106,6 +106,12 @@ public class GiftServiceImpl implements GiftService {
             refundGift.setValue(originalGift.getValue().negate());
             refundGift.setOriginalGiftId(originalGift.getId());
             refundGift = giftDao.maintainGift(refundGift);
+            refundGift.setDistributionLines(null);
+            List<DistributionLine> lines = originalGift.getDistributionLines();
+            for (DistributionLine line : lines) {
+                BigDecimal negativeAmount = line.getAmount() == null ? null : line.getAmount().negate();
+                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode(), line.getMotivationCode()));
+            }
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
             giftDao.maintainGift(originalGift);
@@ -121,16 +127,16 @@ public class GiftServiceImpl implements GiftService {
         }
     }
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public List<Gift> readGiftsByPersonId(Long personId) {
-		return giftDao.readGiftsByPersonId(personId);
-	}
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<Gift> readGiftsByPersonId(Long personId) {
+        return giftDao.readGiftsByPersonId(personId);
+    }
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public List<Gift> readAllGifts() {
-		return giftDao.readAllGifts();
-	}
-	
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<Gift> readAllGifts() {
+        return giftDao.readAllGifts();
+    }
+
 }

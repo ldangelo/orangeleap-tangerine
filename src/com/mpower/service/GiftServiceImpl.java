@@ -84,8 +84,6 @@ public class GiftServiceImpl implements GiftService {
 
         // TODO: remove after get this working
         gift.addDistributionLine(new DistributionLine(gift));
-        gift.addDistributionLine(new DistributionLine(gift));
-        gift.addDistributionLine(new DistributionLine(gift));
 
         // TODO: consider caching techniques for the default Person
         return gift;

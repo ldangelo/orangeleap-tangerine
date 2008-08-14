@@ -40,7 +40,7 @@
 					<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 						<c:if test="${sectionDefinition.layoutType eq 'GRID'}">
 							<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
-							<p class="gridActions">&nbsp;<span id="subTotal">Subtotal: <span>0</span></span></p>
+							<p class="gridActions">&nbsp;<span id="subTotal">Total <span class="warningText">(must match gift value)</span> <span class="value">0</span></span></p>
 						</c:if>
 					</c:forEach>
 					<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>

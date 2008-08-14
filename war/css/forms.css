@@ -281,11 +281,23 @@ p.gridActions {
 }
 .gridActions #subTotal {
 	position:absolute;
-	right:27px;
+	right:24px;
+}
+#subTotal .value {
+	background-color:#f0f0f0;
+	border:1px solid #444;
+	padding:0px 2px 1px 8px;
 }
 .gridActions .warning {
 	padding-left:20px;
-	background:transparent url(../images/icons/warning.png) no-repeat left 1px;
+	background:transparent url(../images/icons/warning.png) no-repeat left 2px;
+}
+.gridActions .warningText {
+	display:none;
+}
+.gridActions .warning .warningText {
+	color:#c00;
+	display:inline;
 }
 #gift_distribution input.amount {
 	text-align:right;

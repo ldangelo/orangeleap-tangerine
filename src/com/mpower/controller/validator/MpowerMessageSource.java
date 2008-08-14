@@ -23,6 +23,7 @@ public class MpowerMessageSource extends AbstractMessageSource implements Resour
     protected MessageFormat resolveCode(String code, Locale locale) {
         String message = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.FIELD_VALIDATION, code, locale);
         if (message == null && (code.startsWith("fieldRequiredFailure.") || code.startsWith("fieldValidationFailure."))) {
+            logger.info("message code, " + code + ", not found - use out-of-the-box error message");
             message = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
         }
         return createMessageFormat(message, locale);

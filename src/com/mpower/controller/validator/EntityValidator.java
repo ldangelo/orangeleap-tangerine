@@ -13,6 +13,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.mpower.domain.CustomField;
 import com.mpower.domain.Customizable;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
@@ -69,6 +70,9 @@ public class EntityValidator implements Validator {
                 if (property == null) {
                     BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
                     property = beanWrapper.getPropertyValue(key);
+                    if (property instanceof CustomField) {
+                        property = ((CustomField) property).getValue();
+                    }
                     fieldValueMap.put(key, property);
                 }
                 String propertyString = property == null ? "" : property.toString();
@@ -89,6 +93,9 @@ public class EntityValidator implements Validator {
                 if (property == null) {
                     BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
                     property = beanWrapper.getPropertyValue(key);
+                    if (property instanceof CustomField) {
+                        property = ((CustomField) property).getValue();
+                    }
                     fieldValueMap.put(key, property);
                 }
                 String propertyString = property == null ? "" : property.toString();

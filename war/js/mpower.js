@@ -124,7 +124,7 @@ function updateTotals() {
 			var rowVal=parseInt($(this).val());
 			if(!isNaN(rowVal)) subTotal += rowVal;
 		}); 
-		$("#subTotal span").html(subTotal.toString());
+		$("#subTotal span.value").html(subTotal.toString());
 		
 		if (subTotal==parseInt($("input#value").val())) {
 			$("#subTotal").removeClass("warning");
@@ -133,8 +133,10 @@ function updateTotals() {
 		}
 }
 function rowCloner(selector) {
-	$(selector).one("keyup",function(){
-		addNewRow();
+	$(selector).one("keyup",function(event){
+		if(event.keyCode != 9) { // ignore tab
+			addNewRow();
+		}
 		rowCloner(selector);
 	});
 }

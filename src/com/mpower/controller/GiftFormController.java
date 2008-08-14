@@ -1,5 +1,7 @@
 package com.mpower.controller;
 
+import java.util.Iterator;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +11,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
@@ -55,6 +58,19 @@ public class GiftFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Gift gift = (Gift) command;
+
+        // validate required fields
+        
+        // TODO: This code is temporary validation to strip out invalid distribution lines.
+        Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
+        while ( distLineIter.hasNext() )
+        {
+        	DistributionLine line = distLineIter.next();
+        	if(line == null || line.getAmount()==null) {
+        		distLineIter.remove();
+        	}
+        }
+        	
         Gift current = giftService.maintainGift(gift);
 
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our

@@ -26,7 +26,11 @@ public class MpowerMessageSource extends AbstractMessageSource implements Resour
             logger.info("message code, " + code + ", not found - use out-of-the-box error message");
             message = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
         }
-        return createMessageFormat(message, locale);
+        if (message == null) {
+			return null;
+		} else {
+			return createMessageFormat(message, locale);
+		}
     }
 
     @Override

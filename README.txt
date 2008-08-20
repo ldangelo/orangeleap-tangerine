@@ -8,9 +8,9 @@ Database:
 
 Tomcat:
 5.  Ensure that JDK 1.6 is installed locally
-6.  Ensure that Tomcat 6.0.16 is installed at /dev/apps/apache-tomcat-6.0.16
+6.  Ensure that Tomcat 6.0.18 is installed at /dev/apps/apache-tomcat-6.0.18
 7.  Follow instructions in README under build/tomcat in this project
-8.  Copy the following jars to /dev/apps/apache-tomcat-6.0.16/lib
+8.  Copy the following jars to /dev/apps/apache-tomcat-6.0.18/lib
 	a. mysql-connector-java-5.0.8-bin.jar (mysql driver)
 	b. jta.jar (Java Transaction APIs)
 	c. sqljdbc.jar (SQL Server Driver - for SQL Server only)
@@ -21,8 +21,8 @@ Tomcat:
 9.  Open the build/build.xml file from this project in the Eclipse ant view
 10. Execute the 'Deploy War' task
 11. Execute the 'Start Tomcat...' task.
-12. Create a file /key.txt with the following line in it to add the cryptography 
+12. Create a file /key.txt with the following line in it to add the cryptography
     key: SECRET_KEY=1d8ef739bd58294c6ee43b2b3bc7a26c
 
-You can now query the database and see that tables have been created for the 
+You can now query the database and see that tables have been created for the
 application.

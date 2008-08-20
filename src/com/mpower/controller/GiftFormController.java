@@ -43,6 +43,7 @@ public class GiftFormController extends SimpleFormController {
             // create person
             gift = giftService.createDefaultGift(SessionServiceImpl.lookupUserSiteName());
             String personId = request.getParameter("personId");
+            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
             Person person = personService.readPersonById(Long.valueOf(personId));
             if (person == null) {
                 logger.error("**** person not found for id: " + personId);
@@ -60,17 +61,16 @@ public class GiftFormController extends SimpleFormController {
         Gift gift = (Gift) command;
 
         // validate required fields
-        
+
         // TODO: This code is temporary validation to strip out invalid distribution lines.
         Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
-        while ( distLineIter.hasNext() )
-        {
-        	DistributionLine line = distLineIter.next();
-        	if(line == null || line.getAmount()==null) {
-        		distLineIter.remove();
-        	}
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line == null || line.getAmount() == null) {
+                distLineIter.remove();
+            }
         }
-        	
+
         Gift current = giftService.maintainGift(gift);
 
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our

@@ -10,14 +10,14 @@
 				WHERE gift.value > 0 AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
 		</query>
 	</named-query>
-	
+
 	<named-query name="READ_ALL_PEOPLE">
 		<query>
 			SELECT person
 			FROM com.mpower.domain.Person person
 		</query>
 	</named-query>
-	
+
 	<named-query name="SET_LAPSED_DONOR">
 		<query>
 			UPDATE com.mpower.domain.Person person
@@ -25,7 +25,7 @@
 			WHERE person.id = :personId
 		</query>
 	</named-query>
-	
+
 	<named-query name="READ_ALL_PEOPLE_BY_SITE">
 		<query>
 			SELECT person

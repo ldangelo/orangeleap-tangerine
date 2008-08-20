@@ -6,9 +6,19 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.2.xsd">
 
-	<sec:global-method-security secured-annotations="enabled" />
+	<sec:global-method-security secured-annotations="enabled"/>
 
-    <sec:http entry-point-ref="authenticationProcessingFilterEntryPoint">
+	<bean id="accessDecisionManager" class="com.mpower.security.MpowerAffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false"/>
+		<property name="decisionVoters">
+			<list>
+				<bean class="org.springframework.security.vote.RoleVoter"/>
+				<bean class="org.springframework.security.vote.AuthenticatedVoter"/>
+			</list>
+		</property>
+	</bean>
+
+    <sec:http entry-point-ref="authenticationProcessingFilterEntryPoint" access-decision-manager-ref="accessDecisionManager">
         <!-- Restrict URLs based on role -->
         <sec:intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -20,7 +30,6 @@
         <sec:intercept-url pattern="/js/jquery.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
-
         <sec:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>
     </sec:http>
 

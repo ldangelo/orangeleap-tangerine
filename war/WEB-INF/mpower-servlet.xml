@@ -97,32 +97,31 @@
         <property name="giftService" ref="giftService" />
     </bean>
 
-   <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="order" value="0" />
-      <property name="alwaysUseFullPath" value="true" />
-        <property name="mappings">
-            <props>
-                <prop key="/dwr/**">dwrController</prop>
-                <prop key="/account.htm">account</prop>
-                <prop key="/person.htm">person</prop>
-                <prop key="/personSearch.htm">personSearch</prop>
-                <prop key="/personView.htm">personView</prop>
-                <prop key="/gift.htm">gift</prop>
-                <prop key="/giftList.htm">giftList</prop>
-                <prop key="/giftRefund.htm">giftRefund</prop>
-                <prop key="/giftSearch.htm">giftSearch</prop>
-                <prop key="/giftView.htm">giftView</prop>
-            </props>
-        </property>
-    </bean>
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order" value="0" />
+		<property name="alwaysUseFullPath" value="true" />
+		<property name="mappings">
+		    <props>
+		        <prop key="/dwr/**">dwrController</prop>
+		        <prop key="/account.htm">account</prop>
+		        <prop key="/person.htm">person</prop>
+		        <prop key="/personSearch.htm">personSearch</prop>
+		        <prop key="/personView.htm">personView</prop>
+		        <prop key="/gift.htm">gift</prop>
+		        <prop key="/giftList.htm">giftList</prop>
+		        <prop key="/giftRefund.htm">giftRefund</prop>
+		        <prop key="/giftSearch.htm">giftSearch</prop>
+		    	<prop key="/giftView.htm">giftView</prop>
+			</props>
+		</property>
+	</bean>
 
     <bean id="beanNameUrlMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-      <property name="order" value="1" />
-   </bean>
+      	<property name="order" value="1" />
+   	</bean>
 
 	<!-- Configures the Tiles layout system -->
-	<bean id="tilesConfigurer"
-		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
 		<property name="definitions">
 			<list>
 				<value>/WEB-INF/mpower-tiles.xml</value>
@@ -131,9 +130,9 @@
 	</bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+    	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
         <property name="prefix" value="/WEB-INF/jsp/"></property>
-       <property name="suffix" value=".jsp"></property>
+       	<property name="suffix" value=".jsp"></property>
     </bean>
 
 
@@ -148,9 +147,9 @@
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
-		<list>
-			<ref bean="cronRuleTrigger"/>
-		</list>
+			<list>
+				<ref bean="cronRuleTrigger"/>
+			</list>
 		</property>
 		<property name="applicationContextSchedulerContextKey">
 	    	<value>applicationContext</value>

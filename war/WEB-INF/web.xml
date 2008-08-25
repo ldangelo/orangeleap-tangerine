@@ -3,13 +3,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>
-			/WEB-INF/applicationContext.xml,
-			/WEB-INF/applicationContext-security.xml
-		</param-value>
-	</context-param>
+         
+   <!-- The following listener and context-param are used to bootstrap our
+        Spring Application Contexts.  The web application context is loaded
+        via the mpower servlet defined below -->
+   <listener>
+      <listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+
+   <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+         /WEB-INF/applicationContext.xml,
+         /WEB-INF/applicationContext-security.xml
+      </param-value>
+   </context-param>
 
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
@@ -25,24 +33,17 @@
 		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
 	</listener>
 
-	<!--
-		There is no "root" ApplicationContext getting loaded. To enable a root
-		context add a <context-param /> and a ContextLoaderListener
-	-->
-	<listener>
-		<listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
+   <!-- This servlet declaration is used as the Dispatcher Servlet (front 
+        controller) in our Spring MVC framework and it also loads our web
+        application context. -->
 	<servlet>
 		<servlet-name>mpower</servlet-name>
 		<servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+		    <param-name>contextConfigLocation</param-name>
+		    <param-value>/WEB-INF/applicationContext-servlet.xml</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
-		<!--
-			Without a <init-param /> for contextConfigLocation that explicity
-			spells out the name of the web components context filename, spring
-			defaults to <servlet-name>-servlet.xml. So in this case, the webApp
-			context file is mpower-servlet.xml
-		-->
 	</servlet>
 
 	<servlet-mapping>

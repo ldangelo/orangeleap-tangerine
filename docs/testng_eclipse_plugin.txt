@@ -1,0 +1,23 @@
+TestNG Eclipse Plugin Installation Instructions
+
+We are going to be using TestNG for unit testing and integration testing.  
+You will be able to run these test suites from an ant build file (which is 
+what the continuous build server will do).  However, if you want to execute 
+them from the Eclipse IDE (and debug into them) you will need the plug in.  
+
+Here is the link:
+http://testng.org/doc/download.html
+
+   1. Install the plug in (see me if you have problems).
+   2. Go to “Open Debug Dialog” (or “Open Run Dialog”)
+   3. Right click on TestNG
+   4. Click new
+   5. Give the configuration a name
+   6. Ensure that mpower is the project that is selected
+   7. Select the “Suite” radio button and ensure that “test\testng.xml” is in the field
+   8. Click on the JRE tab and make sure that the project JRE is selected
+   9. Click Apply and Close
+  10. Open Window/Preferences and select TestNG
+  11. In the output directory put “./build/stage/test-folder”
+
+You are now ready to execute a TestNG suite from Eclipse.

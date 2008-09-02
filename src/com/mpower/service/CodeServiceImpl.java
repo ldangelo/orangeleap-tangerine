@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CodeDao;
-import com.mpower.domain.Gift;
 import com.mpower.domain.customization.Code;
 
 @Service("codeService")

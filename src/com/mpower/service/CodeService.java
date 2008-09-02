@@ -2,7 +2,6 @@ package com.mpower.service;
 
 import java.util.List;
 
-import com.mpower.domain.Person;
 import com.mpower.domain.customization.Code;
 
 public interface CodeService {

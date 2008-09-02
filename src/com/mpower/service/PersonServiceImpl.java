@@ -30,6 +30,9 @@ public class PersonServiceImpl implements PersonService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name = "auditService")
+    private AuditService auditService;
+
     @Resource(name = "personDao")
     private PersonDao personDao;
 
@@ -40,7 +43,9 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Person maintainPerson(Person person) throws PersonValidationException {
         PersonValidator.validatePerson(person);
-        return personDao.savePerson(person);
+        person = personDao.savePerson(person);
+        auditService.auditObject(person);
+        return person;
     }
 
     @Override

@@ -14,9 +14,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.SiteDao;
+import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
@@ -132,5 +134,27 @@ public class SiteServiceImpl implements SiteService {
             sectionFieldsMap.put(pageType, fields);
         }
         return sectionFieldsMap.get(pageType);
+    }
+
+    @Override
+    public Map<String, Object> readFieldValues(String siteName, PageType pageType, List<String> roles, Object object) {
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
+        if (sfs != null) {
+            BeanWrapperImpl bean = new BeanWrapperImpl(object);
+            for (SectionField sectionField : sfs) {
+                String key = sectionField.getFieldDefinition().getFieldName();
+                if (sectionField.getSecondaryFieldDefinition() != null) {
+                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
+                }
+                Object value = bean.getPropertyValue(key);
+                if (value instanceof Phone) {
+                    value = bean.getPropertyValue(key + ".number");
+                }
+                returnMap.put(key, value);
+            }
+            returnMap.put("id", bean.getPropertyValue("id"));
+        }
+        return returnMap;
     }
 }

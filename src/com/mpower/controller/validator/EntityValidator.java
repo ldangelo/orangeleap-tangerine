@@ -14,29 +14,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.CustomField;
-import com.mpower.domain.Customizable;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
-import com.mpower.service.SessionServiceImpl;
-import com.mpower.service.SiteService;
-import com.mpower.type.PageType;
+import com.mpower.domain.Viewable;
 
 public class EntityValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    private PageType pageType;
-
-    private SiteService siteService;
-
-    public void setPageType(PageType pageType) {
-        this.pageType = pageType;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -46,13 +31,10 @@ public class EntityValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        Customizable customizableEntity = (Customizable) target;
-
-        Set<String> requiredFieldSet = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
-
-        Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), null);
-
-        Map<String, String> fieldValidationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+        Viewable viewable = (Viewable) target;
+        Set<String> requiredFields = viewable.getRequiredFields();
+        Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
+        Map<String, String> validationMap = viewable.getValidationMap();
 
         // used as a cache to prevent having to use reflection if the value has already been read
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -61,14 +43,14 @@ public class EntityValidator implements Validator {
         Set<String> errorSet = new HashSet<String>();
 
         // validate required fields
-        if (requiredFieldSet != null) {
-            for (String key : requiredFieldSet) {
+        if (requiredFields != null) {
+            for (String key : requiredFields) {
                 if (errorSet.contains(key)) {
                     continue;
                 }
                 Object property = fieldValueMap.get(key);
                 if (property == null) {
-                    BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
+                    BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
                     property = beanWrapper.getPropertyValue(key);
                     if (property instanceof CustomField) {
                         property = ((CustomField) property).getValue();
@@ -84,14 +66,14 @@ public class EntityValidator implements Validator {
         }
 
         // validate regex
-        if (fieldValidationMap != null) {
-            for (String key : fieldValidationMap.keySet()) {
+        if (validationMap != null) {
+            for (String key : validationMap.keySet()) {
                 if (errorSet.contains(key)) {
                     continue;
                 }
                 Object property = fieldValueMap.get(key);
                 if (property == null) {
-                    BeanWrapper beanWrapper = new BeanWrapperImpl(customizableEntity);
+                    BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
                     property = beanWrapper.getPropertyValue(key);
                     if (property instanceof CustomField) {
                         property = ((CustomField) property).getValue();
@@ -99,7 +81,7 @@ public class EntityValidator implements Validator {
                     fieldValueMap.put(key, property);
                 }
                 String propertyString = property == null ? "" : property.toString();
-                String regex = fieldValidationMap.get(key);
+                String regex = validationMap.get(key);
                 boolean matches = propertyString.matches(regex);
                 if (!matches && !errorSet.contains(key)) {
                     // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);

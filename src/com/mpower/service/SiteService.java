@@ -39,4 +39,14 @@ public interface SiteService {
      * @return
      */
     public Map<String, String> readFieldValidations(String siteName, PageType pageType, List<String> roles);
+
+    /**
+     * Return field values
+     * @param siteName the site name to search
+     * @param pageType the page type to search
+     * @param roles the roles of the current user
+     * @param object
+     * @return
+     */
+    public Map<String, Object> readFieldValues(String siteName, PageType pageType, List<String> roles, Object object);
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,7 +29,7 @@ import com.mpower.util.DistributionLineCustomFieldMap;
 @Entity
 @EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })
 @Table(name = "DISTRO_LINE")
-public class DistributionLine implements Customizable, Serializable {
+public class DistributionLine implements Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -61,10 +62,16 @@ public class DistributionLine implements Customizable, Serializable {
     private Map<String, CustomField> customFieldMap = null;
 
     @Transient
-    private Map<String, Boolean> requiredFieldMap = null;
+    private Set<String> requiredFields = null;
 
     @Transient
     private Map<String, String> validationMap = null;
+
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
+
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
     public DistributionLine() {
     }
@@ -136,8 +143,13 @@ public class DistributionLine implements Customizable, Serializable {
     }
 
     @Override
-    public Map<String, Boolean> getRequiredFieldMap() {
-        return requiredFieldMap;
+    public Set<String> getRequiredFields() {
+        return requiredFields;
+    }
+
+    @Override
+    public void setRequiredFields(Set<String> requiredFields) {
+        this.requiredFields = requiredFields;
     }
 
     @Override
@@ -146,13 +158,27 @@ public class DistributionLine implements Customizable, Serializable {
     }
 
     @Override
-    public void setRequiredFieldMap(Map<String, Boolean> requiredFieldMap) {
-        this.requiredFieldMap = requiredFieldMap;
-    }
-
-    @Override
     public void setValidationMap(Map<String, String> validationMap) {
         this.validationMap = validationMap;
     }
 
+    @Override
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    @Override
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    @Override
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    @Override
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
+    }
 }

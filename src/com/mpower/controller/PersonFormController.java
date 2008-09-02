@@ -1,5 +1,8 @@
 package com.mpower.controller;
 
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,7 +15,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SiteService;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.type.PageType;
 
 public class PersonFormController extends SimpleFormController {
 
@@ -25,14 +30,34 @@ public class PersonFormController extends SimpleFormController {
         this.personService = personService;
     }
 
+    private SiteService siteService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String personId = request.getParameter("personId");
+        personId = (personId == null) ? request.getParameter("id") : personId;
         Person person = null;
         if (personId == null) {
             person = personService.createDefaultPerson(SessionServiceImpl.lookupUserSiteName());
         } else {
             person = personService.readPersonById(new Long(personId));
+        }
+        if (isFormSubmission(request)) {
+            Set<String> requiredFields = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
+            person.setRequiredFields(requiredFields);
+
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            person.setFieldLabelMap(fieldLabelMap);
+
+            Map<String, String> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
+            person.setValidationMap(validationMap);
+
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), person);
+            person.setFieldValueMap(valueMap);
         }
         return person;
     }

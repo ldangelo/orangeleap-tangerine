@@ -51,9 +51,10 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PageDefinition> readPageDefinitions(String siteName) {
+    public List<PageDefinition> readPageDefinitions(String siteName, List<String> roles) {
         Query query = em.createNamedQuery("READ_PAGE_DEFINITIONS");
         query.setParameter("siteName", siteName);
+        query.setParameter("roles", roles);
         return query.getResultList();
     }
 }

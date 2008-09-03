@@ -32,8 +32,8 @@
 	<named-query name="READ_PAGE_DEFINITIONS" >
 		<query>
 		    SELECT pd FROM com.mpower.domain.customization.PageDefinition pd
-		    WHERE (pd.site IS NULL)
-		    OR (pd.site.name = :siteName)
+		    WHERE ((pd.site IS NULL OR pd.site.name = :siteName)
+		    AND (pd.role IN (:roles)))
 		</query>
 	</named-query>
 

@@ -116,14 +116,12 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Transactional
     public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
         Map<String, PageDefinition> pageDefinitionMap = new HashMap<String, PageDefinition>(); // pageType, PageDefinition
-        List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName);
+        List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName, roles);
         if (pages != null) {
             for (PageDefinition pageDefinition : pages) {
-                if (roles.contains(pageDefinition.getRole())) {
-                    PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());
-                    if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageDefinition.getRole()).getRoleRank())) {
-                        pageDefinitionMap.put(pageDefinition.getPageType().getPageName(), pageDefinition);
-                    }
+                PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());
+                if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageDefinition.getRole()).getRoleRank())) {
+                    pageDefinitionMap.put(pageDefinition.getPageType().getPageName(), pageDefinition);
                 }
             }
         }

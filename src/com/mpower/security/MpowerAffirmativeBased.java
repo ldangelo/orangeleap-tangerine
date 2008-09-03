@@ -25,11 +25,13 @@ public class MpowerAffirmativeBased extends AffirmativeBased {
         if (authentication instanceof MpowerAuthenticationToken) {
             if (object instanceof FilterInvocation) {
                 String requestUrl = ((FilterInvocation) object).getRequestUrl();
+                // chop off request parameters
+                requestUrl = (requestUrl != null && requestUrl.indexOf('?') > -1) ? requestUrl.substring(0, requestUrl.indexOf('?')) : requestUrl;
                 Map<String, AccessType> pageAccess = ((MpowerAuthenticationToken) authentication).getPageAccess();
                 AccessType accessType = null;
-				if (pageAccess != null) {
-					accessType = pageAccess.get(requestUrl);
-				}
+                if (pageAccess != null) {
+                    accessType = pageAccess.get(requestUrl);
+                }
                 if (accessType != null && AccessType.DENIED.equals(accessType)) {
                     deny++;
                 }

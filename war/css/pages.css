@@ -284,3 +284,32 @@ td.inactive {
 	width:98%;
 	border-spacing:0;
 }
+.roundedbox,.roundedbox_bottom,.roundedbox_main,.roundedbox_main div.content {
+	background: #fff url("../images/greyBox.gif") no-repeat bottom right;
+}
+
+.roundedbox {
+	width: 400px;   /* Adjust this number for box width */
+	margin: 10px auto;
+}
+
+.roundedbox_main {
+	background-position: top right;
+	padding-right: 10px;
+}
+
+.roundedbox_main div.content {
+	background-position: top left;
+	padding: 10px 0 10px 10px;
+	height: auto !important;  /* Non-IE */
+	height: 1%;  /* IE */
+}
+
+.roundedbox_bottom {
+	background-position: bottom left;
+	margin-right: 5px;
+	height: 5px;
+	line-height: 1px;
+	font-size: 1px;
+	padding: 0;
+}

@@ -227,6 +227,15 @@ ul.formFields li input.textError {
 	border:1px solid #d00;
 	padding:4px;
 }
+table tr td input.text {
+	border:1px solid #7f9db9;
+	padding:1px;
+}
+table tr td input.textError {
+	background:#fed;
+	border:1px solid #d00;
+	padding:1px;
+}
 .globalFormErrors h5 {
 	margin:6px 0 4px;
 	font-size:13px;
@@ -311,4 +320,12 @@ p.gridActions {
 }
 table#gift_distribution thead th.actionColumn {
 	width:19px;
+}
+.codeList {
+	height:300px;
+	overflow-y:scroll;
+	border:1px solid #bbb;
+}
+.codeList table input {
+	font-family:arial,sans-serif;
 }

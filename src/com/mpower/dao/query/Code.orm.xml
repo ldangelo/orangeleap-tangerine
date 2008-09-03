@@ -38,7 +38,7 @@
 			WHERE code.siteName = :siteName
 			AND code.codeType = :codeType
 			AND code.value LIKE :value
-			AND code.inactive = FALSE
+			AND code.inactive != TRUE
 			ORDER BY code.value
 		</query>
 	</named-query>
@@ -50,7 +50,18 @@
 			AND code.codeType = :codeType
 			AND code.value LIKE :value
 			AND code.description LIKE :description
-			AND code.inactive = FALSE
+			AND code.inactive = :inactive
+			ORDER BY code.value
+		</query>
+	</named-query>
+	
+	<named-query name="READ_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION">
+		<query>
+			SELECT code FROM com.mpower.domain.customization.Code code
+			WHERE code.siteName = :siteName
+			AND code.codeType = :codeType
+			AND code.value LIKE :value
+			AND code.description LIKE :description
 			ORDER BY code.value
 		</query>
 	</named-query>

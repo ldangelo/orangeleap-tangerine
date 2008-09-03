@@ -258,3 +258,29 @@ span.majorDonor {
 	color:#e50;
 	padding-left:10px;
 }
+.simplebox {
+	background-color:#eef;
+	padding:4px;
+	border:1px solid #ccf;
+	margin-bottom:8px;
+}
+.simplebox h4  {
+	color:#444;
+	font-size:14px;
+}
+td.action {
+	width:10%;
+}
+td.codeValue {
+	width:20%;
+}
+td.codeDescription {
+	width:60%;
+}
+td.inactive {
+	width:10%;
+}
+.filters table {
+	width:98%;
+	border-spacing:0;
+}

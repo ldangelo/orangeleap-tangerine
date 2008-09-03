@@ -6,6 +6,8 @@ table.tablesorter {
 	font-size: 8pt;
 	width: 100%;
 	text-align: left;
+	border-spacing:0;
+	border-collapse: collapse;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	background-color: #e6EEEE;
@@ -35,7 +37,10 @@ table.tablesorter tbody td a {
 	font-family:verdana;
 	font-size:11px;
 }
-table.tablesorter tbody tr.highlight td {
+/*table.tablesorter tbody tr.highlight td {
+	background-color:#ffd;
+}*/
+table.tablesorter tbody tr:hover td {
 	background-color:#ffd;
 }
 table.tablesorter tbody tr.focused td {
@@ -54,5 +59,6 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 	/*background-color: #8dbdd8;*/
 	/*background-color: #acd0e5;*/
 	/*background-color:#f6f7fb;*/
+	background-color: #dce8e8;
 	color:#000;
 }

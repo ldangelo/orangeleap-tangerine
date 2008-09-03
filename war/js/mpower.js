@@ -4,14 +4,6 @@ $(document).ready(function()
 	//.tablesorterPager({container: $("#pager"),positionFixed: false})
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 
-      	//$(".accountOptions a").click(function() {
-	//	this.blur();
-    //	$(".accountOptions a").removeClass("active");
-	//	$(this).addClass("active");
-	//	$("#currentFunctionTitle").html($(this).html());
-	//	return false;
-	//});
-	
 	// Disabled because hover event is sticky on fast mouse movement
 	//$("table.tablesorter tbody tr").hover(function() {
 	//	$(this).addClass("highlight");
@@ -21,25 +13,9 @@ $(document).ready(function()
 	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parent().parent().addClass("focused");
-	});
-	
-	$("table.tablesorter tbody td input").blur(function() {
+	}).blur(function() {
 		$(this).parent().parent().removeClass("focused");
 	});
-	
-	//$(".secondaryNav li a").click(function() {
-	//	this.blur();
-       //	$(".secondaryNav li a").removeClass("active");
-	//	$(this).addClass("active");
-	//	return false;
-	//});
-	
-	//$(".primaryNav li a").click(function() {
-	//	this.blur();
-       //	$(".primaryNav li a").removeClass("active");
-	//	$(this).addClass("active");
-	//	return false;
-	//});
 	
 	$("ul.formFields li input, ul.formFields li select").change(function() {
        	$("#savedMarker").fadeOut("slow");
@@ -73,7 +49,28 @@ $(document).ready(function()
 	//	}
 	// );
 	
+	$(".projectCode").autocomplete("codeHelper.htm?type=projectCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	}
+	);
+	
+	$(".motivationCode").autocomplete("codeHelper.htm?type=motivationCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	}
+	);
+	
 	$("#paymentType").change(function(){
+		console.log("payment type changed");
 		$("." + this.name + " .column").hide();
 		$(".gift_info").show();
 		$("." + this[this.selectedIndex].getAttribute('reference')).show();
@@ -96,9 +93,6 @@ $(document).ready(function()
 //		waitImage: false
 //	 });
 
-//	$("table#gift_distribution input.amount").keydown(function(){
-//		console.log("yo");
-//	});
 	
 	$("table#gift_distribution input.amount").bind("keyup change", updateTotals);
 	
@@ -111,13 +105,49 @@ $(document).ready(function()
 	});
 	
 	rowCloner("#gift_distribution tr:last");
+	$("#gift_distribution tr:last .deleteButton").hide();
 	
 	$("#gift_distribution td .deleteButton").click(function(){
 		deleteRow($(this).parent().parent());
 	});
-
+	
+	$('#dialog').jqm({overlay:10}).jqDrag($('.jqmWindow h4'));
+	$("#newCodeForm").submit(function(){
+		$.ajax({
+			type: "POST",
+			url: "code.htm",
+			data: $(this).serialize(),
+			success: function(html){
+				$("#dialog .modalContent").html(html);
+				$("#dialog").jqmShow();
+				return false;
+			},
+			error: function(html){
+				$("#dialog .modalContent").html("didn't work");
+				$("#dialog").jqmShow();
+				return false;
+			}
+		});
+		return false;
+	});
+		
+	
+	$(".codeLookup").click(function(){
+		$("#dialog .modalContent").load($(this).attr("href"));
+		$("#dialog").jqmShow();
+		return false;
+	});
+	
+	$(".filters :input").bind("keyup change",function(){
+		var queryString = $(".filters :input").serialize();
+		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
+	});
+	
    }
 );
+
+/* END DOCUMENT READY CODE */
+
 function updateTotals() {
 		var subTotal = 0;
 		$("table#gift_distribution input.amount").each(function(){
@@ -135,7 +165,7 @@ function updateTotals() {
 function rowCloner(selector) {
 	$(selector).one("keyup",function(event){
 		if(event.keyCode != 9) { // ignore tab
-			addNewRow();
+			addNewRow(distributionLineBuilder);
 		}
 		rowCloner(selector);
 	});
@@ -146,10 +176,37 @@ function callServer(name) {
 function callback(data) {
     alert("AJAX Response:" + data);
 }
-function addNewRow() {
-	$(".tablesorter tr:last .deleteButton").show();
-	var newRow = $(".tablesorter tr:last").clone(true);
-	newRow.find(".deleteButton").hide();
+function distributionLineBuilder(newRow) {
+	newRow.find(".deleteButton").click(function(){
+		deleteRow($(this).parent().parent());
+	}).hide();
+	newRow.find("input").focus(function() {
+		$(this).parent().parent().addClass("focused");
+	}).blur(function() {
+		$(this).parent().parent().removeClass("focused");
+	}).removeClass("textError");
+	newRow.find("input.amount").bind("keyup change", updateTotals);
+	newRow.find("input.projectCode").autocomplete("codeHelper.htm?type=projectCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	});
+	newRow.find("input.motivationCode").autocomplete("codeHelper.htm?type=motivationCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	});
+	newRow.removeClass("focused");
+}
+function addNewRow(builder) {
+	var newRow = $(".tablesorter tr:last").clone(false);
+	builder(newRow);
 	var i = newRow.attr("rowindex");
 	var j = parseInt(i) + 1;
 	newRow.attr("rowindex",j);
@@ -160,7 +217,7 @@ function addNewRow() {
 			field.attr('name',nameString);
 			field.val("");
 		});
-	newRow.removeClass("focused highlight");
+	$(".tablesorter tr:last .deleteButton").show();
 	$(".tablesorter").append(newRow);
 }
 function deleteRow(row) {
@@ -169,4 +226,53 @@ function deleteRow(row) {
 	} else {
 		alert("Sorry, you cannot delete that row since it's the only remaining row.")
 	};
+}
+function testDebugger() {
+	var test="hello";
+	console.log(test);
+	console.log(test+" world");
+}
+function formatItem(row) {
+	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
+}
+
+function saveInPlace(elem, baseUrl) {
+	var queryString = $(elem).parent().parent().find("input").serialize();
+	$.ajax({
+		type: "POST",
+		url: baseUrl,
+		data: queryString,
+		success: function(html){
+			$(elem).parent().parent().html(html);
+			return false;
+		},
+		error: function(html){
+			alert("Code could not be saved. Please ensure that the code has a unique value.");
+			return false;
+		}
+	});
+	return false;
+}
+function newInPlace(elem, baseUrl) {
+	var queryString = $(elem).parent().parent().find("input").serialize();
+	$.ajax({
+		type: "POST",
+		url: baseUrl,
+		data: queryString,
+		success: function(html){
+			var newRow=document.createElement("tr");
+			$(newRow).html(html);
+			$(".justAdded table").append(newRow);
+			return false;
+		},
+		error: function(html){
+			alert("Code could not be saved. Please ensure that the code has a unique value.");
+			return false;
+		}
+	});
+	return false;
+}
+function editInPlace(elem) {
+	$(elem).parent().parent().load($(elem).attr("href"));
+	return false;
 }

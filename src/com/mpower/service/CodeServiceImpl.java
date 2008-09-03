@@ -28,8 +28,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
-	public List<Code> readCodes(String siteName, String codeType,
-			String startsWith) {
+	public List<Code> readCodes(String siteName, String codeType, String startsWith) {
 		return codeDao.readCodes(siteName, codeType, startsWith);
 	}
 
@@ -45,8 +44,8 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
-	public List<Code> readCodes(String siteName, String codeType,
-			String startsWith, String partialDescription) {
-		return codeDao.readCodes(siteName, codeType, startsWith, partialDescription);
+	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription,
+			Boolean inactive) {
+		return codeDao.readCodes(siteName, codeType, startsWith, partialDescription, inactive);
 	}
 }

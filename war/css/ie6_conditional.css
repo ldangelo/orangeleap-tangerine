@@ -9,6 +9,11 @@
 	zoom: 1;
 }
 
+/* 100% width table inside scrolling DIV is rendered too wide */
+.codeList table.tablesorter {
+	width:753px;
+}
+
 /* input button widths with padding are weird in IE.
 input.iebuttonfix {
     width: auto;

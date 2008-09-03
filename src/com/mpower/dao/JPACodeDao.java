@@ -29,37 +29,43 @@ public class JPACodeDao implements CodeDao {
 		query.setParameter("codeType", codeType);
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Code> readCodes(String siteName, String codeType, String startsWith) {
 		Query query = em.createNamedQuery("READ_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE");
 		query.setParameter("siteName", siteName);
 		query.setParameter("codeType", codeType);
-		query.setParameter("value", startsWith+"%");
-		//query.setMaxResults(100);
+		query.setParameter("value", startsWith + "%");
+		// query.setMaxResults(100);
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription) {
-		Query query = em.createNamedQuery("READ_ACTIVE_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION");
+	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription,
+			Boolean inactive) {
+		Query query;
+		if (inactive!=null) {
+			query = em.createNamedQuery("READ_ACTIVE_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION");
+			query.setParameter("inactive", inactive);
+		} else {
+			query = em.createNamedQuery("READ_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION");
+		}
 		query.setParameter("siteName", siteName);
 		query.setParameter("codeType", codeType);
-		query.setParameter("value", startsWith+"%");
-		query.setParameter("description", "%"+partialDescription+"%");
+		query.setParameter("value", startsWith + "%");
+		query.setParameter("description", "%" + partialDescription + "%");
 		return query.getResultList();
 	}
-	
-    public Code maintainCode(Code code) {
-        return em.merge(code);
-    }
+
+	public Code maintainCode(Code code) {
+		return em.merge(code);
+	}
 
 	@Override
 	public Code readCode(Long id) {
-        return em.find(Code.class, id);
+		return em.find(Code.class, id);
 	}
 
-	
 }

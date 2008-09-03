@@ -80,17 +80,29 @@
         <property name="personService" ref="personService"/>
     </bean>
 
-    <bean id="giftView" class="com.mpower.controller.GiftViewFormController2">
-        <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.Gift"/>
-        <property name="formView" value="giftView"/>
-        <property name="successView" value="giftView"/>
+    <bean id="giftView" class="com.mpower.controller.GiftViewController">
         <property name="giftService" ref="giftService" />
     </bean>
 
     <bean id="personView" class="com.mpower.controller.PersonViewController">
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
+    </bean>
+    
+    <bean id="codeHelper" class="com.mpower.controller.CodeHelperController">
+        <property name="codeService" ref="codeService"/>
+    </bean>
+    
+    <bean id="codes" class="com.mpower.controller.GenericViewController">
+		<property name="viewName" value="codes"/>
+    </bean>
+    
+	<bean id="code" class="com.mpower.controller.CodeFormController">
+        <property name="commandName" value="code"/>
+        <property name="commandClass" value="com.mpower.domain.customization.Code"/>
+        <property name="formView" value="code" />
+        <property name="successView" value="code" />
+        <property name="codeService" ref="codeService"/>
     </bean>
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -108,6 +120,9 @@
 		        <prop key="/giftRefund.htm">giftRefund</prop>
 		        <prop key="/giftSearch.htm">giftSearch</prop>
 		    	<prop key="/giftView.htm">giftView</prop>
+                <prop key="/codeHelper.htm">codeHelper</prop>
+                <prop key="/code.htm">code</prop>
+                <prop key="/codes.htm">codes</prop>
 			</props>
 		</property>
 	</bean>

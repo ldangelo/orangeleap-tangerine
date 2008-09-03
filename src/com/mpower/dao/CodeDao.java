@@ -10,7 +10,7 @@ public interface CodeDao {
 
 	public List<Code> readCodes(String siteName, String codeType, String startsWith);
 
-	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription);
+	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription, Boolean inactive);
 
 	public Code maintainCode(Code code);
 

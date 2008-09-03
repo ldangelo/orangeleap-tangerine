@@ -2,50 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
-<mp:page pageName='person'/>
-
-<form:form method="post" commandName="person">
-  <c:forEach var="item" items="${sectionDefinitions}">
-    <div style="position: relative;">
-      <div class="content760 mainForm">
-        <div class="bodyContent">
-          <h4 class="formSectionHeader">
-            <mp:sectionHeader messageType="SECTION_HEADER" sectionDefinition="${item}"/>
-          </h4>
-          <div class="columns">
-
-            <div class="column">
-              <ul class="formFields width375">
-                <c:forEach var="sectionField" items="${item.sectionDefinition.sectionFields}" begin="0" end="9">
-                  <mp:field sectionField='${sectionField}' pageDefinition='${pageDefinition}'/>
-                  <%@ include file="/WEB-INF/jsp/snippets/input.jsp" %>
-                </c:forEach>
-		        <li class="clear"></li>
-              </ul>
-            </div>
-
-            <div class="column">
-              <ul class="formFields width375">
-                <c:forEach var="sectionField" items="${item.sectionDefinition.sectionFields}" begin="10">
-                  <mp:field sectionField='${sectionField}' pageDefinition='${pageDefinition}'/>
-                  <%@ include file="/WEB-INF/jsp/snippets/input.jsp" %>
-                </c:forEach>
-                <li class="clear"/>
-              </ul>
-            </div>
-
-            <div class="clearColumns"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </c:forEach>
-</form:form>
-
-<div style="clear: both;"/>
-
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
 		<title>MPower Open Prototype</title>

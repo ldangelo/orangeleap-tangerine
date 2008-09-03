@@ -63,7 +63,7 @@
 			</form:form>
  			
 			<div class="formButtonFooter">
-				<c:if test="${pageAccess['giftList']!='DENIED'}">
+				<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 					<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
 				</c:if>
 				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>

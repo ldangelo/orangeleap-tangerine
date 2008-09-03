@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -81,26 +80,6 @@ public class GiftFormController extends SimpleFormController {
             gift.setFieldValueMap(valueMap);
         }
         return gift;
-    }
-
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        String giftId = request.getParameter("giftId");
-        String personId = request.getParameter("personId");
-        boolean redirect = false;
-        if (giftId == null || personId == null) {
-            redirect = true;
-        } else {
-            Person person = personService.readPersonById(Long.valueOf(personId));
-            if (person == null) {
-                redirect = true;
-            }
-        }
-
-        if (redirect) {
-            return new ModelAndView("redirect:/invalidGift.htm", errors.getModel());
-        }
-        return super.showForm(request, response, errors);
     }
 
     @Override

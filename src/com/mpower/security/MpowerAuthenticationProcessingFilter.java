@@ -85,6 +85,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(((MpowerAuthenticationToken) authResult).getSite(), roles);
         request.getSession().setAttribute("pageAccess", pageAccess);
         ((MpowerAuthenticationToken) authResult).setPageAccess(pageAccess);
+        logger.debug(pageAccess);
     }
 
     protected String obtainSite(HttpServletRequest request) {

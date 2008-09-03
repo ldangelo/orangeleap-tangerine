@@ -70,10 +70,12 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${gridCollection}" var="row" varStatus="status">
-					<tr rowindex="${status.index}">
-					<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
-					<td><img style="cursor:pointer;display:none;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
-					</tr>
+					<c:if test="${row!=null}">
+						<tr rowindex="${status.index}">
+							<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
+							<td><img style="cursor: pointer;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
+						</tr>
+					</c:if>
 				</c:forEach>
 			</tbody>
 		</table>

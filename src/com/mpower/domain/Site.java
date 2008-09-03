@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,10 +13,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
-
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "SITE")
 public class Site implements Serializable {
 

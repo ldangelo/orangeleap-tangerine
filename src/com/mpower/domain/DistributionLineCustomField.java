@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,10 +16,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
-
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "DISTRO_LINE_CUSTOM_FIELD")
 public class DistributionLineCustomField implements Serializable {
 

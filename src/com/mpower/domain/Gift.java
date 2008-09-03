@@ -29,12 +29,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.GiftCustomFieldMap;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })
+@EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "GIFT")
 public class Gift implements Customizable, Viewable, Serializable {
 

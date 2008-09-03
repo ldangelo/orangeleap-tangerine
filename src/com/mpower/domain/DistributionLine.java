@@ -22,12 +22,11 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.DistributionLineCustomFieldMap;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class, TemporalTimestampListener.class })
+@EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "DISTRO_LINE")
 public class DistributionLine implements Customizable, Viewable, Serializable {
 

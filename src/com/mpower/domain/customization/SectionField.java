@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,11 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Site;
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.FieldType;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "SECTION_FIELD", uniqueConstraints = @UniqueConstraint(columnNames = { "SECTION_DEFINITION_ID", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID", "SITE_NAME" }))
 public class SectionField implements Serializable {
 

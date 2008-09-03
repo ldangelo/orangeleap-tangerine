@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,10 +13,7 @@ import javax.persistence.UniqueConstraint;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
-
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "FIELD_REQUIRED", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
 public class FieldRequired implements Serializable {
 

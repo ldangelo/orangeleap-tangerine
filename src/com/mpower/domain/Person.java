@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -25,13 +24,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.util.AddressMap;
 import com.mpower.util.CustomFieldMap;
 import com.mpower.util.PhoneMap;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "PERSON")
 public class Person implements Customizable, Viewable, Serializable {
 

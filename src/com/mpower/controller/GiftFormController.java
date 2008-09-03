@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -46,6 +48,11 @@ public class GiftFormController extends SimpleFormController {
     }
 
     @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String giftId = request.getParameter("giftId");
         Gift gift = null;
@@ -66,7 +73,7 @@ public class GiftFormController extends SimpleFormController {
         } else {
             gift = giftService.readGiftById(new Long(giftId));
         }
-        if (isFormSubmission(request)){
+        if (isFormSubmission(request)) {
             Set<String> requiredFields = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
             gift.setRequiredFields(requiredFields);
 

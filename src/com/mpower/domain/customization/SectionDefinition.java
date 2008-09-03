@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -19,12 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Site;
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.LayoutType;
 import com.mpower.type.PageType;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "ROLE" }))
 public class SectionDefinition implements Serializable {
 

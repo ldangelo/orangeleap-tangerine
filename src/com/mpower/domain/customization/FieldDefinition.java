@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -17,12 +16,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Site;
-import com.mpower.domain.listener.EmptyStringNullifyerListener;
 import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
 
 @Entity
-@EntityListeners(value = { EmptyStringNullifyerListener.class })
 @Table(name = "FIELD_DEFINITION")
 public class FieldDefinition implements Serializable {
 

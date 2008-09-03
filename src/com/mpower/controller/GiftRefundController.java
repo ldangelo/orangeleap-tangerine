@@ -26,7 +26,7 @@ public class GiftRefundController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String giftId = request.getParameter("giftId");
         Gift gift = giftService.refundGift(Long.valueOf(giftId));
-        ModelAndView mav = new ModelAndView("redirect:/giftView.htm", "gift", gift);
+        ModelAndView mav = new ModelAndView("redirect:/giftView.htm");
         mav.addObject("giftId", gift.getId());
         return mav;
     }

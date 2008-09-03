@@ -119,9 +119,11 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName);
         if (pages != null) {
             for (PageDefinition pageDefinition : pages) {
-                PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());
-                if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageDefinition.getRole()).getRoleRank())) {
-                    pageDefinitionMap.put(pageDefinition.getPageType().getPageName(), pageDefinition);
+                if (roles.contains(pageDefinition.getRole())) {
+                    PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());
+                    if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageDefinition.getRole()).getRoleRank())) {
+                        pageDefinitionMap.put(pageDefinition.getPageType().getPageName(), pageDefinition);
+                    }
                 }
             }
         }

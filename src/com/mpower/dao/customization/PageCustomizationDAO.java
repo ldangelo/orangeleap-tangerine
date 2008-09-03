@@ -15,5 +15,5 @@ public interface PageCustomizationDAO {
 
     public List<SectionField> readCustomizedSectionFields(String siteName, Long sectionDefinitionId);
 
-    public List<PageDefinition> readPageDefinitions(String siteName, List<String> roles);
+    public List<PageDefinition> readPageDefinitions(String siteName);
 }

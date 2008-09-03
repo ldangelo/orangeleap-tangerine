@@ -44,7 +44,7 @@ public class PageDefinition implements Serializable {
     @JoinColumn(name = "SITE_NAME")
     private Site site;
 
-    @Column(name = "ROLE")
+    @Column(name = "ROLE", nullable = false)
     private String role;
 
     @Column(name = "ACCESS_TYPE")

@@ -116,7 +116,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Transactional
     public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
         Map<String, PageDefinition> pageDefinitionMap = new HashMap<String, PageDefinition>(); // pageType, PageDefinition
-        List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName, roles);
+        List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName);
         if (pages != null) {
             for (PageDefinition pageDefinition : pages) {
                 PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());

@@ -33,7 +33,7 @@ public class AuditServiceImpl implements AuditService {
         List<Audit> audits = new ArrayList<Audit>();
         Date date = new Date();
         BeanWrapperImpl bean = new BeanWrapperImpl(entity);
-        if (entity.getFieldValueMap().get("id") == null) {
+        if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
             audits.add(new Audit(AuditType.CREATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Added " + entity.getClass().getSimpleName() + " " + entity.getId()));
             logger.info("audit: Added " + entity.getClass().getSimpleName() + " " + entity.getId());
         } else {
@@ -42,7 +42,7 @@ public class AuditServiceImpl implements AuditService {
                 for (String key : fieldLabels.keySet()) {
                     String fieldName = key;
                     Object beanProperty = bean.getPropertyValue(fieldName);
-                    if (beanProperty instanceof Phone){
+                    if (beanProperty instanceof Phone) {
                         fieldName = key + ".number";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }

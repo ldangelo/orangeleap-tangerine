@@ -33,6 +33,9 @@ public class GiftServiceImpl implements GiftService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name = "auditService")
+    private AuditService auditService;
+
     @Resource(name = "giftDao")
     private GiftDao giftDao;
 
@@ -42,13 +45,12 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
-
         if (gift.getPaymentType().equals("Credit Card") || gift.getPaymentType().equals("ACH")) {
-
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
         }
-
-        return giftDao.maintainGift(gift);
+        gift = giftDao.maintainGift(gift);
+        auditService.auditObject(gift);
+        return gift;
     }
 
     @Override
@@ -85,7 +87,7 @@ public class GiftServiceImpl implements GiftService {
         // TODO: remove after get this working
         gift.addDistributionLine(new DistributionLine(gift));
 
-        // TODO: consider caching techniques for the default Person
+        // TODO: consider caching techniques for the default Gift
         return gift;
     }
 
@@ -115,6 +117,7 @@ public class GiftServiceImpl implements GiftService {
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
             giftDao.maintainGift(originalGift);
+            auditService.auditObject(refundGift);
             return refundGift;
         } catch (IllegalAccessException e) {
             throw new IllegalStateException();
@@ -138,5 +141,4 @@ public class GiftServiceImpl implements GiftService {
     public List<Gift> readAllGifts() {
         return giftDao.readAllGifts();
     }
-
 }

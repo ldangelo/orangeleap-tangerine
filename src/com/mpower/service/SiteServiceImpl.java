@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.SiteDao;
@@ -147,11 +148,15 @@ public class SiteServiceImpl implements SiteService {
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
                 }
-                Object value = bean.getPropertyValue(key);
-                if (value instanceof Phone) {
-                    value = bean.getPropertyValue(key + ".number");
+                try {
+                    Object value = bean.getPropertyValue(key);
+                    if (value instanceof Phone) {
+                        value = bean.getPropertyValue(key + ".number");
+                    }
+                    returnMap.put(key, value);
+                } catch (BeansException e) {
+                    // it is ok if the property doesn't exist
                 }
-                returnMap.put(key, value);
             }
             returnMap.put("id", bean.getPropertyValue("id"));
         }

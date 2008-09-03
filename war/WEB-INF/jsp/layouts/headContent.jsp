@@ -11,9 +11,11 @@
 <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.pager.js"></script>
 <script type="text/javascript" src="js/jquery.bgiframe.js"></script>
-<script type="text/javascript" src="js/jquery.dimensions.js"></script>
 <script type="text/javascript" src="js/jquery.hoverIntent.js"></script>
 <script type="text/javascript" src="js/jquery.cluetip.js"></script>
+<script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/jqModal.js"></script>
+<script type="text/javascript" src="js/jqDnR.js"></script>
 <script type="text/javascript" src="js/mpower.js"></script>
 <script type="text/javascript" src="dwr/engine.js"></script>
 <script type="text/javascript" src="dwr/interface/Hello.js"></script>

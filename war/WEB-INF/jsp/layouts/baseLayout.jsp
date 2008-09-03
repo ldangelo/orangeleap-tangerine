@@ -28,5 +28,6 @@
 			<div class="clearBoth"></div>
 			<tiles:insertAttribute name="footer" />
 		</div>
+		<%@ include file="/WEB-INF/jsp/snippets/modal.jsp" %>
 	</body>
 </html>

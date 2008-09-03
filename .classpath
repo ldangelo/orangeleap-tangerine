@@ -63,5 +63,6 @@
 	<classpathentry kind="lib" path="lib/war/bin/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-ldap-1.2.1.jar" sourcepath="lib/war/source/spring-ldap-src-1.2.1.zip"/>
 	<classpathentry kind="lib" path="lib/war/bin/dwr.jar" sourcepath="lib/war/source/dwr-2.0.5-src.zip"/>
+	<classpathentry kind="lib" path="lib/war/bin/spring-modules-validation.jar" sourcepath="lib/war/source/spring-modules-validation-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

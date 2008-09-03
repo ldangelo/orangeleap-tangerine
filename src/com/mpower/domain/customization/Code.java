@@ -38,7 +38,7 @@ public class Code implements Serializable {
     private String value;
 
     @Column(name = "INACTIVE")
-    private Boolean inactive;
+	private boolean inactive = false;
 
     @Column(name = "CODE_DESCRIPTION")
     private String description;
@@ -83,11 +83,12 @@ public class Code implements Serializable {
         this.description = description;
     }
 
-    public Boolean getInactive() {
-        return inactive;
-    }
+	public boolean isInactive() {
+		return inactive;
+	}
 
-    public void setInactive(Boolean inactive) {
-        this.inactive = inactive;
-    }
+	public void setInactive(boolean inactive) {
+		this.inactive = inactive;
+	}
+
 }

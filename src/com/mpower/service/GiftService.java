@@ -29,4 +29,5 @@ public interface GiftService {
 
     public List<Gift> readAllGifts();
 
+    public void setAuditService(AuditService auditService);
 }

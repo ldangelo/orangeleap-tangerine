@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
+import com.mpower.service.AuditService;
 import com.mpower.service.GiftService;
 import com.mpower.test.dataprovider.GiftDataProvider;
 
@@ -18,8 +19,11 @@ public class GiftTest extends BaseTest {
 
     private GiftService giftService;
 
+    private AuditService auditService;
+
     @Test(dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
     public void createGift(Site site, Person person, Gift gift) {
+        giftService.setAuditService(auditService);
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
@@ -42,5 +46,6 @@ public class GiftTest extends BaseTest {
     public void setup() {
         emf = (EntityManagerFactory) applicationContext.getBean("entityManagerFactory");
         giftService = (GiftService) applicationContext.getBean("giftService");
+        auditService = (AuditService) applicationContext.getBean("auditService");
     }
 }

@@ -141,4 +141,8 @@ public class GiftServiceImpl implements GiftService {
     public List<Gift> readAllGifts() {
         return giftDao.readAllGifts();
     }
+
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
 }

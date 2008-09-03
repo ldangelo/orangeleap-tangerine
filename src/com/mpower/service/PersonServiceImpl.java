@@ -96,4 +96,8 @@ public class PersonServiceImpl implements PersonService {
     public List<Person> readAllPeopleBySite(Site site) {
         return personDao.readAllPeopleBySite(site);
     }
+
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
 }

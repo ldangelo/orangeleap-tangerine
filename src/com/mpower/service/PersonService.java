@@ -25,4 +25,6 @@ public interface PersonService {
     public void setLapsedDonor(Long personId);
 
     public List<Person> readAllPeopleBySite(Site site);
+
+    public void setAuditService(AuditService auditService);
 }

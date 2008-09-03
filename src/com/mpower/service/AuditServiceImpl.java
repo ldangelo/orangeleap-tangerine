@@ -34,7 +34,8 @@ public class AuditServiceImpl implements AuditService {
         Date date = new Date();
         BeanWrapperImpl bean = new BeanWrapperImpl(entity);
         if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
-            audits.add(new Audit(AuditType.CREATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Added " + entity.getClass().getSimpleName() + " " + entity.getId()));
+            String name = SecurityContextHolder.getContext().getAuthentication() != null ? SecurityContextHolder.getContext().getAuthentication().getName() : null;
+            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + entity.getClass().getSimpleName() + " " + entity.getId()));
             logger.info("audit: Added " + entity.getClass().getSimpleName() + " " + entity.getId());
         } else {
             if (entity instanceof Viewable) {

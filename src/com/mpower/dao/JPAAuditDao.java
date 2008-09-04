@@ -1,5 +1,7 @@
 package com.mpower.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -26,4 +28,11 @@ public class JPAAuditDao implements AuditDao {
         }
         return em.merge(audit);
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Audit> allAuditHistoryForSite(String siteName) {
+		List<Audit> audits = em.createQuery("from com.mpower.domain.Audit").getResultList();
+		return audits;
+	}
 }

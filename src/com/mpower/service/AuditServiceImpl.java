@@ -77,4 +77,9 @@ public class AuditServiceImpl implements AuditService {
         }
         return audits;
     }
+
+	@Override
+	public List<Audit> allAuditHistoryForSite(String siteName) {
+		return auditDao.allAuditHistoryForSite(siteName);
+	}
 }

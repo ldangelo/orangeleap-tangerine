@@ -8,4 +8,6 @@ import com.mpower.domain.Viewable;
 public interface AuditService {
 
     public List<Audit> auditObject(Viewable entity);
+    
+    public List<Audit> allAuditHistoryForSite(String siteName);
 }

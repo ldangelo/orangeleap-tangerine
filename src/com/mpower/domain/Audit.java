@@ -37,7 +37,7 @@ public class Audit implements Serializable {
     @Column(name = "AUDIT_ID")
     private Long id;
 
-    @Column(name="AUDIT_TYPE")
+    @Column(name="AUDIT_TYPE", updatable = false)
     @Enumerated(EnumType.STRING)
     private AuditType auditType;
 
@@ -52,7 +52,7 @@ public class Audit implements Serializable {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_NAME")
+    @JoinColumn(name = "SITE_NAME", nullable = false)
     private Site site;
 
     @Column(name="ENTITY_TYPE", nullable = false)

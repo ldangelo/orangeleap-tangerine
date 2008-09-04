@@ -18,6 +18,7 @@
 			WHERE code.siteName = :siteName
 			AND code.codeType = :codeType
 			AND code.value LIKE :value
+			AND code.inactive = FALSE
 			ORDER BY code.value
 		</query>
 	</named-query>

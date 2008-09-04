@@ -180,4 +180,9 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
     }
+
+    @Override
+    public Site getSite() {
+        return gift != null ? gift.getSite() : null;
+    }
 }

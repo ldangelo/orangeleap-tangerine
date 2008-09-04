@@ -349,7 +349,7 @@ public class Gift implements Customizable, Viewable, Serializable {
     @SuppressWarnings("unchecked")
     public List<DistributionLine> getDistributionLines() {
         if (distributionLines == null) {
-            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[]{Gift.class}, new Object[]{this}));
+            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
         }
         return distributionLines;
     }
@@ -400,5 +400,10 @@ public class Gift implements Customizable, Viewable, Serializable {
     @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public Site getSite() {
+        return person != null ? person.getSite() : null;
     }
 }

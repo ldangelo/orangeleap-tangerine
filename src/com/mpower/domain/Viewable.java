@@ -26,4 +26,6 @@ public interface Viewable {
     public void setFieldValueMap(Map<String, Object> fieldValueMap);
 
     public Long getId();
+
+    public Site getSite();
 }

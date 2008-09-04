@@ -9,6 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.type.AuditType;
+import com.mpower.type.EntityType;
 
 @Entity
 @Table(name = "Audit")
@@ -48,15 +51,29 @@ public class Audit implements Serializable {
     @Column(name = "DESCRIPTION", updatable = false)
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "SITE_NAME")
+    private Site site;
+
+    @Column(name="ENTITY_TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EntityType entityType;
+
+    @Column(name="OBJECT_ID", nullable = false)
+    private Long objectId;
+
     public Audit() {
         super();
     }
 
-    public Audit(AuditType auditType, String user, Date date, String description) {
+    public Audit(AuditType auditType, String user, Date date, String description, Site site, EntityType entityType, Long objectId) {
         this.auditType = auditType;
         this.user = user;
         this.date = date;
         this.description = description;
+        this.site = site;
+        this.entityType = entityType;
+        this.objectId = objectId;
     }
 
     public Long getId() {
@@ -97,5 +114,29 @@ public class Audit implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Site getSite() {
+        return site;
+    }
+
+    public void setSite(Site site) {
+        this.site = site;
+    }
+
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
+
+    public Long getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(Long objectId) {
+        this.objectId = objectId;
     }
 }

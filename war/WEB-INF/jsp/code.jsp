@@ -26,6 +26,7 @@
 		</td><td class="codeDescription">
 		<input name="description" size="16" value="${code.description}" />
 		</td>
+		<td><input name="inactive" value="true" type="checkbox" ${code.inactive?'checked':''}/></td>
 </c:when>
 <c:when test="${param.view=='form'}">
 	<form:form method="post" commandName="code" action="code.htm">

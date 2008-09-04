@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Search People" />
-	<tiles:putAttribute name="primaryNav" value="People" />
+	<tiles:putAttribute name="browserTitle" value="Manage Codes" />
+	<tiles:putAttribute name="primaryNav" value="Administration" />
 	<tiles:putAttribute name="secondaryNav" value="Codes" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">

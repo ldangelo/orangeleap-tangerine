@@ -37,29 +37,29 @@ public class Audit implements Serializable {
     @Column(name = "AUDIT_ID")
     private Long id;
 
-    @Column(name="AUDIT_TYPE", nullable = false, updatable = false)
+    @Column(name="AUDIT_TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private AuditType auditType;
 
-    @Column(name = "DATE", nullable = false, updatable = false)
+    @Column(name = "DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @Column(name = "USER", nullable = false, updatable = false)
+    @Column(name = "USER")
     private String user;
 
-    @Column(name = "DESCRIPTION", nullable = false, updatable = false)
+    @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "SITE_NAME", nullable = false, updatable = false)
+    @JoinColumn(name = "SITE_NAME", nullable = false)
     private Site site;
 
-    @Column(name="ENTITY_TYPE", nullable = false, updatable = false)
+    @Column(name="ENTITY_TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
 
-    @Column(name="OBJECT_ID", nullable = false, updatable = false)
+    @Column(name="OBJECT_ID", nullable = false)
     private Long objectId;
 
     public Audit() {

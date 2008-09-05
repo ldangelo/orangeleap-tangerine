@@ -1,9 +1,11 @@
 package com.mpower.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -16,36 +18,53 @@ import com.mpower.domain.customization.Code;
 @Service("codeService")
 public class CodeServiceImpl implements CodeService {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	@Resource(name = "codeDao")
-	private CodeDao codeDao;
+    @Resource(name = "auditService")
+    private AuditService auditService;
 
-	@Override
-	public List<Code> readCodes(String siteName, String codeType) {
-		return codeDao.readCodes(siteName, codeType);
-	}
+    @Resource(name = "codeDao")
+    private CodeDao codeDao;
 
-	@Override
-	public List<Code> readCodes(String siteName, String codeType, String startsWith) {
-		return codeDao.readCodes(siteName, codeType, startsWith);
-	}
+    @Override
+    public List<Code> readCodes(String siteName, String codeType) {
+        return codeDao.readCodes(siteName, codeType);
+    }
 
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
-	public Code maintainCode(Code code) {
-		return codeDao.maintainCode(code);
-	}
+    @Override
+    public List<Code> readCodes(String siteName, String codeType, String startsWith) {
+        return codeDao.readCodes(siteName, codeType, startsWith);
+    }
 
-	@Override
-	public Code readCodeById(Long id) {
-		return codeDao.readCode(id);
-	}
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Code maintainCode(Code code) {
+        Code oldCode = null;
+        if (code.getId() != null) {
+            Code dbCode = codeDao.readCode(code.getId());
+            oldCode = codeDao.readCode(code.getId());
+            oldCode = new Code();
+            try {
+                BeanUtils.copyProperties(oldCode, dbCode);
+                code.setOriginalObject(oldCode);
+            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException e) {
+            }
+        }
+        code = codeDao.maintainCode(code);
+        code.setOriginalObject(oldCode);
+        auditService.auditObject(code);
+        return code;
+    }
 
-	@Override
-	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription,
-			Boolean inactive) {
-		return codeDao.readCodes(siteName, codeType, startsWith, partialDescription, inactive);
-	}
+    @Override
+    public Code readCodeById(Long id) {
+        return codeDao.readCode(id);
+    }
+
+    @Override
+    public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription, Boolean inactive) {
+        return codeDao.readCodes(siteName, codeType, startsWith, partialDescription, inactive);
+    }
 }

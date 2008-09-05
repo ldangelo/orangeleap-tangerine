@@ -88,25 +88,26 @@
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
     </bean>
-    
+
     <bean id="codeHelper" class="com.mpower.controller.CodeHelperController">
         <property name="codeService" ref="codeService"/>
     </bean>
-    
+
     <bean id="siteAudit" class="com.mpower.controller.AuditViewController">
         <property name="auditService" ref="auditService"/>
     </bean>
-    
+
     <bean id="codes" class="com.mpower.controller.GenericViewController">
 		<property name="viewName" value="codes"/>
     </bean>
-    
+
 	<bean id="code" class="com.mpower.controller.CodeFormController">
         <property name="commandName" value="code"/>
         <property name="commandClass" value="com.mpower.domain.customization.Code"/>
         <property name="formView" value="code" />
         <property name="successView" value="code" />
         <property name="codeService" ref="codeService"/>
+        <property name="sessionService" ref="sessionService"/>
     </bean>
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

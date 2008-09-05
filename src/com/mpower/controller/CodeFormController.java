@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.customization.Code;
 import com.mpower.service.CodeService;
-import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SessionService;
 
 public class CodeFormController extends SimpleFormController {
 
@@ -19,30 +19,36 @@ public class CodeFormController extends SimpleFormController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private CodeService codeService;
-    
-	public void setCodeService(CodeService codeService) {
-		this.codeService = codeService;
-	}
+
+    private SessionService sessionService;
+
+    public void setCodeService(CodeService codeService) {
+        this.codeService = codeService;
+    }
+
+    public void setSessionService(SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
 
     @Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		String codeId = request.getParameter("codeId");
-		String codeType = request.getParameter("codeType");
-		if (codeId == null) {
-			Code code = new Code();
-			code.setCodeType(codeType);
-			return code;
-		} else {
-			return codeService.readCodeById(new Long(codeId));
-		}
-
-	}
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        String codeId = request.getParameter("codeId");
+        String codeType = request.getParameter("codeType");
+        if (codeId == null) {
+            Code code = new Code();
+            code.setCodeType(codeType);
+            if (isFormSubmission(request)) {
+                code.setSite(sessionService.lookupSite());
+            }
+            return code;
+        } else {
+            return codeService.readCodeById(new Long(codeId));
+        }
+    }
 
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Code code = (Code) command;
-
-        code.setSiteName(SessionServiceImpl.lookupUserSiteName());
         Code newCode = codeService.maintainCode(code);
 
         ModelAndView mav = new ModelAndView(getSuccessView());

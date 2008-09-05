@@ -72,7 +72,6 @@
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/code.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
@@ -90,6 +89,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/code.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/personSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/phoneSetup.sql"/>

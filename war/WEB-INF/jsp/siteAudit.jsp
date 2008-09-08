@@ -15,6 +15,9 @@
 							<th>User</th>
 							<th>Type</th>
 							<th>Description</th>
+							<th>Object Type</th>
+							<th>Object ID</th>
+							<th>Link</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -24,6 +27,16 @@
 								<td>${audit.user}</td>
 								<td>${audit.auditType}</td>
 								<td>${audit.description}</td>
+								<td>${audit.entityType}</td>
+								<td>${audit.objectId}</td>
+								<td><c:choose>
+									<c:when test="${audit.entityType=='person'}">
+										<a href="person.htm?personId=${audit.objectId}">View</a>
+									</c:when>
+									<c:when test="${audit.entityType=='gift'}">
+										<a href="giftView.htm?giftId=${audit.objectId}">View</a>
+									</c:when>
+								</c:choose></td>
 							</tr>
 						</c:forEach>
 					</tbody>

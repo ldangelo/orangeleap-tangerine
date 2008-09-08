@@ -17,6 +17,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.AuditDao;
+import com.mpower.dao.SiteDao;
 import com.mpower.domain.Audit;
 import com.mpower.domain.Auditable;
 import com.mpower.domain.Phone;
@@ -32,6 +33,9 @@ public class AuditServiceImpl implements AuditService {
 
     @Resource(name = "auditDao")
     private AuditDao auditDao;
+    
+    @Resource(name = "siteDao")
+    private SiteDao siteDao;
 
     public List<Audit> auditObject(Object object) {
         List<Audit> audits = null;
@@ -167,6 +171,6 @@ public class AuditServiceImpl implements AuditService {
 
     @Override
     public List<Audit> allAuditHistoryForSite(String siteName) {
-        return auditDao.allAuditHistoryForSite(siteName);
+        return auditDao.allAuditHistoryForSite(siteDao.readSite(siteName));
     }
 }

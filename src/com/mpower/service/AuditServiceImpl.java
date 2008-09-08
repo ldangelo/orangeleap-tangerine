@@ -173,4 +173,9 @@ public class AuditServiceImpl implements AuditService {
     public List<Audit> allAuditHistoryForSite(String siteName) {
         return auditDao.allAuditHistoryForSite(siteDao.readSite(siteName));
     }
+
+	@Override
+	public List<Audit> AuditHistoryForEntity(String siteName, EntityType entityType, Long objectId) {
+        return auditDao.AuditHistoryForEntity(siteDao.readSite(siteName),entityType,objectId);
+	}
 }

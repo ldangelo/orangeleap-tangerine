@@ -284,6 +284,9 @@ table.formTable {
 	padding:0;
 	width:100%;
 }
+.tablesorter td input.lookup {
+	width:80%;
+}
 p.gridActions {
 	margin:6px 0;
 	position:relative;

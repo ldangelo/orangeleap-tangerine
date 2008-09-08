@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import com.mpower.domain.Audit;
 import com.mpower.service.AuditService;
 import com.mpower.service.SessionServiceImpl;
+import com.mpower.type.EntityType;
 
 public class AuditViewController implements Controller {
 
@@ -27,8 +29,15 @@ public class AuditViewController implements Controller {
 
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String entityType = request.getParameter("object");
+		String objectId = request.getParameter("id");
 		List<Audit> audits;
-		audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
+		if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
+			audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
+		} else {
+			audits = auditService.AuditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType.valueOf(entityType),
+					Long.parseLong(objectId.trim()));
+		}
 
 		ModelAndView mav = new ModelAndView("siteAudit");
 		mav.addObject("audits", audits);

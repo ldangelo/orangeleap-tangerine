@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.domain.Audit;
 import com.mpower.domain.Site;
+import com.mpower.type.EntityType;
 
 @Repository("auditDao")
 public class JPAAuditDao implements AuditDao {
@@ -34,13 +35,19 @@ public class JPAAuditDao implements AuditDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> allAuditHistoryForSite(Site site) {
-		
-		//Query q = em.createQuery ("SELECT x FROM Magazine x WHERE x.title = :titleParam and x.price > :priceParam");
-		//q.setParameter ("titleParam", "JDJ").setParameter ("priceParam", 5.0);
-		//List<Magazine> results = q.getResultList ();
-		
 		Query q =  em.createQuery("SELECT audit FROM com.mpower.domain.Audit audit WHERE audit.site = :site");
 		q.setParameter("site", site);
+		List<Audit> audits = q.getResultList();
+		return audits;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Audit> AuditHistoryForEntity(Site site, EntityType entityType, Long objectId) {
+		Query q =  em.createQuery("SELECT audit FROM com.mpower.domain.Audit audit WHERE audit.site = :site AND audit.entityType = :entityType AND audit.objectId = :objectId");
+		q.setParameter("site", site);
+		q.setParameter("entityType", entityType);
+		q.setParameter("objectId", objectId);
 		List<Audit> audits = q.getResultList();
 		return audits;
 	}

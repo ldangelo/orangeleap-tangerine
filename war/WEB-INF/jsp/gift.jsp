@@ -44,7 +44,7 @@
 						</c:if>
 					</c:forEach>
 					<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
-					<a class="lookupLink codeLookup" href="codeHelper.htm?type=projectCode&q=">Lookup</a>
+					<a class="lookupLink codeLookup" href="codeHelper.htm?view=popup&type=projectCode&q=">Lookup</a>
 				</form:form>
 				<script type="text/javascript">
 					var elem=document.getElementById("paymentType");

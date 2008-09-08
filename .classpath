@@ -50,8 +50,6 @@
 	<classpathentry kind="lib" path="lib/war/bin/tiles-api-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/tiles-core-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/tiles-jsp-2.0.5.jar"/>
-	<classpathentry kind="lib" path="lib/war/bin/drools-core.jar"/>
-	<classpathentry kind="lib" path="lib/war/bin/drools-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-security-acl-2.0.3.jar" sourcepath="lib/war/source/spring-security-acl-2.0.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-security-core-2.0.3.jar" sourcepath="lib/war/source/spring-security-core-2.0.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-security-core-tiger-2.0.3.jar" sourcepath="lib/war/source/spring-security-core-tiger-2.0.3-sources.jar"/>
@@ -65,5 +63,7 @@
 	<classpathentry kind="lib" path="lib/war/bin/dwr.jar" sourcepath="lib/war/source/dwr-2.0.5-src.zip"/>
 	<classpathentry kind="lib" path="lib/war/bin/spring-modules-validation.jar" sourcepath="lib/war/source/spring-modules-validation-src.zip"/>
 	<classpathentry kind="lib" path="lib/war/bin/activemq-all-5.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/drools-compiler-4.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/war/bin/drools-core-4.0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

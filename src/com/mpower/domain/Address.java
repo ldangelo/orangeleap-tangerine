@@ -1,19 +1,26 @@
 package com.mpower.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.listener.TemporalTimestampListener;
+
 @Entity
+@EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "ADDRESS")
 public class Address implements Serializable {
 
@@ -51,6 +58,16 @@ public class Address implements Serializable {
 
     @Column(name = "POSTAL_CODE")
     private String postalCode;
+
+    @Column(name = "CREATE_DATE", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @AutoPopulate
+    private Date createDate;
+
+    @Column(name = "UPDATE_DATE", updatable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @AutoPopulate
+    private Date updateDate;
 
     public Long getId() {
         return id;
@@ -124,8 +141,19 @@ public class Address implements Serializable {
         this.addressType = addressType;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

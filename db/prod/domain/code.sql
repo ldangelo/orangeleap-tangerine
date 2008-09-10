@@ -631,4 +631,15 @@ INSERT INTO CODE SET CODE_VALUE='AV010402',CODE_DESCRIPTION='CityLight $100',COD
 update code set inactive=false;
 
 -- insert commitment codes
-INSERT INTO CODE (CODE_TYPE, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, SITE_NAME) VALUES ('commitmentCode', 'test description', false, 'C0123', 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'BF', 'Building Fund', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'GF', 'General Fund', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'DMSEM', 'Dream Marriage Seminar', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'CCMember', 'Coaches Club Membership', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'GM08', 'Golf Marathon 2008 Pledges', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'P2005', '2005 Pledges', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'B2007', 'Fall Benefit 2007', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'DB08', 'Dallas Banquet 2008', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'BRD', 'Board Member Pledge', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', 'CP09', '2009 Corporate Pacesetters ', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', '42456', 'Pledge Drive 2008', false, 'company1');
+INSERT INTO CODE (CODE_TYPE, CODE_VALUE, CODE_DESCRIPTION, INACTIVE, SITE_NAME) VALUES ('commitmentCode', '43340', 'Pledge Drive 2009', false, 'company1');

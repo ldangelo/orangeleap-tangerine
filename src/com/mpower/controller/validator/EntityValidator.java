@@ -13,6 +13,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
@@ -26,7 +27,7 @@ public class EntityValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Person.class.equals(clazz) || Gift.class.equals(clazz);
+        return Person.class.equals(clazz) || Gift.class.equals(clazz) || Commitment.class.equals(clazz);
     }
 
     @Override

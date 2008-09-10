@@ -8,7 +8,12 @@ public enum PageType {
     giftList("/giftList.htm"),
     giftSearch("/giftSearch.htm"),
     giftSearchResults("/giftSearchResults.htm"),
-    giftView("/giftView.htm");
+    giftView("/giftView.htm"),
+    commitment("/commitment.htm"),
+    commitmentList("/commitmentList.htm"),
+    commitmentSearch("/commitmentSearch.htm"),
+    commitmentSearchResults("/commitmentSearchResults.htm"),
+    commitmentView("/commitmentView.htm");
 
     private String pageName;
 

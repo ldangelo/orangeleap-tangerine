@@ -20,9 +20,13 @@
 				<div class="accountOptions">
 					<a class="${sidebarNav=='Profile'?'active':''}" href="person.htm?personId=${person.id}">Profile</a>
 					<a class="${sidebarNav=='Enter Gift'?'active':''}" href="gift.htm?personId=${person.id}">Enter Gift</a>
-            <c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-					<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gift History</a>
-            </c:if>
+		            <c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
+						<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gift History</a>
+		            </c:if>
+					<a class="${sidebarNav=='Enter Commitment'?'active':''}" href="commitment.htm?personId=${person.id}">Enter Commitment</a>
+		            <c:if test="${pageAccess['/commitmentList.htm']!='DENIED'}">
+						<a class="${sidebarNav=='Commitment History'?'active':''}" href="commitmentList.htm?personId=${person.id}">Commitment History</a>
+		            </c:if>
 					<a href="#">Addresses</a>
 					<a href="#">Billing</a>
 					<a href="#">Account Statement</a>

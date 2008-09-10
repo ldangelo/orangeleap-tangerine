@@ -8,5 +8,6 @@ public enum EntityType {
     address,
     phone,
     gift,
-    code
+    code,
+    commitment
 }

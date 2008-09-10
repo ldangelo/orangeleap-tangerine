@@ -84,6 +84,38 @@
         <property name="giftService" ref="giftService" />
     </bean>
 
+    <bean id="commitment" class="com.mpower.controller.CommitmentFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator"/>
+        </property>
+        <property name="formView" value="commitment" />
+        <property name="successView" value="commitmentView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="commitmentSearch" class="com.mpower.controller.CommitmentSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="commitmentSearch"/>
+        <property name="successView" value="commitmentSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+
+    <bean id="commitmentList" class="com.mpower.controller.CommitmentListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+    </bean>
+
+    <bean id="commitmentView" class="com.mpower.controller.CommitmentViewController">
+        <property name="commitmentService" ref="commitmentService" />
+    </bean>
+
     <bean id="personView" class="com.mpower.controller.PersonViewController">
         <property name="personService" ref="personService"/>
         <property name="giftService" ref="giftService" />
@@ -125,6 +157,10 @@
 		        <prop key="/giftRefund.htm">giftRefund</prop>
 		        <prop key="/giftSearch.htm">giftSearch</prop>
 		    	<prop key="/giftView.htm">giftView</prop>
+		        <prop key="/commitment.htm">commitment</prop>
+		        <prop key="/commitmentList.htm">commitmentList</prop>
+		        <prop key="/commitmentSearch.htm">commitmentSearch</prop>
+		    	<prop key="/commitmentView.htm">commitmentView</prop>
                 <prop key="/codeHelper.htm">codeHelper</prop>
                 <prop key="/code.htm">code</prop>
                 <prop key="/codes.htm">codes</prop>

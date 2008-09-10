@@ -106,6 +106,9 @@ public class Person implements Customizable, Viewable, Serializable {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Gift> gifts;
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<Commitment> commitments;
+
     @Column(name = "MAJOR_DONOR")
     private boolean majorDonor = false;
 
@@ -326,6 +329,14 @@ public class Person implements Customizable, Viewable, Serializable {
 
     public void setGifts(List<Gift> gifts) {
         this.gifts = gifts;
+    }
+
+    public List<Commitment> getCommitments() {
+        return commitments;
+    }
+
+    public void setCommitments(List<Commitment> commitments) {
+        this.commitments = commitments;
     }
 
     public boolean isMajorDonor() {

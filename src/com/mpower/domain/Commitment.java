@@ -13,6 +13,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,19 +25,18 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
-import com.mpower.util.GiftCustomFieldMap;
+import com.mpower.type.CommitmentStatusType;
+import com.mpower.util.CommitmentCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
-@Table(name = "GIFT")
-public class Gift implements Customizable, Viewable, Serializable {
+@Table(name = "COMMITMENT")
+public class Commitment implements Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,22 +46,24 @@ public class Gift implements Customizable, Viewable, Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "GIFT_ID")
+    @Column(name = "COMMITMENT_ID")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "COMMITMENT_ID")
-    private Commitment commitment;
+    @OneToMany(mappedBy = "commitment")
+    private List<Gift> gifts;
 
     @Column(name = "COMMENTS")
     private String comments;
 
-    @Column(name = "VALUE")
-    private BigDecimal value;
+    @Column(name = "AMOUNT_PER_GIFT")
+    private BigDecimal amountPerGift;
+
+    @Column(name = "NUMBER_OF_GIFTS")
+    private Integer numberOfGifts;
 
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
@@ -86,32 +89,48 @@ public class Gift implements Customizable, Viewable, Serializable {
     @Column(name = "ACH_ACCOUNT_NUMBER")
     private String achAccountNumber;
 
-    @Column(name = "TRANSACTION_DATE", updatable = false)
+    @Column(name = "COMMITMENT_CODE")
+    private String commitmentCode;
+
+    @Column(name = "PROJECT_CODE")
+    private String projectCode;
+
+    @Column(name = "MOTIVATION_CODE")
+    private String motivationCode;
+
+    @OneToMany(mappedBy = "commitment", cascade = CascadeType.ALL)
+    private List<CommitmentCustomField> commitmentCustomFields;
+
+    @Column(name = "START_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startDate;
+
+    @Column(name = "END_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endDate;
+
+    @Column(name = "STATUS_TYPE")
+    @Enumerated(EnumType.STRING)
+    private CommitmentStatusType statusType;
+
+    @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
-    private Date transactionDate;
+    private Date createDate;
 
-    @Column(name = "AUTH_CODE")
-    private String authCode;
-
-    @Column(name = "ORIGINAL_GIFT_ID")
-    private Long originalGiftId;
-
-    @Column(name = "REFUND_GIFT_ID")
-    private Long refundGiftId;
-
-    @Column(name = "REFUND_GIFT_TRANSACTION_DATE")
+    @Column(name = "UPDATE_DATE", updatable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date refundGiftTransactionDate;
-
-    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-    private List<GiftCustomField> giftCustomFields;
-
-    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-    private List<DistributionLine> distributionLines;
+    @AutoPopulate
+    private Date updateDate;
 
     @Column(name = "DEDUCTIBLE")
     private boolean deductible = false;
+
+    @Column(name = "AUTO_PAY")
+    private boolean autoPay = false;
+
+    @Column(name = "NOTES")
+    private String notes;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -150,12 +169,12 @@ public class Gift implements Customizable, Viewable, Serializable {
         this.person = person;
     }
 
-    public Commitment getCommitment() {
-        return commitment;
+    public List<Gift> getGifts() {
+        return gifts;
     }
 
-    public void setCommitment(Commitment commitment) {
-        this.commitment = commitment;
+    public void setGifts(List<Gift> gifts) {
+        this.gifts = gifts;
     }
 
     public String getComments() {
@@ -166,12 +185,20 @@ public class Gift implements Customizable, Viewable, Serializable {
         this.comments = comments;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getAmountPerGift() {
+        return amountPerGift;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public void setAmountPerGift(BigDecimal amountPerGift) {
+        this.amountPerGift = amountPerGift;
+    }
+
+    public Integer getNumberOfGifts() {
+        return numberOfGifts;
+    }
+
+    public void setNumberOfGifts(Integer numberOfGifts) {
+        this.numberOfGifts = numberOfGifts;
     }
 
     public String getPaymentType() {
@@ -253,14 +280,6 @@ public class Gift implements Customizable, Viewable, Serializable {
         this.creditCardExpirationDate = calendar.getTime();
     }
 
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
     public Integer getCheckNumber() {
         return checkNumber;
     }
@@ -293,14 +312,6 @@ public class Gift implements Customizable, Viewable, Serializable {
         this.achAccountNumber = achAccountNumber;
     }
 
-    public String getAuthCode() {
-        return authCode;
-    }
-
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
-    }
-
     public List<String> getExpirationMonthList() {
         List<String> monthList = new ArrayList<String>();
         for (int i = 1; i <= 12; i++) {
@@ -322,59 +333,19 @@ public class Gift implements Customizable, Viewable, Serializable {
         return yearList;
     }
 
-    public Long getOriginalGiftId() {
-        return originalGiftId;
-    }
-
-    public void setOriginalGiftId(Long originalGiftId) {
-        this.originalGiftId = originalGiftId;
-    }
-
-    public Long getRefundGiftId() {
-        return refundGiftId;
-    }
-
-    public void setRefundGiftId(Long refundGiftId) {
-        this.refundGiftId = refundGiftId;
-    }
-
-    public Date getRefundGiftTransactionDate() {
-        return refundGiftTransactionDate;
-    }
-
-    public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
-        this.refundGiftTransactionDate = refundGiftTransactionDate;
-    }
-
-    public List<GiftCustomField> getCustomFields() {
-        if (giftCustomFields == null) {
-            giftCustomFields = new ArrayList<GiftCustomField>();
+    public List<CommitmentCustomField> getCustomFields() {
+        if (commitmentCustomFields == null) {
+            commitmentCustomFields = new ArrayList<CommitmentCustomField>();
         }
-        return giftCustomFields;
+        return commitmentCustomFields;
     }
 
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
+            customFieldMap = CommitmentCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
         }
         return customFieldMap;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<DistributionLine> getDistributionLines() {
-        if (distributionLines == null) {
-            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
-        }
-        return distributionLines;
-    }
-
-    public void setDistributionLines(List<DistributionLine> distributionLines) {
-        this.distributionLines = distributionLines;
-    }
-
-    public void addDistributionLine(DistributionLine distributionLine) {
-        getDistributionLines().add(distributionLine);
     }
 
     @Override
@@ -422,11 +393,91 @@ public class Gift implements Customizable, Viewable, Serializable {
         return person != null ? person.getSite() : null;
     }
 
+    public String getCommitmentCode() {
+        return commitmentCode;
+    }
+
+    public void setCommitmentCode(String commitmentCode) {
+        this.commitmentCode = commitmentCode;
+    }
+
+    public String getProjectCode() {
+        return projectCode;
+    }
+
+    public void setProjectCode(String projectCode) {
+        this.projectCode = projectCode;
+    }
+
+    public String getMotivationCode() {
+        return motivationCode;
+    }
+
+    public void setMotivationCode(String motivationCode) {
+        this.motivationCode = motivationCode;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public CommitmentStatusType getStatusType() {
+        return statusType;
+    }
+
+    public void setStatusType(CommitmentStatusType statusType) {
+        this.statusType = statusType;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
     public boolean isDeductible() {
         return deductible;
     }
 
     public void setDeductible(boolean deductible) {
         this.deductible = deductible;
+    }
+
+    public boolean isAutoPay() {
+        return autoPay;
+    }
+
+    public void setAutoPay(boolean autoPay) {
+        this.autoPay = autoPay;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

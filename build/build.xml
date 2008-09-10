@@ -72,10 +72,12 @@
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/commitmentView.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/maritalStatusPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>
@@ -87,6 +89,11 @@
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
+	     	<!-- Setup payment type picklist and add to commitment page -->
+	     	<transaction src="${basedir}/db/prod/pages/commitment.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/commitmentList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/commitmentSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/commitmentSearchResults.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/code.sql"/>
@@ -94,6 +101,7 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/phoneSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/giftSetup.sql"/>
+	     	<transaction src="${basedir}/db/dev/devSetup/commitmentSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/businessRulesSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearch.sql"/>

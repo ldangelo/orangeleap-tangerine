@@ -79,12 +79,7 @@ $(document).ready(function()
 	}
 	);
 
-	$("#paymentType").change(function(){
-		console.log("payment type changed");
-		$("." + this.name + " .column").hide();
-		$(".gift_info").show();
-		$("." + this[this.selectedIndex].getAttribute('reference')).show();
-	});
+	$("#paymentType").change(showSelectedSection);
 
 	$("#personTitle").cluetip({
 		cluetipClass:'default',
@@ -293,4 +288,18 @@ function newInPlace(elem, baseUrl) {
 function editInPlace(elem) {
 	$(elem).parent().parent().load($(elem).attr("href"));
 	return false;
+}
+function showSelectedSection(elemId) {
+	if(typeof elemId == "string") {
+		var elem=document.getElementById(elemId);
+	} else {
+		var elem=this;
+	}
+	for(i=0;i<elem.options.length;i++) {
+		if(i==elem.selectedIndex) {
+			$("." + elem[i].getAttribute('reference')).show();
+		} else {
+			$("." + elem[i].getAttribute('reference')).hide();
+		}
+	}
 }

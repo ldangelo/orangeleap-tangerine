@@ -27,9 +27,7 @@
 					<div class="columns">
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 							<c:if test="${sectionDefinition.layoutType ne 'GRID'}">
-								<div class="paymentType">
-									<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
-								</div>
+								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
 							</c:if>
 						</c:forEach>
 						<div class="clearColumns"></div>

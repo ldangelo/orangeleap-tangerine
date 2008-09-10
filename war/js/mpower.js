@@ -10,23 +10,23 @@ $(document).ready(function()
 	//	}, function() {
 	//		$(this).removeClass("highlight");
 	//});
-	
+
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parent().parent().addClass("focused");
 	}).blur(function() {
 		$(this).parent().parent().removeClass("focused");
 	});
-	
+
 	$("ul.formFields li input, ul.formFields li select").change(function() {
        	$("#savedMarker").fadeOut("slow");
 	});
-	
+
 	//$(".newAccountButton").click(function() {
 	//	var destination = $(this).attr("href");
 	//	destination += "&" + $("#person").serialize();
 	//	$(this).attr("href",destination);
 	//});
-	
+
 	// $("#creditCardMonth").autocompleteArray(
 	//	["01", "02", "03", "04", "05", "06", "07", "08",
 	//		"09", "10", "11", "12"],
@@ -37,7 +37,7 @@ $(document).ready(function()
 	//		maxItemsToShow:20
 	//	}
 	// );
-	
+
 	// $("#creditCardYear").autocompleteArray(
 	//	["2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015",
 	//		"2016", "2017", "2018"],
@@ -48,7 +48,17 @@ $(document).ready(function()
 	//		maxItemsToShow:20
 	//	}
 	// );
-	
+
+	$(".commitmentCode").autocomplete("codeHelper.htm?type=commitmentCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	}
+	);
+
 	$(".projectCode").autocomplete("codeHelper.htm?type=projectCode",
 	{
 		delay:10,
@@ -58,7 +68,7 @@ $(document).ready(function()
 		loadingClass:""
 	}
 	);
-	
+
 	$(".motivationCode").autocomplete("codeHelper.htm?type=motivationCode",
 	{
 		delay:10,
@@ -68,7 +78,7 @@ $(document).ready(function()
 		loadingClass:""
 	}
 	);
-	
+
 	$("#paymentType").change(function(){
 		console.log("payment type changed");
 		$("." + this.name + " .column").hide();
@@ -81,11 +91,11 @@ $(document).ready(function()
 		showTitle: false,
 		dropShadow: false,
 		waitImage: false,
-		fx: {             
+		fx: {
         	open:'fadeIn'
 		}
 	});
-	
+
 //	 $(".personRow").cluetip({
 //		cluetipClass:'default',
 //		showTitle: false,
@@ -93,9 +103,9 @@ $(document).ready(function()
 //		waitImage: false
 //	 });
 
-	
+
 	$("table#gift_distribution input.amount").bind("keyup change", updateTotals);
-	
+
 	$("form#gift input#value").bind("keyup change",function(){
 		var amounts=$("table#gift_distribution input.amount");
 		if(amounts.length == 1) {
@@ -103,14 +113,14 @@ $(document).ready(function()
 		}
 		updateTotals();
 	});
-	
+
 	rowCloner("#gift_distribution tr:last");
 	$("#gift_distribution tr:last .deleteButton").hide();
-	
+
 	$("#gift_distribution td .deleteButton").click(function(){
 		deleteRow($(this).parent().parent());
 	});
-	
+
 	$('#dialog').jqm({overlay:10}).jqDrag($('.jqmWindow h4'));
 	$("#newCodeForm").submit(function(){
 		$.ajax({
@@ -130,19 +140,19 @@ $(document).ready(function()
 		});
 		return false;
 	});
-		
-	
+
+
 	$(".codeLookup").click(function(){
 		$("#dialog .modalContent").load($(this).attr("href"));
 		$("#dialog").jqmShow();
 		return false;
 	});
-	
+
 	$(".filters :input").bind("keyup change",function(){
 		var queryString = $(".filters :input").serialize();
 		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
 	});
-	
+
    }
 );
 
@@ -153,9 +163,9 @@ function updateTotals() {
 		$("table#gift_distribution input.amount").each(function(){
 			var rowVal=parseInt($(this).val());
 			if(!isNaN(rowVal)) subTotal += rowVal;
-		}); 
+		});
 		$("#subTotal span.value").html(subTotal.toString());
-		
+
 		if (subTotal==parseInt($("input#value").val())) {
 			$("#subTotal").removeClass("warning");
 		} else {
@@ -185,6 +195,14 @@ function distributionLineBuilder(newRow) {
 	}).blur(function() {
 		$(this).parent().parent().removeClass("focused");
 	}).removeClass("textError");
+	newRow.find("input.commitmentCode").autocomplete("codeHelper.htm?type=commitmentCode",
+	{
+		delay:10,
+		minChars:0,
+		maxItemsToShow:20,
+		formatItem:formatItem,
+		loadingClass:""
+	});
 	newRow.find("input.amount").bind("keyup change", updateTotals);
 	newRow.find("input.projectCode").autocomplete("codeHelper.htm?type=projectCode",
 	{

@@ -41,6 +41,9 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
     @Column(name = "DISTRO_LINE_ID")
     private Long id;
 
+    @Column(name = "COMMITMENT_CODE")
+    private String commitmentCode;
+
     @Column(name = "AMOUNT")
     private BigDecimal amount;
 
@@ -92,6 +95,14 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCommitmentCode() {
+        return commitmentCode;
+    }
+
+    public void setCommitmentCode(String commitmentCode) {
+        this.commitmentCode = commitmentCode;
     }
 
     public BigDecimal getAmount() {

@@ -10,12 +10,13 @@
 		<form method="get" action="codes.htm">
 			<h4>Code Type to Manage</h4>
 			<select id="codeType" name="codeType" onchange="this.form.submit()">
+			  <option value="commitmentCode" ${currentCodeType=='commitmentCode'?'selected':''}>Commitment Code</option>
 			  <option value="projectCode" ${currentCodeType=='projectCode'?'selected':''}>Project Code</option>
 			  <option value="motivationCode" ${currentCodeType=='motivationCode'?'selected':''}>Motivation Code</option>
 			</select>
 		</form>
 		</div>
-			<div class="filters simplebox"> 
+			<div class="filters simplebox">
 				<input type="hidden" name="type" value="${currentCodeType}" />
 				<table>
 					<tr>

@@ -629,3 +629,6 @@ INSERT INTO CODE SET CODE_VALUE='AV010401',CODE_DESCRIPTION='Kingdom Builders $5
 INSERT INTO CODE SET CODE_VALUE='AV010402',CODE_DESCRIPTION='CityLight $100',CODE_TYPE='motivationCode',SITE_NAME='company1';
 
 update code set inactive=false;
+
+-- insert commitment codes
+INSERT INTO CODE (CODE_TYPE, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, SITE_NAME) VALUES ('commitmentCode', 'test description', false, 'C0123', 'company1');

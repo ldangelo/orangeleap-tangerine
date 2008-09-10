@@ -36,6 +36,7 @@
 					<a href="#">Pledges</a>
 					<a href="#">Relationships</a>
 					<a href="#">Subscriptions</a>
+					<a href="siteAudit.htm?object=person&id=${person.id}">Audit</a>
 				</div>
 			</c:if>
 			<h3>

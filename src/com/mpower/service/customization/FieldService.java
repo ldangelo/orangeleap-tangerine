@@ -5,12 +5,12 @@ import java.util.Locale;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.SectionField;
-
+import com.mpower.type.EntityType;
 
 public interface FieldService {
     public FieldDefinition readFieldById(String fieldId);
 
-    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName);
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType);
 
     public boolean lookupFieldRequired(String siteName, SectionField currentField);
 

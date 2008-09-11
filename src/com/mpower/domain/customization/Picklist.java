@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,14 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Site;
+import com.mpower.type.EntityType;
 
 @Entity
-@Table(name = "PICKLIST")
+@Table(name = "PICKLIST", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "PICKLIST_NAME", "ENTITY_TYPE" }))
 public class Picklist implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,6 +38,10 @@ public class Picklist implements Serializable {
 
     @Column(name = "PICKLIST_NAME")
     private String picklistName;
+
+    @Column(name="ENTITY_TYPE")
+    @Enumerated(EnumType.STRING)
+    private EntityType entityType;
 
     @ManyToOne
     @JoinColumn(name = "SITE_NAME")
@@ -77,6 +85,14 @@ public class Picklist implements Serializable {
 
     public void setPicklistItems(List<PicklistItem> picklistItems) {
         this.picklistItems = picklistItems;
+    }
+
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
     }
 
     public Site getSite() {

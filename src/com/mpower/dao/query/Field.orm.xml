@@ -6,8 +6,10 @@
 	<named-query name="READ_PICKLIST_BY_SITE_AND_FIELDNAME" >
 		<query>
 		    SELECT picklist FROM com.mpower.domain.customization.Picklist picklist
-		    WHERE (picklist.picklistName = :fieldName AND
-		           (picklist.site.name = :siteName OR picklist.site.name is null))
+		    WHERE (picklist.picklistName = :fieldName
+		    AND (picklist.site.name = :siteName OR picklist.site.name is null))
+		    AND (picklist.entityType = :entityType OR picklist.entityType is null))
+		    ORDER BY picklist.site.name, picklist.entityType
 		</query>
 	</named-query>
 

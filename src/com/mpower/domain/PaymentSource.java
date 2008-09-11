@@ -11,14 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Entity
-@Table(name = "PAYMENT_SOURCE")
+@Table(name = "PAYMENT_SOURCE", uniqueConstraints = @UniqueConstraint(columnNames = { "PAYMENT_NAME", "PERSON_ID" }))
 public class PaymentSource implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,8 +35,11 @@ public class PaymentSource implements Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
+    @Column(name = "PAYMENT_NAME")
+    private String name;
+
     @Column(name = "PAYMENT_TYPE")
-    private String paymentType;
+    private String type;
 
     @Column(name = "CREDIT_CARD_TYPE")
     private String creditCardType;
@@ -48,8 +50,19 @@ public class PaymentSource implements Serializable {
     @Column(name = "CREDIT_CARD_EXPIRATION_DATE")
     private Date creditCardExpirationDate;
 
-    // absolutely don't store this in the db - see VISA merchant rules
-    // only used for processing
+    @Column(name = "CHECK_NUMBER")
+    private Integer checkNumber;
+
+    @Column(name = "ACH_TYPE")
+    private String achType;
+
+    @Column(name = "ACH_ROUTING_NUMBER")
+    private String achRoutingNumber;
+
+    @Column(name = "ACH_ACCOUNT_NUMBER")
+    private String achAccountNumber;
+
+    // absolutely don't store this in the db - see VISA merchant rules only used for processing
     @Transient
     private String creditCardSecurityCode;
 
@@ -76,12 +89,20 @@ public class PaymentSource implements Serializable {
         this.person = person;
     }
 
-    public String getPaymentType() {
-        return paymentType;
+    public String getName() {
+        return name;
     }
 
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCreditCardType() {
@@ -108,28 +129,43 @@ public class PaymentSource implements Serializable {
         this.creditCardExpirationDate = creditCardExpirationDate;
     }
 
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
+    }
+
+    public String getAchType() {
+        return achType;
+    }
+
+    public void setAchType(String achType) {
+        this.achType = achType;
+    }
+
+    public String getAchRoutingNumber() {
+        return achRoutingNumber;
+    }
+
+    public void setAchRoutingNumber(String achRoutingNumber) {
+        this.achRoutingNumber = achRoutingNumber;
+    }
+
+    public String getAchAccountNumber() {
+        return achAccountNumber;
+    }
+
+    public void setAchAccountNumber(String achAccountNumber) {
+        this.achAccountNumber = achAccountNumber;
+    }
+
     public String getCreditCardSecurityCode() {
         return creditCardSecurityCode;
     }
 
     public void setCreditCardSecurityCode(String creditCardSecurityCode) {
         this.creditCardSecurityCode = creditCardSecurityCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof PaymentSource == false) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
-        PaymentSource rhs = (PaymentSource) obj;
-        return new EqualsBuilder().append(person, rhs.person).append(paymentType, rhs.paymentType).append(creditCardType, rhs.creditCardType).append(creditCardNumber, rhs.creditCardNumber).isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(person).append(paymentType).append(creditCardType).append(creditCardNumber).toHashCode();
     }
 }

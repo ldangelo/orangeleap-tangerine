@@ -19,7 +19,7 @@ public interface GiftService {
 
     public List<Gift> readGifts(String siteName, Map<String, Object> params);
 
-    public Gift createDefaultGift(String siteName);
+    public Gift createDefaultGift(Person person);
 
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
 

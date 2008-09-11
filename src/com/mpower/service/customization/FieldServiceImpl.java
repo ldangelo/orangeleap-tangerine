@@ -12,6 +12,7 @@ import com.mpower.dao.customization.FieldDao;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.type.EntityType;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
 @Service("fieldService")
@@ -40,7 +41,8 @@ public class FieldServiceImpl implements FieldService {
         return fieldDao.readFieldById(fieldId);
     }
 
-    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName) {
-        return fieldDao.readPicklistBySiteAndFieldName(siteName, fieldName);
+    @Override
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType) {
+        return fieldDao.readPicklistBySiteAndFieldName(siteName, fieldName, entityType);
     }
 }

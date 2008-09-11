@@ -14,13 +14,13 @@ import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
+import com.mpower.type.EntityType;
 
 @Repository("fieldDao")
 public class JPAFieldDao implements FieldDao {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
 
     @PersistenceContext
     private EntityManager em;
@@ -30,23 +30,13 @@ public class JPAFieldDao implements FieldDao {
     }
 
     @SuppressWarnings("unchecked")
-    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName) {
+    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType) {
         Query query = em.createNamedQuery("READ_PICKLIST_BY_SITE_AND_FIELDNAME");
         query.setParameter("siteName", siteName);
         query.setParameter("fieldName", fieldName);
+        query.setParameter("entityType", entityType);
         List<Picklist> picklists = query.getResultList();
-        if (picklists.size() > 0) {
-            if (picklists.size() == 1) {
-                return picklists.get(0);
-            } else {
-                for (Picklist picklist : picklists) {
-                    if (picklist.getSite() != null) {
-                        return picklist;
-                    }
-                }
-            }
-        }
-        return null;
+        return picklists.size() > 0 ? picklists.get(0) : null;
     }
 
     @SuppressWarnings("unchecked")

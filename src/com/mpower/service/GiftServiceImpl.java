@@ -23,6 +23,7 @@ import com.mpower.dao.GiftDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.jms.MPowerCreditGateway;
@@ -42,7 +43,7 @@ public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "siteDao")
     private SiteDao siteDao;
-    
+
     @Resource(name = "creditGateway")
     private MPowerCreditGateway creditGateway;
 
@@ -53,10 +54,10 @@ public class GiftServiceImpl implements GiftService {
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
         }
         gift = giftDao.maintainGift(gift);
-        
+
         creditGateway.sendGiftInfo(gift);
         logger.info("*** sending msg to queue");
-        
+
         auditService.auditObject(gift);
         return gift;
     }
@@ -81,18 +82,23 @@ public class GiftServiceImpl implements GiftService {
         return giftDao.readGifts(siteName, params);
     }
 
+    public List<PaymentSource> readPaymentSources(Long personId) {
+        return giftDao.readPaymentSources(personId);
+    }
+
     @Override
-    public Gift createDefaultGift(String siteName) {
+    public Gift createDefaultGift(Person person) {
         // get initial gift with built-in defaults
         Gift gift = new Gift();
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(gift);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteName, Arrays.asList(new EntityType[] { EntityType.gift }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.gift }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
-        // TODO: remove after get this working
+        gift.setPaymentSources(readPaymentSources(person.getId()));
+
         gift.addDistributionLine(new DistributionLine(gift));
 
         // TODO: consider caching techniques for the default Gift

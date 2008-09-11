@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.PicklistItem;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.type.EntityType;
 import com.mpower.type.MessageResourceType;
 
 public class PicklistFieldHandler extends GenericFieldHandler {
@@ -20,7 +21,6 @@ public class PicklistFieldHandler extends GenericFieldHandler {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
     public PicklistFieldHandler(ApplicationContext appContext) {
         super(appContext);
     }
@@ -31,7 +31,8 @@ public class PicklistFieldHandler extends GenericFieldHandler {
         fieldVO.codes = new ArrayList<String>();
         fieldVO.displayValues = new ArrayList<String>();
         fieldVO.referenceValues = new ArrayList<String>();
-        Picklist picklist = fieldService.readPicklistBySiteAndFieldName(siteName, currentField.getPicklistName());
+        EntityType entityType = (currentField.getSecondaryFieldDefinition() != null) ? currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
+        Picklist picklist = fieldService.readPicklistBySiteAndFieldName(siteName, currentField.getPicklistName(), entityType);
         if (picklist != null) {
             for (Iterator<PicklistItem> iterator = picklist.getPicklistItems().iterator(); iterator.hasNext();) {
                 PicklistItem item = iterator.next();

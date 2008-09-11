@@ -57,10 +57,7 @@ public class GiftFormController extends SimpleFormController {
         String giftId = request.getParameter("giftId");
         Gift gift = null;
         if (giftId == null) {
-            // create person
-            gift = giftService.createDefaultGift(SessionServiceImpl.lookupUserSiteName());
             String personId = request.getParameter("personId");
-            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
             Person person = null;
             if (personId != null) {
                 person = personService.readPersonById(Long.valueOf(personId));
@@ -68,8 +65,10 @@ public class GiftFormController extends SimpleFormController {
                     logger.error("**** person not found for id: " + personId);
                     return gift;
                 }
+                gift = giftService.createDefaultGift(person);
+                // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+                gift.setPerson(person);
             }
-            gift.setPerson(person);
         } else {
             gift = giftService.readGiftById(new Long(giftId));
         }

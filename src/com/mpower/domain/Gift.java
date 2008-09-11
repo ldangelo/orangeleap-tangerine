@@ -134,6 +134,9 @@ public class Gift implements Customizable, Viewable, Serializable {
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    @Transient
+    private List<PaymentSource> paymentSources = null;
+
     public Long getId() {
         return id;
     }
@@ -428,5 +431,13 @@ public class Gift implements Customizable, Viewable, Serializable {
 
     public void setDeductible(boolean deductible) {
         this.deductible = deductible;
+    }
+
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSources;
+    }
+
+    public void setPaymentSources(List<PaymentSource> paymentSources) {
+        this.paymentSources = paymentSources;
     }
 }

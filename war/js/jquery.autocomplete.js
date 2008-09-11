@@ -1,6 +1,5 @@
 //  from http://www.dyve.net/jquery/?autocomplete
 jQuery.autocomplete = function(input, options) {
-console.log("setting up autocomplete for "+$(input).attr("name"));
 	// Create a link to self
 	var me = this;
 
@@ -94,7 +93,6 @@ console.log("setting up autocomplete for "+$(input).attr("name"));
 				e.preventDefault();
 				
 				if ($results.is(":visible")) {
-				console.log("its visible");
 					moveSelect(1);
 				} else {
 				active = -1;
@@ -111,7 +109,6 @@ console.log("setting up autocomplete for "+$(input).attr("name"));
 				}
 				break;
 			default:
-			console.log("keypress change");
 				active = -1;
 				if (timeout) clearTimeout(timeout);
 				timeout = setTimeout(function(){onChange();}, options.delay);
@@ -140,7 +137,6 @@ console.log("setting up autocomplete for "+$(input).attr("name"));
 		prev = v;
 		if (v.length >= options.minChars) {
 			$input.addClass(options.loadingClass);
-			console.log("calling request");
 			requestData(v);
 		} else {
 			$input.removeClass(options.loadingClass);
@@ -149,12 +145,9 @@ console.log("setting up autocomplete for "+$(input).attr("name"));
 	};
 
  	function moveSelect(step) {
-console.log("moveselect");
 		var lis = $("li", results);
-		if (!lis) {console.log("!lis");return;}
-		if(lis.size()<1){console.log("empty list");}
+		if (!lis) {return;}
 		active += step;
-console.log("active:"+active);
 		if (active < 0) {
 			active = 0;
 		} else if (active >= lis.size()) {
@@ -330,7 +323,6 @@ console.log("active:"+active);
 	function dataToDom(data) {
 		var ul = document.createElement("ul");
 		var num = data.length;
-		console.log("num "+num);
 
 		// limited results to a max number
 		if( (options.maxItemsToShow > 0) && (options.maxItemsToShow < num) ) num = options.maxItemsToShow;
@@ -375,7 +367,6 @@ console.log("active:"+active);
 	};
 
 	function requestData(q) {
-	console.log("requestData");
 		if (!options.matchCase) q = q.toLowerCase();
 		var data = options.cacheLength ? loadFromCache(q) : null;
 		// recieve the cached data

@@ -56,6 +56,9 @@ public class Commitment implements Customizable, Viewable, Serializable {
     @OneToMany(mappedBy = "commitment")
     private List<Gift> gifts;
 
+    @Column(name = "NAME")
+    private String name;
+
     @Column(name = "COMMENTS")
     private String comments;
 
@@ -175,6 +178,14 @@ public class Commitment implements Customizable, Viewable, Serializable {
 
     public void setGifts(List<Gift> gifts) {
         this.gifts = gifts;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getComments() {

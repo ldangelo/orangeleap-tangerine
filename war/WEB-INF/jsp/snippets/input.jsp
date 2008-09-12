@@ -33,9 +33,6 @@
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
 	<form:checkbox path="${fieldVO.fieldName}" value="${fieldVO.fieldValue}"/>
 </c:when>
-<c:when test="${fieldVO.fieldType == 'READ_ONLY_CHECKBOX'}">
-	<form:checkbox path="${fieldVO.fieldName}" value="${fieldVO.fieldValue}" disabled="true" />
-</c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 	  <input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly"/>
 </c:when>

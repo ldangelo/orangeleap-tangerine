@@ -29,6 +29,9 @@
 						</c:forEach>
 						<div class="clearColumns"></div>
 					</div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="Save Changes" class="saveButton" />
+				</div>
 			</form:form>
 
 			<div class="formButtonFooter">

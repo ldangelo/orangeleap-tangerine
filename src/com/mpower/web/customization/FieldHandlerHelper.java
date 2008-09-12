@@ -39,7 +39,6 @@ public class FieldHandlerHelper {
 		fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.CHECKBOX, genericFieldHandler);
-		fieldTypeToHandlerMap.put(FieldType.READ_ONLY_CHECKBOX, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
 		ExpirationFieldHandler expirationFieldHandler = new ExpirationFieldHandler(appContext);

@@ -112,8 +112,17 @@
         <property name="personService" ref="personService"/>
     </bean>
 
-    <bean id="commitmentView" class="com.mpower.controller.CommitmentViewController">
+    <bean id="commitmentView" class="com.mpower.controller.CommitmentFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator"/>
+        </property>
+        <property name="formView" value="commitmentView" />
+        <property name="successView" value="commitmentView" />
         <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="personView" class="com.mpower.controller.PersonViewController">
@@ -165,6 +174,7 @@
                 <prop key="/code.htm">code</prop>
                 <prop key="/codes.htm">codes</prop>
                 <prop key="/siteAudit.htm">siteAudit</prop>
+                <prop key="/commitment.htm">commitment</prop>
 			</props>
 		</property>
 	</bean>
@@ -188,7 +198,7 @@
        	<property name="suffix" value=".jsp"></property>
     </bean>
 
-
+<!-- 
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
@@ -208,6 +218,8 @@
 	    	<value>applicationContext</value>
 	   	</property>
 	</bean>
+-->
+
 
 	<dwr:controller id="dwrController" debug="true" />
 

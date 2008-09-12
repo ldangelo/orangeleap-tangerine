@@ -240,11 +240,6 @@ function deleteRow(row) {
 		alert("Sorry, you cannot delete that row since it's the only remaining row.")
 	};
 }
-function testDebugger() {
-	var test="hello";
-	console.log(test);
-	console.log(test+" world");
-}
 function formatItem(row) {
 	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
 }

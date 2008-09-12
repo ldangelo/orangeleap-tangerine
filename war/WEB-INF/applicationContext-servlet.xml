@@ -141,6 +141,10 @@
     <bean id="codes" class="com.mpower.controller.GenericViewController">
 		<property name="viewName" value="codes"/>
     </bean>
+    
+    <bean id="welcome" class="com.mpower.controller.GenericViewController">
+		<property name="viewName" value="welcome"/>
+    </bean>
 
 	<bean id="code" class="com.mpower.controller.CodeFormController">
         <property name="commandName" value="code"/>
@@ -174,6 +178,7 @@
                 <prop key="/code.htm">code</prop>
                 <prop key="/codes.htm">codes</prop>
                 <prop key="/siteAudit.htm">siteAudit</prop>
+                <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
 			</props>
 		</property>

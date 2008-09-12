@@ -25,6 +25,9 @@
 	<div class="container">
 		<ul class="primaryNav">
 			<li>
+				<a href="welcome.htm" class="${primaryNav=='Welcome'?'active':''}"><div class="homeIcon">&nbsp;</div></a>
+			</li>
+			<li>
 				<a href="personSearch.htm" class="${primaryNav=='People'?'active':''}">People</a>
 			</li>
 			<li>
@@ -75,6 +78,13 @@
 			</li>
 			<li>
 				<a href="#" class="${secondaryNav=='Users'?'active':''}">Users</a>
+			</li>
+		</ul>
+		</c:when>
+		<c:when test="${primaryNav=='Welcome'}">
+		<ul class="secondaryNav">
+			<li>
+				<div class="navMessage">Please select one of the above modules to get started.</div>
 			</li>
 		</ul>
 		</c:when>

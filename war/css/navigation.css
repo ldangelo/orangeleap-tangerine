@@ -159,3 +159,19 @@
 #homeMenu a:hover span {
 	color: #000;
 }
+div.navMessage {
+	font-size:12px;
+	font-weight:normal;
+	margin:2px 0 0 8px;
+	font-family:verdana;
+}
+div.homeIcon {
+	width:20px;
+	background:url("../images/icons/homeIcon.gif") no-repeat center center;
+}
+a:hover div.homeIcon {
+	background:url("../images/icons/homeIconInverted.gif") no-repeat center center;
+}
+a.active:hover div.homeIcon {
+	background:url("../images/icons/homeIcon.gif") no-repeat center center;
+}

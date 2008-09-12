@@ -313,3 +313,25 @@ td.inactive {
 	font-size: 1px;
 	padding: 0;
 }
+#feed {
+	width:375px;
+	padding-top:4px;
+}
+#feed p {
+	margin:4px 0 2px 0;
+}
+#feed p a {
+	color:#00a;
+	text-decoration:none;
+}
+#feed p a:hover {
+	text-decoration:underline;
+}
+.welcomePage h5 {
+	color:#707070;
+	font-family:arial;
+	font-size:14px;
+}
+.welcomePage .column {
+	margin-top:10px;
+}

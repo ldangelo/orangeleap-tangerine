@@ -23,10 +23,10 @@
 	<c:choose>
 		<c:when test="${!empty codes}">
 			<div class="codeList" style="border:0">
-			<table class="tablesorter">
+			<table>
 				<c:forEach items="${codes}" var="code">
 					<tr>
-						<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="code.htm?codeId=${code.id}&view=inPlace">Use</a>
+						<td class="action"><a class="editInPlace" onclick="window.lookupCaller.val('${code.value}');$('#dialog').jqmHide();window.lookupCaller=null;return false;" href="#">Use</a>
 						<td class="codeValue">${code.value}</td>
 						<td class="codeDescription">${code.description}</td>
 					</tr>

@@ -100,6 +100,12 @@ jQuery.autocomplete = function(input, options) {
 				timeout = setTimeout(function(){onChange();}, options.delay);
 				}
 				break;
+			case 113:  // F2
+				window.lookupCaller = $input;
+				$("#dialog .modalContent").load("codeHelper.htm?view=popup&type="+$input.attr("lookup"),function(){
+					$("#dialog").jqmShow();
+					});
+				break;
 			case 9:  // tab
 			case 13: // return
 				if( selectCurrent() ){

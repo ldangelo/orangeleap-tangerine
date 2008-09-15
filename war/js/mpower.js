@@ -287,6 +287,7 @@ function editInPlace(elem) {
 function showSelectedSection(elemId) {
 	if(typeof elemId == "string") {
 		var elem=document.getElementById(elemId);
+		//showSelectedSection.call(document.getElementById(elemId));
 	} else {
 		var elem=this;
 	}

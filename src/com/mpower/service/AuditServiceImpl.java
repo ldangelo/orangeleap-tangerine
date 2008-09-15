@@ -33,7 +33,7 @@ public class AuditServiceImpl implements AuditService {
 
     @Resource(name = "auditDao")
     private AuditDao auditDao;
-    
+
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
@@ -174,8 +174,15 @@ public class AuditServiceImpl implements AuditService {
         return auditDao.allAuditHistoryForSite(siteDao.readSite(siteName));
     }
 
-	@Override
-	public List<Audit> AuditHistoryForEntity(String siteName, EntityType entityType, Long objectId) {
-        return auditDao.AuditHistoryForEntity(siteDao.readSite(siteName),entityType,objectId);
-	}
+    @Override
+    public List<Audit> AuditHistoryForEntity(String siteName, EntityType entityType, Long objectId) {
+        return auditDao.AuditHistoryForEntity(siteDao.readSite(siteName), entityType, objectId);
+    }
+
+    @Override
+    public List<Audit> auditObjectDelete(Object object) {
+        // TODO Auto-generated method stub
+        logger.debug("audit " + object.getClass().getName() + " delete");
+        return null;
+    }
 }

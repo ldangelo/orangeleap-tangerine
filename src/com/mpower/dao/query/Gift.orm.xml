@@ -33,12 +33,4 @@
 		</query>
 	</named-query>
 
-	<named-query name="READ_PAYMENT_SOURCES_BY_PERSON_ID" >
-		<query>
-			SELECT ps
-			FROM com.mpower.domain.PaymentSource ps
-			WHERE ps.person.id = :personId
-		</query>
-	</named-query>
-
 </entity-mappings>

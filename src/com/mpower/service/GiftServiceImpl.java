@@ -82,8 +82,16 @@ public class GiftServiceImpl implements GiftService {
         return giftDao.readGifts(siteName, params);
     }
 
+    public void createPaymentSource(PaymentSource paymentSource) {
+        giftDao.maintainPaymentSources(paymentSource);
+    }
+
     public List<PaymentSource> readPaymentSources(Long personId) {
         return giftDao.readPaymentSources(personId);
+    }
+
+    public void deletePaymentSource(Long paymentSourceId) {
+        giftDao.readPaymentSources(paymentSourceId);
     }
 
     @Override

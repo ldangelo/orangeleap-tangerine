@@ -32,10 +32,10 @@ public class GiftTest extends BaseTest {
         gift.setPerson(person);
         gift = giftService.maintainGift(gift);
         Long giftId = gift.getId();
-        em.getTransaction().commit();
         em.remove(em.find(Gift.class, giftId));
         em.remove(person);
         em.remove(site);
+        em.getTransaction().rollback();
     }
 
     public void setGiftService(GiftService giftService) {

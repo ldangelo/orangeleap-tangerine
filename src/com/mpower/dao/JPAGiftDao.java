@@ -162,6 +162,15 @@ public class JPAGiftDao implements GiftDao {
         return lg;
     }
 
+    @Override
+    public PaymentSource maintainPaymentSources(PaymentSource paymentSource) {
+        if (paymentSource.getId() == null) {
+            em.persist(paymentSource);
+            return paymentSource;
+        }
+        return em.merge(paymentSource);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readPaymentSources(Long personId) {
@@ -169,5 +178,10 @@ public class JPAGiftDao implements GiftDao {
         query.setParameter("personId", personId);
         List<PaymentSource> paymentSourceList = query.getResultList();
         return paymentSourceList;
+    }
+
+    @Override
+    public void removePaymentSource(PaymentSource paymentSource) {
+        em.remove(paymentSource);
     }
 }

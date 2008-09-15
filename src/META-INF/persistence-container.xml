@@ -13,6 +13,7 @@
       <mapping-file>com/mpower/dao/query/Gift.orm.xml</mapping-file>
       <mapping-file>com/mpower/dao/query/Person.orm.xml</mapping-file>
       <mapping-file>com/mpower/dao/query/Commitment.orm.xml</mapping-file>
+      <mapping-file>com/mpower/dao/query/PaymentSource.orm.xml</mapping-file>
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="update"/>
          <property name="hibernate.show_sql" value="false"/>

@@ -27,13 +27,13 @@ public class PersonTest extends BaseTest {
         em.getTransaction().begin();
         em.persist(site);
         em.persist(person);
-        em.getTransaction().commit();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("lastName", "last");
         List<Person> persons = personService.readPersons(site.getName(), params);
         assert persons.size() == 1;
         em.remove(person);
         em.remove(site);
+        em.getTransaction().rollback();
     }
 
     @Test(dataProvider = "setupCreateSite", dataProviderClass = PersonDataProvider.class)
@@ -46,11 +46,11 @@ public class PersonTest extends BaseTest {
         person.setSite(site);
         em.persist(person);
         Long personId = person.getId();
-        em.getTransaction().commit();
         assert em.find(Person.class, personId) != null;
         assert em.find(Person.class, personId).getSite().getName().equals(siteName);
         em.remove(person);
         em.remove(site);
+        em.getTransaction().rollback();
     }
 
     @BeforeClass

@@ -23,5 +23,9 @@ public interface GiftDao {
 
     public List<Gift> readAllGifts();
 
+    public PaymentSource maintainPaymentSources(PaymentSource paymentSource);
+
     public List<PaymentSource> readPaymentSources(Long personId);
+
+    public void removePaymentSource(PaymentSource paymentSource);
 }

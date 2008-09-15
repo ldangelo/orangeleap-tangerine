@@ -111,6 +111,9 @@ public class Commitment implements Customizable, Viewable, Serializable {
     @Column(name = "NOTES")
     private String notes;
 
+    @Column(name = "PAYMENT_SOURCE_ID")
+    private PaymentSource paymentSource;
+
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
@@ -199,6 +202,7 @@ public class Commitment implements Customizable, Viewable, Serializable {
     public Map<String, String> getValidationMap() {
         return validationMap;
     }
+
     public String getName() {
         return name;
     }
@@ -327,5 +331,13 @@ public class Commitment implements Customizable, Viewable, Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public PaymentSource getPaymentSource() {
+        return paymentSource;
+    }
+
+    public void setPaymentSource(PaymentSource paymentSource) {
+        this.paymentSource = paymentSource;
     }
 }

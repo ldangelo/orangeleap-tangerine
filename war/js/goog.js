@@ -3,6 +3,7 @@ function setupGoogleWidgets() {
 	areaChart();
 	rss();
 	barChart();
+	$(".googleWidget").css("visibility","visible");
 }
 function pieChart() {
       var data = new google.visualization.DataTable();

@@ -29,5 +29,8 @@
 			<tiles:insertAttribute name="footer" />
 		</div>
 		<%@ include file="/WEB-INF/jsp/snippets/modal.jsp" %>
+		<c:if test="${loadGoogle==true}">
+			<%@ include file="/WEB-INF/jsp/snippets/googleScripts.jsp" %>
+		</c:if>
 	</body>
 </html>

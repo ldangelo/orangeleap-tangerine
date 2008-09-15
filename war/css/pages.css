@@ -335,3 +335,6 @@ td.inactive {
 .welcomePage .column {
 	margin-top:10px;
 }
+.googleWidget {
+	visibility:hidden;
+}

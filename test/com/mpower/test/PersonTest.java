@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -17,13 +14,10 @@ import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonTest extends BaseTest {
 
-    private EntityManagerFactory emf;
-
     private PersonService personService;
 
     @Test(dataProvider = "setupCreatePerson", dataProviderClass = PersonDataProvider.class)
     public void searchPerson(Site site, Person person) {
-        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
         em.persist(person);
@@ -38,7 +32,6 @@ public class PersonTest extends BaseTest {
 
     @Test(dataProvider = "setupCreateSite", dataProviderClass = PersonDataProvider.class)
     public void searchPerson(Site site) {
-        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
         String siteName = site.getName();
@@ -55,7 +48,7 @@ public class PersonTest extends BaseTest {
 
     @BeforeClass
     public void setup() {
-        emf = (EntityManagerFactory) applicationContext.getBean("entityManagerFactory");
+        getEntityManager();
         personService = (PersonService) applicationContext.getBean("personService");
     }
 }

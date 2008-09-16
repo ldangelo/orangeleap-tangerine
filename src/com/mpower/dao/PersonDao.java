@@ -20,7 +20,6 @@ public interface PersonDao {
     public List<Person> readAllPeople();
 
     public void setLapsedDonor(Long personId);
-    
-    public List<Person> readAllPeopleBySite(Site site);
 
+    public List<Person> readAllPeopleBySite(Site site);
 }

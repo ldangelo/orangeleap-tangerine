@@ -1,8 +1,5 @@
 package com.mpower.test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,8 +12,6 @@ import com.mpower.test.dataprovider.GiftDataProvider;
 
 public class GiftTest extends BaseTest {
 
-    private EntityManagerFactory emf;
-
     private GiftService giftService;
 
     private AuditService auditService;
@@ -24,7 +19,6 @@ public class GiftTest extends BaseTest {
     @Test(dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
     public void createGift(Site site, Person person, Gift gift) {
         giftService.setAuditService(auditService);
-        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.persist(site);
         person.setSite(site);
@@ -44,7 +38,7 @@ public class GiftTest extends BaseTest {
 
     @BeforeClass
     public void setup() {
-        emf = (EntityManagerFactory) applicationContext.getBean("entityManagerFactory");
+        getEntityManager();
         giftService = (GiftService) applicationContext.getBean("giftService");
         auditService = (AuditService) applicationContext.getBean("auditService");
     }

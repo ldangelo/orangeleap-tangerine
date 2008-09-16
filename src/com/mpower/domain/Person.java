@@ -101,9 +101,6 @@ public class Person implements Customizable, Viewable, Serializable {
     private List<PersonCustomField> personCustomFields;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<PaymentSource> paymentSources;
-
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Gift> gifts;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
@@ -313,14 +310,6 @@ public class Person implements Customizable, Viewable, Serializable {
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
-    }
-
-    public List<PaymentSource> getPaymentSources() {
-        return paymentSources;
-    }
-
-    public void setPaymentSources(List<PaymentSource> paymentSources) {
-        this.paymentSources = paymentSources;
     }
 
     public List<Gift> getGifts() {

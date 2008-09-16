@@ -1,8 +1,5 @@
 package com.mpower.test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -15,9 +12,6 @@ import com.mpower.service.customization.FieldService;
 import com.mpower.test.dataprovider.FieldRequiredDataProvider;
 
 public class FieldTest extends BaseTest {
-
-    private EntityManagerFactory emf;
-    private EntityManager em;
 
     private FieldService fieldService;
 
@@ -47,8 +41,7 @@ public class FieldTest extends BaseTest {
 
     @BeforeClass
     public void setup() {
-        emf = (EntityManagerFactory) applicationContext.getBean("entityManagerFactory");
-        em = emf.createEntityManager();
+        getEntityManager();
         fieldService = (FieldService) applicationContext.getBean("fieldService");
     }
 }

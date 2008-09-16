@@ -17,8 +17,7 @@
 	<context:component-scan base-package="com.mpower"/>
 
 	<aop:config>
-		<aop:advisor pointcut="execution(* *..*Dao.*(..))"
-			advice-ref="txAdvice" />
+		<aop:advisor pointcut="execution(* *..*Dao.*(..))" advice-ref="txAdvice" />
 	</aop:config>
 
 	<tx:advice id="txAdvice">
@@ -33,20 +32,16 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="persistenceUnitName" value="MPowerUnitTestPu" />
 		<property name="jpaVendorAdapter">
-			<bean
-				class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 		</property>
 	</bean>
 
-	<bean id="transactionManager"
-		class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory"
-			ref="entityManagerFactory" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.apache.commons.dbcp.BasicDataSource">
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName">
 			<value>org.hsqldb.jdbcDriver</value>
 		</property>
@@ -66,11 +61,11 @@
 	</bean>
 
 	<bean id="testDestination" class="org.apache.activemq.command.ActiveMQQueue">
-	  <constructor-arg index="0" value="test.mpower.queue" />
+		<constructor-arg index="0" value="test.mpower.queue" />
 	</bean>
 
 	<bean id="testDestinationTopic" class="org.apache.activemq.command.ActiveMQTopic">
-	  <constructor-arg index="0" value="test.mpower.topic" />
+		<constructor-arg index="0" value="test.mpower.topic" />
 	</bean>
 
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
@@ -83,6 +78,5 @@
 	  <property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
-	<bean
-		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 </beans>

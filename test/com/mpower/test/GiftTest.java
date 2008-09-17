@@ -1,6 +1,6 @@
 package com.mpower.test;
 
-import org.testng.annotations.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.domain.Gift;
@@ -12,8 +12,10 @@ import com.mpower.test.dataprovider.GiftDataProvider;
 
 public class GiftTest extends BaseTest {
 
+    @Autowired
     private GiftService giftService;
 
+    @Autowired
     private AuditService auditService;
 
     @Test(dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
@@ -30,16 +32,5 @@ public class GiftTest extends BaseTest {
         em.remove(person);
         em.remove(site);
         em.getTransaction().rollback();
-    }
-
-    public void setGiftService(GiftService giftService) {
-        this.giftService = giftService;
-    }
-
-    @BeforeClass
-    public void setup() {
-        getEntityManager();
-        giftService = (GiftService) applicationContext.getBean("giftService");
-        auditService = (AuditService) applicationContext.getBean("auditService");
     }
 }

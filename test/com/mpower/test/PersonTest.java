@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.annotations.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.domain.Person;
@@ -14,6 +14,7 @@ import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonTest extends BaseTest {
 
+    @Autowired
     private PersonService personService;
 
     @Test(dataProvider = "setupCreatePerson", dataProviderClass = PersonDataProvider.class)
@@ -44,11 +45,5 @@ public class PersonTest extends BaseTest {
         em.remove(person);
         em.remove(site);
         em.getTransaction().rollback();
-    }
-
-    @BeforeClass
-    public void setup() {
-        getEntityManager();
-        personService = (PersonService) applicationContext.getBean("personService");
     }
 }

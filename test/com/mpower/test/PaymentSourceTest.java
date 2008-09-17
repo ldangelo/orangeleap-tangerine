@@ -3,7 +3,7 @@ package com.mpower.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.domain.PaymentSource;
@@ -16,8 +16,10 @@ import com.mpower.test.dataprovider.PaymentSourceDataProvider;
 
 public class PaymentSourceTest extends BaseTest {
 
+    @Autowired
     private PaymentSourceService paymentSourceService;
 
+    @Autowired
     private AuditService auditService;
 
     private List<String> siteIds = new ArrayList<String>();
@@ -47,7 +49,6 @@ public class PaymentSourceTest extends BaseTest {
 
     @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource" })
     public void deletePaymentSource() {
-        em.getTransaction().begin();
         paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");
         List<Person> persons = personService.readAllPeople();
@@ -66,17 +67,5 @@ public class PaymentSourceTest extends BaseTest {
         for (String siteId : siteIds) {
             em.remove(em.find(Site.class, siteId));
         }
-        em.getTransaction().commit();
-    }
-
-    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
-        this.paymentSourceService = paymentSourceService;
-    }
-
-    @BeforeClass
-    public void setup() {
-        getEntityManager();
-        paymentSourceService = (PaymentSourceService) applicationContext.getBean("paymentSourceService");
-        auditService = (AuditService) applicationContext.getBean("auditService");
     }
 }

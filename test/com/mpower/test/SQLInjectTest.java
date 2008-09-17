@@ -3,13 +3,14 @@ package com.mpower.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.dao.PersonDao;
 
 public class SQLInjectTest extends BaseTest {
 
+    @Autowired
     private PersonDao personDao;
 
     @Test
@@ -141,10 +142,5 @@ public class SQLInjectTest extends BaseTest {
         } catch (RuntimeException e) {
             assert false;
         }
-    }
-
-    @BeforeClass
-    public void setup() {
-        personDao = (PersonDao) applicationContext.getBean("personDao");
     }
 }

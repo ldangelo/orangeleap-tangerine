@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
 
 @ContextConfiguration(locations = { "classpath:/applicationContext.xml" })
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
@@ -21,5 +22,10 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
             em = ((EntityManagerFactory) applicationContext.getBean("entityManagerFactory")).createEntityManager();
         }
         return em;
+    }
+
+    @BeforeClass
+    public void setup() {
+        getEntityManager();
     }
 }

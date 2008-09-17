@@ -1,6 +1,6 @@
 package com.mpower.test;
 
-import org.testng.annotations.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.domain.Site;
@@ -13,6 +13,7 @@ import com.mpower.test.dataprovider.FieldRequiredDataProvider;
 
 public class FieldTest extends BaseTest {
 
+    @Autowired
     private FieldService fieldService;
 
     @Test(dataProvider = "testFieldRequired", dataProviderClass = FieldRequiredDataProvider.class)
@@ -37,11 +38,5 @@ public class FieldTest extends BaseTest {
 
         assert fieldService.lookupFieldRequired(siteName, em.find(SectionField.class, sectionFieldId)) == expectedValue;
         em.getTransaction().rollback();
-    }
-
-    @BeforeClass
-    public void setup() {
-        getEntityManager();
-        fieldService = (FieldService) applicationContext.getBean("fieldService");
     }
 }

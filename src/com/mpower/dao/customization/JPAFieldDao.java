@@ -41,7 +41,7 @@ public class JPAFieldDao implements FieldDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         Query query = null;
         if (secondaryFieldDefinitionId == null) {
             query = em.createNamedQuery("QUERY_FIELD_REQUIRED_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION");
@@ -58,21 +58,21 @@ public class JPAFieldDao implements FieldDao {
         List<FieldRequired> fields = query.getResultList();
         if (fields.size() > 0) {
             if (fields.size() == 1) {
-                return fields.get(0).isRequired();
+                return fields.get(0);
             } else {
                 for (FieldRequired fr : fields) {
                     if (fr.getSiteName() != null) {
-                        return fr.isRequired();
+                        return fr;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public String readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         Query query = null;
         if (secondaryFieldDefinitionId == null) {
             query = em.createNamedQuery("QUERY_FIELD_VALIDATION_BY_SITE_AND_SECTION_NAME_AND_FIELD_DEFINITION");
@@ -89,11 +89,11 @@ public class JPAFieldDao implements FieldDao {
         List<FieldValidation> fields = query.getResultList();
         if (fields.size() > 0) {
             if (fields.size() == 1) {
-                return fields.get(0).getRegex();
+                return fields.get(0);
             } else {
                 for (FieldValidation fr : fields) {
                     if (fr.getSiteName() != null) {
-                        return fr.getRegex();
+                        return fr;
                     }
                 }
             }

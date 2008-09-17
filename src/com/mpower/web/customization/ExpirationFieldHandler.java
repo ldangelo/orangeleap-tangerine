@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
+import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.FieldType;
 import com.mpower.type.MessageResourceType;
@@ -17,10 +18,9 @@ public class ExpirationFieldHandler extends GenericFieldHandler {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
-	public ExpirationFieldHandler(ApplicationContext appContext) {
-		super(appContext);
-	}
+    public ExpirationFieldHandler(ApplicationContext appContext) {
+        super(appContext);
+    }
 
     @Override
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
@@ -43,7 +43,8 @@ public class ExpirationFieldHandler extends GenericFieldHandler {
         }
         fieldVO.setLabelText(labelText);
 
-        fieldVO.setRequired(fieldService.lookupFieldRequired(siteName, currentField));
+        FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);
+        fieldVO.setRequired(fr != null && fr.isRequired());
 
         return fieldVO;
     }

@@ -2,7 +2,6 @@ package com.mpower.controller;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -73,14 +72,8 @@ public class GiftFormController extends SimpleFormController {
             gift = giftService.readGiftById(new Long(giftId));
         }
         if (isFormSubmission(request)) {
-            Set<String> requiredFields = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
-            gift.setRequiredFields(requiredFields);
-
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
             gift.setFieldLabelMap(fieldLabelMap);
-
-            Map<String, String> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
-            gift.setValidationMap(validationMap);
 
             Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), gift);
             gift.setFieldValueMap(valueMap);

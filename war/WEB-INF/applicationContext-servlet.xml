@@ -31,7 +31,10 @@
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator"/>
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="person"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
         </property>
         <property name="formView" value="person" />
         <property name="successView" value="person" />
@@ -51,7 +54,10 @@
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator"/>
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="gift"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
         </property>
         <property name="formView" value="gift" />
         <property name="successView" value="giftView" />
@@ -88,7 +94,10 @@
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
 		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator"/>
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="commitment"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
         </property>
         <property name="formView" value="commitment" />
         <property name="successView" value="commitmentView" />
@@ -116,7 +125,10 @@
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
 		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator"/>
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="commitment"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
         </property>
         <property name="formView" value="commitmentView" />
         <property name="successView" value="commitmentView" />
@@ -141,7 +153,7 @@
     <bean id="codes" class="com.mpower.controller.GenericViewController">
 		<property name="viewName" value="codes"/>
     </bean>
-    
+
     <bean id="welcome" class="com.mpower.controller.GenericViewController">
 		<property name="viewName" value="welcome"/>
     </bean>
@@ -203,7 +215,7 @@
        	<property name="suffix" value=".jsp"></property>
     </bean>
 
-<!-- 
+<!--
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>

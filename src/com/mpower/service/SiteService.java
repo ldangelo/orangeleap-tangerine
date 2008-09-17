@@ -3,9 +3,10 @@ package com.mpower.service;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import com.mpower.domain.Site;
+import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
 import com.mpower.type.PageType;
 
 public interface SiteService {
@@ -13,13 +14,13 @@ public interface SiteService {
     public List<Site> readSites();
 
     /**
-     * Return the key of fields that are required
+     * Return field required
      * @param siteName the site name to search
      * @param pageType the page type to search
      * @param roles the roles of the current user
      * @return
      */
-    public Set<String> readRequiredFields(String siteName, PageType pageType, List<String> roles);
+    public Map<String, FieldRequired> readRequiredFields(String siteName, PageType pageType, List<String> roles);
 
     /**
      * Return field labels
@@ -38,7 +39,7 @@ public interface SiteService {
      * @param roles the roles of the current user
      * @return
      */
-    public Map<String, String> readFieldValidations(String siteName, PageType pageType, List<String> roles);
+    public Map<String, FieldValidation> readFieldValidations(String siteName, PageType pageType, List<String> roles);
 
     /**
      * Return field values

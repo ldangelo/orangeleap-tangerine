@@ -71,8 +71,8 @@ public class Gift implements Customizable, Viewable, Serializable {
     @Column(name = "CREDIT_CARD_NUMBER")
     private String creditCardNumber;
 
-    @Column(name = "CREDIT_CARD_EXPIRATION_DATE")
-    private Date creditCardExpirationDate;
+    @Column(name = "CREDIT_CARD_EXPIRATION")
+    private Date creditCardExpiration;
 
     @Column(name = "CHECK_NUMBER")
     private Integer checkNumber;
@@ -201,18 +201,18 @@ public class Gift implements Customizable, Viewable, Serializable {
         this.creditCardNumber = creditCardNumber;
     }
 
-    public Date getCreditCardExpirationDate() {
-        return creditCardExpirationDate;
+    public Date getCreditCardExpiration() {
+        return creditCardExpiration;
     }
 
-    public void setCreditCardExpirationDate(Date creditCardExpirationDate) {
-        this.creditCardExpirationDate = creditCardExpirationDate;
+    public void setCreditCardExpiration(Date creditCardExpiration) {
+        this.creditCardExpiration = creditCardExpiration;
     }
 
     public Integer getCreditCardExpirationMonth() {
-        if (creditCardExpirationDate != null) {
+        if (creditCardExpiration != null) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(creditCardExpirationDate);
+            calendar.setTime(creditCardExpiration);
             creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
         }
         return creditCardExpirationMonth;
@@ -224,9 +224,9 @@ public class Gift implements Customizable, Viewable, Serializable {
     }
 
     public Integer getCreditCardExpirationYear() {
-        if (creditCardExpirationDate != null) {
+        if (creditCardExpiration != null) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(creditCardExpirationDate);
+            calendar.setTime(creditCardExpiration);
             creditCardExpirationYear = calendar.get(Calendar.YEAR);
         }
         return creditCardExpirationYear;
@@ -239,8 +239,8 @@ public class Gift implements Customizable, Viewable, Serializable {
 
     private void setExpirationDate(Integer month, Integer year) {
         Calendar calendar = Calendar.getInstance();
-        if (creditCardExpirationDate != null) {
-            calendar.setTime(creditCardExpirationDate);
+        if (creditCardExpiration != null) {
+            calendar.setTime(creditCardExpiration);
         }
         if (month != null) {
             calendar.set(Calendar.MONTH, month - 1);
@@ -252,8 +252,7 @@ public class Gift implements Customizable, Viewable, Serializable {
         calendar.set(Calendar.HOUR, calendar.getMaximum(Calendar.HOUR));
         calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
         calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
-        creditCardExpirationDate = calendar.getTime();
-        this.creditCardExpirationDate = calendar.getTime();
+        creditCardExpiration = calendar.getTime();
     }
 
     public Date getTransactionDate() {

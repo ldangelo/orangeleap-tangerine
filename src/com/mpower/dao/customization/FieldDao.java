@@ -1,6 +1,8 @@
 package com.mpower.dao.customization;
 
 import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.type.EntityType;
 
@@ -9,7 +11,7 @@ public interface FieldDao {
 
     public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType);
 
-    public boolean readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
+    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
 
-    public String readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
+    public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
 }

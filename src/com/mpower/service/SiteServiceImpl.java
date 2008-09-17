@@ -2,11 +2,9 @@ package com.mpower.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
+import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.service.customization.FieldService;
@@ -55,18 +55,18 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Set<String> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
-        Set<String> returnMap = new HashSet<String>();
+    public Map<String, FieldRequired> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
+        Map<String, FieldRequired> returnMap = new HashMap<String, FieldRequired>();
         List<SectionField> fields = getSectionFields(siteName, pageType, roles);
         if (fields != null) {
             for (SectionField sectionField : fields) {
-                boolean required = fieldService.lookupFieldRequired(siteName, sectionField);
+                FieldRequired fieldRequired = fieldService.lookupFieldRequired(siteName, sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
                 }
-                if (required) {
-                    returnMap.add(key);
+                if (fieldRequired != null && fieldRequired.isRequired()) {
+                    returnMap.put(key, fieldRequired);
                 }
             }
         }
@@ -102,18 +102,18 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, String> readFieldValidations(String siteName, PageType pageType, List<String> roles) {
-        Map<String, String> returnMap = new HashMap<String, String>();
+    public Map<String, FieldValidation> readFieldValidations(String siteName, PageType pageType, List<String> roles) {
+        Map<String, FieldValidation> returnMap = new HashMap<String, FieldValidation>();
         List<SectionField> fields = getSectionFields(siteName, pageType, roles);
         if (fields != null) {
             for (SectionField sectionField : fields) {
-                String regex = fieldService.lookupFieldValidation(siteName, sectionField);
+                FieldValidation fieldValidation = fieldService.lookupFieldValidation(siteName, sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
                 }
-                if (!StringUtils.isEmpty(regex)) {
-                    returnMap.put(key, regex);
+                if (fieldValidation != null && !StringUtils.isEmpty(fieldValidation.getRegex())) {
+                    returnMap.put(key, fieldValidation);
                 }
             }
         }

@@ -1,11 +1,16 @@
 package com.mpower.domain.customization;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -34,14 +39,19 @@ public class FieldValidation implements Serializable {
     @Column(name = "SECTION_NAME")
     private String sectionName;
 
-    @Column(name = "FIELD_DEFINITION_ID")
-    private String fieldDefinitionId;
+    @ManyToOne
+    @JoinColumn(name = "FIELD_DEFINITION_ID")
+    private FieldDefinition fieldDefinition;
 
-    @Column(name = "SECONDARY_FIELD_DEFINITION_ID")
-    private String secondaryFieldDefinitionId;
+    @ManyToOne
+    @JoinColumn(name = "SECONDARY_FIELD_DEFINITION_ID")
+    private FieldDefinition secondaryFieldDefinition;
 
     @Column(name = "VALIDATION_REGEX")
     private String regex;
+
+    @OneToMany(mappedBy = "fieldValidation", cascade = CascadeType.ALL)
+    private List<FieldCondition> fieldConditions;
 
     public String getSectionName() {
         return sectionName;
@@ -67,20 +77,20 @@ public class FieldValidation implements Serializable {
         this.siteName = siteName;
     }
 
-    public String getFieldDefinitionId() {
-        return fieldDefinitionId;
+    public FieldDefinition getFieldDefinition() {
+        return fieldDefinition;
     }
 
-    public void setFieldDefinitionId(String fieldDefinitionId) {
-        this.fieldDefinitionId = fieldDefinitionId;
+    public void setFieldDefinition(FieldDefinition fieldDefinition) {
+        this.fieldDefinition = fieldDefinition;
     }
 
-    public String getSecondaryFieldDefinitionId() {
-        return secondaryFieldDefinitionId;
+    public FieldDefinition getSecondaryFieldDefinition() {
+        return secondaryFieldDefinition;
     }
 
-    public void setSecondaryFieldDefinitionId(String secondaryFieldDefinitionId) {
-        this.secondaryFieldDefinitionId = secondaryFieldDefinitionId;
+    public void setSecondaryFieldDefinition(FieldDefinition secondaryFieldDefinition) {
+        this.secondaryFieldDefinition = secondaryFieldDefinition;
     }
 
     public String getRegex() {
@@ -89,5 +99,13 @@ public class FieldValidation implements Serializable {
 
     public void setRegex(String regex) {
         this.regex = regex;
+    }
+
+    public List<FieldCondition> getFieldConditions() {
+        return fieldConditions;
+    }
+
+    public void setFieldConditions(List<FieldCondition> fieldConditions) {
+        this.fieldConditions = fieldConditions;
     }
 }

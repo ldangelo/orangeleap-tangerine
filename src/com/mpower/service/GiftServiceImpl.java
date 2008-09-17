@@ -126,7 +126,7 @@ public class GiftServiceImpl implements GiftService {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
             refundGift.setId(null);
             refundGift.setTransactionDate(null);
-            refundGift.setCreditCardExpirationDate(null);
+            refundGift.setCreditCardExpiration(null);
             refundGift.setValue(originalGift.getValue().negate());
             refundGift.setOriginalGiftId(originalGift.getId());
             refundGift = giftDao.maintainGift(refundGift);

@@ -18,8 +18,8 @@
 		    SELECT fieldRequired FROM com.mpower.domain.customization.FieldRequired fieldRequired
 		    WHERE ((fieldRequired.siteName = :siteName) OR (fieldRequired.siteName = null))
 		    AND fieldRequired.sectionName = :sectionName
-		    AND fieldRequired.fieldDefinitionId = :fieldDefinitionId
-		    AND fieldRequired.secondaryFieldDefinitionId IS NULL
+		    AND fieldRequired.fieldDefinition.id = :fieldDefinitionId
+		    AND fieldRequired.secondaryFieldDefinition.id IS NULL
 		</query>
 	</named-query>
 
@@ -28,8 +28,8 @@
 		    SELECT fieldRequired FROM com.mpower.domain.customization.FieldRequired fieldRequired
 		    WHERE ((fieldRequired.siteName = :siteName) OR (fieldRequired.siteName = null))
 		    AND fieldRequired.sectionName = :sectionName
-		    AND fieldRequired.fieldDefinitionId = :fieldDefinitionId
-		    AND fieldRequired.secondaryFieldDefinitionId = :secondaryFieldDefinitionId
+		    AND fieldRequired.fieldDefinition.id = :fieldDefinitionId
+		    AND fieldRequired.secondaryFieldDefinition.id = :secondaryFieldDefinitionId
 		</query>
 	</named-query>
 
@@ -38,8 +38,8 @@
 		    SELECT fv FROM com.mpower.domain.customization.FieldValidation fv
 		    WHERE ((fv.siteName = :siteName) OR (fv.siteName = null))
 		    AND fv.sectionName = :sectionName
-		    AND fv.fieldDefinitionId = :fieldDefinitionId
-		    AND fv.secondaryFieldDefinitionId IS NULL
+		    AND fv.fieldDefinition.id = :fieldDefinitionId
+		    AND fv.secondaryFieldDefinition.id IS NULL
 		</query>
 	</named-query>
 
@@ -48,8 +48,8 @@
 		    SELECT fv FROM com.mpower.domain.customization.FieldValidation fv
 		    WHERE ((fv.siteName = :siteName) OR (fv.siteName = null))
 		    AND fv.sectionName = :sectionName
-		    AND fv.fieldDefinitionId = :fieldDefinitionId
-		    AND fv.secondaryFieldDefinitionId = :secondaryFieldDefinitionId
+		    AND fv.fieldDefinition.id = :fieldDefinitionId
+		    AND fv.secondaryFieldDefinition.id = :secondaryFieldDefinitionId
 		</query>
 	</named-query>
 

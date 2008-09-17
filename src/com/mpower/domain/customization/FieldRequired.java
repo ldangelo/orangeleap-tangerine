@@ -1,20 +1,24 @@
 package com.mpower.domain.customization;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Entity
-@Table(name = "FIELD_REQUIRED", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
+@Table(name = "FIELD_REQUIRED")
 public class FieldRequired implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -34,14 +38,19 @@ public class FieldRequired implements Serializable {
     @Column(name = "SECTION_NAME")
     private String sectionName;
 
-    @Column(name = "FIELD_DEFINITION_ID")
-    private String fieldDefinitionId;
+    @ManyToOne
+    @JoinColumn(name = "FIELD_DEFINITION_ID")
+    private FieldDefinition fieldDefinition;
 
-    @Column(name = "SECONDARY_FIELD_DEFINITION_ID")
-    private String secondaryFieldDefinitionId;
+    @ManyToOne
+    @JoinColumn(name = "SECONDARY_FIELD_DEFINITION_ID")
+    private FieldDefinition secondaryFieldDefinition;
 
     @Column(name = "REQUIRED")
-    private boolean required;
+    private boolean required = false;
+
+    @OneToMany(mappedBy = "fieldRequired", cascade = CascadeType.ALL)
+    private List<FieldCondition> fieldConditions;
 
     public Long getId() {
         return id;
@@ -67,6 +76,22 @@ public class FieldRequired implements Serializable {
         this.sectionName = sectionName;
     }
 
+    public FieldDefinition getFieldDefinition() {
+        return fieldDefinition;
+    }
+
+    public void setFieldDefinition(FieldDefinition fieldDefinition) {
+        this.fieldDefinition = fieldDefinition;
+    }
+
+    public FieldDefinition getSecondaryFieldDefinition() {
+        return secondaryFieldDefinition;
+    }
+
+    public void setSecondaryFieldDefinition(FieldDefinition secondaryFieldDefinition) {
+        this.secondaryFieldDefinition = secondaryFieldDefinition;
+    }
+
     public boolean isRequired() {
         return required;
     }
@@ -75,19 +100,11 @@ public class FieldRequired implements Serializable {
         this.required = required;
     }
 
-    public String getFieldDefinitionId() {
-        return fieldDefinitionId;
+    public List<FieldCondition> getFieldConditions() {
+        return fieldConditions;
     }
 
-    public void setFieldDefinitionId(String fieldDefinitionId) {
-        this.fieldDefinitionId = fieldDefinitionId;
-    }
-
-    public String getSecondaryFieldDefinitionId() {
-        return secondaryFieldDefinitionId;
-    }
-
-    public void setSecondaryFieldDefinitionId(String secondaryFieldDefinitionId) {
-        this.secondaryFieldDefinitionId = secondaryFieldDefinitionId;
+    public void setFieldConditions(List<FieldCondition> fieldConditions) {
+        this.fieldConditions = fieldConditions;
     }
 }

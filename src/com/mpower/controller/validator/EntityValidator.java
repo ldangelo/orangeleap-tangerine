@@ -2,6 +2,7 @@ package com.mpower.controller.validator;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,11 +19,29 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.Viewable;
+import com.mpower.domain.customization.FieldCondition;
+import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
+import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SiteService;
+import com.mpower.type.PageType;
 
 public class EntityValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    private SiteService siteService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    private PageType pageType;
+
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -33,9 +52,7 @@ public class EntityValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Viewable viewable = (Viewable) target;
-        Set<String> requiredFields = viewable.getRequiredFields();
         Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
-        Map<String, String> validationMap = viewable.getValidationMap();
 
         // used as a cache to prevent having to use reflection if the value has already been read
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -43,46 +60,74 @@ public class EntityValidator implements Validator {
         // used to know that a field already has an error, so don't add another
         Set<String> errorSet = new HashSet<String>();
 
-        // validate required fields
-        if (requiredFields != null) {
-            for (String key : requiredFields) {
-                if (errorSet.contains(key)) {
+        // first, validate required fields
+        validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+
+        // next, validate custom validation (regex)
+        validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+    }
+
+    private void validateRequiredFields(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+        Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+
+        if (requiredFieldMap != null) {
+            for (String key : requiredFieldMap.keySet()) {
+                FieldRequired fr = requiredFieldMap.get(key);
+                List<FieldCondition> conditions = fr.getFieldConditions();
+                boolean conditionsMet = true;
+                if (conditions != null) {
+                    for (FieldCondition fc : conditions) {
+                        logger.debug("key: " + key + ", condition: dependent=" + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary=" + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
+                                + ", dependent value=" + fc.getValue());
+                        String dependentKey = fc.getDependentFieldDefinition().getFieldName();
+                        if (fc.getDependentSecondaryFieldDefinition() != null) {
+                            dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
+                        }
+                        Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
+                        if (fc.getValue() == null) {
+                            if (dependentProperty != null) {
+                                conditionsMet = false;
+                            }
+                        } else {
+                            if (dependentProperty == null || !dependentProperty.toString().equals(fc.getValue())) {
+                                conditionsMet = false;
+                            }
+                        }
+                    }
+                }
+                if (!conditionsMet) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation:  conditions not met");
+                    }
                     continue;
                 }
-                Object property = fieldValueMap.get(key);
-                if (property == null) {
-                    BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
-                    property = beanWrapper.getPropertyValue(key);
-                    if (property instanceof CustomField) {
-                        property = ((CustomField) property).getValue();
+                if (errorSet.contains(key)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation:  error already exists so don't add another one");
                     }
-                    fieldValueMap.put(key, property);
+                    continue;
                 }
+                Object property = getProperty(key, viewable, fieldValueMap);
                 String propertyString = property == null ? "" : property.toString();
-                if (StringUtils.isEmpty(propertyString) && !errorSet.contains(key)) {
+                boolean required = fr.isRequired();
+                if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
                     errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
                     errorSet.add(key);
                 }
             }
         }
+    }
 
-        // validate regex
+    private void validateRegex(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+        Map<String, FieldValidation> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
         if (validationMap != null) {
             for (String key : validationMap.keySet()) {
                 if (errorSet.contains(key)) {
                     continue;
                 }
-                Object property = fieldValueMap.get(key);
-                if (property == null) {
-                    BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
-                    property = beanWrapper.getPropertyValue(key);
-                    if (property instanceof CustomField) {
-                        property = ((CustomField) property).getValue();
-                    }
-                    fieldValueMap.put(key, property);
-                }
+                Object property = getProperty(key, viewable, fieldValueMap);
                 String propertyString = property == null ? "" : property.toString();
-                String regex = validationMap.get(key);
+                String regex = validationMap.get(key).getRegex();
                 boolean matches = propertyString.matches(regex);
                 if (!matches && !errorSet.contains(key)) {
                     // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
@@ -91,5 +136,18 @@ public class EntityValidator implements Validator {
                 }
             }
         }
+    }
+
+    private Object getProperty(String key, Viewable viewable, Map<String, Object> fieldValueMap) {
+        Object property = fieldValueMap.get(key);
+        if (property == null) {
+            BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
+            property = beanWrapper.getPropertyValue(key);
+            if (property instanceof CustomField) {
+                property = ((CustomField) property).getValue();
+            }
+            fieldValueMap.put(key, property);
+        }
+        return property;
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.mpower.dao.customization.FieldDao;
 import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.customization.FieldRequired;
+import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.EntityType;
@@ -29,11 +31,11 @@ public class FieldServiceImpl implements FieldService {
         return null;
     }
 
-    public boolean lookupFieldRequired(String siteName, SectionField currentField) {
+    public FieldRequired lookupFieldRequired(String siteName, SectionField currentField) {
         return fieldDao.readFieldRequired(siteName, currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
     }
 
-    public String lookupFieldValidation(String siteName, SectionField currentField) {
+    public FieldValidation lookupFieldValidation(String siteName, SectionField currentField) {
         return fieldDao.readFieldValidation(siteName, currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
     }
 

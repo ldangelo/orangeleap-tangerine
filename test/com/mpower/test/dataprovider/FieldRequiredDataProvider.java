@@ -29,12 +29,12 @@ public class FieldRequiredDataProvider {
 
         FieldRequired defaultField = new FieldRequired();
         defaultField.setSectionName(sectionField.getSectionDefinition().getSectionName());
-        defaultField.setFieldDefinitionId(fieldDefinition.getFieldName());
+        defaultField.setFieldDefinition(fieldDefinition);
         defaultField.setRequired(false);
 
         FieldRequired modifiedField = new FieldRequired();
         modifiedField.setSectionName(sectionField.getSectionDefinition().getSectionName());
-        modifiedField.setFieldDefinitionId(fieldDefinition.getFieldName());
+        modifiedField.setFieldDefinition(fieldDefinition);
         modifiedField.setRequired(true);
 
         return new Object[][] { new Object[] { site1, fieldDefinition, sectionDefinition, sectionField, defaultField, modifiedField, true } };

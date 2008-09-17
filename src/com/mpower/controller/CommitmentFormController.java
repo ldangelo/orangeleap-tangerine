@@ -1,7 +1,6 @@
 package com.mpower.controller;
 
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,83 +23,77 @@ import com.mpower.type.PageType;
 
 public class CommitmentFormController extends SimpleFormController {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private CommitmentService commitmentService;
+    private CommitmentService commitmentService;
 
-	private PersonService personService;
+    private PersonService personService;
 
-	public void setCommitmentService(CommitmentService commitmentService) {
-		this.commitmentService = commitmentService;
-	}
+    public void setCommitmentService(CommitmentService commitmentService) {
+        this.commitmentService = commitmentService;
+    }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	private SiteService siteService;
+    private SiteService siteService;
 
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
-	@Override
-	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-	}
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
-	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		String commitmentId = request.getParameter("commitmentId");
-		Commitment commitment = null;
-		if (commitmentId == null) {
-			// create person
-			commitment = commitmentService.createDefaultCommitment(SessionServiceImpl.lookupUserSiteName());
-			String personId = request.getParameter("personId");
-			// TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-			Person person = null;
-			if (personId != null) {
-				person = personService.readPersonById(Long.valueOf(personId));
-				if (person == null) {
-					logger.error("**** person not found for id: " + personId);
-					return commitment;
-				}
-			}
-			commitment.setPerson(person);
-		} else {
-			commitment = commitmentService.readCommitmentById(new Long(commitmentId));
-		}
-		if (isFormSubmission(request)) {
-			Set<String> requiredFields = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
-			commitment.setRequiredFields(requiredFields);
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        String commitmentId = request.getParameter("commitmentId");
+        Commitment commitment = null;
+        if (commitmentId == null) {
+            // create person
+            commitment = commitmentService.createDefaultCommitment(SessionServiceImpl.lookupUserSiteName());
+            String personId = request.getParameter("personId");
+            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+            Person person = null;
+            if (personId != null) {
+                person = personService.readPersonById(Long.valueOf(personId));
+                if (person == null) {
+                    logger.error("**** person not found for id: " + personId);
+                    return commitment;
+                }
+            }
+            commitment.setPerson(person);
+        } else {
+            commitment = commitmentService.readCommitmentById(new Long(commitmentId));
+        }
+        if (isFormSubmission(request)) {
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            commitment.setFieldLabelMap(fieldLabelMap);
 
-			Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
-			commitment.setFieldLabelMap(fieldLabelMap);
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), commitment);
+            commitment.setFieldValueMap(valueMap);
+        }
+        return commitment;
+    }
 
-			Map<String, String> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
-			commitment.setValidationMap(validationMap);
+    @Override
+    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
+        Commitment commitment = (Commitment) command;
 
-			Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), commitment);
-			commitment.setFieldValueMap(valueMap);
-		}
-		return commitment;
-	}
+        // validate required fields
+        Commitment current = commitmentService.maintainCommitment(commitment);
 
-	@Override
-	public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-		Commitment commitment = (Commitment) command;
-
-		// validate required fields
-		Commitment current = commitmentService.maintainCommitment(commitment);
-
-		// TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-		// form to post results back to the same page. We need to get the
-		// command from errors and then add our search results to the model.
-		ModelAndView mav = new ModelAndView("redirect:/commitmentView.htm", errors.getModel());
-		mav.addObject("commitmentId", current.getId());
-		mav.addObject("saved", true);
-		mav.addObject("id", current.getId());
-		return mav;
-	}
+        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
+        // form to post results back to the same page. We need to get the
+        // command from errors and then add our search results to the model.
+        ModelAndView mav = new ModelAndView("redirect:/commitmentView.htm", errors.getModel());
+        mav.addObject("commitmentId", current.getId());
+        mav.addObject("saved", true);
+        mav.addObject("id", current.getId());
+        return mav;
+    }
 }

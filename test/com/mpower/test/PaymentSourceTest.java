@@ -1,5 +1,6 @@
 package com.mpower.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.testng.annotations.BeforeClass;
@@ -19,16 +20,25 @@ public class PaymentSourceTest extends BaseTest {
 
     private AuditService auditService;
 
+    private List<String> siteIds = new ArrayList<String>();
+
+    private List<Long> personIds = new ArrayList<Long>();
+
+    private List<Long> paymentSourceIds = new ArrayList<Long>();
+
     @Test(groups = { "createPaymentSource" }, dataProvider = "setupPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void createPaymentSource(Site site, Person person, PaymentSource ps) {
         paymentSourceService.setAuditService(auditService);
         em.getTransaction().begin();
         em.persist(site);
+        siteIds.add(site.getName());
         person.setSite(site);
         em.persist(person);
+        personIds.add(person.getId());
         ps.setPerson(person);
         int begin = paymentSourceService.readPaymentSources(person.getId()).size();
         ps = paymentSourceService.savePaymentSource(ps);
+        paymentSourceIds.add(ps.getId());
         int end = paymentSourceService.readPaymentSources(person.getId()).size();
         logger.debug("change = " + (end - begin));
         assert (end - begin) == 1;
@@ -47,7 +57,14 @@ public class PaymentSourceTest extends BaseTest {
                 ps = em.getReference(PaymentSource.class, ps.getId());
                 paymentSourceService.deletePaymentSource(ps);
             }
-            // assert paymentSourceService.readPaymentSources(person.getId()).size() == 0;
+            logger.debug("size = " + paymentSourceService.readPaymentSources(person.getId()).size());
+            assert paymentSourceService.readPaymentSources(person.getId()).size() == 0;
+        }
+        for (Long personId : personIds) {
+            em.remove(em.find(Person.class, personId));
+        }
+        for (String siteId : siteIds) {
+            em.remove(em.find(Site.class, siteId));
         }
         em.getTransaction().commit();
     }

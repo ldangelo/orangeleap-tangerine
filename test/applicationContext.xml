@@ -22,13 +22,11 @@
 
 	<tx:advice id="txAdvice">
 		<tx:attributes>
-			<tx:method name="save*" />
-			<tx:method name="*" read-only="true" />
+			<tx:method name="*" />
 		</tx:attributes>
 	</tx:advice>
 
-	<bean id="entityManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="persistenceUnitName" value="MPowerUnitTestPu" />
 		<property name="jpaVendorAdapter">
@@ -69,13 +67,13 @@
 	</bean>
 
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-	  <property name="connectionFactory" ref="connectionFactory" />
-	  <property name="defaultDestination" ref="testDestination" />
-	  <property name="receiveTimeout" value="60000" />
+	  	<property name="connectionFactory" ref="connectionFactory" />
+	  	<property name="defaultDestination" ref="testDestination" />
+	  	<property name="receiveTimeout" value="60000" />
 	</bean>
 
 	<bean id="creditGateway" class="com.mpower.service.jms.MPowerCreditGatewayImpl">
-	  <property name="jmsTemplate" ref="jmsTemplate" />
+	  	<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />

@@ -73,10 +73,8 @@ public class PersonFormController extends SimpleFormController {
             e.createMessages(errors);
         }
 
-        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-        // form to post results back to the same page. We need to get the
-        // command from errors and then add our search results to the model.
-        ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        mav.addObject("person", current);
         mav.addObject("saved", true);
         mav.addObject("id", current.getId());
         return mav;

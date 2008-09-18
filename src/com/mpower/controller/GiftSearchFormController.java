@@ -74,10 +74,9 @@ public class GiftSearchFormController extends SimpleFormController {
         }
 
         List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(), params);
-        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-        // form to post results back to the same page. We need to get the
-        // command from errors and then add our search results to the model.
-        ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
+
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        mav.addObject("gift", gift);
         mav.addObject("giftList", giftList);
         mav.addObject("giftListSize", giftList.size());
         return mav;

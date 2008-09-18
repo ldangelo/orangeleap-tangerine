@@ -38,7 +38,14 @@
 			<value>java:/comp/env/jdbc/MPowerOpen</value>
 		</property>
 	</bean>
-
+   
+   <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+   
+   <!--
+      The following beans were created and used in the JMS/MOM poc shown during
+      Iteration 6.  These beans can be removed but are being left right now as
+      an example of how to use Spring with JMS/MOM
+       
 	<bean id="connectionFactory"  class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL" value="tcp://10.0.2.143:61616" />
 	</bean>
@@ -60,6 +67,6 @@
 	<bean id="creditGateway" class="com.mpower.service.jms.MPowerCreditGatewayImpl">
 	  	<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
+	 -->
 
-	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 </beans>

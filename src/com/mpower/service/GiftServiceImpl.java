@@ -26,7 +26,6 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
-import com.mpower.service.jms.MPowerCreditGateway;
 import com.mpower.type.EntityType;
 
 @Service("giftService")
@@ -44,8 +43,10 @@ public class GiftServiceImpl implements GiftService {
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
+    /* this is needed for JMS
     @Resource(name = "creditGateway")
     private MPowerCreditGateway creditGateway;
+    */
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -55,8 +56,10 @@ public class GiftServiceImpl implements GiftService {
         }
         gift = giftDao.maintainGift(gift);
 
+        /* this was a part of our JMS/MOM poc
         creditGateway.sendGiftInfo(gift);
         logger.info("*** sending msg to queue");
+        */
 
         auditService.auditObject(gift);
         return gift;

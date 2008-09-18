@@ -12,7 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import com.mpower.domain.Audit;
+import com.mpower.domain.Person;
 import com.mpower.service.AuditService;
+import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.type.EntityType;
 
@@ -23,8 +25,20 @@ public class AuditViewController implements Controller {
 
 	private AuditService auditService;
 
+	private String viewName;
+
+	public final void setViewName(String viewName) {
+		this.viewName = viewName;
+	}
+
 	public void setAuditService(AuditService auditService) {
 		this.auditService = auditService;
+	}
+
+	private PersonService personService;
+
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
 	}
 
 	@Override
@@ -32,15 +46,20 @@ public class AuditViewController implements Controller {
 		String entityType = request.getParameter("object");
 		String objectId = request.getParameter("id");
 		List<Audit> audits;
+		ModelAndView mav = new ModelAndView(viewName);
 		if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
 			audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
 		} else {
-			audits = auditService.AuditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType.valueOf(entityType),
-					Long.parseLong(objectId.trim()));
+			audits = auditService.AuditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType
+					.valueOf(entityType), Long.valueOf(objectId));
+			if (EntityType.valueOf(entityType) == EntityType.person) {
+				Person person = personService.readPersonById(Long.valueOf(objectId));
+				mav.addObject("person", person);
+			}
 		}
 
-		ModelAndView mav = new ModelAndView("siteAudit");
 		mav.addObject("audits", audits);
+
 		return mav;
 	}
 

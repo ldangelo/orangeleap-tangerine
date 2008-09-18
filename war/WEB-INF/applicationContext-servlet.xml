@@ -148,6 +148,13 @@
 
     <bean id="siteAudit" class="com.mpower.controller.AuditViewController">
         <property name="auditService" ref="auditService"/>
+		<property name="viewName" value="siteAudit"/>
+    </bean>
+    
+    <bean id="audit" class="com.mpower.controller.AuditViewController">
+        <property name="personService" ref="personService"/>
+        <property name="auditService" ref="auditService"/>
+		<property name="viewName" value="audit"/>
     </bean>
 
     <bean id="codes" class="com.mpower.controller.GenericViewController">
@@ -190,6 +197,7 @@
                 <prop key="/code.htm">code</prop>
                 <prop key="/codes.htm">codes</prop>
                 <prop key="/siteAudit.htm">siteAudit</prop>
+                <prop key="/audit.htm">audit</prop>
                 <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
 			</props>

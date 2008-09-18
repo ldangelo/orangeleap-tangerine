@@ -18,6 +18,7 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.FieldCondition;
 import com.mpower.domain.customization.FieldRequired;
@@ -69,7 +70,6 @@ public class EntityValidator implements Validator {
 
     private void validateRequiredFields(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
-
         if (requiredFieldMap != null) {
             for (String key : requiredFieldMap.keySet()) {
                 FieldRequired fr = requiredFieldMap.get(key);
@@ -89,7 +89,7 @@ public class EntityValidator implements Validator {
                                 conditionsMet = false;
                             }
                         } else {
-                            if (dependentProperty == null || !dependentProperty.toString().equals(fc.getValue())) {
+                            if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
                                 conditionsMet = false;
                             }
                         }
@@ -97,7 +97,7 @@ public class EntityValidator implements Validator {
                 }
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug(key + " validation:  conditions not met");
+                        logger.debug(key + " validation doesn't apply:  conditions not met");
                     }
                     continue;
                 }
@@ -122,7 +122,39 @@ public class EntityValidator implements Validator {
         Map<String, FieldValidation> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
         if (validationMap != null) {
             for (String key : validationMap.keySet()) {
+                FieldValidation fv = validationMap.get(key);
+                List<FieldCondition> conditions = fv.getFieldConditions();
+                boolean conditionsMet = true;
+                if (conditions != null) {
+                    for (FieldCondition fc : conditions) {
+                        logger.debug("key: " + key + ", condition: dependent=" + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary=" + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
+                                + ", dependent value=" + fc.getValue());
+                        String dependentKey = fc.getDependentFieldDefinition().getFieldName();
+                        if (fc.getDependentSecondaryFieldDefinition() != null) {
+                            dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
+                        }
+                        Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
+                        if (fc.getValue() == null) {
+                            if (dependentProperty != null) {
+                                conditionsMet = false;
+                            }
+                        } else {
+                            if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
+                                conditionsMet = false;
+                            }
+                        }
+                    }
+                }
+                if (!conditionsMet) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation doesn't apply:  conditions not met");
+                    }
+                    continue;
+                }
                 if (errorSet.contains(key)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(key + " validation:  error already exists so don't add another one");
+                    }
                     continue;
                 }
                 Object property = getProperty(key, viewable, fieldValueMap);
@@ -143,8 +175,13 @@ public class EntityValidator implements Validator {
         if (property == null) {
             BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
             property = beanWrapper.getPropertyValue(key);
+            // if ((property instanceof String) && beanWrapper.isReadableProperty((String) property)) {
+            // property = beanWrapper.getPropertyValue((String) property);
+            // }
             if (property instanceof CustomField) {
                 property = ((CustomField) property).getValue();
+            } else if (property instanceof Phone) {
+                property = ((Phone) property).getNumber();
             }
             fieldValueMap.put(key, property);
         }

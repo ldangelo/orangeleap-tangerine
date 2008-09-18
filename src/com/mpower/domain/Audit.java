@@ -23,7 +23,7 @@ import com.mpower.type.AuditType;
 import com.mpower.type.EntityType;
 
 @Entity
-@Table(name = "Audit")
+@Table(name = "AUDIT")
 public class Audit implements Serializable {
 
     private static final long serialVersionUID = 1L;

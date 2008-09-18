@@ -72,7 +72,7 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setLabelText(labelText);
 
         FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);
-        fieldVO.setRequired(fr != null && fr.isRequired());
+        fieldVO.setRequired(fr != null && fr.isRequired() && !fr.hasConditions());
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
             String fieldProperty = fieldVO.getFieldName();

@@ -107,4 +107,8 @@ public class FieldRequired implements Serializable {
     public void setFieldConditions(List<FieldCondition> fieldConditions) {
         this.fieldConditions = fieldConditions;
     }
+
+    public boolean hasConditions() {
+        return fieldConditions != null && fieldConditions.size() > 0;
+    }
 }

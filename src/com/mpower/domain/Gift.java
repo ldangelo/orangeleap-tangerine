@@ -248,10 +248,11 @@ public class Gift implements Customizable, Viewable, Serializable {
         if (year != null) {
             calendar.set(Calendar.YEAR, year);
         }
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
-        calendar.set(Calendar.HOUR, calendar.getMaximum(Calendar.HOUR));
-        calendar.set(Calendar.MINUTE, calendar.getMaximum(Calendar.MINUTE));
-        calendar.set(Calendar.SECOND, calendar.getMaximum(Calendar.SECOND));
+        calendar.set(Calendar.DAY_OF_MONTH, 1);	// need to reset to 1 prior to getting max day
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
+        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
         creditCardExpiration = calendar.getTime();
     }
 

@@ -106,4 +106,7 @@ a:hover {
 img {
 	border:0;
 }
+.capitalized {
+	text-transform:capitalize;
+}
 /* input field borders are #7f9db9 by default in firefox */

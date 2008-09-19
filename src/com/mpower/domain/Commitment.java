@@ -360,4 +360,14 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     public void setRecurringGift(RecurringGift recurringGift) {
         this.recurringGift = recurringGift;
     }
+
+    public boolean canRecur() {
+        boolean recur = true;
+        if (getEndDate() != null && getEndDate().before(Calendar.getInstance().getTime())) {
+            recur = false;
+        } else if ("canceled".equals(getStatus()) || "expired".equals(getStatus()) || "suspend".equals(getStatus())) {
+            recur = false;
+        }
+        return recur;
+    }
 }

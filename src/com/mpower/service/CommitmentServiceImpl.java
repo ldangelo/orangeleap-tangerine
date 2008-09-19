@@ -1,7 +1,6 @@
 package com.mpower.service;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class CommitmentServiceImpl implements CommitmentService {
                 rg.setNextRunDate(commitment.getStartDate());
                 commitment.setRecurringGift(rg);
             } else {
-                if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
+                if (!commitment.canRecur()) {
                     commitment.setRecurringGift(null);
                     recurringGiftDao.remove(rg);
                 }

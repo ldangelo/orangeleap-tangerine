@@ -245,7 +245,6 @@
   		<property name="cronExpression" value="0 0 3 * * ?" />
   		<property name="cronExpression" value="0/15 * * * * ?" />
   	</bean>
--->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -257,6 +256,7 @@
 	    	<value>applicationContext</value>
 	   	</property>
 	</bean>
+-->
 
 	<dwr:controller id="dwrController" debug="true" />
 

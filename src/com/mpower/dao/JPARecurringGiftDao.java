@@ -24,9 +24,10 @@ public class JPARecurringGiftDao implements RecurringGiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<RecurringGift> readRecurringGifts(Date date) {
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
         Query query = em.createNamedQuery("READ_RECURRING_GIFTS_ON_OR_AFTER_DATE");
         query.setParameter("date", date);
+        query.setParameter("statuses", statuses);
         return query.getResultList();
     }
 

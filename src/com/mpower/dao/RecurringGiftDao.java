@@ -7,7 +7,7 @@ import com.mpower.domain.RecurringGift;
 
 public interface RecurringGiftDao {
 
-    public List<RecurringGift> readRecurringGifts(Date date);
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);
 
     public RecurringGift maintain(RecurringGift rg);
 

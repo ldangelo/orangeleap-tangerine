@@ -7,6 +7,7 @@
 		<query>
 			SELECT rg FROM com.mpower.domain.RecurringGift rg
 			WHERE rg.nextRunDate &lt;= :date
+			AND rg.commitment.status IN (:statuses)
 		</query>
 	</named-query>
 

@@ -222,15 +222,15 @@
         <property name="prefix" value="/WEB-INF/jsp/"></property>
        	<property name="suffix" value=".jsp"></property>
     </bean>
-<!--
+
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
 
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="dailyRuleFiringJob" />
-  		run every morning at 3 AM
-  		<property name="cronExpression" value="0 0 3 * * ?" />
+  		 <!-- run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />-->
   		<property name="cronExpression" value="0,30 * * * * ? *" />
   	</bean>
 
@@ -241,10 +241,12 @@
 
   	<bean id="cronRuleTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="jobDetail" />
-  		run every morning at 3 AM
-  		<property name="cronExpression" value="0 0 3 * * ?" />
+  		<!-- run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />-->
   		<property name="cronExpression" value="0/15 * * * * ?" />
   	</bean>
+
+<!--
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>

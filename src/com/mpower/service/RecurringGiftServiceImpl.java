@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,13 +30,13 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     private RecurringGiftDao recurringGiftDao;
 
     @Transactional(propagation = Propagation.SUPPORTS)
-    public List<RecurringGift> readRecurringGifts(Date date) {
-        return recurringGiftDao.readRecurringGifts(date);
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
+        return recurringGiftDao.readRecurringGifts(date, statuses);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void processRecurringGifts() {
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime());
+        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { "Active", "Fulfilled" }));
         if (recurringGifts != null) {
             for (RecurringGift rg : recurringGifts) {
                 logger.debug("recurring gift: id=" + rg.getId() + ", next run=" + rg.getNextRunDate());
@@ -48,7 +49,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 // TODO: change payment type to reflect commitment payment type
                 gift.setPaymentType(rg.getCommitment().getPaymentSource().getType());
                 gift = giftService.maintainGift(gift);
-                logger.debug("add gift");
                 Date previousNextRun = rg.getNextRunDate();
                 Calendar nextRun = Calendar.getInstance();
                 nextRun.setTime(previousNextRun);
@@ -60,18 +60,21 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                     nextRun.add(Calendar.MONTH, 3);
                 } else if ("Annually".equals(rg.getCommitment().getFrequency())) {
                     nextRun.add(Calendar.YEAR, 1);
-                } else if ("Other".equals(rg.getCommitment().getFrequency())) {
-                    // TODO: implement
                 } else {
-                    // TODO: implement
+                    // TODO: implement (need to cover "Other" case)
                 }
-                logger.debug("frequency = "+rg.getCommitment().getFrequency()+": previous gift was for, " + previousNextRun + ", setting next gift for " + nextRun.getTime());
-                // TODO: remove once done testing
-                Calendar testNextRun = Calendar.getInstance();
-                testNextRun.add(Calendar.MINUTE, 1);
-                rg.setNextRunDate(testNextRun.getTime());
-                logger.debug("it is currently, " + Calendar.getInstance().getTime() + ", running again at " + nextRun.getTime());
-                recurringGiftDao.maintain(rg);
+                if (rg.getCommitment().getEndDate() != null && nextRun.after(rg.getCommitment().getEndDate())) {
+                    logger.debug("next run date is after end date, so removing recurring gift");
+                    recurringGiftDao.remove(rg);
+                } else {
+                    logger.debug("frequency = " + rg.getCommitment().getFrequency() + ": previous gift was for, " + previousNextRun + ", setting next gift for " + nextRun.getTime());
+                    // TODO: remove once done testing
+                    Calendar testNextRun = Calendar.getInstance();
+                    testNextRun.add(Calendar.MINUTE, 1);
+                    rg.setNextRunDate(testNextRun.getTime());
+                    logger.debug("it is currently, " + Calendar.getInstance().getTime() + ", running again at " + nextRun.getTime());
+                    recurringGiftDao.maintain(rg);
+                }
             }
         }
     }

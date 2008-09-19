@@ -7,5 +7,5 @@ import com.mpower.domain.RecurringGift;
 
 public interface RecurringGiftService {
 
-    public List<RecurringGift> readRecurringGifts(Date date);
+    public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);
 }

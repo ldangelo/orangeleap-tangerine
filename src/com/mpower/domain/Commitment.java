@@ -3,6 +3,7 @@ package com.mpower.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +13,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,13 +30,12 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
-import com.mpower.type.CommitmentStatusType;
 import com.mpower.util.CommitmentCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMITMENT", uniqueConstraints = @UniqueConstraint(columnNames = { "NAME", "PERSON_ID" }))
-public class Commitment implements Customizable, Viewable, Serializable {
+public class Commitment implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -82,15 +81,14 @@ public class Commitment implements Customizable, Viewable, Serializable {
 
     @Column(name = "START_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date startDate;
+    private Date startDate = Calendar.getInstance().getTime();
 
     @Column(name = "END_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
-    @Column(name = "STATUS_TYPE")
-    @Enumerated(EnumType.STRING)
-    private CommitmentStatusType statusType;
+    @Column(name = "STATUS")
+    private String status;
 
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -113,6 +111,12 @@ public class Commitment implements Customizable, Viewable, Serializable {
 
     @Column(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
+
+    @Column(name = "FREQUENCY")
+    private String frequency;
+
+    @OneToOne(mappedBy = "commitment", cascade = { CascadeType.ALL })
+    private RecurringGift recurringGift;
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
@@ -285,12 +289,12 @@ public class Commitment implements Customizable, Viewable, Serializable {
         this.endDate = endDate;
     }
 
-    public CommitmentStatusType getStatusType() {
-        return statusType;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatusType(CommitmentStatusType statusType) {
-        this.statusType = statusType;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getCreateDate() {
@@ -339,5 +343,21 @@ public class Commitment implements Customizable, Viewable, Serializable {
 
     public void setPaymentSource(PaymentSource paymentSource) {
         this.paymentSource = paymentSource;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public RecurringGift getRecurringGift() {
+        return recurringGift;
+    }
+
+    public void setRecurringGift(RecurringGift recurringGift) {
+        this.recurringGift = recurringGift;
     }
 }

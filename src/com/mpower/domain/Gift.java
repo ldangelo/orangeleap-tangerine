@@ -35,7 +35,7 @@ import com.mpower.util.GiftCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "GIFT")
-public class Gift implements Customizable, Viewable, Serializable {
+public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -112,6 +112,10 @@ public class Gift implements Customizable, Viewable, Serializable {
 
     @Column(name = "DEDUCTIBLE")
     private boolean deductible = false;
+
+    @ManyToOne
+    @JoinColumn(name = "PAYMENT_SOURCE_ID")
+    private PaymentSource paymentSource;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -248,7 +252,7 @@ public class Gift implements Customizable, Viewable, Serializable {
         if (year != null) {
             calendar.set(Calendar.YEAR, year);
         }
-        calendar.set(Calendar.DAY_OF_MONTH, 1);	// need to reset to 1 prior to getting max day
+        calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to getting max day
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
         calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
@@ -439,5 +443,13 @@ public class Gift implements Customizable, Viewable, Serializable {
 
     public void setPaymentSources(List<PaymentSource> paymentSources) {
         this.paymentSources = paymentSources;
+    }
+
+    public PaymentSource getPaymentSource() {
+        return paymentSource;
+    }
+
+    public void setPaymentSource(PaymentSource paymentSource) {
+        this.paymentSource = paymentSource;
     }
 }

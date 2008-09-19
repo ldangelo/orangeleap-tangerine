@@ -17,10 +17,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Auditable;
 import com.mpower.domain.Site;
+import com.mpower.domain.SiteAware;
 
 @Entity
 @Table(name = "CODE", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "CODE_TYPE", "CODE_VALUE" }) })
-public class Code implements Auditable, Serializable {
+public class Code implements SiteAware, Auditable, Serializable {
 
     private static final long serialVersionUID = 1L;
 

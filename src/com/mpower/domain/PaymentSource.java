@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE", uniqueConstraints = @UniqueConstraint(columnNames = { "PAYMENT_NAME", "PERSON_ID" }))
-public class PaymentSource implements Serializable {
+public class PaymentSource implements SiteAware, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -167,5 +167,9 @@ public class PaymentSource implements Serializable {
 
     public void setCreditCardSecurityCode(String creditCardSecurityCode) {
         this.creditCardSecurityCode = creditCardSecurityCode;
+    }
+
+    public Site getSite() {
+        return person != null ? person.getSite() : null;
     }
 }

@@ -150,7 +150,7 @@
         <property name="auditService" ref="auditService"/>
 		<property name="viewName" value="siteAudit"/>
     </bean>
-    
+
     <bean id="audit" class="com.mpower.controller.AuditViewController">
         <property name="personService" ref="personService"/>
         <property name="auditService" ref="auditService"/>
@@ -222,29 +222,41 @@
         <property name="prefix" value="/WEB-INF/jsp/"></property>
        	<property name="suffix" value=".jsp"></property>
     </bean>
-
 <!--
     <bean id="dailyRuleFiringJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.mpower.service.rule.DailyRuleFiringJob"/>
   	</bean>
 
   	<bean id="cronRuleTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-  		<property name="jobDetail" ref="dailyRuleFiringJob"/>
+  		<property name="jobDetail" ref="dailyRuleFiringJob" />
+  		run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />
   		<property name="cronExpression" value="0,30 * * * * ? *" />
   	</bean>
 
+  	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="recurringGiftService"/>
+		<property name="targetMethod" value="processRecurringGifts" />
+	</bean>
+
+  	<bean id="cronRuleTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="jobDetail" />
+  		run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />
+  		<property name="cronExpression" value="0/15 * * * * ?" />
+  	</bean>
+-->
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="cronRuleTrigger"/>
+				<ref bean="cronRuleTriggerDaily"/>
 			</list>
 		</property>
 		<property name="applicationContextSchedulerContextKey">
 	    	<value>applicationContext</value>
 	   	</property>
 	</bean>
--->
-
 
 	<dwr:controller id="dwrController" debug="true" />
 

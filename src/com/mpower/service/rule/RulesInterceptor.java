@@ -26,6 +26,8 @@ import org.springframework.stereotype.Component;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.domain.Site;
+import com.mpower.domain.SiteAware;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
@@ -37,10 +39,8 @@ public class RulesInterceptor implements ApplicationContextAware {
     private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
     private ApplicationContext applicationContext;
-    
-    @Around(value = "execution(* com.mpower.service..*.maintain*(..)) " +
-                 "|| execution(* com.mpower.service..*.save*(..))" +
-    		     "|| execution(* com.mpower.service..*.refund*(..))")
+
+    @Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
     public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
 
         Object[] args = pjp.getArgs();
@@ -75,15 +75,15 @@ public class RulesInterceptor implements ApplicationContextAware {
 
         workingMemory.setGlobal("applicationContext", applicationContext);
         logger.info("*** firing all rules");
- 
+
         workingMemory.fireAllRules();
 
         return pjp.proceed(args);
     }
 
     private RuleBase loadRules(Object[] entities) throws Exception {
-    	
-    	try {
+
+        try {
             if (entities == null || entities.length == 0) {
                 return null;
             }
@@ -95,7 +95,24 @@ public class RulesInterceptor implements ApplicationContextAware {
             // Consider checking the database first and then falling back to the file.
             for (Object entity : entities) {
 
-                String site = ((MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getSite();
+                String site = null;
+                if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                    site = ((MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getSite();
+                } else {
+                    // we must be running from a timer and no one is logged in
+                    if (entity instanceof SiteAware) {
+                        Site s = ((SiteAware) entity).getSite();
+                        site = s != null ? s.getName() : null;
+                    }
+                }
+
+                if (site == null) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("site is null, so unable to process rules");
+                    }
+                    continue;
+                }
+
                 String name = "/rules/" + site + "_" + entity.getClass().getSimpleName() + "_maintain.dslr";
                 InputStream stream = getClass().getResourceAsStream(name);
                 if (stream == null) {

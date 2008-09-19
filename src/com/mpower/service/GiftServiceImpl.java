@@ -43,23 +43,33 @@ public class GiftServiceImpl implements GiftService {
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
-    /* this is needed for JMS
-    @Resource(name = "creditGateway")
-    private MPowerCreditGateway creditGateway;
-    */
+    /*
+     * this is needed for JMS
+     * @Resource(name = "creditGateway") private MPowerCreditGateway creditGateway;
+     */
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Gift maintainGift(Gift gift) {
-        if (gift.getPaymentType().equals("Credit Card") || gift.getPaymentType().equals("ACH")) {
+        if ("Credit Card".equals(gift.getPaymentType()) || "ACH".equals(gift.getPaymentType())) {
+            PaymentSource paymentSource = new PaymentSource();
+            paymentSource.setAchAccountNumber(gift.getAchAccountNumber());
+            paymentSource.setAchRoutingNumber(gift.getAchRoutingNumber());
+            paymentSource.setAchType(gift.getAchType());
+            paymentSource.setCreditCardExpirationDate(gift.getCreditCardExpiration());
+            paymentSource.setCreditCardNumber(gift.getCreditCardNumber());
+            paymentSource.setCreditCardType(gift.getCreditCardType());
+            paymentSource.setPerson(gift.getPerson());
+            paymentSource.setType(gift.getPaymentType());
+            gift.setPaymentSource(paymentSource);
+
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
         }
         gift = giftDao.maintainGift(gift);
 
-        /* this was a part of our JMS/MOM poc
-        creditGateway.sendGiftInfo(gift);
-        logger.info("*** sending msg to queue");
-        */
+        /*
+         * this was a part of our JMS/MOM poc creditGateway.sendGiftInfo(gift); logger.info("*** sending msg to queue");
+         */
 
         auditService.auditObject(gift);
         return gift;

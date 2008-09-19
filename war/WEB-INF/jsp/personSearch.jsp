@@ -1,4 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
+<c:choose>
+<c:when test="${param.view=='ajaxResults'}">
+<jsp:include page="personSearchResults.jsp"/>
+</c:when>
+<c:otherwise>
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="Search People" />
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -21,7 +26,11 @@
 					</div>
 				</c:forEach>
 			</form:form>
+			<div id="personSearchResults">
 			<jsp:include page="personSearchResults.jsp"/>
+			</div>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>
+</c:otherwise>
+</c:choose>

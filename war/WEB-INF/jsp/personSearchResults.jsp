@@ -1,7 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <c:choose>
 <c:when test="${!empty personList}">
-
 	<c:url value="/personSearch.htm" var="pagedLink" scope="request"> 
 	    <c:param name="page" value=""/> 
 	</c:url> 

@@ -299,3 +299,21 @@ function showSelectedSection(elemId) {
 		}
 	}
 }
+function getPage(elem) {
+		var queryString = $("#person").find("input").serialize();
+		var baseUrl = $(elem).attr("href");
+		$.ajax({
+			type: "POST",
+			url: baseUrl,
+			data: queryString+"&view=ajaxResults",
+			success: function(html){
+				$("#personSearchResults").html(html);
+				return false;
+			},
+			error: function(html){
+				alert("error");
+				return false;
+			}
+		});
+		return false;
+}

@@ -19,19 +19,28 @@ ul.formFields li.side label.desc {
 	font-family:Arial, sans-serif;
 	padding-top:2px;
 }
-ul.formFields li.side input,
-ul.formFields li.side select {
+ul.formFields li input {
+	width:100%;
+	padding:3px 4px;
+	border:1px solid #7f9db9;
+}
+ul.formFields li select {
+	padding:2px;
+}
+ul.formFields li.side input {
 	float:left;
 	width:66%;
 }
 ul.formFields li.side select {
-	width:68.7%;
+	float:left;
+	width:68.6%;
 }
 ul.formFields li.side select.expMonth {
 	width:23.8%;
 }
 ul.formFields li.side select.expYear {
 	width:43.8%;
+	margin-left:1%;
 }
 ul.formFields li.side textarea {
 	width:66%;
@@ -48,9 +57,6 @@ form .req {
 	float:none;
 	font-weight:bold;
 	margin:0pt;
-}
-input.medium, select.medium {
-	width:50%;
 }
 input.text, input.file, textarea.textarea, select.select{
 	margin:0;
@@ -72,37 +78,6 @@ form li:after, .buttons:after{
 	visibility:hidden;
 }
 
-ul.formFields li.field33,
-ul.formFields li.field50,
-ul.formFields li.field100  {
-	display:inline;
-	float:left;
-	clear:none;
-}
-ul.width600 li.field33 {
-	width:150px;
-	margin-right:20px;
-}
-ul.width600 li.field50 {
-	width:235px;
-	margin-right:20px;
-}
-ul.width600 li.field100 {
-	width:490px;	
-}
-* html ul.width600 li.field33 {
-	margin-right:12px;
-}
-* html ul.width600 li.field50 {
-	margin-right:12px;
-}
-ul.formFields li input {
-	width:100%;
-	padding:3px;
-}
-ul.formFields li select {
-	width:100%;
-}
 ul.formFields li.clear {
 	clear:both;
 	font-size:1px;
@@ -165,6 +140,16 @@ a.lookupLink {
 	margin:5px 3px 0pt;
 	overflow:hidden;
 	padding:0pt;
+	text-indent:-2000px;
+	width:16px;
+}
+a.tableLookupLink {
+	background:transparent url(../images/icons/view.png) no-repeat 0% 0%;
+	display:block;
+	height:16px;
+	margin:0;
+	overflow:hidden;
+	padding:0;
 	text-indent:-2000px;
 	width:16px;
 }

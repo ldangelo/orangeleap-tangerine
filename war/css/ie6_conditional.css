@@ -14,6 +14,12 @@
 	width:753px;
 }
 
+
+ul.formFields li.side select {
+	width:68.8%;
+	margin-top:2px; /* To maintain spacing since padding can't be adjusted */
+}
+
 /* input button widths with padding are weird in IE.
 input.iebuttonfix {
     width: auto;

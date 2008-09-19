@@ -57,7 +57,8 @@
 	border-bottom:1px solid #ddd;
 	margin-bottom:12px;
 }
-.accountOptions a {
+.accountOptions a,
+.accountOptions a:visited {
 	border-top:1px solid #ddd;
 	display:block;
 	color:#000;
@@ -228,6 +229,13 @@ form input.file {
   color: #ccc;
 }
 
+.pagination span.pageDots {
+	border:0;
+	background:none;
+	margin:0;
+	padding:0;
+}
+
 .pagination span.disabled:hover {
   border: 1px solid #ccc;
   color: #ccc;
@@ -337,4 +345,7 @@ td.inactive {
 }
 .googleWidget {
 	visibility:hidden;
+}
+#sidebarsearch {
+	width:121px;
 }

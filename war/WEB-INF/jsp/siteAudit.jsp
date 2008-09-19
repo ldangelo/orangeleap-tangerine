@@ -1,11 +1,12 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="Site Audit" />
 	<tiles:putAttribute name="primaryNav" value="Administration" />
 	<tiles:putAttribute name="secondaryNav" value="Auditing" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-		<h1>Sitewide Audit History</h1>
+		<h1><security:authentication property="site" /> Audit History</h1>
 		<c:choose>
 			<c:when test="${!empty audits}">
 				<table class="tablesorter defaultSort">
@@ -27,7 +28,7 @@
 								<td>${audit.user}</td>
 								<td>${audit.auditType}</td>
 								<td>${audit.description}</td>
-								<td>${audit.entityType}</td>
+								<td class="capitalized">${audit.entityType}</td>
 								<td>${audit.objectId}</td>
 								<td><c:choose>
 									<c:when test="${audit.entityType=='person'}">

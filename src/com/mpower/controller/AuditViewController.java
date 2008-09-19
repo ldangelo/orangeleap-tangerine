@@ -45,16 +45,18 @@ public class AuditViewController implements Controller {
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String entityType = request.getParameter("object");
 		String objectId = request.getParameter("id");
-		List<Audit> audits;
+		List<Audit> audits = null;
 		ModelAndView mav = new ModelAndView(viewName);
 		if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
 			audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
 		} else {
-			audits = auditService.AuditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType
-					.valueOf(entityType), Long.valueOf(objectId));
 			if (EntityType.valueOf(entityType) == EntityType.person) {
 				Person person = personService.readPersonById(Long.valueOf(objectId));
 				mav.addObject("person", person);
+				audits = auditService.auditHistoryForPerson(person.getId());
+			} else {
+				audits = auditService.auditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType
+						.valueOf(entityType), Long.valueOf(objectId));
 			}
 		}
 

@@ -21,6 +21,8 @@ rule "Gift - Donation Made - Analyze Major Donor - Set Major Donor"
 		Set the person as a major donor
 end
 
+
+
 rule "Gift - Donation Made - Analyze Lapsed Donor - Unset Lapsed Donor"
 	when
 		There is a person

@@ -12,5 +12,7 @@ public interface AuditDao {
 
 	public List<Audit> allAuditHistoryForSite(Site site);
 
-	public List<Audit> AuditHistoryForEntity(Site site, EntityType entityType, Long objectId);
+	public List<Audit> auditHistoryForEntity(Site site, EntityType entityType, Long objectId);
+
+	public List<Audit> auditHistoryForPerson(Long personId);
 }

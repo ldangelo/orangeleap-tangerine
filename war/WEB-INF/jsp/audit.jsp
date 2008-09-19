@@ -37,7 +37,7 @@
 								<td>${audit.user}</td>
 								<td>${audit.auditType}</td>
 								<td>${audit.description}</td>
-								<td>${audit.entityType}</td>
+								<td class="capitalized">${audit.entityType}</td>
 								<td>${audit.objectId}</td>
 								<td><c:choose>
 									<c:when test="${audit.entityType=='person'}">

@@ -9,23 +9,25 @@ import java.util.Set;
  */
 public interface Viewable {
 
-    public Set<String> getRequiredFields();
+	public Set<String> getRequiredFields();
 
-    public void setRequiredFields(Set<String> requiredFields);
+	public void setRequiredFields(Set<String> requiredFields);
 
-    public Map<String, String> getValidationMap();
+	public Map<String, String> getValidationMap();
 
-    public void setValidationMap(Map<String, String> validationMap);
+	public void setValidationMap(Map<String, String> validationMap);
 
-    public Map<String, String> getFieldLabelMap();
+	public Map<String, String> getFieldLabelMap();
 
-    public void setFieldLabelMap(Map<String, String> fieldLabelMap);
+	public void setFieldLabelMap(Map<String, String> fieldLabelMap);
 
-    public Map<String, Object> getFieldValueMap();
+	public Map<String, Object> getFieldValueMap();
 
-    public void setFieldValueMap(Map<String, Object> fieldValueMap);
+	public void setFieldValueMap(Map<String, Object> fieldValueMap);
 
-    public Long getId();
+	public Long getId();
 
-    public Site getSite();
+	public Site getSite();
+
+	public Person getPerson();
 }

@@ -6,9 +6,11 @@ package com.mpower.domain;
  */
 public interface Auditable {
 
-    public Auditable getOriginalObject();
+	public Auditable getOriginalObject();
 
-    public Long getId();
+	public Long getId();
 
-    public Site getSite();
+	public Site getSite();
+
+	public Person getPerson();
 }

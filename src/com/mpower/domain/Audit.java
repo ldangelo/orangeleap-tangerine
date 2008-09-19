@@ -26,117 +26,130 @@ import com.mpower.type.EntityType;
 @Table(name = "AUDIT")
 public class Audit implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
-    private final Log logger = LogFactory.getLog(getClass());
+	@SuppressWarnings("unused")
+	@Transient
+	private final Log logger = LogFactory.getLog(getClass());
 
-    @Id
-    @GeneratedValue
-    @Column(name = "AUDIT_ID")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "AUDIT_ID")
+	private Long id;
 
-    @Column(name="AUDIT_TYPE", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private AuditType auditType;
+	@Column(name="AUDIT_TYPE", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AuditType auditType;
 
-    @Column(name = "DATE", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+	@Column(name = "DATE", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date date;
 
-    @Column(name = "USER")
-    private String user;
+	@Column(name = "USER")
+	private String user;
 
-    @Column(name = "DESCRIPTION", nullable = false)
-    private String description;
+	@Column(name = "DESCRIPTION", nullable = false)
+	private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "SITE_NAME", nullable = false)
-    private Site site;
+	@ManyToOne
+	@JoinColumn(name = "PERSON_ID")
+	private Person person;
 
-    @Column(name="ENTITY_TYPE", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EntityType entityType;
+	@ManyToOne
+	@JoinColumn(name = "SITE_NAME", nullable = false)
+	private Site site;
 
-    @Column(name="OBJECT_ID", nullable = false)
-    private Long objectId;
+	@Column(name="ENTITY_TYPE", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private EntityType entityType;
 
-    public Audit() {
-        super();
-    }
+	@Column(name="OBJECT_ID", nullable = false)
+	private Long objectId;
 
-    public Audit(AuditType auditType, String user, Date date, String description, Site site, EntityType entityType, Long objectId) {
-        this.auditType = auditType;
-        this.user = user;
-        this.date = date;
-        this.description = description;
-        this.site = site;
-        this.entityType = entityType;
-        this.objectId = objectId;
-    }
+	public Audit() {
+		super();
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Audit(AuditType auditType, String user, Date date, String description, Site site, EntityType entityType, Long objectId, Person person) {
+		this.auditType = auditType;
+		this.user = user;
+		this.date = date;
+		this.description = description;
+		this.site = site;
+		this.entityType = entityType;
+		this.objectId = objectId;
+		this.person = person;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public AuditType getAuditType() {
-        return auditType;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setAuditType(AuditType auditType) {
-        this.auditType = auditType;
-    }
+	public AuditType getAuditType() {
+		return auditType;
+	}
 
-    public Date getDate() {
-        return date;
-    }
+	public void setAuditType(AuditType auditType) {
+		this.auditType = auditType;
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	public Date getDate() {
+		return date;
+	}
 
-    public String getUser() {
-        return user;
-    }
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+	public String getUser() {
+		return user;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Site getSite() {
-        return site;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setSite(Site site) {
-        this.site = site;
-    }
+	public Person getPerson() {
+		return person;
+	}
 
-    public EntityType getEntityType() {
-        return entityType;
-    }
+	public void setPerson(Person person) {
+		this.person = person;
+	}
 
-    public void setEntityType(EntityType entityType) {
-        this.entityType = entityType;
-    }
+	public Site getSite() {
+		return site;
+	}
 
-    public Long getObjectId() {
-        return objectId;
-    }
+	public void setSite(Site site) {
+		this.site = site;
+	}
 
-    public void setObjectId(Long objectId) {
-        this.objectId = objectId;
-    }
+	public EntityType getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(EntityType entityType) {
+		this.entityType = entityType;
+	}
+
+	public Long getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(Long objectId) {
+		this.objectId = objectId;
+	}
 }

@@ -113,7 +113,7 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "DEDUCTIBLE")
     private boolean deductible = false;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 

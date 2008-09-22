@@ -35,7 +35,7 @@ public class JPAAuditDao implements AuditDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> allAuditHistoryForSite(Site site) {
-		Query q =  em.createQuery("SELECT audit FROM com.mpower.domain.Audit audit WHERE audit.site = :site");
+		Query q =  em.createQuery("AUDIT_HISTORY_FOR_SITE");
 		q.setParameter("site", site);
 		List<Audit> audits = q.getResultList();
 		return audits;
@@ -44,7 +44,7 @@ public class JPAAuditDao implements AuditDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> auditHistoryForEntity(Site site, EntityType entityType, Long objectId) {
-		Query q =  em.createQuery("SELECT audit FROM com.mpower.domain.Audit audit WHERE audit.site = :site AND audit.entityType = :entityType AND audit.objectId = :objectId");
+		Query q =  em.createQuery("AUDIT_HISTORY_FOR_ENTITY");
 		q.setParameter("site", site);
 		q.setParameter("entityType", entityType);
 		q.setParameter("objectId", objectId);
@@ -55,7 +55,7 @@ public class JPAAuditDao implements AuditDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> auditHistoryForPerson(Long personId) {
-		Query q =  em.createQuery("SELECT audit FROM com.mpower.domain.Audit audit WHERE audit.person.id = :personId");
+		Query q =  em.createQuery("AUDIT_HISTORY_FOR_PERSON");
 		q.setParameter("personId", personId);
 		List<Audit> audits = q.getResultList();
 		return audits;

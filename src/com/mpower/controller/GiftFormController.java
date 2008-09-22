@@ -16,8 +16,10 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.GiftService;
+import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
@@ -25,81 +27,101 @@ import com.mpower.type.PageType;
 
 public class GiftFormController extends SimpleFormController {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+	/** Logger for this class and subclasses */
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    private GiftService giftService;
+	private GiftService giftService;
 
-    private PersonService personService;
+	private PersonService personService;
 
-    public void setGiftService(GiftService giftService) {
-        this.giftService = giftService;
-    }
+	private PaymentSourceService paymentSourceService;
 
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
+	public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
+		this.paymentSourceService = paymentSourceService;
+	}
 
-    private SiteService siteService;
+	public void setGiftService(GiftService giftService) {
+		this.giftService = giftService;
+	}
 
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
 
-    @Override
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
+	private SiteService siteService;
 
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        String giftId = request.getParameter("giftId");
-        Gift gift = null;
-        if (giftId == null) {
-            String personId = request.getParameter("personId");
-            Person person = null;
-            if (personId != null) {
-                person = personService.readPersonById(Long.valueOf(personId));
-                if (person == null) {
-                    logger.error("**** person not found for id: " + personId);
-                    return gift;
-                }
-                gift = giftService.createDefaultGift(person);
-                // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-                gift.setPerson(person);
-            }
-        } else {
-            gift = giftService.readGiftById(new Long(giftId));
-        }
-        if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
-            gift.setFieldLabelMap(fieldLabelMap);
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), gift);
-            gift.setFieldValueMap(valueMap);
-        }
-        return gift;
-    }
+	@Override
+	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+	}
 
-    @Override
-    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-        Gift gift = (Gift) command;
+	@Override
+	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+		String giftId = request.getParameter("giftId");
+		Gift gift = null;
+		if (giftId == null) {
+			String personId = request.getParameter("personId");
+			Person person = null;
+			if (personId != null) {
+				person = personService.readPersonById(Long.valueOf(personId));
+				if (person == null) {
+					logger.error("**** person not found for id: " + personId);
+					return gift;
+				}
+				gift = giftService.createDefaultGift(person);
+				// TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+				gift.setPerson(person);
+			}
+		} else {
+			gift = giftService.readGiftById(new Long(giftId));
+		}
+		if (isFormSubmission(request)) {
+			Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+			gift.setFieldLabelMap(fieldLabelMap);
 
-        // validate required fields
+			Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), gift);
+			gift.setFieldValueMap(valueMap);
+		}
+		return gift;
+	}
 
-        // TODO: This code is temporary validation to strip out invalid distribution lines.
-        Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
-        while (distLineIter.hasNext()) {
-            DistributionLine line = distLineIter.next();
-            if (line == null || line.getAmount() == null) {
-                distLineIter.remove();
-            }
-        }
+	@Override
+	public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
+		Gift gift = (Gift) command;
+		PaymentSource paymentSource = new PaymentSource();
 
-        Gift current = giftService.maintainGift(gift);
+		// validate required fields
 
-        ModelAndView mav = new ModelAndView("redirect:/giftView.htm");
-        mav.addObject("giftId", current.getId());
-        return mav;
-    }
+		// TODO: This code is temporary validation to strip out invalid distribution lines.
+		Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
+		while (distLineIter.hasNext()) {
+			DistributionLine line = distLineIter.next();
+			if (line == null || line.getAmount() == null) {
+				distLineIter.remove();
+			}
+		}
+
+		if(gift.getPaymentType().equals("Credit Card")) {
+			paymentSource.setCreditCardNumber(gift.getCreditCardNumber());
+			paymentSource.setCreditCardType(gift.getCreditCardType());
+			paymentSource.setCreditCardSecurityCode(gift.getCreditCardSecurityCode());
+			paymentSource.setCreditCardExpirationDate(gift.getCreditCardExpiration());
+		} else if(gift.getPaymentType().equals("ACH")) {
+			paymentSource.setAchAccountNumber(gift.getAchAccountNumber());
+			paymentSource.setAchRoutingNumber(gift.getAchRoutingNumber());
+			paymentSource.setAchType(gift.getAchType());
+		}
+		paymentSource.setPerson(gift.getPerson());
+		paymentSourceService.savePaymentSource(paymentSource);
+
+		Gift current = giftService.maintainGift(gift);
+
+		ModelAndView mav = new ModelAndView("redirect:/giftView.htm");
+		mav.addObject("giftId", current.getId());
+		return mav;
+	}
 }

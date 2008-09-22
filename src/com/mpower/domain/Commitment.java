@@ -109,7 +109,8 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     @Column(name = "NOTES")
     private String notes;
 
-    @Column(name = "PAYMENT_SOURCE_ID")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
     @Column(name = "FREQUENCY")
@@ -150,6 +151,9 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     }
 
     public List<Gift> getGifts() {
+        if (gifts == null) {
+            gifts = new ArrayList<Gift>();
+        }
         return gifts;
     }
 

@@ -104,7 +104,6 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/phoneSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/giftSetup.sql"/>
-	     	<transaction src="${basedir}/db/dev/devSetup/commitmentSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/businessRulesSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearch.sql"/>
@@ -112,6 +111,7 @@
 	     	<transaction src="${basedir}/db/dev/customRoleTest/giftSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/dev/fieldValidation.sql"/>
 	     	<transaction src="${basedir}/db/dev/pageAccess.sql"/>
+	     	<transaction src="${basedir}/db/dev/devSetup/conferenceDemoData.sql"/>
 	     </sql>
 	</target>
 

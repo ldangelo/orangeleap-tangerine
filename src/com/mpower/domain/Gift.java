@@ -37,430 +37,412 @@ import com.mpower.util.GiftCustomFieldMap;
 @Table(name = "GIFT")
 public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unused")
-	@Transient
-	private final Log logger = LogFactory.getLog(getClass());
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
-	@Id
-	@GeneratedValue
-	@Column(name = "GIFT_ID")
-	private Long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "GIFT_ID")
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "PERSON_ID")
-	private Person person;
+    @ManyToOne
+    @JoinColumn(name = "PERSON_ID")
+    private Person person;
 
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "COMMITMENT_ID")
-	private Commitment commitment;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COMMITMENT_ID")
+    private Commitment commitment;
 
-	@Column(name = "COMMENTS")
-	private String comments;
+    @Column(name = "COMMENTS")
+    private String comments;
 
-	@Column(name = "VALUE")
-	private BigDecimal value;
+    @Column(name = "VALUE")
+    private BigDecimal value;
 
-	@Column(name = "PAYMENT_TYPE")
-	private String paymentType;
+    @Column(name = "PAYMENT_TYPE")
+    private String paymentType;
 
-	@Column(name = "CREDIT_CARD_TYPE")
-	private String creditCardType;
+    @Column(name = "CHECK_NUMBER")
+    private Integer checkNumber;
 
-	@Column(name = "CREDIT_CARD_NUMBER")
-	private String creditCardNumber;
+    @Column(name = "TRANSACTION_DATE", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @AutoPopulate
+    private Date transactionDate;
 
-	@Column(name = "CREDIT_CARD_EXPIRATION")
-	private Date creditCardExpiration;
+    @Column(name = "AUTH_CODE")
+    private String authCode;
 
-	@Column(name = "CREDIT_CARD_SECURITY_CODE")
-	private String creditCardSecurityCode;
+    @Column(name = "ORIGINAL_GIFT_ID")
+    private Long originalGiftId;
 
-	@Column(name = "CHECK_NUMBER")
-	private Integer checkNumber;
+    @Column(name = "REFUND_GIFT_ID")
+    private Long refundGiftId;
 
-	@Column(name = "ACH_TYPE")
-	private String achType;
+    @Column(name = "REFUND_GIFT_TRANSACTION_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date refundGiftTransactionDate;
 
-	@Column(name = "ACH_ROUTING_NUMBER")
-	private String achRoutingNumber;
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<GiftCustomField> giftCustomFields;
 
-	@Column(name = "ACH_ACCOUNT_NUMBER")
-	private String achAccountNumber;
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<DistributionLine> distributionLines;
 
-	@Column(name = "TRANSACTION_DATE", updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@AutoPopulate
-	private Date transactionDate;
+    @Column(name = "DEDUCTIBLE")
+    private boolean deductible = false;
 
-	@Column(name = "AUTH_CODE")
-	private String authCode;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PAYMENT_SOURCE_ID")
+    private PaymentSource paymentSource;
 
-	@Column(name = "ORIGINAL_GIFT_ID")
-	private Long originalGiftId;
+    @Transient
+    private Integer creditCardExpirationMonth;
 
-	@Column(name = "REFUND_GIFT_ID")
-	private Long refundGiftId;
+    @Transient
+    private Integer creditCardExpirationYear;
 
-	@Column(name = "REFUND_GIFT_TRANSACTION_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date refundGiftTransactionDate;
+    @Transient
+    private Map<String, CustomField> customFieldMap = null;
 
-	@OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-	private List<GiftCustomField> giftCustomFields;
+    @Transient
+    private Set<String> requiredFields = null;
 
-	@OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-	private List<DistributionLine> distributionLines;
+    @Transient
+    private Map<String, String> validationMap = null;
 
-	@Column(name = "DEDUCTIBLE")
-	private boolean deductible = false;
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "PAYMENT_SOURCE_ID")
-	private PaymentSource paymentSource;
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
-	@Transient
-	private Integer creditCardExpirationMonth;
+    @Transient
+    private List<PaymentSource> paymentSources = null;
 
-	@Transient
-	private Integer creditCardExpirationYear;
+    public Long getId() {
+        return id;
+    }
 
-	@Transient
-	private Map<String, CustomField> customFieldMap = null;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	@Transient
-	private Set<String> requiredFields = null;
+    public Person getPerson() {
+        return person;
+    }
 
-	@Transient
-	private Map<String, String> validationMap = null;
-
-	@Transient
-	private Map<String, String> fieldLabelMap = null;
-
-	@Transient
-	private Map<String, Object> fieldValueMap = null;
-
-	@Transient
-	private List<PaymentSource> paymentSources = null;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	public Commitment getCommitment() {
-		return commitment;
-	}
-
-	public void setCommitment(Commitment commitment) {
-		this.commitment = commitment;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	public void setValue(BigDecimal value) {
-		this.value = value;
-	}
-
-	public String getPaymentType() {
-		return paymentType;
-	}
-
-	public void setPaymentType(String paymentType) {
-		this.paymentType = paymentType;
-	}
-
-	public String getCreditCardType() {
-		return creditCardType;
-	}
-
-	public void setCreditCardType(String creditCardType) {
-		this.creditCardType = creditCardType;
-	}
-
-	public String getCreditCardNumber() {
-		return creditCardNumber;
-	}
-
-	public void setCreditCardNumber(String creditCardNumber) {
-		this.creditCardNumber = creditCardNumber;
-	}
-
-	public Date getCreditCardExpiration() {
-		return creditCardExpiration;
-	}
-
-	public void setCreditCardExpiration(Date creditCardExpiration) {
-		this.creditCardExpiration = creditCardExpiration;
-	}
-
-	public String getCreditCardSecurityCode() {
-		return creditCardSecurityCode;
-	}
-
-	public void setCreditCardSecurityCode(String creditCardSecurityCode) {
-		this.creditCardSecurityCode = creditCardSecurityCode;
-	}
-
-	public Integer getCreditCardExpirationMonth() {
-		if (creditCardExpiration != null) {
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(creditCardExpiration);
-			creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
-		}
-		return creditCardExpirationMonth;
-	}
-
-	public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
-		setExpirationDate(creditCardExpirationMonth, null);
-		this.creditCardExpirationMonth = creditCardExpirationMonth;
-	}
-
-	public Integer getCreditCardExpirationYear() {
-		if (creditCardExpiration != null) {
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(creditCardExpiration);
-			creditCardExpirationYear = calendar.get(Calendar.YEAR);
-		}
-		return creditCardExpirationYear;
-	}
-
-	public void setCreditCardExpirationYear(Integer creditCardExpirationYear) {
-		setExpirationDate(null, creditCardExpirationYear);
-		this.creditCardExpirationYear = creditCardExpirationYear;
-	}
-
-	private void setExpirationDate(Integer month, Integer year) {
-		Calendar calendar = Calendar.getInstance();
-		if (creditCardExpiration != null) {
-			calendar.setTime(creditCardExpiration);
-		}
-		if (month != null) {
-			calendar.set(Calendar.MONTH, month - 1);
-		}
-		if (year != null) {
-			calendar.set(Calendar.YEAR, year);
-		}
-		calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to getting max day
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-		calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
-		calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
-		calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
-		creditCardExpiration = calendar.getTime();
-	}
-
-	public Date getTransactionDate() {
-		return transactionDate;
-	}
-
-	public void setTransactionDate(Date transactionDate) {
-		this.transactionDate = transactionDate;
-	}
-
-	public Integer getCheckNumber() {
-		return checkNumber;
-	}
-
-	public void setCheckNumber(Integer checkNumber) {
-		this.checkNumber = checkNumber;
-	}
-
-	public String getAchType() {
-		return achType;
-	}
-
-	public void setAchType(String achType) {
-		this.achType = achType;
-	}
-
-	public String getAchRoutingNumber() {
-		return achRoutingNumber;
-	}
-
-	public void setAchRoutingNumber(String achRoutingNumber) {
-		this.achRoutingNumber = achRoutingNumber;
-	}
-
-	public String getAchAccountNumber() {
-		return achAccountNumber;
-	}
-
-	public void setAchAccountNumber(String achAccountNumber) {
-		this.achAccountNumber = achAccountNumber;
-	}
-
-	public String getAuthCode() {
-		return authCode;
-	}
-
-	public void setAuthCode(String authCode) {
-		this.authCode = authCode;
-	}
-
-	public List<String> getExpirationMonthList() {
-		List<String> monthList = new ArrayList<String>();
-		for (int i = 1; i <= 12; i++) {
-			String month = String.valueOf(i);
-			if (month.length() == 1) {
-				month = "0" + month;
-			}
-			monthList.add(month);
-		}
-		return monthList;
-	}
-
-	public List<String> getExpirationYearList() {
-		List<String> yearList = new ArrayList<String>();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		for (int i = 0; i < 10; i++) {
-			yearList.add(String.valueOf(year + i));
-		}
-		return yearList;
-	}
-
-	public Long getOriginalGiftId() {
-		return originalGiftId;
-	}
-
-	public void setOriginalGiftId(Long originalGiftId) {
-		this.originalGiftId = originalGiftId;
-	}
-
-	public Long getRefundGiftId() {
-		return refundGiftId;
-	}
-
-	public void setRefundGiftId(Long refundGiftId) {
-		this.refundGiftId = refundGiftId;
-	}
-
-	public Date getRefundGiftTransactionDate() {
-		return refundGiftTransactionDate;
-	}
-
-	public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
-		this.refundGiftTransactionDate = refundGiftTransactionDate;
-	}
-
-	public List<GiftCustomField> getCustomFields() {
-		if (giftCustomFields == null) {
-			giftCustomFields = new ArrayList<GiftCustomField>();
-		}
-		return giftCustomFields;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, CustomField> getCustomFieldMap() {
-		if (customFieldMap == null) {
-			customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
-		}
-		return customFieldMap;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<DistributionLine> getDistributionLines() {
-		if (distributionLines == null) {
-			distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
-		}
-		return distributionLines;
-	}
-
-	public void setDistributionLines(List<DistributionLine> distributionLines) {
-		this.distributionLines = distributionLines;
-	}
-
-	public void addDistributionLine(DistributionLine distributionLine) {
-		getDistributionLines().add(distributionLine);
-	}
-
-	@Override
-	public Set<String> getRequiredFields() {
-		return requiredFields;
-	}
-
-	@Override
-	public void setRequiredFields(Set<String> requiredFields) {
-		this.requiredFields = requiredFields;
-	}
-
-	@Override
-	public Map<String, String> getValidationMap() {
-		return validationMap;
-	}
-
-	@Override
-	public void setValidationMap(Map<String, String> validationMap) {
-		this.validationMap = validationMap;
-	}
-
-	@Override
-	public Map<String, String> getFieldLabelMap() {
-		return fieldLabelMap;
-	}
-
-	@Override
-	public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-		this.fieldLabelMap = fieldLabelMap;
-	}
-
-	@Override
-	public Map<String, Object> getFieldValueMap() {
-		return fieldValueMap;
-	}
-
-	@Override
-	public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-		this.fieldValueMap = fieldValueMap;
-	}
-
-	@Override
-	public Site getSite() {
-		return person != null ? person.getSite() : null;
-	}
-
-	public boolean isDeductible() {
-		return deductible;
-	}
-
-	public void setDeductible(boolean deductible) {
-		this.deductible = deductible;
-	}
-
-	public List<PaymentSource> getPaymentSources() {
-		return paymentSources;
-	}
-
-	public void setPaymentSources(List<PaymentSource> paymentSources) {
-		this.paymentSources = paymentSources;
-	}
-
-	public PaymentSource getPaymentSource() {
-		return paymentSource;
-	}
-
-	public void setPaymentSource(PaymentSource paymentSource) {
-		this.paymentSource = paymentSource;
-	}
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Commitment getCommitment() {
+        return commitment;
+    }
+
+    public void setCommitment(Commitment commitment) {
+        this.commitment = commitment;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getCreditCardType() {
+        return getPaymentSource().getCreditCardType();
+    }
+
+    public void setCreditCardType(String creditCardType) {
+        getPaymentSource().setCreditCardType(creditCardType);
+    }
+
+    public String getCreditCardNumber() {
+        return getPaymentSource().getCreditCardNumber();
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        getPaymentSource().setCreditCardNumber(creditCardNumber);
+    }
+
+    public Date getCreditCardExpiration() {
+        return getPaymentSource().getCreditCardExpirationDate();
+    }
+
+    public void setCreditCardExpiration(Date creditCardExpiration) {
+        getPaymentSource().setCreditCardExpirationDate(creditCardExpiration);
+    }
+
+    public String getCreditCardSecurityCode() {
+        return getPaymentSource().getCreditCardSecurityCode();
+    }
+
+    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
+        getPaymentSource().setCreditCardSecurityCode(creditCardSecurityCode);
+    }
+
+    public Integer getCreditCardExpirationMonth() {
+        if (getPaymentSource().getCreditCardExpirationDate() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+            creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
+        }
+        return creditCardExpirationMonth;
+    }
+
+    public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
+        setExpirationDate(creditCardExpirationMonth, null);
+        this.creditCardExpirationMonth = creditCardExpirationMonth;
+    }
+
+    public Integer getCreditCardExpirationYear() {
+        if (getPaymentSource().getCreditCardExpirationDate() != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+            creditCardExpirationYear = calendar.get(Calendar.YEAR);
+        }
+        return creditCardExpirationYear;
+    }
+
+    public void setCreditCardExpirationYear(Integer creditCardExpirationYear) {
+        setExpirationDate(null, creditCardExpirationYear);
+        this.creditCardExpirationYear = creditCardExpirationYear;
+    }
+
+    private void setExpirationDate(Integer month, Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        if (getPaymentSource().getCreditCardExpirationDate() != null) {
+            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+        }
+        if (month != null) {
+            calendar.set(Calendar.MONTH, month - 1);
+        }
+        if (year != null) {
+            calendar.set(Calendar.YEAR, year);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to getting max day
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
+        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+        getPaymentSource().setCreditCardExpirationDate(calendar.getTime());
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
+    }
+
+    public String getAchType() {
+        return getPaymentSource().getAchType();
+    }
+
+    public void setAchType(String achType) {
+        getPaymentSource().setAchType(achType);
+    }
+
+    public String getAchRoutingNumber() {
+        return getPaymentSource().getAchRoutingNumber();
+    }
+
+    public void setAchRoutingNumber(String achRoutingNumber) {
+        getPaymentSource().setAchRoutingNumber(achRoutingNumber);
+    }
+
+    public String getAchAccountNumber() {
+        return getPaymentSource().getAchAccountNumber();
+    }
+
+    public void setAchAccountNumber(String achAccountNumber) {
+        getPaymentSource().setAchAccountNumber(achAccountNumber);
+    }
+
+    public String getAuthCode() {
+        return authCode;
+    }
+
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
+    }
+
+    public List<String> getExpirationMonthList() {
+        List<String> monthList = new ArrayList<String>();
+        for (int i = 1; i <= 12; i++) {
+            String month = String.valueOf(i);
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+            monthList.add(month);
+        }
+        return monthList;
+    }
+
+    public List<String> getExpirationYearList() {
+        List<String> yearList = new ArrayList<String>();
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 0; i < 10; i++) {
+            yearList.add(String.valueOf(year + i));
+        }
+        return yearList;
+    }
+
+    public Long getOriginalGiftId() {
+        return originalGiftId;
+    }
+
+    public void setOriginalGiftId(Long originalGiftId) {
+        this.originalGiftId = originalGiftId;
+    }
+
+    public Long getRefundGiftId() {
+        return refundGiftId;
+    }
+
+    public void setRefundGiftId(Long refundGiftId) {
+        this.refundGiftId = refundGiftId;
+    }
+
+    public Date getRefundGiftTransactionDate() {
+        return refundGiftTransactionDate;
+    }
+
+    public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
+        this.refundGiftTransactionDate = refundGiftTransactionDate;
+    }
+
+    public List<GiftCustomField> getCustomFields() {
+        if (giftCustomFields == null) {
+            giftCustomFields = new ArrayList<GiftCustomField>();
+        }
+        return giftCustomFields;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, CustomField> getCustomFieldMap() {
+        if (customFieldMap == null) {
+            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
+        }
+        return customFieldMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<DistributionLine> getDistributionLines() {
+        if (distributionLines == null) {
+            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
+        }
+        return distributionLines;
+    }
+
+    public void setDistributionLines(List<DistributionLine> distributionLines) {
+        this.distributionLines = distributionLines;
+    }
+
+    public void addDistributionLine(DistributionLine distributionLine) {
+        getDistributionLines().add(distributionLine);
+    }
+
+    @Override
+    public Set<String> getRequiredFields() {
+        return requiredFields;
+    }
+
+    @Override
+    public void setRequiredFields(Set<String> requiredFields) {
+        this.requiredFields = requiredFields;
+    }
+
+    @Override
+    public Map<String, String> getValidationMap() {
+        return validationMap;
+    }
+
+    @Override
+    public void setValidationMap(Map<String, String> validationMap) {
+        this.validationMap = validationMap;
+    }
+
+    @Override
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    @Override
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    @Override
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    @Override
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public Site getSite() {
+        return person != null ? person.getSite() : null;
+    }
+
+    public boolean isDeductible() {
+        return deductible;
+    }
+
+    public void setDeductible(boolean deductible) {
+        this.deductible = deductible;
+    }
+
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSources;
+    }
+
+    public void setPaymentSources(List<PaymentSource> paymentSources) {
+        this.paymentSources = paymentSources;
+    }
+
+    public PaymentSource getPaymentSource() {
+        if (paymentSource == null) {
+            paymentSource = new PaymentSource(this.getPerson());
+        }
+        return paymentSource;
+    }
+
+    public void setPaymentSource(PaymentSource paymentSource) {
+        this.paymentSource = paymentSource;
+    }
 }

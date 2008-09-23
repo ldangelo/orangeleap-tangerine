@@ -64,7 +64,6 @@
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
 
     <bean id="giftRefund" class="com.mpower.controller.GiftRefundController">
@@ -247,11 +246,12 @@
   		<property name="cronExpression" value="0/15 * * * * ?" />
   	</bean>
 
-<!--
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
+<!--
 				<ref bean="cronRuleTrigger"/>
+-->
 				<ref bean="cronRuleTriggerDaily"/>
 			</list>
 		</property>
@@ -259,7 +259,6 @@
 	    	<value>applicationContext</value>
 	   	</property>
 	</bean>
--->
 
 	<dwr:controller id="dwrController" debug="true" />
 

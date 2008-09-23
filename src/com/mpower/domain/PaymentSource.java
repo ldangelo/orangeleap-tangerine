@@ -47,8 +47,8 @@ public class PaymentSource implements SiteAware, Serializable {
     @Column(name = "CREDIT_CARD_NUMBER")
     private String creditCardNumber;
 
-    @Column(name = "CREDIT_CARD_EXPIRATION_DATE")
-    private Date creditCardExpirationDate;
+    @Column(name = "CREDIT_CARD_EXPIRATION")
+    private Date creditCardExpiration;
 
     @Column(name = "CHECK_NUMBER")
     private Integer checkNumber;
@@ -121,12 +121,12 @@ public class PaymentSource implements SiteAware, Serializable {
         this.creditCardNumber = creditCardNumber;
     }
 
-    public Date getCreditCardExpirationDate() {
-        return creditCardExpirationDate;
+    public Date getCreditCardExpiration() {
+        return creditCardExpiration;
     }
 
-    public void setCreditCardExpirationDate(Date creditCardExpirationDate) {
-        this.creditCardExpirationDate = creditCardExpirationDate;
+    public void setCreditCardExpiration(Date creditCardExpiration) {
+        this.creditCardExpiration = creditCardExpiration;
     }
 
     public Integer getCheckNumber() {

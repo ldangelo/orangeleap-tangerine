@@ -56,7 +56,7 @@ public class GiftServiceImpl implements GiftService {
             paymentSource.setAchAccountNumber(gift.getAchAccountNumber());
             paymentSource.setAchRoutingNumber(gift.getAchRoutingNumber());
             paymentSource.setAchType(gift.getAchType());
-            paymentSource.setCreditCardExpirationDate(gift.getCreditCardExpiration());
+            paymentSource.setCreditCardExpiration(gift.getCreditCardExpiration());
             paymentSource.setCreditCardNumber(gift.getCreditCardNumber());
             paymentSource.setCreditCardType(gift.getCreditCardType());
             paymentSource.setPerson(gift.getPerson());

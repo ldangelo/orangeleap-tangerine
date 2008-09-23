@@ -171,42 +171,10 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
         this.paymentType = paymentType;
     }
 
-    public String getCreditCardType() {
-        return getPaymentSource().getCreditCardType();
-    }
-
-    public void setCreditCardType(String creditCardType) {
-        getPaymentSource().setCreditCardType(creditCardType);
-    }
-
-    public String getCreditCardNumber() {
-        return getPaymentSource().getCreditCardNumber();
-    }
-
-    public void setCreditCardNumber(String creditCardNumber) {
-        getPaymentSource().setCreditCardNumber(creditCardNumber);
-    }
-
-    public Date getCreditCardExpiration() {
-        return getPaymentSource().getCreditCardExpirationDate();
-    }
-
-    public void setCreditCardExpiration(Date creditCardExpiration) {
-        getPaymentSource().setCreditCardExpirationDate(creditCardExpiration);
-    }
-
-    public String getCreditCardSecurityCode() {
-        return getPaymentSource().getCreditCardSecurityCode();
-    }
-
-    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
-        getPaymentSource().setCreditCardSecurityCode(creditCardSecurityCode);
-    }
-
     public Integer getCreditCardExpirationMonth() {
-        if (getPaymentSource().getCreditCardExpirationDate() != null) {
+        if (getPaymentSource().getCreditCardExpiration() != null) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+            calendar.setTime(getPaymentSource().getCreditCardExpiration());
             creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
         }
         return creditCardExpirationMonth;
@@ -218,9 +186,9 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
     }
 
     public Integer getCreditCardExpirationYear() {
-        if (getPaymentSource().getCreditCardExpirationDate() != null) {
+        if (getPaymentSource().getCreditCardExpiration() != null) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+            calendar.setTime(getPaymentSource().getCreditCardExpiration());
             creditCardExpirationYear = calendar.get(Calendar.YEAR);
         }
         return creditCardExpirationYear;
@@ -233,8 +201,8 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     private void setExpirationDate(Integer month, Integer year) {
         Calendar calendar = Calendar.getInstance();
-        if (getPaymentSource().getCreditCardExpirationDate() != null) {
-            calendar.setTime(getPaymentSource().getCreditCardExpirationDate());
+        if (getPaymentSource().getCreditCardExpiration() != null) {
+            calendar.setTime(getPaymentSource().getCreditCardExpiration());
         }
         if (month != null) {
             calendar.set(Calendar.MONTH, month - 1);
@@ -247,7 +215,7 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
         calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
         calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
         calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
-        getPaymentSource().setCreditCardExpirationDate(calendar.getTime());
+        getPaymentSource().setCreditCardExpiration(calendar.getTime());
     }
 
     public Date getTransactionDate() {
@@ -264,30 +232,6 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setCheckNumber(Integer checkNumber) {
         this.checkNumber = checkNumber;
-    }
-
-    public String getAchType() {
-        return getPaymentSource().getAchType();
-    }
-
-    public void setAchType(String achType) {
-        getPaymentSource().setAchType(achType);
-    }
-
-    public String getAchRoutingNumber() {
-        return getPaymentSource().getAchRoutingNumber();
-    }
-
-    public void setAchRoutingNumber(String achRoutingNumber) {
-        getPaymentSource().setAchRoutingNumber(achRoutingNumber);
-    }
-
-    public String getAchAccountNumber() {
-        return getPaymentSource().getAchAccountNumber();
-    }
-
-    public void setAchAccountNumber(String achAccountNumber) {
-        getPaymentSource().setAchAccountNumber(achAccountNumber);
     }
 
     public String getAuthCode() {
@@ -444,5 +388,61 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setPaymentSource(PaymentSource paymentSource) {
         this.paymentSource = paymentSource;
+    }
+
+    public String getCreditCardType() {
+        return getPaymentSource().getCreditCardType();
+    }
+
+    public void setCreditCardType(String creditCardType) {
+        getPaymentSource().setCreditCardType(creditCardType);
+    }
+
+    public String getCreditCardNumber() {
+        return getPaymentSource().getCreditCardNumber();
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        getPaymentSource().setCreditCardNumber(creditCardNumber);
+    }
+
+    public Date getCreditCardExpiration() {
+        return getPaymentSource().getCreditCardExpiration();
+    }
+
+    public void setCreditCardExpiration(Date creditCardExpiration) {
+        getPaymentSource().setCreditCardExpiration(creditCardExpiration);
+    }
+
+    public String getCreditCardSecurityCode() {
+        return getPaymentSource().getCreditCardSecurityCode();
+    }
+
+    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
+        getPaymentSource().setCreditCardSecurityCode(creditCardSecurityCode);
+    }
+
+    public String getAchType() {
+        return getPaymentSource().getAchType();
+    }
+
+    public void setAchType(String achType) {
+        getPaymentSource().setAchType(achType);
+    }
+
+    public String getAchRoutingNumber() {
+        return getPaymentSource().getAchRoutingNumber();
+    }
+
+    public void setAchRoutingNumber(String achRoutingNumber) {
+        getPaymentSource().setAchRoutingNumber(achRoutingNumber);
+    }
+
+    public String getAchAccountNumber() {
+        return getPaymentSource().getAchAccountNumber();
+    }
+
+    public void setAchAccountNumber(String achAccountNumber) {
+        getPaymentSource().setAchAccountNumber(achAccountNumber);
     }
 }

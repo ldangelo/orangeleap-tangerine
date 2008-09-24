@@ -15,9 +15,7 @@
 		<query>
 			SELECT audit 
 			FROM com.mpower.domain.Audit audit 
-			WHERE audit.site = :site 
-				AND audit.entityType = :entityType 
-				AND audit.objectId = :objectId
+			WHERE audit.site = :site AND audit.entityType = :entityType AND audit.objectId = :objectId
 		</query>
 	</named-query>
 	

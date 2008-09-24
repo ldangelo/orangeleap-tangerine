@@ -61,7 +61,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 logger.debug("recurring gift: id=" + rg.getId() + ", next run=" + rg.getNextRunDate());
                 Commitment commitment = rg.getCommitment();
                 Date nextDate = null;
-                if (commitment.getEndDate() == null || commitment.getEndDate().after(new Date())) {
+                if (commitment.getEndDate() == null || commitment.getEndDate().after(getToday().getTime())) {
                     createGift(rg.getCommitment());
                     nextDate = getNextRecurringGiftDate(rg.getCommitment());
                     if (nextDate != null) {
@@ -134,9 +134,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         } else {
             nextRun.setTime(commitment.getStartDate());
         }
-        Calendar today = Calendar.getInstance();
-        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-        while (nextRun.before(today) || commitment.isSuspended(nextRun.getTime())) {
+        while (nextRun.before(getToday()) || commitment.isSuspended(nextRun.getTime())) {
             if (commitment.isSuspended(nextRun.getTime())) {
                 logger.debug("next run, " + nextRun.getTime() + " is during a suspended period so going to next");
             }
@@ -153,9 +151,16 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             }
         }
         if (nextRun.getTime().after(commitment.getEndDate())) {
-            logger.debug("next run, " + nextRun.getTime() + " is after commitment end date - set commitment to expired");
-            return null;
+            logger.debug("next run, " + nextRun.getTime() + " is after commitment end date");
+            nextRun.setTime(commitment.getEndDate());
         }
         return nextRun.getTime();
+    }
+
+    private Calendar getToday() {
+        Calendar today = Calendar.getInstance();
+        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        logger.debug("getToday() = " + today.getTime());
+        return today;
     }
 }

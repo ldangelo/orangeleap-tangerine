@@ -31,7 +31,7 @@ public class SessionServiceImpl implements SessionService {
 
     public static String lookupUserSiteName() {
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getSite();
+        return authentication != null ? authentication.getSite() : null;
     }
 
     public static List<String> lookupUserRoles() {

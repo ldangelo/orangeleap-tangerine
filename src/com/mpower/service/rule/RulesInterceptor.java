@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.domain.SiteAware;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
@@ -50,8 +51,12 @@ public class RulesInterceptor implements ApplicationContextAware {
         PersonService ps = (PersonService) applicationContext.getBean("personService");
         GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
+        String site = null;
         for (Object entity : args) {
             workingMemory.insert(entity);
+            if (entity instanceof SiteAware) {
+                site = ((SiteAware) entity).getSite() != null ? ((SiteAware) entity).getSite().getName() : null;
+            }
 
             try {
                 Gift gift = (Gift) entity;
@@ -68,7 +73,9 @@ public class RulesInterceptor implements ApplicationContextAware {
             }
         }
 
-        String site = SessionServiceImpl.lookupUserSiteName();
+        if (site == null) {
+            site = SessionServiceImpl.lookupUserSiteName();
+        }
 
         try {
             workingMemory.setGlobal("applicationContext", applicationContext);
@@ -79,7 +86,7 @@ public class RulesInterceptor implements ApplicationContextAware {
             workingMemory.fireAllRules();
         } catch (Exception e) {
             logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
-            e.printStackTrace();
+            logger.info(e);
         }
         return pjp.proceed(args);
     }

@@ -1,155 +1,86 @@
 package com.mpower.service.rule;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.compiler.DroolsError;
-import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderErrors;
-import org.drools.rule.Package;
+import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
-import com.mpower.domain.Site;
-import com.mpower.domain.SiteAware;
-import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
+import com.mpower.service.SessionServiceImpl;
 
 @Aspect
 @Component("rulesInterceptor")
 public class RulesInterceptor implements ApplicationContextAware {
 
-    private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
-    @Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
-    public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
+	@Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
+	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
 
-        Object[] args = pjp.getArgs();
-        RuleBase ruleBase = loadRules(args);
-        if (ruleBase == null) {
-            return pjp.proceed();
-        }
+		Object[] args = pjp.getArgs();
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		Properties props = new Properties();
+		props.put("url", "http://localhost:8080/drools-jbrms/org.drools.brms.JBRMS/package/com.mpower/NEWEST");
+		props.put("newInstance", "true");
+		props.put("name","testagent");
 
-        @SuppressWarnings("unused")
-        PersonService ps = (PersonService) applicationContext.getBean("personService");
-        GiftService gs = (GiftService) applicationContext.getBean("giftService");
+		RuleAgent agent = RuleAgent.newRuleAgent(props);
+		RuleBase ruleBase = agent.getRuleBase();
 
-        for (Object entity : args) {
-            workingMemory.insert(entity);
+		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-            try {
-                Gift gift = (Gift) entity;
-                List<Gift> gifts = gs.readGiftsByPersonId(gift.getPerson().getId());
-                Iterator<Gift> giftsIter = gifts.iterator();
-                while (giftsIter.hasNext()) {
-                    workingMemory.insert(giftsIter.next());
-                }
+		@SuppressWarnings("unused")
+		PersonService ps = (PersonService) applicationContext.getBean("personService");
+		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
-                Person person = gift.getPerson();
-                workingMemory.insert(person);
+		for (Object entity : args) {
+			workingMemory.insert(entity);
 
-            } catch (Exception ex) {
-            }
-        }
+			try {
+				Gift gift = (Gift) entity;
+				List<Gift> gifts = gs.readGiftsByPersonId(gift.getPerson().getId());
+				Iterator<Gift> giftsIter = gifts.iterator();
+				while (giftsIter.hasNext()) {
+					workingMemory.insert(giftsIter.next());
+				}
 
-        workingMemory.setGlobal("applicationContext", applicationContext);
-        logger.info("*** firing all rules");
+				Person person = gift.getPerson();
+				workingMemory.insert(person);
 
-        workingMemory.fireAllRules();
+			} catch (Exception ex) {
+			}
+		}
 
-        return pjp.proceed(args);
-    }
+		String site = SessionServiceImpl.lookupUserSiteName();
 
-    private RuleBase loadRules(Object[] entities) throws Exception {
+		workingMemory.setGlobal("applicationContext", applicationContext);
+		logger.info("*** firing all rules");
 
-        try {
-            if (entities == null || entities.length == 0) {
-                return null;
-            }
-            PackageBuilder builder = new PackageBuilder();
+		String ruleflow = "com.mpower." + site + "_GiftDonatedRuleflow";
+		workingMemory.startProcess(ruleflow);
+		workingMemory.fireAllRules();
+		return pjp.proceed(args);
+	}
 
-            boolean foundRule = false;
-
-            // TODO: Need a better overall strategy for looking up a rule file
-            // Consider checking the database first and then falling back to the file.
-            for (Object entity : entities) {
-
-                String site = null;
-                if (SecurityContextHolder.getContext().getAuthentication() != null) {
-                    site = ((MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication()).getSite();
-                } else {
-                    // we must be running from a timer and no one is logged in
-                    if (entity instanceof SiteAware) {
-                        Site s = ((SiteAware) entity).getSite();
-                        site = s != null ? s.getName() : null;
-                    }
-                }
-
-                if (site == null) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("site is null, so unable to process rules");
-                    }
-                    continue;
-                }
-
-                String name = "/rules/" + site + "_" + entity.getClass().getSimpleName() + "_maintain.dslr";
-                InputStream stream = getClass().getResourceAsStream(name);
-                if (stream == null) {
-                    continue;
-                }
-                foundRule = true;
-                String dslName = "/rules/" + site + "_Language.dsl";
-                InputStream dslStream = getClass().getResourceAsStream(dslName);
-                builder.addPackageFromDrl(new InputStreamReader(stream), new InputStreamReader(dslStream));
-                IOUtils.closeQuietly(stream);
-            }
-            if (!foundRule) {
-                return null;
-            }
-
-            if (builder.hasErrors()) {
-                PackageBuilderErrors errors = builder.getErrors();
-                StringBuffer buff = new StringBuffer("An error occured loading Drools: ").append(System.getProperty("line.separator"));
-                DroolsError[] drlErrors = errors.getErrors();
-                for (DroolsError error : drlErrors) {
-                    buff.append(error.getMessage()).append(System.getProperty("line.separator"));
-                }
-                logger.error(buff.toString());
-            }
-
-            Package pkg = builder.getPackage();
-
-            // add the package to a rule base.
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            ruleBase.addPackage(pkg);
-            return ruleBase;
-        } finally {
-        }
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 }

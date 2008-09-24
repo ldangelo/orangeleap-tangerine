@@ -40,6 +40,17 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     private static final long serialVersionUID = 1L;
 
+    public static final String STATUS_ACTIVE = "active";
+    public static final String STATUS_CANCELED = "canceled";
+    public static final String STATUS_EXPIRED = "expired";
+    public static final String STATUS_FULFILLED = "fulfilled";
+    public static final String STATUS_SUSPEND = "suspend";
+
+    public static final String FREQUENCY_WEEKLY = "weekly";
+    public static final String FREQUENCY_MONTHLY = "monthly";
+    public static final String FREQUENCY_QUARTERLY = "quarterly";
+    public static final String FREQUENCY_ANNUALLY = "annually";
+
     @SuppressWarnings("unused")
     @Transient
     private final Log logger = LogFactory.getLog(getClass());
@@ -406,10 +417,23 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
         boolean recur = true;
         if (getEndDate() != null && getEndDate().before(Calendar.getInstance().getTime())) {
             recur = false;
-        } else if ("canceled".equals(getStatus()) || "expired".equals(getStatus()) || "suspend".equals(getStatus())) {
+        } else if ("canceled".equals(getStatus()) || "expired".equals(getStatus())) {
             recur = false;
+        } else if ("suspend".equals(getStatus())) {
+            if (suspendStartDate == null && suspendEndDate == null) {
+                recur = false;
+            } else {
+                Date now = new Date();
+                if (suspendStartDate != null && suspendEndDate != null && now.after(suspendStartDate) && suspendEndDate.after(endDate)) {
+                    return false;
+                }
+            }
         }
         return recur;
+    }
+
+    public boolean isSuspended(Date date) {
+        return "suspend".equals(getStatus()) && suspendStartDate.before(date) && suspendEndDate.after(date);
     }
 
     public String getCreditCardType() {

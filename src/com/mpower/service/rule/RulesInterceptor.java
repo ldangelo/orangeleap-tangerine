@@ -27,60 +27,65 @@ import com.mpower.service.SessionServiceImpl;
 @Component("rulesInterceptor")
 public class RulesInterceptor implements ApplicationContextAware {
 
-	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+    private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
-	private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-	@Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
-	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
+    @Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
+    public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
 
-		Object[] args = pjp.getArgs();
+        Object[] args = pjp.getArgs();
 
-		Properties props = new Properties();
-		props.put("url", "http://localhost:8080/drools-jbrms/org.drools.brms.JBRMS/package/com.mpower/NEWEST");
-		props.put("newInstance", "true");
-		props.put("name","testagent");
+        Properties props = new Properties();
+        props.put("url", "http://localhost:8080/drools-jbrms/org.drools.brms.JBRMS/package/com.mpower/NEWEST");
+        props.put("newInstance", "true");
+        props.put("name", "testagent");
 
-		RuleAgent agent = RuleAgent.newRuleAgent(props);
-		RuleBase ruleBase = agent.getRuleBase();
+        RuleAgent agent = RuleAgent.newRuleAgent(props);
+        RuleBase ruleBase = agent.getRuleBase();
 
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-		@SuppressWarnings("unused")
-		PersonService ps = (PersonService) applicationContext.getBean("personService");
-		GiftService gs = (GiftService) applicationContext.getBean("giftService");
+        @SuppressWarnings("unused")
+        PersonService ps = (PersonService) applicationContext.getBean("personService");
+        GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
-		for (Object entity : args) {
-			workingMemory.insert(entity);
+        for (Object entity : args) {
+            workingMemory.insert(entity);
 
-			try {
-				Gift gift = (Gift) entity;
-				List<Gift> gifts = gs.readGiftsByPersonId(gift.getPerson().getId());
-				Iterator<Gift> giftsIter = gifts.iterator();
-				while (giftsIter.hasNext()) {
-					workingMemory.insert(giftsIter.next());
-				}
+            try {
+                Gift gift = (Gift) entity;
+                List<Gift> gifts = gs.readGiftsByPersonId(gift.getPerson().getId());
+                Iterator<Gift> giftsIter = gifts.iterator();
+                while (giftsIter.hasNext()) {
+                    workingMemory.insert(giftsIter.next());
+                }
 
-				Person person = gift.getPerson();
-				workingMemory.insert(person);
+                Person person = gift.getPerson();
+                workingMemory.insert(person);
 
-			} catch (Exception ex) {
-			}
-		}
+            } catch (Exception ex) {
+            }
+        }
 
-		String site = SessionServiceImpl.lookupUserSiteName();
+        String site = SessionServiceImpl.lookupUserSiteName();
 
-		workingMemory.setGlobal("applicationContext", applicationContext);
-		logger.info("*** firing all rules");
+        try {
+            workingMemory.setGlobal("applicationContext", applicationContext);
+            logger.info("*** firing all rules");
 
-		String ruleflow = "com.mpower." + site + "_GiftDonatedRuleflow";
-		workingMemory.startProcess(ruleflow);
-		workingMemory.fireAllRules();
-		return pjp.proceed(args);
-	}
+            String ruleflow = "com.mpower." + site + "_GiftDonatedRuleflow";
+            workingMemory.startProcess(ruleflow);
+            workingMemory.fireAllRules();
+        } catch (Exception e) {
+            logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
+            e.printStackTrace();
+        }
+        return pjp.proceed(args);
+    }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

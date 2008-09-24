@@ -15,11 +15,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CommitmentDao;
-import com.mpower.dao.RecurringGiftDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Person;
-import com.mpower.domain.RecurringGift;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
@@ -32,11 +30,11 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
+
     @Resource(name = "commitmentDao")
     private CommitmentDao commitmentDao;
-
-    @Resource(name = "recurringGiftDao")
-    private RecurringGiftDao recurringGiftDao;
 
     @Resource(name = "siteDao")
     private SiteDao siteDao;
@@ -44,19 +42,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Commitment maintainCommitment(Commitment commitment) {
-        if (commitment.isAutoPay()) {
-            RecurringGift rg = commitment.getRecurringGift();
-            if (commitment.getRecurringGift() == null) {
-                rg = new RecurringGift(commitment);
-                rg.setNextRunDate(commitment.getStartDate());
-                commitment.setRecurringGift(rg);
-            } else {
-                if (!commitment.canRecur()) {
-                    commitment.setRecurringGift(null);
-                    recurringGiftDao.remove(rg);
-                }
-            }
-        }
+        commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         commitment = commitmentDao.maintainCommitment(commitment);
         auditService.auditObject(commitment);
         return commitment;

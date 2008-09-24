@@ -2,6 +2,7 @@ package com.mpower.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -125,6 +126,14 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     @OneToOne(mappedBy = "commitment", cascade = { CascadeType.ALL })
     private RecurringGift recurringGift;
 
+    @Column(name = "SUSPEND_START_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date suspendStartDate;
+
+    @Column(name = "SUSPEND_END_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date suspendEndDate;
+
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
@@ -139,6 +148,9 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+
+    @Transient
+    private BigInteger amountTotal = null;
 
     public Long getId() {
         return id;
@@ -454,5 +466,29 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     public void setAchAccountNumber(String achAccountNumber) {
         getPaymentSource().setAchAccountNumber(achAccountNumber);
+    }
+
+    public BigInteger getAmountTotal() {
+        return amountTotal;
+    }
+
+    public void setAmountTotal(BigInteger amountTotal) {
+        this.amountTotal = amountTotal;
+    }
+
+    public Date getSuspendStartDate() {
+        return suspendStartDate;
+    }
+
+    public void setSuspendStartDate(Date suspendStartDate) {
+        this.suspendStartDate = suspendStartDate;
+    }
+
+    public Date getSuspendEndDate() {
+        return suspendEndDate;
+    }
+
+    public void setSuspendEndDate(Date suspendEndDate) {
+        this.suspendEndDate = suspendEndDate;
     }
 }

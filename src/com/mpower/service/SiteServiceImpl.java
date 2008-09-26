@@ -47,8 +47,6 @@ public class SiteServiceImpl implements SiteService {
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
-    private Map<PageType, List<SectionField>> sectionFieldsMap = new HashMap<PageType, List<SectionField>>();
-
     @Override
     public List<Site> readSites() {
         return siteDao.readSites();
@@ -121,20 +119,17 @@ public class SiteServiceImpl implements SiteService {
     }
 
     private List<SectionField> getSectionFields(String siteName, PageType pageType, List<String> roles) {
-        if (sectionFieldsMap.get(pageType) == null) {
-            List<SectionField> fields = new ArrayList<SectionField>();
-            List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(siteName, pageType, roles);
-            if (sectionDefinitions != null) {
-                for (SectionDefinition sectionDefinition : sectionDefinitions) {
-                    List<SectionField> currentSectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(siteName, sectionDefinition);
-                    if (currentSectionFields != null) {
-                        fields.addAll(currentSectionFields);
-                    }
+        List<SectionField> fields = new ArrayList<SectionField>();
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(siteName, pageType, roles);
+        if (sectionDefinitions != null) {
+            for (SectionDefinition sectionDefinition : sectionDefinitions) {
+                List<SectionField> currentSectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(siteName, sectionDefinition);
+                if (currentSectionFields != null) {
+                    fields.addAll(currentSectionFields);
                 }
             }
-            sectionFieldsMap.put(pageType, fields);
         }
-        return sectionFieldsMap.get(pageType);
+        return fields;
     }
 
     @Override

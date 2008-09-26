@@ -17,6 +17,7 @@ import com.mpower.dao.RecurringGiftDao;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.RecurringGift;
+import com.mpower.type.GiftEntryType;
 
 @Service("recurringGiftService")
 public class RecurringGiftServiceImpl implements RecurringGiftService {
@@ -62,7 +63,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 Commitment commitment = rg.getCommitment();
                 Date nextDate = null;
                 if (commitment.getEndDate() == null || commitment.getEndDate().after(getToday().getTime())) {
-                    createGift(rg.getCommitment());
+                    createAutoGift(rg.getCommitment());
                     nextDate = getNextRecurringGiftDate(rg.getCommitment());
                     if (nextDate != null) {
                         rg.setNextRunDate(nextDate);
@@ -77,17 +78,18 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         }
     }
 
-    private void createGift(Commitment commitment) {
+    private void createAutoGift(Commitment commitment) {
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
         gift.setCommitment(commitment);
         gift.setComments(commitment.getComments());
         gift.setDeductible(commitment.isDeductible());
         gift.setValue(commitment.getAmountPerGift());
-        // TODO: change payment type to reflect commitment payment type
-        gift.setPaymentType(commitment.getPaymentSource().getType());
+        gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
+        gift.setEntryType(GiftEntryType.AUTO);
         gift = giftService.maintainGift(gift);
+        commitment.setLastEntryDate(gift.getTransactionDate());
     }
 
     private Date getNextRecurringGiftDate(Commitment commitment) {
@@ -100,9 +102,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
 
         if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
             nextGiftDate = null;
-        } else if (commitment.getNumberOfGifts() != null && commitment.getGifts().size() >= commitment.getNumberOfGifts()) {
-            logger.debug("commitment number of gifts met, so removing recurring gift");
-            nextGiftDate = null;
         } else if (Commitment.STATUS_ACTIVE.equals(commitment.getStatus())) {
             nextGiftDate = calculateNextRunDate(commitment);
         } else if (Commitment.STATUS_FULFILLED.equals(commitment.getStatus())) {
@@ -113,14 +112,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             nextGiftDate = null;
         }
 
-        if (nextGiftDate != null) {
-            Date prevDate = commitment.getRecurringGift() == null ? null : commitment.getRecurringGift().getNextRunDate();
-            logger.debug("frequency = " + commitment.getFrequency() + ": previous gift was for, " + prevDate + ", setting next gift for " + nextGiftDate);
-
-            // TODO: remove once done testing
-            // Calendar testNextRun = Calendar.getInstance();
-            // testNextRun.add(Calendar.MINUTE, 1);
-            // nextGiftDate = testNextRun.getTime();
+        if (nextGiftDate != null && logger.isDebugEnabled()) {
             logger.debug("it is currently, " + Calendar.getInstance().getTime() + ", running again at " + nextGiftDate);
         }
         return nextGiftDate;
@@ -134,7 +126,8 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         } else {
             nextRun.setTime(commitment.getStartDate());
         }
-        while (nextRun.before(getToday()) || commitment.isSuspended(nextRun.getTime())) {
+        logger.debug("next run = " + nextRun.getTime() + " millis=" + nextRun.getTimeInMillis());
+        while (nextRun.before(getToday()) || commitment.isSuspended(nextRun.getTime()) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
             if (commitment.isSuspended(nextRun.getTime())) {
                 logger.debug("next run, " + nextRun.getTime() + " is during a suspended period so going to next");
             }
@@ -159,8 +152,11 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
 
     private Calendar getToday() {
         Calendar today = Calendar.getInstance();
-        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
-        logger.debug("getToday() = " + today.getTime());
+        today.clear();
+        today.set(Calendar.YEAR, today.get(Calendar.YEAR));
+        today.set(Calendar.MONTH, today.get(Calendar.MONTH));
+        today.set(Calendar.DAY_OF_MONTH, today.get(Calendar.DAY_OF_MONTH));
+        logger.debug("getToday() = " + today.getTime() + " millis=" + today.getTimeInMillis());
         return today;
     }
 }

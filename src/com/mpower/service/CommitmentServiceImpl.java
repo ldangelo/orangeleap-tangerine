@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.CommitmentDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
@@ -43,6 +44,18 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Commitment maintainCommitment(Commitment commitment) {
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
+        if ("Credit Card".equals(commitment.getPaymentType()) || "ACH".equals(commitment.getPaymentType())) {
+            PaymentSource paymentSource = new PaymentSource();
+            paymentSource.setAchAccountNumber(commitment.getAchAccountNumber());
+            paymentSource.setAchRoutingNumber(commitment.getAchRoutingNumber());
+            paymentSource.setAchType(commitment.getAchType());
+            paymentSource.setCreditCardExpiration(commitment.getCreditCardExpiration());
+            paymentSource.setCreditCardNumber(commitment.getCreditCardNumber());
+            paymentSource.setCreditCardType(commitment.getCreditCardType());
+            paymentSource.setPerson(commitment.getPerson());
+            paymentSource.setType(commitment.getPaymentType());
+            commitment.setPaymentSource(paymentSource);
+        }
         commitment = commitmentDao.maintainCommitment(commitment);
         auditService.auditObject(commitment);
         return commitment;

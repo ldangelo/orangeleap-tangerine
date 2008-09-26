@@ -13,6 +13,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
+import com.mpower.type.GiftEntryType;
 import com.mpower.util.GiftCustomFieldMap;
 
 @Entity
@@ -98,6 +101,10 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
+
+    @Column(name="ENTRY_TYPE")
+    @Enumerated(EnumType.STRING)
+    private GiftEntryType entryType = GiftEntryType.MANUAL;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -444,5 +451,13 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setAchAccountNumber(String achAccountNumber) {
         getPaymentSource().setAchAccountNumber(achAccountNumber);
+    }
+
+    public GiftEntryType getEntryType() {
+        return entryType;
+    }
+
+    public void setEntryType(GiftEntryType entryType) {
+        this.entryType = entryType;
     }
 }

@@ -145,6 +145,10 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     @Temporal(TemporalType.TIMESTAMP)
     private Date suspendEndDate;
 
+    @Column(name = "LAST_ENTRY_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastEntryDate;
+
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
@@ -514,5 +518,13 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     public void setSuspendEndDate(Date suspendEndDate) {
         this.suspendEndDate = suspendEndDate;
+    }
+
+    public Date getLastEntryDate() {
+        return lastEntryDate;
+    }
+
+    public void setLastEntryDate(Date lastEntryDate) {
+        this.lastEntryDate = lastEntryDate;
     }
 }

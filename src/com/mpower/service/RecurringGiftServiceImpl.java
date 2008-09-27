@@ -17,7 +17,6 @@ import com.mpower.dao.RecurringGiftDao;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.RecurringGift;
-import com.mpower.type.GiftEntryType;
 
 @Service("recurringGiftService")
 public class RecurringGiftServiceImpl implements RecurringGiftService {
@@ -79,15 +78,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     }
 
     private void createAutoGift(Commitment commitment) {
-        Gift gift = new Gift();
-        gift.setPerson(commitment.getPerson());
-        gift.setCommitment(commitment);
-        gift.setComments(commitment.getComments());
-        gift.setDeductible(commitment.isDeductible());
-        gift.setValue(commitment.getAmountPerGift());
-        gift.setPaymentType(commitment.getPaymentType());
-        gift.setPaymentSource(commitment.getPaymentSource());
-        gift.setEntryType(GiftEntryType.AUTO);
+        Gift gift = giftService.createGift(commitment);
         gift = giftService.maintainGift(gift);
         commitment.setLastEntryDate(gift.getTransactionDate());
     }

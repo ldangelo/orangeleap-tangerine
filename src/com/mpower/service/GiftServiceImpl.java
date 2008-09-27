@@ -21,12 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.SiteDao;
+import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
+import com.mpower.type.GiftEntryType;
 
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
@@ -123,6 +125,20 @@ public class GiftServiceImpl implements GiftService {
         gift.addDistributionLine(new DistributionLine(gift));
 
         // TODO: consider caching techniques for the default Gift
+        return gift;
+    }
+
+    @Override
+    public Gift createGift(Commitment commitment) {
+        Gift gift = new Gift();
+        gift.setPerson(commitment.getPerson());
+        gift.setCommitment(commitment);
+        gift.setComments(commitment.getComments());
+        gift.setDeductible(commitment.isDeductible());
+        gift.setValue(commitment.getAmountPerGift());
+        gift.setPaymentType(commitment.getPaymentType());
+        gift.setPaymentSource(commitment.getPaymentSource());
+        gift.setEntryType(GiftEntryType.AUTO);
         return gift;
     }
 

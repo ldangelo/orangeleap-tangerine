@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 
@@ -30,4 +31,6 @@ public interface GiftService {
     public List<Gift> readAllGifts();
 
     public void setAuditService(AuditService auditService);
+
+    public Gift createGift(Commitment commitment);
 }

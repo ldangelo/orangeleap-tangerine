@@ -14,9 +14,11 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.service.CommitmentService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
@@ -28,9 +30,17 @@ public class GiftFormController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private CommitmentService commitmentService;
+
     private GiftService giftService;
 
     private PersonService personService;
+
+    private SiteService siteService;
+
+    public void setCommitmentService(CommitmentService commitmentService) {
+        this.commitmentService = commitmentService;
+    }
 
     public void setGiftService(GiftService giftService) {
         this.giftService = giftService;
@@ -39,8 +49,6 @@ public class GiftFormController extends SimpleFormController {
     public void setPersonService(PersonService personService) {
         this.personService = personService;
     }
-
-    private SiteService siteService;
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
@@ -56,17 +64,31 @@ public class GiftFormController extends SimpleFormController {
         String giftId = request.getParameter("giftId");
         Gift gift = null;
         if (giftId == null) {
-            String personId = request.getParameter("personId");
-            Person person = null;
-            if (personId != null) {
-                person = personService.readPersonById(Long.valueOf(personId));
-                if (person == null) {
-                    logger.error("**** person not found for id: " + personId);
+            String commitmentId = request.getParameter("commitmentId");
+            Commitment commitment = null;
+            if (commitmentId != null) {
+                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+                if (commitment == null) {
+                    logger.error("**** commitment not found for id: " + commitmentId);
                     return gift;
                 }
-                gift = giftService.createDefaultGift(person);
+                gift = giftService.createGift(commitment);
                 // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-                gift.setPerson(person);
+                gift.setPerson(commitment.getPerson());
+            }
+            if (gift == null) {
+                String personId = request.getParameter("personId");
+                Person person = null;
+                if (personId != null) {
+                    person = personService.readPersonById(Long.valueOf(personId));
+                    if (person == null) {
+                        logger.error("**** person not found for id: " + personId);
+                        return gift;
+                    }
+                    gift = giftService.createDefaultGift(person);
+                    // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+                    gift.setPerson(person);
+                }
             }
         } else {
             gift = giftService.readGiftById(new Long(giftId));

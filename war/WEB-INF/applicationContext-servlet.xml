@@ -61,6 +61,7 @@
         </property>
         <property name="formView" value="gift" />
         <property name="successView" value="giftView" />
+        <property name="commitmentService" ref="commitmentService" />
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />

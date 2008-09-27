@@ -139,6 +139,12 @@ public class GiftServiceImpl implements GiftService {
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(GiftEntryType.AUTO);
+        DistributionLine dl = new DistributionLine(gift);
+        dl.setCommitmentCode(commitment.getCommitmentCode());
+        dl.setProjectCode(commitment.getProjectCode());
+        dl.setMotivationCode(commitment.getMotivationCode());
+        dl.setAmount(commitment.getAmountPerGift());
+        gift.addDistributionLine(dl);
         return gift;
     }
 

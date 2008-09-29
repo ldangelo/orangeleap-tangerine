@@ -41,7 +41,7 @@
 </c:when>
 <c:otherwise>
 <c:forEach items="${codes}" var="code">
-${code.value}|${code.description}
+${code.value}|${code.description}&nbsp;
 </c:forEach>
 </c:otherwise>
 </c:choose>

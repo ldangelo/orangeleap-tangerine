@@ -22,7 +22,7 @@ function pieChart() {
       data.setValue(4, 1, 68);
 
       var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, {width: 375, height: 240, is3D: true});
+      chart.draw(data, {width: 330, height: 220, is3D: true});
       //, title: 'Gift Analysis by Motivation'
 }
 function areaChart() {

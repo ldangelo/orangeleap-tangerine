@@ -62,3 +62,11 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 	background-color: #dce8e8;
 	color:#000;
 }
+form table.minimal td {
+	padding:0;
+	border:0;
+	margin:0;
+}
+th.header a {
+	text-decoration:none;
+}

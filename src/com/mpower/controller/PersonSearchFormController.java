@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -60,7 +61,7 @@ public class PersonSearchFormController extends SimpleFormController {
 		Enumeration<String> enu = request.getParameterNames();
 		while (enu.hasMoreElements()) {
 			String param = enu.nextElement();
-			if (!param.equalsIgnoreCase("page") && StringUtils.trimToNull(request.getParameter(param)) != null) {
+			if (!param.equalsIgnoreCase("page") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("sort") && StringUtils.trimToNull(request.getParameter(param)) != null) {
 				try {
 					Object obj = bw.getPropertyValue(param);
 					params.put(param, obj);
@@ -72,8 +73,17 @@ public class PersonSearchFormController extends SimpleFormController {
 		}
 
 		List<Person> personList = personService.readPersons(SessionServiceImpl.lookupUserSiteName(), params);
-
-		PagedListHolder pagedListHolder = new PagedListHolder(personList);
+		String sort = request.getParameter("sort");
+		String ascending = request.getParameter("ascending");
+		Boolean sortAscending;
+		if (StringUtils.trimToNull(ascending) != null) {
+			sortAscending = new Boolean(ascending);
+		} else {
+			sortAscending = new Boolean(true);
+		}
+		MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
+		PagedListHolder pagedListHolder = new PagedListHolder(personList,sortDef);
+		pagedListHolder.resort();
 		pagedListHolder.setMaxLinkedPages(3);
 		pagedListHolder.setPageSize(10);
 		String page = request.getParameter("page");
@@ -87,6 +97,8 @@ public class PersonSearchFormController extends SimpleFormController {
 
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.addObject("pagedListHolder", pagedListHolder);
+		mav.addObject("currentSort", sort);
+		mav.addObject("currentAscending", sortAscending);
 		mav.addObject("person", person);
 		mav.addObject("personList", personList);
 		mav.addObject("personListSize", personList.size());

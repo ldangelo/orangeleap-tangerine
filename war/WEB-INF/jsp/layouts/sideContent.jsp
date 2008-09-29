@@ -28,14 +28,11 @@
 						<a class="${sidebarNav=='Commitment History'?'active':''}" href="commitmentList.htm?personId=${person.id}">Commitment History</a>
 		            </c:if>
 					<a href="#">Addresses</a>
-					<a href="#">Billing</a>
+					<a href="#">Payment Methods</a>
 					<a href="#">Account Statement</a>
-					<a href="#">Codes</a>
 					<a href="#">Notes</a>
 					<a href="#">Dates</a>
-					<a href="#">Pledges</a>
 					<a href="#">Relationships</a>
-					<a href="#">Subscriptions</a>
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}">Audit</a>
 				</div>
 			</c:if>

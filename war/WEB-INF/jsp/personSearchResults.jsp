@@ -54,7 +54,7 @@
 	
 	<mp:page pageName='personSearchResults' />
 	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-		<table id="myTable" class="tablesorter" cellspacing="0" cellpadding="0"> 
+		<table class="tablesorter" cellspacing="0" cellpadding="0"> 
 			<thead> 
 				<c:forEach items="${personList}" var="row" begin="0" end="0">
 					<tr>
@@ -65,7 +65,7 @@
 			</thead> 
 			<tbody> 
 				<c:forEach items="${pagedListHolder.pageList}" var="row">
-					<tr class="personRow" rel="personView.htm?personId=${row.id}">
+					<tr>
 						<td><a href="person.htm?personId=${row.id}">Edit</a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>

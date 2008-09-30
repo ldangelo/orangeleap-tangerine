@@ -8,7 +8,7 @@
 
 	<mp:page pageName='giftSearchResults' />
 	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-		<table id="myTable" class="tablesorter" cellspacing="0" cellpadding="0">
+		<table class="tablesorter" cellspacing="0" cellpadding="0">
 			<thead>
 				<c:forEach items="${giftList}" var="row" begin="0" end="0">
 					<tr>

@@ -34,6 +34,16 @@ public class SessionServiceImpl implements SessionService {
         return authentication != null ? authentication.getSite() : null;
     }
 
+    public static String lookupUserName() {
+        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    public static String lookupUserPassword() {
+        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return (String) authentication.getCredentials();
+    }
+
     public static List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         RoleType greatestRoleType = null;

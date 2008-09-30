@@ -31,6 +31,7 @@
         <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
         <sec:concurrent-session-control expired-url="/login.jsp" max-sessions="1" exception-if-maximum-exceeded="true"/>
+        <sec:logout/>
     </sec:http>
 
     <bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
@@ -122,4 +123,13 @@
            <property name="exceptionIfMaximumExceeded" value="true"/>
     </bean>
     <bean id="sessionRegistry" class="org.springframework.security.concurrent.SessionRegistryImpl"/>
+
+    <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
+	</bean>
+
+    <bean id="ldapService" class="com.mpower.service.ldap.LdapServiceImpl">
+    	<property name="ldapTemplate" ref="ldapTemplate"/>
+	</bean>
+
 </beans>

@@ -43,11 +43,14 @@
     </bean>
 
     <bean id="account" class="com.mpower.controller.AccountFormController">
-        <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.Person"/>
+        <property name="commandName" value="user"/>
+        <property name="commandClass" value="com.mpower.domain.PasswordChange"/>
+        <property name="validator">
+            <bean class="com.mpower.controller.validator.PasswordChangeValidator"/>
+        </property>
         <property name="formView" value="account" />
         <property name="successView" value="account" />
-        <property name="personService" ref="personService" />
+        <property name="ldapService" ref="ldapService"/>
     </bean>
 
     <bean id="gift" class="com.mpower.controller.GiftFormController">

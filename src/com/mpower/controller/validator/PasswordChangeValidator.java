@@ -14,6 +14,8 @@ public class PasswordChangeValidator implements Validator {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private static final int MINIMUM_PASSWORD_LENGTH = 6;
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
@@ -28,11 +30,11 @@ public class PasswordChangeValidator implements Validator {
         String oldPw = StringUtils.trimToEmpty(pwChange.getCurrentPassword());
 
         // spoke with Jenn and we're starting:
-        //   old password entered must match current password
-        //   new password and confirm password must match
-        //   new password must be different than current password
-        //   minimum 6 characters
-        //   TODO: force change password every 60 days
+        // old password entered must match current password
+        // new password and confirm password must match
+        // new password must be different than current password
+        // minimum 6 characters
+        // TODO: force change password every 60 days
         String authenticatedPw = SessionServiceImpl.lookupUserPassword();
         if (!authenticatedPw.equals(oldPw)) {
             errors.rejectValue("currentPassword", "currentPasswordIncorrect", null, "current password is incorrect");
@@ -45,9 +47,9 @@ public class PasswordChangeValidator implements Validator {
             logger.debug("new password, " + newPw + ", must be different then current password");
         } else {
             // TODO: validated password requirements here
-            if (newPw.trim().length() < 6) {
-                errors.rejectValue("newPassword", "newPasswordSizeIncorrect", null, "new password must be at least 6 characters");
-                logger.debug("new password, " + newPw + ", must be at least 6 characters");
+            if (newPw.trim().length() < MINIMUM_PASSWORD_LENGTH) {
+                errors.rejectValue("newPassword", "newPasswordSizeIncorrect", null, "new password must be at least " + MINIMUM_PASSWORD_LENGTH + " characters");
+                logger.debug("new password, " + newPw + ", must be at least " + MINIMUM_PASSWORD_LENGTH + " characters");
             }
         }
     }

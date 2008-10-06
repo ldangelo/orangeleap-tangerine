@@ -175,7 +175,6 @@
         <property name="formView" value="code" />
         <property name="successView" value="code" />
         <property name="codeService" ref="codeService"/>
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

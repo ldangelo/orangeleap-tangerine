@@ -11,7 +11,6 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.customization.Code;
 import com.mpower.service.CodeService;
-import com.mpower.service.SessionService;
 import com.mpower.service.SessionServiceImpl;
 
 public class CodeFormController extends SimpleFormController {
@@ -21,14 +20,8 @@ public class CodeFormController extends SimpleFormController {
 
     private CodeService codeService;
 
-    private SessionService sessionService;
-
     public void setCodeService(CodeService codeService) {
         this.codeService = codeService;
-    }
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
     }
 
     @Override
@@ -38,9 +31,6 @@ public class CodeFormController extends SimpleFormController {
         if (codeId == null) {
             Code code = new Code();
             code.setType(codeService.readCodeType(codeType,SessionServiceImpl.lookupUserSiteName()));
-            //if (isFormSubmission(request)) {
-            //    code.setSite(sessionService.lookupSite());
-            //}
             return code;
         } else {
             return codeService.readCodeById(new Long(codeId));

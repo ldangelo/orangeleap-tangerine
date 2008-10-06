@@ -1,53 +1,53 @@
-dn: o=mpowerOpen
+dn: dc=mpowerOpen-dev
 objectClass: organization
 objectClass: extensibleObject
 objectClass: top
 o: mpowerOpen
 
-dn: o=company1,o=mpowerOpen
+dn: o=company1,dc=mpowerOpen-dev
 objectClass: organization
 objectClass: extensibleObject
 objectClass: top
 o: company1
 
-dn: ou=roles,o=company1,o=mpowerOpen
+dn: ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: organizationalUnit
 objectClass: top
 ou: roles
 
-dn: cn=admin,ou=roles,o=company1,o=mpowerOpen
+dn: cn=admin,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: admin
-member: uid=rod,ou=users,o=company1,o=mpowerOpen
-member: uid=randy,ou=users,o=company1,o=mpowerOpen
+member: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: cn=manager,ou=roles,o=company1,o=mpowerOpen
+dn: cn=manager,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: manager
-member: uid=dianne,ou=users,o=company1,o=mpowerOpen
-member: uid=rod,ou=users,o=company1,o=mpowerOpen
-member: uid=nolan,ou=users,o=company1,o=mpowerOpen
-member: uid=randy,ou=users,o=company1,o=mpowerOpen
+member: uid=dianne,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: cn=user,ou=roles,o=company1,o=mpowerOpen
+dn: cn=user,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: user
-member: uid=dianne,ou=users,o=company1,o=mpowerOpen
-member: uid=rod,ou=users,o=company1,o=mpowerOpen
-member: uid=scott,ou=users,o=company1,o=mpowerOpen
-member: uid=randy,ou=users,o=company1,o=mpowerOpen
-member: uid=nolan,ou=users,o=company1,o=mpowerOpen
-member: uid=greg,ou=users,o=company1,o=mpowerOpen
+member: uid=dianne,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=scott,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=greg,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: ou=users,o=company1,o=mpowerOpen
+dn: ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: organizationalUnit
 objectClass: top
 ou: users
 
-dn: uid=dianne,ou=users,o=company1,o=mpowerOpen
+dn: uid=dianne,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -57,7 +57,7 @@ sn: Emu
 uid: dianne
 userpassword:: e1NIQX1aVkhubHlRQVVaSmJpbUpoWDB5THFxVEJhWXc9
 
-dn: uid=rod,ou=users,o=company1,o=mpowerOpen
+dn: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -67,7 +67,7 @@ sn: Johnson
 uid: rod
 userpassword:: e1NIQX1lbk5qN3U4VzNpYXlPSVRKbTU4SEFFV08xMDg9
 
-dn: uid=scott,ou=users,o=company1,o=mpowerOpen
+dn: uid=scott,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -77,44 +77,44 @@ sn: Wombat
 uid: scott
 userpassword:: e1NIQX1kTHFqdkNHaHlGNzM4OWZ2NTlkZEtYNHJ4WDQ9
 
-dn: o=company2,o=mpowerOpen
+dn: o=company2,dc=mpowerOpen-dev
 objectClass: organization
 objectClass: extensibleObject
 objectClass: top
 o: company2
 
-dn: ou=roles,o=company2,o=mpowerOpen
+dn: ou=roles,o=company2,dc=mpowerOpen-dev
 objectClass: organizationalUnit
 objectClass: top
 ou: roles
 
-dn: cn=admin,ou=roles,o=company2,o=mpowerOpen
+dn: cn=admin,ou=roles,o=company2,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: admin
-member: uid=jack,ou=users,o=company2,o=mpowerOpen
+member: uid=jack,ou=users,o=company2,dc=mpowerOpen-dev
 
-dn: cn=manager,ou=roles,o=company2,o=mpowerOpen
+dn: cn=manager,ou=roles,o=company2,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: manager
-member: uid=jack,ou=users,o=company2,o=mpowerOpen
-member: uid=locke,ou=users,o=company2,o=mpowerOpen
+member: uid=jack,ou=users,o=company2,dc=mpowerOpen-dev
+member: uid=locke,ou=users,o=company2,dc=mpowerOpen-dev
 
-dn: cn=user,ou=roles,o=company2,o=mpowerOpen
+dn: cn=user,ou=roles,o=company2,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: user
-member: uid=hurley,ou=users,o=company2,o=mpowerOpen
-member: uid=jack,ou=users,o=company2,o=mpowerOpen
-member: uid=locke,ou=users,o=company2,o=mpowerOpen
+member: uid=hurley,ou=users,o=company2,dc=mpowerOpen-dev
+member: uid=jack,ou=users,o=company2,dc=mpowerOpen-dev
+member: uid=locke,ou=users,o=company2,dc=mpowerOpen-dev
 
-dn: ou=users,o=company2,o=mpowerOpen
+dn: ou=users,o=company2,dc=mpowerOpen-dev
 objectClass: organizationalUnit
 objectClass: top
 ou: users
 
-dn: uid=jack,ou=users,o=company2,o=mpowerOpen
+dn: uid=jack,ou=users,o=company2,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -124,7 +124,7 @@ sn: Johnson
 uid: jack
 userpassword:: e1NIQX1XV2NueUtEcVRiTzZMT3p1M011czA5ZXpjYmc9
 
-dn: uid=locke,ou=users,o=company2,o=mpowerOpen
+dn: uid=locke,ou=users,o=company2,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -134,7 +134,7 @@ sn: Emu
 uid: locke
 userpassword:: e1NIQX03YXJhQnRjRkdiSVdQajczU0lHbkRUV3dFTWc9
 
-dn: uid=hurley,ou=users,o=company2,o=mpowerOpen
+dn: uid=hurley,ou=users,o=company2,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -144,31 +144,31 @@ sn: Wombat
 uid: hurley
 userpassword:: e1NIQX12ZjJYYjRPaWlRWXJ4SHBVV3phTDUySGZqMWs9
 
-dn: cn=super_admin,ou=roles,o=company1,o=mpowerOpen
+dn: cn=super_admin,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: super_admin
-member: uid=nolan,ou=users,o=company1,o=mpowerOpen
+member: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: cn=super_manager,ou=roles,o=company1,o=mpowerOpen
+dn: cn=super_manager,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: super_manager
-member: uid=randy,ou=users,o=company1,o=mpowerOpen
-member: uid=nolan,ou=users,o=company1,o=mpowerOpen
-member: uid=rod,ou=users,o=company1,o=mpowerOpen
+member: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: cn=super_user,ou=roles,o=company1,o=mpowerOpen
+dn: cn=super_user,ou=roles,o=company1,dc=mpowerOpen-dev
 objectClass: groupOfNames
 objectClass: top
 cn: super_user
-member: uid=dianne,ou=users,o=company1,o=mpowerOpen
-member: uid=randy,ou=users,o=company1,o=mpowerOpen
-member: uid=nolan,ou=users,o=company1,o=mpowerOpen
-member: uid=rod,ou=users,o=company1,o=mpowerOpen
-member: uid=greg,ou=users,o=company1,o=mpowerOpen
+member: uid=dianne,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=rod,ou=users,o=company1,dc=mpowerOpen-dev
+member: uid=greg,ou=users,o=company1,dc=mpowerOpen-dev
 
-dn: uid=nolan,ou=users,o=company1,o=mpowerOpen
+dn: uid=nolan,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
@@ -178,7 +178,7 @@ sn: Ryan
 uid: nolan
 userpassword:: e1NIQX02anpaZUdVRUYwY0ZOZk9rY2x0clVFS21xMWs9
 
-dn: uid=randy,ou=users,o=company1,o=mpowerOpen
+dn: uid=randy,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -188,7 +188,7 @@ sn: Johnson
 uid: randy
 userpassword:: e1NIQX1yT2lUK3l5VlU2T0toeit3UFE0aHBBYXpVYUU9
 
-dn: uid=greg,ou=users,o=company1,o=mpowerOpen
+dn: uid=greg,ou=users,o=company1,dc=mpowerOpen-dev
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson

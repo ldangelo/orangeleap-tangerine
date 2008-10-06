@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.GrantedAuthority;
@@ -19,6 +20,7 @@ import org.springframework.security.util.TextUtils;
 import org.springframework.util.Assert;
 
 import com.mpower.service.customization.PageCustomizationService;
+import com.mpower.service.ldap.LdapService;
 import com.mpower.type.AccessType;
 import com.mpower.util.HttpUtil;
 
@@ -36,6 +38,9 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
     public void setPageCustomizationService(PageCustomizationService pageCustomizationService) {
         this.pageCustomizationService = pageCustomizationService;
     }
+
+    @Autowired
+    private LdapService ldapService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request) throws AuthenticationException {
@@ -86,6 +91,10 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         request.getSession().setAttribute("pageAccess", pageAccess);
         ((MpowerAuthenticationToken) authResult).setPageAccess(pageAccess);
         logger.debug(pageAccess);
+
+        request.getSession().setAttribute("passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
+        request.getSession().setAttribute("lastlogindate", ldapService.getLastLogin().getTime());
+        ldapService.setLastLogin();
     }
 
     protected String obtainSite(HttpServletRequest request) {

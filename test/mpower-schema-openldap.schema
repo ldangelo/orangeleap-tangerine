@@ -1,0 +1,24 @@
+attributetype ( 1.3.6.1.4.1.18060.0.4.3.2.2 
+	NAME 'lastlogin' 
+	DESC 'last login date' 
+	EQUALITY generalizedTimeMatch 
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 
+	SINGLE-VALUE 
+ )
+
+attributetype ( 1.3.6.1.4.1.18060.0.4.3.2.3 
+	NAME 'passwordchangedate' 
+	DESC 'date of last password change' 
+	EQUALITY generalizedTimeMatch 
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.24 
+	SINGLE-VALUE 
+ )
+
+objectclass ( 1.3.6.1.4.1.18060.0.4.3.2.1 
+	NAME 'mpoweruser' 
+	DESC 'mpower user' 
+	SUP top 
+	AUXILIARY 
+	MAY ( lastlogin $ passwordchangedate ) 
+ )
+

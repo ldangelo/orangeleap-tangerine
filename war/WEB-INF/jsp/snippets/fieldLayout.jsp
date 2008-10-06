@@ -59,7 +59,7 @@
 			<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 		</c:if>
 		
-		<table class="tablesorter" id="${sectionDefinition.sectionHtmlName}" cellspacing="0" cellpadding="0"> 
+		<table class="tablesorter" style="table-layout:fixed;" id="${sectionDefinition.sectionHtmlName}" cellspacing="0" cellpadding="0"> 
 			<thead> 
 				<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 					<tr>

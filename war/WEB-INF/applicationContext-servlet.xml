@@ -161,11 +161,11 @@
 		<property name="viewName" value="audit"/>
     </bean>
 
-    <bean id="codes" class="com.mpower.controller.GenericViewController">
-		<property name="viewName" value="codes"/>
+    <bean id="codes" class="com.mpower.controller.CodeManageController">
+        <property name="codeService" ref="codeService"/>
     </bean>
 
-    <bean id="welcome" class="com.mpower.controller.GenericViewController">
+    <bean id="welcome" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
 		<property name="viewName" value="welcome"/>
     </bean>
 

@@ -1,5 +1,6 @@
 package com.mpower.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -60,6 +61,14 @@ public class PersonFormController extends SimpleFormController {
             person.setFieldValueMap(valueMap);
         }
         return person;
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+    	Map refData = new HashMap();
+    	refData.put("testingRefData", "hello world");
+    	return refData;
     }
 
     @Override

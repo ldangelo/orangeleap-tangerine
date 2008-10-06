@@ -281,9 +281,11 @@ td.action {
 }
 td.codeValue {
 	width:20%;
+	text-align:left;
 }
 td.codeDescription {
 	width:60%;
+	text-align:left;
 }
 td.inactive {
 	width:10%;

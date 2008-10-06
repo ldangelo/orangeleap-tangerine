@@ -21,7 +21,7 @@ import com.mpower.domain.Site;
 import com.mpower.domain.SiteAware;
 
 @Entity
-@Table(name = "CODE", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "CODE_TYPE", "CODE_VALUE" }) })
+@Table(name = "CODE", uniqueConstraints = { @UniqueConstraint(columnNames = { "CODE_VALUE","CODE_TYPE_ID" }) })
 public class Code implements SiteAware, Auditable, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,12 +35,12 @@ public class Code implements SiteAware, Auditable, Serializable {
 	@Column(name = "CODE_ID")
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "SITE_NAME", nullable = false)
-	private Site site;
-
-	@Column(name = "CODE_TYPE", nullable = false)
+	@Transient
 	private String codeType;
+
+	@ManyToOne
+	@JoinColumn(name = "CODE_TYPE_ID")
+	private CodeType type;
 
 	@Column(name = "CODE_VALUE", nullable = false)
 	private String value;
@@ -63,20 +63,20 @@ public class Code implements SiteAware, Auditable, Serializable {
 	}
 
 	public Site getSite() {
-		return site;
+		return type.getSite();
 	}
 
-	public void setSite(Site site) {
-		this.site = site;
-	}
+	// public void setSite(Site site) {
+	// this.site = site;
+	// }
 
-	public String getCodeType() {
-		return codeType;
-	}
+	// public String getCodeType() {
+	// return codeType;
+	// }
 
-	public void setCodeType(String codeType) {
-		this.codeType = codeType;
-	}
+	// public void setCodeType(String codeType) {
+	// this.codeType = codeType;
+	// }
 
 	public String getValue() {
 		return value;
@@ -114,4 +114,21 @@ public class Code implements SiteAware, Auditable, Serializable {
 	public Person getPerson() {
 		return null;
 	}
+
+	public CodeType getType() {
+		return type;
+	}
+
+	public void setType(CodeType type) {
+		this.type = type;
+	}
+
+	public String getCodeType() {
+		return codeType;
+	}
+
+	public void setCodeType(String codeType) {
+		this.codeType = codeType;
+	}
+
 }

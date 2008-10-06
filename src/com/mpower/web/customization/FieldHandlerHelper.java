@@ -36,6 +36,7 @@ public class FieldHandlerHelper {
 		fieldTypeToHandlerMap.put(FieldType.TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
+		fieldTypeToHandlerMap.put(FieldType.CODE, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
 		fieldTypeToHandlerMap.put(FieldType.CHECKBOX, genericFieldHandler);

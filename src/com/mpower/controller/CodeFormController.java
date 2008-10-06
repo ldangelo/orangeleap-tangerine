@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.customization.Code;
 import com.mpower.service.CodeService;
 import com.mpower.service.SessionService;
+import com.mpower.service.SessionServiceImpl;
 
 public class CodeFormController extends SimpleFormController {
 
@@ -36,10 +37,10 @@ public class CodeFormController extends SimpleFormController {
         String codeType = request.getParameter("codeType");
         if (codeId == null) {
             Code code = new Code();
-            code.setCodeType(codeType);
-            if (isFormSubmission(request)) {
-                code.setSite(sessionService.lookupSite());
-            }
+            code.setType(codeService.readCodeType(codeType,SessionServiceImpl.lookupUserSiteName()));
+            //if (isFormSubmission(request)) {
+            //    code.setSite(sessionService.lookupSite());
+            //}
             return code;
         } else {
             return codeService.readCodeById(new Long(codeId));
@@ -49,6 +50,7 @@ public class CodeFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Code code = (Code) command;
+        code.setType(codeService.readCodeType(code.getCodeType(),SessionServiceImpl.lookupUserSiteName()));
         Code newCode = codeService.maintainCode(code);
 
         ModelAndView mav = new ModelAndView(getSuccessView());

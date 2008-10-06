@@ -35,6 +35,7 @@
 			<div class="clearColumns"></div>
 
 		</div>
+		<iframe src="http://www.google.com/calendar/hosted/credera.com/embed?src=usa__en%40holiday.calendar.google.com&ctz=America/Chicago&mode=AGENDA" style="border: 0" width="166" height="120" frameborder="0" scrolling="no"></iframe>
 	</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -101,10 +101,7 @@ jQuery.autocomplete = function(input, options) {
 				}
 				break;
 			case 113:  // F2
-				window.lookupCaller = $input;
-				$("#dialog .modalContent").load("codeHelper.htm?view=popup&type="+$input.attr("lookup"),function(){
-					$("#dialog").jqmShow();
-					});
+				loadCodePopup($input);
 				break;
 			case 9:  // tab
 			case 13: // return

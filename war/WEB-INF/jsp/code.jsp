@@ -5,7 +5,7 @@
 		<c:if test="${code.id!=null}">
 			<input type="hidden" name="id" value="${code.id}" />
 		</c:if>
-		<input type="hidden" name="codeType" value="${code.codeType}" />
+		<input type="hidden" name="codeType" value="${code.type.name}" />
 		</td>
 		<td>
 		<input name="value" size="16" value="${code.value}" />
@@ -19,7 +19,7 @@
 		<c:if test="${code.id!=null}">
 			<input type="hidden" name="id" value="${code.id}" />
 		</c:if>
-		<input type="hidden" name="codeType" value="${code.codeType}" />
+		<input type="hidden" name="codeType" value="${code.type.name}" />
 		</td>
 		<td class="codeValue">
 		<input name="value" size="16" value="${code.value}" />
@@ -33,7 +33,7 @@
 		<c:if test="${code.id!=null}">
 			<input type="hidden" name="id" value="${code.id}" />
 		</c:if>
-		<input type="hidden" name="codeType" value="${code.codeType}" />
+		<input type="hidden" name="codeType" value="${code.type.name}" />
 		value<form:input path="value" size="16" cssClass="text" cssErrorClass="textError" />
 		description<form:input path="description" size="16" cssClass="text" cssErrorClass="textError" />
 		<input type="submit" value="Save Changes" class="saveButton" />

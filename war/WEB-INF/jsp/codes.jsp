@@ -5,14 +5,16 @@
 	<tiles:putAttribute name="secondaryNav" value="Codes" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
+		
+		
 		<c:set var="currentCodeType" value="${param.codeType!=null?param.codeType:'projectCode'}" />
 		<div class="simplebox">
 		<form method="get" action="codes.htm">
 			<h4>Code Type to Manage</h4>
 			<select id="codeType" name="codeType" onchange="this.form.submit()">
-			  <option value="commitmentCode" ${currentCodeType=='commitmentCode'?'selected':''}>Commitment Code</option>
-			  <option value="projectCode" ${currentCodeType=='projectCode'?'selected':''}>Project Code</option>
-			  <option value="motivationCode" ${currentCodeType=='motivationCode'?'selected':''}>Motivation Code</option>
+			<c:forEach var="type" items="${codeTypes}">
+			  <option value="${type.name}" ${currentCodeType==type.name?'selected':''}>${type.label}</option>
+			</c:forEach>
 			</select>
 		</form>
 		</div>

@@ -30,6 +30,12 @@
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>
+<c:when test="${fieldVO.fieldType == 'CODE'}">
+<div class="lookupWrapper">
+	<input value="${fieldVO.fieldValue}" class="text code" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" />
+	<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
+</div>
+</c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
 	<form:checkbox path="${fieldVO.fieldName}" value="${fieldVO.fieldValue}"/>
 </c:when>

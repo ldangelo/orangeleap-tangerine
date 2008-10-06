@@ -317,3 +317,16 @@ table#gift_distribution thead th.actionColumn {
 .codeList table input {
 	font-family:arial,sans-serif;
 }
+div.lookupWrapper {
+	position:relative;
+}
+/*
+	.lookupWrapper .lookupLink {
+		//visibility:hidden;
+		opacity:.5;
+	}
+	.showLink .lookupLink {
+		//visibility:visible;
+		opacity:1;
+	}
+*/

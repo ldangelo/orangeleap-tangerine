@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.domain.customization.Code;
+import com.mpower.domain.customization.CodeType;
 
 @Repository("codeDao")
 public class JPACodeDao implements CodeDao {
@@ -27,6 +28,14 @@ public class JPACodeDao implements CodeDao {
 		Query query = em.createNamedQuery("READ_CODES_BY_SITE_AND_CODE_TYPE");
 		query.setParameter("siteName", siteName);
 		query.setParameter("codeType", codeType);
+		return query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> listCodeTypes(String siteName) {
+		Query query = em.createNamedQuery("READ_DISTINCT_CODE_TYPES");
+		query.setParameter("siteName", siteName);
 		return query.getResultList();
 	}
 
@@ -66,6 +75,14 @@ public class JPACodeDao implements CodeDao {
 	@Override
 	public Code readCode(Long id) {
 		return em.find(Code.class, id);
+	}
+
+	@Override
+	public CodeType readCodeType(String codeType, String siteName) {
+		Query query = em.createNamedQuery("READ_CODE_TYPE");
+		query.setParameter("codeType", codeType);
+		query.setParameter("siteName", siteName);
+		return (CodeType) query.getSingleResult();
 	}
 
 }

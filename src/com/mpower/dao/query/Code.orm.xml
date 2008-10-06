@@ -3,11 +3,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
+	<named-query name="READ_DISTINCT_CODE_TYPES">
+		<query>
+			SELECT DISTINCT code.type FROM com.mpower.domain.customization.Code code
+			WHERE code.type.site.name = :siteName
+		</query>
+	</named-query>
+	
+	<named-query name="READ_CODE_TYPE">
+		<query>
+			SELECT codeType FROM com.mpower.domain.customization.CodeType codeType
+			WHERE codeType.name = :codeType
+			AND codeType.site.name = :siteName
+		</query>
+	</named-query>
+
 	<named-query name="READ_CODES_BY_SITE_AND_CODE_TYPE">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			ORDER BY code.value
 		</query>
 	</named-query>
@@ -15,8 +30,8 @@
 	<named-query name="READ_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			AND code.value LIKE :value
 			AND code.inactive = FALSE
 			ORDER BY code.value
@@ -26,8 +41,8 @@
 	<named-query name="READ_ACTIVE_CODES_BY_SITE_AND_CODE_TYPE">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			AND code.inactive = FALSE
 			ORDER BY code.value
 		</query>
@@ -36,8 +51,8 @@
 	<named-query name="READ_ACTIVE_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			AND code.value LIKE :value
 			AND code.inactive != TRUE
 			ORDER BY code.value
@@ -47,8 +62,8 @@
 	<named-query name="READ_ACTIVE_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			AND code.value LIKE :value
 			AND code.description LIKE :description
 			AND code.inactive = :inactive
@@ -59,8 +74,8 @@
 	<named-query name="READ_CODES_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION">
 		<query>
 			SELECT code FROM com.mpower.domain.customization.Code code
-			WHERE code.site.name = :siteName
-			AND code.codeType = :codeType
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
 			AND code.value LIKE :value
 			AND code.description LIKE :description
 			ORDER BY code.value

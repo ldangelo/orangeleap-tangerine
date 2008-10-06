@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CodeDao;
 import com.mpower.domain.customization.Code;
+import com.mpower.domain.customization.CodeType;
 
 @Service("codeService")
 public class CodeServiceImpl implements CodeService {
@@ -67,4 +68,14 @@ public class CodeServiceImpl implements CodeService {
     public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription, Boolean inactive) {
         return codeDao.readCodes(siteName, codeType, startsWith, partialDescription, inactive);
     }
+
+	@Override
+	public List<String> listCodeTypes(String siteName) {
+		return codeDao.listCodeTypes(siteName);
+	}
+
+	@Override
+	public CodeType readCodeType(String codeType, String siteName) {
+		return codeDao.readCodeType(codeType, siteName);
+	}
 }

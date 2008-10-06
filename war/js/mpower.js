@@ -76,6 +76,10 @@ $(document).ready(function()
 			});
 		}
 	});
+	
+	Date.format = 'mm/dd/yyyy';
+	$('input.date').datePicker({startDate:'01/01/1996'});
+	
 
    }
 );

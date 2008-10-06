@@ -1,8 +1,6 @@
 dn: dc=mpowerOpen-dev
-objectClass: organization
-objectClass: extensibleObject
-objectClass: top
-o: mpowerOpen-dev
+objectClass: domain
+dc: mpowerOpen-dev
 
 dn: o=company1,dc=mpowerOpen-dev
 objectClass: organization

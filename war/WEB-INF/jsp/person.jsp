@@ -6,7 +6,6 @@
 	<tiles:putAttribute name="sidebarNav" value="Profile" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-		${testingRefData}
 			<mp:page pageName='person' />
 			<c:set var="person" value="${person}" scope="request" />
 			<c:if test="${person.id!=null}">

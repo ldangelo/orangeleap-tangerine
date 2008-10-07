@@ -37,7 +37,7 @@
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-	<form:checkbox path="${fieldVO.fieldName}" value="${fieldVO.fieldValue}"/>
+	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 	  <input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly"/>

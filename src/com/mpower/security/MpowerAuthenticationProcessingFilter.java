@@ -93,7 +93,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         logger.debug(pageAccess);
 
         request.getSession().setAttribute("passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
-        request.getSession().setAttribute("lastlogindate", ldapService.getLastLogin().getTime());
+        request.getSession().setAttribute("lastLoginDate", ldapService.getLastLogin().getTime());
         ldapService.setLastLogin();
     }
 

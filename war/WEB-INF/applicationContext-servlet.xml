@@ -13,6 +13,13 @@
     <bean id="messageSource" class="com.mpower.controller.validator.MpowerMessageSource">
         <property name="messageService" ref="messageService"/>
 	</bean>
+	
+	<bean id="paymentManager" class="com.mpower.controller.PaymentManagerFormController">
+    	<property name="commandName" value="paymentSource" />
+    	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+    	<property name="personService" ref="personService" />
+    	<property name="paymentSourceService" ref="paymentSourceService" />
+    </bean>
 
     <bean id="personSearch" class="com.mpower.controller.PersonSearchFormController">
         <property name="commandName" value="person"/>
@@ -203,6 +210,7 @@
                 <prop key="/audit.htm">audit</prop>
                 <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
+                <prop key="/paymentManager.htm">paymentManager</prop>
 			</props>
 		</property>
 	</bean>

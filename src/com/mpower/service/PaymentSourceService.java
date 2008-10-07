@@ -6,11 +6,12 @@ import com.mpower.domain.PaymentSource;
 
 public interface PaymentSourceService {
 
-    public PaymentSource savePaymentSource(PaymentSource paymentSource);
+	public PaymentSource savePaymentSource(PaymentSource paymentSource);
 
-    public List<PaymentSource> readPaymentSources(Long personId);
+	public List<PaymentSource> readPaymentSources(Long personId);
 
-    public void deletePaymentSource(PaymentSource paymentSource);
+	public void deletePaymentSource(PaymentSource paymentSource);
 
-    public void setAuditService(AuditService auditService);
+	public void setAuditService(AuditService auditService);
+
 }

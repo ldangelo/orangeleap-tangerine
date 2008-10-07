@@ -1,7 +1,10 @@
 package com.mpower.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,156 +23,230 @@ import org.apache.commons.logging.LogFactory;
 @Table(name = "PAYMENT_SOURCE", uniqueConstraints = @UniqueConstraint(columnNames = { "PAYMENT_NAME", "PERSON_ID" }))
 public class PaymentSource implements SiteAware, Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
-    private final Log logger = LogFactory.getLog(getClass());
+	@SuppressWarnings("unused")
+	@Transient
+	private final Log logger = LogFactory.getLog(getClass());
 
-    @Id
-    @GeneratedValue
-    @Column(name = "PAYMENT_SOURCE_ID")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "PAYMENT_SOURCE_ID")
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "PERSON_ID")
-    private Person person;
+	@ManyToOne
+	@JoinColumn(name = "PERSON_ID")
+	private Person person;
 
-    @Column(name = "PAYMENT_NAME")
-    private String name;
+	@Column(name = "PAYMENT_NAME")
+	private String name;
 
-    @Column(name = "PAYMENT_TYPE")
-    private String type;
+	@Column(name = "PAYMENT_TYPE")
+	private String type;
 
-    @Column(name = "CREDIT_CARD_TYPE")
-    private String creditCardType;
+	@Column(name = "CREDIT_CARD_TYPE")
+	private String creditCardType;
 
-    @Column(name = "CREDIT_CARD_NUMBER")
-    private String creditCardNumber;
+	@Column(name = "CREDIT_CARD_NUMBER")
+	private String creditCardNumber;
 
-    @Column(name = "CREDIT_CARD_EXPIRATION")
-    private Date creditCardExpiration;
+	@Column(name = "CREDIT_CARD_EXPIRATION")
+	private Date creditCardExpiration;
 
-    @Column(name = "CHECK_NUMBER")
-    private Integer checkNumber;
+	@Column(name = "CHECK_NUMBER")
+	private Integer checkNumber;
 
-    @Column(name = "ACH_TYPE")
-    private String achType;
+	@Column(name = "ACH_TYPE")
+	private String achType;
 
-    @Column(name = "ACH_ROUTING_NUMBER")
-    private String achRoutingNumber;
+	@Column(name = "ACH_ROUTING_NUMBER")
+	private String achRoutingNumber;
 
-    @Column(name = "ACH_ACCOUNT_NUMBER")
-    private String achAccountNumber;
+	@Column(name = "ACH_ACCOUNT_NUMBER")
+	private String achAccountNumber;
 
-    // absolutely don't store this in the db - see VISA merchant rules only used for processing
-    @Transient
-    private String creditCardSecurityCode;
+	@Transient
+	private Integer creditCardExpirationMonth;
 
-    public PaymentSource() {
-    }
+	@Transient
+	private Integer creditCardExpirationYear;
 
-    public PaymentSource(Person person) {
-        this.person = person;
-    }
+	// absolutely don't store this in the db - see VISA merchant rules only used for processing
+	@Transient
+	private String creditCardSecurityCode;
 
-    public Long getId() {
-        return id;
-    }
+	public PaymentSource() {
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public PaymentSource(Person person) {
+		this.person = person;
+	}
 
-    public Person getPerson() {
-        return person;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Person getPerson() {
+		return person;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setPerson(Person person) {
+		this.person = person;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getCreditCardType() {
-        return creditCardType;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public void setCreditCardType(String creditCardType) {
-        this.creditCardType = creditCardType;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-    public String getCreditCardNumber() {
-        return creditCardNumber;
-    }
+	public String getCreditCardType() {
+		return creditCardType;
+	}
 
-    public void setCreditCardNumber(String creditCardNumber) {
-        this.creditCardNumber = creditCardNumber;
-    }
+	public void setCreditCardType(String creditCardType) {
+		this.creditCardType = creditCardType;
+	}
 
-    public Date getCreditCardExpiration() {
-        return creditCardExpiration;
-    }
+	public String getCreditCardNumber() {
+		return creditCardNumber;
+	}
 
-    public void setCreditCardExpiration(Date creditCardExpiration) {
-        this.creditCardExpiration = creditCardExpiration;
-    }
+	public void setCreditCardNumber(String creditCardNumber) {
+		this.creditCardNumber = creditCardNumber;
+	}
 
-    public Integer getCheckNumber() {
-        return checkNumber;
-    }
+	public Date getCreditCardExpiration() {
+		return creditCardExpiration;
+	}
 
-    public void setCheckNumber(Integer checkNumber) {
-        this.checkNumber = checkNumber;
-    }
+	public void setCreditCardExpiration(Date creditCardExpiration) {
+		this.creditCardExpiration = creditCardExpiration;
+	}
 
-    public String getAchType() {
-        return achType;
-    }
+	public Integer getCheckNumber() {
+		return checkNumber;
+	}
 
-    public void setAchType(String achType) {
-        this.achType = achType;
-    }
+	public void setCheckNumber(Integer checkNumber) {
+		this.checkNumber = checkNumber;
+	}
 
-    public String getAchRoutingNumber() {
-        return achRoutingNumber;
-    }
+	public String getAchType() {
+		return achType;
+	}
 
-    public void setAchRoutingNumber(String achRoutingNumber) {
-        this.achRoutingNumber = achRoutingNumber;
-    }
+	public void setAchType(String achType) {
+		this.achType = achType;
+	}
 
-    public String getAchAccountNumber() {
-        return achAccountNumber;
-    }
+	public String getAchRoutingNumber() {
+		return achRoutingNumber;
+	}
 
-    public void setAchAccountNumber(String achAccountNumber) {
-        this.achAccountNumber = achAccountNumber;
-    }
+	public void setAchRoutingNumber(String achRoutingNumber) {
+		this.achRoutingNumber = achRoutingNumber;
+	}
 
-    public String getCreditCardSecurityCode() {
-        return creditCardSecurityCode;
-    }
+	public String getAchAccountNumber() {
+		return achAccountNumber;
+	}
 
-    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
-        this.creditCardSecurityCode = creditCardSecurityCode;
-    }
+	public void setAchAccountNumber(String achAccountNumber) {
+		this.achAccountNumber = achAccountNumber;
+	}
 
-    public Site getSite() {
-        return person != null ? person.getSite() : null;
-    }
+	public Integer getCreditCardExpirationMonth() {
+		if (getCreditCardExpiration() != null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(getCreditCardExpiration());
+			creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
+		}
+		return creditCardExpirationMonth;
+	}
+
+	public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
+		setExpirationDate(creditCardExpirationMonth, null);
+		this.creditCardExpirationMonth = creditCardExpirationMonth;
+	}
+
+	public Integer getCreditCardExpirationYear() {
+		if (getCreditCardExpiration() != null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(getCreditCardExpiration());
+			creditCardExpirationYear = calendar.get(Calendar.YEAR);
+		}
+		return creditCardExpirationYear;
+	}
+
+	public void setCreditCardExpirationYear(Integer creditCardExpirationYear) {
+		setExpirationDate(null, creditCardExpirationYear);
+		this.creditCardExpirationYear = creditCardExpirationYear;
+	}
+
+	private void setExpirationDate(Integer month, Integer year) {
+		Calendar calendar = Calendar.getInstance();
+		if (getCreditCardExpiration() != null) {
+			calendar.setTime(getCreditCardExpiration());
+		}
+		if (month != null) {
+			calendar.set(Calendar.MONTH, month - 1);
+		}
+		if (year != null) {
+			calendar.set(Calendar.YEAR, year);
+		}
+		calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to getting max day
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
+		calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+		setCreditCardExpiration(calendar.getTime());
+	}
+
+	public String getCreditCardSecurityCode() {
+		return creditCardSecurityCode;
+	}
+
+	public void setCreditCardSecurityCode(String creditCardSecurityCode) {
+		this.creditCardSecurityCode = creditCardSecurityCode;
+	}
+
+	public Site getSite() {
+		return person != null ? person.getSite() : null;
+	}
+
+	public List<String> getExpirationMonthList() {
+		List<String> monthList = new ArrayList<String>();
+		for (int i = 1; i <= 12; i++) {
+			String month = String.valueOf(i);
+			if (month.length() == 1) {
+				month = "0" + month;
+			}
+			monthList.add(month);
+		}
+		return monthList;
+	}
+
+	public List<String> getExpirationYearList() {
+		List<String> yearList = new ArrayList<String>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		for (int i = 0; i < 10; i++) {
+			yearList.add(String.valueOf(year + i));
+		}
+		return yearList;
+	}
 }

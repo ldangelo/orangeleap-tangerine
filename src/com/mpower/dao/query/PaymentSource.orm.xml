@@ -8,7 +8,8 @@
 			SELECT ps
 			FROM com.mpower.domain.PaymentSource ps
 			WHERE ps.person.id = :personId
+			ORDER BY ps.type
 		</query>
 	</named-query>
-
+	
 </entity-mappings>

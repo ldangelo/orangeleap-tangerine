@@ -29,6 +29,7 @@
 		            </c:if>
 					<a href="#">Addresses</a>
 					<a href="#">Payment Methods</a>
+					<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Manager</a>
 					<a href="#">Account Statement</a>
 					<a href="#">Notes</a>
 					<a href="#">Dates</a>

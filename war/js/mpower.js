@@ -14,6 +14,7 @@ $(document).ready(function()
 	});
 
 	$("#paymentType").change(showSelectedSection);
+	$("#type").change(showSelectedSection);
 
 	$("#personTitle").cluetip({
 		cluetipClass:'default',

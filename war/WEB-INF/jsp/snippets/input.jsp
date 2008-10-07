@@ -17,12 +17,12 @@
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
 	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
-		<c:forEach var="opt" varStatus="status" items="${gift.expirationMonthList}">
+		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
 			   <option value="${opt}">${opt}</option>
 	    </c:forEach>
 	</select>
 	<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
-		<c:forEach var="opt" varStatus="status" items="${gift.expirationYearList}">
+		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
 			   <option value="${opt}">${opt}</option>
 	    </c:forEach>
     </select>

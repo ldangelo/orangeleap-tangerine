@@ -101,7 +101,7 @@ function updateTotals() {
 		}
 }
 function rowCloner(selector) {
-	$(selector).bind("keyup",function(event){
+	$(selector).one("keyup",function(event){
 		if(event.keyCode != 9) { // ignore tab
 			addNewRow(distributionLineBuilder);
 		}

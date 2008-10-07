@@ -31,6 +31,11 @@ ul.formFields li.side input {
 	float:left;
 	width:66%;
 }
+ul.formFields li.side input.checkbox {
+	float:left;
+	width:auto;
+	border:0;
+}
 ul.formFields li.side select {
 	float:left;
 	width:68.6%;

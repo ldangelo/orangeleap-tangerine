@@ -64,7 +64,7 @@ public class GiftSearchFormController extends SimpleFormController {
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
-            if (StringUtils.trimToNull(request.getParameter(param)) != null) {
+            if (!param.equalsIgnoreCase("page") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("sort") && StringUtils.trimToNull(request.getParameter(param)) != null) {
                 try {
                     Object obj = bw.getPropertyValue(param);
                     params.put(param, obj);

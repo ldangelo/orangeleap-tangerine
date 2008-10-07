@@ -10,7 +10,7 @@
     	<name>page</name>
      	<tag-class>com.mpower.web.customization.PageTag</tag-class>
      	<body-content>empty</body-content>
-     	<description>Returns the correct pageDefinition given the page name.</description>
+     	<description>Returns the correct pageAccess given the page name.</description>
      	<attribute>
             <name>pageName</name>
             <required>true</required>

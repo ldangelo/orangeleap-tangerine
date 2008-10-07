@@ -22,8 +22,8 @@ import com.mpower.type.AccessType;
 import com.mpower.type.PageType;
 
 @Entity
-@Table(name = "PAGE_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "PAGE_TYPE", "SITE_NAME", "ROLE" }))
-public class PageDefinition implements Serializable {
+@Table(name = "PAGE_ACCESS", uniqueConstraints = @UniqueConstraint(columnNames = { "PAGE_TYPE", "SITE_NAME", "ROLE" }))
+public class PageAccess implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,7 @@ public class PageDefinition implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "PAGE_DEFINITION_ID")
+    @Column(name = "PAGE_ACCESS_ID")
     private Long id;
 
     @Column(name = "PAGE_TYPE")

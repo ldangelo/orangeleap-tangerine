@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.customization.PageDefinition;
+import com.mpower.domain.customization.PageAccess;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.PageType;
@@ -51,8 +51,8 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PageDefinition> readPageDefinitions(String siteName, List<String> roles) {
-        Query query = em.createNamedQuery("READ_PAGE_DEFINITIONS");
+    public List<PageAccess> readPageAccess(String siteName, List<String> roles) {
+        Query query = em.createNamedQuery("READ_PAGE_ACCESS");
         query.setParameter("siteName", siteName);
         query.setParameter("roles", roles);
         return query.getResultList();

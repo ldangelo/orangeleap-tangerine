@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.customization.PageCustomizationDAO;
-import com.mpower.domain.customization.PageDefinition;
+import com.mpower.domain.customization.PageAccess;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.AccessType;
@@ -115,21 +115,21 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Override
     @Transactional
     public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
-        Map<String, PageDefinition> pageDefinitionMap = new HashMap<String, PageDefinition>(); // pageType, PageDefinition
-        List<PageDefinition> pages = pageCustomizationDao.readPageDefinitions(siteName, roles);
+        Map<String, PageAccess> pageAccessMap = new HashMap<String, PageAccess>(); // pageType, PageAccess
+        List<PageAccess> pages = pageCustomizationDao.readPageAccess(siteName, roles);
         if (pages != null) {
-            for (PageDefinition pageDefinition : pages) {
-                PageDefinition pd = pageDefinitionMap.get(pageDefinition.getPageType().name());
-                if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageDefinition.getRole()).getRoleRank())) {
-                    pageDefinitionMap.put(pageDefinition.getPageType().getPageName(), pageDefinition);
+            for (PageAccess pageAccess : pages) {
+                PageAccess pd = pageAccessMap.get(pageAccess.getPageType().name());
+                if (pd == null || pd.getSite() == null || (RoleType.valueOf(pd.getRole()).getRoleRank() < RoleType.valueOf(pageAccess.getRole()).getRoleRank())) {
+                    pageAccessMap.put(pageAccess.getPageType().getPageName(), pageAccess);
                 }
             }
         }
 
-        Map<String, AccessType> pageAccessMap = new HashMap<String, AccessType>(); // pageType, AccessType
-        for (String key : pageDefinitionMap.keySet()) {
-            pageAccessMap.put(key, pageDefinitionMap.get(key).getAccessType());
+        Map<String, AccessType> accessMap = new HashMap<String, AccessType>(); // pageType, AccessType
+        for (String key : pageAccessMap.keySet()) {
+            accessMap.put(key, pageAccessMap.get(key).getAccessType());
         }
-        return pageAccessMap;
+        return accessMap;
     }
 }

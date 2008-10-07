@@ -29,11 +29,11 @@
 		</query>
 	</named-query>
 
-	<named-query name="READ_PAGE_DEFINITIONS" >
+	<named-query name="READ_PAGE_ACCESS" >
 		<query>
-		    SELECT pd FROM com.mpower.domain.customization.PageDefinition pd
-		    WHERE ((pd.site IS NULL OR pd.site.name = :siteName)
-		    AND (pd.role IN (:roles)))
+		    SELECT pa FROM com.mpower.domain.customization.PageAccess pa
+		    WHERE ((pa.site IS NULL OR pa.site.name = :siteName)
+		    AND (pa.role IN (:roles)))
 		</query>
 	</named-query>
 

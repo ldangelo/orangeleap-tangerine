@@ -12,7 +12,7 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='personSearch'/>
 
-			<form:form method="post" commandName="person">
+			<form:form method="post" commandName="person" cssClass="searchForm">
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<h1>
 						<mp:sectionHeader sectionDefinition="${sectionDefinition}"/>
@@ -26,7 +26,7 @@
 					</div>
 				</c:forEach>
 			</form:form>
-			<div id="personSearchResults">
+			<div id="searchResults">
 			<jsp:include page="personSearchResults.jsp"/>
 			</div>
 		</div>

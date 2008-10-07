@@ -14,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -74,8 +76,32 @@ public class GiftSearchFormController extends SimpleFormController {
         }
 
         List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(), params);
+		String sort = request.getParameter("sort");
+		String ascending = request.getParameter("ascending");
+		Boolean sortAscending;
+		if (StringUtils.trimToNull(ascending) != null) {
+			sortAscending = new Boolean(ascending);
+		} else {
+			sortAscending = new Boolean(true);
+		}
+		MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
+		PagedListHolder pagedListHolder = new PagedListHolder(giftList,sortDef);
+		pagedListHolder.resort();
+		pagedListHolder.setMaxLinkedPages(3);
+		pagedListHolder.setPageSize(10);
+		String page = request.getParameter("page");
 
+		Integer pg = 0;
+		if (!StringUtils.isBlank(page)) {
+			pg = Integer.valueOf(page);
+		}
+
+		pagedListHolder.setPage(pg);
+        
         ModelAndView mav = new ModelAndView(getSuccessView());
+		mav.addObject("pagedListHolder", pagedListHolder);
+		mav.addObject("currentSort", sort);
+		mav.addObject("currentAscending", sortAscending);
         mav.addObject("gift", gift);
         mav.addObject("giftList", giftList);
         mav.addObject("giftListSize", giftList.size());

@@ -3,6 +3,7 @@ package com.mpower.service;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -126,8 +127,39 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 nextRun.add(Calendar.WEEK_OF_MONTH, 1);
             } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
                 nextRun.add(Calendar.MONTH, 1);
+            } else if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
+                Calendar today = getToday();
+                Calendar startDateCal = new GregorianCalendar();
+                startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
+                Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
+                boolean found = false;
+                if (firstGiftCal.after(today)){
+                    nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
+                    found = true;
+                }
+                Calendar secondGiftCal = new GregorianCalendar();
+                secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
+                if (secondGiftCal.after(today)){
+                    nextRun.setTimeInMillis(secondGiftCal.getTimeInMillis());
+                    found = true;
+                }
+                int i = 1;
+                while (!found){
+                    Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
+                    if (payment1.after(today)){
+                        nextRun.setTimeInMillis(payment1.getTimeInMillis());
+                        found = true;
+                    }
+                    Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
+                    if (payment2.after(today)){
+                        nextRun.setTimeInMillis(payment2.getTimeInMillis());
+                        found = true;
+                    }
+                }
             } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
                 nextRun.add(Calendar.MONTH, 3);
+            } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.MONTH, 6);
             } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
                 nextRun.add(Calendar.YEAR, 1);
             } else {
@@ -142,12 +174,27 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     }
 
     private Calendar getToday() {
-        Calendar today = Calendar.getInstance();
-        today.clear();
-        today.set(Calendar.YEAR, today.get(Calendar.YEAR));
-        today.set(Calendar.MONTH, today.get(Calendar.MONTH));
-        today.set(Calendar.DAY_OF_MONTH, today.get(Calendar.DAY_OF_MONTH));
+        Calendar now = Calendar.getInstance();
+        Calendar today = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
         logger.debug("getToday() = " + today.getTime() + " millis=" + today.getTimeInMillis());
         return today;
+    }
+
+    private Calendar getBimonthlyCalendar(int year, int month, int day) {
+        Calendar next = new GregorianCalendar();
+        next.clear();
+        if (month > 11) {
+            next.set(year + 1, month - 12, 1);
+        } else {
+            next.set(year, month, 1);
+        }
+        int maxMonthDay = next.getActualMaximum(Calendar.DAY_OF_MONTH);
+        if (maxMonthDay >= day) {
+            next.set(Calendar.DAY_OF_MONTH, day);
+        } else {
+            next.set(Calendar.DAY_OF_MONTH, maxMonthDay);
+        }
+        logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
+        return next;
     }
 }

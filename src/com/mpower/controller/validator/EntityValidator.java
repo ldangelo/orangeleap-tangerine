@@ -52,6 +52,7 @@ public class EntityValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        logger.debug("in EntityValidator");
         Viewable viewable = (Viewable) target;
         Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
 

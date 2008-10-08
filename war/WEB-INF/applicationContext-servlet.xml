@@ -104,11 +104,17 @@
     <bean id="commitment" class="com.mpower.controller.CommitmentFormController">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
-		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
-		        <property name="pageType" value="commitment"/>
-		        <property name="siteService" ref="siteService" />
-            </bean>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="commitment"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="commitment"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
         </property>
         <property name="formView" value="commitment" />
         <property name="successView" value="commitmentView" />

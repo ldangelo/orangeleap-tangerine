@@ -2,7 +2,6 @@ package com.mpower.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,8 +46,10 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     public static final String STATUS_SUSPEND = "suspend";
 
     public static final String FREQUENCY_WEEKLY = "weekly";
+    public static final String FREQUENCY_TWICE_MONTHLY = "twice monthly";
     public static final String FREQUENCY_MONTHLY = "monthly";
     public static final String FREQUENCY_QUARTERLY = "quarterly";
+    public static final String FREQUENCY_TWICE_ANNUALLY = "twice annually";
     public static final String FREQUENCY_ANNUALLY = "annually";
 
     @SuppressWarnings("unused")
@@ -78,6 +79,9 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     @Column(name = "NUMBER_OF_GIFTS")
     private Integer numberOfGifts;
+
+    @Column(name = "AMOUNT_TOTAL")
+    private BigDecimal amountTotal = null;
 
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
@@ -163,9 +167,6 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
-
-    @Transient
-    private BigInteger amountTotal = null;
 
     public Long getId() {
         return id;
@@ -496,11 +497,11 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
         getPaymentSource().setAchAccountNumber(achAccountNumber);
     }
 
-    public BigInteger getAmountTotal() {
+    public BigDecimal getAmountTotal() {
         return amountTotal;
     }
 
-    public void setAmountTotal(BigInteger amountTotal) {
+    public void setAmountTotal(BigDecimal amountTotal) {
         this.amountTotal = amountTotal;
     }
 
@@ -526,5 +527,26 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     public void setLastEntryDate(Date lastEntryDate) {
         this.lastEntryDate = lastEntryDate;
+    }
+
+    public BigDecimal getAmountPaid() {
+        BigDecimal amount = BigDecimal.ZERO;
+        if (getGifts() != null) {
+            for (Gift gift : getGifts()) {
+                amount = amount.add(gift.getValue());
+            }
+        }
+        return amount;
+    }
+
+    public BigDecimal getAmountRemaining() {
+        BigDecimal amount = getAmountTotal();
+        if (amount != null) {
+            amount = amount.subtract(getAmountPaid());
+            if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                amount = BigDecimal.ZERO;
+            }
+        }
+        return amount;
     }
 }

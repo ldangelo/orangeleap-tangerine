@@ -1,6 +1,8 @@
 package com.mpower.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +44,16 @@ public class PaymentManagerFormController extends SimpleFormController {
 		paymentSource.setPerson(person);
 		return paymentSource;
 	}
+	
+    @SuppressWarnings("unchecked")
+	@Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+    	Map refData = new HashMap();
+		String personId = request.getParameter("personId");
+		List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
+		refData.put("paymentSources", paymentSources);
+    	return refData;
+    }
 
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -53,8 +65,9 @@ public class PaymentManagerFormController extends SimpleFormController {
 		Person person = personService.readPersonById(Long.valueOf(personId));
 		ModelAndView mav = new ModelAndView("paymentManager");
 		mav.addObject("paymentSources", paymentSources);
+		paymentSource = new PaymentSource();
+		paymentSource.setPerson(person);
 		mav.addObject("paymentSource", paymentSource);
-		mav.addObject("person", person);
 		return mav;
 
 	}

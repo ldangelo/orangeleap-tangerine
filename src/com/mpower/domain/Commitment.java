@@ -432,62 +432,6 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
         return "suspend".equals(getStatus()) && suspendStartDate.before(date) && suspendEndDate.after(date);
     }
 
-    public String getCreditCardType() {
-        return getPaymentSource().getCreditCardType();
-    }
-
-    public void setCreditCardType(String creditCardType) {
-        getPaymentSource().setCreditCardType(creditCardType);
-    }
-
-    public String getCreditCardNumber() {
-        return getPaymentSource().getCreditCardNumber();
-    }
-
-    public void setCreditCardNumber(String creditCardNumber) {
-        getPaymentSource().setCreditCardNumber(creditCardNumber);
-    }
-
-    public Date getCreditCardExpiration() {
-        return getPaymentSource().getCreditCardExpiration();
-    }
-
-    public void setCreditCardExpiration(Date creditCardExpiration) {
-        getPaymentSource().setCreditCardExpiration(creditCardExpiration);
-    }
-
-    public String getCreditCardSecurityCode() {
-        return getPaymentSource().getCreditCardSecurityCode();
-    }
-
-    public void setCreditCardSecurityCode(String creditCardSecurityCode) {
-        getPaymentSource().setCreditCardSecurityCode(creditCardSecurityCode);
-    }
-
-    public String getAchType() {
-        return getPaymentSource().getAchType();
-    }
-
-    public void setAchType(String achType) {
-        getPaymentSource().setAchType(achType);
-    }
-
-    public String getAchRoutingNumber() {
-        return getPaymentSource().getAchRoutingNumber();
-    }
-
-    public void setAchRoutingNumber(String achRoutingNumber) {
-        getPaymentSource().setAchRoutingNumber(achRoutingNumber);
-    }
-
-    public String getAchAccountNumber() {
-        return getPaymentSource().getAchAccountNumber();
-    }
-
-    public void setAchAccountNumber(String achAccountNumber) {
-        getPaymentSource().setAchAccountNumber(achAccountNumber);
-    }
-
     public BigDecimal getAmountTotal() {
         return amountTotal;
     }

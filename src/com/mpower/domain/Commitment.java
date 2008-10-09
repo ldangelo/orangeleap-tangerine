@@ -45,12 +45,14 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
     public static final String STATUS_FULFILLED = "fulfilled";
     public static final String STATUS_SUSPEND = "suspend";
 
+    public static final String FREQUENCY_ONE_TIME = "one time";
     public static final String FREQUENCY_WEEKLY = "weekly";
     public static final String FREQUENCY_TWICE_MONTHLY = "twice monthly";
     public static final String FREQUENCY_MONTHLY = "monthly";
     public static final String FREQUENCY_QUARTERLY = "quarterly";
     public static final String FREQUENCY_TWICE_ANNUALLY = "twice annually";
     public static final String FREQUENCY_ANNUALLY = "annually";
+    public static final String FREQUENCY_UNSPECIFIED = "unspecified";
 
     @SuppressWarnings("unused")
     @Transient
@@ -76,9 +78,6 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     @Column(name = "AMOUNT_PER_GIFT")
     private BigDecimal amountPerGift;
-
-    @Column(name = "NUMBER_OF_GIFTS")
-    private Integer numberOfGifts;
 
     @Column(name = "AMOUNT_TOTAL")
     private BigDecimal amountTotal = null;
@@ -205,14 +204,6 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     public void setAmountPerGift(BigDecimal amountPerGift) {
         this.amountPerGift = amountPerGift;
-    }
-
-    public Integer getNumberOfGifts() {
-        return numberOfGifts;
-    }
-
-    public void setNumberOfGifts(Integer numberOfGifts) {
-        this.numberOfGifts = numberOfGifts;
     }
 
     public String getPaymentType() {

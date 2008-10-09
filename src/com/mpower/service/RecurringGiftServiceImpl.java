@@ -86,12 +86,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
 
     private Date getNextRecurringGiftDate(Commitment commitment) {
         Date nextGiftDate = new Date();
-        if (commitment.getNumberOfGifts() != null) {
-            logger.debug("gift " + commitment.getGifts().size() + " of " + commitment.getNumberOfGifts());
-        } else {
-            logger.debug("gift does not specify a number of gifts");
-        }
-
         if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
             nextGiftDate = null;
         } else if (Commitment.STATUS_ACTIVE.equals(commitment.getStatus())) {
@@ -111,64 +105,66 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     }
 
     private Date calculateNextRunDate(Commitment commitment) {
-        Date previousNextRun = commitment.getRecurringGift() == null ? null : commitment.getRecurringGift().getNextRunDate();
-        Calendar nextRun = Calendar.getInstance();
-        if (previousNextRun != null) {
-            nextRun.setTime(previousNextRun);
-        } else {
-            nextRun.setTime(commitment.getStartDate());
-        }
-        logger.debug("next run = " + nextRun.getTime() + " millis=" + nextRun.getTimeInMillis());
-        while (nextRun.before(getToday()) || commitment.isSuspended(nextRun.getTime()) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
-            if (commitment.isSuspended(nextRun.getTime())) {
-                logger.debug("next run, " + nextRun.getTime() + " is during a suspended period so going to next");
+        Calendar nextRun = new GregorianCalendar();
+        nextRun.setTimeInMillis(commitment.getStartDate().getTime());
+        logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
+        Calendar today = getToday();
+        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
+            Calendar startDateCal = new GregorianCalendar();
+            startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
+            Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
+            boolean found = false;
+            boolean pastEndDate = false;
+            if (firstGiftCal.after(today)) {
+                nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
+                pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
             }
-            if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.WEEK_OF_MONTH, 1);
-            } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 1);
-            } else if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
-                Calendar today = getToday();
-                Calendar startDateCal = new GregorianCalendar();
-                startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
-                Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
-                boolean found = false;
-                if (firstGiftCal.after(today)){
-                    nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
-                    found = true;
-                }
+            if (!found && !pastEndDate) {
                 Calendar secondGiftCal = new GregorianCalendar();
                 secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
-                if (secondGiftCal.after(today)){
+                if (secondGiftCal.after(today)) {
                     nextRun.setTimeInMillis(secondGiftCal.getTimeInMillis());
-                    found = true;
+                    pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                    found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                 }
-                int i = 1;
-                while (!found){
+                int i = 0;
+                while (!found && !pastEndDate) {
+                    i++;
                     Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
-                    if (payment1.after(today)){
+                    if (payment1.after(today)) {
                         nextRun.setTimeInMillis(payment1.getTimeInMillis());
-                        found = true;
+                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                        found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                     }
                     Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
-                    if (payment2.after(today)){
+                    if (payment2.after(today)) {
                         nextRun.setTimeInMillis(payment2.getTimeInMillis());
-                        found = true;
+                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                        found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                     }
                 }
-            } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 3);
-            } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 6);
-            } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.YEAR, 1);
-            } else {
-                // TODO: implement (need to cover "Other" case)
+            }
+        } else {
+            while ((nextRun != null) && (nextRun.before(today) || isSuspended(commitment, nextRun.getTime()) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate())))) {
+                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+                    nextRun.add(Calendar.WEEK_OF_MONTH, 1);
+                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+                    nextRun.add(Calendar.MONTH, 1);
+                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+                    nextRun.add(Calendar.MONTH, 3);
+                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+                    nextRun.add(Calendar.MONTH, 6);
+                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+                    nextRun.add(Calendar.YEAR, 1);
+                } else {
+                    nextRun = null;
+                }
             }
         }
-        if (nextRun.getTime().after(commitment.getEndDate())) {
-            logger.debug("next run, " + nextRun.getTime() + " is after commitment end date");
-            nextRun.setTime(commitment.getEndDate());
+        if (nextRun == null || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
+            nextRun = null;
+            logger.debug("no next run scheduled");
         }
         return nextRun.getTime();
     }
@@ -196,5 +192,16 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         }
         logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
         return next;
+    }
+
+    private boolean isSuspended(Commitment commitment, Date date) {
+        if (commitment.isSuspended(date)) {
+            logger.debug("next run, " + date + " is during a suspended period so going to next");
+        }
+        return commitment.isSuspended(date);
+    }
+
+    private boolean isPastEndDate(Commitment commitment, Date date) {
+        return commitment.getEndDate() == null ? false : date.after(commitment.getEndDate());
     }
 }

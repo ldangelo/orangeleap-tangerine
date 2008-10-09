@@ -1,7 +1,6 @@
 package com.mpower.domain;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Use this class to indicate an entity is customizable
@@ -9,25 +8,17 @@ import java.util.Set;
  */
 public interface Viewable {
 
-	public Set<String> getRequiredFields();
+    public Map<String, String> getFieldLabelMap();
 
-	public void setRequiredFields(Set<String> requiredFields);
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap);
 
-	public Map<String, String> getValidationMap();
+    public Map<String, Object> getFieldValueMap();
 
-	public void setValidationMap(Map<String, String> validationMap);
+    public void setFieldValueMap(Map<String, Object> fieldValueMap);
 
-	public Map<String, String> getFieldLabelMap();
+    public Long getId();
 
-	public void setFieldLabelMap(Map<String, String> fieldLabelMap);
+    public Site getSite();
 
-	public Map<String, Object> getFieldValueMap();
-
-	public void setFieldValueMap(Map<String, Object> fieldValueMap);
-
-	public Long getId();
-
-	public Site getSite();
-
-	public Person getPerson();
+    public Person getPerson();
 }

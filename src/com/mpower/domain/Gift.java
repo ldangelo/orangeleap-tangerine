@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -109,12 +108,6 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
-
-    @Transient
-    private Set<String> requiredFields = null;
-
-    @Transient
-    private Map<String, String> validationMap = null;
 
     @Transient
     private Map<String, String> fieldLabelMap = null;
@@ -258,26 +251,6 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     public void addDistributionLine(DistributionLine distributionLine) {
         getDistributionLines().add(distributionLine);
-    }
-
-    @Override
-    public Set<String> getRequiredFields() {
-        return requiredFields;
-    }
-
-    @Override
-    public void setRequiredFields(Set<String> requiredFields) {
-        this.requiredFields = requiredFields;
-    }
-
-    @Override
-    public Map<String, String> getValidationMap() {
-        return validationMap;
-    }
-
-    @Override
-    public void setValidationMap(Map<String, String> validationMap) {
-        this.validationMap = validationMap;
     }
 
     @Override

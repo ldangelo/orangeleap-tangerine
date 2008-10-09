@@ -33,6 +33,11 @@ public class JPAGiftDao implements GiftDao {
     @Override
     public Gift maintainGift(Gift gift) {
         if (gift.getId() == null) {
+            Date date = new Date();
+            gift.setTransactionDate(date);
+            if (gift.getPostmarkDate() == null) {
+                gift.setPostmarkDate(date);
+            }
             em.persist(gift);
             return gift;
         }

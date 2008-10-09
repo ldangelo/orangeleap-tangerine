@@ -29,7 +29,6 @@ import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.GiftEntryType;
 import com.mpower.util.GiftCustomFieldMap;
@@ -39,295 +38,306 @@ import com.mpower.util.GiftCustomFieldMap;
 @Table(name = "GIFT")
 public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unused")
-	@Transient
-	private final Log logger = LogFactory.getLog(getClass());
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
-	@Id
-	@GeneratedValue
-	@Column(name = "GIFT_ID")
-	private Long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "GIFT_ID")
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "PERSON_ID")
-	private Person person;
+    @ManyToOne
+    @JoinColumn(name = "PERSON_ID")
+    private Person person;
 
-	@ManyToOne(optional = true)
-	@JoinColumn(name = "COMMITMENT_ID")
-	private Commitment commitment;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COMMITMENT_ID")
+    private Commitment commitment;
 
-	@Column(name = "COMMENTS")
-	private String comments;
+    @Column(name = "COMMENTS")
+    private String comments;
 
-	@Column(name = "VALUE")
-	private BigDecimal value;
+    @Column(name = "VALUE")
+    private BigDecimal value;
 
-	@Column(name = "TRANSACTION_DATE", updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@AutoPopulate
-	private Date transactionDate;
+    @Column(name = "TRANSACTION_DATE", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date transactionDate;
 
-	@Column(name = "PAYMENT_TYPE")
-	private String paymentType;
+    @Column(name = "POSTMARK_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date postmarkDate;
 
-	@Column(name = "CHECK_NUMBER")
-	private Integer checkNumber;
+    @Column(name = "PAYMENT_TYPE")
+    private String paymentType;
 
-	@Column(name = "AUTH_CODE")
-	private String authCode;
+    @Column(name = "CHECK_NUMBER")
+    private Integer checkNumber;
 
-	@Column(name = "ORIGINAL_GIFT_ID")
-	private Long originalGiftId;
+    @Column(name = "AUTH_CODE")
+    private String authCode;
 
-	@Column(name = "REFUND_GIFT_ID")
-	private Long refundGiftId;
+    @Column(name = "ORIGINAL_GIFT_ID")
+    private Long originalGiftId;
 
-	@Column(name = "REFUND_GIFT_TRANSACTION_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date refundGiftTransactionDate;
+    @Column(name = "REFUND_GIFT_ID")
+    private Long refundGiftId;
 
-	@OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-	private List<GiftCustomField> giftCustomFields;
+    @Column(name = "REFUND_GIFT_TRANSACTION_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date refundGiftTransactionDate;
 
-	@OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
-	private List<DistributionLine> distributionLines;
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<GiftCustomField> giftCustomFields;
 
-	@Column(name = "DEDUCTIBLE")
-	private boolean deductible = false;
+    @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
+    private List<DistributionLine> distributionLines;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "PAYMENT_SOURCE_ID")
-	private PaymentSource paymentSource;
+    @Column(name = "DEDUCTIBLE")
+    private boolean deductible = false;
 
-	@Column(name="ENTRY_TYPE")
-	@Enumerated(EnumType.STRING)
-	private GiftEntryType entryType = GiftEntryType.MANUAL;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PAYMENT_SOURCE_ID")
+    private PaymentSource paymentSource;
 
-	@Transient
-	private Map<String, CustomField> customFieldMap = null;
+    @Column(name="ENTRY_TYPE")
+    @Enumerated(EnumType.STRING)
+    private GiftEntryType entryType = GiftEntryType.MANUAL;
 
-	@Transient
-	private Set<String> requiredFields = null;
+    @Transient
+    private Map<String, CustomField> customFieldMap = null;
 
-	@Transient
-	private Map<String, String> validationMap = null;
+    @Transient
+    private Set<String> requiredFields = null;
 
-	@Transient
-	private Map<String, String> fieldLabelMap = null;
+    @Transient
+    private Map<String, String> validationMap = null;
 
-	@Transient
-	private Map<String, Object> fieldValueMap = null;
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
 
-	@Transient
-	private List<PaymentSource> paymentSources = null;
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
-	public Long getId() {
-		return id;
-	}
+    @Transient
+    private List<PaymentSource> paymentSources = null;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Person getPerson() {
-		return person;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setPerson(Person person) {
-		this.person = person;
-	}
+    public Person getPerson() {
+        return person;
+    }
 
-	public Commitment getCommitment() {
-		return commitment;
-	}
-
-	public void setCommitment(Commitment commitment) {
-		this.commitment = commitment;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	public void setValue(BigDecimal value) {
-		this.value = value;
-	}
-
-	public Date getTransactionDate() {
-		return transactionDate;
-	}
-
-	public void setTransactionDate(Date transactionDate) {
-		this.transactionDate = transactionDate;
-	}
-
-	public void setPaymentType(String paymentType) {
-		this.paymentType = paymentType;
-	}
-
-	public String getPaymentType() {
-		return paymentType;
-	}
-
-	public void setCheckNumber(Integer checkNumber) {
-		this.checkNumber = checkNumber;
-	}
-
-	public Integer getCheckNumber() {
-		return checkNumber;
-	}
-
-	public String getAuthCode() {
-		return authCode;
-	}
-
-	public void setAuthCode(String authCode) {
-		this.authCode = authCode;
-	}
-
-	public Long getOriginalGiftId() {
-		return originalGiftId;
-	}
-
-	public void setOriginalGiftId(Long originalGiftId) {
-		this.originalGiftId = originalGiftId;
-	}
-
-	public Long getRefundGiftId() {
-		return refundGiftId;
-	}
-
-	public void setRefundGiftId(Long refundGiftId) {
-		this.refundGiftId = refundGiftId;
-	}
-
-	public Date getRefundGiftTransactionDate() {
-		return refundGiftTransactionDate;
-	}
-
-	public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
-		this.refundGiftTransactionDate = refundGiftTransactionDate;
-	}
-
-	public List<GiftCustomField> getCustomFields() {
-		if (giftCustomFields == null) {
-			giftCustomFields = new ArrayList<GiftCustomField>();
-		}
-		return giftCustomFields;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, CustomField> getCustomFieldMap() {
-		if (customFieldMap == null) {
-			customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
-		}
-		return customFieldMap;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<DistributionLine> getDistributionLines() {
-		if (distributionLines == null) {
-			distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
-		}
-		return distributionLines;
-	}
-
-	public void setDistributionLines(List<DistributionLine> distributionLines) {
-		this.distributionLines = distributionLines;
-	}
-
-	public void addDistributionLine(DistributionLine distributionLine) {
-		getDistributionLines().add(distributionLine);
-	}
-
-	@Override
-	public Set<String> getRequiredFields() {
-		return requiredFields;
-	}
-
-	@Override
-	public void setRequiredFields(Set<String> requiredFields) {
-		this.requiredFields = requiredFields;
-	}
-
-	@Override
-	public Map<String, String> getValidationMap() {
-		return validationMap;
-	}
-
-	@Override
-	public void setValidationMap(Map<String, String> validationMap) {
-		this.validationMap = validationMap;
-	}
-
-	@Override
-	public Map<String, String> getFieldLabelMap() {
-		return fieldLabelMap;
-	}
-
-	@Override
-	public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-		this.fieldLabelMap = fieldLabelMap;
-	}
-
-	@Override
-	public Map<String, Object> getFieldValueMap() {
-		return fieldValueMap;
-	}
-
-	@Override
-	public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-		this.fieldValueMap = fieldValueMap;
-	}
-
-	@Override
-	public Site getSite() {
-		return person != null ? person.getSite() : null;
-	}
-
-	public boolean isDeductible() {
-		return deductible;
-	}
-
-	public void setDeductible(boolean deductible) {
-		this.deductible = deductible;
-	}
-
-	public List<PaymentSource> getPaymentSources() {
-		return paymentSources;
-	}
-
-	public void setPaymentSources(List<PaymentSource> paymentSources) {
-		this.paymentSources = paymentSources;
-	}
-
-	public PaymentSource getPaymentSource() {
-		if (paymentSource == null) {
-			paymentSource = new PaymentSource(this.getPerson());
-		}
-		return paymentSource;
-	}
-
-	public void setPaymentSource(PaymentSource paymentSource) {
-		this.paymentSource = paymentSource;
-	}
-
-	public GiftEntryType getEntryType() {
-		return entryType;
-	}
-
-	public void setEntryType(GiftEntryType entryType) {
-		this.entryType = entryType;
-	}
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Commitment getCommitment() {
+        return commitment;
+    }
+
+    public void setCommitment(Commitment commitment) {
+        this.commitment = commitment;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public Date getPostmarkDate() {
+        return postmarkDate;
+    }
+
+    public void setPostmarkDate(Date postmarkDate) {
+        this.postmarkDate = postmarkDate;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
+    }
+
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public String getAuthCode() {
+        return authCode;
+    }
+
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
+    }
+
+    public Long getOriginalGiftId() {
+        return originalGiftId;
+    }
+
+    public void setOriginalGiftId(Long originalGiftId) {
+        this.originalGiftId = originalGiftId;
+    }
+
+    public Long getRefundGiftId() {
+        return refundGiftId;
+    }
+
+    public void setRefundGiftId(Long refundGiftId) {
+        this.refundGiftId = refundGiftId;
+    }
+
+    public Date getRefundGiftTransactionDate() {
+        return refundGiftTransactionDate;
+    }
+
+    public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
+        this.refundGiftTransactionDate = refundGiftTransactionDate;
+    }
+
+    public List<GiftCustomField> getCustomFields() {
+        if (giftCustomFields == null) {
+            giftCustomFields = new ArrayList<GiftCustomField>();
+        }
+        return giftCustomFields;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, CustomField> getCustomFieldMap() {
+        if (customFieldMap == null) {
+            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
+        }
+        return customFieldMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<DistributionLine> getDistributionLines() {
+        if (distributionLines == null) {
+            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
+        }
+        return distributionLines;
+    }
+
+    public void setDistributionLines(List<DistributionLine> distributionLines) {
+        this.distributionLines = distributionLines;
+    }
+
+    public void addDistributionLine(DistributionLine distributionLine) {
+        getDistributionLines().add(distributionLine);
+    }
+
+    @Override
+    public Set<String> getRequiredFields() {
+        return requiredFields;
+    }
+
+    @Override
+    public void setRequiredFields(Set<String> requiredFields) {
+        this.requiredFields = requiredFields;
+    }
+
+    @Override
+    public Map<String, String> getValidationMap() {
+        return validationMap;
+    }
+
+    @Override
+    public void setValidationMap(Map<String, String> validationMap) {
+        this.validationMap = validationMap;
+    }
+
+    @Override
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    @Override
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    @Override
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    @Override
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public Site getSite() {
+        return person != null ? person.getSite() : null;
+    }
+
+    public boolean isDeductible() {
+        return deductible;
+    }
+
+    public void setDeductible(boolean deductible) {
+        this.deductible = deductible;
+    }
+
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSources;
+    }
+
+    public void setPaymentSources(List<PaymentSource> paymentSources) {
+        this.paymentSources = paymentSources;
+    }
+
+    public PaymentSource getPaymentSource() {
+        if (paymentSource == null) {
+            paymentSource = new PaymentSource(this.getPerson());
+        }
+        return paymentSource;
+    }
+
+    public void setPaymentSource(PaymentSource paymentSource) {
+        this.paymentSource = paymentSource;
+    }
+
+    public GiftEntryType getEntryType() {
+        return entryType;
+    }
+
+    public void setEntryType(GiftEntryType entryType) {
+        this.entryType = entryType;
+    }
 
 }

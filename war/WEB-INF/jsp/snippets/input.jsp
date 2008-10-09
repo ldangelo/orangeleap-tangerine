@@ -11,6 +11,10 @@
 <c:when test="${fieldVO.fieldType == 'DATE'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
 </c:when>
+<c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
+	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
+	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
+</c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />

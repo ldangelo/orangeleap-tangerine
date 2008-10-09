@@ -1,7 +1,9 @@
 package com.mpower.dao;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,10 +35,11 @@ public class JPAGiftDao implements GiftDao {
     @Override
     public Gift maintainGift(Gift gift) {
         if (gift.getId() == null) {
-            Date date = new Date();
-            gift.setTransactionDate(date);
+            Calendar transCal = Calendar.getInstance();
+            gift.setTransactionDate(transCal.getTime());
             if (gift.getPostmarkDate() == null) {
-                gift.setPostmarkDate(date);
+                Calendar postCal = new GregorianCalendar(transCal.get(Calendar.YEAR), transCal.get(Calendar.MONTH), transCal.get(Calendar.DAY_OF_MONTH));
+                gift.setPostmarkDate(postCal.getTime());
             }
             em.persist(gift);
             return gift;

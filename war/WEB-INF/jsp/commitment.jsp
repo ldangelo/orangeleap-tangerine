@@ -23,6 +23,8 @@
 					</jsp:include>
 
 					<jsp:include page="snippets/standardFormErrors.jsp"/>
+					
+					<c:set var="paymentSource" value="${commitment.paymentSource}" />
 
 					<div class="columns">
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}">

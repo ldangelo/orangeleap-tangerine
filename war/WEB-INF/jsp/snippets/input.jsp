@@ -44,7 +44,7 @@
 	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
-	  <input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly"/>
+	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.fieldValue?'&nbsp;':fieldVO.fieldValue}</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LOOKUP'}">
 	<input value="${fieldVO.fieldValue}" size="16" class="text lookup" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" /><a class="lookupLink jqModal" href="#">Lookup</a>

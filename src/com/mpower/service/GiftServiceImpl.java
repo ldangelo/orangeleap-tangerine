@@ -55,12 +55,12 @@ public class GiftServiceImpl implements GiftService {
 	public Gift maintainGift(Gift gift) {
 		if ("Credit Card".equals(gift.getPaymentType()) || "ACH".equals(gift.getPaymentType())) {
 			PaymentSource paymentSource = new PaymentSource();
-			paymentSource.setCreditCardExpiration(gift.getCreditCardExpiration());
-			paymentSource.setCreditCardNumber(gift.getCreditCardNumber());
-			paymentSource.setCreditCardType(gift.getCreditCardType());
-			paymentSource.setAchAccountNumber(gift.getAchAccountNumber());
-			paymentSource.setAchRoutingNumber(gift.getAchRoutingNumber());
-			paymentSource.setAchType(gift.getAchType());
+			paymentSource.setCreditCardExpiration(gift.getPaymentSource().getCreditCardExpiration());
+			paymentSource.setCreditCardNumber(gift.getPaymentSource().getCreditCardNumber());
+			paymentSource.setCreditCardType(gift.getPaymentSource().getCreditCardType());
+			paymentSource.setAchAccountNumber(gift.getPaymentSource().getAchAccountNumber());
+			paymentSource.setAchRoutingNumber(gift.getPaymentSource().getAchRoutingNumber());
+			paymentSource.setAchType(gift.getPaymentSource().getAchType());
 
 			paymentSource.setPerson(gift.getPerson());
 			paymentSource.setType(gift.getPaymentType());
@@ -162,7 +162,7 @@ public class GiftServiceImpl implements GiftService {
 			Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
 			refundGift.setId(null);
 			refundGift.setTransactionDate(null);
-			refundGift.setCreditCardExpiration(null);
+			refundGift.getPaymentSource().setCreditCardExpiration(null);
 			refundGift.setValue(originalGift.getValue().negate());
 			refundGift.setOriginalGiftId(originalGift.getId());
 			refundGift = giftDao.maintainGift(refundGift);

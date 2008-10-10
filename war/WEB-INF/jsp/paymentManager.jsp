@@ -36,7 +36,9 @@
 			<div class="clearColumns"></div>
 		</div>
 		<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit" class="saveButton" /></div>
-
+		<c:if test="${paymentSource.id != null}">
+			<a class="actionLink" href="paymentManager.htm?personId=${person.id}">Cancel</a>
+		</c:if>
 	</form:form>
 
 	<script type="text/javascript">

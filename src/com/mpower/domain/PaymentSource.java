@@ -14,13 +14,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Entity
-@Table(name = "PAYMENT_SOURCE", uniqueConstraints = @UniqueConstraint(columnNames = { "PAYMENT_NAME", "PERSON_ID" }))
+@Table(name = "PAYMENT_SOURCE")
 public class PaymentSource implements SiteAware, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -65,13 +66,20 @@ public class PaymentSource implements SiteAware, Serializable {
 	@Column(name = "ACH_ACCOUNT_NUMBER")
 	private String achAccountNumber;
 
+	@Column(name = "ACTIVE")
+	private boolean active;
+
 	@Transient
 	private Integer creditCardExpirationMonth;
 
 	@Transient
+	private String creditCardExpirationMonthText;
+
+	@Transient
 	private Integer creditCardExpirationYear;
 
-	// absolutely don't store this in the db - see VISA merchant rules only used for processing
+	// absolutely don't store this in the db - see VISA merchant rules only used
+	// for processing
 	@Transient
 	private String creditCardSecurityCode;
 
@@ -170,6 +178,14 @@ public class PaymentSource implements SiteAware, Serializable {
 		this.achAccountNumber = achAccountNumber;
 	}
 
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
 	public Integer getCreditCardExpirationMonth() {
 		if (getCreditCardExpiration() != null) {
 			Calendar calendar = Calendar.getInstance();
@@ -177,6 +193,20 @@ public class PaymentSource implements SiteAware, Serializable {
 			creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
 		}
 		return creditCardExpirationMonth;
+	}
+
+	public String getCreditCardExpirationMonthText() {
+		if (getCreditCardExpiration() != null) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(getCreditCardExpiration());
+			creditCardExpirationMonth = calendar.get(Calendar.MONTH) + 1;
+			String month = String.valueOf(creditCardExpirationMonth);
+			if (month.length() == 1) {
+				month = "0" + month;
+			}
+			creditCardExpirationMonthText = month;
+		}
+		return creditCardExpirationMonthText;
 	}
 
 	public void setCreditCardExpirationMonth(Integer creditCardExpirationMonth) {
@@ -209,11 +239,15 @@ public class PaymentSource implements SiteAware, Serializable {
 		if (year != null) {
 			calendar.set(Calendar.YEAR, year);
 		}
-		calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to getting max day
-		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		calendar.set(Calendar.DAY_OF_MONTH, 1); // need to reset to 1 prior to
+		// getting max day
+		calendar.set(Calendar.DAY_OF_MONTH, calendar
+				.getActualMaximum(Calendar.DAY_OF_MONTH));
 		calendar.set(Calendar.HOUR, calendar.getActualMaximum(Calendar.HOUR));
-		calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE));
-		calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND));
+		calendar.set(Calendar.MINUTE, calendar
+				.getActualMaximum(Calendar.MINUTE));
+		calendar.set(Calendar.SECOND, calendar
+				.getActualMaximum(Calendar.SECOND));
 		setCreditCardExpiration(calendar.getTime());
 	}
 
@@ -248,5 +282,38 @@ public class PaymentSource implements SiteAware, Serializable {
 			yearList.add(String.valueOf(year + i));
 		}
 		return yearList;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof PaymentSource)) {
+			return false;
+		}
+		PaymentSource ps = (PaymentSource) obj;
+		EqualsBuilder eb = new EqualsBuilder();
+		if ("ACH".equals(getType())) {
+			eb.append(achType, ps.achType).append(achAccountNumber,
+					ps.achAccountNumber).append(achRoutingNumber,
+							ps.achRoutingNumber);
+		} else if ("Credit Card".equals(getType())) {
+			eb.append(creditCardType, ps.creditCardType).append(
+					creditCardNumber, ps.creditCardNumber).append(
+							creditCardExpiration, ps.creditCardExpiration).append(
+									creditCardSecurityCode, ps.creditCardSecurityCode);
+		}
+		return eb.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder hcb = new HashCodeBuilder();
+		if ("ACH".equals(getType())) {
+			hcb.append(achType).append(achAccountNumber).append(
+					achRoutingNumber);
+		} else if ("Credit Card".equals(getType())) {
+			hcb.append(creditCardType).append(creditCardNumber).append(
+					creditCardExpiration).append(creditCardSecurityCode);
+		}
+		return hcb.hashCode();
 	}
 }

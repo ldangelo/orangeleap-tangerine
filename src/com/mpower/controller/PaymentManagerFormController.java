@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
@@ -39,21 +40,32 @@ public class PaymentManagerFormController extends SimpleFormController {
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
 		String personId = request.getParameter("personId");
-		Person person = personService.readPersonById(Long.valueOf(personId));
-		PaymentSource paymentSource = new PaymentSource();
-		paymentSource.setPerson(person);
+		String paymentSourceId = request.getParameter("paymentSourceId");
+		PaymentSource paymentSource = null;
+		if (paymentSourceId == null) {
+			Person person = personService.readPersonById(Long.valueOf(personId));
+			paymentSource = new PaymentSource();
+			paymentSource.setPerson(person);
+		} else {
+			try {
+				paymentSource = (PaymentSource) BeanUtils.cloneBean(paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		return paymentSource;
 	}
-	
-    @SuppressWarnings("unchecked")
+
+	@SuppressWarnings("unchecked")
 	@Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
-    	Map refData = new HashMap();
+	protected Map referenceData(HttpServletRequest request) throws Exception {
+		Map refData = new HashMap();
 		String personId = request.getParameter("personId");
-		List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
+		List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
 		refData.put("paymentSources", paymentSources);
-    	return refData;
-    }
+		return refData;
+	}
 
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -61,13 +73,14 @@ public class PaymentManagerFormController extends SimpleFormController {
 		PaymentSource paymentSource = (PaymentSource) command;
 		paymentSourceService.savePaymentSource(paymentSource);
 		String personId = request.getParameter("personId");
-		List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
+		List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
 		Person person = personService.readPersonById(Long.valueOf(personId));
 		ModelAndView mav = new ModelAndView("paymentManager");
 		mav.addObject("paymentSources", paymentSources);
 		paymentSource = new PaymentSource();
 		paymentSource.setPerson(person);
 		mav.addObject("paymentSource", paymentSource);
+		mav.addObject(personId);
 		return mav;
 
 	}

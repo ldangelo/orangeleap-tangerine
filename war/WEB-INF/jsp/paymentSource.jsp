@@ -21,7 +21,10 @@
 										<p style="margin:0;">${fieldVO.labelText}: ${fieldVO.fieldValue}</p>
 									</c:if>
 								</c:forEach>
+								<a href="paymentManager.htm?paymentSourceId=${row.id}&personId=${person.id}"">Edit</a>
+								<a onclick="return(confirm('Are you sure you want to remove this payment source?'));" href="paymentSourceDelete.htm?paymentSourceId=${row.id}&personId=${person.id}"">Remove</a>
 								<hr />
+
 							</c:forEach>
 					</c:forEach>
 				</c:when>

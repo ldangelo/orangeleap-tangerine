@@ -37,6 +37,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
 			paymentSource.setCreditCardSecurityCode(null);
 			paymentSource.setCreditCardType(null);
 		}
+		paymentSource.setActive(true);
 		auditService.auditObject(paymentSource);
 		return paymentSourceDao.maintainPaymentSource(paymentSource);
 	}
@@ -53,6 +54,27 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
 
 	public void setAuditService(AuditService auditService) {
 		this.auditService = auditService;
+	}
+
+	@Override
+	public List<PaymentSource> readActivePaymentSources(Long personId) {
+		return paymentSourceDao.readActivePaymentSources(personId);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void inactivatePaymentSource(Long paymentSourceId) {
+		paymentSourceDao.inactivatePaymentSource(paymentSourceId);
+	}
+
+	@Override
+	public void removePaymentSource(Long paymentSourceId) {
+		paymentSourceDao.removePaymentSource(paymentSourceId);
+	}
+
+	@Override
+	public PaymentSource readPaymentSource(Long paymentSourceId) {
+		return paymentSourceDao.readPaymentSource(paymentSourceId);
 	}
 
 }

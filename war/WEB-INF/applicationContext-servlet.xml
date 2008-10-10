@@ -20,6 +20,10 @@
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
+    
+    <bean id="paymentSourceDelete" class="com.mpower.controller.PaymentSourceDeleteController">
+    	<property name="paymentSourceService" ref="paymentSourceService" />
+    </bean>
 
     <bean id="personSearch" class="com.mpower.controller.PersonSearchFormController">
         <property name="commandName" value="person"/>
@@ -217,6 +221,7 @@
                 <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
                 <prop key="/paymentManager.htm">paymentManager</prop>
+                <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
 			</props>
 		</property>
 	</bean>

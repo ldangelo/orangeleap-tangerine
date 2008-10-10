@@ -20,17 +20,33 @@
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
-	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
-		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
-			   <option value="${opt}">${opt}</option>
-	    </c:forEach>
-	</select>
-	<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
-		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
-			   <option value="${opt}">${opt}</option>
-	    </c:forEach>
-    </select>
-</c:when>
+		<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
+			<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
+				<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
+				<c:choose>
+					<c:when test="${opt == expirationMonth}">
+						<option month=${expirationMonth}" value="${opt}" selected="selected">${opt}</option>
+					</c:when>
+					<c:otherwise>
+						<option month=${expirationMonth}" value="${opt}">${opt}</option>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</select>
+		<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
+			<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
+				<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear }" />
+				<c:choose>
+					<c:when test="${opt == expirationYear}">
+						<option value="${opt}" selected="selected">${opt}</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${opt}">${opt}</option>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</select>
+	</c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>

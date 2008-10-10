@@ -1,0 +1,2 @@
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SITE_NAME) VALUES (1, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName', 'person.lastName', null);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID, PARAM_ORDER) VALUES ('person.lastName', 1, 1000);

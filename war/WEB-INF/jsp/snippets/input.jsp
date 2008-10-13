@@ -19,13 +19,20 @@
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
 </c:when>
+<c:when test="${fieldVO.fieldType == 'QUERIED_PICKLIST'}">
+		<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
+			<c:forEach var="opt" varStatus="status" items="${paymentSources}">
+				<option value="${opt}">${opt}</option>
+			</c:forEach>
+		</select>
+</c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
 		<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
 			<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
 				<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
 				<c:choose>
 					<c:when test="${opt == expirationMonth}">
-						<option month=${expirationMonth}" value="${opt}" selected="selected">${opt}</option>
+						<option month="{expirationMonth}" value="${opt}" selected="selected">${opt}</option>
 					</c:when>
 					<c:otherwise>
 						<option month=${expirationMonth}" value="${opt}">${opt}</option>

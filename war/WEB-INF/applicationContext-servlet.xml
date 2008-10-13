@@ -79,6 +79,7 @@
         <property name="giftService" ref="giftService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
 
     <bean id="giftRefund" class="com.mpower.controller.GiftRefundController">

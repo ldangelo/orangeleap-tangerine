@@ -78,6 +78,9 @@ public class PaymentSource implements SiteAware, Serializable {
 	@Transient
 	private Integer creditCardExpirationYear;
 
+	@Transient
+	private String creditCardNumberDisplay;
+
 	// absolutely don't store this in the db - see VISA merchant rules only used
 	// for processing
 	@Transient
@@ -315,5 +318,10 @@ public class PaymentSource implements SiteAware, Serializable {
 					creditCardExpiration).append(creditCardSecurityCode);
 		}
 		return hcb.hashCode();
+	}
+
+	public String getCreditCardNumberDisplay() {
+		String creditCardNumberDisplay = "***-" + this.creditCardNumber.substring(this.creditCardNumber.length()-4, this.creditCardNumber.length());
+		return creditCardNumberDisplay;
 	}
 }

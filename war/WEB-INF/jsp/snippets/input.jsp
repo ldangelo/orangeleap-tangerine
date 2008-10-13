@@ -22,8 +22,14 @@
 <c:when test="${fieldVO.fieldType == 'QUERIED_PICKLIST'}">
 		<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
 			<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-				<option value="${opt}">${opt}</option>
+				<c:if test="${opt.type == 'ACH'}">
+					<option value="${opt}">${opt.type} - ${opt.achAccountNumber}</option>
+				</c:if>
+				<c:if test="${opt.type == 'Credit Card'}">
+					<option value="${opt}">${opt.creditCardType} &nbsp ${opt.creditCardNumberDisplay}</option>
+				</c:if>
 			</c:forEach>
+			<option value="new" selected="selected">Create New...</option>
 		</select>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">

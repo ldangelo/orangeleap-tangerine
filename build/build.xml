@@ -115,6 +115,7 @@
 	     	<transaction src="${basedir}/db/dev/fieldValidation.sql"/>
 	     	<transaction src="${basedir}/db/dev/pageAccess.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/conferenceDemoData.sql"/>
+	     	<transaction src="${basedir}/db/dev/queryLookup.sql"/>
 	     </sql>
 	</target>
 

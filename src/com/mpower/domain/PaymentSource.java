@@ -360,7 +360,7 @@ public class PaymentSource implements SiteAware, Serializable {
         if ("ACH".equals(getType())) {
             eb.append(achType, ps.achType).append(achAccountNumber, ps.achAccountNumber).append(achRoutingNumber, ps.achRoutingNumber);
         } else if ("Credit Card".equals(getType())) {
-            eb.append(creditCardType, ps.creditCardType).append(creditCardNumber, ps.creditCardNumber).append(creditCardExpiration, ps.creditCardExpiration).append(creditCardSecurityCode, ps.creditCardSecurityCode);
+            eb.append(creditCardType, ps.creditCardType).append(creditCardNumber, ps.creditCardNumber);
         }
         return eb.isEquals();
     }
@@ -371,7 +371,7 @@ public class PaymentSource implements SiteAware, Serializable {
         if ("ACH".equals(getType())) {
             hcb.append(achType).append(achAccountNumber).append(achRoutingNumber);
         } else if ("Credit Card".equals(getType())) {
-            hcb.append(creditCardType).append(creditCardNumber).append(creditCardExpiration).append(creditCardSecurityCode);
+            hcb.append(creditCardType).append(creditCardNumber);
         }
         return hcb.hashCode();
     }

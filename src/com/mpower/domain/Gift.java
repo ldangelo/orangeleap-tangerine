@@ -102,7 +102,7 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
-    @Column(name="ENTRY_TYPE")
+    @Column(name = "ENTRY_TYPE")
     @Enumerated(EnumType.STRING)
     private GiftEntryType entryType = GiftEntryType.MANUAL;
 
@@ -312,5 +312,4 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
     public void setEntryType(GiftEntryType entryType) {
         this.entryType = entryType;
     }
-
 }

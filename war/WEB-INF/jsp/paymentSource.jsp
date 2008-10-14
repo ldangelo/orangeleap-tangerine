@@ -30,7 +30,7 @@
 				</c:when>
 				<c:when test="${paymentSources ne null}">
 					<p style="margin:8px 0 6px 0;">No payment sources have been entered for this person.</p>
-					<p>Would you like to <a href="paymentSource.htm?personId=${person.id}">create a new payment source</a>?</p>
+					<p>Would you like to <a href="paymentManager.htm?personId=${person.id}">create a new payment source</a>?</p>
 				</c:when>
 				<c:otherwise>
 				</c:otherwise>

@@ -53,9 +53,6 @@ public class PaymentSource implements SiteAware, Serializable {
     @Column(name = "CREDIT_CARD_EXPIRATION")
     private Date creditCardExpiration;
 
-    @Column(name = "ACH_TYPE")
-    private String achType;
-
     @Column(name = "ACH_ROUTING_NUMBER")
     private String achRoutingNumber;
 
@@ -168,14 +165,6 @@ public class PaymentSource implements SiteAware, Serializable {
 
     public void setCreditCardExpiration(Date creditCardExpiration) {
         this.creditCardExpiration = creditCardExpiration;
-    }
-
-    public String getAchType() {
-        return achType;
-    }
-
-    public void setAchType(String achType) {
-        this.achType = achType;
     }
 
     public String getAchRoutingNumber() {
@@ -336,7 +325,7 @@ public class PaymentSource implements SiteAware, Serializable {
         PaymentSource ps = (PaymentSource) obj;
         EqualsBuilder eb = new EqualsBuilder();
         if ("ACH".equals(getType())) {
-            eb.append(achType, ps.achType).append(achAccountNumber, ps.achAccountNumber).append(achRoutingNumber, ps.achRoutingNumber);
+            eb.append(achAccountNumber, ps.achAccountNumber).append(achRoutingNumber, ps.achRoutingNumber);
         } else if ("Credit Card".equals(getType())) {
             eb.append(creditCardType, ps.creditCardType).append(creditCardNumber, ps.creditCardNumber);
         }
@@ -347,7 +336,7 @@ public class PaymentSource implements SiteAware, Serializable {
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
         if ("ACH".equals(getType())) {
-            hcb.append(achType).append(achAccountNumber).append(achRoutingNumber);
+            hcb.append(achAccountNumber).append(achRoutingNumber);
         } else if ("Credit Card".equals(getType())) {
             hcb.append(creditCardType).append(creditCardNumber);
         }

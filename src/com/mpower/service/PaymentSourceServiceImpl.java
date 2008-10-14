@@ -30,7 +30,6 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
         if (!paymentSource.getType().equals("ACH")) {
             paymentSource.setAchAccountNumber(null);
             paymentSource.setAchRoutingNumber(null);
-            paymentSource.setAchType(null);
         } else if (!paymentSource.getType().equals("Credit Card")) {
             paymentSource.setCreditCardExpiration(null);
             paymentSource.setCreditCardNumber(null);

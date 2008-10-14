@@ -41,9 +41,6 @@ public class PaymentSource implements SiteAware, Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @Column(name = "PAYMENT_NAME")
-    private String name;
-
     @Column(name = "PAYMENT_TYPE")
     private String type;
 
@@ -55,9 +52,6 @@ public class PaymentSource implements SiteAware, Serializable {
 
     @Column(name = "CREDIT_CARD_EXPIRATION")
     private Date creditCardExpiration;
-
-    @Column(name = "CHECK_NUMBER")
-    private Integer checkNumber;
 
     @Column(name = "ACH_TYPE")
     private String achType;
@@ -111,14 +105,6 @@ public class PaymentSource implements SiteAware, Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getType() {
@@ -182,14 +168,6 @@ public class PaymentSource implements SiteAware, Serializable {
 
     public void setCreditCardExpiration(Date creditCardExpiration) {
         this.creditCardExpiration = creditCardExpiration;
-    }
-
-    public Integer getCheckNumber() {
-        return checkNumber;
-    }
-
-    public void setCheckNumber(Integer checkNumber) {
-        this.checkNumber = checkNumber;
     }
 
     public String getAchType() {

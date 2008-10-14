@@ -17,6 +17,14 @@
 	<bean id="paymentManager" class="com.mpower.controller.PaymentManagerFormController">
     	<property name="commandName" value="paymentSource" />
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.PaymentSourceValidator">
+			        <property name="pageType" value="paymentSource"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     </bean>

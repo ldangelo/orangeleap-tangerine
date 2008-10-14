@@ -34,118 +34,118 @@ import com.mpower.type.PageType;
 
 public class GiftFormController extends SimpleFormController {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private CommitmentService commitmentService;
+    private CommitmentService commitmentService;
 
-	private GiftService giftService;
+    private GiftService giftService;
 
-	private PersonService personService;
+    private PersonService personService;
 
-	private SiteService siteService;
+    private SiteService siteService;
 
-	private PaymentSourceService paymentSourceService;
+    private PaymentSourceService paymentSourceService;
 
-	public void setCommitmentService(CommitmentService commitmentService) {
-		this.commitmentService = commitmentService;
-	}
+    public void setCommitmentService(CommitmentService commitmentService) {
+        this.commitmentService = commitmentService;
+    }
 
-	public void setGiftService(GiftService giftService) {
-		this.giftService = giftService;
-	}
+    public void setGiftService(GiftService giftService) {
+        this.giftService = giftService;
+    }
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
-	public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
-		this.paymentSourceService = paymentSourceService;
-	}
+    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
+        this.paymentSourceService = paymentSourceService;
+    }
 
-	@Override
-	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
-		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-	}
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Map referenceData(HttpServletRequest request) throws Exception {
-		Map refData = new HashMap();
-		String personId = request.getParameter("personId");
-		List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
-		refData.put("paymentSources", paymentSources);
-		return refData;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = new HashMap();
+        String personId = request.getParameter("personId");
+        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
+        refData.put("paymentSources", paymentSources);
+        return refData;
+    }
 
-	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-		String giftId = request.getParameter("giftId");
-		Gift gift = null;
-		if (giftId == null) {
-			String commitmentId = request.getParameter("commitmentId");
-			Commitment commitment = null;
-			if (commitmentId != null) {
-				commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
-				if (commitment == null) {
-					logger.error("**** commitment not found for id: " + commitmentId);
-					return gift;
-				}
-				gift = giftService.createGift(commitment);
-				// TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-				gift.setPerson(commitment.getPerson());
-			}
-			if (gift == null) {
-				String personId = request.getParameter("personId");
-				Person person = null;
-				if (personId != null) {
-					person = personService.readPersonById(Long.valueOf(personId));
-					if (person == null) {
-						logger.error("**** person not found for id: " + personId);
-						return gift;
-					}
-					gift = giftService.createDefaultGift(person);
-					// TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-					gift.setPerson(person);
-				}
-			}
-		} else {
-			gift = giftService.readGiftById(new Long(giftId));
-		}
-		if (isFormSubmission(request)) {
-			Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
-			gift.setFieldLabelMap(fieldLabelMap);
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        String giftId = request.getParameter("giftId");
+        Gift gift = null;
+        if (giftId == null) {
+            String commitmentId = request.getParameter("commitmentId");
+            Commitment commitment = null;
+            if (commitmentId != null) {
+                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+                if (commitment == null) {
+                    logger.error("**** commitment not found for id: " + commitmentId);
+                    return gift;
+                }
+                gift = giftService.createGift(commitment);
+                // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+                gift.setPerson(commitment.getPerson());
+            }
+            if (gift == null) {
+                String personId = request.getParameter("personId");
+                Person person = null;
+                if (personId != null) {
+                    person = personService.readPersonById(Long.valueOf(personId));
+                    if (person == null) {
+                        logger.error("**** person not found for id: " + personId);
+                        return gift;
+                    }
+                    gift = giftService.createDefaultGift(person);
+                    // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+                    gift.setPerson(person);
+                }
+            }
+        } else {
+            gift = giftService.readGiftById(new Long(giftId));
+        }
+        if (isFormSubmission(request)) {
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            gift.setFieldLabelMap(fieldLabelMap);
 
-			Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), gift);
-			gift.setFieldValueMap(valueMap);
-		}
-		return gift;
-	}
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), gift);
+            gift.setFieldValueMap(valueMap);
+        }
+        return gift;
+    }
 
-	@Override
-	public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-		Gift gift = (Gift) command;
+    @Override
+    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
+        Gift gift = (Gift) command;
 
-		// validate required fields
+        // validate required fields
 
-		// TODO: This code is temporary validation to strip out invalid distribution lines.
-		Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
-		while (distLineIter.hasNext()) {
-			DistributionLine line = distLineIter.next();
-			if (line == null || line.getAmount() == null) {
-				distLineIter.remove();
-			}
-		}
+        // TODO: This code is temporary validation to strip out invalid distribution lines.
+        Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line == null || line.getAmount() == null) {
+                distLineIter.remove();
+            }
+        }
 
-		Gift current = giftService.maintainGift(gift);
+        Gift current = giftService.maintainGift(gift);
 
-		ModelAndView mav = new ModelAndView("redirect:/giftView.htm");
-		mav.addObject("giftId", current.getId());
-		return mav;
-	}
+        ModelAndView mav = new ModelAndView("redirect:/giftView.htm");
+        mav.addObject("giftId", current.getId());
+        return mav;
+    }
 }

@@ -82,6 +82,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/commitmentView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/> 
 	     	<transaction src="${basedir}/db/prod/pages/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/maritalStatusPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>

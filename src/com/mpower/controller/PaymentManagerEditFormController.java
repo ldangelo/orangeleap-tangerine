@@ -1,16 +1,12 @@
 package com.mpower.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -20,10 +16,8 @@ import com.mpower.domain.Person;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 
-public class PaymentManagerFormController extends SimpleFormController {
+public class PaymentManagerEditFormController extends SimpleFormController {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
 
 	private PaymentSourceService paymentSourceService;
 
@@ -53,17 +47,8 @@ public class PaymentManagerFormController extends SimpleFormController {
 				e.printStackTrace();
 			}
 		}
-		return paymentSource;
-	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Map referenceData(HttpServletRequest request) throws Exception {
-		Map refData = new HashMap();
-		String personId = request.getParameter("personId");
-		List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
-		refData.put("paymentSources", paymentSources);
-		return refData;
+		return paymentSource;
 	}
 
 	@Override
@@ -78,6 +63,7 @@ public class PaymentManagerFormController extends SimpleFormController {
 		mav.addObject("paymentSources", paymentSources);
 		paymentSource = new PaymentSource();
 		paymentSource.setPerson(person);
+		mav.addObject("redirect:/paymentManager.htm?personId=" + personId, errors.getModel());
 		mav.addObject("paymentSource", paymentSource);
 		mav.addObject(personId);
 		return mav;

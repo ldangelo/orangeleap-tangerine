@@ -161,7 +161,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource = null;
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     public Long getId() {
         return id;

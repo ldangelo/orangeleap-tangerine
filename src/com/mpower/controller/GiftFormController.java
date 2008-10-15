@@ -41,11 +41,11 @@ public class GiftFormController extends SimpleFormController {
 
     private GiftService giftService;
 
+    private PaymentSourceService paymentSourceService;
+
     private PersonService personService;
 
     private SiteService siteService;
-
-    private PaymentSourceService paymentSourceService;
 
     public void setCommitmentService(CommitmentService commitmentService) {
         this.commitmentService = commitmentService;
@@ -55,16 +55,16 @@ public class GiftFormController extends SimpleFormController {
         this.giftService = giftService;
     }
 
+    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
+        this.paymentSourceService = paymentSourceService;
+    }
+
     public void setPersonService(PersonService personService) {
         this.personService = personService;
     }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
-    }
-
-    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
-        this.paymentSourceService = paymentSourceService;
     }
 
     @Override

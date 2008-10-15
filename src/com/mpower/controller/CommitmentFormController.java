@@ -17,8 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Commitment;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.CommitmentService;
+import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
@@ -31,17 +33,23 @@ public class CommitmentFormController extends SimpleFormController {
 
     private CommitmentService commitmentService;
 
+    private PaymentSourceService paymentSourceService;
+
     private PersonService personService;
+
+    private SiteService siteService;
 
     public void setCommitmentService(CommitmentService commitmentService) {
         this.commitmentService = commitmentService;
     }
 
+    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
+        this.paymentSourceService = paymentSourceService;
+    }
+
     public void setPersonService(PersonService personService) {
         this.personService = personService;
     }
-
-    private SiteService siteService;
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
@@ -51,6 +59,7 @@ public class CommitmentFormController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
     }
 
     @Override

@@ -92,9 +92,9 @@
         <property name="successView" value="giftView" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="giftService" ref="giftService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
 
     <bean id="giftRefund" class="com.mpower.controller.GiftRefundController">
@@ -139,6 +139,7 @@
         <property name="formView" value="commitment" />
         <property name="successView" value="commitmentView" />
         <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
     </bean>

@@ -35,7 +35,7 @@ import com.mpower.util.GiftCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "GIFT")
-public class Gift implements SiteAware, Customizable, Viewable, Serializable {
+public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -117,6 +117,9 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private List<PaymentSource> paymentSources = null;
+
+    @Transient
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     public Long getId() {
         return id;
@@ -311,5 +314,13 @@ public class Gift implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setEntryType(GiftEntryType entryType) {
         this.entryType = entryType;
+    }
+
+    public PaymentSource getSelectedPaymentSource() {
+        return selectedPaymentSource;
+    }
+
+    public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
+        this.selectedPaymentSource = selectedPaymentSource;
     }
 }

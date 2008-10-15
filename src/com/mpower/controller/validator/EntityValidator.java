@@ -17,6 +17,8 @@ import org.springframework.validation.Validator;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Gift;
+import com.mpower.domain.PaymentSource;
+import com.mpower.domain.PaymentSourceAware;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Viewable;
@@ -53,6 +55,15 @@ public class EntityValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in EntityValidator");
+        if (target instanceof PaymentSourceAware) {
+            PaymentSourceAware obj = (PaymentSourceAware) target;
+            PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
+            if (selectedPaymentSource.getId() != null) {
+                obj.setPaymentSource(selectedPaymentSource);
+            }
+            PaymentSourceValidator.validatePaymentSource(((PaymentSourceAware) target).getPaymentSource(), errors);
+        }
+
         Viewable viewable = (Viewable) target;
         Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
 

@@ -34,7 +34,7 @@ import com.mpower.util.CommitmentCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMITMENT", uniqueConstraints = @UniqueConstraint(columnNames = { "NAME", "PERSON_ID" }))
-public class Commitment implements SiteAware, Customizable, Viewable, Serializable {
+public class Commitment implements SiteAware, PaymentSourceAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -159,6 +159,9 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+
+    @Transient
+    private PaymentSource selectedPaymentSource = null;
 
     public Long getId() {
         return id;
@@ -456,5 +459,13 @@ public class Commitment implements SiteAware, Customizable, Viewable, Serializab
             }
         }
         return amount;
+    }
+
+    public PaymentSource getSelectedPaymentSource() {
+        return selectedPaymentSource;
+    }
+
+    public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
+        this.selectedPaymentSource = selectedPaymentSource;
     }
 }

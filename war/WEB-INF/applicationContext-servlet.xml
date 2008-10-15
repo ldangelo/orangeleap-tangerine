@@ -240,7 +240,6 @@
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
                 <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
 			</props>
-			
 		</property>
 	</bean>
 
@@ -309,5 +308,17 @@
             <dwr:include method="greet" />
         </dwr:remote>
     </bean>
+
+	<bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+	    	<map>
+	      		<entry key="com.mpower.domain.PaymentSource">
+	        		<bean id="paymentSourceEditor" class="com.mpower.controller.PaymentSourceEditor">
+				    	<property name="paymentSourceService" ref="paymentSourceService" />
+				    </bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
 </beans>

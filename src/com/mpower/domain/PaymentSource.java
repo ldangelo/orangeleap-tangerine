@@ -60,7 +60,7 @@ public class PaymentSource implements SiteAware, Serializable {
     private String achAccountNumberEncrypted;
 
     @Column(name = "ACTIVE")
-    private boolean active;
+    private boolean active = true;
 
     @Transient
     private Integer creditCardExpirationMonth;

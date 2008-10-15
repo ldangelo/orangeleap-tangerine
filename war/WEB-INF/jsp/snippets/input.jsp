@@ -20,46 +20,46 @@
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'QUERIED_PICKLIST'}">
-		<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
-			<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-				<c:if test="${opt.type == 'ACH'}">
-					<option value="${opt}">${opt.type} - ${opt.achAccountNumber}</option>
-				</c:if>
-				<c:if test="${opt.type == 'Credit Card'}">
-					<option value="${opt}">${opt.creditCardType} &nbsp ${opt.creditCardNumberDisplay}</option>
-				</c:if>
-			</c:forEach>
-			<option value="new" selected="selected">Create New...</option>
-		</select>
+	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
+		<c:forEach var="opt" varStatus="status" items="${paymentSources}">
+			<c:if test="${opt.type == 'ACH'}">
+				<option value="${opt.id}">${opt.type} &nbsp; ${opt.achAccountNumberDisplay}</option>
+			</c:if>
+			<c:if test="${opt.type == 'Credit Card'}">
+				<option value="${opt.id}">${opt.creditCardType} &nbsp; ${opt.creditCardNumberDisplay}</option>
+			</c:if>
+		</c:forEach>
+		<option value="new">Create New...</option>
+	</select>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
-		<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
-			<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
-				<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
-				<c:choose>
-					<c:when test="${opt == expirationMonth}">
-						<option month="{expirationMonth}" value="${opt}" selected="selected">${opt}</option>
-					</c:when>
-					<c:otherwise>
-						<option month=${expirationMonth}" value="${opt}">${opt}</option>
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-		</select>
-		<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
-			<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
-				<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear }" />
-				<c:choose>
-					<c:when test="${opt == expirationYear}">
-						<option value="${opt}" selected="selected">${opt}</option>
-					</c:when>
-					<c:otherwise>
-						<option value="${opt}">${opt}</option>
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-		</select>
-	</c:when>
+	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
+		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
+			<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
+			<c:choose>
+				<c:when test="${opt == expirationMonth}">
+					<option month="{expirationMonth}" value="${opt}" selected="selected">${opt}</option>
+				</c:when>
+				<c:otherwise>
+					<option month=${expirationMonth}" value="${opt}">${opt}</option>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+	</select>
+	<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
+		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
+			<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear }" />
+			<c:choose>
+				<c:when test="${opt == expirationYear}">
+					<option value="${opt}" selected="selected">${opt}</option>
+				</c:when>
+				<c:otherwise>
+					<option value="${opt}">${opt}</option>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+	</select>
+</c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>

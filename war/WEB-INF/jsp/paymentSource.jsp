@@ -17,8 +17,16 @@
 								<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 								
 									<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}"/>
-									<c:if test="${fieldVO.fieldValue!=null}">
-										<p style="margin:0;">${fieldVO.labelText}: ${fieldVO.fieldValue}</p>
+									<c:if test="${fieldVO.fieldValue!=null}">	
+									<c:choose>
+										<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
+											<p style="margin:0;">${fieldVO.labelText}: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" /></p>
+										</c:when>
+										<c:otherwise>
+											<p style="margin:0;">${fieldVO.labelText}: ${fieldVO.fieldValue}</p>
+										</c:otherwise>
+									</c:choose>
+										
 									</c:if>
 								</c:forEach>
 								<c:if test="${row.type!='ACH'}">

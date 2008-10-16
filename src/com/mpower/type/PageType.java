@@ -16,7 +16,8 @@ public enum PageType {
 	commitmentView("/commitmentView.htm"),
 	paymentManager("/paymentManager.htm"),
 	paymentManagerEdit("/paymentManagerEdit.htm"),
-	paymentSource("/paymentSource.htm");
+	paymentSource("/paymentSource.htm"),
+	queryLookup("/queryLookup.htm");
 
 	private String pageName;
 

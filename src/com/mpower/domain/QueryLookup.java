@@ -42,6 +42,9 @@ public class QueryLookup implements Serializable {
     @ManyToOne
     @JoinColumn(name = "FIELD_DEFINITION_ID")
     private FieldDefinition fieldDefinition;
+    
+    @Column(name = "SECTION_NAME")
+    private String sectionName;
 
     @Column(name = "JPA_QUERY")
     private String jpaQuery;
@@ -89,4 +92,12 @@ public class QueryLookup implements Serializable {
     public void setQueryLookupParams(List<QueryLookupParam> queryLookupParams) {
         this.queryLookupParams = queryLookupParams;
     }
+
+	public String getSectionName() {
+		return sectionName;
+	}
+
+	public void setSectionName(String sectionName) {
+		this.sectionName = sectionName;
+	}
 }

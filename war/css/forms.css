@@ -138,7 +138,7 @@ h4.gridSectionHeader {
 	background: #F6F7FB;
 }
 a.lookupLink {
-	background:transparent url(../images/icons/view.png) no-repeat 0% 0%;
+	background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;
 	display:block;
 	float:left;
 	height:16px;
@@ -148,8 +148,22 @@ a.lookupLink {
 	text-indent:-2000px;
 	width:16px;
 }
+
+a.lookupLink2 {
+	/*background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;*/
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	margin:0;
+	height:16px;
+	/*overflow:hidden;*/
+	padding:0;
+	/*text-indent:-2000px;*/
+	width:16px;
+}
 a.tableLookupLink {
-	background:transparent url(../images/icons/view.png) no-repeat 0% 0%;
+	background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;
 	display:block;
 	height:16px;
 	margin:0;
@@ -324,7 +338,31 @@ table#gift_distribution thead th.actionColumn {
 }
 div.lookupWrapper {
 	position:relative;
+	float:left;
+	width:66%;
 }
+table div.lookupWrapper {
+	position:relative;
+	width:100%;
+}
+ul.formFields div.lookupWrapper input {
+	width:100%;
+}
+.lookupImg {
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:5000;
+}
+
+.readOnlyField {
+	border:1px solid #7F9DB9;
+	padding:1px 4px;
+	float:left;
+	width:66%;
+	background:#eee;
+}
+
 /*
 	.lookupWrapper .lookupLink {
 		//visibility:hidden;
@@ -335,3 +373,7 @@ div.lookupWrapper {
 		opacity:1;
 	}
 */
+table.alignLeft td,
+table.alignLeft th {
+	text-align:left;
+}

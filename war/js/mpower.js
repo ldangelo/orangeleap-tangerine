@@ -245,3 +245,10 @@ function loadCodePopup(elem) {
 		$("#dialog").jqmShow();
 	});
 }
+function loadQueryLookup(elem) {
+	var fieldDef = $(elem).eq(0).attr("fieldDef");
+	window.lookupCaller = elem;
+	$("#dialog .modalContent").load("queryLookup.htm?fieldDef="+fieldDef,function(){
+		$("#dialog").jqmShow();
+	});
+}

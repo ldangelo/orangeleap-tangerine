@@ -184,6 +184,10 @@
     <bean id="codeHelper" class="com.mpower.controller.CodeHelperController">
         <property name="codeService" ref="codeService"/>
     </bean>
+    
+    <bean id="queryLookup" class="com.mpower.controller.QueryLookupController">
+        <property name="queryLookupService" ref="queryLookupService"/>
+    </bean>
 
     <bean id="siteAudit" class="com.mpower.controller.AuditViewController">
         <property name="auditService" ref="auditService"/>
@@ -239,6 +243,7 @@
                 <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
                 <prop key="/paymentManager.htm">paymentManager</prop>
+                <prop key="/queryLookup.htm">queryLookup</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
                 <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
 			</props>

@@ -66,7 +66,7 @@
 <c:when test="${fieldVO.fieldType == 'CODE'}">
 <div class="lookupWrapper">
 	<input value="${fieldVO.fieldValue}" class="text code" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" />
-	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:4px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
+	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">

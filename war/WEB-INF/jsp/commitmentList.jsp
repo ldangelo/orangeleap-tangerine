@@ -3,7 +3,7 @@
 	<tiles:putAttribute name="browserTitle" value="Commitment History" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Commitment History" />
+	<tiles:putAttribute name="sidebarNav" value="Commitments" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='commitmentList' />
 		<c:set var="person" value="${person}" scope="request" />
@@ -13,7 +13,7 @@
 		<div class="content760 mainForm">
 
 		<jsp:include page="snippets/personHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="Commitment History" />
+			<jsp:param name="currentFunctionTitleText" value="Commitments" />
 		</jsp:include>
 
 		<c:choose>

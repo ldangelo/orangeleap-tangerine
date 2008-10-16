@@ -48,7 +48,7 @@
 				<a href="personSearch.htm" class="${secondaryNav=='Search'?'active':''}">Search</a>
 			</li>
 			<li>
-				<a href="person.htm" class="${secondaryNav=='Edit'?'active':''}">Edit</a>
+				<a href="person.htm" class="${secondaryNav=='Edit'?'active':''}">${secondaryNav=='Edit'?'Edit':'New'}</a>
 			</li>
 			<li>
 				<a href="#">Correspond</a>

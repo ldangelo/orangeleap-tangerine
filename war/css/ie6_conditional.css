@@ -26,3 +26,12 @@ input.iebuttonfix {
     overflow: visible;
 }
 */
+
+div.lookupWrapper {
+	position:relative;
+	float:left;
+	width:66%;
+}
+ul.formFields div.lookupWrapper input {
+	width:91%;
+}

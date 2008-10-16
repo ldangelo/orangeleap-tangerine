@@ -10,6 +10,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.PaymentSource;
+import com.mpower.domain.PaymentSourceAware;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
 import com.mpower.util.CalendarUtils;
@@ -47,7 +48,7 @@ public class PaymentSourceValidator implements Validator {
 
     public static void validatePaymentSource(Object target, Errors errors) {
         String inPath = errors.getNestedPath();
-        if (!(target instanceof PaymentSource)) {
+        if (target instanceof PaymentSourceAware) {
             errors.setNestedPath("paymentSource");
         }
         PaymentSource source = (PaymentSource) target;

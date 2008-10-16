@@ -37,16 +37,12 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
 
-    @Resource(name = "recurringGiftService")
-    private RecurringGiftService recurringGiftService;
-
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Commitment maintainCommitment(Commitment commitment) {
-        commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         if (!"Credit Card".equals(commitment.getPaymentType()) && !"ACH".equals(commitment.getPaymentType())) {
             commitment.setPaymentSource(null);
         }

@@ -61,23 +61,26 @@ public class EntityValidator implements Validator {
             if (selectedPaymentSource.getId() != null) {
                 obj.setPaymentSource(selectedPaymentSource);
             }
+            obj.getPaymentSource().setType(obj.getPaymentType());
             PaymentSourceValidator.validatePaymentSource(((PaymentSourceAware) target).getPaymentSource(), errors);
         }
 
-        Viewable viewable = (Viewable) target;
-        Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
+        if (!errors.hasErrors()) {
+            Viewable viewable = (Viewable) target;
+            Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
 
-        // used as a cache to prevent having to use reflection if the value has already been read
-        Map<String, Object> fieldValueMap = new HashMap<String, Object>();
+            // used as a cache to prevent having to use reflection if the value has already been read
+            Map<String, Object> fieldValueMap = new HashMap<String, Object>();
 
-        // used to know that a field already has an error, so don't add another
-        Set<String> errorSet = new HashSet<String>();
+            // used to know that a field already has an error, so don't add another
+            Set<String> errorSet = new HashSet<String>();
 
-        // first, validate required fields
-        validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+            // first, validate required fields
+            validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
 
-        // next, validate custom validation (regex)
-        validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+            // next, validate custom validation (regex)
+            validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+        }
     }
 
     private void validateRequiredFields(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {

@@ -27,15 +27,6 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public PaymentSource savePaymentSource(PaymentSource paymentSource) {
-        if (!paymentSource.getType().equals("ACH")) {
-            paymentSource.setAchAccountNumber(null);
-            paymentSource.setAchRoutingNumber(null);
-        } else if (!paymentSource.getType().equals("Credit Card")) {
-            paymentSource.setCreditCardExpiration(null);
-            paymentSource.setCreditCardNumber(null);
-            paymentSource.setCreditCardSecurityCode(null);
-            paymentSource.setCreditCardType(null);
-        }
         paymentSource.setActive(true);
         auditService.auditObject(paymentSource);
         return paymentSourceDao.maintainPaymentSource(paymentSource);

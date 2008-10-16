@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -341,5 +342,20 @@ public class PaymentSource implements SiteAware, Serializable {
             hcb.append(creditCardType).append(creditCardNumber);
         }
         return hcb.hashCode();
+    }
+
+    @PrePersist
+    public void standardize() {
+        if (type != null) {
+            if ("ACH".equals(getType())) {
+                setCreditCardExpiration(null);
+                setCreditCardNumber(null);
+                setCreditCardSecurityCode(null);
+                setCreditCardType(null);
+            } else if ("Credit Card".equals(getType())) {
+                setAchAccountNumber(null);
+                setAchRoutingNumber(null);
+            }
+        }
     }
 }

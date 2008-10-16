@@ -2,8 +2,6 @@ package com.mpower.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -64,15 +62,15 @@ public class CommitmentFormController extends SimpleFormController {
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
-        Map refData = new HashMap();
-        String personId = request.getParameter("personId");
-        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
-        refData.put("paymentSources", paymentSources);
-        return refData;
-    }
+    //    @SuppressWarnings("unchecked")
+    //    @Override
+    //    protected Map referenceData(HttpServletRequest request) throws Exception {
+    //        Map refData = new HashMap();
+    //        String personId = request.getParameter("personId");
+    //        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
+    //        refData.put("paymentSources", paymentSources);
+    //        return refData;
+    //    }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {

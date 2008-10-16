@@ -47,11 +47,15 @@ public class PaymentSourceValidator implements Validator {
     }
 
     public static void validatePaymentSource(Object target, Errors errors) {
+        PaymentSource source = null;
         String inPath = errors.getNestedPath();
-        if (target instanceof PaymentSourceAware) {
+        if (target instanceof PaymentSource) {
+            source = (PaymentSource) target;
+        } else if (target instanceof PaymentSourceAware) {
+            source = ((PaymentSourceAware) target).getPaymentSource();
             errors.setNestedPath("paymentSource");
         }
-        PaymentSource source = (PaymentSource) target;
+
         if ("ACH".equals(source.getType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achAccountNumber", "invalidAchAccountNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achRoutingNumber", "invalidAchRoutingNumber");

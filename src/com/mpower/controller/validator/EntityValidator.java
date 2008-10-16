@@ -62,7 +62,7 @@ public class EntityValidator implements Validator {
                 obj.setPaymentSource(selectedPaymentSource);
             }
             obj.getPaymentSource().setType(obj.getPaymentType());
-            PaymentSourceValidator.validatePaymentSource(((PaymentSourceAware) target).getPaymentSource(), errors);
+            PaymentSourceValidator.validatePaymentSource(target, errors);
         }
 
         if (!errors.hasErrors()) {

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
 
 public interface GiftDao {
 
@@ -22,10 +21,4 @@ public interface GiftDao {
     public List<Gift> readGiftsByPersonId(Long personId);
 
     public List<Gift> readAllGifts();
-
-    public PaymentSource maintainPaymentSources(PaymentSource paymentSource);
-
-    public List<PaymentSource> readPaymentSources(Long personId);
-
-    public void removePaymentSource(PaymentSource paymentSource);
 }

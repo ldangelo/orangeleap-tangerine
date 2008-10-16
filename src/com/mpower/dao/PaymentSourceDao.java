@@ -6,18 +6,17 @@ import com.mpower.domain.PaymentSource;
 
 public interface PaymentSourceDao {
 
-	public PaymentSource maintainPaymentSource(PaymentSource paymentSource);
+    public PaymentSource maintainPaymentSource(PaymentSource paymentSource);
 
-	public List<PaymentSource> readPaymentSources(Long personId);
+    public List<PaymentSource> readPaymentSources(Long personId);
 
-	public void deletePaymentSource(PaymentSource paymentSource);
+    public void deletePaymentSource(PaymentSource paymentSource);
 
-	public List<PaymentSource> readActivePaymentSources(Long personId);
+    public List<PaymentSource> readActivePaymentSources(Long personId);
 
-	public void inactivatePaymentSource(Long paymentSourceId);
+    public void inactivatePaymentSource(Long paymentSourceId);
 
-	public void removePaymentSource(Long paymentSourceId);
+    public void removePaymentSource(Long paymentSourceId);
 
-	public PaymentSource readPaymentSource(Long paymentSourceId);
-
+    public PaymentSource readPaymentSource(Long paymentSourceId);
 }

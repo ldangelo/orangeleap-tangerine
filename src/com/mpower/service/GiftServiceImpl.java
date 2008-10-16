@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
+import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
@@ -41,6 +42,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "giftDao")
     private GiftDao giftDao;
+
+    @Resource(name = "paymentSourceDao")
+    private PaymentSourceDao paymentSourceDao;
 
     @Resource(name = "siteDao")
     private SiteDao siteDao;
@@ -90,15 +94,15 @@ public class GiftServiceImpl implements GiftService {
     }
 
     public void createPaymentSource(PaymentSource paymentSource) {
-        giftDao.maintainPaymentSources(paymentSource);
+        paymentSourceDao.maintainPaymentSource(paymentSource);
     }
 
     public List<PaymentSource> readPaymentSources(Long personId) {
-        return giftDao.readPaymentSources(personId);
+        return paymentSourceDao.readPaymentSources(personId);
     }
 
     public void deletePaymentSource(Long paymentSourceId) {
-        giftDao.readPaymentSources(paymentSourceId);
+        paymentSourceDao.readPaymentSources(paymentSourceId);
     }
 
     @Override

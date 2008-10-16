@@ -161,6 +161,9 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
+    private List<PaymentSource> paymentSources = null;
+
+    @Transient
     private PaymentSource selectedPaymentSource = new PaymentSource();
 
     public Long getId() {
@@ -459,6 +462,14 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
             }
         }
         return amount;
+    }
+
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSources;
+    }
+
+    public void setPaymentSources(List<PaymentSource> paymentSources) {
+        this.paymentSources = paymentSources;
     }
 
     public PaymentSource getSelectedPaymentSource() {

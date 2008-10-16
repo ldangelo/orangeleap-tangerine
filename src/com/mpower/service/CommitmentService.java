@@ -18,7 +18,7 @@ public interface CommitmentService {
 
     public List<Commitment> readCommitments(String siteName, Map<String, Object> params);
 
-    public Commitment createDefaultCommitment(String siteName);
+    public Commitment createDefaultCommitment(Person person);
 
     public void setAuditService(AuditService auditService);
 }

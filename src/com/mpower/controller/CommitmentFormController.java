@@ -2,6 +2,8 @@ package com.mpower.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -62,13 +64,22 @@ public class CommitmentFormController extends SimpleFormController {
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = new HashMap();
+        String personId = request.getParameter("personId");
+        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
+        refData.put("paymentSources", paymentSources);
+        return refData;
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String commitmentId = request.getParameter("commitmentId");
         Commitment commitment = null;
         if (commitmentId == null) {
             // create person
-            commitment = commitmentService.createDefaultCommitment(SessionServiceImpl.lookupUserSiteName());
             String personId = request.getParameter("personId");
             // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
             Person person = null;
@@ -78,8 +89,9 @@ public class CommitmentFormController extends SimpleFormController {
                     logger.error("**** person not found for id: " + personId);
                     return commitment;
                 }
+                commitment = commitmentService.createDefaultCommitment(person);
+                commitment.setPerson(person);
             }
-            commitment.setPerson(person);
         } else {
             commitment = commitmentService.readCommitmentById(new Long(commitmentId));
         }

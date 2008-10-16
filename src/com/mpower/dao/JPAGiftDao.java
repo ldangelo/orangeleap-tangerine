@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
 import com.mpower.util.EntityUtility;
 
 @Repository("giftDao")
@@ -168,28 +167,5 @@ public class JPAGiftDao implements GiftDao {
         Query query = em.createNamedQuery("READ_ALL_GIFTS");
         List<Gift> lg = query.getResultList();
         return lg;
-    }
-
-    @Override
-    public PaymentSource maintainPaymentSources(PaymentSource paymentSource) {
-        if (paymentSource.getId() == null) {
-            em.persist(paymentSource);
-            return paymentSource;
-        }
-        return em.merge(paymentSource);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<PaymentSource> readPaymentSources(Long personId) {
-        Query query = em.createNamedQuery("READ_PAYMENT_SOURCES_BY_PERSON_ID");
-        query.setParameter("personId", personId);
-        List<PaymentSource> paymentSourceList = query.getResultList();
-        return paymentSourceList;
-    }
-
-    @Override
-    public void removePaymentSource(PaymentSource paymentSource) {
-        em.remove(paymentSource);
     }
 }

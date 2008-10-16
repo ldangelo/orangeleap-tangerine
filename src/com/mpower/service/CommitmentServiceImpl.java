@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CommitmentDao;
+import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Person;
@@ -30,11 +31,14 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "recurringGiftService")
-    private RecurringGiftService recurringGiftService;
-
     @Resource(name = "commitmentDao")
     private CommitmentDao commitmentDao;
+
+    @Resource(name = "paymentSourceDao")
+    private PaymentSourceDao paymentSourceDao;
+
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
 
     @Resource(name = "siteDao")
     private SiteDao siteDao;
@@ -72,15 +76,17 @@ public class CommitmentServiceImpl implements CommitmentService {
     }
 
     @Override
-    public Commitment createDefaultCommitment(String siteName) {
+    public Commitment createDefaultCommitment(Person person) {
         // get initial gift with built-in defaults
         Commitment commitment = new Commitment();
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteName, Arrays.asList(new EntityType[] { EntityType.gift }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.gift }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
+
+        commitment.setPaymentSources(paymentSourceDao.readPaymentSources(person.getId()));
 
         // TODO: consider caching techniques for the default Gift
         return commitment;

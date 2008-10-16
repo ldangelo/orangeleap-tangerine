@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -345,6 +346,7 @@ public class PaymentSource implements SiteAware, Serializable {
     }
 
     @PrePersist
+    @PreUpdate
     public void standardize() {
         if (type != null) {
             if ("ACH".equals(getType())) {

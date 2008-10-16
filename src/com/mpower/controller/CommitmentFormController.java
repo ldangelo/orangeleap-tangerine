@@ -2,6 +2,8 @@ package com.mpower.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -62,15 +64,29 @@ public class CommitmentFormController extends SimpleFormController {
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
     }
 
-    //    @SuppressWarnings("unchecked")
-    //    @Override
-    //    protected Map referenceData(HttpServletRequest request) throws Exception {
-    //        Map refData = new HashMap();
-    //        String personId = request.getParameter("personId");
-    //        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
-    //        refData.put("paymentSources", paymentSources);
-    //        return refData;
-    //    }
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = new HashMap();
+        String personIdString = request.getParameter("personId");
+        Long personId = null;
+        if (personIdString == null) {
+            String commitmentId = request.getParameter("commitmentId");
+            if (commitmentId != null) {
+                Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+                if (commitment != null) {
+                    commitment.getPerson().getId();
+                }
+            }
+        } else {
+            personId = Long.valueOf(personIdString);
+        }
+        if (personId != null) {
+            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(personId);
+            refData.put("paymentSources", paymentSources);
+        }
+        return refData;
+    }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {

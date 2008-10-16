@@ -171,6 +171,7 @@
         <property name="formView" value="commitmentView" />
         <property name="successView" value="commitmentView" />
         <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
     </bean>

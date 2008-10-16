@@ -75,7 +75,7 @@ public class CommitmentFormController extends SimpleFormController {
             if (commitmentId != null) {
                 Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
                 if (commitment != null) {
-                    commitment.getPerson().getId();
+                    personId = commitment.getPerson().getId();
                 }
             }
         } else {

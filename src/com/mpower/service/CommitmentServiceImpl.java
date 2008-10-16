@@ -18,6 +18,7 @@ import com.mpower.dao.CommitmentDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
@@ -43,7 +44,18 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Commitment maintainCommitment(Commitment commitment) {
-        if (!"Credit Card".equals(commitment.getPaymentType()) && !"ACH".equals(commitment.getPaymentType())) {
+        if ("Credit Card".equals(commitment.getPaymentType()) || "ACH".equals(commitment.getPaymentType())) {
+            commitment.getPaymentSource().setType(commitment.getPaymentType());
+            List<PaymentSource> paymentSources = paymentSourceDao.readPaymentSources(commitment.getPerson().getId());
+            if (paymentSources != null) {
+                for (PaymentSource paymentSource : paymentSources) {
+                    if (commitment.getPaymentSource().equals(paymentSource)) {
+                        commitment.setPaymentSource(paymentSource);
+                        break;
+                    }
+                }
+            }
+        } else {
             commitment.setPaymentSource(null);
         }
         commitment = commitmentDao.maintainCommitment(commitment);

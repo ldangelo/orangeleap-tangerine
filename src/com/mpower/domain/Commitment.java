@@ -108,7 +108,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     private Date endDate;
 
     @Column(name = "STATUS")
-    private String status;
+    private String status = STATUS_ACTIVE;
 
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

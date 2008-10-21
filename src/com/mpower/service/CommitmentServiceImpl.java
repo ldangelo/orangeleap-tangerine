@@ -38,6 +38,9 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
 
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
+
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
@@ -59,6 +62,7 @@ public class CommitmentServiceImpl implements CommitmentService {
             commitment.setPaymentSource(null);
         }
         commitment = commitmentDao.maintainCommitment(commitment);
+        commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
         return commitment;
     }

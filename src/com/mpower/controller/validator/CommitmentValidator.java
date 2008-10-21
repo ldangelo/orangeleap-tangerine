@@ -3,6 +3,7 @@ package com.mpower.controller.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.Commitment;
@@ -37,14 +38,19 @@ public class CommitmentValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in CommitmentValidator");
-        // Viewable viewable = (Viewable) target;
-        //
-        // Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
-        //
-        // // used as a cache to prevent having to use reflection if the value has already been read
-        // Map<String, Object> fieldValueMap = new HashMap<String, Object>();
-        //
-        // // used to know that a field already has an error, so don't add another
-        // Set<String> errorSet = new HashSet<String>();
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "invalidStartDate", "Start Date is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "commitmentCode", "invalidCommitmentCode", "Commitment code is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "invalidName", "Commitment name is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectCode", "invalidProjectCode", "Project code is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "motivationCode", "invalidMotivationCode", "Motivation code is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
+        if (!errors.hasErrors()) {
+            Commitment commitment = (Commitment) target;
+            if (commitment.getEndDate() != null) {
+                if (commitment.getEndDate().before(commitment.getStartDate())) {
+                    errors.rejectValue("endDate", "invalidEndDate", "Commitment start date must be before end date");
+                }
+            }
+        }
     }
 }

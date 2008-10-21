@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +39,9 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public RecurringGift maintainRecurringGift(Commitment commitment) {
+        // TODO: remove after testing
+        getCommitmentGifts(commitment);
+
         RecurringGift rg = commitment.getRecurringGift();
         if (commitment.isAutoPay()) {
             if (rg == null) {
@@ -167,6 +171,80 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             logger.debug("no next run scheduled");
         }
         return nextRun.getTime();
+    }
+
+    public List<Gift> getCommitmentGifts(Commitment commitment) {
+        List<Gift> gifts = null;
+        if (commitment.getStartDate() == null) {
+            logger.debug("Commitment start date is null");
+            return gifts;
+        }
+        if (commitment.getEndDate() == null) {
+            logger.debug("Commitment end date is null");
+            return gifts;
+        }
+        gifts = new ArrayList<Gift>();
+        Calendar startDateCal = new GregorianCalendar();
+        startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
+        Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
+        gifts.add(createGift(commitment, firstGiftCal));
+
+        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
+            Calendar secondGiftCal = new GregorianCalendar();
+            secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
+            if (isPastEndDate(commitment, secondGiftCal.getTime())) {
+                return gifts;
+            } else {
+                gifts.add(createGift(commitment, secondGiftCal));
+            }
+            boolean pastEndDate = false;
+            int i = 0;
+            while (!pastEndDate) {
+                i++;
+                Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
+                if (isPastEndDate(commitment, payment1.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    gifts.add(createGift(commitment, payment1));
+                }
+                Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
+                if (isPastEndDate(commitment, payment2.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    gifts.add(createGift(commitment, payment2));
+                }
+            }
+        } else {
+            Calendar giftCal = firstGiftCal;
+            boolean pastEndDate = false;
+            while (!pastEndDate) {
+                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.WEEK_OF_MONTH, 1);
+                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 1);
+                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 3);
+                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 6);
+                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.YEAR, 1);
+                } else {
+                    logger.debug("Unknown frequency");
+                    return gifts;
+                }
+                if (isPastEndDate(commitment, giftCal.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    gifts.add(createGift(commitment, giftCal));
+                }
+            }
+        }
+        return gifts;
+    }
+
+    private Gift createGift(Commitment commitment, Calendar giftCal) {
+        logger.debug("Creating gift for " + commitment.getAmountPerGift() + ", on " + giftCal.getTime());
+        return new Gift(commitment, giftCal.getTime());
     }
 
     private Calendar getToday() {

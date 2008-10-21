@@ -121,6 +121,16 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
     @Transient
     private PaymentSource selectedPaymentSource = new PaymentSource();
 
+    public Gift() {
+    }
+
+    public Gift(Commitment commitment, Date transactionDate) {
+        this.commitment = commitment;
+        this.person = commitment.getPerson();
+        this.transactionDate = transactionDate;
+        this.value = commitment.getAmountPerGift();
+    }
+
     public Long getId() {
         return id;
     }

@@ -21,4 +21,6 @@ public interface GiftDao {
     public List<Gift> readGiftsByPersonId(Long personId);
 
     public List<Gift> readAllGifts();
+
+    public List<Gift> readGiftsByCommitmentId(Long commitmentId);
 }

@@ -33,4 +33,6 @@ public interface GiftService {
     public void setAuditService(AuditService auditService);
 
     public Gift createGift(Commitment commitment);
+
+    public List<Gift> readGiftsByCommitment(Commitment commitment);
 }

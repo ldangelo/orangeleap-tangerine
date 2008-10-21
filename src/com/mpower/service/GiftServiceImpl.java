@@ -210,4 +210,8 @@ public class GiftServiceImpl implements GiftService {
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
     }
+
+    public List<Gift> readGiftsByCommitment(Commitment commitment){
+        return giftDao.readGiftsByCommitmentId(commitment.getId());
+    }
 }

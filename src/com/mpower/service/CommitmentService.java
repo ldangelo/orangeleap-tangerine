@@ -1,9 +1,11 @@
 package com.mpower.service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Commitment;
+import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 
 public interface CommitmentService {
@@ -21,4 +23,8 @@ public interface CommitmentService {
     public Commitment createDefaultCommitment(Person person);
 
     public void setAuditService(AuditService auditService);
+
+    public List<Calendar> getCommitmentGiftDates(Commitment commitment);
+
+    public List<Gift> getCommitmentGifts(Commitment commitment);
 }

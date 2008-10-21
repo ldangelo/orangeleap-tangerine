@@ -1,6 +1,5 @@
 package com.mpower.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,9 +38,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public RecurringGift maintainRecurringGift(Commitment commitment) {
-        // TODO: remove after testing
-        getCommitmentGifts(commitment);
-
         RecurringGift rg = commitment.getRecurringGift();
         if (commitment.isAutoPay()) {
             if (rg == null) {
@@ -121,7 +117,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             boolean pastEndDate = false;
             if (firstGiftCal.after(today)) {
                 nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
-                pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
                 found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
             }
             if (!found && !pastEndDate) {
@@ -129,22 +125,22 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
                 if (secondGiftCal.after(today)) {
                     nextRun.setTimeInMillis(secondGiftCal.getTimeInMillis());
-                    pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                    pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
                     found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                 }
                 int i = 0;
                 while (!found && !pastEndDate) {
                     i++;
-                    Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
+                    Calendar payment1 = CommitmentServiceImpl.getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
                     if (payment1.after(today)) {
                         nextRun.setTimeInMillis(payment1.getTimeInMillis());
-                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                        pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
                         found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                     }
-                    Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
+                    Calendar payment2 = CommitmentServiceImpl.getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
                     if (payment2.after(today)) {
                         nextRun.setTimeInMillis(payment2.getTimeInMillis());
-                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
+                        pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
                         found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
                     }
                 }
@@ -173,80 +169,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         return nextRun.getTime();
     }
 
-    public List<Gift> getCommitmentGifts(Commitment commitment) {
-        List<Gift> gifts = null;
-        if (commitment.getStartDate() == null) {
-            logger.debug("Commitment start date is null");
-            return gifts;
-        }
-        if (commitment.getEndDate() == null) {
-            logger.debug("Commitment end date is null");
-            return gifts;
-        }
-        gifts = new ArrayList<Gift>();
-        Calendar startDateCal = new GregorianCalendar();
-        startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
-        Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
-        gifts.add(createGift(commitment, firstGiftCal));
-
-        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
-            Calendar secondGiftCal = new GregorianCalendar();
-            secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
-            if (isPastEndDate(commitment, secondGiftCal.getTime())) {
-                return gifts;
-            } else {
-                gifts.add(createGift(commitment, secondGiftCal));
-            }
-            boolean pastEndDate = false;
-            int i = 0;
-            while (!pastEndDate) {
-                i++;
-                Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
-                if (isPastEndDate(commitment, payment1.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    gifts.add(createGift(commitment, payment1));
-                }
-                Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
-                if (isPastEndDate(commitment, payment2.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    gifts.add(createGift(commitment, payment2));
-                }
-            }
-        } else {
-            Calendar giftCal = firstGiftCal;
-            boolean pastEndDate = false;
-            while (!pastEndDate) {
-                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.WEEK_OF_MONTH, 1);
-                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 1);
-                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 3);
-                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 6);
-                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.YEAR, 1);
-                } else {
-                    logger.debug("Unknown frequency");
-                    return gifts;
-                }
-                if (isPastEndDate(commitment, giftCal.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    gifts.add(createGift(commitment, giftCal));
-                }
-            }
-        }
-        return gifts;
-    }
-
-    private Gift createGift(Commitment commitment, Calendar giftCal) {
-        logger.debug("Creating gift for " + commitment.getAmountPerGift() + ", on " + giftCal.getTime());
-        return new Gift(commitment, giftCal.getTime());
-    }
-
     private Calendar getToday() {
         Calendar now = Calendar.getInstance();
         Calendar today = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
@@ -254,32 +176,10 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         return today;
     }
 
-    private Calendar getBimonthlyCalendar(int year, int month, int day) {
-        Calendar next = new GregorianCalendar();
-        next.clear();
-        if (month > 11) {
-            next.set(year + 1, month - 12, 1);
-        } else {
-            next.set(year, month, 1);
-        }
-        int maxMonthDay = next.getActualMaximum(Calendar.DAY_OF_MONTH);
-        if (maxMonthDay >= day) {
-            next.set(Calendar.DAY_OF_MONTH, day);
-        } else {
-            next.set(Calendar.DAY_OF_MONTH, maxMonthDay);
-        }
-        logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
-        return next;
-    }
-
     private boolean isSuspended(Commitment commitment, Date date) {
         if (commitment.isSuspended(date)) {
             logger.debug("next run, " + date + " is during a suspended period so going to next");
         }
         return commitment.isSuspended(date);
-    }
-
-    private boolean isPastEndDate(Commitment commitment, Date date) {
-        return commitment.getEndDate() == null ? false : date.after(commitment.getEndDate());
     }
 }

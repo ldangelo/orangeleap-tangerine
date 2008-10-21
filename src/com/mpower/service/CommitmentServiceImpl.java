@@ -1,6 +1,10 @@
 package com.mpower.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +22,7 @@ import com.mpower.dao.CommitmentDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
+import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
@@ -27,7 +32,7 @@ import com.mpower.type.EntityType;
 public class CommitmentServiceImpl implements CommitmentService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final static Log logger = LogFactory.getLog(CommitmentServiceImpl.class);
 
     @Resource(name = "auditService")
     private AuditService auditService;
@@ -61,6 +66,17 @@ public class CommitmentServiceImpl implements CommitmentService {
         } else {
             commitment.setPaymentSource(null);
         }
+
+        if (logger.isDebugEnabled()) {
+            List<Calendar> giftDates = getCommitmentGiftDates(commitment);
+            if (giftDates != null) {
+                int i = 1;
+                for (Calendar cal : giftDates) {
+                    logger.debug("Gift " + (i++) + ": scheduled for " + cal.getTime());
+                }
+            }
+        }
+
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -106,5 +122,116 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
+    }
+
+    public List<Calendar> getCommitmentGiftDates(Commitment commitment) {
+        List<Calendar> giftDates = null;
+        if (commitment.getStartDate() == null) {
+            logger.debug("Commitment start date is null");
+            return giftDates;
+        }
+        if (commitment.getEndDate() == null) {
+            logger.debug("Commitment end date is null");
+            return giftDates;
+        }
+        giftDates = new ArrayList<Calendar>();
+        Calendar startDateCal = new GregorianCalendar();
+        startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
+        Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
+        giftDates.add(createGiftDate(commitment, firstGiftCal));
+
+        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
+            Calendar secondGiftCal = new GregorianCalendar();
+            secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
+            if (isPastEndDate(commitment, secondGiftCal.getTime())) {
+                return giftDates;
+            } else {
+                giftDates.add(createGiftDate(commitment, secondGiftCal));
+            }
+            boolean pastEndDate = false;
+            int i = 0;
+            while (!pastEndDate) {
+                i++;
+                Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
+                if (isPastEndDate(commitment, payment1.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    giftDates.add(createGiftDate(commitment, payment1));
+                }
+                Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
+                if (isPastEndDate(commitment, payment2.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    giftDates.add(createGiftDate(commitment, payment2));
+                }
+            }
+        } else {
+            Calendar giftCal = firstGiftCal;
+            boolean pastEndDate = false;
+            while (!pastEndDate) {
+                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.WEEK_OF_MONTH, 1);
+                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 1);
+                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 3);
+                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.MONTH, 6);
+                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+                    giftCal.add(Calendar.YEAR, 1);
+                } else {
+                    logger.debug("Unknown frequency");
+                    return giftDates;
+                }
+                if (isPastEndDate(commitment, giftCal.getTime())) {
+                    pastEndDate = true;
+                } else {
+                    giftDates.add(createGiftDate(commitment, giftCal));
+                }
+            }
+        }
+        return giftDates;
+    }
+
+    public List<Gift> getCommitmentGifts(Commitment commitment) {
+        List<Calendar> giftDates = getCommitmentGiftDates(commitment);
+        if (giftDates != null) {
+            List<Gift> gifts = new ArrayList<Gift>();
+            for (Calendar cal : giftDates) {
+                gifts.add(createGift(commitment, cal));
+            }
+        }
+        return null;
+    }
+
+    public static Calendar createGiftDate(Commitment commitment, Calendar giftCal) {
+        return new GregorianCalendar(giftCal.get(Calendar.YEAR), giftCal.get(Calendar.MONTH), giftCal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static Gift createGift(Commitment commitment, Calendar giftCal) {
+        logger.debug("Creating gift for " + commitment.getAmountPerGift() + ", on " + giftCal.getTime());
+        return new Gift(commitment, giftCal.getTime());
+    }
+
+    public static boolean isPastEndDate(Commitment commitment, Date date) {
+        return commitment.getEndDate() == null ? false : date.after(commitment.getEndDate());
+    }
+
+    public static Calendar getBimonthlyCalendar(int year, int month, int day) {
+        Calendar next = new GregorianCalendar();
+        next.clear();
+        if (month > 11) {
+            next.set(year + 1, month - 12, 1);
+        } else {
+            next.set(year, month, 1);
+        }
+        int maxMonthDay = next.getActualMaximum(Calendar.DAY_OF_MONTH);
+        if (maxMonthDay >= day) {
+            next.set(Calendar.DAY_OF_MONTH, day);
+        } else {
+            next.set(Calendar.DAY_OF_MONTH, maxMonthDay);
+        }
+        logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
+        return next;
     }
 }

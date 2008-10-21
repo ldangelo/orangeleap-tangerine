@@ -327,9 +327,9 @@ public class PaymentSource implements SiteAware, Serializable {
         PaymentSource ps = (PaymentSource) obj;
         EqualsBuilder eb = new EqualsBuilder();
         if ("ACH".equals(getType())) {
-            eb.append(achAccountNumber, ps.achAccountNumber).append(achRoutingNumber, ps.achRoutingNumber);
+            eb.append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
         } else if ("Credit Card".equals(getType())) {
-            eb.append(creditCardType, ps.creditCardType).append(creditCardNumber, ps.creditCardNumber);
+            eb.append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
         }
         return eb.isEquals();
     }

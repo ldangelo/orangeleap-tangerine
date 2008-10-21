@@ -64,7 +64,9 @@ public class GiftServiceImpl implements GiftService {
             if (paymentSources != null) {
                 for (PaymentSource paymentSource : paymentSources) {
                     if (gift.getPaymentSource().equals(paymentSource)) {
-                        paymentSource.setCreditCardExpiration(gift.getPaymentSource().getCreditCardExpiration());
+                        if ("Credit Card".equals(gift.getPaymentType())) {
+                            paymentSource.setCreditCardExpiration(gift.getPaymentSource().getCreditCardExpiration());
+                        }
                         gift.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
                         break;
                     }

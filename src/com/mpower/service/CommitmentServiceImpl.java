@@ -58,7 +58,10 @@ public class CommitmentServiceImpl implements CommitmentService {
             if (paymentSources != null) {
                 for (PaymentSource paymentSource : paymentSources) {
                     if (commitment.getPaymentSource().equals(paymentSource)) {
-                        commitment.setPaymentSource(paymentSource);
+                        if ("Credit Card".equals(commitment.getPaymentType())) {
+                            paymentSource.setCreditCardExpiration(commitment.getPaymentSource().getCreditCardExpiration());
+                        }
+                        commitment.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
                         break;
                     }
                 }

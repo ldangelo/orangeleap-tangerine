@@ -251,6 +251,7 @@ a.actionLink {
 	padding:5px 8px;
 	background: #eee url(../images/buttonGradient.gif) repeat-x;
 	border:1px solid #777;
+	border-bottom:1px solid #535353;
 	margin:0 4px;
 	color:#000;
 	font-size:12px;

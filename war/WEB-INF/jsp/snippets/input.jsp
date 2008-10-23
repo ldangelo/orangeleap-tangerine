@@ -9,7 +9,9 @@
   </label>
 <c:choose>
 <c:when test="${fieldVO.fieldType == 'DATE'}">
+<div class="lookupWrapper">
     <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
+</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
@@ -27,10 +29,17 @@
 				<option value="${opt.id}">${opt.type} &nbsp; ${opt.achAccountNumberDisplay}</option>
 			</c:if>
 			<c:if test="${opt.type == 'Credit Card'}">
-				<option value="${opt.id}">${opt.creditCardType} &nbsp; ${opt.creditCardNumberDisplay}</option>
+				<option value="${opt.id}">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 			</c:if>
 		</c:forEach>
 	</select>
+</c:when>
+<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
+<div class="lookupWrapper">
+	<input style="float:left;" class="text" fieldDef="${sectionField.fieldDefinition.id}" name="${fieldVO.fieldName}Display" readonly="readonly" />
+	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('input'));return false;">Lookup</a>
+	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.fieldValue}" />
+</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
 	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
@@ -38,17 +47,17 @@
 			<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
 			<c:choose>
 				<c:when test="${opt == expirationMonth}">
-					<option month="{expirationMonth}" value="${opt}" selected="selected">${opt}</option>
+					<option value="${opt}" selected="selected">${opt}</option>
 				</c:when>
 				<c:otherwise>
-					<option month=${expirationMonth}" value="${opt}">${opt}</option>
+					<option value="${opt}">${opt}</option>
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
 	</select>
 	<select name="${fieldVO.fieldName}Year" id="${fieldVO.fieldName}Year" class="expYear">
 		<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
-			<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear }" />
+			<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear}" />
 			<c:choose>
 				<c:when test="${opt == expirationYear}">
 					<option value="${opt}" selected="selected">${opt}</option>
@@ -70,7 +79,8 @@
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/>
+	<input type="checkbox" value="${fieldVO.fieldValue}" class="checkbox" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
+	<!-- <form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> -->
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.fieldValue?'&nbsp;':fieldVO.fieldValue}</div>

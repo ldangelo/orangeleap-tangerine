@@ -42,7 +42,6 @@
 					</c:forEach>
 					<div class="formButtonFooter personFormButtons"><input type="submit" value="Save Commitment" class="saveButton" /></div>
 				</form:form>
-                <a class="actionLink" href="gift.htm?personId=${person.id}">Receive Gift</a>
 				<script type="text/javascript">
 					var elem=document.getElementById("paymentType");
 					$("." + elem[elem.selectedIndex].getAttribute('reference')).show();

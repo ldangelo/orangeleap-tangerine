@@ -15,6 +15,23 @@ $(document).ready(function()
 
 	$("#paymentType").change(showSelectedSection);
 	$("#type").change(showSelectedSection);
+	
+	$("#selectedPaymentSource").change(function(){
+		console.log($(this).val());
+		if($(this).val()=="new") {
+			$("#paymentType").parent().show();
+			showSelectedSection("paymentType");
+			$(".commitment_editCreditCard").hide();
+		} else {
+			$(".commitment_editCreditCard").show();
+			$("#paymentType").parent().hide();
+			elem=document.getElementById("paymentType");
+			for(i=0;i<elem.options.length;i++) {
+					$("." + elem[i].getAttribute('reference')).hide();
+			}
+		}
+
+	});
 
 	$("#personTitle").cluetip({
 		cluetipClass:'default',
@@ -251,4 +268,10 @@ function loadQueryLookup(elem) {
 	$("#dialog .modalContent").load("queryLookup.htm?fieldDef="+fieldDef,function(){
 		$("#dialog").jqmShow();
 	});
+}
+function useQueryLookup(elem,value) {
+window.lookupCaller.val($(elem).attr('displayvalue'));
+window.lookupCaller.nextAll(':hidden').val(value);
+$('#dialog').jqmHide();
+window.lookupCaller=null;
 }

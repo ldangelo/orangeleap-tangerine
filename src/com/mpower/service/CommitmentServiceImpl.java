@@ -203,6 +203,7 @@ public class CommitmentServiceImpl implements CommitmentService {
             for (Calendar cal : giftDates) {
                 gifts.add(createGift(commitment, cal));
             }
+            return gifts;
         }
         return null;
     }

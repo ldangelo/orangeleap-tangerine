@@ -1,8 +1,10 @@
 package com.mpower.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.Commitment;
+import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.CommitmentService;
@@ -76,7 +79,16 @@ public class CommitmentFormController extends SimpleFormController {
                 Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
                 if (commitment != null) {
                     personId = commitment.getPerson().getId();
+                    List<Gift> gifts = commitmentService.getCommitmentGifts(commitment);
+                    refData.put("gifts",gifts);
+                    Iterator<Gift> giftIter = gifts.iterator();
+                    BigDecimal giftSum = new BigDecimal(0);
+                    while (giftIter.hasNext()) {
+                    	giftSum = giftSum.add(giftIter.next().getValue());
+                    }
+                    refData.put("giftSum",giftSum);
                 }
+                
             }
         } else {
             personId = Long.valueOf(personIdString);
@@ -133,6 +145,7 @@ public class CommitmentFormController extends SimpleFormController {
         mav.addObject("commitmentId", current.getId());
         mav.addObject("saved", true);
         mav.addObject("id", current.getId());
+        mav.addObject("myErrors",errors);
         return mav;
     }
 }

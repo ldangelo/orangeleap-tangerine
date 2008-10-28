@@ -20,7 +20,7 @@ public class PhoneFieldHandler extends GenericFieldHandler {
 	@Override
 	public String getFieldPropertyName(SectionField sectionField) {
 		FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
-		return fieldDefinition.getFieldName() + ".number";
+		return fieldDefinition.getFieldName();
 	}
 
 

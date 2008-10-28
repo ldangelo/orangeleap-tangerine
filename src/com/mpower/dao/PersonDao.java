@@ -15,6 +15,8 @@ public interface PersonDao {
 
     public List<Person> readPersons(String siteName, Map<String, Object> params);
 
+    public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds);
+
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
     public List<Person> readAllPeople();

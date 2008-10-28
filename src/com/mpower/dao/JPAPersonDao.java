@@ -29,7 +29,6 @@ public class JPAPersonDao implements PersonDao {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
     @PersistenceContext
     private EntityManager em;
 
@@ -53,11 +52,20 @@ public class JPAPersonDao implements PersonDao {
         return em.find(Person.class, id);
     }
 
+    public List<Person> readPersons(String siteName, Map<String, Object> params) {
+        return readPersons(siteName, params, null);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readPersons(String siteName, Map<String, Object> params) {
+    public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds) {
         boolean whereUsed = true;
         StringBuilder queryString = new StringBuilder("SELECT person FROM com.mpower.domain.Person person WHERE person.site.name = :siteName");
+        boolean hasIgnoreIds = false;
+        if (ignoreIds != null && !ignoreIds.isEmpty()) {
+            queryString.append(" AND person.id NOT IN (:ignoreIds)");
+            hasIgnoreIds = true;
+        }
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
@@ -106,6 +114,9 @@ public class JPAPersonDao implements PersonDao {
 
         Query query = em.createQuery(queryString.toString());
         query.setParameter("siteName", siteName);
+        if (hasIgnoreIds) {
+            query.setParameter("ignoreIds", ignoreIds);
+        }
         for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
         }
@@ -182,10 +193,10 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
-	public List<Person> readAllPeopleBySite(Site site) {
-		Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE");
-		query.setParameter("site", site);
-		return query.getResultList();
-	}
+    @Override
+    public List<Person> readAllPeopleBySite(Site site) {
+        Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE");
+        query.setParameter("site", site);
+        return query.getResultList();
+    }
 }

@@ -55,7 +55,12 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<Person> readPersons(String siteName, Map<String, Object> params) {
-        return personDao.readPersons(siteName, params);
+        return personDao.readPersons(siteName, params, null);
+    }
+
+    @Override
+    public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds) {
+        return personDao.readPersons(siteName, params, ignoreIds);
     }
 
     @Override

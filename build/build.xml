@@ -82,7 +82,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/commitmentView.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/> 
+	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
@@ -120,6 +120,9 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/conferenceDemoData.sql"/>
 	     	<transaction src="${basedir}/db/dev/queryLookup.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/queryLookup.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/addressManager.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/address.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/addressManagerEdit.sql"/>
 	     </sql>
 	</target>
 

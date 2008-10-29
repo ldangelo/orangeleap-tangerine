@@ -69,7 +69,10 @@ public class Address implements Serializable {
 	@AutoPopulate
 	private Date updateDate;
 
-	public Long getId() {
+	@Transient
+	private Person person;
+
+    public Long getId() {
 		return id;
 	}
 
@@ -156,4 +159,12 @@ public class Address implements Serializable {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 }

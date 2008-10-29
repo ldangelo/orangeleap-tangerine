@@ -27,7 +27,7 @@
 		            <c:if test="${pageAccess['/commitmentList.htm']!='DENIED'}">
 						<a class="${sidebarNav=='Commitments'?'active':''}" href="commitmentList.htm?personId=${person.id}">Commitments</a>
 		            </c:if>
-					<a href="#">Addresses</a>
+					<a class="${sidebarNav=='Addresses'?'active':''}" href="addressManager.htm?personId=${person.id}">Address Manager</a>
 					<a href="#">Payment Methods</a>
 					<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Manager</a>
 					<a href="#">Account Statement</a>

@@ -13,7 +13,7 @@
     <bean id="messageSource" class="com.mpower.controller.validator.MpowerMessageSource">
         <property name="messageService" ref="messageService"/>
 	</bean>
-	
+
 	<bean id="paymentManager" class="com.mpower.controller.PaymentManagerFormController">
     	<property name="commandName" value="paymentSource" />
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
@@ -28,16 +28,42 @@
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
-    
+
     <bean id="paymentManagerEdit" class="com.mpower.controller.PaymentManagerEditFormController">
     	<property name="commandName" value="paymentSource" />
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     </bean>
-    
+
     <bean id="paymentSourceDelete" class="com.mpower.controller.PaymentSourceDeleteController">
     	<property name="paymentSourceService" ref="paymentSourceService" />
+    </bean>
+
+	<bean id="addressManager" class="com.mpower.controller.AddressFormController">
+    	<property name="commandName" value="address" />
+    	<property name="commandClass" value="com.mpower.domain.Address" />
+<!--		<property name="validators">-->
+<!--			<list>-->
+<!--	            <bean class="com.mpower.controller.validator.AddressValidator">-->
+<!--			        <property name="pageType" value="paymentSource"/>-->
+<!--			        <property name="siteService" ref="siteService" />-->
+<!--	            </bean>-->
+<!--			</list>-->
+<!--        </property>-->
+    	<property name="personService" ref="personService" />
+    	<property name="addressService" ref="addressService" />
+    </bean>
+
+    <bean id="addressManagerEdit" class="com.mpower.controller.AddressManagerEditFormController">
+    	<property name="commandName" value="address" />
+    	<property name="commandClass" value="com.mpower.domain.Address" />
+    	<property name="personService" ref="personService" />
+    	<property name="addressService" ref="addressService" />
+    </bean>
+
+    <bean id="addressDelete" class="com.mpower.controller.AddressDeleteController">
+    	<property name="addressService" ref="addressService" />
     </bean>
 
     <bean id="personSearch" class="com.mpower.controller.PersonSearchFormController">
@@ -184,7 +210,7 @@
     <bean id="codeHelper" class="com.mpower.controller.CodeHelperController">
         <property name="codeService" ref="codeService"/>
     </bean>
-    
+
     <bean id="queryLookup" class="com.mpower.controller.QueryLookupController">
         <property name="queryLookupService" ref="queryLookupService"/>
     </bean>
@@ -242,10 +268,13 @@
                 <prop key="/audit.htm">audit</prop>
                 <prop key="/welcome.htm">welcome</prop>
                 <prop key="/commitment.htm">commitment</prop>
-                <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/queryLookup.htm">queryLookup</prop>
+                <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
                 <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
+                <prop key="/addressManager.htm">addressManager</prop>
+                <prop key="/addressManagerEdit.htm">addressManagerEdit</prop>
+                <prop key="/addressDelete.htm">addressDelete</prop>
 			</props>
 		</property>
 	</bean>

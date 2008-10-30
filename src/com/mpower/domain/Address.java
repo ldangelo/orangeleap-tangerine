@@ -1,8 +1,12 @@
 package com.mpower.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,11 +25,12 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
+import com.mpower.util.AddressCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "ADDRESS")
-public class Address implements Serializable {
+public class Address implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -74,6 +80,51 @@ public class Address implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
     private Date updateDate;
+
+    @Column(name = "RECEIVE_CORRESPONDENCE")
+    private boolean receiveMail = true;
+
+    // either regular, temporary, or seasonal
+    @Column(name = "ACTIVATION_STATUS")
+    private String activationStatus;
+
+    // only care about month/day/year, not time
+    @Column(name = "TEMPORARY_START_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date temporaryStartDate;
+
+    // only care about month/day/year, not time
+    @Column(name = "TEMPORARY_END_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date temporaryEndDate;
+
+    // only care about month/day, not year or time
+    @Column(name = "SEASONAL_START_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date seasonalStartDate;
+
+    // only care about month/day, not year or time
+    @Column(name = "SEASONAL_END_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date seasonalEndDate;
+
+    @Column(name = "INACTIVE")
+    private boolean inactive = false;
+
+    @Column(name = "COMMENT")
+    private String comment;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+    private List<AddressCustomField> addressCustomFields;
+
+    @Transient
+    private Map<String, CustomField> customFieldMap = null;
+
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
+
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
     public Long getId() {
         return id;
@@ -169,5 +220,104 @@ public class Address implements Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public boolean isReceiveMail() {
+        return receiveMail;
+    }
+
+    public void setReceiveMail(boolean receiveMail) {
+        this.receiveMail = receiveMail;
+    }
+
+    public String getActivationStatus() {
+        return activationStatus;
+    }
+
+    public void setActivationStatus(String activationStatus) {
+        this.activationStatus = activationStatus;
+    }
+
+    public Date getTemporaryStartDate() {
+        return temporaryStartDate;
+    }
+
+    public void setTemporaryStartDate(Date temporaryStartDate) {
+        this.temporaryStartDate = temporaryStartDate;
+    }
+
+    public Date getTemporaryEndDate() {
+        return temporaryEndDate;
+    }
+
+    public void setTemporaryEndDate(Date temporaryEndDate) {
+        this.temporaryEndDate = temporaryEndDate;
+    }
+
+    public Date getSeasonalStartDate() {
+        return seasonalStartDate;
+    }
+
+    public void setSeasonalStartDate(Date seasonalStartDate) {
+        this.seasonalStartDate = seasonalStartDate;
+    }
+
+    public Date getSeasonalEndDate() {
+        return seasonalEndDate;
+    }
+
+    public void setSeasonalEndDate(Date seasonalEndDate) {
+        this.seasonalEndDate = seasonalEndDate;
+    }
+
+    public boolean isInactive() {
+        return inactive;
+    }
+
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public List<AddressCustomField> getAddressCustomFields() {
+        if (addressCustomFields == null) {
+            addressCustomFields = new ArrayList<AddressCustomField>();
+        }
+        return addressCustomFields;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, CustomField> getCustomFieldMap() {
+        if (customFieldMap == null) {
+            customFieldMap = AddressCustomFieldMap.buildCustomFieldMap(getAddressCustomFields(), this);
+        }
+        return customFieldMap;
+    }
+
+    public Site getSite() {
+        return person.getSite();
+    }
+
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
     }
 }

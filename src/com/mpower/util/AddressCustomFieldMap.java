@@ -6,28 +6,27 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.Address;
+import com.mpower.domain.AddressCustomField;
 import com.mpower.domain.CustomField;
-import com.mpower.domain.Person;
-import com.mpower.domain.PersonCustomField;
 
-public class CustomFieldMap extends AbstractInstanceValuesMap {
+public class AddressCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
     private static final long serialVersionUID = 1L;
 
-    private Person person;
+    private Address address;
 
-    public static CustomFieldMap buildCustomFieldMap(List<PersonCustomField> personCustomFieldList, Person person) {
+    public static AddressCustomFieldMap buildCustomFieldMap(List<AddressCustomField> addressCustomFieldList, Address address) {
         List<CustomField> customFieldList = new ArrayList<CustomField>();
-        for (PersonCustomField pcf: personCustomFieldList) {
+        for (AddressCustomField pcf : addressCustomFieldList) {
             customFieldList.add(pcf.getCustomField());
         }
-        CustomFieldMap cfm = new CustomFieldMap();
+        AddressCustomFieldMap cfm = new AddressCustomFieldMap();
         cfm.initialize(customFieldList);
-        cfm.person = person;
+        cfm.address = address;
         return cfm;
     }
 
@@ -35,7 +34,7 @@ public class CustomFieldMap extends AbstractInstanceValuesMap {
     public Object createObject(Object key) {
         CustomField newCustomField = new CustomField();
         newCustomField.setName((String) key);
-        person.getPersonCustomFields().add(new PersonCustomField(person, newCustomField));
+        address.getAddressCustomFields().add(new AddressCustomField(address, newCustomField));
         return newCustomField;
     }
 

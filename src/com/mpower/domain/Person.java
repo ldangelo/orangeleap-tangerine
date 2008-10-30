@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.AddressMap;
-import com.mpower.util.CustomFieldMap;
+import com.mpower.util.PersonCustomFieldMap;
 import com.mpower.util.PhoneMap;
 
 @Entity
@@ -268,7 +268,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = CustomFieldMap.buildCustomFieldMap(getPersonCustomFields(), this);
+            customFieldMap = PersonCustomFieldMap.buildCustomFieldMap(getPersonCustomFields(), this);
         }
         return customFieldMap;
     }

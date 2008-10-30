@@ -63,12 +63,8 @@ public class CommitmentSearchFormController extends SimpleFormController {
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
             if (StringUtils.trimToNull(request.getParameter(param)) != null) {
-                try {
-                    Object obj = bw.getPropertyValue(param);
-                    params.put(param, obj);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                if (bw.isReadableProperty(param)) {
+                    params.put(param, bw.getPropertyValue(param));
                 }
             }
         }

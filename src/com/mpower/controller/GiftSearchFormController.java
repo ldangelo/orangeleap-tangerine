@@ -65,43 +65,39 @@ public class GiftSearchFormController extends SimpleFormController {
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
             if (!param.equalsIgnoreCase("page") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("sort") && StringUtils.trimToNull(request.getParameter(param)) != null) {
-                try {
-                    Object obj = bw.getPropertyValue(param);
-                    params.put(param, obj);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                if (bw.isReadableProperty(param)){
+                    params.put(param, bw.getPropertyValue(param));
                 }
             }
         }
 
         List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(), params);
-		String sort = request.getParameter("sort");
-		String ascending = request.getParameter("ascending");
-		Boolean sortAscending;
-		if (StringUtils.trimToNull(ascending) != null) {
-			sortAscending = new Boolean(ascending);
-		} else {
-			sortAscending = new Boolean(true);
-		}
-		MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
-		PagedListHolder pagedListHolder = new PagedListHolder(giftList,sortDef);
-		pagedListHolder.resort();
-		pagedListHolder.setMaxLinkedPages(3);
-		pagedListHolder.setPageSize(10);
-		String page = request.getParameter("page");
+        String sort = request.getParameter("sort");
+        String ascending = request.getParameter("ascending");
+        Boolean sortAscending;
+        if (StringUtils.trimToNull(ascending) != null) {
+            sortAscending = new Boolean(ascending);
+        } else {
+            sortAscending = new Boolean(true);
+        }
+        MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
+        PagedListHolder pagedListHolder = new PagedListHolder(giftList,sortDef);
+        pagedListHolder.resort();
+        pagedListHolder.setMaxLinkedPages(3);
+        pagedListHolder.setPageSize(10);
+        String page = request.getParameter("page");
 
-		Integer pg = 0;
-		if (!StringUtils.isBlank(page)) {
-			pg = Integer.valueOf(page);
-		}
+        Integer pg = 0;
+        if (!StringUtils.isBlank(page)) {
+            pg = Integer.valueOf(page);
+        }
 
-		pagedListHolder.setPage(pg);
-        
+        pagedListHolder.setPage(pg);
+
         ModelAndView mav = new ModelAndView(getSuccessView());
-		mav.addObject("pagedListHolder", pagedListHolder);
-		mav.addObject("currentSort", sort);
-		mav.addObject("currentAscending", sortAscending);
+        mav.addObject("pagedListHolder", pagedListHolder);
+        mav.addObject("currentSort", sort);
+        mav.addObject("currentAscending", sortAscending);
         mav.addObject("gift", gift);
         mav.addObject("giftList", giftList);
         mav.addObject("giftListSize", giftList.size());

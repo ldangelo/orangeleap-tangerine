@@ -19,6 +19,9 @@ import com.mpower.domain.Address;
 import com.mpower.domain.Person;
 import com.mpower.service.AddressService;
 import com.mpower.service.PersonService;
+import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SiteService;
+import com.mpower.type.PageType;
 
 public class AddressFormController extends SimpleFormController {
 
@@ -29,12 +32,18 @@ public class AddressFormController extends SimpleFormController {
 
     private PersonService personService;
 
+    private SiteService siteService;
+
     public void setAddressService(AddressService addressService) {
         this.addressService = addressService;
     }
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
     }
 
     @Override
@@ -52,6 +61,13 @@ public class AddressFormController extends SimpleFormController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (isFormSubmission(request)) {
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            address.setFieldLabelMap(fieldLabelMap);
+
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), address);
+            address.setFieldValueMap(valueMap);
         }
         return address;
     }

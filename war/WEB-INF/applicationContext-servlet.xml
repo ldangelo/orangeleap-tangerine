@@ -51,8 +51,15 @@
 <!--	            </bean>-->
 <!--			</list>-->
 <!--        </property>-->
-    	<property name="personService" ref="personService" />
+        <property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="address"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
     	<property name="addressService" ref="addressService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="addressManagerEdit" class="com.mpower.controller.AddressManagerEditFormController">

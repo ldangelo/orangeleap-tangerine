@@ -73,6 +73,7 @@ public class AddressManagerEditFormController extends SimpleFormController {
         address = new Address();
         address.setPerson(person);
         mav.addObject("redirect:/addressManager.htm?personId=" + personId, errors.getModel());
+        mav.addObject("person", person);
         mav.addObject("address", address);
         mav.addObject(personId);
         return mav;

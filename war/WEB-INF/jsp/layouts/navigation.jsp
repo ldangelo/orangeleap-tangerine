@@ -37,7 +37,7 @@
 				<a href="codes.htm" class="${primaryNav=='Administration'?'active':''}">Administration</a>
 			</li>
 			<li>
-				<a href="#">Analysis</a>
+				<a href="#">Reporting</a>
 			</li>
 		</ul>
 		<div class="clearBoth"></div>

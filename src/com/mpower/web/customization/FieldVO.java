@@ -22,6 +22,7 @@ public class FieldVO {
     private String siteName;
     private String fieldName;
     private Object fieldValue;
+    private Object displayValue;
     private String helpText;
     private String labelText;
     private String validationExpression;
@@ -134,5 +135,13 @@ public class FieldVO {
 
 	public void setReferenceValues(List<String> referenceValues) {
 		this.referenceValues = referenceValues;
+	}
+
+	public Object getDisplayValue() {
+		return displayValue;
+	}
+
+	public void setDisplayValue(Object displayValue) {
+		this.displayValue = displayValue;
 	}
 }

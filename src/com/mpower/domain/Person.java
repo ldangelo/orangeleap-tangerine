@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -75,7 +76,11 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Column(name = "SPOUSE_FIRST_NAME")
     private String spouseFirstName;
-
+    
+    @OneToOne
+    @JoinColumn(name = "SPOUSE", referencedColumnName = "PERSON_ID")
+    private Person spouse;
+    
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
 
@@ -135,6 +140,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    public String getDisplayValue() {
+    	return firstName + " " + lastName;
+    }
 
     public Long getId() {
         return id;
@@ -377,4 +386,12 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public Person getPerson() {
         return this;
     }
+
+	public Person getSpouse() {
+		return spouse;
+	}
+
+	public void setSpouse(Person spouse) {
+		this.spouse = spouse;
+	}
 }

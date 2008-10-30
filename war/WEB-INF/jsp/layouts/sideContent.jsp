@@ -21,14 +21,13 @@
 					<a class="${sidebarNav=='Profile'?'active':''}" href="person.htm?personId=${person.id}">Profile</a>
 					<a class="${sidebarNav=='Enter Gift'?'active':''}" href="gift.htm?personId=${person.id}">Enter Gift</a>
 		            <c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gift History</a>
+						<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gifts</a>
 		            </c:if>
 					<a class="${sidebarNav=='Enter Commitment'?'active':''}" href="commitment.htm?personId=${person.id}">Enter Commitment</a>
 		            <c:if test="${pageAccess['/commitmentList.htm']!='DENIED'}">
 						<a class="${sidebarNav=='Commitments'?'active':''}" href="commitmentList.htm?personId=${person.id}">Commitments</a>
 		            </c:if>
 					<a class="${sidebarNav=='Addresses'?'active':''}" href="addressManager.htm?personId=${person.id}">Address Manager</a>
-					<a href="#">Payment Methods</a>
 					<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Manager</a>
 					<a href="#">Account Statement</a>
 					<a href="#">Notes</a>

@@ -41,6 +41,10 @@
 				</c:if>
 				<a class="actionLink" href="commitment.htm?personId=${person.id}">Enter a new commitment</a>
 			</div>
+			<c:forEach var="gift" items="${gifts}">
+			${gift.transactionDate} ... ${gift.value}<br />
+			</c:forEach>
+			Sum:${giftSum}
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

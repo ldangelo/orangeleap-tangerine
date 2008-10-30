@@ -15,6 +15,7 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import com.mpower.domain.QueryLookup;
 import com.mpower.service.QueryLookupService;
 import com.mpower.service.SessionServiceImpl;
 
@@ -42,16 +43,16 @@ public class QueryLookupController implements Controller {
 			}
 		}
 
-		//List<String> displayColumns = new ArrayList<String>();
-		//displayColumns.add("lastName");
-		//displayColumns.add("firstName");
+		// List<String> displayColumns = new ArrayList<String>();
+		// displayColumns.add("lastName");
+		// displayColumns.add("firstName");
 		String fieldDef = StringUtils.trimToNull(request.getParameter("fieldDef"));
-		
-		List<Object> objects = queryLookupService.executeQueryLookup(SessionServiceImpl.lookupUserSiteName(),
-				fieldDef, queryParams);
+		QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
+		List<Object> objects = queryLookupService.executeQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef,
+				queryParams);
 		ModelAndView mav = new ModelAndView("queryLookup");
 		mav.addObject("objects", objects);
-		
+
 		PagedListHolder pagedListHolder = new PagedListHolder(objects);
 		pagedListHolder.setMaxLinkedPages(3);
 		pagedListHolder.setPageSize(50);
@@ -64,10 +65,10 @@ public class QueryLookupController implements Controller {
 
 		pagedListHolder.setPage(pg);
 		mav.addObject("pagedListHolder", pagedListHolder);
-		
-		
-		//mav.addObject("displayColumns", displayColumns);
-		//mav.addObject("parameterMap", request.getParameterMap());
+		mav.addObject("queryLookup", queryLookup);
+
+		// mav.addObject("displayColumns", displayColumns);
+		// mav.addObject("parameterMap", request.getParameterMap());
 		return mav;
 	}
 

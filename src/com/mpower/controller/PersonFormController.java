@@ -40,6 +40,7 @@ public class PersonFormController extends SimpleFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(Person.class, new PersonEditor(personService));
     }
 
     @Override

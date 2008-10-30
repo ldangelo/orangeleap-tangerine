@@ -17,7 +17,6 @@ $(document).ready(function()
 	$("#type").change(showSelectedSection);
 	
 	$("#selectedPaymentSource").change(function(){
-		console.log($(this).val());
 		if($(this).val()=="new") {
 			$("#paymentType").parent().show();
 			showSelectedSection("paymentType");
@@ -270,7 +269,7 @@ function loadQueryLookup(elem) {
 	});
 }
 function useQueryLookup(elem,value) {
-window.lookupCaller.val($(elem).attr('displayvalue'));
+window.lookupCaller.find("a").attr("id",value).html($(elem).attr('displayvalue'));
 window.lookupCaller.nextAll(':hidden').val(value);
 $('#dialog').jqmHide();
 window.lookupCaller=null;

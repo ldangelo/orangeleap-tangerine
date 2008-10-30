@@ -24,6 +24,10 @@ ul.formFields li input {
 	padding:3px 4px;
 	border:1px solid #7f9db9;
 }
+ul.formFields li textarea {
+	padding:3px 4px;
+	border:1px solid #7f9db9;
+}
 ul.formFields li select {
 	padding:2px;
 }
@@ -50,7 +54,7 @@ ul.formFields li.side select.expYear {
 ul.formFields li.side textarea {
 	width:66%;
 }
-ul.formFields li.side input.date,
+/*ul.formFields li.side input.date,*/
 ul.formFields li.side input.lookup {
 	width:60%;
 }
@@ -229,7 +233,10 @@ a.tableLookupLink {
 ul.formFields li input.textError {
 	background:#fed;
 	border:1px solid #d00;
-	padding:4px;
+}
+ul.formFields li textarea.textError {
+	background:#fed;
+	border:1px solid #d00;
 }
 table tr td input.text {
 	border:1px solid #7f9db9;
@@ -345,6 +352,10 @@ table div.lookupWrapper {
 	position:relative;
 	width:100%;
 }
+div.lookupWrapper a.dp-choose-date {
+	position:absolute;
+	right:-10px;
+}
 ul.formFields div.lookupWrapper input {
 	width:100%;
 }
@@ -361,6 +372,12 @@ ul.formFields div.lookupWrapper input {
 	float:left;
 	width:66%;
 	background:#eee;
+}
+.lookupField {
+	border:1px solid #7F9DB9;
+	padding:1px 4px;
+	float:left;
+	width:100%;
 }
 
 /*

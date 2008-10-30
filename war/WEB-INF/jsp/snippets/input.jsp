@@ -1,5 +1,13 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <li class="side">
+<c:remove var="errorClass" scope="page" />
+<c:if test="${commandObject!=null}">
+<spring:hasBindErrors name="${commandObject}">
+<c:forEach items="${errors.fieldErrors}" var="error">
+<c:if test="${error.field==fieldVO.fieldName}"><c:set scope="page" var="errorClass" value="textError" /></c:if>
+</c:forEach>
+</spring:hasBindErrors> 
+</c:if>
   <label for="${fieldVO.fieldName}" id="${fieldVO.fieldName}.label" class="desc">
 	<c:if test="${fieldVO.fieldType != 'SPACER'}">
 		<c:if test="${fieldVO.helpAvailable == 'true'}"><a class="helpLink"><img src="images/icons/questionGreyTransparent.gif" /></a><span class="helpText"><c:out value="${fieldVO.helpText}" /></span></c:if>
@@ -10,7 +18,7 @@
 <c:choose>
 <c:when test="${fieldVO.fieldType == 'DATE'}">
 <div class="lookupWrapper">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" />
+    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date ${errorClass}" />
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
@@ -21,24 +29,28 @@
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
 </c:when>
-<c:when test="${fieldVO.fieldType == 'QUERIED_PICKLIST'}">
+<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
 		<option value="new">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 			<c:if test="${opt.type == 'ACH'}">
-				<option value="${opt.id}">${opt.type} &nbsp; ${opt.achAccountNumberDisplay}</option>
+				<option value="${opt.id}">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
 			</c:if>
 			<c:if test="${opt.type == 'Credit Card'}">
 				<option value="${opt.id}">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 			</c:if>
 		</c:forEach>
 	</select>
+<div style="padding:8px 0 0 0;float:left;width:100%;">
+<label class="desc" id="selectedPaymentSource.creditCardSecurityCode.label" for="selectedPaymentSource.creditCardSecurityCode">Security Code</label>
+<input type="text" size="16" value="" class="text" name="selectedPaymentSource.creditCardSecurityCode" id="selectedPaymentSource.creditCardSecurityCode"/>
+</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 <div class="lookupWrapper">
-	<input style="float:left;" class="text" fieldDef="${sectionField.fieldDefinition.id}" name="${fieldVO.fieldName}Display" readonly="readonly" />
-	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('input'));return false;">Lookup</a>
-	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.fieldValue}" />
+	<div style="float:left;" class="text lookupField" fieldDef="${sectionField.fieldDefinition.id}"><a target="_blank" href="#" id="${fieldVO.id}" onclick="this.href=('person.htm?personId='+$(this).attr('id'));">${fieldVO.displayValue}</a>&nbsp;</div>
+	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
+	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.id}" />
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
@@ -74,13 +86,20 @@
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CODE'}">
 <div class="lookupWrapper">
-	<input value="${fieldVO.fieldValue}" class="text code" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text code ${errorClass}" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" />
 	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-	<input type="checkbox" value="${fieldVO.fieldValue}" class="checkbox" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
-	<!-- <form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> -->
+	<c:choose>
+		<c:when test="${fieldVO.fieldValue}">
+			<input type="checkbox" value="true" class="checkbox" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" checked="checked" />
+		</c:when>
+		<c:otherwise>
+			<input type="checkbox" value="true" class="checkbox" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
+		</c:otherwise>
+	</c:choose>
+	<!-- 	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> ${fieldVO.fieldValue?checked:''}-->
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.fieldValue?'&nbsp;':fieldVO.fieldValue}</div>
@@ -92,16 +111,16 @@
 	<input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'ADDRESS'}">
-	<input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PHONE'}">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" />
+	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
-	<textarea rows="2" cols="30" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}"></textarea>
+	<textarea rows="2" cols="30" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}"></textarea>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'NUMBER'}">
-	<input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
+    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'SPACER'}">
 	&nbsp;

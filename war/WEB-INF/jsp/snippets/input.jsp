@@ -41,10 +41,6 @@
 			</c:if>
 		</c:forEach>
 	</select>
-<div style="padding:8px 0 0 0;float:left;width:100%;">
-<label class="desc" id="selectedPaymentSource.creditCardSecurityCode.label" for="selectedPaymentSource.creditCardSecurityCode">Security Code</label>
-<input type="text" size="16" value="" class="text" name="selectedPaymentSource.creditCardSecurityCode" id="selectedPaymentSource.creditCardSecurityCode"/>
-</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 <div class="lookupWrapper">

@@ -21,8 +21,10 @@ $(document).ready(function()
 			$("#paymentType").parent().show();
 			showSelectedSection("paymentType");
 			$(".commitment_editCreditCard").hide();
+			$(".gift_editCreditCard").hide();
 		} else {
 			$(".commitment_editCreditCard").show();
+			$(".gift_editCreditCard").show();
 			$("#paymentType").parent().hide();
 			elem=document.getElementById("paymentType");
 			for(i=0;i<elem.options.length;i++) {

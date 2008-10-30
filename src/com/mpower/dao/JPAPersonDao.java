@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Person;
-import com.mpower.domain.PersonPhone;
+import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
 import com.mpower.util.EntityUtility;
 
@@ -34,9 +34,9 @@ public class JPAPersonDao implements PersonDao {
 
     @Override
     public Person savePerson(Person person) {
-        for (Iterator<PersonPhone> iter = person.getPersonPhones().iterator(); iter.hasNext();) {
-            PersonPhone personPhone = iter.next();
-            if (personPhone == null || personPhone.getPhone() == null || StringUtils.stripToNull(personPhone.getPhone().getNumber()) == null) {
+        for (Iterator<Phone> iter = person.getPhones().iterator(); iter.hasNext();) {
+            Phone phone = iter.next();
+            if (phone == null || StringUtils.stripToNull(phone.getNumber()) == null) {
                 iter.remove();
             }
         }
@@ -126,11 +126,11 @@ public class JPAPersonDao implements PersonDao {
     private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
         StringBuilder addressString = new StringBuilder();
         if (addressParams != null && !addressParams.isEmpty()) {
-            addressString.append(" AND EXISTS ( SELECT personAddress FROM com.mpower.domain.PersonAddress personAddress WHERE personAddress.person.id = person.id ");
+            addressString.append(" AND EXISTS ( SELECT address FROM com.mpower.domain.Address address WHERE address.person.id = person.id ");
             for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                addressString.append(" AND personAddress.address.");
+                addressString.append(" AND address.");
                 addressString.append(key);
                 addressString.append(" LIKE :");
                 String paramName = key.replace(".", "_");
@@ -149,11 +149,11 @@ public class JPAPersonDao implements PersonDao {
     private StringBuilder getPhoneString(Map<String, Object> phoneParams, LinkedHashMap<String, Object> parameterMap) {
         StringBuilder phoneString = new StringBuilder();
         if (phoneParams != null && !phoneParams.isEmpty()) {
-            phoneString.append(" AND EXISTS ( SELECT personPhone FROM com.mpower.domain.PersonPhone personPhone WHERE personPhone.person.id = person.id ");
+            phoneString.append(" AND EXISTS ( SELECT phone FROM com.mpower.domain.Phone phone WHERE phone.person.id = person.id ");
             for (Map.Entry<String, Object> pair : phoneParams.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                phoneString.append(" AND personPhone.phone.");
+                phoneString.append(" AND phone.");
                 phoneString.append(key);
                 phoneString.append(" LIKE :");
                 String paramName = key.replace(".", "_");

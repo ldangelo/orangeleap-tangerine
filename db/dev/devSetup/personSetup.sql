@@ -1,7 +1,5 @@
 -- Create a list of people in the database
 -- Executing a list of people must come BEFORE executing:
-	-- PERSON_ADDRESS insertions (addressSetup.sql, CREATE_DATE, UPDATE_DATE)
-	-- PERSON_PHONE insertions (phoneSetup.sql)
 	-- GIFTS insertions (giftSetup.sql)
 
 INSERT INTO PERSON (TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL, SUFFIX, MARITAL_STATUS, SPOUSE_FIRST_NAME, ORGANIZATION_NAME, SITE_NAME, MAJOR_DONOR, LAPSED_DONOR, CREATE_DATE, UPDATE_DATE) VALUES ('Mr.', 'Adam', 'Jay', 'Smith', 'thepatriarch@gmail.com', null, 'Single', 'Eve', 'Alpha Omega Inc.', 'company1', false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

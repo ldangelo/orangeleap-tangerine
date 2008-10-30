@@ -91,10 +91,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     private String preferredPhoneType;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<PersonAddress> personAddresses;
+    private List<Address> addresses;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
-    private List<PersonPhone> personPhones;
+    private List<Phone> phones;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<PersonCustomField> personCustomFields;
@@ -228,32 +228,32 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
         this.spouseName = spouseName;
     }
 
-    public List<PersonAddress> getPersonAddresses() {
-        if (personAddresses == null) {
-            personAddresses = new ArrayList<PersonAddress>();
+    public List<Address> getAddresses() {
+        if (addresses == null) {
+            addresses = new ArrayList<Address>();
         }
-        return personAddresses;
+        return addresses;
     }
 
     @SuppressWarnings("unchecked")
     public Map<String, Address> getAddressMap() {
         if (addressMap == null) {
-            addressMap = AddressMap.buildAddressMap(getPersonAddresses(), this);
+            addressMap = AddressMap.buildAddressMap(getAddresses(), this);
         }
         return addressMap;
     }
 
-    public List<PersonPhone> getPersonPhones() {
-        if (personPhones == null) {
-            personPhones = new ArrayList<PersonPhone>();
+    public List<Phone> getPhones() {
+        if (phones == null) {
+            phones = new ArrayList<Phone>();
         }
-        return personPhones;
+        return phones;
     }
 
     @SuppressWarnings("unchecked")
     public Map<String, Phone> getPhoneMap() {
         if (phoneMap == null) {
-            phoneMap = PhoneMap.buildPhoneMap(getPersonPhones(), this);
+            phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
         }
         return phoneMap;
     }

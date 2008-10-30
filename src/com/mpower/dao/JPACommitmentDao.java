@@ -110,11 +110,11 @@ public class JPACommitmentDao implements CommitmentDao {
     private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
         StringBuilder addressString = new StringBuilder();
         if (addressParams != null && !addressParams.isEmpty()) {
-            addressString.append(" AND EXISTS ( SELECT personAddress FROM com.mpower.domain.PersonAddress personAddress WHERE personAddress.person.id = commitment.person.id ");
+            addressString.append(" AND EXISTS ( SELECT address FROM com.mpower.domain.Address address WHERE address.person.id = commitment.person.id ");
             for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                addressString.append("AND personAddress.address.");
+                addressString.append("AND address.");
                 addressString.append(key);
                 addressString.append(" LIKE :");
                 String paramName = key.replace(".", "_");

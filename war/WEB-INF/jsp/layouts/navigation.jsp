@@ -37,7 +37,7 @@
 				<a href="codes.htm" class="${primaryNav=='Administration'?'active':''}">Administration</a>
 			</li>
 			<li>
-				<a href="#">Reporting</a>
+				<a href="http://10.0.2.162:8080/jasperserver/login.html">Reporting</a>
 			</li>
 		</ul>
 		<div class="clearBoth"></div>

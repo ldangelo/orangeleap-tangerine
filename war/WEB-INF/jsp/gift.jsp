@@ -48,30 +48,6 @@
 					var elem=document.getElementById("paymentType");
 					$("." + elem[elem.selectedIndex].getAttribute('reference')).show();
 				</script>
-				<br />
-				<br />
-				<br />
-			
-			
-	<div style="padding-right: 8px;" class="column">
-	<h4 class="formSectionHeader">Query Lookup Test</h4>
-
-	<ul class="formFields width375">
-<li class="side">
-		<label class="desc" id="projectCode.label" for="projectCode">
-	Person</label>
-<div class="lookupWrapper">
-		<input style="float:left;" class="text code" fieldDef="person.lastName" name="testingQL" />
-		<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('input'));return false;">Lookup</a>
-</div>
-</li><li class="clear"></li>
-	</ul>
-
-</div>
-			
-			
-				
-				
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

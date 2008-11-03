@@ -61,8 +61,8 @@ public class PaymentSource implements SiteAware, Serializable {
     @Column(name = "ACH_ACCOUNT_NUMBER")
     private String achAccountNumberEncrypted;
 
-    @Column(name = "ACTIVE")
-    private boolean active = true;
+    @Column(name = "INACTIVE")
+    private boolean inactive = false;
 
     @Transient
     private Integer creditCardExpirationMonth;
@@ -216,12 +216,12 @@ public class PaymentSource implements SiteAware, Serializable {
         // no-op
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setInactive(boolean inactive) {
+        this.inactive = inactive;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isInactive() {
+        return inactive;
     }
 
     public Integer getCreditCardExpirationMonth() {

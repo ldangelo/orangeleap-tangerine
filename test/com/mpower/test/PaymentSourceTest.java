@@ -48,7 +48,7 @@ public class PaymentSourceTest extends BaseTest {
     }
 
     @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource" })
-    public void deletePaymentSource() {
+    public void inactivatePaymentSources() {
         paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");
         List<Person> persons = personService.readAllPeople();
@@ -56,7 +56,8 @@ public class PaymentSourceTest extends BaseTest {
             List<PaymentSource> sources = paymentSourceService.readPaymentSources(person.getId());
             for (PaymentSource ps : sources) {
                 ps = em.getReference(PaymentSource.class, ps.getId());
-                paymentSourceService.deletePaymentSource(ps);
+                ps.setInactive(true);
+                paymentSourceService.savePaymentSource(ps);
             }
             logger.debug("size = " + paymentSourceService.readPaymentSources(person.getId()).size());
             assert paymentSourceService.readPaymentSources(person.getId()).size() == 0;

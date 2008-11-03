@@ -27,39 +27,21 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public PaymentSource savePaymentSource(PaymentSource paymentSource) {
-        paymentSource.setActive(true);
-        auditService.auditObject(paymentSource);
-        return paymentSourceDao.maintainPaymentSource(paymentSource);
+        paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
+        if (paymentSource.isInactive()) {
+            auditService.auditObjectInactive(paymentSource);
+        } else {
+            auditService.auditObject(paymentSource);
+        }
+        return paymentSource;
     }
 
     public List<PaymentSource> readPaymentSources(Long personId) {
         return paymentSourceDao.readPaymentSources(personId);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public void deletePaymentSource(PaymentSource paymentSource) {
-        auditService.auditObjectDelete(paymentSource);
-        paymentSourceDao.deletePaymentSource(paymentSource);
-    }
-
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
-    }
-
-    @Override
-    public List<PaymentSource> readActivePaymentSources(Long personId) {
-        return paymentSourceDao.readActivePaymentSources(personId);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void inactivatePaymentSource(Long paymentSourceId) {
-        paymentSourceDao.inactivatePaymentSource(paymentSourceId);
-    }
-
-    @Override
-    public void removePaymentSource(Long paymentSourceId) {
-        paymentSourceDao.removePaymentSource(paymentSourceId);
     }
 
     @Override

@@ -187,14 +187,31 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
-    public List<Audit> auditObjectDelete(Object object) {
-        // TODO Auto-generated method stub
-        logger.debug("audit " + object.getClass().getName() + " delete");
-        return null;
+    public List<Audit> auditHistoryForPerson(Long personId) {
+        return auditDao.auditHistoryForPerson(personId);
     }
 
     @Override
-    public List<Audit> auditHistoryForPerson(Long personId) {
-        return auditDao.auditHistoryForPerson(personId);
+    public Audit auditObjectInactive(Object object) {
+        Audit audit = null;
+        Date date = new Date();
+        if (object instanceof Viewable) {
+            Viewable viewable = (Viewable) object;
+            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + viewable.getClass().getSimpleName() + " " + viewable.getId(), viewable.getSite(), EntityType.valueOf(StringUtils.lowerCase(viewable.getClass().getSimpleName())),
+                    viewable.getId(), viewable.getPerson());
+        } else if (object instanceof Auditable) {
+            Auditable auditable = (Auditable) object;
+            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + auditable.getClass().getSimpleName() + " " + auditable.getId(), auditable.getSite(), EntityType.valueOf(StringUtils
+                    .lowerCase(auditable.getClass().getSimpleName())), auditable.getId(), auditable.getPerson());
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("don't know how to audit object " + (object == null ? null : object.getClass().getName()));
+            }
+        }
+
+        if (audit != null) {
+            auditDao.auditObject(audit);
+        }
+        return audit;
     }
 }

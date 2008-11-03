@@ -65,8 +65,9 @@
     <bean id="addressManagerEdit" class="com.mpower.controller.AddressManagerEditFormController">
     	<property name="commandName" value="address" />
     	<property name="commandClass" value="com.mpower.domain.Address" />
-    	<property name="personService" ref="personService" />
     	<property name="addressService" ref="addressService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="addressDelete" class="com.mpower.controller.AddressDeleteController">

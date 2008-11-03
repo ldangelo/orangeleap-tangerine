@@ -10,13 +10,5 @@ public interface PaymentSourceDao {
 
     public List<PaymentSource> readPaymentSources(Long personId);
 
-    public void deletePaymentSource(PaymentSource paymentSource);
-
-    public List<PaymentSource> readActivePaymentSources(Long personId);
-
-    public void inactivatePaymentSource(Long paymentSourceId);
-
-    public void removePaymentSource(Long paymentSourceId);
-
     public PaymentSource readPaymentSource(Long paymentSourceId);
 }

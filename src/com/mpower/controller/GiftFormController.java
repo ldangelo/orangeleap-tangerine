@@ -79,7 +79,7 @@ public class GiftFormController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = new HashMap();
         String personId = request.getParameter("personId");
-        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(Long.valueOf(personId));
+        List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
         refData.put("paymentSources", paymentSources);
         return refData;
     }

@@ -82,9 +82,9 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
     private Date updateDate;
 
     @Column(name = "RECEIVE_CORRESPONDENCE")
-    private boolean receiveMail = true;
+    private boolean receiveMail = false;
 
-    // either regular, temporary, or seasonal
+    // either permanent, temporary, or seasonal
     @Column(name = "ACTIVATION_STATUS")
     private String activationStatus;
 
@@ -112,10 +112,15 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
     private boolean inactive = false;
 
     @Column(name = "COMMENT")
-    private String comment;
+    private String comments;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<AddressCustomField> addressCustomFields;
+
+    // only meaningful for Permanent addresses, and indicates when date becomes effective (ex. they are moving the first of next month)
+    @Column(name = "EFFECTIVE_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date effectiveDate;
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
@@ -278,12 +283,12 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
         this.inactive = inactive;
     }
 
-    public String getComment() {
-        return comment;
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public List<AddressCustomField> getAddressCustomFields() {
@@ -299,6 +304,14 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
             customFieldMap = AddressCustomFieldMap.buildCustomFieldMap(getAddressCustomFields(), this);
         }
         return customFieldMap;
+    }
+
+    public Date getEffectiveDate() {
+        return effectiveDate;
+    }
+
+    public void setEffectiveDate(Date effectiveDate) {
+        this.effectiveDate = effectiveDate;
     }
 
     public Site getSite() {

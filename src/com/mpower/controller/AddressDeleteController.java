@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import com.mpower.domain.Address;
 import com.mpower.service.AddressService;
 
 public class AddressDeleteController implements Controller {
@@ -25,9 +26,10 @@ public class AddressDeleteController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String addressId = request.getParameter("addressId");
         String personId = request.getParameter("personId");
-        addressService.deleteAddress(addressService.readAddress(Long.valueOf(addressId)));
+        Address address = addressService.readAddress(Long.valueOf(addressId));
+        address.setInactive(true);
+        addressService.saveAddress(address);
         ModelAndView mav = new ModelAndView("redirect:/addressManager.htm?personId=" + personId);
-        // mav.addObject("paymentSourceId", gift.getId());
         return mav;
     }
 }

@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -27,42 +28,28 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public Address saveAddress(Address address) {
-        auditService.auditObject(address);
-        return addressDao.maintainAddress(address);
+        address = addressDao.maintainAddress(address);
+        if (address.isInactive()) {
+            auditService.auditObjectInactive(address);
+        } else {
+            auditService.auditObject(address);
+        }
+        return address;
     }
 
     public List<Address> readAddresses(Long personId) {
         return addressDao.readAddresses(personId);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public void deleteAddress(Address address) {
-        auditService.auditObjectDelete(address);
-        addressDao.deleteAddress(address);
-    }
-
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
     }
 
-    // @Override
-    // public List<PaymentSource> readActivePaymentSources(Long personId) {
-    // return paymentSourceDao.readActivePaymentSources(personId);
-    // }
-    //
-    // @Transactional(propagation = Propagation.REQUIRED)
-    // public void inactivateAddress(Long addressId) {
-    // addressDao.inactivateAddress(addressId);
-    // }
-
-    //
-    // @Override
-    // public void removeAddress(Long addressId) {
-    // addressDao.removeAddress(addressId);
-    // }
-
-    @Override
     public Address readAddress(Long addressId) {
         return addressDao.readAddress(addressId);
+    }
+
+    public List<Address> getCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence) {
+        return addressDao.readCurrentAddresses(personId, calendar, receiveCorrespondence);
     }
 }

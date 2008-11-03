@@ -3,17 +3,68 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
-	<named-query name="READ_ADDRESSES_BY_PERSON_ID" >
+	<named-query name="READ_ACTIVE_ADDRESSES_BY_PERSON_ID" >
 		<query>
 			SELECT address FROM com.mpower.domain.Address address
 			WHERE address.person.id = :personId
+			AND address.inactive = FALSE
 		</query>
 	</named-query>
 
-	<named-query name="READ_ACTIVE_ADDRESSES_BY_PERSON_ID">
+	<named-query name="READ_CURRENT_ADDRESSES_BY_PERSON_ID_AND_CORRESPONDENCE" >
 		<query>
 			SELECT address FROM com.mpower.domain.Address address
 			WHERE address.person.id = :personId
+			AND address.receiveMail = :correspondence
+			AND address.inactive = FALSE
+			AND
+			(
+				(
+					address.activationStatus = 'temporary'
+					AND address.temporaryStartDate &lt;= :specifiedTemporaryDate
+					AND address.temporaryEndDate &gt;= :specifiedTemporaryDate
+				)
+				OR
+				(
+					address.activationStatus = 'seasonal'
+					AND address.seasonalStartDate &lt;= :specifiedSeasonalDate
+					AND address.seasonalEndDate &gt;= :specifiedSeasonalDate
+					AND NOT EXISTS
+					(
+						SELECT a1 FROM com.mpower.domain.Address a1
+						WHERE a1.person.id = :personId
+						AND a1.receiveMail = :correspondence
+						AND a1.inactive = FALSE
+						AND a1.activationStatus = 'temporary'
+						AND a1.temporaryStartDate &lt;= :specifiedTemporaryDate
+						AND a1.temporaryEndDate &gt;= :specifiedTemporaryDate
+					)
+				)
+				OR
+				(
+					address.activationStatus = 'permanent'
+					AND NOT EXISTS
+					(
+						SELECT a2 FROM com.mpower.domain.Address a2
+						WHERE a2.person.id = :personId
+						AND a2.receiveMail = :correspondence
+						AND a2.inactive = FALSE
+						AND a2.activationStatus = 'temporary'
+						AND a2.temporaryStartDate &lt;= :specifiedTemporaryDate
+						AND a2.temporaryEndDate &gt;= :specifiedTemporaryDate
+					)
+					AND NOT EXISTS
+					(
+						SELECT a3 FROM com.mpower.domain.Address a3
+						WHERE a3.person.id = :personId
+						AND a3.receiveMail = :correspondence
+						AND a3.inactive = FALSE
+						AND a3.activationStatus = 'seasonal'
+						AND a3.seasonalStartDate &lt;= :specifiedSeasonalDate
+						AND a3.seasonalEndDate &gt;= :specifiedSeasonalDate
+					)
+				)
+			)
 		</query>
 	</named-query>
 

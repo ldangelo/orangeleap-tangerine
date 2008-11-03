@@ -84,17 +84,17 @@ public class CommitmentFormController extends SimpleFormController {
                     Iterator<Gift> giftIter = gifts.iterator();
                     BigDecimal giftSum = new BigDecimal(0);
                     while (giftIter.hasNext()) {
-                    	giftSum = giftSum.add(giftIter.next().getValue());
+                        giftSum = giftSum.add(giftIter.next().getValue());
                     }
                     refData.put("giftSum",giftSum);
                 }
-                
+
             }
         } else {
             personId = Long.valueOf(personIdString);
         }
         if (personId != null) {
-            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSources(personId);
+            List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
             refData.put("paymentSources", paymentSources);
         }
         return refData;

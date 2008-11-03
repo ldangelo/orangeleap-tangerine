@@ -1,5 +1,7 @@
 package com.mpower.dao;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,10 +36,9 @@ public class JPAAddressDao implements AddressDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Address> readAddresses(Long personId) {
-        Query query = em.createNamedQuery("READ_ADDRESSES_BY_PERSON_ID");
+        Query query = em.createNamedQuery("READ_ACTIVE_ADDRESSES_BY_PERSON_ID");
         query.setParameter("personId", personId);
-        List<Address> addressList = query.getResultList();
-        return addressList;
+        return query.getResultList();
     }
 
     @Override
@@ -45,41 +46,23 @@ public class JPAAddressDao implements AddressDao {
         em.remove(address);
     }
 
-    // @SuppressWarnings("unchecked")
-    // @Override
-    // public List<Address> readActiveAddresses(Long personId) {
-    // Query query = em.createNamedQuery("READ_ACTIVE_ADDRESSES_BY_PERSON_ID");
-    // query.setParameter("personId", personId);
-    // List<Address> addressList = query.getResultList();
-    // return addressList;
-    // }
-    //
-    // public void inactivateAddress(Long addressId) {
-    // Address address = em.find(Address.class, addressId);
-    // address
-    // Query query = em.createNamedQuery("UPDATE_PAYMENT_SOURCE_TO_INACTIVE");
-    // query.setParameter("addressId", addressId);
-    // query.executeUpdate();
-    // }
-
-    // @SuppressWarnings("unchecked")
-    // @Override
-    // public void removeAddress(Long addressId) {
-    // // Logic to determine whether or not we should delete or simply
-    // // inactivate a payment source
-    // Query query = em.createNamedQuery("READ_GIFTS_BY_PAYMENT_SOURCE_ID");
-    // query.setParameter("addressId", addressId);
-    // List<Gift> gifts = query.getResultList();
-    // if (gifts.size() > 0) {
-    // inactivateAddress(addressId);
-    // } else {
-    // Address address = readAddress(addressId);
-    // deleteAddress(address);
-    // }
-    // }
-
     @Override
     public Address readAddress(Long addressId) {
         return em.find(Address.class, addressId);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence) {
+        Query query = em.createNamedQuery("READ_CURRENT_ADDRESSES_BY_PERSON_ID_AND_CORRESPONDENCE");
+        query.setParameter("personId", personId);
+        query.setParameter("correspondence", receiveCorrespondence);
+        Calendar specifiedTemporaryCal = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        logger.debug("specifiedTemporaryCal = " + specifiedTemporaryCal.getTime());
+        query.setParameter("specifiedTemporaryDate", specifiedTemporaryCal.getTime());
+        Calendar specifiedSeasonalCal = new GregorianCalendar(0, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        logger.debug("specifiedSeasonalCal = " + specifiedSeasonalCal.getTime());
+        query.setParameter("specifiedSeasonalDate", specifiedSeasonalCal.getTime());
+        return query.getResultList();
     }
 }

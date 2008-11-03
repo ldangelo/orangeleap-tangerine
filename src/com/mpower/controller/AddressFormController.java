@@ -8,10 +8,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -46,6 +47,10 @@ public class AddressFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String personId = request.getParameter("personId");
@@ -56,11 +61,7 @@ public class AddressFormController extends SimpleFormController {
             address = new Address();
             address.setPerson(person);
         } else {
-            try {
-                address = (Address) BeanUtils.cloneBean(addressService.readAddress(Long.valueOf(addressId)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            address = addressService.readAddress(Long.valueOf(addressId));
         }
         if (isFormSubmission(request)) {
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
@@ -90,17 +91,15 @@ public class AddressFormController extends SimpleFormController {
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Address address = (Address) command;
-        addressService.saveAddress(address);
+        addressService.saveAddress((Address) command);
         String personId = request.getParameter("personId");
         List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
         Person person = personService.readPersonById(Long.valueOf(personId));
-        ModelAndView mav = new ModelAndView("paymentManager");
+        ModelAndView mav = new ModelAndView("addressManager");
         mav.addObject("addresses", addresses);
-        address = new Address();
         // address.setPerson(person);
         mav.addObject("person", person);
-        mav.addObject("address", address);
+        mav.addObject("address", new Address());
         mav.addObject(personId);
         return mav;
     }

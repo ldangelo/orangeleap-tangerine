@@ -45,7 +45,7 @@ public class PersonDataProvider {
         address1.setAddressLine1("addressLine1");
         address1.setAddressLine2("addressLine2");
         address1.setAddressLine3("addressLine3");
-        address1.setAddressType("primaryAddress");
+        address1.setAddressType("home");
         address1.setCity("city");
         address1.setCountry("US");
         address1.setPostalCode("postalCode");

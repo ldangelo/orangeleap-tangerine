@@ -11,35 +11,35 @@
 
 
 
-	<table id="myTable" class="tablesorter" cellspacing="0" cellpadding="0"> 
-		<thead> 
-			<tr> 
+	<table id="myTable" class="tablesorter" cellspacing="0" cellpadding="0">
+		<thead>
+			<tr>
 			    <th>&nbsp;</th>
 			    <th>Account #</th>
-			    <th>Last Name</th> 
+			    <th>Last Name</th>
 			    <th>First Name</th>
 			    <th>Org Name</th>
-			    <th>Address</th> 
-			    <th>City</th> 
+			    <th>Address</th>
+			    <th>City</th>
 			    <th>State</th>
 			    <th>Zip</th>
-			</tr> 
-			</thead> 
+			</tr>
+			</thead>
 		<tbody>
 			<c:forEach items="${personList}" var="person">
 				<tr>
 					<td><a href="person.htm?personId=${person.id}">Edit</a></td>
-				    <td>707</td> 
-				    <td>${person.lastName}</td> 
+				    <td>707</td>
+				    <td>${person.lastName}</td>
 				    <td>${person.firstName}</td>
 				    <td>${person.organizationName}</td>
-				    <td>${person.addressMap.primaryAddress.addressLine1}</td> 
-				    <td>${person.addressMap.primaryAddress.city}</td>
-				    <td>${person.addressMap.primaryAddress.stateProvince}</td>
-				    <td>${person.addressMap.primaryAddress.postalCode}</td>
-				</tr> 
+				    <td>${person.addressMap.home.addressLine1}</td>
+				    <td>${person.addressMap.home.city}</td>
+				    <td>${person.addressMap.home.stateProvince}</td>
+				    <td>${person.addressMap.home.postalCode}</td>
+				</tr>
 			</c:forEach>
-		</tbody> 
+		</tbody>
 	</table>
 
 </body>

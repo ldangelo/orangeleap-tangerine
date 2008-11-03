@@ -41,6 +41,7 @@
 				OR
 				(
 					address.activationStatus = 'permanent'
+					AND ((address.effectiveDate IS NULL) OR (address.effectiveDate &lt;= :specifiedTemporaryDate))
 					AND NOT EXISTS
 					(
 						SELECT a2 FROM com.mpower.domain.Address a2
@@ -96,6 +97,7 @@
 				OR
 				(
 					address.activationStatus = 'permanent'
+					AND ((address.effectiveDate IS NULL) OR (address.effectiveDate &lt;= :specifiedTemporaryDate))
 					AND NOT EXISTS
 					(
 						SELECT a2 FROM com.mpower.domain.Address a2

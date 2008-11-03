@@ -81,7 +81,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("2-temporary-addressLine1");
         address1StringList.add("3-temporary-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
-        List<Address> addresses = addressService.getCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -97,7 +97,7 @@ public class AddressTest extends BaseTest {
         Calendar cal = CalendarUtils.getToday(false);
         cal.add(Calendar.WEEK_OF_MONTH, 2);
         System.out.println("queryCurrentAddresses2:  "+cal.getTime());
-        List<Address> addresses = addressService.getCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -112,7 +112,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-permanent-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.add(Calendar.MONTH, 2);
-        List<Address> addresses = addressService.getCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());

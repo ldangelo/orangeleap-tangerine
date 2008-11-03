@@ -1,5 +1,8 @@
 package com.mpower.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -43,6 +47,7 @@ public class AddressManagerEditFormController extends SimpleFormController {
     }
 
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
@@ -59,7 +64,7 @@ public class AddressManagerEditFormController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String personId = request.getParameter("personId");
         String addressId = request.getParameter("addressId");
-        Address address= null;
+        Address address = null;
         if (addressId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
             address = new Address();
@@ -81,17 +86,20 @@ public class AddressManagerEditFormController extends SimpleFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Address address = (Address) command;
         addressService.saveAddress(address);
-        String personId = request.getParameter("personId");
-        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
-        Person person = personService.readPersonById(Long.valueOf(personId));
+        String personIdString = request.getParameter("personId");
+        Long personId = Long.valueOf(personIdString);
+        List<Address> addresses = addressService.readAddresses(personId);
+        Person person = personService.readPersonById(personId);
         ModelAndView mav = new ModelAndView("addressManager");
         mav.addObject("addresses", addresses);
+        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
+        mav.addObject("currentAddresses", currentAddresses);
         address = new Address();
         address.setPerson(person);
-        mav.addObject("redirect:/addressManager.htm?personId=" + personId, errors.getModel());
+        mav.addObject("redirect:/addressManager.htm?personId=" + personIdString, errors.getModel());
         mav.addObject("person", person);
         mav.addObject("address", address);
-        mav.addObject(personId);
+        mav.addObject(personIdString);
         return mav;
     }
 }

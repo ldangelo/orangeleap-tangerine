@@ -347,7 +347,7 @@ public class PaymentSource implements SiteAware, Serializable {
 
     @PrePersist
     @PreUpdate
-    public void standardize() {
+    public void normalize() {
         if (type != null) {
             if ("ACH".equals(getType())) {
                 setCreditCardExpiration(null);

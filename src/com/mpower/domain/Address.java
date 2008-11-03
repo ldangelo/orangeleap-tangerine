@@ -2,7 +2,9 @@ package com.mpower.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -263,8 +267,15 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
         return seasonalStartDate;
     }
 
+    @SuppressWarnings("deprecation")
     public void setSeasonalStartDate(Date seasonalStartDate) {
-        this.seasonalStartDate = seasonalStartDate;
+        Calendar cal = null;
+        if (seasonalStartDate != null) {
+            cal = new GregorianCalendar(0, seasonalStartDate.getMonth(), seasonalStartDate.getDay());
+            this.seasonalStartDate = cal.getTime();
+        } else {
+            this.seasonalStartDate = null;
+        }
     }
 
     public Date getSeasonalEndDate() {
@@ -332,5 +343,26 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
 
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void normalize() {
+        if (activationStatus != null) {
+            if ("permanent".equals(getActivationStatus())) {
+                setSeasonalEndDate(null);
+                setSeasonalStartDate(null);
+                setTemporaryEndDate(null);
+                setTemporaryStartDate(null);
+            } else if ("seasonal".equals(getActivationStatus())) {
+                setEffectiveDate(null);
+                setTemporaryEndDate(null);
+                setTemporaryStartDate(null);
+            } else if ("temporary".equals(getActivationStatus())) {
+                setEffectiveDate(null);
+                setSeasonalEndDate(null);
+                setSeasonalStartDate(null);
+            }
+        }
     }
 }

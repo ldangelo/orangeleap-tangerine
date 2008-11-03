@@ -53,15 +53,25 @@ public class JPAAddressDao implements AddressDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<Address> readCurrentAddresses(Long personId, Calendar calendar) {
+        Query query = em.createNamedQuery("READ_CURRENT_ADDRESSES_BY_PERSON_ID");
+        query.setParameter("personId", personId);
+        Calendar specifiedTemporaryCal = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        query.setParameter("specifiedTemporaryDate", specifiedTemporaryCal.getTime());
+        Calendar specifiedSeasonalCal = new GregorianCalendar(0, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        query.setParameter("specifiedSeasonalDate", specifiedSeasonalCal.getTime());
+        return query.getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence) {
         Query query = em.createNamedQuery("READ_CURRENT_ADDRESSES_BY_PERSON_ID_AND_CORRESPONDENCE");
         query.setParameter("personId", personId);
         query.setParameter("correspondence", receiveCorrespondence);
         Calendar specifiedTemporaryCal = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        logger.debug("specifiedTemporaryCal = " + specifiedTemporaryCal.getTime());
         query.setParameter("specifiedTemporaryDate", specifiedTemporaryCal.getTime());
         Calendar specifiedSeasonalCal = new GregorianCalendar(0, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        logger.debug("specifiedSeasonalCal = " + specifiedSeasonalCal.getTime());
         query.setParameter("specifiedSeasonalDate", specifiedSeasonalCal.getTime());
         return query.getResultList();
     }

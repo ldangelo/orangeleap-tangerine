@@ -49,7 +49,11 @@ public class AddressServiceImpl implements AddressService {
         return addressDao.readAddress(addressId);
     }
 
-    public List<Address> getCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence) {
+    public List<Address> readCurrentAddresses(Long personId, Calendar calendar) {
+        return addressDao.readCurrentAddresses(personId, calendar);
+    }
+
+    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence) {
         return addressDao.readCurrentAddresses(personId, calendar, receiveCorrespondence);
     }
 }

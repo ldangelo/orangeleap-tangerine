@@ -1,5 +1,8 @@
 package com.mpower.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -48,6 +52,7 @@ public class AddressFormController extends SimpleFormController {
     }
 
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
@@ -77,30 +82,35 @@ public class AddressFormController extends SimpleFormController {
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = new HashMap();
-        String personId = request.getParameter("personId");
-        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
-        refData.put("person", personService.readPersonById(Long.valueOf(personId)));
+        String personIdString = request.getParameter("personId");
+        Long personId = Long.valueOf(personIdString);
+        List<Address> addresses = addressService.readAddresses(personId);
+        refData.put("person", personService.readPersonById(personId));
         refData.put("addresses", addresses);
         if (logger.isDebugEnabled()) {
             for (Address a : addresses) {
                 logger.debug("### address: " + a.getAddressLine1() + ", " + a.getCity() + ", " + a.getStateProvince() + ", " + a.getPostalCode());
             }
         }
+        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
+        refData.put("currentAddresses", currentAddresses);
         return refData;
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         addressService.saveAddress((Address) command);
-        String personId = request.getParameter("personId");
-        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
-        Person person = personService.readPersonById(Long.valueOf(personId));
+        String personIdString = request.getParameter("personId");
+        Long personId = Long.valueOf(personIdString);
+        List<Address> addresses = addressService.readAddresses(personId);
+        Person person = personService.readPersonById(personId);
         ModelAndView mav = new ModelAndView("addressManager");
         mav.addObject("addresses", addresses);
-        // address.setPerson(person);
+        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
+        mav.addObject("currentAddresses", currentAddresses);
         mav.addObject("person", person);
         mav.addObject("address", new Address());
-        mav.addObject(personId);
+        mav.addObject(personIdString);
         return mav;
     }
 }

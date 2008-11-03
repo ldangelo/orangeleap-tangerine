@@ -61,6 +61,7 @@
 					)
 				)
 			)
+			ORDER BY address.activationStatus ASC, address.createDate ASC
 		</query>
 	</named-query>
 
@@ -115,6 +116,7 @@
 					)
 				)
 			)
+			ORDER BY address.activationStatus ASC, address.createDate ASC
 		</query>
 	</named-query>
 

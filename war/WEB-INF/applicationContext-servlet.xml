@@ -43,19 +43,17 @@
 	<bean id="addressManager" class="com.mpower.controller.AddressFormController">
     	<property name="commandName" value="address" />
     	<property name="commandClass" value="com.mpower.domain.Address" />
-<!--		<property name="validators">-->
-<!--			<list>-->
-<!--	            <bean class="com.mpower.controller.validator.AddressValidator">-->
-<!--			        <property name="pageType" value="paymentSource"/>-->
-<!--			        <property name="siteService" ref="siteService" />-->
-<!--	            </bean>-->
-<!--			</list>-->
-<!--        </property>-->
-        <property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
-		        <property name="pageType" value="address"/>
-		        <property name="siteService" ref="siteService" />
-            </bean>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.AddressValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
         </property>
     	<property name="addressService" ref="addressService" />
     	<property name="personService" ref="personService" />
@@ -65,6 +63,18 @@
     <bean id="addressManagerEdit" class="com.mpower.controller.AddressManagerEditFormController">
     	<property name="commandName" value="address" />
     	<property name="commandClass" value="com.mpower.domain.Address" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.AddressValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
     	<property name="addressService" ref="addressService" />
     	<property name="personService" ref="personService" />
     	<property name="siteService" ref="siteService" />

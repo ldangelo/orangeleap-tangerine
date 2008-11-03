@@ -124,7 +124,7 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
     // only meaningful for Permanent addresses, and indicates when date becomes effective (ex. they are moving the first of next month)
     @Column(name = "EFFECTIVE_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date effectiveDate;
+    private Date effectiveDate = new Date();
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;

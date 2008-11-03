@@ -94,6 +94,8 @@ public class AddressManagerEditFormController extends SimpleFormController {
         mav.addObject("addresses", addresses);
         List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
         mav.addObject("currentAddresses", currentAddresses);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
+        mav.addObject("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
         address = new Address();
         address.setPerson(person);
         mav.addObject("redirect:/addressManager.htm?personId=" + personIdString, errors.getModel());

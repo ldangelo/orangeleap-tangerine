@@ -94,6 +94,8 @@ public class AddressFormController extends SimpleFormController {
         }
         List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
         refData.put("currentAddresses", currentAddresses);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
+        refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
         return refData;
     }
 
@@ -108,6 +110,8 @@ public class AddressFormController extends SimpleFormController {
         mav.addObject("addresses", addresses);
         List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
         mav.addObject("currentAddresses", currentAddresses);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
+        mav.addObject("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
         mav.addObject("person", person);
         mav.addObject("address", new Address());
         mav.addObject(personIdString);

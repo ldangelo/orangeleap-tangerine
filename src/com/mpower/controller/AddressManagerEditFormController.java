@@ -92,7 +92,7 @@ public class AddressManagerEditFormController extends SimpleFormController {
         Person person = personService.readPersonById(personId);
         ModelAndView mav = new ModelAndView("addressManager");
         mav.addObject("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance());
+        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), false);
         mav.addObject("currentAddresses", currentAddresses);
         List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondenceAddresses", currentCorrespondenceAddresses);

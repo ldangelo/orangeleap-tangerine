@@ -15,7 +15,5 @@ public interface AddressService {
 
     public Address readAddress(Long addressId);
 
-    public List<Address> readCurrentAddresses(Long personId, Calendar calendar);
-
     public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence);
 }

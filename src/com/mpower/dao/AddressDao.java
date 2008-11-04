@@ -15,7 +15,5 @@ public interface AddressDao {
 
     public Address readAddress(Long AddressId);
 
-    public List<Address> readCurrentAddresses(Long personId, Calendar calendar);
-
-    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence);
+    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean mailOnly);
 }

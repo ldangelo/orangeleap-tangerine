@@ -81,6 +81,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("2-temporary-addressLine1");
         address1StringList.add("3-temporary-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
+        cal.set(cal.get(Calendar.YEAR), 9, 15);
         List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
@@ -95,9 +96,19 @@ public class AddressTest extends BaseTest {
         address1StringList.add("2-seasonal-addressLine1");
         address1StringList.add("3-seasonal-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
-        cal.add(Calendar.WEEK_OF_MONTH, 2);
-        System.out.println("queryCurrentAddresses2:  "+cal.getTime());
+        cal.set(cal.get(Calendar.YEAR), 10, 15);
+        System.out.println("queryCurrentAddresses2:  " + cal.getTime());
         List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
+        assert addresses.size() == 3;
+        for (Address a : addresses) {
+            logger.debug("address: " + a.getActivationStatus() + ", effective=" + a.getEffectiveDate() + ", season start=" + a.getSeasonalStartDate() + ", season end=" + a.getSeasonalEndDate() + ", temp start=" + a.getTemporaryStartDate() + ", temp end=" + a.getTemporaryEndDate());
+            assert address1StringList.contains(a.getAddressLine1());
+        }
+
+        cal = CalendarUtils.getToday(false);
+        cal.set(cal.get(Calendar.YEAR), 2, 15);
+        System.out.println("queryCurrentAddresses2:  " + cal.getTime());
+        addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -111,7 +122,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("2-permanent-addressLine1");
         address1StringList.add("3-permanent-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
-        cal.add(Calendar.MONTH, 2);
+        cal.set(cal.get(Calendar.YEAR), 3, 1);
         List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {

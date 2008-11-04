@@ -2,9 +2,7 @@ package com.mpower.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -267,15 +265,8 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
         return seasonalStartDate;
     }
 
-    @SuppressWarnings("deprecation")
     public void setSeasonalStartDate(Date seasonalStartDate) {
-        Calendar cal = null;
-        if (seasonalStartDate != null) {
-            cal = new GregorianCalendar(0, seasonalStartDate.getMonth(), seasonalStartDate.getDay());
-            this.seasonalStartDate = cal.getTime();
-        } else {
-            this.seasonalStartDate = null;
-        }
+        this.seasonalStartDate = seasonalStartDate;
     }
 
     public Date getSeasonalEndDate() {

@@ -71,6 +71,9 @@
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
+		<div class="searchResultsHeader">
+		<h4 class="searchResults">Current Addresses</h4>
+		</div>
 		<p style="margin: 8px 0 6px 0;">There are no current addresses for this person.</p>
 	</c:otherwise>
 </c:choose>
@@ -107,6 +110,9 @@
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
+		<div class="searchResultsHeader">
+		<h4 class="searchResults">Current Correspondence Addresses</h4>
+		</div>
 		<p style="margin: 8px 0 6px 0;">There are no current correspondence addresses for this person.</p>
 	</c:otherwise>
 </c:choose>

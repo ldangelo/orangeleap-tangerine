@@ -31,7 +31,7 @@
 					AND address.seasonalEndDate &gt;= :specifiedSeasonalDate
 					AND NOT EXISTS
 					(
-						SELECT a1 FROM com.mpower.domain.Address a1
+						SELECT a1.id FROM com.mpower.domain.Address a1
 						WHERE a1.person.id = :personId
 						AND a1.inactive = FALSE
 						AND a1.activationStatus = 'temporary'
@@ -45,7 +45,7 @@
 					AND ((address.effectiveDate IS NULL) OR (address.effectiveDate &lt;= :specifiedTemporaryDate))
 					AND NOT EXISTS
 					(
-						SELECT a2 FROM com.mpower.domain.Address a2
+						SELECT a2.id FROM com.mpower.domain.Address a2
 						WHERE a2.person.id = :personId
 						AND a2.inactive = FALSE
 						AND a2.activationStatus = 'temporary'
@@ -54,7 +54,7 @@
 					)
 					AND NOT EXISTS
 					(
-						SELECT a3 FROM com.mpower.domain.Address a3
+						SELECT a3.id FROM com.mpower.domain.Address a3
 						WHERE a3.person.id = :personId
 						AND a3.inactive = FALSE
 						AND a3.activationStatus = 'seasonal'
@@ -87,7 +87,7 @@
 					AND address.seasonalEndDate &gt;= :specifiedSeasonalDate
 					AND NOT EXISTS
 					(
-						SELECT a1 FROM com.mpower.domain.Address a1
+						SELECT a1.id FROM com.mpower.domain.Address a1
 						WHERE a1.person.id = :personId
 						AND a1.inactive = FALSE
 						AND a1.activationStatus = 'temporary'
@@ -101,7 +101,7 @@
 					AND ((address.effectiveDate IS NULL) OR (address.effectiveDate &lt;= :specifiedTemporaryDate))
 					AND NOT EXISTS
 					(
-						SELECT a2 FROM com.mpower.domain.Address a2
+						SELECT a2.id FROM com.mpower.domain.Address a2
 						WHERE a2.person.id = :personId
 						AND a2.inactive = FALSE
 						AND a2.activationStatus = 'temporary'
@@ -110,7 +110,7 @@
 					)
 					AND NOT EXISTS
 					(
-						SELECT a3 FROM com.mpower.domain.Address a3
+						SELECT a3.id FROM com.mpower.domain.Address a3
 						WHERE a3.person.id = :personId
 						AND a3.inactive = FALSE
 						AND a3.activationStatus = 'seasonal'

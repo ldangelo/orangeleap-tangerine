@@ -8,6 +8,7 @@
 			SELECT address FROM com.mpower.domain.Address address
 			WHERE address.person.id = :personId
 			AND address.inactive = FALSE
+			ORDER BY address.activationStatus, address.createDate
 		</query>
 	</named-query>
 
@@ -62,7 +63,7 @@
 					)
 				)
 			)
-			ORDER BY address.activationStatus ASC, address.createDate ASC
+			ORDER BY address.activationStatus, address.createDate
 		</query>
 	</named-query>
 
@@ -118,7 +119,7 @@
 					)
 				)
 			)
-			ORDER BY address.activationStatus ASC, address.createDate ASC
+			ORDER BY address.activationStatus, address.createDate
 		</query>
 	</named-query>
 

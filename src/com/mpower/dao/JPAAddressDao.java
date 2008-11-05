@@ -143,4 +143,13 @@ public class JPAAddressDao implements AddressDao {
         typeMap.put(address.getAddressType(), aList);
         statusMap.put(key, typeMap);
     }
+
+    @Override
+    public void inactivateAddresses() {
+        Query query = em.createNamedQuery("SET_EXPIRED_TEMPORARY_ADDRESSES_INACTIVE");
+        int modifedRecordCount = query.executeUpdate();
+        if (logger.isDebugEnabled() && modifedRecordCount > 0) {
+            logger.debug("  inactivateAddressJob: number of addresses marked inactive = " + modifedRecordCount);
+        }
+    }
 }

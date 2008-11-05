@@ -52,4 +52,9 @@ public class AddressServiceImpl implements AddressService {
     public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean mailOnly) {
         return addressDao.readCurrentAddresses(personId, calendar, mailOnly);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivateAddresses() {
+        addressDao.inactivateAddresses();
+    }
 }

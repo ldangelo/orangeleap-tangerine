@@ -327,13 +327,25 @@
   		<property name="cronExpression" value="0,30 * * * * ? *" />
   	</bean>
 
-  	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  	<bean id="recurringGiftJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="recurringGiftService"/>
 		<property name="targetMethod" value="processRecurringGifts" />
 	</bean>
 
-  	<bean id="cronRuleTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
-  		<property name="jobDetail" ref="jobDetail" />
+  	<bean id="recurringGiftJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="recurringGiftJob" />
+  		<!-- run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />-->
+  		<property name="cronExpression" value="0/15 * * * * ?" />
+  	</bean>
+
+  	<bean id="inactivateAddressJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="addressService"/>
+		<property name="targetMethod" value="inactivateAddresses" />
+	</bean>
+
+  	<bean id="inactivateAddressJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="inactivateAddressJob" />
   		<!-- run every morning at 3 AM
   		<property name="cronExpression" value="0 0 3 * * ?" />-->
   		<property name="cronExpression" value="0/15 * * * * ?" />
@@ -345,7 +357,8 @@
 <!--
 				<ref bean="cronRuleTrigger"/>
 -->
-				<ref bean="cronRuleTriggerDaily"/>
+				<ref bean="recurringGiftJobTrigger"/>
+				<ref bean="inactivateAddressJobTrigger"/>
 			</list>
 		</property>
 		<property name="applicationContextSchedulerContextKey">

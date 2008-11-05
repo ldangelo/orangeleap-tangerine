@@ -21,4 +21,13 @@
 		</query>
 	</named-query>
 
+	<named-query name="SET_EXPIRED_TEMPORARY_ADDRESSES_INACTIVE" >
+		<query>
+			UPDATE com.mpower.domain.Address address
+			SET address.inactive = TRUE
+			WHERE address.activationStatus = 'temporary'
+			AND address.temporaryEndDate &lt;= CURRENT_DATE
+		</query>
+	</named-query>
+
 </entity-mappings>

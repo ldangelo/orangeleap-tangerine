@@ -26,6 +26,7 @@
 			UPDATE com.mpower.domain.Address address
 			SET address.inactive = TRUE
 			WHERE address.activationStatus = 'temporary'
+			AND address.inactive = FALSE
 			AND address.temporaryEndDate &lt;= CURRENT_DATE
 		</query>
 	</named-query>

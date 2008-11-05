@@ -43,6 +43,9 @@ public class PicklistFieldHandler extends GenericFieldHandler {
                 }
                 fieldVO.displayValues.add(displayValue);
                 fieldVO.referenceValues.add(item.getReferenceValue());
+                if (fieldVO.getFieldValue()!=null && fieldVO.getFieldValue().equals(item.getItemName())){
+                    fieldVO.setDisplayValue(displayValue);
+                }
             }
         }
         return fieldVO;

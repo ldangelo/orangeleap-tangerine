@@ -5,7 +5,7 @@
 <c:choose>
 	<c:when test="${!empty addresses}">
 		<div class="searchResultsHeader">
-		<h4 class="searchResults">Addresses</h4>
+			<h4 class="searchResults">Addresses</h4>
 		</div>
 		<mp:page pageName='address' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -22,7 +22,7 @@
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.fieldValue}</p>
+								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -34,6 +34,9 @@
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
+		<div class="searchResultsHeader">
+			<h4 class="searchResults">Addresses</h4>
+		</div>
 		<p style="margin: 8px 0 6px 0;">No addresses have been entered for
 		this person.</p>
 	</c:otherwise>
@@ -42,7 +45,7 @@
 <c:choose>
 	<c:when test="${!empty currentAddresses}">
 		<div class="searchResultsHeader">
-		<h4 class="searchResults">Current Addresses</h4>
+			<h4 class="searchResults">Current Addresses</h4>
 		</div>
 		<mp:page pageName='address' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -59,7 +62,7 @@
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.fieldValue}</p>
+								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -72,7 +75,7 @@
 	</c:when>
 	<c:otherwise>
 		<div class="searchResultsHeader">
-		<h4 class="searchResults">Current Addresses</h4>
+			<h4 class="searchResults">Current Addresses</h4>
 		</div>
 		<p style="margin: 8px 0 6px 0;">There are no current addresses for this person.</p>
 	</c:otherwise>
@@ -81,7 +84,7 @@
 <c:choose>
 	<c:when test="${!empty currentCorrespondenceAddresses}">
 		<div class="searchResultsHeader">
-		<h4 class="searchResults">Current Correspondence Addresses</h4>
+			<h4 class="searchResults">Current Correspondence Addresses</h4>
 		</div>
 		<mp:page pageName='address' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -98,7 +101,7 @@
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.fieldValue}</p>
+								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -111,7 +114,7 @@
 	</c:when>
 	<c:otherwise>
 		<div class="searchResultsHeader">
-		<h4 class="searchResults">Current Correspondence Addresses</h4>
+			<h4 class="searchResults">Current Correspondence Addresses</h4>
 		</div>
 		<p style="margin: 8px 0 6px 0;">There are no current correspondence addresses for this person.</p>
 	</c:otherwise>

@@ -9,12 +9,11 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.type.FieldType;
 
 public class FieldVO {
-	
+
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
-	public List<String> referenceValues;
+    public List<String> referenceValues;
     public List<String> codes;
     public List<String> displayValues;
     private FieldType fieldType;
@@ -129,19 +128,19 @@ public class FieldVO {
         }
     }
 
-	public List<String> getReferenceValues() {
-		return referenceValues;
-	}
+    public List<String> getReferenceValues() {
+        return referenceValues;
+    }
 
-	public void setReferenceValues(List<String> referenceValues) {
-		this.referenceValues = referenceValues;
-	}
+    public void setReferenceValues(List<String> referenceValues) {
+        this.referenceValues = referenceValues;
+    }
 
-	public Object getDisplayValue() {
-		return displayValue;
-	}
+    public Object getDisplayValue() {
+        return displayValue != null ? displayValue : fieldValue;
+    }
 
-	public void setDisplayValue(Object displayValue) {
-		this.displayValue = displayValue;
-	}
+    public void setDisplayValue(Object displayValue) {
+        this.displayValue = displayValue;
+    }
 }

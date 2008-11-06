@@ -21,6 +21,7 @@ import com.mpower.dao.SiteDao;
 import com.mpower.domain.Audit;
 import com.mpower.domain.Auditable;
 import com.mpower.domain.CustomField;
+import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Viewable;
 import com.mpower.type.AuditType;
@@ -95,6 +96,9 @@ public class AuditServiceImpl implements AuditService {
                     }
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
+                    } else if(beanProperty instanceof Person) {
+                        fieldName = key + ".displayValue";
+                        beanProperty = bean.getPropertyValue(fieldName);
                     }
                     Object originalBeanProperty = viewable.getFieldValueMap().get(key);
                     if (originalBeanProperty == null && beanProperty == null) {

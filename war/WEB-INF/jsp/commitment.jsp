@@ -42,10 +42,6 @@
 					</c:forEach>
 					<div class="formButtonFooter personFormButtons"><input type="submit" value="Save Commitment" class="saveButton" /></div>
 				</form:form>
-				<script type="text/javascript">
-					var elem=document.getElementById("paymentType");
-					$("." + elem[elem.selectedIndex].getAttribute('reference')).show();
-				</script>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

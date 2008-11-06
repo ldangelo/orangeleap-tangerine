@@ -41,11 +41,6 @@
 		</c:if>
 	</form:form>
 
-	<script type="text/javascript">
-		var elem=document.getElementById("type");
-		$("." + elem[elem.selectedIndex].getAttribute('reference')).show();
-	</script>
-
 	<jsp:include page="paymentSource.jsp" />
 
 	</div>

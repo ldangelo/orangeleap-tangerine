@@ -13,26 +13,24 @@ $(document).ready(function()
        	$("#savedMarker").fadeOut("slow");
 	});
 
-	$("#paymentType").change(showSelectedSection);
-	$("#type").change(showSelectedSection);
-	
-	$("#selectedPaymentSource").change(function(){
-		if($(this).val()=="new") {
-			$("#paymentType").parent().show();
-			showSelectedSection("paymentType");
-			$(".commitment_editCreditCard").hide();
-			$(".gift_editCreditCard").hide();
-		} else {
-			$(".commitment_editCreditCard").show();
-			$(".gift_editCreditCard").show();
-			$("#paymentType").parent().hide();
-			elem=document.getElementById("paymentType");
-			for(i=0;i<elem.options.length;i++) {
-					$("." + elem[i].getAttribute('reference')).hide();
-			}
-		}
-
-	});
+	$(".picklist").each(toggleReferencedElements);
+	$(".picklist").change(toggleReferencedElements);
+	//cascading show and hide
+	//when hiding a .picklist, hideAllReferencedElements for it
+	//when showing a .picklist, toggleReferencedElements for it
+	//$("#selectedPaymentSource").change(function(){
+	//	if($(this).val()=="new") {
+	//		$("li:has(#paymentType)").show();
+	//		toggleReferencedElements("paymentType");
+	//		$(".commitment_editCreditCard").hide();
+	//		$(".gift_editCreditCard").hide();
+	//	} else {
+	//		$("li:has(#paymentType)").hide();
+	//		hideAllReferencedElements("paymentType");
+	//		$(".commitment_editCreditCard").show();
+	//		$(".gift_editCreditCard").show();
+	//	}
+	//});
 
 	$("#personTitle").cluetip({
 		cluetipClass:'default',
@@ -223,21 +221,49 @@ function editInPlace(elem) {
 	$(elem).parent().parent().load($(elem).attr("href"));
 	return false;
 }
-function showSelectedSection(elemId) {
-	if(typeof elemId == "string") {
-		var elem=document.getElementById(elemId);
-		//showSelectedSection.call(document.getElementById(elemId));
-	} else {
-		var elem=this;
+	
+function toggleReferencedElements(elemId) {
+	var elem=this;
+	console.log("toggle referenced for " + elem + " id of: " + $(elem).attr("id"));
+	for(var i=0;i<elem.options.length;i++) {
+		var selector = elem[i].getAttribute('reference');
+		if(selector!=null && selector.length) {
+			var $target = $(selector);
+			var $picklists = $(selector).filter(".picklist");
+			var $nested = $(selector).find(".picklist");
+			$picklists = $picklists.add($nested);
+			if(i==elem.selectedIndex) {
+				console.log("showing "+selector);
+				$target.show();
+				$picklists.each(toggleReferencedElements);
+			} else {
+				console.log("hiding "+selector);
+				$target.hide();
+				$picklists.each(hideAllReferencedElements);
+			}
+		} else { console.log("blank or null selector"); }
 	}
-	for(i=0;i<elem.options.length;i++) {
-		if(i==elem.selectedIndex) {
-			$("." + elem[i].getAttribute('reference')).show();
+}
+function hideAllReferencedElements(elemId) {
+	var elem=this;
+	console.log("hide referenced for " + elem + " id of: " + $(elem).attr("id"));
+	for(var i=0;i<elem.options.length;i++) {
+		var selector = elem[i].getAttribute('reference');
+		if(selector!=null && selector.length) {
+			var $target = $(selector);
+			var $picklists = $(selector).filter(".picklist");
+			var $nested = $(selector).find(".picklist");
+			$picklists = $picklists.add($nested);
+			console.log("hiding "+selector);
+			$target.hide();
+			$picklists.each(hideAllReferencedElements);
 		} else {
-			$("." + elem[i].getAttribute('reference')).hide();
+			console.log("blank or null selector");
 		}
 	}
 }
+
+
 function getPage(elem) {
 		var queryString = $(".searchForm").find("input").serialize();
 		var baseUrl = $(elem).attr("href");

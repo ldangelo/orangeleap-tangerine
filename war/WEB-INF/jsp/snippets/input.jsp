@@ -18,7 +18,7 @@
 <c:choose>
 <c:when test="${fieldVO.fieldType == 'DATE'}">
 <div class="lookupWrapper">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date ${errorClass}" />
+    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text date" cssErrorClass="textError date" />
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
@@ -30,14 +30,14 @@
 	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
-	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
-		<option value="new">Create New...</option>
+	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">
+		<option value="new" reference="li:has(#paymentType)">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 			<c:if test="${opt.type == 'ACH'}">
 				<option value="${opt.id}">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
 			</c:if>
 			<c:if test="${opt.type == 'Credit Card'}">
-				<option value="${opt.id}">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+				<option value="${opt.id}" reference=".gift_editCreditCard">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 			</c:if>
 		</c:forEach>
 	</select>
@@ -122,19 +122,19 @@
 	&nbsp;
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}">
+	<select name="${fieldVO.fieldName}" <c:if test="${fieldVO.cascading}">class="picklist"</c:if>id="${fieldVO.fieldName}">
        <c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+           <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
            <c:choose>
                <c:when test="${fieldVO.fieldValue eq code}">
                    <c:set var="selected" value="selected" scope="page" />
-                   <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
                </c:when>
                <c:otherwise>
                    <c:set var="selected" value="" scope="page"/>
                </c:otherwise>
            </c:choose>
-		   <option reference="${fieldVO.referenceValues[status.index]}" value="${code}" ${selected}>
-			   ${fieldVO.displayValues[status.index]}
+		   <option <c:if test="${!empty reference}">reference="${fieldVO.referenceValues[status.index]}"</c:if>value="${code}" ${selected}>
+			${fieldVO.displayValues[status.index]}
 		   </option>
       </c:forEach>
 	</select>

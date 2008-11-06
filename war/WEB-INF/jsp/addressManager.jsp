@@ -14,6 +14,8 @@
 	<c:if test="${person.id!=null}">
 		<c:set var="viewingPerson" value="true" scope="request" />
 	</c:if>
+	
+	<c:set var="commandObject" value="address" />
 
 	<form:form method="post" commandName="address">
 		<c:if test="${id != null}">

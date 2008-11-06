@@ -47,6 +47,12 @@ public class PicklistFieldHandler extends GenericFieldHandler {
                     fieldVO.setDisplayValue(displayValue);
                 }
             }
+            for (Iterator<String> iterator = fieldVO.getReferenceValues().iterator(); iterator.hasNext();) {
+                String refVal = iterator.next();
+                if (!GenericValidator.isBlankOrNull(refVal)) {
+                    fieldVO.setCascading(true);
+                }
+            }
         }
         return fieldVO;
     }

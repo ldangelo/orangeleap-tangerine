@@ -35,10 +35,12 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
-		<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit" class="saveButton" /></div>
+		<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit" class="saveButton" />
 		<c:if test="${address.id != null}">
 			<a class="actionLink" href="addressManager.htm?personId=${person.id}">Cancel</a>
 		</c:if>
+		</div>
+
 	</form:form>
 
 	<!--<jsp:include page="address.jsp" />-->

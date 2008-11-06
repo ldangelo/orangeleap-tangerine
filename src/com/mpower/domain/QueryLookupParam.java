@@ -36,9 +36,6 @@ public class QueryLookupParam implements Serializable {
     @Column(name = "PARAM_NAME")
     private String name;
 
-    @Column(name = "PARAM_ORDER")
-    private Integer paramOrder;
-
     public Long getId() {
         return id;
     }
@@ -61,13 +58,5 @@ public class QueryLookupParam implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getParamOrder() {
-        return paramOrder;
-    }
-
-    public void setParamOrder(Integer paramOrder) {
-        this.paramOrder = paramOrder;
     }
 }

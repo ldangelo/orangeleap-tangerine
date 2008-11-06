@@ -2,6 +2,7 @@ package com.mpower.controller;
 
 import java.beans.PropertyEditorSupport;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,7 +21,8 @@ public class PersonEditor extends PropertyEditorSupport {
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
-        long personId = Integer.parseInt(text);
+    	if(StringUtils.trimToNull(text)==null) return;
+        long personId = Long.valueOf(StringUtils.trimToNull(text));
         Person person = personService.readPersonById(personId);
         setValue(person);
     }

@@ -35,8 +35,9 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<SectionField> readOutOfBoxSectionFields(String sectionName) {
+    public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName) {
         Query query = em.createNamedQuery("READ_OUT_OF_BOX_SECTION_FIELDS");
+        query.setParameter("pageType", pageType);
         query.setParameter("sectionName", sectionName);
         return query.getResultList();
     }

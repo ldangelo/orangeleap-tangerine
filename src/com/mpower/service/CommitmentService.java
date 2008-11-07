@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.type.CommitmentType;
 
 public interface CommitmentService {
 
@@ -14,13 +15,13 @@ public interface CommitmentService {
 
     public Commitment readCommitmentById(Long commitmentId);
 
-    public List<Commitment> readCommitments(Person person);
+    public List<Commitment> readCommitments(Person person, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(Long personId);
+    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(String siteName, Map<String, Object> params);
+    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params);
 
-    public Commitment createDefaultCommitment(Person person);
+    public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType);
 
     public void setAuditService(AuditService auditService);
 

@@ -13,7 +13,7 @@
 
 	<named-query name="ANALYZE_FOR_MAJOR_DONOR" >
 		<query>
-			SELECT SUM(gift.value) FROM com.mpower.domain.Gift gift
+			SELECT SUM(gift.amount) FROM com.mpower.domain.Gift gift
 			WHERE (gift.person.id = :personId AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
 		</query>
 	</named-query>

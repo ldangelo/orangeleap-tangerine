@@ -29,9 +29,10 @@ import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
+import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
 
-public class CommitmentFormController extends SimpleFormController {
+public class MembershipFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -60,6 +61,12 @@ public class CommitmentFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    private PageType pageType;
+
+    public void setPageType(PageType pageType) {
+        this.pageType = pageType;
+    }
+
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
@@ -84,7 +91,7 @@ public class CommitmentFormController extends SimpleFormController {
                     Iterator<Gift> giftIter = gifts.iterator();
                     BigDecimal giftSum = new BigDecimal(0);
                     while (giftIter.hasNext()) {
-                        giftSum = giftSum.add(giftIter.next().getValue());
+                        giftSum = giftSum.add(giftIter.next().getAmount());
                     }
                     refData.put("giftSum",giftSum);
                 }
@@ -115,17 +122,17 @@ public class CommitmentFormController extends SimpleFormController {
                     logger.error("**** person not found for id: " + personId);
                     return commitment;
                 }
-                commitment = commitmentService.createDefaultCommitment(person);
+                commitment = commitmentService.createDefaultCommitment(person, CommitmentType.MEMBERSHIP);
                 commitment.setPerson(person);
             }
         } else {
             commitment = commitmentService.readCommitmentById(new Long(commitmentId));
         }
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), request.getLocale());
             commitment.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), commitment);
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), commitment);
             commitment.setFieldValueMap(valueMap);
         }
         return commitment;
@@ -141,7 +148,7 @@ public class CommitmentFormController extends SimpleFormController {
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
-        ModelAndView mav = new ModelAndView("redirect:/commitmentView.htm", errors.getModel());
+        ModelAndView mav = new ModelAndView("redirect:/membershipView.htm", errors.getModel());
         mav.addObject("commitmentId", current.getId());
         mav.addObject("saved", true);
         mav.addObject("id", current.getId());

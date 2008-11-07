@@ -14,8 +14,9 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.Person;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.PersonService;
+import com.mpower.type.CommitmentType;
 
-public class CommitmentListController implements Controller {
+public class PledgeListController implements Controller {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -37,10 +38,10 @@ public class CommitmentListController implements Controller {
         logger.info("**** in handleRequest()");
         String personId = request.getParameter("personId");
 
-        List<Commitment> commitmentList = commitmentService.readCommitments(Long.valueOf(personId));
+        List<Commitment> commitmentList = commitmentService.readCommitments(Long.valueOf(personId), CommitmentType.PLEDGE);
         Person person = personService.readPersonById(Long.valueOf(personId));
 
-        ModelAndView mav = new ModelAndView("commitmentList");
+        ModelAndView mav = new ModelAndView("pledgeList");
         if (person != null) {
             mav.addObject("person", person);
         }

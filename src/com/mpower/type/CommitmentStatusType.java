@@ -4,6 +4,5 @@ public enum CommitmentStatusType {
     ACTIVE,
     CANCELED,
     EXPIRED,
-    FULFILLED,
-    SUSPEND
+    FULFILLED
 }

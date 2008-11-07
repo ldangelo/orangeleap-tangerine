@@ -142,8 +142,7 @@ public class GiftServiceImpl implements GiftService {
         gift.setPerson(commitment.getPerson());
         gift.setCommitment(commitment);
         gift.setComments(commitment.getComments());
-        gift.setDeductible(commitment.isDeductible());
-        gift.setValue(commitment.getAmountPerGift());
+        gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(GiftEntryType.AUTO);
@@ -170,7 +169,7 @@ public class GiftServiceImpl implements GiftService {
             refundGift.setId(null);
             refundGift.setTransactionDate(null);
             refundGift.getPaymentSource().setCreditCardExpiration(null);
-            refundGift.setValue(originalGift.getValue().negate());
+            refundGift.setAmount(originalGift.getAmount().negate());
             refundGift.setOriginalGiftId(originalGift.getId());
             refundGift = giftDao.maintainGift(refundGift);
             refundGift.setDistributionLines(null);

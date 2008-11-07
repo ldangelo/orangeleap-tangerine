@@ -22,7 +22,7 @@ public class GiftDataProvider {
         Gift gift = new Gift();
         gift.setComments("My gift to you");
         gift.setPaymentType("Cash");
-        gift.setValue(BigDecimal.valueOf(1000L));
+        gift.setAmount(BigDecimal.valueOf(1000L));
 
         return new Object[][] { new Object[] { site, person, gift } };
     }

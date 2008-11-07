@@ -18,6 +18,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -59,8 +61,11 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
     @Column(name = "COMMENTS")
     private String comments;
 
-    @Column(name = "VALUE")
-    private BigDecimal value;
+    @Column(name = "AMOUNT")
+    private BigDecimal amount;
+
+    @Column(name = "DEDUCTIBLE_AMOUNT")
+    private BigDecimal deductibleAmount;
 
     @Column(name = "TRANSACTION_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -128,7 +133,7 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
         this.commitment = commitment;
         this.person = commitment.getPerson();
         this.transactionDate = transactionDate;
-        this.value = commitment.getAmountPerGift();
+        this.amount = commitment.getAmountPerGift();
     }
 
     public Long getId() {
@@ -163,12 +168,20 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
         this.comments = comments;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public BigDecimal getDeductibleAmount() {
+        return deductibleAmount;
+    }
+
+    public void setDeductibleAmount(BigDecimal deductibleAmount) {
+        this.deductibleAmount = deductibleAmount;
     }
 
     public Date getTransactionDate() {
@@ -332,5 +345,13 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
 
     public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
         this.selectedPaymentSource = selectedPaymentSource;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void normalize() {
+        if (deductibleAmount == null) {
+            deductibleAmount = amount;
+        }
     }
 }

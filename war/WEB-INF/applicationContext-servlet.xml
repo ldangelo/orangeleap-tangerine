@@ -165,55 +165,168 @@
         <property name="giftService" ref="giftService" />
     </bean>
 
-    <bean id="commitment" class="com.mpower.controller.CommitmentFormController">
+    <bean id="recurringGift" class="com.mpower.controller.RecurringGiftFormController">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="pageType" value="recurringGift"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.mpower.controller.validator.CommitmentValidator">
-			        <property name="pageType" value="commitment"/>
+			        <property name="pageType" value="recurringGift"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="commitment"/>
+			        <property name="pageType" value="recurringGift"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
 			</list>
         </property>
-        <property name="formView" value="commitment" />
-        <property name="successView" value="commitmentView" />
+        <property name="formView" value="recurringGift" />
+        <property name="successView" value="recurringGiftView" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
         <property name="siteService" ref="siteService" />
     </bean>
 
-    <bean id="commitmentSearch" class="com.mpower.controller.CommitmentSearchFormController">
+    <bean id="recurringGiftSearch" class="com.mpower.controller.RecurringGiftSearchFormController">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
-        <property name="formView" value="commitmentSearch"/>
-        <property name="successView" value="commitmentSearch"/>
+        <property name="formView" value="recurringGiftSearch"/>
+        <property name="successView" value="recurringGiftSearch"/>
         <property name="commitmentService" ref="commitmentService" />
         <property name="sessionService" ref="sessionService"/>
     </bean>
 
 
-    <bean id="commitmentList" class="com.mpower.controller.CommitmentListController">
+    <bean id="recurringGiftList" class="com.mpower.controller.RecurringGiftListController">
         <property name="commitmentService" ref="commitmentService" />
         <property name="personService" ref="personService"/>
     </bean>
 
-    <bean id="commitmentView" class="com.mpower.controller.CommitmentFormController">
+    <bean id="recurringGiftView" class="com.mpower.controller.RecurringGiftFormController">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
 		<property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
-		        <property name="pageType" value="commitment"/>
+		        <property name="pageType" value="recurringGiftView"/>
 		        <property name="siteService" ref="siteService" />
             </bean>
         </property>
-        <property name="formView" value="commitmentView" />
-        <property name="successView" value="commitmentView" />
+        <property name="formView" value="recurringGiftView" />
+        <property name="successView" value="recurringGiftView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="pledge" class="com.mpower.controller.PledgeFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="pageType" value="pledge"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="pledge"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="pledge"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+        <property name="formView" value="pledge" />
+        <property name="successView" value="pledgeView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="pledgeSearch" class="com.mpower.controller.PledgeSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="pledgeSearch"/>
+        <property name="successView" value="pledgeSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+
+    <bean id="pledgeList" class="com.mpower.controller.PledgeListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+    </bean>
+
+    <bean id="pledgeView" class="com.mpower.controller.PledgeFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="pledgeView"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
+        <property name="formView" value="pledgeView" />
+        <property name="successView" value="pledgeView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="membership" class="com.mpower.controller.MembershipFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="pageType" value="membership"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="membership"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="membership"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+        <property name="formView" value="membership" />
+        <property name="successView" value="membershipView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="membershipSearch" class="com.mpower.controller.MembershipSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="membershipSearch"/>
+        <property name="successView" value="membershipSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+
+    <bean id="membershipList" class="com.mpower.controller.MembershipListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+    </bean>
+
+    <bean id="membershipView" class="com.mpower.controller.MembershipFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="membershipView"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
+        <property name="formView" value="membershipView" />
+        <property name="successView" value="membershipView" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
@@ -275,17 +388,12 @@
 		        <prop key="/giftRefund.htm">giftRefund</prop>
 		        <prop key="/giftSearch.htm">giftSearch</prop>
 		    	<prop key="/giftView.htm">giftView</prop>
-		        <prop key="/commitment.htm">commitment</prop>
-		        <prop key="/commitmentList.htm">commitmentList</prop>
-		        <prop key="/commitmentSearch.htm">commitmentSearch</prop>
-		    	<prop key="/commitmentView.htm">commitmentView</prop>
                 <prop key="/codeHelper.htm">codeHelper</prop>
                 <prop key="/code.htm">code</prop>
                 <prop key="/codes.htm">codes</prop>
                 <prop key="/siteAudit.htm">siteAudit</prop>
                 <prop key="/audit.htm">audit</prop>
                 <prop key="/welcome.htm">welcome</prop>
-                <prop key="/commitment.htm">commitment</prop>
                 <prop key="/queryLookup.htm">queryLookup</prop>
                 <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
@@ -293,6 +401,18 @@
                 <prop key="/addressManager.htm">addressManager</prop>
                 <prop key="/addressManagerEdit.htm">addressManagerEdit</prop>
                 <prop key="/addressDelete.htm">addressDelete</prop>
+		        <prop key="/recurringGift.htm">recurringGift</prop>
+		        <prop key="/recurringGiftList.htm">recurringGiftList</prop>
+		        <prop key="/recurringGiftSearch.htm">recurringGiftSearch</prop>
+		    	<prop key="/recurringGiftView.htm">recurringGiftView</prop>
+		        <prop key="/pledge.htm">pledge</prop>
+		        <prop key="/pledgeList.htm">pledgeList</prop>
+		        <prop key="/pledgeSearch.htm">pledgeSearch</prop>
+		    	<prop key="/pledgeView.htm">pledgeView</prop>
+		        <prop key="/membership.htm">membership</prop>
+		        <prop key="/membershipList.htm">membershipList</prop>
+		        <prop key="/membershipSearch.htm">membershipSearch</prop>
+		    	<prop key="/membershipView.htm">membershipView</prop>
 			</props>
 		</property>
 	</bean>

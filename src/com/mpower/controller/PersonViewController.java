@@ -41,7 +41,7 @@ public class PersonViewController implements Controller {
 
         List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
         for (Gift gft : giftList) {
-            totalGiving = totalGiving.add(gft.getValue() == null ? BigDecimal.ZERO : gft.getValue());
+            totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
         }
 
         ModelAndView mav = new ModelAndView("personView");

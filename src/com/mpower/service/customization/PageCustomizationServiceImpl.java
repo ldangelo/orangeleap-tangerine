@@ -54,7 +54,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Override
     public List<SectionField> readSectionFieldsBySiteAndSectionName(String siteName, SectionDefinition sectionDefinition) {
         List<SectionField> returnFields;
-        List<SectionField> outOfBoxSectionFields = pageCustomizationDao.readOutOfBoxSectionFields(sectionDefinition.getSectionName());
+        List<SectionField> outOfBoxSectionFields = pageCustomizationDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
         List<SectionField> customSectionFields = pageCustomizationDao.readCustomizedSectionFields(siteName, sectionDefinition.getId());
         if (customSectionFields.isEmpty()) {
             returnFields = outOfBoxSectionFields;

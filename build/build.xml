@@ -81,7 +81,6 @@
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/commitmentView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
@@ -98,11 +97,21 @@
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
-	     	<!-- Setup payment type picklist and add to commitment page -->
-	     	<transaction src="${basedir}/db/prod/pages/commitment.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/commitmentList.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/commitmentSearch.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/commitmentSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGift.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledge.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membership.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipSearchResults.sql"/>
 	     	<!-- Add development data -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/code.sql"/>

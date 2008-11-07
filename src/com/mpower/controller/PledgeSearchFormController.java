@@ -23,8 +23,9 @@ import com.mpower.domain.Person;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.SessionService;
 import com.mpower.service.SessionServiceImpl;
+import com.mpower.type.CommitmentType;
 
-public class CommitmentSearchFormController extends SimpleFormController {
+public class PledgeSearchFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -69,7 +70,7 @@ public class CommitmentSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Commitment> commitmentList = commitmentService.readCommitments(SessionServiceImpl.lookupUserSiteName(), params);
+        List<Commitment> commitmentList = commitmentService.readCommitments(SessionServiceImpl.lookupUserSiteName(), CommitmentType.PLEDGE, params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

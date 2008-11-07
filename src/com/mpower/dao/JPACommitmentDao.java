@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Commitment;
+import com.mpower.type.CommitmentType;
 import com.mpower.util.EntityUtility;
 
 @Repository("commitmentDao")
@@ -43,17 +44,18 @@ public class JPACommitmentDao implements CommitmentDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Commitment> readCommitments(Long personId) {
-        Query query = em.createNamedQuery("READ_COMMITMENTS_BY_PERSON_ID");
+    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType) {
+        Query query = em.createNamedQuery("READ_COMMITMENTS_BY_PERSON_ID_AND_TYPE");
         query.setParameter("personId", personId);
+        query.setParameter("commitmentType", commitmentType);
         return query.getResultList();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Commitment> readCommitments(String siteName, Map<String, Object> params) {
+    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params) {
         boolean whereUsed = true;
-        StringBuilder queryString = new StringBuilder("SELECT commitment FROM com.mpower.domain.Commitment commitment WHERE commitment.person.site.name = :siteName");
+        StringBuilder queryString = new StringBuilder("SELECT commitment FROM com.mpower.domain.Commitment commitment WHERE commitment.person.site.name = :siteName AND commitment.commitmentType = :commitmentType");
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();

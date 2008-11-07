@@ -6,7 +6,7 @@
 		<h4 class="searchResults">Search Results <strong>1 - ${commitmentListSize}</strong> of <strong>${commitmentListSize}</strong></h4>
 	</div>
 
-	<mp:page pageName='commitmentSearchResults' />
+	<mp:page pageName='recurringGiftSearchResults' />
 	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 		<table class="tablesorter" cellspacing="0" cellpadding="0">
 			<thead>
@@ -20,7 +20,7 @@
 			<tbody>
 				<c:forEach items="${commitmentList}" var="row">
 					<tr>
-						<td><a href="commitmentView.htm?commitmentId=${row.id}">View</a></td>
+						<td><a href="recurringGiftView.htm?commitmentId=${row.id}">View</a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>
 				</c:forEach>

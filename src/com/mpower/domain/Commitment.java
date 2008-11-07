@@ -12,12 +12,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
+import com.mpower.type.CommitmentType;
 import com.mpower.util.CommitmentCustomFieldMap;
 
 @Entity
@@ -42,7 +47,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     public static final String STATUS_CANCELED = "canceled";
     public static final String STATUS_EXPIRED = "expired";
     public static final String STATUS_FULFILLED = "fulfilled";
-    public static final String STATUS_SUSPEND = "suspend";
 
     public static final String FREQUENCY_ONE_TIME = "one time";
     public static final String FREQUENCY_WEEKLY = "weekly";
@@ -65,6 +69,10 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     @ManyToOne
     @JoinColumn(name = "PERSON_ID")
     private Person person;
+
+    @Column(name = "COMMITMENT_TYPE")
+    @Enumerated(EnumType.STRING)
+    private CommitmentType commitmentType;
 
     @OneToMany(mappedBy = "commitment")
     private List<Gift> gifts;
@@ -120,9 +128,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     @AutoPopulate
     private Date updateDate;
 
-    @Column(name = "DEDUCTIBLE")
-    private boolean deductible = false;
-
     @Column(name = "AUTO_PAY")
     private boolean autoPay = false;
 
@@ -138,14 +143,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
 
     @OneToOne(mappedBy = "commitment", cascade = { CascadeType.ALL })
     private RecurringGift recurringGift;
-
-    @Column(name = "SUSPEND_START_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date suspendStartDate;
-
-    @Column(name = "SUSPEND_END_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date suspendEndDate;
 
     @Column(name = "LAST_ENTRY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -166,6 +163,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     @Transient
     private PaymentSource selectedPaymentSource = new PaymentSource();
 
+    public Commitment() {
+    }
+
+    public Commitment(CommitmentType commitmentType) {
+        this.commitmentType = commitmentType;
+    }
+
     public Long getId() {
         return id;
     }
@@ -180,6 +184,14 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public CommitmentType getCommitmentType() {
+        return commitmentType;
+    }
+
+    public void setCommitmentType(CommitmentType commitmentType) {
+        this.commitmentType = commitmentType;
     }
 
     public List<Gift> getGifts() {
@@ -337,14 +349,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
         this.updateDate = updateDate;
     }
 
-    public boolean isDeductible() {
-        return deductible;
-    }
-
-    public void setDeductible(boolean deductible) {
-        this.deductible = deductible;
-    }
-
     public boolean isAutoPay() {
         return autoPay;
     }
@@ -394,21 +398,8 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
             recur = false;
         } else if ("canceled".equals(getStatus()) || "expired".equals(getStatus())) {
             recur = false;
-        } else if ("suspend".equals(getStatus())) {
-            if (suspendStartDate == null && suspendEndDate == null) {
-                recur = false;
-            } else {
-                Date now = new Date();
-                if (suspendStartDate != null && suspendEndDate != null && now.after(suspendStartDate) && suspendEndDate.after(endDate)) {
-                    return false;
-                }
-            }
         }
         return recur;
-    }
-
-    public boolean isSuspended(Date date) {
-        return "suspend".equals(getStatus()) && suspendStartDate.before(date) && suspendEndDate.after(date);
     }
 
     public BigDecimal getAmountTotal() {
@@ -417,22 +408,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
 
     public void setAmountTotal(BigDecimal amountTotal) {
         this.amountTotal = amountTotal;
-    }
-
-    public Date getSuspendStartDate() {
-        return suspendStartDate;
-    }
-
-    public void setSuspendStartDate(Date suspendStartDate) {
-        this.suspendStartDate = suspendStartDate;
-    }
-
-    public Date getSuspendEndDate() {
-        return suspendEndDate;
-    }
-
-    public void setSuspendEndDate(Date suspendEndDate) {
-        this.suspendEndDate = suspendEndDate;
     }
 
     public Date getLastEntryDate() {
@@ -447,7 +422,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
         BigDecimal amount = BigDecimal.ZERO;
         if (getGifts() != null) {
             for (Gift gift : getGifts()) {
-                amount = amount.add(gift.getValue());
+                amount = amount.add(gift.getAmount());
             }
         }
         return amount;
@@ -478,5 +453,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
 
     public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
         this.selectedPaymentSource = selectedPaymentSource;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void normalize() {
+        if (CommitmentType.RECURRING_GIFT.equals(getCommitmentType())) {
+            setAutoPay(true);
+        } else {
+            setAutoPay(false);
+        }
     }
 }

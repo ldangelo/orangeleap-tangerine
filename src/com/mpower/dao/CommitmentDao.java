@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.Commitment;
+import com.mpower.type.CommitmentType;
 
 public interface CommitmentDao {
 
@@ -11,7 +12,7 @@ public interface CommitmentDao {
 
     public Commitment readCommitment(Long commitmentId);
 
-    public List<Commitment> readCommitments(Long personId);
+    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(String siteName, Map<String, Object> params);
+    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params);
 }

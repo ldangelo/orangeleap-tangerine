@@ -7,7 +7,7 @@
 		<query>
 				SELECT gift.person.id
 				FROM com.mpower.domain.Gift gift
-				WHERE gift.value > 0 AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
+				WHERE gift.amount > 0 AND (gift.transactionDate BETWEEN :beginDate AND :currentDate))
 		</query>
 	</named-query>
 

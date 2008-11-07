@@ -16,6 +16,7 @@
 		<query>
 		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
 		    WHERE sectionField.sectionDefinition.sectionName = :sectionName
+		    AND sectionField.sectionDefinition.pageType = :pageType
 		    AND sectionField.sectionDefinition.site is null
 		    AND sectionField.site is null
 		</query>

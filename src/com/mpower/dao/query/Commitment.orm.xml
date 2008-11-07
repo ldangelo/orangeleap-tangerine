@@ -3,11 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 
-	<named-query name="READ_COMMITMENTS_BY_PERSON_ID" >
+	<named-query name="READ_COMMITMENTS_BY_PERSON_ID_AND_TYPE" >
 		<query>
 			SELECT commitment
 			FROM com.mpower.domain.Commitment commitment
 			WHERE commitment.person.id = :personId
+			AND commitment.commitmentType = :commitmentType
 		</query>
 	</named-query>
 

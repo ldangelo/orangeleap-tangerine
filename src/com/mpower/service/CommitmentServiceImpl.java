@@ -26,6 +26,7 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
+import com.mpower.type.CommitmentType;
 import com.mpower.type.EntityType;
 
 @Service("commitmentService")
@@ -92,24 +93,24 @@ public class CommitmentServiceImpl implements CommitmentService {
     }
 
     @Override
-    public List<Commitment> readCommitments(Person person) {
-        return readCommitments(person.getId());
+    public List<Commitment> readCommitments(Person person, CommitmentType commitmentType) {
+        return readCommitments(person.getId(), commitmentType);
     }
 
     @Override
-    public List<Commitment> readCommitments(Long personId) {
-        return commitmentDao.readCommitments(personId);
+    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType) {
+        return commitmentDao.readCommitments(personId, commitmentType);
     }
 
     @Override
-    public List<Commitment> readCommitments(String siteName, Map<String, Object> params) {
-        return commitmentDao.readCommitments(siteName, params);
+    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params) {
+        return commitmentDao.readCommitments(siteName, commitmentType, params);
     }
 
     @Override
-    public Commitment createDefaultCommitment(Person person) {
+    public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType) {
         // get initial gift with built-in defaults
-        Commitment commitment = new Commitment();
+        Commitment commitment = new Commitment(commitmentType);
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
 
         List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.gift }));
@@ -205,7 +206,7 @@ public class CommitmentServiceImpl implements CommitmentService {
             }
             return gifts;
         }
-        return null;
+        return new ArrayList<Gift>();
     }
 
     public static Calendar createGiftDate(Commitment commitment, Calendar giftCal) {

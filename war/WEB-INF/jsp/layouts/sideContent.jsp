@@ -23,9 +23,17 @@
 		            <c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gifts</a>
 		            </c:if>
-					<a class="${sidebarNav=='Enter Commitment'?'active':''}" href="commitment.htm?personId=${person.id}">Enter Commitment</a>
-		            <c:if test="${pageAccess['/commitmentList.htm']!='DENIED'}">
-						<a class="${sidebarNav=='Commitments'?'active':''}" href="commitmentList.htm?personId=${person.id}">Commitments</a>
+					<a class="${sidebarNav=='Enter Recurring Gift'?'active':''}" href="recurringGift.htm?personId=${person.id}&type=recurringGift">Enter Recurring Gift</a>
+		            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
+						<a class="${sidebarNav=='Recurring Gifts'?'active':''}" href="recurringGiftList.htm?personId=${person.id}&type=recurringGift">Recurring Gifts</a>
+		            </c:if>
+					<a class="${sidebarNav=='Enter Pledge'?'active':''}" href="pledge.htm?personId=${person.id}&type=pledge">Enter Pledge</a>
+		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
+						<a class="${sidebarNav=='Pledges'?'active':''}" href="pledgeList.htm?personId=${person.id}&type=pledge">Pledges</a>
+		            </c:if>
+					<a class="${sidebarNav=='Enter Membership'?'active':''}" href="membership.htm?personId=${person.id}&type=membership">Enter Membership</a>
+		            <c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
+						<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership">Memberships</a>
 		            </c:if>
 					<a class="${sidebarNav=='Addresses'?'active':''}" href="addressManager.htm?personId=${person.id}">Address Manager</a>
 					<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Manager</a>

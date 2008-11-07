@@ -9,11 +9,6 @@ public enum PageType {
     giftSearch("/giftSearch.htm"),
     giftSearchResults("/giftSearchResults.htm"),
     giftView("/giftView.htm"),
-    commitment("/commitment.htm"),
-    commitmentList("/commitmentList.htm"),
-    commitmentSearch("/commitmentSearch.htm"),
-    commitmentSearchResults("/commitmentSearchResults.htm"),
-    commitmentView("/commitmentView.htm"),
     paymentManager("/paymentManager.htm"),
     paymentManagerEdit("/paymentManagerEdit.htm"),
     paymentSource("/paymentSource.htm"),
@@ -21,7 +16,22 @@ public enum PageType {
     queryLookup("/queryLookup.htm"),
     addressManager("/addressManager.htm"),
     addressManagerEdit("/addressManagerEdit.htm"),
-    address("/address.htm");
+    address("/address.htm"),
+    recurringGift("/recurringGift.htm"),
+    recurringGiftList("/recurringGiftList.htm"),
+    recurringGiftSearch("/recurringGiftSearch.htm"),
+    recurringGiftSearchResults("/recurringGiftSearchResults.htm"),
+    recurringGiftView("/recurringGiftView.htm"),
+    pledge("/pledge.htm"),
+    pledgeList("/pledgeList.htm"),
+    pledgeSearch("/pledgeSearch.htm"),
+    pledgeSearchResults("/pledgeSearchResults.htm"),
+    pledgeView("/pledgeView.htm"),
+    membership("/membership.htm"),
+    membershipList("/membershipList.htm"),
+    membershipSearch("/membershipSearch.htm"),
+    membershipSearchResults("/membershipSearchResults.htm"),
+    membershipView("/membershipView.htm");
 
     private String pageName;
 

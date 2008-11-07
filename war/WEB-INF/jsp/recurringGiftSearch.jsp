@@ -1,11 +1,11 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Search Commitments" />
-	<tiles:putAttribute name="primaryNav" value="Commitments" />
+	<tiles:putAttribute name="browserTitle" value="Search Recurring Gifts" />
+	<tiles:putAttribute name="primaryNav" value="Recurring Gifts" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-			<mp:page pageName='commitmentSearch'/>
+			<mp:page pageName='recurringGiftSearch'/>
 			<form:form method="post" commandName="commitment">
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<h1>
@@ -19,7 +19,7 @@
 					</div>
 				</c:forEach>
 			</form:form>
-			<jsp:include page="commitmentSearchResults.jsp"/>
+			<jsp:include page="recurringGiftSearchResults.jsp"/>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

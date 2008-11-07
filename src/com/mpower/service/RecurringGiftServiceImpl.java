@@ -92,8 +92,6 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             nextGiftDate = calculateNextRunDate(commitment);
         } else if (Commitment.STATUS_FULFILLED.equals(commitment.getStatus())) {
             nextGiftDate = calculateNextRunDate(commitment);
-        } else if (Commitment.STATUS_SUSPEND.equals(commitment.getStatus())) {
-            nextGiftDate = calculateNextRunDate(commitment);
         } else {
             nextGiftDate = null;
         }
@@ -118,7 +116,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
             if (firstGiftCal.after(today)) {
                 nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
                 pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
-                found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
+                found = !pastEndDate;
             }
             if (!found && !pastEndDate) {
                 Calendar secondGiftCal = new GregorianCalendar();
@@ -126,7 +124,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                 if (secondGiftCal.after(today)) {
                     nextRun.setTimeInMillis(secondGiftCal.getTimeInMillis());
                     pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
-                    found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
+                    found = !pastEndDate;
                 }
                 int i = 0;
                 while (!found && !pastEndDate) {
@@ -135,18 +133,18 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                     if (payment1.after(today)) {
                         nextRun.setTimeInMillis(payment1.getTimeInMillis());
                         pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
-                        found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
+                        found = !pastEndDate;
                     }
                     Calendar payment2 = CommitmentServiceImpl.getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
                     if (payment2.after(today)) {
                         nextRun.setTimeInMillis(payment2.getTimeInMillis());
                         pastEndDate = CommitmentServiceImpl.isPastEndDate(commitment, nextRun.getTime());
-                        found = !isSuspended(commitment, nextRun.getTime()) && !pastEndDate;
+                        found = !pastEndDate;
                     }
                 }
             }
         } else {
-            while ((nextRun != null) && (nextRun.before(today) || isSuspended(commitment, nextRun.getTime()) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate())))) {
+            while ((nextRun != null) && (nextRun.before(today) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate())))) {
                 if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
                     nextRun.add(Calendar.WEEK_OF_MONTH, 1);
                 } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
@@ -174,12 +172,5 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         Calendar today = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
         logger.debug("getToday() = " + today.getTime() + " millis=" + today.getTimeInMillis());
         return today;
-    }
-
-    private boolean isSuspended(Commitment commitment, Date date) {
-        if (commitment.isSuspended(date)) {
-            logger.debug("next run, " + date + " is during a suspended period so going to next");
-        }
-        return commitment.isSuspended(date);
     }
 }

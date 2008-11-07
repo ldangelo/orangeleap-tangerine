@@ -23,11 +23,11 @@
 </c:when>
 <c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
-	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
+	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty formattedDate?'&nbsp;':formattedDate}</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
-	<input value="${formattedDate}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" readonly="readonly" />
+	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty formattedDate?'&nbsp;':formattedDate}</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">

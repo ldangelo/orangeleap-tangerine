@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 
 import com.mpower.domain.Commitment;
 import com.mpower.service.SiteService;
+import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
 
 public class CommitmentValidator implements Validator {
@@ -38,14 +39,16 @@ public class CommitmentValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in CommitmentValidator");
+        Commitment commitment = (Commitment) target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "invalidStartDate", "Start Date is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "commitmentCode", "invalidCommitmentCode", "Commitment code is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "invalidName", "Commitment name is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectCode", "invalidProjectCode", "Project code is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "motivationCode", "invalidMotivationCode", "Motivation code is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
+        if (CommitmentType.RECURRING_GIFT.equals(commitment.getCommitmentType())) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
+        }
         if (!errors.hasErrors()) {
-            Commitment commitment = (Commitment) target;
             if (commitment.getEndDate() != null) {
                 if (commitment.getEndDate().before(commitment.getStartDate())) {
                     errors.rejectValue("endDate", "invalidEndDate", "Commitment start date must be before end date");

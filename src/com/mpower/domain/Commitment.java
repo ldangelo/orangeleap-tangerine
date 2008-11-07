@@ -148,6 +148,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastEntryDate;
 
+    @Column(name = "RECURRING")
+    private boolean recurring = false;
+
+    @Column(name = "PROJECTED_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date projectedDate;
+
     @Transient
     private Map<String, CustomField> customFieldMap = null;
 
@@ -418,6 +425,22 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
         this.lastEntryDate = lastEntryDate;
     }
 
+    public boolean isRecurring() {
+        return recurring;
+    }
+
+    public void setRecurring(boolean recurring) {
+        this.recurring = recurring;
+    }
+
+    public Date getProjectedDate() {
+        return projectedDate;
+    }
+
+    public void setProjectedDate(Date projectedDate) {
+        this.projectedDate = projectedDate;
+    }
+
     public BigDecimal getAmountPaid() {
         BigDecimal amount = BigDecimal.ZERO;
         if (getGifts() != null) {
@@ -460,7 +483,19 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     public void normalize() {
         if (CommitmentType.RECURRING_GIFT.equals(getCommitmentType())) {
             setAutoPay(true);
-        } else {
+            setProjectedDate(null);
+        } else if (CommitmentType.PLEDGE.equals(getCommitmentType())) {
+            setAutoPay(false);
+            if (isRecurring()) {
+                setProjectedDate(null);
+                setAmountTotal(null);
+            } else {
+                setStartDate(null);
+                setEndDate(null);
+                setAmountPerGift(null);
+                setFrequency(null);
+            }
+        } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
         }
     }

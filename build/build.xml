@@ -92,6 +92,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/creditCardTypePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/frequencyPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/statusPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/recurringPicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>

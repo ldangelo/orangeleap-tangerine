@@ -276,7 +276,7 @@ function getPage(elem) {
 				return false;
 			},
 			error: function(html){
-				alert("error");
+				alert("An error has occurred.  Please refresh the page and try again.");
 				return false;
 			}
 		});

@@ -141,6 +141,14 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
         this.id = id;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     public String getAddressLine1() {
         return addressLine1;
     }
@@ -219,14 +227,6 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     public boolean isReceiveMail() {

@@ -19,6 +19,8 @@
         <mapping-file>com/mpower/dao/query/Audit.orm.xml</mapping-file>
         <mapping-file>com/mpower/dao/query/QueryLookup.orm.xml</mapping-file>
         <mapping-file>com/mpower/dao/query/Address.orm.xml</mapping-file>
+        <mapping-file>com/mpower/dao/query/Email.orm.xml</mapping-file>
+        <mapping-file>com/mpower/dao/query/Phone.orm.xml</mapping-file>
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
@@ -43,6 +45,8 @@
         <mapping-file>com/mpower/dao/query/Audit.orm.xml</mapping-file>
         <mapping-file>com/mpower/dao/query/QueryLookup.orm.xml</mapping-file>
         <mapping-file>com/mpower/dao/query/Address.orm.xml</mapping-file>
+        <mapping-file>com/mpower/dao/query/Email.orm.xml</mapping-file>
+        <mapping-file>com/mpower/dao/query/Phone.orm.xml</mapping-file>
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="false"/>

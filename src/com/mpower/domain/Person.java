@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.AddressMap;
+import com.mpower.util.EmailMap;
 import com.mpower.util.PersonCustomFieldMap;
 import com.mpower.util.PhoneMap;
 
@@ -65,9 +66,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "EMAIL")
-    private String email;
-
     @Column(name = "SUFFIX")
     private String suffix;
 
@@ -76,11 +74,11 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Column(name = "SPOUSE_FIRST_NAME")
     private String spouseFirstName;
-    
+
     @OneToOne
     @JoinColumn(name = "SPOUSE", referencedColumnName = "PERSON_ID")
     private Person spouse;
-    
+
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
 
@@ -97,6 +95,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    private List<Email> emails;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Phone> phones;
@@ -130,6 +131,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     private Map<String, Address> addressMap = null;
 
     @Transient
+    private Map<String, Email> emailMap = null;
+
+    @Transient
     private Map<String, Phone> phoneMap = null;
 
     @Transient
@@ -140,9 +144,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
-    
+
     public String getDisplayValue() {
-    	return firstName + " " + lastName;
+        return firstName + " " + lastName;
     }
 
     public Long getId() {
@@ -187,14 +191,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Date getBirthDate() {
@@ -250,6 +246,21 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
             addressMap = AddressMap.buildAddressMap(getAddresses(), this);
         }
         return addressMap;
+    }
+
+    public List<Email> getEmails() {
+        if (emails == null) {
+            emails = new ArrayList<Email>();
+        }
+        return emails;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Email> getEmailMap() {
+        if (emailMap == null) {
+            emailMap = EmailMap.buildEmailMap(getEmails(), this);
+        }
+        return emailMap;
     }
 
     public List<Phone> getPhones() {
@@ -387,11 +398,11 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
         return this;
     }
 
-	public Person getSpouse() {
-		return spouse;
-	}
+    public Person getSpouse() {
+        return spouse;
+    }
 
-	public void setSpouse(Person spouse) {
-		this.spouse = spouse;
-	}
+    public void setSpouse(Person spouse) {
+        this.spouse = spouse;
+    }
 }

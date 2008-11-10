@@ -11,9 +11,9 @@ public interface AddressDao {
 
     public List<Address> readAddresses(Long personId);
 
-    public void deleteAddress(Address Address);
+    public void deleteAddress(Address address);
 
-    public Address readAddress(Long AddressId);
+    public Address readAddress(Long addressId);
 
     public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean mailOnly);
 

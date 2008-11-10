@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.CustomField;
-import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
@@ -146,9 +145,7 @@ public class SiteServiceImpl implements SiteService {
                 }
                 try {
                     Object value = bean.getPropertyValue(key);
-                    if (value instanceof Phone) {
-                        value = bean.getPropertyValue(key + ".number");
-                    } else if (value instanceof CustomField) {
+                    if (value instanceof CustomField) {
                         value = bean.getPropertyValue(key + ".value");
                     }
                     returnMap.put(key, value);

@@ -22,7 +22,6 @@ import com.mpower.domain.Audit;
 import com.mpower.domain.Auditable;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
 import com.mpower.domain.Viewable;
 import com.mpower.type.AuditType;
 import com.mpower.type.EntityType;
@@ -87,16 +86,13 @@ public class AuditServiceImpl implements AuditService {
                     }
                     String fieldName = key;
                     Object beanProperty = bean.getPropertyValue(fieldName);
-                    if (beanProperty instanceof Phone) {
-                        fieldName = key + ".number";
-                        beanProperty = bean.getPropertyValue(fieldName);
-                    } else if (beanProperty instanceof CustomField) {
+                    if (beanProperty instanceof CustomField) {
                         fieldName = key + ".value";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
-                    } else if(beanProperty instanceof Person) {
+                    } else if (beanProperty instanceof Person) {
                         fieldName = key + ".displayValue";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }

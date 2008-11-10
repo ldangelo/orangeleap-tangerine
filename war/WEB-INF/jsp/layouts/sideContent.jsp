@@ -36,6 +36,8 @@
 						<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership">Memberships</a>
 		            </c:if>
 					<a class="${sidebarNav=='Addresses'?'active':''}" href="addressManager.htm?personId=${person.id}">Address Manager</a>
+					<a class="${sidebarNav=='Addresses'?'active':''}" href="emailManager.htm?personId=${person.id}">Email Manager</a>
+					<a class="${sidebarNav=='Addresses'?'active':''}" href="phoneManager.htm?personId=${person.id}">Phone Manager</a>
 					<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Manager</a>
 					<a href="#">Account Statement</a>
 					<a href="#">Notes</a>

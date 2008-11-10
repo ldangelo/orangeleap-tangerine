@@ -27,12 +27,12 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
-import com.mpower.util.PhoneCustomFieldMap;
+import com.mpower.util.EmailCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
-@Table(name = "PHONE")
-public class Phone implements Serializable {
+@Table(name = "EMAIL")
+public class Email implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,21 +42,21 @@ public class Phone implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "PHONE_ID")
+    @Column(name = "EMAIL_ID")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @Column(name = "PHONE_TYPE", nullable = false)
-    private String phoneType;
+    @Column(name = "EMAIL_TYPE")
+    private String emailType;
 
-    @Column(name = "NUMBER")
-    private String number;
+    @Column(name = "EMAIL_ADDRESS")
+    private String emailAddress;
 
-    @Column(name = "SMS")
-    private String sms;
+    @Column(name = "EMAIL_DISPLAY")
+    private String emailDisplay;
 
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -101,10 +101,10 @@ public class Phone implements Serializable {
     @Column(name = "COMMENT")
     private String comments;
 
-    @OneToMany(mappedBy = "phone", cascade = CascadeType.ALL)
-    private List<PhoneCustomField> phoneCustomFields;
+    @OneToMany(mappedBy = "email", cascade = CascadeType.ALL)
+    private List<EmailCustomField> emailCustomFields;
 
-    // only meaningful for Permanent phones, and indicates when date becomes effective (ex. they are moving the first of next month)
+    // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     @Column(name = "EFFECTIVE_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date effectiveDate;
@@ -134,28 +134,28 @@ public class Phone implements Serializable {
         this.person = person;
     }
 
-    public String getPhoneType() {
-        return phoneType;
+    public String getEmailType() {
+        return emailType;
     }
 
-    public void setPhoneType(String phoneType) {
-        this.phoneType = phoneType;
+    public void setEmailType(String emailType) {
+        this.emailType = emailType;
     }
 
-    public String getNumber() {
-        return number;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
-    public String getSms() {
-        return sms;
+    public String getEmailDisplay() {
+        return emailDisplay;
     }
 
-    public void setSms(String sms) {
-        this.sms = sms;
+    public void setEmailDisplay(String emailDisplay) {
+        this.emailDisplay = emailDisplay;
     }
 
     public Date getCreateDate() {
@@ -238,17 +238,17 @@ public class Phone implements Serializable {
         this.comments = comments;
     }
 
-    public List<PhoneCustomField> getPhoneCustomFields() {
-        if (phoneCustomFields == null) {
-            phoneCustomFields = new ArrayList<PhoneCustomField>();
+    public List<EmailCustomField> getEmailCustomFields() {
+        if (emailCustomFields == null) {
+            emailCustomFields = new ArrayList<EmailCustomField>();
         }
-        return phoneCustomFields;
+        return emailCustomFields;
     }
 
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = PhoneCustomFieldMap.buildCustomFieldMap(getPhoneCustomFields(), this);
+            customFieldMap = EmailCustomFieldMap.buildCustomFieldMap(getEmailCustomFields(), this);
         }
         return customFieldMap;
     }

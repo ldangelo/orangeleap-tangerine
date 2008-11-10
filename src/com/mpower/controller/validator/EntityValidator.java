@@ -17,6 +17,7 @@ import org.springframework.validation.Validator;
 import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.PaymentSourceAware;
@@ -50,7 +51,7 @@ public class EntityValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Person.class.equals(clazz) || Gift.class.equals(clazz) || Commitment.class.equals(clazz) || Address.class.equals(clazz);
+        return Person.class.equals(clazz) || Gift.class.equals(clazz) || Commitment.class.equals(clazz) || Address.class.equals(clazz) || Email.class.equals(clazz) || Phone.class.equals(clazz);
     }
 
     @Override
@@ -196,8 +197,6 @@ public class EntityValidator implements Validator {
             // }
             if (property instanceof CustomField) {
                 property = ((CustomField) property).getValue();
-            } else if (property instanceof Phone) {
-                property = ((Phone) property).getNumber();
             }
             fieldValueMap.put(key, property);
         }

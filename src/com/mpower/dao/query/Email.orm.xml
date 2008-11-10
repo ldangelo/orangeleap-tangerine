@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
+
+	<named-query name="READ_ACTIVE_EMAILS_BY_PERSON_ID" >
+		<query>
+			SELECT email FROM com.mpower.domain.Email email
+			WHERE email.person.id = :personId
+			AND email.inactive = FALSE
+			ORDER BY email.activationStatus, email.createDate
+		</query>
+	</named-query>
+
+	<named-query name="READ_ACTIVE_EMAILS_BY_PERSON_ID_ORDER_BY_TYPE" >
+		<query>
+			SELECT email FROM com.mpower.domain.Email email
+			WHERE email.person.id = :personId
+			AND email.inactive = FALSE
+			ORDER BY email.emailType, email.activationStatus
+		</query>
+	</named-query>
+
+	<named-query name="SET_EXPIRED_TEMPORARY_EMAILS_INACTIVE" >
+		<query>
+			UPDATE com.mpower.domain.Email email
+			SET email.inactive = TRUE
+			WHERE email.activationStatus = 'temporary'
+			AND email.inactive = FALSE
+			AND email.temporaryEndDate &lt;= CURRENT_DATE
+		</query>
+	</named-query>
+
+</entity-mappings>

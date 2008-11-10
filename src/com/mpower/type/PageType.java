@@ -31,7 +31,13 @@ public enum PageType {
     membershipList("/membershipList.htm"),
     membershipSearch("/membershipSearch.htm"),
     membershipSearchResults("/membershipSearchResults.htm"),
-    membershipView("/membershipView.htm");
+    membershipView("/membershipView.htm"),
+    emailManager("/emailManager.htm"),
+    emailManagerEdit("/emailManagerEdit.htm"),
+    email("/email.htm"),
+    phoneManager("/phoneManager.htm"),
+    phoneManagerEdit("/phoneManagerEdit.htm"),
+    phone("/phone.htm");
 
     private String pageName;
 

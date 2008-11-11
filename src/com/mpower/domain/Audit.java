@@ -20,136 +20,134 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.type.AuditType;
-import com.mpower.type.EntityType;
 
 @Entity
 @Table(name = "AUDIT")
 public class Audit implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unused")
-	@Transient
-	private final Log logger = LogFactory.getLog(getClass());
+    @SuppressWarnings("unused")
+    @Transient
+    private final Log logger = LogFactory.getLog(getClass());
 
-	@Id
-	@GeneratedValue
-	@Column(name = "AUDIT_ID")
-	private Long id;
+    @Id
+    @GeneratedValue
+    @Column(name = "AUDIT_ID")
+    private Long id;
 
-	@Column(name="AUDIT_TYPE", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AuditType auditType;
+    @Column(name = "AUDIT_TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AuditType auditType;
 
-	@Column(name = "DATE", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
+    @Column(name = "DATE", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
 
-	@Column(name = "USER")
-	private String user;
+    @Column(name = "USER")
+    private String user;
 
-	@Column(name = "DESCRIPTION", nullable = false)
-	private String description;
+    @Column(name = "DESCRIPTION", nullable = false)
+    private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "PERSON_ID")
-	private Person person;
+    @ManyToOne
+    @JoinColumn(name = "PERSON_ID")
+    private Person person;
 
-	@ManyToOne
-	@JoinColumn(name = "SITE_NAME", nullable = false)
-	private Site site;
+    @ManyToOne
+    @JoinColumn(name = "SITE_NAME", nullable = false)
+    private Site site;
 
-	@Column(name="ENTITY_TYPE", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private EntityType entityType;
+    @Column(name = "ENTITY_TYPE", nullable = false)
+    private String entityType;
 
-	@Column(name="OBJECT_ID", nullable = false)
-	private Long objectId;
+    @Column(name = "OBJECT_ID", nullable = false)
+    private Long objectId;
 
-	public Audit() {
-		super();
-	}
+    public Audit() {
+        super();
+    }
 
-	public Audit(AuditType auditType, String user, Date date, String description, Site site, EntityType entityType, Long objectId, Person person) {
-		this.auditType = auditType;
-		this.user = user;
-		this.date = date;
-		this.description = description;
-		this.site = site;
-		this.entityType = entityType;
-		this.objectId = objectId;
-		this.person = person;
-	}
+    public Audit(AuditType auditType, String user, Date date, String description, Site site, String entityType, Long objectId, Person person) {
+        this.auditType = auditType;
+        this.user = user;
+        this.date = date;
+        this.description = description;
+        this.site = site;
+        this.entityType = entityType;
+        this.objectId = objectId;
+        this.person = person;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public AuditType getAuditType() {
-		return auditType;
-	}
+    public AuditType getAuditType() {
+        return auditType;
+    }
 
-	public void setAuditType(AuditType auditType) {
-		this.auditType = auditType;
-	}
+    public void setAuditType(AuditType auditType) {
+        this.auditType = auditType;
+    }
 
-	public Date getDate() {
-		return date;
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Person getPerson() {
-		return person;
-	}
+    public Person getPerson() {
+        return person;
+    }
 
-	public void setPerson(Person person) {
-		this.person = person;
-	}
+    public void setPerson(Person person) {
+        this.person = person;
+    }
 
-	public Site getSite() {
-		return site;
-	}
+    public Site getSite() {
+        return site;
+    }
 
-	public void setSite(Site site) {
-		this.site = site;
-	}
+    public void setSite(Site site) {
+        this.site = site;
+    }
 
-	public EntityType getEntityType() {
-		return entityType;
-	}
+    public String getEntityType() {
+        return entityType;
+    }
 
-	public void setEntityType(EntityType entityType) {
-		this.entityType = entityType;
-	}
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
 
-	public Long getObjectId() {
-		return objectId;
-	}
+    public Long getObjectId() {
+        return objectId;
+    }
 
-	public void setObjectId(Long objectId) {
-		this.objectId = objectId;
-	}
+    public void setObjectId(Long objectId) {
+        this.objectId = objectId;
+    }
 }

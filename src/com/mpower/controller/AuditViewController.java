@@ -20,49 +20,46 @@ import com.mpower.type.EntityType;
 
 public class AuditViewController implements Controller {
 
-	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private AuditService auditService;
+    private AuditService auditService;
 
-	private String viewName;
+    private String viewName;
 
-	public final void setViewName(String viewName) {
-		this.viewName = viewName;
-	}
+    public final void setViewName(String viewName) {
+        this.viewName = viewName;
+    }
 
-	public void setAuditService(AuditService auditService) {
-		this.auditService = auditService;
-	}
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
-	private PersonService personService;
+    private PersonService personService;
 
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
+    }
 
-	@Override
-	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String entityType = request.getParameter("object");
-		String objectId = request.getParameter("id");
-		List<Audit> audits = null;
-		ModelAndView mav = new ModelAndView(viewName);
-		if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
-			audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
-		} else {
-			if (EntityType.valueOf(entityType) == EntityType.person) {
-				Person person = personService.readPersonById(Long.valueOf(objectId));
-				mav.addObject("person", person);
-				audits = auditService.auditHistoryForPerson(person.getId());
-			} else {
-				audits = auditService.auditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType
-						.valueOf(entityType), Long.valueOf(objectId));
-			}
-		}
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String entityType = request.getParameter("object");
+        String objectId = request.getParameter("id");
+        List<Audit> audits = null;
+        ModelAndView mav = new ModelAndView(viewName);
+        if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
+            audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
+        } else {
+            if (EntityType.valueOf(entityType) == EntityType.person) {
+                Person person = personService.readPersonById(Long.valueOf(objectId));
+                mav.addObject("person", person);
+                audits = auditService.auditHistoryForPerson(person.getId());
+            } else {
+                audits = auditService.auditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType.valueOf(entityType).name(), Long.valueOf(objectId));
+            }
+        }
 
-		mav.addObject("audits", audits);
-
-		return mav;
-	}
-
+        mav.addObject("audits", audits);
+        return mav;
+    }
 }

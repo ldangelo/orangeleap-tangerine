@@ -20,11 +20,11 @@ import com.mpower.dao.AuditDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Audit;
 import com.mpower.domain.Auditable;
+import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.Viewable;
 import com.mpower.type.AuditType;
-import com.mpower.type.EntityType;
 
 @Service("auditService")
 public class AuditServiceImpl implements AuditService {
@@ -73,9 +73,9 @@ public class AuditServiceImpl implements AuditService {
             if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
                 name = SecurityContextHolder.getContext().getAuthentication().getName();
             }
-            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + viewable.getClass().getSimpleName() + " " + viewable.getId(), viewable.getSite(), EntityType.valueOf(StringUtils.lowerCase(viewable.getClass().getSimpleName())), viewable.getId(), viewable.getPerson()));
+            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(viewable) + " " + viewable.getId(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable.getPerson()));
             if (logger.isDebugEnabled()) {
-                logger.debug("audit Site " + viewable.getSite().getName() + ": added " + viewable.getClass().getSimpleName() + " " + viewable.getId());
+                logger.debug("audit Site " + viewable.getSite().getName() + ": added " + getClassName(viewable) + " " + viewable.getId());
             }
         } else {
             if (viewable instanceof Viewable) {
@@ -100,20 +100,20 @@ public class AuditServiceImpl implements AuditService {
                     if (originalBeanProperty == null && beanProperty == null) {
                         continue;
                     } else if (originalBeanProperty == null && beanProperty != null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), viewable.getSite(), EntityType.valueOf(StringUtils.lowerCase(viewable
-                                .getClass().getSimpleName())), viewable.getId(), viewable.getPerson()));
+                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable
+                                .getPerson()));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
                         }
                     } else if (originalBeanProperty != null && beanProperty == null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), viewable.getSite(), EntityType.valueOf(StringUtils
-                                .lowerCase(viewable.getClass().getSimpleName())), viewable.getId(), viewable.getPerson()));
+                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(),
+                                viewable.getPerson()));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
                         }
                     } else if (!originalBeanProperty.toString().equals(beanProperty.toString())) {
                         audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), viewable.getSite(),
-                                EntityType.valueOf(StringUtils.lowerCase(viewable.getClass().getSimpleName())), viewable.getId(), viewable.getPerson()));
+                                getClassName(viewable), viewable.getId(), viewable.getPerson()));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
                         }
@@ -134,9 +134,9 @@ public class AuditServiceImpl implements AuditService {
                 name = SecurityContextHolder.getContext().getAuthentication().getName();
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("audit Site " + auditable.getSite().getName() + ": added " + auditable.getClass().getSimpleName() + " " + auditable.getId());
+                logger.debug("audit Site " + auditable.getSite().getName() + ": added " + getClassName(auditable) + " " + auditable.getId());
             }
-            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + auditable.getClass().getSimpleName() + " " + auditable.getId(), auditable.getSite(), EntityType.valueOf(StringUtils.lowerCase(auditable.getClass().getSimpleName())), auditable.getId(), auditable.getPerson()));
+            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(auditable) + " " + auditable.getId(), auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson()));
         } else {
             BeanWrapperImpl bean = new BeanWrapperImpl(auditable);
             Field[] fields = auditable.getClass().getDeclaredFields();
@@ -154,20 +154,19 @@ public class AuditServiceImpl implements AuditService {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": added " + fieldName + " " + newFieldValue);
                             }
-                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Add " + fieldName + " " + newFieldValue, auditable.getSite(), EntityType.valueOf(StringUtils.lowerCase(auditable.getClass()
-                                    .getSimpleName())), auditable.getId(), auditable.getPerson()));
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Add " + fieldName + " " + newFieldValue, auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson()));
                         } else if (newFieldValue != null && oldFieldValue == null) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": delete " + fieldName + " " + oldFieldValue);
                             }
-                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + oldFieldValue, auditable.getSite(), EntityType.valueOf(StringUtils.lowerCase(auditable.getClass()
-                                    .getSimpleName())), auditable.getId(), auditable.getPerson()));
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + oldFieldValue, auditable.getSite(), getClassName(auditable), auditable.getId(), auditable
+                                    .getPerson()));
                         } else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": change field " + fieldName + " from " + oldFieldValue.toString() + " to " + newFieldValue.toString());
                             }
-                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + oldFieldValue + " to " + newFieldValue, auditable.getSite(), EntityType.valueOf(StringUtils
-                                    .lowerCase(auditable.getClass().getSimpleName())), auditable.getId(), auditable.getPerson()));
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + oldFieldValue + " to " + newFieldValue, auditable.getSite(), getClassName(auditable), auditable
+                                    .getId(), auditable.getPerson()));
                         }
                     }
                 }
@@ -182,8 +181,8 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
-    public List<Audit> auditHistoryForEntity(String siteName, EntityType entityType, Long objectId) {
-        return auditDao.auditHistoryForEntity(siteDao.readSite(siteName), entityType, objectId);
+    public List<Audit> auditHistoryForEntity(String siteName, String entityTypeDisplay, Long objectId) {
+        return auditDao.auditHistoryForEntity(siteDao.readSite(siteName), entityTypeDisplay, objectId);
     }
 
     @Override
@@ -197,12 +196,10 @@ public class AuditServiceImpl implements AuditService {
         Date date = new Date();
         if (object instanceof Viewable) {
             Viewable viewable = (Viewable) object;
-            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + viewable.getClass().getSimpleName() + " " + viewable.getId(), viewable.getSite(), EntityType.valueOf(StringUtils.lowerCase(viewable.getClass().getSimpleName())),
-                    viewable.getId(), viewable.getPerson());
+            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + getClassName(viewable) + " " + viewable.getId(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable.getPerson());
         } else if (object instanceof Auditable) {
             Auditable auditable = (Auditable) object;
-            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + auditable.getClass().getSimpleName() + " " + auditable.getId(), auditable.getSite(), EntityType.valueOf(StringUtils
-                    .lowerCase(auditable.getClass().getSimpleName())), auditable.getId(), auditable.getPerson());
+            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson());
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("don't know how to audit object " + (object == null ? null : object.getClass().getName()));
@@ -213,5 +210,15 @@ public class AuditServiceImpl implements AuditService {
             auditDao.auditObject(audit);
         }
         return audit;
+    }
+
+    private String getClassName(Object object) {
+        String name = object.getClass().getSimpleName();
+        if (object instanceof Commitment) {
+            name = StringUtils.lowerCase(((Commitment) object).getCommitmentType().getDisplayName());
+        } else {
+            name = StringUtils.lowerCase(name);
+        }
+        return name;
     }
 }

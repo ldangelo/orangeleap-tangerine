@@ -3,7 +3,6 @@ package com.mpower.service;
 import java.util.List;
 
 import com.mpower.domain.Audit;
-import com.mpower.type.EntityType;
 
 public interface AuditService {
 
@@ -11,7 +10,7 @@ public interface AuditService {
 
     public List<Audit> allAuditHistoryForSite(String siteName);
 
-    public List<Audit> auditHistoryForEntity(String siteName, EntityType entityType, Long objectId);
+    public List<Audit> auditHistoryForEntity(String siteName, String entityTypeDisplay, Long objectId);
 
     public List<Audit> auditHistoryForPerson(Long personId);
 

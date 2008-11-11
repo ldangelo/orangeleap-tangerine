@@ -565,6 +565,30 @@
   		<property name="cronExpression" value="0/15 * * * * ?" />
   	</bean>
 
+  	<bean id="inactivateEmailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="emailService"/>
+		<property name="targetMethod" value="inactivateEmails" />
+	</bean>
+
+  	<bean id="inactivateEmailJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="inactivateEmailJob" />
+  		<!-- run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />-->
+  		<property name="cronExpression" value="0/15 * * * * ?" />
+  	</bean>
+
+  	<bean id="inactivatePhoneJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="phoneService"/>
+		<property name="targetMethod" value="inactivatePhones" />
+	</bean>
+
+  	<bean id="inactivatePhoneJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="inactivatePhoneJob" />
+  		<!-- run every morning at 3 AM
+  		<property name="cronExpression" value="0 0 3 * * ?" />-->
+  		<property name="cronExpression" value="0/15 * * * * ?" />
+  	</bean>
+
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -573,6 +597,8 @@
 -->
 				<ref bean="recurringGiftJobTrigger"/>
 				<ref bean="inactivateAddressJobTrigger"/>
+				<ref bean="inactivateEmailJobTrigger"/>
+				<ref bean="inactivatePhoneJobTrigger"/>
 			</list>
 		</property>
 		<property name="applicationContextSchedulerContextKey">

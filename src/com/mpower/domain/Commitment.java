@@ -26,7 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +37,7 @@ import com.mpower.util.CommitmentCustomFieldMap;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
-@Table(name = "COMMITMENT", uniqueConstraints = @UniqueConstraint(columnNames = { "NAME", "PERSON_ID" }))
+@Table(name = "COMMITMENT")
 public class Commitment implements SiteAware, PaymentSourceAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,9 +75,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
 
     @OneToMany(mappedBy = "commitment")
     private List<Gift> gifts;
-
-    @Column(name = "NAME")
-    private String name;
 
     @Column(name = "COMMENTS")
     private String comments;
@@ -253,14 +249,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
             customFieldMap = CommitmentCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
         }
         return customFieldMap;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getComments() {

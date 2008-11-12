@@ -35,7 +35,6 @@
 			</form:form>
 
 			<div class="formButtonFooter">
-				<a class="actionLink" href="gift.htm?personId=${person.id}&commitmentId=${commitment.id}">Receive Gift</a>
 				<c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
 					<a class="actionLink" href="membershipList.htm?personId=${person.id}">View membership history</a>
 				</c:if>

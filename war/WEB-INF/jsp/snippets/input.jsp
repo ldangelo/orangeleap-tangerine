@@ -43,11 +43,22 @@
 	</select>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
+	<c:choose>
+		<c:when test="${!empty fieldVO.id}">
+			<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
+				<c:param name="id" value="${fieldVO.id}" />
+			</c:url>
+		</c:when>
+		<c:otherwise>
+			<c:set value="#" var="entityLink" scope="page" />
+		</c:otherwise>
+	</c:choose>
 <div class="lookupWrapper">
-	<div style="float:left;" class="text lookupField" fieldDef="${sectionField.fieldDefinition.id}"><a target="_blank" href="#" id="${fieldVO.id}" onclick="this.href=('person.htm?personId='+$(this).attr('id'));">${fieldVO.displayValue}</a>&nbsp;</div>
+	<div style="float:left;" class="text lookupField" fieldDef="${sectionField.fieldDefinition.id}"><a target="_blank" href="${entityLink}">${fieldVO.displayValue}</a>&nbsp;</div>
 	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
 	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.id}" />
 </div>
+<c:remove var="entityLink" scope="page" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
 	<select name="${fieldVO.fieldName}Month" id="${fieldVO.fieldName}Month" class="expMonth">
@@ -98,7 +109,7 @@
 	<!-- 	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> ${fieldVO.fieldValue?checked:''}-->
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
-	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.fieldValue?'&nbsp;':fieldVO.fieldValue}</div>
+	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.displayValue?'&nbsp;':fieldVO.displayValue}</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LOOKUP'}">
 	<input value="${fieldVO.fieldValue}" size="16" class="text lookup" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" /><a class="lookupLink jqModal" href="#">Lookup</a>

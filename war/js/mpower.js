@@ -1,5 +1,7 @@
 $(document).ready(function()
    {
+   
+    //eliminate these
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 	$("table.defaultSort").tablesorter();
 
@@ -15,22 +17,6 @@ $(document).ready(function()
 
 	$(".picklist").each(toggleReferencedElements);
 	$(".picklist").change(toggleReferencedElements);
-	//cascading show and hide
-	//when hiding a .picklist, hideAllReferencedElements for it
-	//when showing a .picklist, toggleReferencedElements for it
-	//$("#selectedPaymentSource").change(function(){
-	//	if($(this).val()=="new") {
-	//		$("li:has(#paymentType)").show();
-	//		toggleReferencedElements("paymentType");
-	//		$(".commitment_editCreditCard").hide();
-	//		$(".gift_editCreditCard").hide();
-	//	} else {
-	//		$("li:has(#paymentType)").hide();
-	//		hideAllReferencedElements("paymentType");
-	//		$(".commitment_editCreditCard").show();
-	//		$(".gift_editCreditCard").show();
-	//	}
-	//});
 
 	$("#personTitle").cluetip({
 		cluetipClass:'default',
@@ -41,8 +27,6 @@ $(document).ready(function()
         	open:'fadeIn'
 		}
 	});
-
-	///$("table#gift_distribution input.amount").bind("keyup change", updateTotals);
 
 	$("form#gift input#value").bind("keyup change",function(){
 		var amounts=$("table#gift_distribution input.amount");
@@ -222,9 +206,8 @@ function editInPlace(elem) {
 	return false;
 }
 	
-function toggleReferencedElements(elemId) {
+function toggleReferencedElements() {
 	var elem=this;
-	console.log("toggle referenced for " + elem + " id of: " + $(elem).attr("id"));
 	for(var i=0;i<elem.options.length;i++) {
 		var selector = elem[i].getAttribute('reference');
 		if(selector!=null && selector.length) {
@@ -233,20 +216,17 @@ function toggleReferencedElements(elemId) {
 			var $nested = $(selector).find(".picklist");
 			$picklists = $picklists.add($nested);
 			if(i==elem.selectedIndex) {
-				console.log("showing "+selector);
 				$target.show();
 				$picklists.each(toggleReferencedElements);
 			} else {
-				console.log("hiding "+selector);
 				$target.hide();
 				$picklists.each(hideAllReferencedElements);
 			}
-		} else { console.log("blank or null selector"); }
+		}
 	}
 }
-function hideAllReferencedElements(elemId) {
+function hideAllReferencedElements() {
 	var elem=this;
-	console.log("hide referenced for " + elem + " id of: " + $(elem).attr("id"));
 	for(var i=0;i<elem.options.length;i++) {
 		var selector = elem[i].getAttribute('reference');
 		if(selector!=null && selector.length) {
@@ -254,11 +234,8 @@ function hideAllReferencedElements(elemId) {
 			var $picklists = $(selector).filter(".picklist");
 			var $nested = $(selector).find(".picklist");
 			$picklists = $picklists.add($nested);
-			console.log("hiding "+selector);
 			$target.hide();
 			$picklists.each(hideAllReferencedElements);
-		} else {
-			console.log("blank or null selector");
 		}
 	}
 }
@@ -296,9 +273,9 @@ function loadQueryLookup(elem) {
 		$("#dialog").jqmShow();
 	});
 }
-function useQueryLookup(elem,value) {
-window.lookupCaller.find("a").attr("id",value).html($(elem).attr('displayvalue'));
-window.lookupCaller.nextAll(':hidden').val(value);
-$('#dialog').jqmHide();
-window.lookupCaller=null;
+function useQueryLookup(elem, value) {
+	window.lookupCaller.find("a").attr("href",$(elem).attr('gotourl')).html($(elem).attr('displayvalue'));
+	window.lookupCaller.nextAll(':hidden').val(value);
+	$('#dialog').jqmHide();
+	window.lookupCaller=null;
 }

@@ -148,6 +148,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public String getDisplayValue() {
         return firstName + " " + lastName;
     }
+    
+    public String getEntityName() {
+    	return "person";
+    }
 
     public Long getId() {
         return id;

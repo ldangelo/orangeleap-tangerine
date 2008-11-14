@@ -86,6 +86,9 @@ public class GenericFieldHandler implements FieldHandler {
 	            if (propBeanWrappermodel.isReadableProperty("displayValue")) {
 	            	fieldVO.setDisplayValue(propBeanWrappermodel.getPropertyValue("displayValue"));
 	            }
+	            if (propBeanWrappermodel.isReadableProperty("entityName")) {
+	            	fieldVO.setEntityName(propBeanWrappermodel.getPropertyValue("entityName").toString());
+	            }
             }
         }
 

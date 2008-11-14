@@ -20,6 +20,7 @@ public class FieldVO {
     public List<String> displayValues;
     private FieldType fieldType;
     private Long id;
+    private String entityName;
     private String siteName;
     private String fieldName;
     private Object fieldValue;
@@ -152,5 +153,13 @@ public class FieldVO {
 
 	public void setCascading(boolean cascading) {
 		this.cascading = cascading;
+	}
+
+	public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
 	}
 }

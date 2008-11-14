@@ -21,5 +21,6 @@ public enum FieldType {
     CHECKBOX,
     PAYMENT_SOURCE_PICKLIST,
     ADDRESS_PICKLIST,
+    PHONE_PICKLIST,
     QUERY_LOOKUP
 }

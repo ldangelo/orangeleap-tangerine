@@ -227,6 +227,7 @@
         <property name="giftService" ref="giftService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
+        <property name="phoneService" ref="phoneService" />
         <property name="siteService" ref="siteService" />
     </bean>
 

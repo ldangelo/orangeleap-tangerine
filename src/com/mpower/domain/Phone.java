@@ -118,6 +118,15 @@ public class Phone implements SiteAware, Customizable, Viewable, Serializable {
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    public Phone() {
+    }
+
+    public Phone(Person person) {
+        this.person = person;
+        this.phoneType = "home";
+        this.activationStatus = "permanent";
+    }
+
     public Long getId() {
         return id;
     }

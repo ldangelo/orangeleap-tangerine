@@ -37,7 +37,7 @@ import com.mpower.util.GiftCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "GIFT")
-public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Customizable, Viewable, Serializable {
+public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -111,6 +111,10 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Custom
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PHONE_ID")
+    private Phone phone;
+
     @Column(name = "ENTRY_TYPE")
     @Enumerated(EnumType.STRING)
     private GiftEntryType entryType = GiftEntryType.MANUAL;
@@ -129,6 +133,9 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Custom
 
     @Transient
     private Address selectedAddress = new Address();
+
+    @Transient
+    private Phone selectedPhone = new Phone();
 
     public Gift() {
     }
@@ -338,6 +345,17 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Custom
         this.address = address;
     }
 
+    public Phone getPhone() {
+        if (phone == null) {
+            phone = new Phone(this.getPerson());
+        }
+        return phone;
+    }
+
+    public void setPhone(Phone phone) {
+        this.phone = phone;
+    }
+
     public GiftEntryType getEntryType() {
         return entryType;
     }
@@ -360,6 +378,14 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Custom
 
     public void setSelectedAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
+    }
+
+    public Phone getSelectedPhone() {
+        return selectedPhone;
+    }
+
+    public void setSelectedPhone(Phone selectedPhone) {
+        this.selectedPhone = selectedPhone;
     }
 
     @PrePersist

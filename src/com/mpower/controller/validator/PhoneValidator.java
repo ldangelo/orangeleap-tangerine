@@ -7,6 +7,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.Phone;
+import com.mpower.domain.PhoneAware;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
 
@@ -38,9 +39,21 @@ public class PhoneValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in PhoneValidator");
+        validatePhone(target, errors);
+    }
+
+    public static void validatePhone(Object target, Errors errors) {
+        Phone phone = null;
+        String inPath = errors.getNestedPath();
+        if (target instanceof Phone) {
+            phone = (Phone) target;
+        } else if (target instanceof PhoneAware) {
+            phone = ((PhoneAware) target).getPhone();
+            errors.setNestedPath("phone");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");
         if (!errors.hasErrors()) {
-            Phone phone = (Phone) target;
             if ("seasonal".equals(phone.getActivationStatus())) {
                 if (phone.getSeasonalStartDate() == null) {
                     errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
@@ -62,5 +75,6 @@ public class PhoneValidator implements Validator {
                 }
             }
         }
+        errors.setNestedPath(inPath);
     }
 }

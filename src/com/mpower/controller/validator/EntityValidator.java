@@ -24,6 +24,7 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.PaymentSourceAware;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
+import com.mpower.domain.PhoneAware;
 import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.FieldCondition;
 import com.mpower.domain.customization.FieldRequired;
@@ -75,6 +76,15 @@ public class EntityValidator implements Validator {
                 obj.setAddress(selectedAddress);
             }
             AddressValidator.validateAddress(target, errors);
+        }
+
+        if (target instanceof PhoneAware) {
+            PhoneAware obj = (PhoneAware) target;
+            Phone selectedPhone = obj.getSelectedPhone();
+            if (selectedPhone.getId() != null) {
+                obj.setPhone(selectedPhone);
+            }
+            PhoneValidator.validatePhone(target, errors);
         }
 
         if (!errors.hasErrors()) {

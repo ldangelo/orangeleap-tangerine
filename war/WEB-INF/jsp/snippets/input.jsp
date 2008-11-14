@@ -50,6 +50,14 @@
 		</c:forEach>
 	</select>
 </c:when>
+<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
+	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">
+		<option value="new" reference="li:has(:input[name^='phone'])">Create New...</option>
+		<c:forEach var="opt" varStatus="status" items="${phones}">
+			<option value="${opt.id}">${opt.number}</option>
+		</c:forEach>
+	</select>
+</c:when>
 <c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 	<c:choose>
 		<c:when test="${!empty fieldVO.id}">

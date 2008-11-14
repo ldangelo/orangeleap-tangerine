@@ -25,11 +25,13 @@ import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.service.AddressService;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.service.PhoneService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
@@ -75,12 +77,19 @@ public class GiftFormController extends SimpleFormController {
         this.addressService = addressService;
     }
 
+    private PhoneService phoneService;
+
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
+    }
+
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
         binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
+        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
     }
 
     @SuppressWarnings("unchecked")
@@ -92,6 +101,8 @@ public class GiftFormController extends SimpleFormController {
         refData.put("paymentSources", paymentSources);
         List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
         refData.put("addresses", addresses);
+        List<Phone> phones = phoneService.readPhones(Long.valueOf(personId));
+        refData.put("phones", phones);
         return refData;
     }
 

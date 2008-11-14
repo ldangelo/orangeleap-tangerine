@@ -6,38 +6,38 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.Address;
-import com.mpower.service.AddressService;
+import com.mpower.domain.Phone;
+import com.mpower.service.PhoneService;
 
-public class AddressEditor extends PropertyEditorSupport {
+public class PhoneEditor extends PropertyEditorSupport {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private AddressService addressService;
+    private PhoneService phoneService;
 
-    public AddressEditor() {
+    public PhoneEditor() {
         super();
     }
 
-    public AddressEditor(AddressService addressService) {
+    public PhoneEditor(PhoneService phoneService) {
         super();
-        setAddressService(addressService);
+        setPhoneService(phoneService);
     }
 
-    public void setAddressService(AddressService addressService) {
-        this.addressService = addressService;
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
     }
 
     public void setAsText(String text) throws IllegalArgumentException {
         if (NumberUtils.isDigits(text)) {
-            Long addressId = NumberUtils.createLong(text);
-            Address a = addressService.readAddress(addressId);
+            Long phoneId = NumberUtils.createLong(text);
+            Phone a = phoneService.readPhone(phoneId);
             setValue(a);
         } else {
-            Address a = new Address();
+            Phone a = new Phone();
             a.setActivationStatus("permanent");
-            a.setAddressType("home");
+            a.setPhoneType("home");
             setValue(a);
         }
     }

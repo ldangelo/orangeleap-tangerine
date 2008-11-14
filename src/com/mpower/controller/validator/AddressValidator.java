@@ -7,6 +7,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.Address;
+import com.mpower.domain.AddressAware;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
 
@@ -38,12 +39,24 @@ public class AddressValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in AddressValidator");
+        validateAddress(target, errors);
+    }
+
+    public static void validateAddress(Object target, Errors errors) {
+        Address address = null;
+        String inPath = errors.getNestedPath();
+        if (target instanceof Address) {
+            address = (Address) target;
+        } else if (target instanceof AddressAware) {
+            address = ((AddressAware) target).getAddress();
+            errors.setNestedPath("address");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressLine1", "invalidAddressLine1", "Address Line 1 is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city", "invalidCity", "City is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required");
         if (!errors.hasErrors()) {
-            Address address = (Address) target;
             if ("seasonal".equals(address.getActivationStatus())) {
                 if (address.getSeasonalStartDate() == null) {
                     errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
@@ -65,5 +78,6 @@ public class AddressValidator implements Validator {
                 }
             }
         }
+        errors.setNestedPath(inPath);
     }
 }

@@ -19,11 +19,13 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.service.AddressService;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentSourceService;
@@ -67,11 +69,18 @@ public class GiftFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    private AddressService addressService;
+
+    public void setAddressService(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
+        binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
     }
 
     @SuppressWarnings("unchecked")
@@ -81,6 +90,8 @@ public class GiftFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
         refData.put("paymentSources", paymentSources);
+        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
+        refData.put("addresses", addresses);
         return refData;
     }
 

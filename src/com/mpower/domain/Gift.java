@@ -37,7 +37,7 @@ import com.mpower.util.GiftCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "GIFT")
-public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewable, Serializable {
+public class Gift implements SiteAware, PaymentSourceAware, AddressAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -107,6 +107,10 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ADDRESS_ID")
+    private Address address;
+
     @Column(name = "ENTRY_TYPE")
     @Enumerated(EnumType.STRING)
     private GiftEntryType entryType = GiftEntryType.MANUAL;
@@ -121,10 +125,10 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private List<PaymentSource> paymentSources = null;
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     @Transient
-    private PaymentSource selectedPaymentSource = new PaymentSource();
+    private Address selectedAddress = new Address();
 
     public Gift() {
     }
@@ -312,14 +316,6 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
         this.deductible = deductible;
     }
 
-    public List<PaymentSource> getPaymentSources() {
-        return paymentSources;
-    }
-
-    public void setPaymentSources(List<PaymentSource> paymentSources) {
-        this.paymentSources = paymentSources;
-    }
-
     public PaymentSource getPaymentSource() {
         if (paymentSource == null) {
             paymentSource = new PaymentSource(this.getPerson());
@@ -329,6 +325,17 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
 
     public void setPaymentSource(PaymentSource paymentSource) {
         this.paymentSource = paymentSource;
+    }
+
+    public Address getAddress() {
+        if (address == null) {
+            address = new Address(this.getPerson());
+        }
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public GiftEntryType getEntryType() {
@@ -345,6 +352,14 @@ public class Gift implements SiteAware, PaymentSourceAware, Customizable, Viewab
 
     public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
         this.selectedPaymentSource = selectedPaymentSource;
+    }
+
+    public Address getSelectedAddress() {
+        return selectedAddress;
+    }
+
+    public void setSelectedAddress(Address selectedAddress) {
+        this.selectedAddress = selectedAddress;
     }
 
     @PrePersist

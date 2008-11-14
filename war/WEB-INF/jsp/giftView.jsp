@@ -12,11 +12,11 @@
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
 			<form:form method="post" commandName="gift">
-			
+
 				<jsp:include page="snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="View Gift" />
 				</jsp:include>
-				
+
 				<c:choose>
 					<c:when test="${gift.originalGiftId == null}">
 						<h3 style="color:#070;">This gift was entered on <fmt:formatDate value="${gift.transactionDate}"/> at <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
@@ -43,15 +43,15 @@
 						<c:if test="${!empty sectionDefinition.defaultLabel}">
 							<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						</c:if>
-						<table class="tablesorter" cellspacing="0" cellpadding="0"> 
-							<thead> 
+						<table class="tablesorter" cellspacing="0" cellpadding="0">
+							<thead>
 								<c:forEach items="${gift.distributionLines}" var="row" begin="0" end="0">
 									<tr>
 										<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
 									</tr>
 								</c:forEach>
-							</thead> 
-							<tbody> 
+							</thead>
+							<tbody>
 								<c:forEach items="${gift.distributionLines}" var="row">
 									<tr>
 										<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
@@ -61,7 +61,7 @@
 						</table>
 					</c:forEach>
 			</form:form>
- 			
+
 			<div class="formButtonFooter">
 				<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 					<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>

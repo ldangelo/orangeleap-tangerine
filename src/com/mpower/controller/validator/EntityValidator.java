@@ -15,6 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.Address;
+import com.mpower.domain.AddressAware;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Email;
@@ -65,6 +66,15 @@ public class EntityValidator implements Validator {
             }
             obj.getPaymentSource().setType(obj.getPaymentType());
             PaymentSourceValidator.validatePaymentSource(target, errors);
+        }
+
+        if (target instanceof AddressAware) {
+            AddressAware obj = (AddressAware) target;
+            Address selectedAddress = obj.getSelectedAddress();
+            if (selectedAddress.getId() != null) {
+                obj.setAddress(selectedAddress);
+            }
+            AddressValidator.validateAddress(target, errors);
         }
 
         if (!errors.hasErrors()) {

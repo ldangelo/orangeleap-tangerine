@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -132,6 +133,13 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+
+    public Address() {
+    }
+
+    public Address(Person person) {
+        this.person = person;
+    }
 
     public Long getId() {
         return id;
@@ -334,6 +342,10 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
 
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    public String getShortDisplay() {
+        return StringUtils.substring(addressLine1, 0, 10) + " ... " + StringUtils.substring(postalCode, 0, 5);
     }
 
     @PrePersist

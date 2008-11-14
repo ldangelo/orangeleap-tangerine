@@ -128,8 +128,6 @@ public class GiftServiceImpl implements GiftService {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
-        gift.setPaymentSources(readPaymentSources(person.getId()));
-
         gift.addDistributionLine(new DistributionLine(gift));
 
         // TODO: consider caching techniques for the default Gift

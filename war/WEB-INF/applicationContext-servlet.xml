@@ -222,6 +222,7 @@
         </property>
         <property name="formView" value="gift" />
         <property name="successView" value="giftView" />
+        <property name="addressService" ref="addressService" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="giftService" ref="giftService" />
         <property name="paymentSourceService" ref="paymentSourceService" />

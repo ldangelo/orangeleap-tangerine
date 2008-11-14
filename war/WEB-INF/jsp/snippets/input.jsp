@@ -6,7 +6,7 @@
 <c:forEach items="${errors.fieldErrors}" var="error">
 <c:if test="${error.field==fieldVO.fieldName}"><c:set scope="page" var="errorClass" value="textError" /></c:if>
 </c:forEach>
-</spring:hasBindErrors> 
+</spring:hasBindErrors>
 </c:if>
   <label for="${fieldVO.fieldName}" id="${fieldVO.fieldName}.label" class="desc">
 	<c:if test="${fieldVO.fieldType != 'SPACER'}">
@@ -39,6 +39,14 @@
 			<c:if test="${opt.type == 'Credit Card'}">
 				<option value="${opt.id}" reference=".gift_editCreditCard">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 			</c:if>
+		</c:forEach>
+	</select>
+</c:when>
+<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
+	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">
+		<option value="new" reference="li:has(:input[name^='address'])">Create New...</option>
+		<c:forEach var="opt" varStatus="status" items="${addresses}">
+			<option value="${opt.id}">${opt.shortDisplay}</option>
 		</c:forEach>
 	</select>
 </c:when>
@@ -108,7 +116,7 @@
 	</c:choose>
 	<!-- 	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> ${fieldVO.fieldValue?checked:''}-->
 </c:when>
-<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
+<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
 	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.displayValue?'&nbsp;':fieldVO.displayValue}</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LOOKUP'}">

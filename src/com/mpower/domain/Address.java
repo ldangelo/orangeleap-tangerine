@@ -139,6 +139,8 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
 
     public Address(Person person) {
         this.person = person;
+        this.addressType = "home";
+        this.activationStatus = "permanent";
     }
 
     public Long getId() {

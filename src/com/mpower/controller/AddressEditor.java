@@ -35,7 +35,10 @@ public class AddressEditor extends PropertyEditorSupport {
             Address a = addressService.readAddress(paymentSourceId);
             setValue(a);
         } else {
-            setValue(new Address());
+            Address a = new Address();
+            a.setActivationStatus("permanent");
+            a.setAddressType("home");
+            setValue(a);
         }
     }
 }

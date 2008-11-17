@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
@@ -70,7 +71,13 @@ public class PhoneManagerEditFormController extends SimpleFormController {
             phone = new Phone();
             phone.setPerson(person);
         } else {
-            phone = phoneService.readPhone(Long.valueOf(phoneId));
+            Phone originalPhone = phoneService.readPhone(Long.valueOf(phoneId));
+            try {
+                phone = (Phone) BeanUtils.cloneBean(originalPhone);
+                phone.setId(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (isFormSubmission(request)) {
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());

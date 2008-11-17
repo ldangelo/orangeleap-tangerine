@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -309,5 +311,23 @@ public class Phone implements SiteAware, Customizable, Viewable, Serializable {
                 setSeasonalStartDate(null);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Phone)) {
+            return false;
+        }
+        Phone p = (Phone) obj;
+        EqualsBuilder eb = new EqualsBuilder();
+        eb.append(person.getId(), p.getPerson().getId()).append(phoneType, p.getPhoneType()).append(activationStatus, p.getActivationStatus()).append(number, p.getNumber()).append(sms, p.getSms());
+        return eb.isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hcb = new HashCodeBuilder();
+        hcb.append(person.getId()).append(phoneType).append(activationStatus).append(number).append(sms);
+        return hcb.hashCode();
     }
 }

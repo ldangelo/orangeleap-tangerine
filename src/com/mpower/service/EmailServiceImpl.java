@@ -28,11 +28,23 @@ public class EmailServiceImpl implements EmailService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public Email saveEmail(Email email) {
-        email = emailDao.maintainEmail(email);
-        if (email.isInactive()) {
-            auditService.auditObjectInactive(email);
-        } else {
-            auditService.auditObject(email);
+        boolean found = false;
+        if (email.getId() == null) {
+            List<Email> emailList = readEmails(email.getPerson().getId());
+            for (Email e : emailList) {
+                if (email.equals(e)) {
+                    email = e;
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            email = emailDao.maintainEmail(email);
+            if (email.isInactive()) {
+                auditService.auditObjectInactive(email);
+            } else {
+                auditService.auditObject(email);
+            }
         }
         return email;
     }

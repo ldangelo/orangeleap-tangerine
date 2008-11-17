@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -300,5 +302,23 @@ public class Email implements SiteAware, Customizable, Viewable, Serializable {
                 setSeasonalStartDate(null);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Email)) {
+            return false;
+        }
+        Email e = (Email) obj;
+        EqualsBuilder eb = new EqualsBuilder();
+        eb.append(person.getId(), e.getPerson().getId()).append(emailType, e.getEmailType()).append(activationStatus, e.getActivationStatus()).append(emailAddress, e.getEmailAddress()).append(emailDisplay, e.getEmailDisplay());
+        return eb.isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hcb = new HashCodeBuilder();
+        hcb.append(person.getId()).append(emailType).append(activationStatus).append(emailAddress).append(emailDisplay);
+        return hcb.hashCode();
     }
 }

@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
@@ -70,7 +71,13 @@ public class EmailManagerEditFormController extends SimpleFormController {
             email = new Email();
             email.setPerson(person);
         } else {
-            email = emailService.readEmail(Long.valueOf(emailId));
+            Email originalEmail = emailService.readEmail(Long.valueOf(emailId));
+            try {
+                email = (Email) BeanUtils.cloneBean(originalEmail);
+                email.setId(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (isFormSubmission(request)) {
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());

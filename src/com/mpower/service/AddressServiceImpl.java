@@ -28,11 +28,23 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public Address saveAddress(Address address) {
-        address = addressDao.maintainAddress(address);
-        if (address.isInactive()) {
-            auditService.auditObjectInactive(address);
-        } else {
-            auditService.auditObject(address);
+        boolean found = false;
+        if (address.getId() == null) {
+            List<Address> addressList = readAddresses(address.getPerson().getId());
+            for (Address a : addressList) {
+                if (address.equals(a)) {
+                    address = a;
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            address = addressDao.maintainAddress(address);
+            if (address.isInactive()) {
+                auditService.auditObjectInactive(address);
+            } else {
+                auditService.auditObject(address);
+            }
         }
         return address;
     }

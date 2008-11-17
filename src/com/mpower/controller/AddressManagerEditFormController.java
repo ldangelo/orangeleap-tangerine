@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
@@ -70,7 +71,13 @@ public class AddressManagerEditFormController extends SimpleFormController {
             address = new Address();
             address.setPerson(person);
         } else {
-            address = addressService.readAddress(Long.valueOf(addressId));
+            Address originalAddress = addressService.readAddress(Long.valueOf(addressId));
+            try {
+                address = (Address) BeanUtils.cloneBean(originalAddress);
+                address.setId(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         if (isFormSubmission(request)) {
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());

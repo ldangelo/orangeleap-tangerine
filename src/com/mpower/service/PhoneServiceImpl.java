@@ -28,11 +28,23 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public Phone savePhone(Phone phone) {
-        phone = phoneDao.maintainPhone(phone);
-        if (phone.isInactive()) {
-            auditService.auditObjectInactive(phone);
-        } else {
-            auditService.auditObject(phone);
+        boolean found = false;
+        if (phone.getId() == null) {
+            List<Phone> phoneList = readPhones(phone.getPerson().getId());
+            for (Phone p : phoneList) {
+                if (phone.equals(p)) {
+                    phone = p;
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            phone = phoneDao.maintainPhone(phone);
+            if (phone.isInactive()) {
+                auditService.auditObjectInactive(phone);
+            } else {
+                auditService.auditObject(phone);
+            }
         }
         return phone;
     }

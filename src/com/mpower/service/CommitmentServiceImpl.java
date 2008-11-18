@@ -118,8 +118,6 @@ public class CommitmentServiceImpl implements CommitmentService {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
-        commitment.setPaymentSources(paymentSourceDao.readPaymentSources(person.getId()));
-
         // TODO: consider caching techniques for the default Gift
         return commitment;
     }

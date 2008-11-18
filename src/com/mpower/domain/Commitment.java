@@ -38,7 +38,7 @@ import com.mpower.util.CommitmentCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMITMENT")
-public class Commitment implements SiteAware, PaymentSourceAware, Customizable, Viewable, Serializable {
+public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -134,6 +134,14 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ADDRESS_ID")
+    private Address address;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PHONE_ID")
+    private Phone phone;
+
     @Column(name = "FREQUENCY")
     private String frequency;
 
@@ -161,10 +169,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private List<PaymentSource> paymentSources = null;
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     @Transient
-    private PaymentSource selectedPaymentSource = new PaymentSource();
+    private Address selectedAddress = new Address();
+
+    @Transient
+    private Phone selectedPhone = new Phone();
 
     public Commitment() {
     }
@@ -371,6 +382,28 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
         this.paymentSource = paymentSource;
     }
 
+    public Address getAddress() {
+        if (address == null) {
+            address = new Address(this.getPerson());
+        }
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Phone getPhone() {
+        if (phone == null) {
+            phone = new Phone(this.getPerson());
+        }
+        return phone;
+    }
+
+    public void setPhone(Phone phone) {
+        this.phone = phone;
+    }
+
     public String getFrequency() {
         return frequency;
     }
@@ -450,20 +483,28 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
         return amount;
     }
 
-    public List<PaymentSource> getPaymentSources() {
-        return paymentSources;
-    }
-
-    public void setPaymentSources(List<PaymentSource> paymentSources) {
-        this.paymentSources = paymentSources;
-    }
-
     public PaymentSource getSelectedPaymentSource() {
         return selectedPaymentSource;
     }
 
     public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
         this.selectedPaymentSource = selectedPaymentSource;
+    }
+
+    public Address getSelectedAddress() {
+        return selectedAddress;
+    }
+
+    public void setSelectedAddress(Address selectedAddress) {
+        this.selectedAddress = selectedAddress;
+    }
+
+    public Phone getSelectedPhone() {
+        return selectedPhone;
+    }
+
+    public void setSelectedPhone(Phone selectedPhone) {
+        this.selectedPhone = selectedPhone;
     }
 
     @PrePersist
@@ -483,6 +524,8 @@ public class Commitment implements SiteAware, PaymentSourceAware, Customizable, 
                 setAmountPerGift(null);
                 setFrequency(null);
             }
+            setAddress(null);
+            setPhone(null);
         } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
         }

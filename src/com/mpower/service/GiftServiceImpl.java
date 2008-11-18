@@ -150,6 +150,8 @@ public class GiftServiceImpl implements GiftService {
         dl.setMotivationCode(commitment.getMotivationCode());
         dl.setAmount(commitment.getAmountPerGift());
         gift.addDistributionLine(dl);
+        gift.setAddress(commitment.getAddress());
+        gift.setPhone(commitment.getPhone());
         return gift;
     }
 
@@ -208,7 +210,7 @@ public class GiftServiceImpl implements GiftService {
         this.auditService = auditService;
     }
 
-    public List<Gift> readGiftsByCommitment(Commitment commitment){
+    public List<Gift> readGiftsByCommitment(Commitment commitment) {
         return giftDao.readGiftsByCommitmentId(commitment.getId());
     }
 }

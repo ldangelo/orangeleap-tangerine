@@ -20,13 +20,17 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
+import com.mpower.service.AddressService;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.service.PhoneService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
 import com.mpower.type.CommitmentType;
@@ -61,6 +65,18 @@ public class RecurringGiftFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    private AddressService addressService;
+
+    public void setAddressService(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
+    private PhoneService phoneService;
+
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
+    }
+
     private PageType pageType;
 
     public void setPageType(PageType pageType) {
@@ -72,6 +88,8 @@ public class RecurringGiftFormController extends SimpleFormController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
+        binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
+        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
     }
 
     @SuppressWarnings("unchecked")
@@ -103,6 +121,10 @@ public class RecurringGiftFormController extends SimpleFormController {
         if (personId != null) {
             List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
             refData.put("paymentSources", paymentSources);
+            List<Address> addresses = addressService.readAddresses(personId);
+            refData.put("addresses", addresses);
+            List<Phone> phones = phoneService.readPhones(personId);
+            refData.put("phones", phones);
         }
         return refData;
     }

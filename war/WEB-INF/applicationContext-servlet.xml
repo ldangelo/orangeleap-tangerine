@@ -273,9 +273,11 @@
         </property>
         <property name="formView" value="recurringGift" />
         <property name="successView" value="recurringGiftView" />
+        <property name="addressService" ref="addressService" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
+        <property name="phoneService" ref="phoneService" />
         <property name="siteService" ref="siteService" />
     </bean>
 
@@ -305,9 +307,11 @@
         </property>
         <property name="formView" value="recurringGiftView" />
         <property name="successView" value="recurringGiftView" />
+        <property name="addressService" ref="addressService" />
         <property name="commitmentService" ref="commitmentService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
+        <property name="phoneService" ref="phoneService" />
         <property name="siteService" ref="siteService" />
     </bean>
 

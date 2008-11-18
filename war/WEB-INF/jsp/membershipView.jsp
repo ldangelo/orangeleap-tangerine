@@ -43,7 +43,6 @@
 			<c:forEach var="gift" items="${gifts}">
 			${gift.transactionDate} ... ${gift.amount}<br />
 			</c:forEach>
-			Sum:${giftSum}
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

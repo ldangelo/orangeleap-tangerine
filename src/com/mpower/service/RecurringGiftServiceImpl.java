@@ -163,6 +163,7 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
         if (nextRun == null || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
             nextRun = null;
             logger.debug("no next run scheduled");
+            return null;
         }
         return nextRun.getTime();
     }

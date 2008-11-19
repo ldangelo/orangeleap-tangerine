@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -53,7 +54,17 @@ public class QueryLookupController implements Controller {
 		ModelAndView mav = new ModelAndView("queryLookup");
 		mav.addObject("objects", objects);
 
-		PagedListHolder pagedListHolder = new PagedListHolder(objects);
+	    String sort = request.getParameter("sort");
+	    String ascending = request.getParameter("ascending");
+	    Boolean sortAscending;
+	    if (StringUtils.trimToNull(ascending) != null) {
+	        sortAscending = new Boolean(ascending);
+	    } else {
+	        sortAscending = new Boolean(true);
+	    }
+	    MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
+        PagedListHolder pagedListHolder = new PagedListHolder(objects,sortDef);
+        pagedListHolder.resort();
 		pagedListHolder.setMaxLinkedPages(3);
 		pagedListHolder.setPageSize(50);
 		String page = request.getParameter("page");
@@ -66,6 +77,9 @@ public class QueryLookupController implements Controller {
 		pagedListHolder.setPage(pg);
 		mav.addObject("pagedListHolder", pagedListHolder);
 		mav.addObject("queryLookup", queryLookup);
+        mav.addObject("currentSort", sort);
+        mav.addObject("currentAscending", sortAscending);
+
 
 		// mav.addObject("displayColumns", displayColumns);
 		// mav.addObject("parameterMap", request.getParameterMap());

@@ -51,6 +51,7 @@
 <c:if test="${param.view!='table'}">
 </div>
 </c:if>
+<c:if test="${param.resultsOnly!='true'}"> 
 <script type="text/javascript">
 	$(".refreshButton").click(function(){
 		var queryString = $(".filters :input").serialize();
@@ -63,3 +64,4 @@
 		
 	});
 </script>
+</c:if>

@@ -103,15 +103,15 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Column(name = "DEDUCTIBLE")
     private boolean deductible = false;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "PHONE_ID")
     private Phone phone;
 

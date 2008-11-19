@@ -31,6 +31,7 @@ import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
+import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
 
 public class EntityValidator implements Validator {
@@ -59,32 +60,35 @@ public class EntityValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in EntityValidator");
-        if (target instanceof PaymentSourceAware) {
-            PaymentSourceAware obj = (PaymentSourceAware) target;
-            PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
-            if (selectedPaymentSource.getId() != null) {
-                obj.setPaymentSource(selectedPaymentSource);
+        // PLEDGE doesn't have payment source, address, or phone (considering refactoring Commitment to RecurringGift and Pledge)
+        if (!(target instanceof Commitment) || !CommitmentType.PLEDGE.equals(((Commitment) target).getCommitmentType())) {
+            if (target instanceof PaymentSourceAware) {
+                PaymentSourceAware obj = (PaymentSourceAware) target;
+                PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
+                if (selectedPaymentSource.getId() != null) {
+                    obj.setPaymentSource(selectedPaymentSource);
+                }
+                obj.getPaymentSource().setType(obj.getPaymentType());
+                PaymentSourceValidator.validatePaymentSource(target, errors);
             }
-            obj.getPaymentSource().setType(obj.getPaymentType());
-            PaymentSourceValidator.validatePaymentSource(target, errors);
-        }
 
-        if (target instanceof AddressAware) {
-            AddressAware obj = (AddressAware) target;
-            Address selectedAddress = obj.getSelectedAddress();
-            if (selectedAddress.getId() != null) {
-                obj.setAddress(selectedAddress);
+            if (target instanceof AddressAware) {
+                AddressAware obj = (AddressAware) target;
+                Address selectedAddress = obj.getSelectedAddress();
+                if (selectedAddress.getId() != null) {
+                    obj.setAddress(selectedAddress);
+                }
+                AddressValidator.validateAddress(target, errors);
             }
-            AddressValidator.validateAddress(target, errors);
-        }
 
-        if (target instanceof PhoneAware) {
-            PhoneAware obj = (PhoneAware) target;
-            Phone selectedPhone = obj.getSelectedPhone();
-            if (selectedPhone.getId() != null) {
-                obj.setPhone(selectedPhone);
+            if (target instanceof PhoneAware) {
+                PhoneAware obj = (PhoneAware) target;
+                Phone selectedPhone = obj.getSelectedPhone();
+                if (selectedPhone.getId() != null) {
+                    obj.setPhone(selectedPhone);
+                }
+                PhoneValidator.validatePhone(target, errors);
             }
-            PhoneValidator.validatePhone(target, errors);
         }
 
         if (!errors.hasErrors()) {

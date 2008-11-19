@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CommitmentDao;
+import com.mpower.dao.GiftDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
@@ -38,8 +40,20 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
+    @Resource(name = "addressService")
+    private AddressService addressService;
+
+    @Resource(name = "phoneService")
+    private PhoneService phoneService;
+
+    @Resource(name = "paymentSourceService")
+    private PaymentSourceService paymentSourceService;
+
     @Resource(name = "commitmentDao")
     private CommitmentDao commitmentDao;
+
+    @Resource(name = "giftDao")
+    private GiftDao giftDao;
 
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
@@ -81,6 +95,16 @@ public class CommitmentServiceImpl implements CommitmentService {
             }
         }
 
+        // TODO: need to see if they exist if null id
+        if (commitment.getAddress().getId() == null) {
+            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
+        }
+        if (commitment.getPaymentSource().getId() == null) {
+            commitment.setPaymentSource(paymentSourceService.savePaymentSource(commitment.getPaymentSource()));
+        }
+        if (commitment.getPhone().getId() == null) {
+            commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
+        }
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -236,5 +260,9 @@ public class CommitmentServiceImpl implements CommitmentService {
         }
         logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
         return next;
+    }
+
+    public BigDecimal getAmountReceived(Long commitmentId) {
+        return giftDao.readGiftsReceivedSumByCommitmentId(commitmentId);
     }
 }

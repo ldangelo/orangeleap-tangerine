@@ -1,5 +1,6 @@
 package com.mpower.service;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -28,4 +29,6 @@ public interface CommitmentService {
     public List<Calendar> getCommitmentGiftDates(Commitment commitment);
 
     public List<Gift> getCommitmentGifts(Commitment commitment);
+
+    public BigDecimal getAmountReceived(Long commitmentId);
 }

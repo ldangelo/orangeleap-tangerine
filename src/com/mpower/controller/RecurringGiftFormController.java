@@ -112,6 +112,7 @@ public class RecurringGiftFormController extends SimpleFormController {
                         giftSum = giftSum.add(giftIter.next().getAmount());
                     }
                     refData.put("giftSum", giftSum);
+                    refData.put("giftsReceivedSum", commitmentService.getAmountReceived(commitment.getId()));
                 }
 
             }

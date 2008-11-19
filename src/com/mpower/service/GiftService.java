@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
+import com.mpower.type.GiftEntryType;
 
 public interface GiftService {
 
@@ -32,7 +33,7 @@ public interface GiftService {
 
     public void setAuditService(AuditService auditService);
 
-    public Gift createGift(Commitment commitment);
+    public Gift createGift(Commitment commitment, GiftEntryType giftEntryType);
 
     public List<Gift> readGiftsByCommitment(Commitment commitment);
 }

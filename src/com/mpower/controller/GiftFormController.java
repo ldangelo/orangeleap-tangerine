@@ -34,6 +34,7 @@ import com.mpower.service.PersonService;
 import com.mpower.service.PhoneService;
 import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
+import com.mpower.type.GiftEntryType;
 import com.mpower.type.PageType;
 
 public class GiftFormController extends SimpleFormController {
@@ -119,7 +120,7 @@ public class GiftFormController extends SimpleFormController {
                     logger.error("**** commitment not found for id: " + commitmentId);
                     return gift;
                 }
-                gift = giftService.createGift(commitment);
+                gift = giftService.createGift(commitment, GiftEntryType.MANUAL);
                 // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
                 gift.setPerson(commitment.getPerson());
             }

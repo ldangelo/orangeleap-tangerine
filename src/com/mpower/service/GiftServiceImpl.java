@@ -37,6 +37,15 @@ public class GiftServiceImpl implements GiftService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name = "addressService")
+    private AddressService addressService;
+
+    @Resource(name = "phoneService")
+    private PhoneService phoneService;
+
+    @Resource(name = "paymentSourceService")
+    private PaymentSourceService paymentSourceService;
+
     @Resource(name = "auditService")
     private AuditService auditService;
 
@@ -59,21 +68,34 @@ public class GiftServiceImpl implements GiftService {
     public Gift maintainGift(Gift gift) {
         if ("Credit Card".equals(gift.getPaymentType()) || "ACH".equals(gift.getPaymentType())) {
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
-            gift.getPaymentSource().setType(gift.getPaymentType());
-            List<PaymentSource> paymentSources = paymentSourceDao.readPaymentSources(gift.getPerson().getId());
-            if (paymentSources != null) {
-                for (PaymentSource paymentSource : paymentSources) {
-                    if (gift.getPaymentSource().equals(paymentSource)) {
-                        if ("Credit Card".equals(gift.getPaymentType())) {
-                            paymentSource.setCreditCardExpiration(gift.getPaymentSource().getCreditCardExpiration());
+            if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
+                gift.getPaymentSource().setType(gift.getPaymentType());
+                List<PaymentSource> paymentSources = paymentSourceDao.readPaymentSources(gift.getPerson().getId());
+                if (paymentSources != null) {
+                    for (PaymentSource paymentSource : paymentSources) {
+                        if (gift.getPaymentSource().equals(paymentSource)) {
+                            if ("Credit Card".equals(gift.getPaymentType())) {
+                                paymentSource.setCreditCardExpiration(gift.getPaymentSource().getCreditCardExpiration());
+                            }
+                            gift.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
+                            break;
                         }
-                        gift.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
-                        break;
                     }
+                } else {
+                    gift.setPaymentSource(null);
                 }
             }
-        } else {
-            gift.setPaymentSource(null);
+        }
+
+        // TODO: need to see if they exist if null id
+        if (gift.getAddress().getId() == null) {
+            gift.setAddress(addressService.saveAddress(gift.getAddress()));
+        }
+        if (gift.getPaymentSource().getId() == null) {
+            gift.setPaymentSource(paymentSourceService.savePaymentSource(gift.getPaymentSource()));
+        }
+        if (gift.getPhone().getId() == null) {
+            gift.setPhone(phoneService.savePhone(gift.getPhone()));
         }
         gift = giftDao.maintainGift(gift);
 
@@ -135,7 +157,7 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public Gift createGift(Commitment commitment) {
+    public Gift createGift(Commitment commitment, GiftEntryType giftEntryType) {
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
         gift.setCommitment(commitment);
@@ -143,7 +165,7 @@ public class GiftServiceImpl implements GiftService {
         gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
-        gift.setEntryType(GiftEntryType.AUTO);
+        gift.setEntryType(giftEntryType);
         DistributionLine dl = new DistributionLine(gift);
         dl.setCommitmentCode(commitment.getCommitmentCode());
         dl.setProjectCode(commitment.getProjectCode());

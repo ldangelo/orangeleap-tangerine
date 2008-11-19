@@ -175,4 +175,10 @@ public class JPAGiftDao implements GiftDao {
         query.setParameter("commitmentId", commitmentId);
         return query.getResultList();
     }
+
+    public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId) {
+        Query query = em.createNamedQuery("READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID");
+        query.setParameter("commitmentId", commitmentId);
+        return (BigDecimal) query.getSingleResult();
+    }
 }

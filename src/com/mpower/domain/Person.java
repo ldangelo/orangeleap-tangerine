@@ -93,13 +93,13 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "PREFERRED_PHONE_TYPE")
     private String preferredPhoneType;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person")
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person")
     private List<Email> emails;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person")
     private List<Phone> phones;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
@@ -148,9 +148,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public String getDisplayValue() {
         return firstName + " " + lastName;
     }
-    
+
     public String getEntityName() {
-    	return "person";
+        return "person";
     }
 
     public Long getId() {

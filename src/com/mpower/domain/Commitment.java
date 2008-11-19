@@ -130,15 +130,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Column(name = "NOTES")
     private String notes;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "PHONE_ID")
     private Phone phone;
 
@@ -511,10 +511,17 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @PreUpdate
     public void normalize() {
         if (CommitmentType.RECURRING_GIFT.equals(getCommitmentType())) {
+            setAmountTotal(null);
             setAutoPay(true);
             setProjectedDate(null);
         } else if (CommitmentType.PLEDGE.equals(getCommitmentType())) {
             setAutoPay(false);
+            setAddress(null);
+            setPaymentSource(null);
+            setPhone(null);
+            setSelectedAddress(null);
+            setSelectedPaymentSource(null);
+            setSelectedPhone(null);
             if (isRecurring()) {
                 setProjectedDate(null);
                 setAmountTotal(null);
@@ -524,8 +531,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
                 setAmountPerGift(null);
                 setFrequency(null);
             }
-            setAddress(null);
-            setPhone(null);
         } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
         }

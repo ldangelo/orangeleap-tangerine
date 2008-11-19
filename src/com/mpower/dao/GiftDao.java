@@ -1,5 +1,6 @@
 package com.mpower.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,4 +24,6 @@ public interface GiftDao {
     public List<Gift> readAllGifts();
 
     public List<Gift> readGiftsByCommitmentId(Long commitmentId);
+
+    public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId);
 }

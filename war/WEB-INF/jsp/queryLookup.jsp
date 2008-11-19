@@ -11,7 +11,13 @@
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 				<tr>
 					<th>&nbsp;</th>
-					<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
+					<mp:section sectionDefinition="${sectionDefinition}"/>
+					<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+						<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />	
+						<th class="header">
+							<a href="#" onclick="toggleQueryLookupSortFields($(this).parent(),'${fieldVO.fieldName}');$('.refreshButton').click();return false;">${fieldVO.labelText}</a>
+						</th>
+					</c:forEach>	
 				</tr>
 			</c:forEach>
 		</thead> 
@@ -52,16 +58,38 @@
 </div>
 </c:if>
 <c:if test="${param.resultsOnly!='true'}"> 
+<div id="sort" style="visibility:hidden">${currentSort}</div>
+<div id="ascending" style="visibility:hidden">${currentAscending}</div>
 <script type="text/javascript">
+
 	$(".refreshButton").click(function(){
-		var queryString = $(".filters :input").serialize();
+		var queryString = "queryLookup.htm?view=table&resultsOnly=true" 
+			+ "&sort=" + $("#sort").val()
+			+ "&ascending=" + $("#ascending").val()
+			+ "&" + $(".filters :input").serialize();
 		$("#resultstablebody .resultrow").remove();
-		$("#holdresults").load("queryLookup.htm?view=table&resultsOnly=true&"+queryString,{},
+		$("#holdresults").load(queryString,{},
 		     function(){
 				   $("#resultstablebody").append($("#holdresults tr"));
 			 }
 		 );
 		
 	});
+
+	var toggleQueryLookupSortFields = function(aheader, sortFieldName) {
+
+		aheader.siblings().andSelf().removeClass("mpHeaderSortUp").removeClass("mpHeaderSortDown");
+		if ( $("#ascending").val() != "true" || $("#sort").val() != sortFieldName) {
+			aheader.addClass("mpHeaderSortUp");
+			$("#ascending").val("true");
+		} else {
+			aheader.addClass("mpHeaderSortDown");
+			$("#ascending").val("false");
+		}
+		
+		$('#sort').val(sortFieldName);
+	}
+
+	
 </script>
 </c:if>

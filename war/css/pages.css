@@ -385,3 +385,17 @@ td.inactive {
 #chart_div {
 margin-right:30px;
 }
+
+.mpHeaderSortUp {
+	background-image: url(../images/asc.gif);
+}
+.mpHeaderSortDown {
+	background-image: url(../images/desc.gif);
+} 
+.mpHeaderSortDown, .mpHeaderSortUp {
+    background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	background-color: #dce8e8;
+	color:#000;
+}

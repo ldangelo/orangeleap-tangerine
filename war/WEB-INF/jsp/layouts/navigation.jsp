@@ -31,7 +31,10 @@
 				<a href="#">My Work</a>
 			</li>
 			<li>
-				<a href="#">Favorites</a>
+				<a href="#">Recent</a>
+			</li>
+			<li>
+				<a href="#">Bookmarks</a>
 			</li>
 			<li>
 				<a href="#">Create New...</a>

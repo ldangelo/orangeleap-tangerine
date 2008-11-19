@@ -34,10 +34,10 @@
 		<option value="new" reference="li:has(#paymentType)">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 			<c:if test="${opt.type == 'ACH'}">
-				<option value="${opt.id}">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
+				<option value="${opt.id}" reference="li:has(#selectedAddress), li:has(#selectedPhone)">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
 			</c:if>
 			<c:if test="${opt.type == 'Credit Card'}">
-				<option value="${opt.id}" reference=".gift_editCreditCard">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+				<option value="${opt.id}" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 			</c:if>
 		</c:forEach>
 	</select>

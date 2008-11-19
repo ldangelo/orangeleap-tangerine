@@ -38,7 +38,7 @@ public class QueryLookupController implements Controller {
 		while (enu.hasMoreElements()) {
 			String param = enu.nextElement();
 			String paramValue = StringUtils.trimToNull(request.getParameter(param));
-			if (paramValue != null && !param.equalsIgnoreCase("fieldDef") && !param.equalsIgnoreCase("view")) {
+			if (paramValue != null && !param.equalsIgnoreCase("fieldDef") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("resultsOnly")) {
 				queryParams.put(param, paramValue);
 			}
 		}

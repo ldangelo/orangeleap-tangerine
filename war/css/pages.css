@@ -77,10 +77,40 @@
 	font-weight:bold;
 	color:#000;
 }
+.accountOptions a.groupActive {
+	background:#fea;
+	font-weight:bold;
+	color:#000;
+}
 .accountOptions a:hover {
 	/*background:#ffbc7e url("../images/doublearrow.gif") 97% 50% no-repeat;*/
 	background:#ffbc7e;
 	color:#000;
+}
+.accountOptions span.secondary {
+	display:none;
+}
+.accountOptions span.active {
+	display:block;
+	padding-bottom:5px;
+	background:#ffd;
+}
+.accountOptions span a,
+.accountOptions span a:visited {
+	border:0;
+	font-size:12px;
+	padding-left:14px;
+}
+.accountOptions span a:hover {
+	/*background:#ffbc7e;*/
+		background:#ffbc7e;
+	color:#000;
+}
+.accountOptions span a.active,
+.accountOptions span a.active:hover {
+	cursor:default;
+	font-size:12px;
+	background:#ffd url("../images/doublearrow.gif") 97% 50% no-repeat;
 }
 .myTasks {
 	border-top:1px solid #ddd;

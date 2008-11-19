@@ -28,16 +28,53 @@
 				<a href="welcome.htm" class="${primaryNav=='Welcome'?'active':''}"><div class="homeIcon">&nbsp;</div></a>
 			</li>
 			<li>
-				<a href="personSearch.htm" class="${primaryNav=='People'?'active':''}">People</a>
+				<a href="#">My Work</a>
 			</li>
 			<li>
-				<a href="giftSearch.htm" class="${primaryNav=='Gifts'?'active':''}">Gifts</a>
+				<a href="#">Favorites</a>
 			</li>
 			<li>
-				<a href="codes.htm" class="${primaryNav=='Administration'?'active':''}">Administration</a>
+				<a href="#">Create New...</a>
+				<ul>
+					<li>
+						<a href="person.htm">Person</a>
+					</li>
+					<c:if test="${viewingPerson}">
+						<li class="sectionTitle">For ${person.firstName}&nbsp;${person.lastName} ...</li>
+						<li>
+							<a href="gift.htm?personId=${person.id}">Gift</a>
+						</li>
+						<li>
+							<a href="addressManager.htm?personId=${person.id}">Address</a>
+						</li>
+						<li>
+							<a href="recurringGift.htm?personId=${person.id}&type=recurringGift">Recurring Gift</a>
+						</li>
+						<li>
+							<a href="pledge.htm?personId=${person.id}&type=pledge">Pledge</a>
+						</li>
+						<li>
+							<a href="membership.htm?personId=${person.id}&type=membership">Membership</a>
+						</li>
+					</c:if>
+				</ul>
 			</li>
 			<li>
-				<a href="http://10.0.2.162:8080/jasperserver/login.html">Reporting</a>
+				<a href="#">Go To...</a>
+				<ul>
+					<li>
+						<a href="personSearch.htm">Search People</a>
+					</li>
+					<li>
+						<a href="giftSearch.htm">Search Gifts</a>
+					</li>
+					<li>
+						<a href="codes.htm">Manage Codes</a>
+					</li>
+					<li>
+						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank">Reporting</a>
+					</li>
+				</ul>
 			</li>
 		</ul>
 		<div class="clearBoth"></div>
@@ -92,5 +129,14 @@
 		<div class="clearBoth"></div>
 	</div>
 	<div class="navRightCap"></div>
-
+	<div class="searchBar">
+		<form method="post" action="personSearch.htm">
+			<input size="30" name="lastName" />
+			<select name="type">
+				<option value="people">People</option>
+				<option value="people">Gifts</option>
+			</select>
+			<input type="image" src="images/searchBtn.gif" value="Search" class="searchBarBtn" />
+		</form>
+	</div>
 </div>

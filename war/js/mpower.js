@@ -1,6 +1,6 @@
 $(document).ready(function()
    {
-   
+	$.debug(true);
     //eliminate these
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 	$("table.defaultSort").tablesorter();
@@ -27,8 +27,41 @@ $(document).ready(function()
         	open:'fadeIn'
 		}
 	});
+	
+	$("span.secondary:has('a.active')").each(function(){
+		$(this).addClass("active").prev(".groupHeader").addClass("groupActive");
+	});
+	
+	$("div.navGroup:not(:has('a.active'))").hoverIntent({
+		sensitivity: 7,
+		interval: 100,
+		over: function(){
+			$(this).find("span.secondary").filter(":hidden").slideDown();
+			},
+		timeout: 1000,
+		out: function(){
+			$(this).find("span.secondary").filter(":visible").slideUp();
+			}
+	 });
+	 
 
-	$("form#gift input#value").bind("keyup change",function(){
+	 
+	 $(".primaryNav li ul").each(function(){
+	 	var btnWidth = $(this).prev("a").outerWidth() + 20;
+	 	var selfWidth = $(this).outerWidth();
+	 	if (btnWidth > selfWidth) {
+	 		$(this).width(btnWidth);
+	 	}
+	 });
+	 
+	 $(".primaryNav li:has(ul)").hover(function(){
+			$(this).find("ul").show().prev("a").addClass("bactive");
+		},function(){
+			$(this).find("ul").hide().prev("a").removeClass("bactive");
+		});
+
+
+	$("form#gift input#amount").bind("keyup change",function(){
 		var amounts=$("table#gift_distribution input.amount");
 		if(amounts.length == 1) {
 			amounts.val($(this).val());
@@ -90,12 +123,11 @@ $(document).ready(function()
 function updateTotals() {
 		var subTotal = 0;
 		$("table#gift_distribution input.amount").each(function(){
-			var rowVal=parseInt($(this).val());
+			var rowVal=parseFloat($(this).val());
 			if(!isNaN(rowVal)) subTotal += rowVal;
 		});
 		$("#subTotal span.value").html(subTotal.toString());
-
-		if (subTotal==parseInt($("input#value").val())) {
+		if (subTotal==parseFloat($("input#amount").val())) {
 			$("#subTotal").removeClass("warning");
 		} else {
 			$("#subTotal").addClass("warning");

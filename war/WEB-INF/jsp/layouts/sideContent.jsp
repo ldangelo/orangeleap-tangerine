@@ -3,16 +3,6 @@
 <div class="sideBar">
 	<div class="wrapper">
 		<div class="innerContent" style="height:600px;">
-			<h3>
-				Search People
-			</h3>
-			<form method="post" action="personSearch.htm">
-				<input size="18" id="sidebarsearch" name="lastName" />
-				<input type="submit" value="Go" />
-			</form>
-			<a style="font-size:10px;" href="personSearch.htm">Advanced Search</a>
-			<br />
-			<br />
 			<c:if test="${viewingPerson}">
 				<h3>
 					${person.displayValue}:

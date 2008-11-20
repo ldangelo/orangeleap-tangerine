@@ -77,6 +77,9 @@
 					<li>
 						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank">Reporting</a>
 					</li>
+					<li>
+						<a href="siteAudit.htm">Site Audit</a>
+					</li>
 				</ul>
 			</li>
 		</ul>

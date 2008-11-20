@@ -1,6 +1,5 @@
 $(document).ready(function()
    {
-	$.debug(true);
     //eliminate these
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 	$("table.defaultSort").tablesorter();
@@ -319,3 +318,8 @@ function useQueryLookup(elem, value) {
 	$('#dialog').jqmHide();
 	window.lookupCaller=null;
 }
+
+// Create a placeholder console object in case Firebug is not present.
+if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };
+// Initialize the console (workaround for current Firebug defect)
+console.log();

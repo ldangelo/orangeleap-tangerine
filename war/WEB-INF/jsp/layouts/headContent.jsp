@@ -8,7 +8,6 @@
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery.debug.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="js/jquery.bgiframe.js"></script>
 <script type="text/javascript" src="js/jquery.hoverIntent.js"></script>

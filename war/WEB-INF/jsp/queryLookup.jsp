@@ -70,13 +70,17 @@
 		$("#resultstablebody .resultrow").remove();
 		$("#holdresults").load(queryString,{},
 		     function(){
-				   $("#resultstablebody").append($("#holdresults tr"));
+		           if ($("#holdresults tr").length == 0){
+				      $("#resultstablebody").append("<tr class='resultrow'><td></td><td>No results.</td></tr>");
+		           } else  {
+				      $("#resultstablebody").append($("#holdresults tr"));
+		           }
 			 }
 		 );
 		
 	});
 
-	var toggleQueryLookupSortFields = function(aheader, sortFieldName) {
+	function toggleQueryLookupSortFields(aheader, sortFieldName) {
 
 		aheader.siblings().andSelf().removeClass("mpHeaderSortUp").removeClass("mpHeaderSortDown");
 		if ( $("#ascending").val() != "true" || $("#sort").val() != sortFieldName) {

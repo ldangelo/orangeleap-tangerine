@@ -386,10 +386,10 @@ td.inactive {
 margin-right:30px;
 }
 
-.mpHeaderSortUp {
+.mpHeaderSortDown {
 	background-image: url(../images/asc.gif);
 }
-.mpHeaderSortDown {
+.mpHeaderSortUp {
 	background-image: url(../images/desc.gif);
 } 
 .mpHeaderSortDown, .mpHeaderSortUp {

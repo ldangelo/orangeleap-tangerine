@@ -26,7 +26,7 @@ public class PhoneMap extends AbstractInstanceValuesMap {
 
     @Override
     public Object createObject(Object key) {
-        Phone newPhone = new Phone();
+        Phone newPhone = new Phone(person);
         newPhone.setPhoneType((String) key);
         person.getPhones().add(newPhone);
         return newPhone;

@@ -120,6 +120,15 @@ public class Email implements SiteAware, Customizable, Viewable, Serializable {
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    public Email() {
+    }
+
+    public Email(Person person) {
+        this.person = person;
+        this.emailType = "home";
+        this.activationStatus = "permanent";
+    }
+
     public Long getId() {
         return id;
     }

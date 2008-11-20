@@ -26,7 +26,7 @@ public class EmailMap extends AbstractInstanceValuesMap {
 
     @Override
     public Object createObject(Object key) {
-        Email newEmail = new Email();
+        Email newEmail = new Email(person);
         newEmail.setEmailType((String) key);
         person.getEmails().add(newEmail);
         return newEmail;

@@ -93,13 +93,13 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "PREFERRED_PHONE_TYPE")
     private String preferredPhoneType;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Email> emails;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<Phone> phones;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)

@@ -26,7 +26,7 @@ public class AddressMap extends AbstractInstanceValuesMap {
 
     @Override
     public Object createObject(Object key) {
-        Address newAddress = new Address();
+        Address newAddress = new Address(person);
         newAddress.setAddressType((String) key);
         person.getAddresses().add(newAddress);
         return newAddress;

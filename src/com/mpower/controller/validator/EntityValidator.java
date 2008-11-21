@@ -201,8 +201,19 @@ public class EntityValidator implements Validator {
                 Object property = getProperty(key, viewable, fieldValueMap);
                 String propertyString = property == null ? "" : property.toString();
                 String regex = validationMap.get(key).getRegex();
-                boolean matches = propertyString.matches(regex);
-                if (!matches && !errorSet.contains(key)) {
+                boolean valid;
+                String validator = "extensions:";
+                if (regex.startsWith(validator)) {
+                	if (propertyString.length() == 0) {
+                       // 'required' is validated in validateRequiredFields()
+                	   valid = true;
+                	} else {
+                	   valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
+                	} 
+                } else {
+                	valid = propertyString.matches(regex);
+                }
+                if (!valid && !errorSet.contains(key)) {
                     // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
                     errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
                     // errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");

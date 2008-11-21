@@ -22,11 +22,6 @@
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
 								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 						</c:forEach>
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1" end="3">
-							<c:if test="${sectionDefinition.defaultLabel==commitment.paymentType}">
-								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-							</c:if>
-						</c:forEach>
 						<div class="clearColumns"></div>
 					</div>
 				<div class="formButtonFooter personFormButtons">

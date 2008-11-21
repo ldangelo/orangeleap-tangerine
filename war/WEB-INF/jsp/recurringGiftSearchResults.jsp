@@ -19,10 +19,20 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${commitmentList}" var="row">
-					<tr>
-						<td><a href="recurringGiftView.htm?commitmentId=${row.id}">View</a></td>
-						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
-					</tr>
+					<c:choose>
+						<c:when test="${empty row.gifts}">
+							<tr>
+								<td><a href="recurringGift.htm?commitmentId=${row.id}">View</a></td>
+								<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td><a href="recurringGiftView.htm?commitmentId=${row.id}">View</a></td>
+								<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
+							</tr>
+						</c:otherwise>
+					</c:choose>
 				</c:forEach>
 			</tbody>
 		</table>

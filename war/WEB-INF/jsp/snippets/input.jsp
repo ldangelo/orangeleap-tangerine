@@ -34,10 +34,24 @@
 		<option value="new" reference="li:has(#paymentType)">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 			<c:if test="${opt.type == 'ACH'}">
-				<option value="${opt.id}" reference="li:has(#selectedAddress), li:has(#selectedPhone)">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
+				<c:choose>
+					<c:when test="${opt.id == commitment.paymentSource.id}">
+						<option value="${opt.id}" selected="selected" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${opt.id}" reference="li:has(#selectedAddress), li:has(#selectedPhone)">${opt.type}&nbsp;${opt.achAccountNumberDisplay}</option>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 			<c:if test="${opt.type == 'Credit Card'}">
-				<option value="${opt.id}" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+				<c:choose>
+					<c:when test="${opt.id == commitment.paymentSource.id}">
+						<option value="${opt.id}" selected="selected" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${opt.id}" reference="li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 		</c:forEach>
 	</select>
@@ -46,7 +60,14 @@
 	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">
 		<option value="new" reference="li:has(:input[name^='address'])">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${addresses}">
-			<option value="${opt.id}">${opt.shortDisplay}</option>
+			<c:choose>
+				<c:when test="${opt.id == commitment.address.id}">
+					<option value="${opt.id}" selected="selected">${opt.shortDisplay}</option>
+				</c:when>
+				<c:otherwise>
+					<option value="${opt.id}">${opt.shortDisplay}</option>
+				</c:otherwise>
+			</c:choose>
 		</c:forEach>
 	</select>
 </c:when>
@@ -54,7 +75,14 @@
 	<select name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" class="picklist">
 		<option value="new" reference="li:has(:input[name^='phone'])">Create New...</option>
 		<c:forEach var="opt" varStatus="status" items="${phones}">
-			<option value="${opt.id}">${opt.number}</option>
+			<c:choose>
+				<c:when test="${opt.id == commitment.phone.id}">
+					<option value="${opt.id}" selected="selected">${opt.number}</option>
+				</c:when>
+				<c:otherwise>
+					<option value="${opt.id}">${opt.number}</option>
+				</c:otherwise>
+			</c:choose>
 		</c:forEach>
 	</select>
 </c:when>

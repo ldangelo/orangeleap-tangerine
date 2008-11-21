@@ -19,13 +19,8 @@
 
 				<h3 style="color:#070;">This recurring gift was entered on <fmt:formatDate value="${commitment.createDate}"/> at <fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
 					<div class="columns">
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
+						<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-						</c:forEach>
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1" end="3">
-							<c:if test="${sectionDefinition.defaultLabel==commitment.paymentType}">
-								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-							</c:if>
 						</c:forEach>
 						<div class="clearColumns"></div>
 					</div>

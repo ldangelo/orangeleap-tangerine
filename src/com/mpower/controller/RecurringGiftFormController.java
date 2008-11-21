@@ -171,7 +171,9 @@ public class RecurringGiftFormController extends SimpleFormController {
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
-        ModelAndView mav = new ModelAndView("redirect:/recurringGiftView.htm", errors.getModel());
+        String redirectView = current.getGifts().isEmpty() ? "recurringGift" : "recurringGiftView";
+        setSuccessView(redirectView);
+        ModelAndView mav = new ModelAndView("redirect:/" + redirectView + ".htm", errors.getModel());
         mav.addObject("commitmentId", current.getId());
         mav.addObject("saved", true);
         mav.addObject("id", current.getId());

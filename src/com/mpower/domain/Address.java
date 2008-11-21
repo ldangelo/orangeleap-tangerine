@@ -381,14 +381,14 @@ public class Address implements SiteAware, Customizable, Viewable, Serializable 
         Address a = (Address) obj;
         EqualsBuilder eb = new EqualsBuilder();
         eb.append(person.getId(), a.getPerson().getId()).append(addressType, a.getAddressType()).append(activationStatus, a.getActivationStatus()).append(addressLine1, a.getAddressLine1()).append(addressLine2, a.getAddressLine2()).append(addressLine3, a.getAddressLine3()).append(city, a.getCity())
-        .append(country, a.getCountry()).append(stateProvince, a.getStateProvince());
+        .append(country, a.getCountry()).append(stateProvince, a.getStateProvince()).append(postalCode, a.getPostalCode());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(person.getId()).append(addressType).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince);
+        hcb.append(person.getId()).append(addressType).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
         return hcb.hashCode();
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,15 @@ public class AddressServiceImpl implements AddressService {
             List<Address> addressList = readAddresses(address.getPerson().getId());
             for (Address a : addressList) {
                 if (address.equals(a)) {
-                    address = a;
                     found = true;
+                    Long id = a.getId();
+                    try {
+                        BeanUtils.copyProperties(a, address);
+                        a.setId(id);
+                    } catch (Exception e) {
+                        logger.debug(e.getMessage(), e);
+                    }
+                    address = a;
                 }
             }
         }

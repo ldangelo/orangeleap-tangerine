@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,15 @@ public class EmailServiceImpl implements EmailService {
             List<Email> emailList = readEmails(email.getPerson().getId());
             for (Email e : emailList) {
                 if (email.equals(e)) {
-                    email = e;
                     found = true;
+                    Long id = e.getId();
+                    try {
+                        BeanUtils.copyProperties(e, email);
+                        e.setId(id);
+                    } catch (Exception ex) {
+                        logger.debug(ex.getMessage(), ex);
+                    }
+                    email = e;
                 }
             }
         }

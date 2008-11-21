@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,15 @@ public class PhoneServiceImpl implements PhoneService {
             List<Phone> phoneList = readPhones(phone.getPerson().getId());
             for (Phone p : phoneList) {
                 if (phone.equals(p)) {
-                    phone = p;
                     found = true;
+                    Long id = p.getId();
+                    try {
+                        BeanUtils.copyProperties(p, phone);
+                        p.setId(id);
+                    } catch (Exception e) {
+                        logger.debug(e.getMessage(), e);
+                    }
+                    phone = p;
                 }
             }
         }

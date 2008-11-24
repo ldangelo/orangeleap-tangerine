@@ -64,10 +64,10 @@ public class PaymentManagerFormController extends SimpleFormController {
             paymentSource = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
         }
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.paymentManager, SessionServiceImpl.lookupUserRoles(), request.getLocale());
             paymentSource.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), paymentSource);
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.paymentManager, SessionServiceImpl.lookupUserRoles(), paymentSource);
             paymentSource.setFieldValueMap(valueMap);
         }
         return paymentSource;

@@ -32,6 +32,7 @@ public class AddressDataProvider {
         address.setStateProvince("state");
         address.setActivationStatus("permanent");
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -42,6 +43,7 @@ public class AddressDataProvider {
         address.setStateProvince("state");
         address.setActivationStatus("permanent");
         address.setAddressType("work");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -52,6 +54,7 @@ public class AddressDataProvider {
         address.setStateProvince("state");
         address.setActivationStatus("permanent");
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         // set seasonals to be 10/1 - 3/31
@@ -68,6 +71,7 @@ public class AddressDataProvider {
         Calendar seasonEnd = new GregorianCalendar(today.get(Calendar.YEAR), 2, 31);
         address.setSeasonalEndDate(seasonEnd.getTime());
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -80,6 +84,7 @@ public class AddressDataProvider {
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
         address.setAddressType("work");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -92,6 +97,7 @@ public class AddressDataProvider {
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         // set temporary addresses for 10/15/<today's year> - 11/14/<today's year>
@@ -109,6 +115,7 @@ public class AddressDataProvider {
         tempEnd.set(tempEnd.get(Calendar.YEAR), 10, 14);
         address.setTemporaryEndDate(tempEnd.getTime());
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -121,6 +128,7 @@ public class AddressDataProvider {
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
         address.setAddressType("work");
+        address.setPerson(person1);
         addresses.add(address);
 
         address = new Address();
@@ -133,6 +141,7 @@ public class AddressDataProvider {
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
         address.setAddressType("home");
+        address.setPerson(person1);
         addresses.add(address);
 
         return new Object[][] { new Object[] { site1, person1, addresses } };

@@ -27,6 +27,7 @@
         </property>
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
+    	<property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="paymentManagerEdit" class="com.mpower.controller.PaymentManagerEditFormController">
@@ -34,6 +35,7 @@
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
+    	<property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="paymentSourceDelete" class="com.mpower.controller.PaymentSourceDeleteController">

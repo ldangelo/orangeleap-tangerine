@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import com.mpower.util.AES;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE")
-public class PaymentSource implements SiteAware, Serializable {
+public class PaymentSource implements SiteAware, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -82,6 +83,12 @@ public class PaymentSource implements SiteAware, Serializable {
 
     @Transient
     private String achAccountNumber;
+
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
+
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
     public PaymentSource() {
     }
@@ -359,5 +366,21 @@ public class PaymentSource implements SiteAware, Serializable {
                 setAchRoutingNumber(null);
             }
         }
+    }
+
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
     }
 }

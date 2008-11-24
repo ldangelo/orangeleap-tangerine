@@ -1,6 +1,7 @@
 package com.mpower.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,9 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.SiteService;
+import com.mpower.type.PageType;
 
 public class PaymentManagerEditFormController extends SimpleFormController {
 
@@ -29,6 +33,12 @@ public class PaymentManagerEditFormController extends SimpleFormController {
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
+    }
+
+    private SiteService siteService;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
     }
 
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
@@ -47,7 +57,13 @@ public class PaymentManagerEditFormController extends SimpleFormController {
         } else {
             paymentSource = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
         }
+        if (isFormSubmission(request)) {
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            paymentSource.setFieldLabelMap(fieldLabelMap);
 
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), paymentSource);
+            paymentSource.setFieldValueMap(valueMap);
+        }
         return paymentSource;
     }
 

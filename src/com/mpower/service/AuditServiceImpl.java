@@ -196,10 +196,12 @@ public class AuditServiceImpl implements AuditService {
         Date date = new Date();
         if (object instanceof Viewable) {
             Viewable viewable = (Viewable) object;
-            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + getClassName(viewable) + " " + viewable.getId(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable.getPerson());
+            String user = SecurityContextHolder.getContext().getAuthentication() == null ? "" : SecurityContextHolder.getContext().getAuthentication().getName();
+            audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(viewable) + " " + viewable.getId(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable.getPerson());
         } else if (object instanceof Auditable) {
             Auditable auditable = (Auditable) object;
-            audit = new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson());
+            String user = SecurityContextHolder.getContext().getAuthentication() == null ? "" : SecurityContextHolder.getContext().getAuthentication().getName();
+            audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson());
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("don't know how to audit object " + (object == null ? null : object.getClass().getName()));

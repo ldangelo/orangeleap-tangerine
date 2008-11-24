@@ -21,7 +21,7 @@
 		</c:if>
 
 		<jsp:include page="snippets/personHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="Address Manager" />
+			<jsp:param name="currentFunctionTitleText" value="Addresses" />
 			<jsp:param name="submitButtonText" value="Submit" />
 		</jsp:include>
 

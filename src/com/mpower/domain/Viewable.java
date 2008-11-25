@@ -3,7 +3,7 @@ package com.mpower.domain;
 import java.util.Map;
 
 /**
- * Use this class to indicate an entity is customizable
+ * Use this class to indicate an entity can be displayed on a page
  * @author jball
  */
 public interface Viewable {

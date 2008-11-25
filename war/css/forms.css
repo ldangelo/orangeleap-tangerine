@@ -402,16 +402,6 @@ ul.formFields div.lookupWrapper input {
 	width:100%;
 }
 
-/*
-	.lookupWrapper .lookupLink {
-		//visibility:hidden;
-		opacity:.5;
-	}
-	.showLink .lookupLink {
-		//visibility:visible;
-		opacity:1;
-	}
-*/
 table.alignLeft td,
 table.alignLeft th {
 	text-align:left;

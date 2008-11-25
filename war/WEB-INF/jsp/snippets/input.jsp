@@ -8,7 +8,7 @@
 </c:forEach>
 </spring:hasBindErrors>
 </c:if>
-  <label for="${fieldVO.fieldName}" id="${fieldVO.fieldName}.label" class="desc">
+  <label for="${fieldVO.fieldName}" class="desc">
 	<c:if test="${fieldVO.fieldType != 'SPACER'}">
 		<c:if test="${fieldVO.helpAvailable == 'true'}"><a class="helpLink"><img src="images/icons/questionGreyTransparent.gif" /></a><span class="helpText"><c:out value="${fieldVO.helpText}" /></span></c:if>
 	  	<c:out value="${fieldVO.labelText}" />
@@ -49,7 +49,7 @@
 						<option value="${opt.id}" selected="selected" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 					</c:when>
 					<c:otherwise>
-						<option value="${opt.id}" reference="li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
+						<option value="${opt.id}" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)">${opt.creditCardType}&nbsp;${opt.creditCardNumberDisplay}&nbsp;Exp.&nbsp;${opt.creditCardExpirationMonth}/${opt.creditCardExpirationYear}</option>
 					</c:otherwise>
 				</c:choose>
 			</c:if>
@@ -100,7 +100,7 @@
 <div class="lookupWrapper">
 	<div style="float:left;" class="text lookupField" fieldDef="${sectionField.fieldDefinition.id}"><a target="_blank" href="${entityLink}">${fieldVO.displayValue}</a>&nbsp;</div>
 	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
-	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.id}" />
+	<input type="hidden" name="${fieldVO.fieldName}" value="${fieldVO.id}" id="${fieldVO.fieldName}" />
 </div>
 <c:remove var="entityLink" scope="page" />
 </c:when>
@@ -133,11 +133,11 @@
 	</select>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'TEXT'}">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
+	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CODE'}">
 <div class="lookupWrapper">
-	<input value="${fieldVO.fieldValue}" class="text code ${errorClass}" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text code ${errorClass}" lookup="${fieldVO.fieldName}" codeType="${fieldVO.fieldName}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
 </div>
 </c:when>
@@ -150,7 +150,6 @@
 			<input type="checkbox" value="true" class="checkbox" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 		</c:otherwise>
 	</c:choose>
-	<!-- 	<form:checkbox path="${fieldVO.fieldName}" cssClass="checkbox" value="${fieldVO.fieldValue}"/> ${fieldVO.fieldValue?checked:''}-->
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
 	<div id="${fieldVO.fieldName}" class="readOnlyField">${empty fieldVO.displayValue?'&nbsp;':fieldVO.displayValue}</div>
@@ -162,16 +161,16 @@
 	<input value="${fieldVO.fieldValue}" size="16" class="text" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'ADDRESS'}">
-	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PHONE'}">
-	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" />
+	<input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
 	<textarea rows="2" cols="30" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}"></textarea>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'NUMBER'}">
-    <form:input path="${fieldVO.fieldName}" size="16" cssClass="text" cssErrorClass="textError" />
+    <input value="${fieldVO.fieldValue}" class="text ${errorClass}" name="${fieldVO.fieldName}" id="${fieldVO.fieldName}" />
 </c:when>
 <c:when test="${fieldVO.fieldType == 'SPACER'}">
 	&nbsp;

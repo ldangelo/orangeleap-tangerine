@@ -79,7 +79,7 @@
 }
 #navmain ul li a:hover {
 	/*background-color: #ffd3a6;*/
-	background: #444 url("../images/navGradientBlack.gif") repeat-x;
+	background: #444 url("../images/navGradientBlack2.gif") repeat-x;
 	color: #fff;
 }
 #navmain ul li a.active {
@@ -107,7 +107,7 @@
 	color: #000;
 }
 #navmain ul li a.dropActive:hover {
-	background: #444 url("../images/navGradientBlack.gif") repeat-x;
+	background: #444 url("../images/navGradientBlack2.gif") repeat-x;
 	color: #fff;
 }
 #navmain ul li a.bactive {
@@ -116,7 +116,7 @@
 	text-decoration: none;
 	line-height: 22px;
 	display: block;
-	background: #444 url("../images/navGradientBlack.gif") repeat-x;
+	background: #444 url("../images/navGradientBlack2.gif") repeat-x;
 	color: #fff;
 }
 #navmain ul.primaryNav li ul {
@@ -180,7 +180,7 @@
 #navmain .searchBar {
 	position:absolute;
 	top:4px;
-	right:25px;
+	right:23px;
 }
 .searchBar .searchBarBtn {
 	vertical-align:middle;

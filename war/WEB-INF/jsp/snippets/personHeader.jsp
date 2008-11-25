@@ -22,7 +22,7 @@
 	</div>
 	<c:if test="${param.submitButtonText!=null}">
 		<div class="columnRight" style="padding:19px 19px 0 0;">
-			<input type="submit" value="${param.submitButtonText}" />
+			<input type="submit" value="${param.submitButtonText}" class="saveButton" />
 		</div>
 	</c:if>
 	<div class="clearColumns"></div>

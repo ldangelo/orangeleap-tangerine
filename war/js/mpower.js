@@ -39,7 +39,18 @@ $(document).ready(function()
 			},
 		timeout: 1000,
 		out: function(){
-			$(this).find("span.secondary").filter(":visible").slideUp();
+
+			}
+	 });
+	 
+	 $("div.accountOptions").hoverIntent({
+		sensitivity: 7,
+		interval: 100,
+		over: function(){
+			},
+		timeout: 1000,
+		out: function(){
+			$(this).find("span.secondary:not('.active')").filter(":visible").slideUp();
 			}
 	 });
 	 

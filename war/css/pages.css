@@ -353,6 +353,10 @@ td.inactive {
 margin-right:30px;
 }
 
+.codeList {
+    overflow-x:hidden;
+}
+
 .mpHeaderSortDown {
 	background-image: url(../images/asc.gif);
 }

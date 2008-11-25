@@ -5,7 +5,8 @@
 		Last login <c:out value="${lastLoginDate}"/>
 		</p>
 		<p class="legal">
-			(800) 562-5150 | &#169; Copyright 2008 MPower Open. All Rights Reserved. |
+            <% int year = 1900 + new java.util.Date().getYear(); %>
+			(800) 562-5150 | &#169; Copyright <%= (year > 2008 ? "2008-" : "") + year %> MPower Open. All Rights Reserved. |
 			<a href="#">Articles</a> |
 			<a href="#">Resources</a>
 		</p>

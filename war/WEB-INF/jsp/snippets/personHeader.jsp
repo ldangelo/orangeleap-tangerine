@@ -6,7 +6,7 @@
 	<div class="column">
 	<c:choose>
 	<c:when test="${viewingPerson}">
-		<h2 class="personEdit" rel="personView.htm?personId=${person.id}" id="personTitle">
+		<h2 class="personEdit cluetip" rel="personView.htm?personId=${person.id}" id="personTitle">
 			${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
 		</h2>
 	</c:when>

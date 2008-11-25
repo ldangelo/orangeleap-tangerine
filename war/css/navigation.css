@@ -149,34 +149,6 @@
 #navmain ul.primaryNav li:hover ul {
 	/*left: auto;  show it */
 }
-#navmain ul.secondaryNav {
-	display:none;
-}
-#navmain ul.secondaryNav li a {
-	color: #000;
-	line-height: 18px;
-	display: block;
-	padding: 3px 8px 2px;
-	font-size: 11px;
-	font-family:Verdana, sans-serif;
-}
-#navmain ul.secondaryNav li a.active {
-	background: #fff url("../images/navGradientGrey2.gif") repeat-x;
-	color: #000;
-	border: 1px solid #666;
-	border-top:none;
-	border-bottom:none;
-	padding: 3px 7px 2px;
-	margin: 0;
-}
-#navmain ul.secondaryNav li a:hover {
-	background: #444 url("../images/secondaryHighlight.gif") repeat-x;
-	color: #000;
-}
-#navmain ul.secondaryNav li a.active:hover {
-	background: #444 url("../images/secondaryHighlight.gif") repeat-x;
-	color: #000;
-}
 #navmain .searchBar {
 	position:absolute;
 	top:4px;

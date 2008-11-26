@@ -2,6 +2,7 @@ package com.mpower.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +95,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
 
         request.getSession().setAttribute("passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
         request.getSession().setAttribute("lastLoginDate", ldapService.getLastLogin().getTime());
+        request.getSession().setAttribute("currentDate",new Date());
         ldapService.setLastLogin();
     }
 

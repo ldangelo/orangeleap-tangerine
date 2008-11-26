@@ -1,7 +1,7 @@
 package com.mpower.domain;
 
 /**
- * Use this class to indicate an entity is customizable
+ * Use this class to indicate an entity that is auditable, but not Viewable (see interface)
  * @author jball
  */
 public interface Auditable {

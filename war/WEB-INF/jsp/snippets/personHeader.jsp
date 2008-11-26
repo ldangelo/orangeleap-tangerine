@@ -6,7 +6,7 @@
 	<div class="column">
 	<c:choose>
 	<c:when test="${viewingPerson}">
-		<h2 class="personEdit" rel="personView.htm?personId=${person.id}" id="personTitle">
+		<h2 class="personEdit cluetip" rel="personView.htm?personId=${person.id}" id="personTitle">
 			${person.lastName}<c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if>${person.firstName}<c:if test="${person.majorDonor}"><span class="majorDonor">(Major Donor)</span></c:if>
 		</h2>
 	</c:when>
@@ -22,7 +22,7 @@
 	</div>
 	<c:if test="${param.submitButtonText!=null}">
 		<div class="columnRight" style="padding:19px 19px 0 0;">
-			<input type="submit" value="${param.submitButtonText}" />
+			<input type="submit" value="${param.submitButtonText}" class="saveButton" />
 		</div>
 	</c:if>
 	<div class="clearColumns"></div>

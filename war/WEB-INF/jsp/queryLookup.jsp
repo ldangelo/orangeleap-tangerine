@@ -1,11 +1,11 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<c:if test="${param.view!='table'}">
+<c:if test="${param.view!='resultsOnly'}">
 <div class="codeList" style="border:0">
 </c:if>
 <mp:page pageName='queryLookup' />
 <c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 <c:if test="${sectionDefinition.sectionName==queryLookup.sectionName}">
-<c:if test="${param.resultsOnly!='true'}">
+<c:if test="${param.view!='resultsOnly'}">
 	<table cellspacing="0" cellpadding="0" style="width:100%" class="alignLeft ${sectionDefinition.sectionName}"> 
 		<thead> 
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
@@ -24,8 +24,11 @@
 		<tbody id="resultstablebody">
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 				<tr class="filters">
-					<td align="center"><img style="cursor: pointer;" class="refreshButton" src="images/icons/refresh.png" />
-					<input name="fieldDef" type="hidden" value="${param.fieldDef}" /></td>
+					<td style="text-align:center"><img style="cursor: pointer;" class="refreshButton" src="images/icons/refresh.png" />
+					<input name="fieldDef" type="hidden" value="${param.fieldDef}" />
+					<input id="sort" name="sort" type="hidden" value="${currentSort}" />
+					<input id="ascending" name="ascending" type="hidden" value="${currentAscending}" />
+					</td>
 					<%@ include file="/WEB-INF/jsp/snippets/gridSearchHeader.jsp" %>
 				</tr>
 			</c:forEach>
@@ -47,51 +50,48 @@
 				</tr>
 				<c:remove var="entityLink" scope="page" />
 			</c:forEach>
-<c:if test="${param.resultsOnly!='true'}"> 
+			<c:if test="${empty pagedListHolder.pageList}">
+				<tr class='resultrow'><td></td><td>No results.</td></tr>
+			</c:if>
+<c:if test="${param.view!='resultsOnly'}">
 		</tbody>
 	</table>
 <div id="holdresults" style="visibility:hidden"></div>
 </c:if>
 </c:if>
 </c:forEach>
-<c:if test="${param.view!='table'}">
+<c:if test="${param.view!='resultsOnly'}">
 </div>
 </c:if>
-<c:if test="${param.resultsOnly!='true'}"> 
-<div id="sort" style="visibility:hidden">${currentSort}</div>
-<div id="ascending" style="visibility:hidden">${currentAscending}</div>
+<c:if test="${param.view!='resultsOnly'}">
+
 <script type="text/javascript">
 
 	$(".refreshButton").click(function(){
-		var queryString = "queryLookup.htm?view=table&resultsOnly=true" 
-			+ "&sort=" + $("#sort").val()
-			+ "&ascending=" + $("#ascending").val()
+		var queryString = "queryLookup.htm?view=resultsOnly" 
 			+ "&" + $(".filters :input").serialize();
-		$("#resultstablebody .resultrow").remove();
-		$("#holdresults").load(queryString,{},
-		     function(){
-		           if ($("#holdresults tr").length == 0){
-				      $("#resultstablebody").append("<tr class='resultrow'><td></td><td>No results.</td></tr>");
-		           } else  {
-				      $("#resultstablebody").append($("#holdresults tr"));
-		           }
-			 }
-		 );
-		
+		$.ajax({
+			type: "GET",
+			url: queryString,
+			success: function(html){
+				$("#resultstablebody .resultrow").remove();
+				$("#resultstablebody").append(html);
+			}
+		});
 	});
 
 	function toggleQueryLookupSortFields(aheader, sortFieldName) {
 
-		aheader.siblings().andSelf().removeClass("mpHeaderSortUp").removeClass("mpHeaderSortDown");
-		if ( $("#ascending").val() != "true" || $("#sort").val() != sortFieldName) {
+		aheader.siblings().andSelf().removeClass("mpHeaderSortUp mpHeaderSortDown");
+		if ( $(".filters #ascending").val() != "true" || $(".filters #sort").val() != sortFieldName) {
 			aheader.addClass("mpHeaderSortUp");
-			$("#ascending").val("true");
+			$(".filters #ascending").val("true");
 		} else {
 			aheader.addClass("mpHeaderSortDown");
-			$("#ascending").val("false");
+			$(".filters #ascending").val("false");
 		}
 		
-		$('#sort').val(sortFieldName);
+		$('.filters #sort').val(sortFieldName);
 	}
 
 	

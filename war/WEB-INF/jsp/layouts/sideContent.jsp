@@ -9,8 +9,9 @@
 				</h3>
 				<div class="accountOptions">
 					<div class="navGroup">
-						<a class="groupHeader ${sidebarNav=='Profile'?'active':''}" href="person.htm?personId=${person.id}">Profile</a>
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
 						<span class="secondary ${sidebarNav=='Profile'?'active':''}">
+							<a class="${sidebarNav=='Profile'?'active':''}" href="person.htm?personId=${person.id}">Contact Information</a>
 							<a class="${sidebarNav=='Address Manager'?'active':''}" href="addressManager.htm?personId=${person.id}">Addresses</a>
 							<a class="${sidebarNav=='Email Manager'?'active':''}" href="emailManager.htm?personId=${person.id}">Emails</a>
 							<a class="${sidebarNav=='Phone Manager'?'active':''}" href="phoneManager.htm?personId=${person.id}">Phone Numbers</a>
@@ -18,24 +19,25 @@
 						</span>
 					</div>
 					<div class="navGroup">
-		            <c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<a class="groupHeader ${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gifts</a>
-		            </c:if>
-		            <span class="secondary ${sidebarNav=='Gift History'?'active':''}">
-			            <a class="${sidebarNav=='Enter Gift'?'active':''}" href="gift.htm?personId=${person.id}">New Gift</a>
-						<a class="${sidebarNav=='Enter Recurring Gift'?'active':''}" href="recurringGift.htm?personId=${person.id}&type=recurringGift">Enter Recurring Gift</a>
-			            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-							<a class="${sidebarNav=='Recurring Gifts'?'active':''}" href="recurringGiftList.htm?personId=${person.id}&type=recurringGift">Recurring Gifts</a>
-			            </c:if>
-						<a class="${sidebarNav=='Enter Pledge'?'active':''}" href="pledge.htm?personId=${person.id}&type=pledge">Enter Pledge</a>
-			            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-							<a class="${sidebarNav=='Pledges'?'active':''}" href="pledgeList.htm?personId=${person.id}&type=pledge">Pledges</a>
-			            </c:if>
-						<a class="${sidebarNav=='Enter Membership'?'active':''}" href="membership.htm?personId=${person.id}&type=membership">Enter Membership</a>
-			            <c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
-							<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership">Memberships</a>
-			            </c:if>
-		            </span>
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gifts</a>
+			            <span class="secondary ${sidebarNav=='Gift History'?'active':''}">
+							<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
+			            		<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gift History</a>
+							</c:if>
+				            <a class="${sidebarNav=='Enter Gift'?'active':''}" href="gift.htm?personId=${person.id}">New Gift</a>
+							<a class="${sidebarNav=='Enter Recurring Gift'?'active':''}" href="recurringGift.htm?personId=${person.id}&type=recurringGift">Enter Recurring Gift</a>
+				            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
+								<a class="${sidebarNav=='Recurring Gifts'?'active':''}" href="recurringGiftList.htm?personId=${person.id}&type=recurringGift">Recurring Gifts</a>
+				            </c:if>
+							<a class="${sidebarNav=='Enter Pledge'?'active':''}" href="pledge.htm?personId=${person.id}&type=pledge">Enter Pledge</a>
+				            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
+								<a class="${sidebarNav=='Pledges'?'active':''}" href="pledgeList.htm?personId=${person.id}&type=pledge">Pledges</a>
+				            </c:if>
+							<a class="${sidebarNav=='Enter Membership'?'active':''}" href="membership.htm?personId=${person.id}&type=membership">Enter Membership</a>
+				            <c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
+								<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership">Memberships</a>
+				            </c:if>
+			            </span>
 		            </div>
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}">Audit</a>
 				</div>

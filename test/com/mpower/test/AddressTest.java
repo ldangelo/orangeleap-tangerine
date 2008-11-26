@@ -97,7 +97,6 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-seasonal-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 10, 15);
-        System.out.println("queryCurrentAddresses2:  " + cal.getTime());
         List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
@@ -107,7 +106,6 @@ public class AddressTest extends BaseTest {
 
         cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 2, 15);
-        System.out.println("queryCurrentAddresses2:  " + cal.getTime());
         addresses = addressService.readCurrentAddresses(personId, cal, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {

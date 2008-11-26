@@ -1,6 +1,7 @@
 body {
 	font-family: Verdana, sans-serif;
 	font-size: 12px;
+	line-height: 1.5em;
 	color: #000;
 	padding: 0;
 	margin: 0;
@@ -103,16 +104,14 @@ a:hover {
 	position:relative;
 }
 .loginPane {
-	background: #fff url("../images/signInBox.gif") no-repeat center top;
+	background: #fff url("../images/signInBox.gif") no-repeat;
 	width:581px;
+	height:383px;
 	margin:100px auto 0;
-	padding:15px 0 0 0;
 	text-align:left;
 }
-
 .loginContent {
-	background: #fff url("../images/signInBox.gif") no-repeat center bottom;
-	padding:10px 10px 30px 10px;
+	padding:30px 10px 10px 10px;
 	text-align:center;
 }
 .loginHeader {
@@ -141,6 +140,5 @@ table.loginInfo {
 }
 .loginField {
 	padding:3px;
-	height:24px;
 	margin:0;
 }

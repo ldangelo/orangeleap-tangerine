@@ -34,6 +34,9 @@ public class Site implements Serializable {
     @Id
     @Column(name = "SITE_NAME")
     private String name;
+    
+    @Column(name = "MERCHANT_NUMBER")
+    private String merchantNumber;
 
     @ManyToOne
     @JoinColumn(name = "PARENT_SITE_NAME", referencedColumnName = "SITE_NAME")
@@ -53,7 +56,15 @@ public class Site implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public String getMerchantNumber() {
+		return merchantNumber;
+	}
+
+	public void setMerchantNumber(String merchantNumber) {
+		this.merchantNumber = merchantNumber;
+	}
+
+	public void setName(String name) {
         this.name = name;
     }
 

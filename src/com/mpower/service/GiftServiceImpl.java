@@ -59,9 +59,9 @@ public class GiftServiceImpl implements GiftService {
     private SiteDao siteDao;
 
     /*
-     * this is needed for JMS
-     * @Resource(name = "creditGateway") private MPowerCreditGateway creditGateway;
-     */
+     * this is needed for JMS */
+     //@Resource(name = "creditGateway") 
+     //private MPowerCreditGateway creditGateway;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -99,13 +99,19 @@ public class GiftServiceImpl implements GiftService {
         }
         gift = giftDao.maintainGift(gift);
 
-        /*
-         * this was a part of our JMS/MOM poc creditGateway.sendGiftInfo(gift); logger.info("*** sending msg to queue");
-         */
-
+		// this was a part of our JMS/MOM poc
+        // comment it out to disable jms processing.
+        // processMockTrans(gift);
+        
         auditService.auditObject(gift);
+        
         return gift;
     }
+
+//	private void processMockTrans(Gift gift) {
+//		// this was a part of our JMS/MOM poc
+//        creditGateway.sendGiftTransaction(gift);
+//	}
 
     @Override
     public Gift readGiftById(Long giftId) {
@@ -235,4 +241,8 @@ public class GiftServiceImpl implements GiftService {
     public List<Gift> readGiftsByCommitment(Commitment commitment) {
         return giftDao.readGiftsByCommitmentId(commitment.getId());
     }
+    
+    private void processTransaction() {
+		
+	}
 }

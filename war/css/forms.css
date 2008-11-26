@@ -195,37 +195,15 @@ a.tableLookupLink {
 	position:relative;
 }
 .personFormButtons input {
-	font-size:13px;
-	padding:3px 5px;
+	font-size:14px;
+	padding:3px 4px;
 	margin:0 5px;
 	font-family:arial;
 }
-
-.saveButton,.searchButton {
-	font-size:13px;
-	font-family:arial;
-	text-decoration:none;
-	font-weight:bold;
-	padding:3px 5px;
-	background: #eee url(../images/buttonGradient.gif) repeat-x;
-	border:1px solid #777;
-	border-bottom:1px solid #535353;
-	margin:0 4px;
-	color:#000;
-	line-height:24px;
-}
-.saveButton:hover,
-.searchButton:hover {
-	background: #eee url(../images/buttonGradientBlue.gif) repeat-x;
-	cursor:pointer;
-}
-
-/*
 .searchButton {
 	font-weight:bold;
 	color:#444;
 }
-*/
 #savedMarker {
 	background:transparent url(../images/icons/check-eee.gif) no-repeat center left;
 	margin-left:12px;
@@ -402,6 +380,16 @@ ul.formFields div.lookupWrapper input {
 	width:100%;
 }
 
+/*
+	.lookupWrapper .lookupLink {
+		//visibility:hidden;
+		opacity:.5;
+	}
+	.showLink .lookupLink {
+		//visibility:visible;
+		opacity:1;
+	}
+*/
 table.alignLeft td,
 table.alignLeft th {
 	text-align:left;

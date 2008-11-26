@@ -4,5 +4,5 @@ import com.mpower.domain.Gift;
 
 public interface MPowerCreditGateway {
 
-	public void sendGiftInfo(Gift gift);
+	public void sendGiftTransaction(Gift gift);
 }

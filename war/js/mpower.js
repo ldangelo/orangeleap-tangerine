@@ -2,11 +2,12 @@ $(document).ready(function()
    {
     //eliminate these
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
+	$("table.defaultSort").tablesorter();
 
 	$("table.tablesorter tbody td input").focus(function() {
-		$(this).parents("tr:first").addClass("focused");
+		$(this).parent().parent().addClass("focused");
 	}).blur(function() {
-		$(this).parents("tr:first").removeClass("focused");
+		$(this).parent().parent().removeClass("focused");
 	});
 
 	$("ul.formFields li input, ul.formFields li select").change(function() {
@@ -16,7 +17,7 @@ $(document).ready(function()
 	$(".picklist").each(toggleReferencedElements);
 	$(".picklist").change(toggleReferencedElements);
 
-	$(".cluetip[rel]").cluetip({
+	$("#personTitle").cluetip({
 		cluetipClass:'default',
 		showTitle: false,
 		dropShadow: false,
@@ -36,15 +37,9 @@ $(document).ready(function()
 		over: function(){
 			$(this).find("span.secondary").filter(":hidden").slideDown();
 			},
-		timeout: 1000
-	 });
-	 
-	 $("div.accountOptions").hoverIntent({
-		sensitivity: 7,
-		interval: 100,
 		timeout: 1000,
 		out: function(){
-			$(this).find("span.secondary:not('.active')").filter(":visible").slideUp();
+			$(this).find("span.secondary").filter(":visible").slideUp();
 			}
 	 });
 	 
@@ -78,7 +73,6 @@ $(document).ready(function()
 	$("#gift_distribution tr:last .deleteButton").hide();
 
 	$('#dialog').jqm({overlay:10}).jqDrag($('.jqmWindow h4'));
-	
 	$("#newCodeForm").submit(function(){
 		$.ajax({
 			type: "POST",
@@ -98,7 +92,7 @@ $(document).ready(function()
 		return false;
 	});
 
-	$(".filters :input").bind("keyup change",function(){
+	$(".filters :input").bind("keyup",function(){
 		var queryString = $(".filters :input").serialize();
 		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
 	});
@@ -143,7 +137,7 @@ function rowCloner(selector) {
 		if(event.keyCode != 9) { // ignore tab
 			addNewRow(distributionLineBuilder);
 		}
-		rowCloner(selector); // Re-attach to the (new) last table row
+		rowCloner(selector);
 	});
 }
 function distributionLineBuilder(newRow) {
@@ -167,6 +161,11 @@ function distributionLineBuilder(newRow) {
 				formatItem:formatItem,
 				loadingClass:""
 			});
+		$(this).focus(function(){
+			$(this).parent().addClass("showLink");
+			}).blur(function(){
+				$(this).parent().removeClass("showLink");
+		});
 	});
 	newRow.removeClass("focused");
 }
@@ -290,11 +289,11 @@ function getPage(elem) {
 			data: queryString+"&view=ajaxResults",
 			success: function(html){
 				$("#searchResults").html(html);
-				//return false;
+				return false;
 			},
 			error: function(html){
 				alert("An error has occurred.  Please refresh the page and try again.");
-				//return false;
+				return false;
 			}
 		});
 		return false;

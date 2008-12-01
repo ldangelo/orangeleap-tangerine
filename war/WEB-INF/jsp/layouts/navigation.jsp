@@ -42,7 +42,7 @@
 						<a href="person.htm">Person</a>
 					</li>
 					<c:if test="${viewingPerson}">
-						<li class="sectionTitle">For ${person.firstName}&nbsp;${person.lastName} ...</li>
+						<li class="sectionTitle">For <c:out value="${person.firstName}"/>&nbsp;<c:out value="${person.lastName}"/> ...</li>
 						<li>
 							<a href="gift.htm?personId=${person.id}">Gift</a>
 						</li>

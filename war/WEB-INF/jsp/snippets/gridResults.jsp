@@ -9,6 +9,6 @@
 	<c:when test="${fieldVO.fieldType == 'DATE'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM-dd-yy h:mm a" />
 	</c:when>
-	<c:otherwise>${fieldVO.fieldValue}</c:otherwise>
+	<c:otherwise><c:out value='${fieldVO.fieldValue}'/></c:otherwise>
 	</c:choose></td>
 </c:forEach>

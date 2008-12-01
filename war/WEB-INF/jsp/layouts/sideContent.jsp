@@ -5,7 +5,7 @@
 		<div class="innerContent" style="height:600px;">
 			<c:if test="${viewingPerson}">
 				<h3>
-					${person.displayValue}:
+					<c:out value='${person.displayValue}'/>:
 				</h3>
 				<div class="accountOptions">
 					<div class="navGroup">

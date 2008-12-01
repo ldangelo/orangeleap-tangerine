@@ -15,7 +15,7 @@
 			</c:otherwise>
 		</c:choose>
 		<p class="legal">
-			(800) 562-5150 | &#169; Copyright ${copyrightRange} MPower Open. All Rights Reserved. |
+			(800) 562-5150 | &#169; Copyright <c:out value="${copyrightRange}"/> MPower Open. All Rights Reserved. |
 			<a href="#">Articles</a> |
 			<a href="#">Resources</a>
 		</p>

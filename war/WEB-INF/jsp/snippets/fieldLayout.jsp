@@ -27,7 +27,7 @@
 		</div>
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN'}">
-		<div class="column ${sectionDefinition.sectionHtmlName}" style="padding-right:8px;">
+		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" style="padding-right:8px;">
 			<c:if test="${!empty sectionDefinition.defaultLabel}">
 				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 			</c:if>
@@ -41,7 +41,7 @@
 		</div>
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
-		<div class="column ${sectionDefinition.sectionHtmlName}" style="display:none;padding-right:8px;">
+		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" style="display:none;padding-right:8px;">
 			<c:if test="${!empty sectionDefinition.defaultLabel}">
 				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 			</c:if>
@@ -59,7 +59,7 @@
 			<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 		</c:if>
 		
-		<table class="tablesorter" style="table-layout:fixed;" id="${sectionDefinition.sectionHtmlName}" cellspacing="0" cellpadding="0"> 
+		<table class="tablesorter" style="table-layout:fixed;" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0" cellpadding="0"> 
 			<thead> 
 				<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 					<tr>
@@ -71,7 +71,7 @@
 			<tbody>
 				<c:forEach items="${gridCollection}" var="row" varStatus="status">
 					<c:if test="${row!=null}">
-						<tr rowindex="${status.index}">
+						<tr rowindex="<c:out value='${status.index}'/>">
 							<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
 							<td><img style="cursor: pointer;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
 						</tr>

@@ -6,7 +6,7 @@
 <c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 <c:if test="${sectionDefinition.sectionName==queryLookup.sectionName}">
 <c:if test="${param.view!='resultsOnly'}">
-	<table cellspacing="0" cellpadding="0" style="width:100%" class="alignLeft ${sectionDefinition.sectionName}"> 
+	<table cellspacing="0" cellpadding="0" style="width:100%" class="alignLeft <c:out value='${sectionDefinition.sectionName}'/>"> 
 		<thead> 
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 				<tr>
@@ -15,7 +15,7 @@
 					<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 						<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />	
 						<th class="header">
-							<a href="#" onclick="toggleQueryLookupSortFields($(this).parent(),'${fieldVO.fieldName}');$('.refreshButton').click();return false;">${fieldVO.labelText}</a>
+							<a href="#" onclick="toggleQueryLookupSortFields($(this).parent(),'<c:out value="${fieldVO.fieldName}"/>');$('.refreshButton').click();return false;"><c:out value='${fieldVO.labelText}'/></a>
 						</th>
 					</c:forEach>	
 				</tr>
@@ -25,9 +25,9 @@
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 				<tr class="filters">
 					<td style="text-align:center"><img style="cursor: pointer;" class="refreshButton" src="images/icons/refresh.png" />
-					<input name="fieldDef" type="hidden" value="${param.fieldDef}" />
-					<input id="sort" name="sort" type="hidden" value="${currentSort}" />
-					<input id="ascending" name="ascending" type="hidden" value="${currentAscending}" />
+					<input name="fieldDef" type="hidden" value="<c:out value='${param.fieldDef}'/>" />
+					<input id="sort" name="sort" type="hidden" value="<c:out value='${currentSort}'/>" />
+					<input id="ascending" name="ascending" type="hidden" value="<c:out value='${currentAscending}'/>" />
 					</td>
 					<%@ include file="/WEB-INF/jsp/snippets/gridSearchHeader.jsp" %>
 				</tr>
@@ -45,7 +45,7 @@
 					</c:otherwise>
 				</c:choose>
 				<tr class="resultrow">
-					<td><a href="#" displayvalue="${row.displayValue}" gotourl="${entityLink}" onclick="useQueryLookup(this,'${row.id}');return false;">Use</a></td>
+					<td><a href="#" displayvalue="<c:out value='${row.displayValue}'/>" gotourl="<c:out value='${entityLink}'/>" onclick="useQueryLookup(this,'${row.id}');return false;">Use</a></td>
 					<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 				</tr>
 				<c:remove var="entityLink" scope="page" />

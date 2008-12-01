@@ -13,13 +13,13 @@
 			<h4>Code Type to Manage</h4>
 			<select id="codeType" name="codeType" onchange="this.form.submit()">
 			<c:forEach var="type" items="${codeTypes}">
-			  <option value="${type.name}" ${currentCodeType==type.name?'selected':''}>${type.label}</option>
+			  <option value="<c:out value='${type.name}'/>" ${currentCodeType==type.name?'selected':''}><c:out value='${type.label}'/></option>
 			</c:forEach>
 			</select>
 		</form>
 		</div>
 			<div class="filters simplebox">
-				<input type="hidden" name="type" value="${currentCodeType}" />
+				<input type="hidden" name="type" value="<c:out value='${currentCodeType}'/>" />
 				<table>
 					<tr>
 						<td class="action">&nbsp;</td>

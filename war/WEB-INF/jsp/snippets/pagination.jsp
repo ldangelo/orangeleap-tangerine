@@ -11,13 +11,13 @@
 	<div class="pagination">
 		<c:if test="${pagedListHolder.pageCount > 1}">
 		    <c:if test="${!pagedListHolder.firstPage}">
-		        <a href="${pagedLink}${pagedListHolder.page-1}" onclick="return getPage(this)">« Previous</a>
+		        <a href="<c:out value='${pagedLink}'/>${pagedListHolder.page-1}" onclick="return getPage(this)">« Previous</a>
 		    </c:if>
 		    <c:if test="${pagedListHolder.firstPage}">
 		        <span class="disabled">« Previous</span>
 		    </c:if>
 		    <c:if test="${pagedListHolder.firstLinkedPage > 0}">
-		        <a href="${pagedLink}0" onclick="return getPage(this)">1</a>
+		        <a href="<c:out value='${pagedLink}'/>0" onclick="return getPage(this)">1</a>
 		    </c:if>
 		    <c:if test="${pagedListHolder.firstLinkedPage > 1}">
 		        <span class="pageDots">...</span>
@@ -28,7 +28,7 @@
 		                <span class="current">${i+1}</span>
 		            </c:when>
 		            <c:otherwise>
-		                <a href="${pagedLink}${i}" onclick="return getPage(this)">${i+1}</a>
+		                <a href="<c:out value='${pagedLink}'/>${i}" onclick="return getPage(this)">${i+1}</a>
 		            </c:otherwise>
 		        </c:choose>
 		    </c:forEach>
@@ -36,10 +36,10 @@
 		        <span class="pageDots">...</span>
 		    </c:if>
 		    <c:if test="${pagedListHolder.lastLinkedPage < pagedListHolder.pageCount - 1}">
-		        <a href="${pagedLink}${pagedListHolder.pageCount-1}" onclick="return getPage(this)">${pagedListHolder.pageCount}</a>
+		        <a href="<c:out value='${pagedLink}'/>${pagedListHolder.pageCount-1}" onclick="return getPage(this)">${pagedListHolder.pageCount}</a>
 		    </c:if>
 		    <c:if test="${!pagedListHolder.lastPage}">
-		       <a href="${pagedLink}${pagedListHolder.page+1}" onclick="return getPage(this)">Next »</a>
+		       <a href="<c:out value='${pagedLink}'/>${pagedListHolder.page+1}" onclick="return getPage(this)">Next »</a>
 		    </c:if>
 		    <c:if test="${pagedListHolder.lastPage}">
 		       <span class="disabled">Next »</span>

@@ -15,7 +15,7 @@
 			
 			<form:form method="post" commandName="person">
 				<c:if test="${id != null}">
-					<input type="hidden" name="id" value="${id}" />
+					<input type="hidden" name="id" value="<c:out value='${id}'/>" />
 				</c:if>
 			
 				<jsp:include page="snippets/personHeader.jsp">

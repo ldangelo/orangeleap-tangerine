@@ -34,11 +34,11 @@
 						<c:forEach items="${audits}" var="audit">
 							<tr>
 								<td><fmt:formatDate value="${audit.date}" pattern="MM-dd-yy h:mm a" /></td>
-								<td>${audit.user}</td>
-								<td>${audit.auditType}</td>
-								<td>${audit.description}</td>
-								<td class="capitalized">${audit.entityType}</td>
-								<td>${audit.objectId}</td>
+								<td><c:out value='${audit.user}'/></td>
+								<td><c:out value='${audit.auditType}'/></td>
+								<td><c:out value='${audit.description}'/></td>
+								<td class="capitalized"><c:out value='${audit.entityType}'/></td>
+								<td><c:out value='${audit.objectId}'/></td>
 								<td><c:choose>
 									<c:when test="${audit.entityType=='person'}">
 										<a href="person.htm?personId=${audit.objectId}">View</a>

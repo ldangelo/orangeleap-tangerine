@@ -18,11 +18,11 @@
 						<c:choose>
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 								<p style="margin: 0;">
-									${fieldVO.labelText}: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
+									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
+								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -58,11 +58,11 @@
 						<c:choose>
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 								<p style="margin: 0;">
-									${fieldVO.labelText}: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
+									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
+								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -97,11 +97,11 @@
 						<c:choose>
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 								<p style="margin: 0;">
-									${fieldVO.labelText}: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
+									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;">${fieldVO.labelText}:  ${fieldVO.displayValue}</p>
+								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
 							</c:otherwise>
 						</c:choose>
 					</c:if>

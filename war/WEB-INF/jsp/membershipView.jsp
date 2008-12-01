@@ -41,7 +41,7 @@
 				<a class="actionLink" href="membership.htm?personId=${person.id}">Enter a new membership</a>
 			</div>
 			<c:forEach var="gift" items="${gifts}">
-			${gift.transactionDate} ... ${gift.amount}<br />
+			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
 			</c:forEach>
 		</div>
 	</tiles:putAttribute>

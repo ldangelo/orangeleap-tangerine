@@ -23,11 +23,11 @@
 </c:when>
 <c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
-	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:out value="${empty formattedDate?'&nbsp;':formattedDate}"/></div>
+	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY'}">
 	<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
-	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:out value="${empty formattedDate?'&nbsp;':formattedDate}"/></div>
+	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 	<select name="<c:out value='${fieldVO.fieldName}'/>" id=<c:out value='${fieldVO.fieldName}'/>" class="picklist">
@@ -137,7 +137,7 @@
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CODE'}">
 <div class="lookupWrapper">
-	<input value=<c:out value='"${fieldVO.fieldValue}'/>" class="text code <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
+	<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 		codeType="<c:out value='${fieldVO.fieldName}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
 	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
 </div>
@@ -153,7 +153,7 @@
 	</c:choose>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
-	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:out value="${empty fieldVO.displayValue?'&nbsp;':fieldVO.displayValue}"/></div>
+	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LOOKUP'}">
 	<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" /><a class="lookupLink jqModal" href="#">Lookup</a>

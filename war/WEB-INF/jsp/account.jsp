@@ -13,15 +13,15 @@
 			<table class="formTable">
 				<tr>
 					<td style="text-align:right"><label for="j_username">Enter your <b>current password:</b></label></td>
-					<td><input size="30" class="loginField" type="password" name="currentPassword" id="currentPassword" value="${user.currentPassword}" /></td>
+					<td><input size="30" class="loginField" type="password" name="currentPassword" id="currentPassword" value="<c:out value='${user.currentPassword}'/>" /></td>
 	    		</tr>
 				<tr>
 					<td style="text-align:right"><label for="j_password">Choose a <b>new password:</b></label></td>
-					<td><input size="30" class="loginField" type="password" name="newPassword" id="newPassword" value="${user.newPassword}" /></td>
+					<td><input size="30" class="loginField" type="password" name="newPassword" id="newPassword" value="<c:out value='${user.newPassword}'/>" /></td>
 	    		</tr>
 				<tr>
 					<td style="text-align:right"><label for="j_username">Confirm your <b>new password:</b></label></td>
-					<td><input size="30" class="loginField" type="password" name="newPasswordConfirm" id="newPasswordConfirm" value="${user.newPasswordConfirm}" /></td>
+					<td><input size="30" class="loginField" type="password" name="newPasswordConfirm" id="newPasswordConfirm" value="<c:out value='${user.newPasswordConfirm}'/>" /></td>
 	    		</tr>
     		</table>
     		<div class="formButtonFooter personFormButtons">

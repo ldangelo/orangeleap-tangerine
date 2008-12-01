@@ -36,9 +36,9 @@
 				<a class="actionLink" href="recurringGift.htm?personId=${person.id}">Enter a new recurring gift</a>
 			</div>
 			<c:forEach var="gift" items="${gifts}">
-			${gift.transactionDate} ... ${gift.amount}<br />
+			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
 			</c:forEach>
-			Sum:${giftSum}
+			Sum:<c:out value='${giftSum}'/>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

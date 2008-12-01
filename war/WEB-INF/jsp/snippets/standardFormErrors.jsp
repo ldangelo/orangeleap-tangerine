@@ -4,7 +4,7 @@
 		<h5>Please correct the following errors on this page:</h5>
 		<ul>
 		<c:forEach items="${messages}" var="message">
-			<li>${message}</li>
+			<li><c:out value='${message}'/></li>
 		</c:forEach>
 		</ul>
 	</div>

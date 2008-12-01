@@ -15,16 +15,14 @@
 					<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 						<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />	
 						<th class="header">
-							<a href="#" onclick="toggleQueryLookupSortFields($(this).parent(),'<c:out value="${fieldVO.fieldName}"/>');$('.refreshButton').click();return false;"><c:out value='${fieldVO.labelText}'/></a>
+							<a href="#" onclick="QueryLookup.toggleQueryLookupSortFields($(this).parent(),'<c:out value="${fieldVO.fieldName}"/>')"><c:out value='${fieldVO.labelText}'/></a>
 						</th>
 					</c:forEach>	
 				</tr>
 			</c:forEach>
-		</thead> 
-		<tbody id="resultstablebody">
 			<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 				<tr class="filters">
-					<td style="text-align:center"><img style="cursor: pointer;" class="refreshButton" src="images/icons/refresh.png" />
+					<td>
 					<input name="fieldDef" type="hidden" value="<c:out value='${param.fieldDef}'/>" />
 					<input id="sort" name="sort" type="hidden" value="<c:out value='${currentSort}'/>" />
 					<input id="ascending" name="ascending" type="hidden" value="<c:out value='${currentAscending}'/>" />
@@ -32,6 +30,8 @@
 					<%@ include file="/WEB-INF/jsp/snippets/gridSearchHeader.jsp" %>
 				</tr>
 			</c:forEach>
+		</thead> 
+		<tbody id="resultstablebody">
 </c:if>
 			<c:forEach items="${pagedListHolder.pageList}" var="row">
 				<c:choose>
@@ -45,7 +45,7 @@
 					</c:otherwise>
 				</c:choose>
 				<tr class="resultrow">
-					<td><a href="#" displayvalue="<c:out value='${row.displayValue}'/>" gotourl="<c:out value='${entityLink}'/>" onclick="useQueryLookup(this,'${row.id}');return false;">Use</a></td>
+					<td><a href="#" displayvalue="<c:out value='${row.displayValue}'/>" gotourl="<c:out value='${entityLink}'/>" onclick="useQueryLookup(this,'${row.id}')">Use</a></td>
 					<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 				</tr>
 				<c:remove var="entityLink" scope="page" />
@@ -66,34 +66,31 @@
 <c:if test="${param.view!='resultsOnly'}">
 
 <script type="text/javascript">
-
-	$(".refreshButton").click(function(){
-		var queryString = "queryLookup.htm?view=resultsOnly" 
-			+ "&" + $(".filters :input").serialize();
-		$.ajax({
-			type: "GET",
-			url: queryString,
-			success: function(html){
-				$("#resultstablebody .resultrow").remove();
-				$("#resultstablebody").append(html);
-			}
-		});
+	$(".filters :input").bind("keyup", function(){
+		QueryLookup.doQuery();
 	});
-
-	function toggleQueryLookupSortFields(aheader, sortFieldName) {
-
-		aheader.siblings().andSelf().removeClass("mpHeaderSortUp mpHeaderSortDown");
-		if ( $(".filters #ascending").val() != "true" || $(".filters #sort").val() != sortFieldName) {
-			aheader.addClass("mpHeaderSortUp");
-			$(".filters #ascending").val("true");
-		} else {
-			aheader.addClass("mpHeaderSortDown");
-			$(".filters #ascending").val("false");
-		}
-		
-		$('.filters #sort').val(sortFieldName);
-	}
-
 	
+	var QueryLookup = {
+		doQuery: function() {
+			var queryString = $(".filters :input").serialize();
+			$("#resultstablebody").load("queryLookup.htm?view=resultsOnly&" + queryString);
+		},
+		
+		toggleQueryLookupSortFields: function(aheader, sortFieldName) {
+			aheader.siblings().andSelf().removeClass("mpHeaderSortUp mpHeaderSortDown");
+			if ( $(".filters #ascending").val() != "true" || $(".filters #sort").val() != sortFieldName) {
+				aheader.addClass("mpHeaderSortUp");
+				$(".filters #ascending").val("true");
+			} else {
+				aheader.addClass("mpHeaderSortDown");
+				$(".filters #ascending").val("false");
+			}
+			
+			$('.filters #sort').val(sortFieldName);
+			
+			this.doQuery();
+			return false;
+		}
+	}
 </script>
 </c:if>

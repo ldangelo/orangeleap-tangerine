@@ -145,7 +145,7 @@
 				</div>
 				<div class="content760 mainForm">
 					<jsp:include page="testForm.jsp" />
-					<jsp:include page="snippets/lookupModal.jsp" />
+					<jsp:include page="lookupModal.jsp" />
 				</div>
 
 			</div>

@@ -406,3 +406,7 @@ table.alignLeft td,
 table.alignLeft th {
 	text-align:left;
 }
+select.multiSelect { 
+	height: 56px; 
+	border:1px solid #7F9DB9;
+}

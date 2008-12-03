@@ -244,14 +244,14 @@ function toggleReferencedElements() {
 	var $toBeHidden;
 	var $toBeToggled;
 	var $toBeHiddenNested;
-	for(var i=0;i<elem.options.length;i++) {
+	for(var i = 0;i < elem.options.length; i++) {
 		var selector = elem[i].getAttribute('reference');
 		if(selector!=null && selector.length) {
 			var $target = $(selector);
 			var $picklists = $(selector).filter(".picklist");
 			var $nested = $(selector).find(".picklist");
 			$picklists = $picklists.add($nested);
-			if(i==elem.selectedIndex) {
+			if (elem.options[i].selected) {
 				$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
 				$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
 			} else {

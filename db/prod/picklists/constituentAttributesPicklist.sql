@@ -1,4 +1,4 @@
--- ConstituentAttributes Picklist
+-- ConstituentAttributes Picklist 
 
 INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME) VALUES ('constituentAttributes', 'constituentAttributes');
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('constituentAttributes', 'person', 'Person', 'li:has(.ea-person)', 1);

@@ -86,7 +86,7 @@
 		</c:forEach>
 	</select>
 </c:when>
-<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
+<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">
 	<c:choose>
 		<c:when test="${!empty fieldVO.id}">
 			<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
@@ -152,7 +152,7 @@
 		</c:otherwise>
 	</c:choose>
 </c:when>
-<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTIPICKLIST_DISPLAY'}">
+<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">
 	<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'LOOKUP'}">
@@ -176,9 +176,9 @@
 <c:when test="${fieldVO.fieldType == 'SPACER'}">
 	&nbsp;
 </c:when>
-<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES' or fieldVO.fieldType == 'MULTIPICKLIST'}">
-	<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:if test="${fieldVO.fieldType eq 'MULTIPICKLIST'}">multiSelect </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
-		<c:if test="${fieldVO.fieldType eq 'MULTIPICKLIST'}">multiple="true" size="3"</c:if>>
+<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES' or fieldVO.fieldType == 'MULTI_PICKLIST'}">
+	<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST'}">multiSelect </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
+		<c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST'}">multiple="true" size="3"</c:if>>
 		<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
            <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
            <c:choose>

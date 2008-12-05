@@ -19,3 +19,15 @@ INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORD
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.phoneMap[work]', 18000);
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.phoneMap[mobile]', 19000);
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.preferredPhoneType', 20000);
+
+// Constituent type picklist
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.constituentAttributes', 30000);
+
+// Tax Id field is used by organization, donor and employee (only FIELD_NAME is used to determine this; FIELD_DEFINITION_ID just has to be unique)
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.customFieldMap[organization,donor,employee.taxid]', 30100);
+
+// The organization this employee belongs to
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.customFieldMap[employee.organization]', 30200);
+
+// The employee list for an organization
+INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.customFieldMap[organization.employees]', 30300);

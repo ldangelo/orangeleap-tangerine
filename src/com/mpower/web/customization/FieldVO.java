@@ -20,6 +20,7 @@ public class FieldVO {
     private FieldType fieldType;
     private Long id;
     private String entityName;
+    private String entityAttributes;
     private String siteName;
     private String fieldName;
     private Object fieldValue;
@@ -161,4 +162,12 @@ public class FieldVO {
     public void setEntityName(String entityName) {
         this.entityName = entityName;
     }
+
+	public void setEntityAttributes(String entityAttributes) {
+		this.entityAttributes = entityAttributes;
+	}
+
+	public String getEntityAttributes() {
+		return entityAttributes;
+	}
 }

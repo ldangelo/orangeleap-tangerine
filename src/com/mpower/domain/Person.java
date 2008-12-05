@@ -50,6 +50,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @ManyToOne
     @JoinColumn(name = "SITE_NAME")
     private Site site;
+    
+    // This could become a OneToMany relationship, instead of a comma-delimited string as it is now.
+    @Column(name = "CONSTITUENT_ATTRIBUTES")
+    private String constituentAttributes;
 
     @Column(name = "TITLE")
     private String title;
@@ -144,6 +148,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    public Person() {
+    	this.constituentAttributes = "person";
+    }
 
     public String getDisplayValue() {
         return firstName + " " + lastName;
@@ -409,4 +417,14 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public void setSpouse(Person spouse) {
         this.spouse = spouse;
     }
+
+	public void setConstituentAttributes(String constituentAttributes) {
+		this.constituentAttributes = constituentAttributes;
+	}
+
+	public String getConstituentAttributes() {
+		return constituentAttributes;
+	}
+	
+
 }

@@ -70,6 +70,10 @@ public class GenericFieldHandler implements FieldHandler {
             }
         }
         fieldVO.setLabelText(labelText);
+        
+        // For custom fields that depend on an entity attribute being selected to show.
+        fieldVO.setEntityAttributes(currentField.getFieldDefinition().getEntityAttributes());
+
 
         FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);
         fieldVO.setRequired(fr != null && fr.isRequired() && !fr.hasConditions());

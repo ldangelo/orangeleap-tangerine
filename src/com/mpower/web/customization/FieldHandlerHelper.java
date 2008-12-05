@@ -44,6 +44,7 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PAYMENT_SOURCE_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.ADDRESS_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PHONE_PICKLIST, genericFieldHandler);
@@ -56,6 +57,8 @@ public class FieldHandlerHelper {
         PicklistFieldHandler picklistFieldHandler = new PicklistFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.PICKLIST, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PICKLIST_DISPLAY, picklistFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST, picklistFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_DISPLAY, picklistFieldHandler);
 
         PreferredPhoneFieldHandler preferredPhoneFieldHandler = new PreferredPhoneFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.PREFERRED_PHONE_TYPES, preferredPhoneFieldHandler);

@@ -79,6 +79,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>

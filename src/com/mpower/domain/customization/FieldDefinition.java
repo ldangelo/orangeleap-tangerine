@@ -58,7 +58,7 @@ public class FieldDefinition implements Serializable {
     private String fieldInfo;
 
     public boolean isCustom() {
-        return (site != null);
+        return (fieldName != null && fieldName.startsWith("customFieldMap"));
     }
 
     public EntityType getEntityType() {
@@ -119,5 +119,21 @@ public class FieldDefinition implements Serializable {
 
     public void setDefaultLabel(String defaultLabel) {
         this.defaultLabel = defaultLabel;
+    }
+    
+    // If a custom field name is like "customFieldMap[organization,donor.taxid]" the entity attribute css classes that activate this field are "ea-donor ea-employee"
+    public String getEntityAttributes() {
+    	String entityAttributes = "";
+    	if (isCustom()) {
+        	String name = getFieldName();
+        	int start = name.indexOf("[") + 1;
+        	int end = name.indexOf(".", start);
+        	if (start < 1 || end < 1) return entityAttributes;
+        	String[] ea = name.substring(start, end).split(",");
+        	for (String s: ea) entityAttributes += ((entityAttributes.length() > 0) ? " " : "") + "ea-" + s;
+        	return entityAttributes;
+    	} else {
+    		return entityAttributes;
+    	}
     }
 }

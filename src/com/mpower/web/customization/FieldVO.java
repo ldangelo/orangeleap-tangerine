@@ -19,6 +19,7 @@ public class FieldVO {
     public List<String> displayValues;
     private FieldType fieldType;
     private Long id;
+    private List<Long> ids;
     private String entityName;
     private String entityAttributes;
     private String siteName;
@@ -169,5 +170,13 @@ public class FieldVO {
 
 	public String getEntityAttributes() {
 		return entityAttributes;
+	}
+
+	public void setIds(List<Long> ids) {
+		this.ids = ids;
+	}
+
+	public List<Long> getIds() {
+		return ids;
 	}
 }

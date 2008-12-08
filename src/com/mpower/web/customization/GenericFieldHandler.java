@@ -1,5 +1,6 @@
 package com.mpower.web.customization;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -10,7 +11,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.SectionField;
@@ -103,12 +103,16 @@ public class GenericFieldHandler implements FieldHandler {
 	            }
 	            if (isCustom) {
    	            	if (fieldType == FieldType.QUERY_LOOKUP || fieldType == FieldType.MULTI_QUERY_LOOKUP) {
+   	            		List<Long> list = new ArrayList<Long>();
+   	            		fieldVO.setIds(list);
 	            		String[] ids = ((String)propertyValue).split(",");
 	            		StringBuffer sb = new StringBuffer();
 	            		for (String id : ids) {
 	            			if (sb.length() > 0) sb.append("<br>");
-	            			sb.append(resolve(Long.valueOf(id), entityType));
-		            	    fieldVO.setId(Long.valueOf(id));  // TODO need to support multi valued
+	            			Long longid = Long.valueOf(id);
+	            			sb.append(resolve(longid, entityType));
+		            	    fieldVO.setId(longid);  
+		            	    list.add(longid);
 	            		}
 	            	    fieldVO.setDisplayValue(sb.toString());
 	            	}

@@ -154,7 +154,11 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     }
 
     public String getDisplayValue() {
-        return firstName + " " + lastName;
+    	if (this.constituentAttributes.indexOf("organization") > -1) {
+    		return organizationName;
+    	} else {
+    		return firstName + " " + lastName;
+    	}
     }
 
     public String getEntityName() {

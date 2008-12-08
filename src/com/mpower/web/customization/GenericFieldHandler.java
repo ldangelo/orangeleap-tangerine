@@ -108,6 +108,7 @@ public class GenericFieldHandler implements FieldHandler {
 	            		for (String id : ids) {
 	            			if (sb.length() > 0) sb.append("<br>");
 	            			sb.append(resolve(Long.valueOf(id), entityType));
+		            	    fieldVO.setId(Long.valueOf(id));  // TODO need to support multi valued
 	            		}
 	            	    fieldVO.setDisplayValue(sb.toString());
 	            	}

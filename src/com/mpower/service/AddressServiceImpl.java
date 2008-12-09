@@ -27,7 +27,7 @@ public class AddressServiceImpl implements AddressService {
     @Resource(name = "addressDao")
     private AddressDao addressDao;
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Address saveAddress(Address address) {
         boolean found = false;
         if (address.getId() == null) {

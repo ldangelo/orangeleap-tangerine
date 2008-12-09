@@ -27,7 +27,7 @@ public class PhoneServiceImpl implements PhoneService {
     @Resource(name = "phoneDao")
     private PhoneDao phoneDao;
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Phone savePhone(Phone phone) {
         boolean found = false;
         if (phone.getId() == null) {

@@ -64,7 +64,7 @@ public class GiftServiceImpl implements GiftService {
     // @Resource(name = "creditGateway")
     // private MPowerCreditGateway creditGateway;
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
         if ("Credit Card".equals(gift.getPaymentType()) || "ACH".equals(gift.getPaymentType())) {
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
@@ -189,7 +189,7 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Gift refundGift(Long giftId) {
         Gift originalGift = giftDao.readGift(giftId);
         try {

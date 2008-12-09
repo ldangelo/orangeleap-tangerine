@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
     @Resource(name = "emailDao")
     private EmailDao emailDao;
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Email saveEmail(Email email) {
         boolean found = false;
         if (email.getId() == null) {

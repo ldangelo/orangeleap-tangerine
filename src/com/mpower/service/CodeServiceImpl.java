@@ -39,7 +39,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Code maintainCode(Code code) {
         Code oldCode = null;
         if (code.getId() != null) {

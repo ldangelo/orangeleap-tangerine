@@ -65,7 +65,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     private SiteDao siteDao;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Commitment maintainCommitment(Commitment commitment) {
         if ("Credit Card".equals(commitment.getPaymentType()) || "ACH".equals(commitment.getPaymentType())) {
             commitment.getPaymentSource().setType(commitment.getPaymentType());

@@ -25,7 +25,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource savePaymentSource(PaymentSource paymentSource) {
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
         if (paymentSource.isInactive()) {

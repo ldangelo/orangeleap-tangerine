@@ -32,12 +32,12 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     @Resource(name = "recurringGiftDao")
     private RecurringGiftDao recurringGiftDao;
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
         return recurringGiftDao.readRecurringGifts(date, statuses);
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public RecurringGift maintainRecurringGift(Commitment commitment) {
         RecurringGift rg = commitment.getRecurringGift();
         if (commitment.isAutoPay()) {

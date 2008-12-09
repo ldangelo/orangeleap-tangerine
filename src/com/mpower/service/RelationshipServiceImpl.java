@@ -26,7 +26,7 @@ import com.mpower.type.RelationshipType;
 
 @Service("relationshipService")
 public class RelationshipServiceImpl implements RelationshipService {
-
+ 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 

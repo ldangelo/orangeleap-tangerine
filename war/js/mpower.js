@@ -77,7 +77,7 @@ $(document).ready(function()
 	rowCloner("#gift_distribution tr:last");
 	$("#gift_distribution tr:last .deleteButton").hide();
 
-	$('#dialog').jqm({overlay:10}).jqDrag($('.jqmWindow h4'));
+	$('#dialog').jqm({overlay:50}).jqDrag($('.jqmWindow h4'));
 	
 	$("#newCodeForm").submit(function(){
 		$.ajax({

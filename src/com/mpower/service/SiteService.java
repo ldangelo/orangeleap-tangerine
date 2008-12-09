@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.mpower.domain.Site;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.type.PageType;
@@ -50,4 +51,14 @@ public interface SiteService {
      * @return
      */
     public Map<String, Object> readFieldValues(String siteName, PageType pageType, List<String> roles, Object object);
+    
+    /**
+     * Return field types
+     * @param siteName the site name to search
+     * @param pageType the page type to search
+     * @param roles the roles of the current user
+     * @param object
+     * @return
+     */
+    public Map<String, FieldDefinition> readFieldTypes(String siteName, PageType pageType, List<String> roles);
 }

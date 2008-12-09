@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.AddressMap;
 import com.mpower.util.EmailMap;
@@ -148,6 +149,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
     
     public Person() {
     	this.constituentAttributes = "person";
@@ -428,6 +432,14 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
 	public String getConstituentAttributes() {
 		return constituentAttributes;
+	}
+
+	public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+		this.fieldTypeMap = fieldTypeMap;
+	}
+
+	public Map<String, FieldDefinition> getFieldTypeMap() {
+		return fieldTypeMap;
 	}
 	
 

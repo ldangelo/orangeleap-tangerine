@@ -72,24 +72,25 @@ public class FieldDefinition implements Serializable {
     
 	// Helper methods
 	
-	// There should only be one master field relationship per site for this field.
-	public FieldRelationship getSiteMasterFieldRelationship() {
+	// Returns master fields for this site.
+	// There should usually only be one master field relationship per site for this field.
+	public List<FieldRelationship> getSiteMasterFieldRelationships(Site site) {
 		List<FieldRelationship> list = getMasterFieldRelationships();
-		list = getSiteFieldRelationships(list);
-		if (list.size() == 0) return null; else return list.get(0);
+		return getSiteFieldRelationships(site, list);
 	}
 	
 	// Returns detail fields for this site.
-	public List<FieldRelationship> getSiteDetailFieldRelationships() {
+	public List<FieldRelationship> getSiteDetailFieldRelationships(Site site) {
 		List<FieldRelationship> list = getDetailFieldRelationships();
-		return getSiteFieldRelationships(list);
+		return getSiteFieldRelationships(site, list);
 	}
 	
 	// Filter for this site.
-    private List<FieldRelationship> getSiteFieldRelationships(List<FieldRelationship> list) {
+    private List<FieldRelationship> getSiteFieldRelationships(Site site, List<FieldRelationship> list) {
     	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
 		for (FieldRelationship fr : list) {
-			if (fr.getSite().getName().equals(this.getSite().getName())) result.add(fr);
+			if (fr.getSite() == null) continue;
+			if (fr.getSite().getName().equals(site.getName()))  result.add(fr);
 		}
 		// If no site specific relationships exist for this field, the default relationships apply.
 		if (result.size() == 0) for (FieldRelationship fr : list) {

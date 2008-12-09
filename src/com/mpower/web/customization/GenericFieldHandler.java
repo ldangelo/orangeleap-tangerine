@@ -108,11 +108,13 @@ public class GenericFieldHandler implements FieldHandler {
 	            		String[] ids = ((String)propertyValue).split(",");
 	            		StringBuffer sb = new StringBuffer();
 	            		for (String id : ids) {
-	            			if (sb.length() > 0) sb.append("<br>");
-	            			Long longid = Long.valueOf(id);
-	            			sb.append(resolve(longid, entityType));
-		            	    fieldVO.setId(longid);  
-		            	    list.add(longid);
+	            			if (id.length() > 0) {
+		            			if (sb.length() > 0) sb.append("<br>");
+		            			Long longid = Long.valueOf(id);
+		            			sb.append(resolve(longid, entityType));
+			            	    fieldVO.setId(longid);  
+			            	    list.add(longid);
+	            			}
 	            		}
 	            	    fieldVO.setDisplayValue(sb.toString());
 	            	}

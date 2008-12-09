@@ -52,6 +52,24 @@ public class JPAPersonDao implements PersonDao {
         return em.find(Person.class, id);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Person> readPersons(String siteName, List<Long> ids) {
+    	
+        StringBuilder queryString = new StringBuilder();
+        for (Long id : ids) {
+        	if (queryString.length() > 0) queryString.append(',');
+        	queryString.append(id);
+        }
+        queryString.insert(0, "SELECT person FROM com.mpower.domain.Person person WHERE person.site.name = :siteName AND person.id IN (");
+        queryString.append(")");
+        
+        Query query = em.createQuery(queryString.toString());
+        query.setParameter("siteName", siteName);
+        return query.getResultList();
+        	
+    }
+
     public List<Person> readPersons(String siteName, Map<String, Object> params) {
         return readPersons(siteName, params, null);
     }

@@ -12,6 +12,8 @@ public interface PersonDao {
     public Person savePerson(Person person);
 
     public Person readPerson(Long id);
+    
+    public List<Person> readPersons(String siteName, List<Long> ids);
 
     public List<Person> readPersons(String siteName, Map<String, Object> params);
 

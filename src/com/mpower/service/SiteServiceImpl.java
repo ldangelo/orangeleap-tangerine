@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Site;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.SectionDefinition;
@@ -157,4 +158,21 @@ public class SiteServiceImpl implements SiteService {
         }
         return returnMap;
     }
+
+    @Override
+    public Map<String, FieldDefinition> readFieldTypes(String siteName, PageType pageType, List<String> roles) {
+        Map<String, FieldDefinition> returnMap = new HashMap<String, FieldDefinition>();
+        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
+        if (sfs != null) {
+            for (SectionField sectionField : sfs) {
+                String key = sectionField.getFieldDefinition().getFieldName();
+                if (sectionField.getSecondaryFieldDefinition() != null) {
+                    key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
+                }
+                returnMap.put(key, sectionField.getFieldDefinition());
+            }
+        }
+        return returnMap;
+    }
+
 }

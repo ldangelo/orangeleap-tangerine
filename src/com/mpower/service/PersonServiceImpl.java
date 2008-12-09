@@ -32,6 +32,9 @@ public class PersonServiceImpl implements PersonService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
+    @Resource(name = "relationshipService")
+    private RelationshipService relationshipService;
+
     @Resource(name = "personDao")
     private PersonDao personDao;
 
@@ -39,9 +42,10 @@ public class PersonServiceImpl implements PersonService {
     private SiteDao siteDao;
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(propagation = Propagation.REQUIRED)
     public Person maintainPerson(Person person) throws PersonValidationException {
         person = personDao.savePerson(person);
+        relationshipService.maintainRelationships(person);
         auditService.auditObject(person);
         return person;
     }

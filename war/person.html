@@ -918,8 +918,18 @@
 </div></div>
 
 		<style type="text/css">
-		    div.jqmWindow { font-family: arial, sans-serif; width: auto; min-width: 5em; border: 2px outset #EFEFEF; }
-		    div.jqmWindow h4 { margin: 0; text-align: center; }
+		    div.jqmWindow { font-family: arial, sans-serif; width: auto; min-width: 5em; border: 0; }
+		    div.jqmWindow h4 { margin: 0; padding: 0; line-height: 31px; text-align: center; vertical-align: middle; width: 100%; color: #FFF; }
+		    .jqmWindow .modalTopLeft { background: url(images/modal_top_left_2.png) no-repeat top left; height: 31px; padding-left: 10px; background-color: transparent; margin: 0 18px 0 0; }
+		    .jqmWindow .modalTopRight { background: url(images/modal_top_right_2.png) no-repeat top right; height: 31px; margin: 0 -25px 0 0; }
+		    .jqmWindow .modalBottomLeft { background: url(images/modal_bottom_left.png) no-repeat bottom left; height: 17px; padding: 0 0 0 10px; background-color: transparent; margin: 0 18px 0 0; position: relative; border: 0; }
+		    .jqmWindow .modalBottomRight { background: url(images/modal_bottom_right.png) no-repeat bottom right; height: 17px; width: 26px; position: absolute; right: -26px; top: 0; }
+		    .jqmWindow .modalContent { position: relative;  }
+		    .jqmWindow .modalSideRight { position: absolute; background-image: url(images/modal_side_right.png); background-repeat: repeat-y; background-position: top left; width: 9px; height: 100%; top: 0; right: -8px; }
+		    
+		    .jqmClose { right: 13px; top: 7px; }
+		    
+		    
 		    table.multiSelect { text-align: left; margin: auto 10px; }
 		    table.multiSelect thead th { text-align: left; background-color: #EFEFEF; padding-left: 2px; border-color: #D1D1D1 gray gray #D1D1D1; border-style: solid; border-width: 1px; line-height: 25px; }
 		    table.multiSelect thead th.arrows { width: 30px; background-color: transparent; border: 0; }
@@ -929,7 +939,7 @@
 		    table.multiSelect tbody ul ol { padding-right: 25px; white-space: nowrap; border-bottom: 1px solid #DDDDDD; line-height: 25px; cursor: pointer; }
 		    table.multiSelect tbody ul ol.picked { background-color:#BFE8FF; border-bottom:1px solid #FFFFFF; }
 		    table.multiSelect tbody ul ol a, table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
-		    div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; }
+		    div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
 		    div.modalSearch { margin-top: 10px; margin-bottom: 15px; }
 		    div.modalSearch input.defaultText { color: #AFAFAF; }
 			div.modalSearch label { font-weight: bold; margin: auto 3px auto; }
@@ -941,11 +951,16 @@
 		</style>
 		<!--[if IE]>
 		<style type="text/css">
-		    div.jqmWindow { border-color: #FF; }
-		    table.multiSelect tbody td { width: 20em; }
+		    /*table.multiSelect tbody td { width: 20em; }*/
+			.jqmWindow .modalTopLeft, .jqmWindow .modalTopRight, .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { height: auto; }
+			.jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }
 		</style>
 		<![endif]-->
 		<!--[if lte IE 6]>
+		<style type="text/css">
+		</style>
+		<![endif]-->
+		<!--[if IE 7]>
 		<style type="text/css">
 		</style>
 		<![endif]-->
@@ -1046,9 +1061,11 @@
 			}
 		</script>
 		<div class="jqmWindow" id="dialog">
-			<div class="titleBar">
-				<h4 class="dragHandle">Lookup</h4>
-				<img class="jqmClose" src="images/x.gif">
+			<div class="modalTopLeft">
+				<div class="modalTopRight">
+					<h4 class="dragHandle">Lookup</h4>
+					<img class="jqmClose" src="images/x.gif"/>
+  				</div>
 			</div>
 			<div class="modalContent">
 				<form method="POST" action="">
@@ -1100,6 +1117,11 @@
 			        	<input type="button" value="Cancel" class="saveButton" name="cancelButton" id="cancelButton"  />
 			        </div>
 				</form>
+			    <div class='modalSideRight'>&nbsp;</div>
+		    </div>
+		    <div class="modalBottomLeft">&nbsp;
+		    	<div class="modalBottomRight">&nbsp; 
+		    	</div>
 		    </div>
 		</div>
     </body>

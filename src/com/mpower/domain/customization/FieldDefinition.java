@@ -115,10 +115,10 @@ public class FieldDefinition implements Serializable {
     	}
     }
 
-    
+    private static String CUSTOM_FIELD_MAP = "customFieldMap[";
     
     public boolean isCustom() {
-        return (fieldName != null && fieldName.startsWith("customFieldMap"));
+        return (fieldName != null && fieldName.startsWith(CUSTOM_FIELD_MAP));
     }
 
     public EntityType getEntityType() {
@@ -131,6 +131,11 @@ public class FieldDefinition implements Serializable {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public String getCustomFieldName() {
+    	if (!isCustom()) return "";
+        return fieldName.substring(CUSTOM_FIELD_MAP.length(), fieldName.length() - 1);
     }
 
     public String getPropertyName() {

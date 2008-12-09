@@ -1,5 +1,6 @@
 package com.mpower.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,6 +56,8 @@ public class JPAPersonDao implements PersonDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Person> readPersons(String siteName, List<Long> ids) {
+    	
+    	if (ids == null || ids.size() == 0) return new ArrayList<Person>();
     	
         StringBuilder queryString = new StringBuilder();
         for (Long id : ids) {

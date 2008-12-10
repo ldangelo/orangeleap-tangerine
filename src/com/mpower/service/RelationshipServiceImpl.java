@@ -59,23 +59,18 @@ public class RelationshipServiceImpl implements RelationshipService {
        		    List<Long> oldids = getIds(person, oldFieldValue);
     			List<Long> newids = getIds(person, newFieldValue);
 
+    			logger.debug("fieldname="+key);
+    			logger.debug("oldids="+oldFieldValue);
+    			logger.debug("newids="+newFieldValue);
+    			String fieldlabel = fd.getDefaultLabel();
     			
-    			if (!oldFieldValue.equals(newFieldValue)) {
-    			
-	    			logger.debug("fieldname="+key);
-	    			logger.debug("oldids="+oldFieldValue);
-	    			logger.debug("newids="+newFieldValue);
-	    			String fieldlabel = fd.getDefaultLabel();
-	    			
-	    			// Maintain the other related fields
-		   			for (FieldRelationship fr : masters) {
-	    			    maintainRelationShip(fieldlabel, person, fr.getMasterField(), RelationshipDirection.MASTER, fr.getRelationshipType(), oldids, newids, ex);
-		   			}
-		   			for (FieldRelationship fr : details) {
-		    			maintainRelationShip(fieldlabel, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr.getRelationshipType(), oldids, newids, ex);
-		    		}
-	   			
-    			}
+    			// Maintain the other related fields
+	   			for (FieldRelationship fr : masters) {
+   			    	maintainRelationShip(fieldlabel, person, fr.getMasterField(), RelationshipDirection.MASTER, fr.getRelationshipType(), oldids, newids, ex);
+ 	   			}
+	   			for (FieldRelationship fr : details) {
+   			    	maintainRelationShip(fieldlabel, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr.getRelationshipType(), oldids, newids, ex);
+ 	   			}
 	   			
     		}
     	}

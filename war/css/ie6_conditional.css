@@ -35,3 +35,6 @@ div.lookupWrapper {
 ul.formFields div.lookupWrapper input {
 	width:91%;
 }
+a.hideText {
+	text-indent: -2000px;
+}

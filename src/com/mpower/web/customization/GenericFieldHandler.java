@@ -77,8 +77,15 @@ public class GenericFieldHandler implements FieldHandler {
         }
         fieldVO.setLabelText(labelText);
         
-        // For custom fields that depend on an entity attribute being selected to show.
-        fieldVO.setEntityAttributes(currentField.getFieldDefinition().getEntityAttributes());
+        // For fields that depend on an entity attribute being selected to show.
+        // For entity attributes like "employee,donor" the entity attribute css classes that activate this field are "ea-employee ea-donor"
+        String entityAttributes = currentField.getFieldDefinition().getEntityAttributes();
+    	StringBuilder entityAttributesStyle = new StringBuilder();
+    	if (entityAttributes != null) {
+    		String[] entityAttributesArray = entityAttributes.split(",");
+    		for (String ea : entityAttributesArray) entityAttributesStyle.append(" ea-"+ea);
+    	}
+        fieldVO.setEntityAttributes(entityAttributesStyle.toString().trim());
 
 
         FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);

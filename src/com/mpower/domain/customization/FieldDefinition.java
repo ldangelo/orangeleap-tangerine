@@ -51,6 +51,9 @@ public class FieldDefinition implements Serializable {
     @Enumerated(EnumType.STRING)
     private FieldType fieldType;
 
+    @Column(name = "ENTITY_ATTRIBUTES")
+    private String entityAttributes;
+
     @ManyToOne
     @JoinColumn(name = "SITE_NAME")
     private Site site;
@@ -99,22 +102,7 @@ public class FieldDefinition implements Serializable {
 		return result;
     }
     
-    // If a custom field name is like "customFieldMap[organization,donor.taxid]" the entity attribute css classes that activate this field are "ea-donor ea-employee"
-    public String getEntityAttributes() {
-    	String entityAttributes = "";
-    	if (isCustom()) {
-        	String name = getFieldName();
-        	int start = name.indexOf("[") + 1;
-        	int end = name.indexOf(".", start);
-        	if (start < 1 || end < 1) return entityAttributes;
-        	String[] ea = name.substring(start, end).split(",");
-        	for (String s: ea) entityAttributes += ((entityAttributes.length() > 0) ? " " : "") + "ea-" + s;
-        	return entityAttributes;
-    	} else {
-    		return entityAttributes;
-    	}
-    }
-
+ 
     private static String CUSTOM_FIELD_MAP = "customFieldMap[";
     
     public boolean isCustom() {
@@ -200,6 +188,14 @@ public class FieldDefinition implements Serializable {
 
 	public List<FieldRelationship> getDetailFieldRelationships() {
 		return detailFieldRelationships;
+	}
+
+	public void setEntityAttributes(String entityAttributes) {
+		this.entityAttributes = entityAttributes;
+	}
+
+	public String getEntityAttributes() {
+		return entityAttributes;
 	}
 	
 	

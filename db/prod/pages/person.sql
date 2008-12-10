@@ -23,7 +23,7 @@ INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORD
 // Constituent type picklist
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.constituentAttributes', 30000);
 
-// Tax Id field is used by organization, donor and employee (only FIELD_NAME is used to determine this; FIELD_DEFINITION_ID just has to be unique)
+// Tax Id field is used by organization, donor and employee
 INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1, 'person.customFieldMap[organization,donor,employee.taxid]', 30100);
 
 // The organization this employee belongs to

@@ -156,12 +156,22 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public Person() {
     	this.constituentAttributes = "person";
     }
+    
+    public String getCustomFieldValue(String fieldName) {
+    	CustomField customField = getCustomFieldMap().get(fieldName);
+    	if (customField == null || customField.getValue() == null) return null;
+        return customField.getValue();
+    }
 
     public String getDisplayValue() {
-    	if (this.constituentAttributes.indexOf("organization") > -1) {
-    		return organizationName;
+    	// Temporary until all person attributes are moved to custom attributes
+    	if (constituentAttributes.indexOf("organization") > -1) {
+    		String orgName = getCustomFieldValue("organization.organizationName");
+    		return (orgName == null) ? organizationName : orgName; 
     	} else {
-    		return firstName + " " + lastName;
+   		    String fname = getCustomFieldValue("person.firstName");
+   		    String lname = getCustomFieldValue("person.lastName");
+    		return (fname == null || lname == null) ? (firstName + " " + lastName) : fname + " " + lname;
     	}
     }
 

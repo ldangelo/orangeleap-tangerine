@@ -163,7 +163,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     }
     
     public boolean isOrganization() {
-    	return constituentAttributes.indexOf("organization") > -1;
+    	return constituentAttributes != null && constituentAttributes.indexOf("organization") > -1;
     }
 
     public String getDisplayValue() {
@@ -440,7 +440,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 	}
 
 	public String getConstituentAttributes() {
-		return constituentAttributes;
+		return constituentAttributes == null ? "" : constituentAttributes;
 	}
 
 	public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {

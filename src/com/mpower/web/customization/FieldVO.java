@@ -179,4 +179,8 @@ public class FieldVO {
 	public List<Long> getIds() {
 		return ids;
 	}
+	
+	public String getIdsString() {
+		return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getIds());
+	}
 }

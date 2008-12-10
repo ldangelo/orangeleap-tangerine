@@ -163,7 +163,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     }
     
     public boolean isOrganization() {
-    	return constituentAttributes != null && constituentAttributes.indexOf("organization") > -1;
+    	return getConstituentAttributes().contains("organization");
     }
 
     public String getDisplayValue() {

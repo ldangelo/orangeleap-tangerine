@@ -54,7 +54,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     
     // This could become a OneToMany relationship, instead of a comma-delimited string as it is now.
     @Column(name = "CONSTITUENT_ATTRIBUTES")
-    private String constituentAttributes;
+    private String constituentAttributes = "person";
 
     @Column(name = "TITLE")
     private String title;
@@ -154,7 +154,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     private Map<String, FieldDefinition> fieldTypeMap = null;
     
     public Person() {
-    	this.constituentAttributes = "person";
     }
     
     public String getCustomFieldValue(String fieldName) {
@@ -162,16 +161,16 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     	if (customField == null || customField.getValue() == null) return null;
         return customField.getValue();
     }
+    
+    public boolean isOrganization() {
+    	return constituentAttributes.indexOf("organization") > -1;
+    }
 
     public String getDisplayValue() {
-    	// Temporary until all person attributes are moved to custom attributes
-    	if (constituentAttributes.indexOf("organization") > -1) {
-    		String orgName = getCustomFieldValue("organization.organizationName");
-    		return (orgName == null) ? organizationName : orgName; 
+    	if (isOrganization()) {
+    		return organizationName; 
     	} else {
-   		    String fname = getCustomFieldValue("person.firstName");
-   		    String lname = getCustomFieldValue("person.lastName");
-    		return (fname == null || lname == null) ? (firstName + " " + lastName) : fname + " " + lname;
+    	    return firstName + " " + lastName;
     	}
     }
 

@@ -60,6 +60,7 @@ ul.formFields li.side input.lookup {
 }
 li.side {
 	padding:4px 0;
+	clear: left;
 }
 form .req {
 	color:red !important;
@@ -207,16 +208,17 @@ a.tableLookupLink {
 	text-decoration:none;
 	font-weight:bold;
 	padding:3px 5px;
-	background: #eee url(../images/buttonGradient.gif) repeat-x;
+	background: #c8c9c8 url(../images/buttonGradient.gif) repeat-x;
 	border:1px solid #777;
 	border-bottom:1px solid #535353;
 	margin:0 4px;
 	color:#000;
-	line-height:24px;
+	height:24px;
+	vertical-align: bottom;
 }
 .saveButton:hover,
 .searchButton:hover {
-	background: #eee url(../images/buttonGradientBlue.gif) repeat-x;
+	background: #c8c9c8 url(../images/buttonGradientBlue.gif) repeat-x;
 	cursor:pointer;
 }
 
@@ -381,6 +383,7 @@ div.lookupWrapper a.dp-choose-date {
 ul.formFields div.lookupWrapper input {
 	width:100%;
 }
+
 .lookupImg {
 	position:absolute;
 	top:0;
@@ -395,18 +398,50 @@ ul.formFields div.lookupWrapper input {
 	width:66%;
 	background:#eee;
 }
-.lookupField {
+.lookupField, .multiLookupField {
 	border:1px solid #7F9DB9;
 	padding:1px 4px;
 	float:left;
 	width:100%;
 }
+.multiLookupField {
+    padding-bottom: 2px; 
+    position: relative;
+}
+.multiLookupField a {
+	background: transparent url(../images/icons/view.gif) no-repeat top left;
+	display: block;
+	height: 16px;
+	width: 16px;
+	margin: 2px;
+	padding: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+a.hideText {
+	font-size: 0;
+    text-decoration: none;
+    line-height: 0;
+    color: transparent;
+}	
+
+ul.formFields li div.multiLookupField input { 
+    border: 0;
+    padding: 1px 0 0;
+    margin: 0;
+    width: auto;
+    display: block;
+}
+
+ul.formFields li div.linkableLookupField input { 
+    text-decoration: underline;
+    color: #525F95; 
+    cursor: pointer;
+}
+
 
 table.alignLeft td,
 table.alignLeft th {
 	text-align:left;
-}
-select.multiSelect { 
-	height: 56px; 
-	border:1px solid #7F9DB9;
 }

@@ -30,7 +30,9 @@ public class CustomField implements Serializable {
     @Column(name = "FIELD_NAME", nullable = false)
     private String name;
 
-    @Column(name = "FIELD_VALUE")
+    // This column should only be 'longtext' for types that need it, which is a good reason to break out this table 
+    // into separate ones for different entity types and/or field types.
+    @Column(name = "FIELD_VALUE", length = 8000)
     private String value;
 
     public Long getId() {

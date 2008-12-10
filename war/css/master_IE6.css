@@ -38,3 +38,9 @@ ul.formFields div.lookupWrapper input {
 a.hideText {
 	text-indent: -2000px;
 }
+
+/* Modal window */
+.jqmWindow .modalTopLeft, .jqmWindow .modalTopRight { background-image: url(none); background-color: #9AB7DC; }
+.jqmWindow .modalBottomLeft { background-image: url(none); }
+.jqmWindow .modalBottomRight { background-image: url(none); position: static; }
+.jqmWindow .modalSideRight { display: none; }

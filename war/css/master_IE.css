@@ -1,0 +1,6 @@
+/* Modal window */
+table.multiSelect tbody td { width: 20em; }
+div.jqmWindow { width: 40em; }
+div.jqmWindow .buttonsDiv, div.modalSearch  { zoom: 1; }
+.jqmWindow .modalTopLeft, .jqmWindow .modalTopRight, .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { height: auto; }
+.jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }

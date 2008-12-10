@@ -1,8 +1,11 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <link rel="stylesheet" type="text/css" media="screen, projection" href="css/screen.css" />
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
+<!--[if IE]>
+	<link href="css/master_IE.css" rel="stylesheet" type="text/css" />
+<![endif]-->
 <!--[if lte IE 6]>
-	<link href="css/ie6_conditional.css" rel="stylesheet" type="text/css" />
+	<link href="css/master_IE6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />

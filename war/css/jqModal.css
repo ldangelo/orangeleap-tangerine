@@ -13,10 +13,8 @@
     top: 17%;
     left: 50%;
     margin-left: -300px;
-    width: 400px;
-    background-color: eee;
     color: #333;
-    border: 1px solid #000;
+    font-family: arial, sans-serif; width: auto; min-width: 20em; border: 0;
 }
 .jqmWindow .titleBar {
 	background: #ffa648 url(../images/modalGradient.gif) repeat-x top left;
@@ -25,23 +23,31 @@
 }
 .jqmWindow h4 {
 	font-size:14px;
-	line-height:16px;
-	padding:4px;
-	margin:0 25px 0 0;
 	cursor:move;
+	margin: 0; padding: 0; line-height: 31px; text-align: center; vertical-align: middle; width: 100%; color: #FFF;
 }
-.modalContent  {
+
+.jqmWindow .modalTopLeft { background: url(../images/modal_top_left_blue.png) no-repeat top left; height: 31px; padding-left: 10px; background-color: transparent; margin: 0 18px 0 0; }
+.jqmWindow .modalTopRight { background: url(../images/modal_top_right_blue.png) no-repeat top right; height: 31px; margin: 0 -25px 0 0; }
+.jqmWindow .modalBottomLeft { background: url(../images/modal_bottom_left.png) no-repeat bottom left; height: 17px; padding: 0 0 0 10px; background-color: transparent; margin: 0 18px 0 0; position: relative; border: 0; }
+.jqmWindow .modalBottomRight { background: url(../images/modal_bottom_right.png) no-repeat bottom right; height: 17px; width: 26px; position: absolute; right: -26px; top: 0; }
+.jqmWindow .modalSideRight { position: absolute; background-image: url(../images/modal_side_right.png); background-repeat: repeat-y; background-position: top left; width: 9px; height: 100%; top: 0; right: -8px; }
+
+.modalContentWrapper  {
 	padding:4px;
-	background:#fff;
+	background-color: #fff;
+	position: relative; 
 }
 .jqmClose {
 	position:absolute;
-	right:3px;
-	top:3px;
 	cursor:pointer;
+	right: 13px; top: 7px; width: 17px; height: 17px; background-image: url(../images/x_blue.gif); background-repeat: no-repeat; background-position: top left; 
 }
+.jqmClose:hover { background-position: bottom left; }
 
 .jqmOverlay { background-color: #000; }
+
+
 
 /* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
 * iframe.jqm {position:absolute;top:0;left:0;z-index:-1;
@@ -49,7 +55,7 @@
 	height: expression(this.parentNode.offsetHeight+'px');
 }
 
-/* Fixed posistioning emulation for IE6
+/* Fixed positioning emulation for IE6
      Star selector used to hide definition from browsers other than IE6
      For valid CSS, use a conditional include instead */
 * html .jqmWindow {

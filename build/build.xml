@@ -57,7 +57,7 @@
 				<antcall target="5. Stop Tomcat"/>
 			</try>
 		</trycatch>
-		<sleep seconds="35"/>
+		<sleep seconds="20"/>
 		<antcall target="3. Undeploy War"/>
 		<antcall target="1. Deploy Exploded War"/>
 		<antcall target="4. Start Tomcat - Debug Mode"/>
@@ -96,6 +96,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/frequencyPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/statusPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/recurringPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/stateprovince.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/constituentAttributesPicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>

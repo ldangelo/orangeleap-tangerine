@@ -7,10 +7,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="http://alo-mpower.local:8080/mpower/css/screen.css" />
 <link rel="stylesheet" type="text/css" media="print" href="http://alo-mpower.local:8080/mpower/css/print.css" />
-<!--[if lte IE 6]>
-	<link href="http://alo-mpower.local:8080/mpower/css/ie6_conditional.css" rel="stylesheet" type="text/css" />
+<!--[if IE>
+	<link href="http://alo-mpower.local:8080/mpower/css/master_IE.css" rel="stylesheet" type="text/css" />
 <![endif]-->
-<!--[if lt IE 7]>
+<!--[if lte IE 6]>
+	<link href="http://alo-mpower.local:8080/mpower/css/master_IE6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 
@@ -918,60 +919,6 @@
 	</div>
 </div></div>
 
-		<style type="text/css">
-		    div.jqmWindow { font-family: arial, sans-serif; width: auto; min-width: 5em; border: 0; }
-		    div.jqmWindow h4 { margin: 0; padding: 0; line-height: 31px; text-align: center; vertical-align: middle; width: 100%; color: #FFF; }
-		    .jqmWindow .modalTopLeft { background: url(images/modal_top_left_blue.png) no-repeat top left; height: 31px; padding-left: 10px; background-color: transparent; margin: 0 18px 0 0; }
-		    .jqmWindow .modalTopRight { background: url(images/modal_top_right_blue.png) no-repeat top right; height: 31px; margin: 0 -25px 0 0; }
-		    .jqmWindow .modalBottomLeft { background: url(images/modal_bottom_left.png) no-repeat bottom left; height: 17px; padding: 0 0 0 10px; background-color: transparent; margin: 0 18px 0 0; position: relative; border: 0; }
-		    .jqmWindow .modalBottomRight { background: url(images/modal_bottom_right.png) no-repeat bottom right; height: 17px; width: 26px; position: absolute; right: -26px; top: 0; }
-		    .jqmWindow .modalContent { position: relative;  }
-		    .jqmWindow .modalSideRight { position: absolute; background-image: url(images/modal_side_right.png); background-repeat: repeat-y; background-position: top left; width: 9px; height: 100%; top: 0; right: -8px; }
-		    
-		    .jqmClose { right: 13px; top: 7px; width: 17px; height: 17px; background-image: url(images/x_blue.gif); background-repeat: no-repeat; background-position: top left; }
-		    .jqmClose:hover { background-position: bottom left; }
-		    
-		    table.multiSelect { text-align: left; margin: auto 10px; }
-		    table.multiSelect thead th { text-align: left; background-color: #EFEFEF; padding-left: 2px; border-color: #D1D1D1 gray gray #D1D1D1; border-style: solid; border-width: 1px; line-height: 25px; }
-		    table.multiSelect thead th.arrows { width: 30px; background-color: transparent; border: 0; }
-		    table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }
-		    table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; margin-left: 0; }
-		    table.multiSelect tbody ul { height: 15em; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; margin: 0; }
-		    table.multiSelect tbody ul ol { padding-right: 25px; white-space: nowrap; border-bottom: 1px solid #DDDDDD; line-height: 25px; cursor: pointer; }
-		    table.multiSelect tbody ul ol:hover { background-color: #FFFFCC; }
-		    table.multiSelect tbody ul ol.picked { background-color:#BFE8FF; border-bottom:1px solid #FFFFFF; }
-		    table.multiSelect tbody ul ol a, table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
-		    div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
-		    div.modalSearch { margin-top: 10px; margin-bottom: 15px; }
-		    div.modalSearch input.defaultText { color: #AFAFAF; }
-			div.modalSearch label { font-weight: bold; margin-right: 3px; }
-			table.multiSelect tbody td.arrows { vertical-align: middle; text-align: center; border: 0; width: 30px; min-width: 30px; }
-			table.multiSelect tbody td.arrows a { display: block; height: 18px; width: 19px; background-repeat: no-repeat; background-position: top left; overflow: hidden; margin: 7px auto; }
-			table.multiSelect tbody td.arrows a:hover { background-position: bottom left; }
-			table.multiSelect tbody td.arrows a.rightArrow { background-image: url(images/rightArrow.gif); }
-			table.multiSelect tbody td.arrows a.leftArrow { background-image: url(images/leftArrow.gif); }
-		</style>
-		<!--[if IE]>
-		<style type="text/css">
-		    table.multiSelect tbody td { width: 20em; }
-			div.jqmWindow { width: 40em; }
-			div.jqmWindow .buttonsDiv, div.modalSearch  { zoom: 1; }
-			.jqmWindow .modalTopLeft, .jqmWindow .modalTopRight, .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { height: auto; }
-			.jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }
-		</style>
-		<![endif]-->
-		<!--[if lte IE 6]>
-		<style type="text/css">
-		    .jqmWindow .modalTopLeft, .jqmWindow .modalTopRight { background-image: url(none); background-color: #9AB7DC; }
-		    .jqmWindow .modalBottomLeft { background-image: url(none); }
-		    .jqmWindow .modalBottomRight { background-image: url(none); position: static; }
-		    .jqmWindow .modalSideRight { display: none; }
-		</style>
-		<![endif]-->
-		<!--[if IE 7]>
-		<style type="text/css">
-		</style>
-		<![endif]-->
 		<script type="text/javascript">
 			$(document).ready(function() {
 				var callbackElem = null;

@@ -34,7 +34,7 @@
 .jqmWindow .modalSideRight { position: absolute; background-image: url(../images/modal_side_right.png); background-repeat: repeat-y; background-position: top left; width: 9px; height: 100%; top: 0; right: -8px; }
 
 .modalContentWrapper  {
-	padding:4px;
+	padding: 15px 4px 4px;
 	background-color: #fff;
 	position: relative; 
 }
@@ -59,7 +59,7 @@ table.multiSelect tbody ul ol:hover { background-color: #FFFFCC; }
 table.multiSelect tbody ul ol.picked { background-color:#BFE8FF; border-bottom:1px solid #FFFFFF; }
 table.multiSelect tbody ul ol a, table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
 div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
-div.modalSearch { margin-top: 10px; margin-bottom: 15px; }
+div.modalSearch { margin-bottom: 15px; padding-left: 10px; padding-right: 10px; }
 div.modalSearch input.defaultText { color: #AFAFAF; }
 div.modalSearch label { font-weight: bold; margin-right: 3px; }
 table.multiSelect tbody td.arrows { vertical-align: middle; text-align: center; border: 0; width: 30px; min-width: 30px; }

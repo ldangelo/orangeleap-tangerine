@@ -1,5 +1,6 @@
 package com.mpower.web.customization;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +21,6 @@ public class FieldVO {
     public List<String> referenceValues;
     private boolean cascading;
     public List<String> codes;
-    public List<String> displayValues;
     private FieldType fieldType;
     private Long id;
     private List<Long> ids;
@@ -29,21 +29,23 @@ public class FieldVO {
     private String siteName;
     private String fieldName;
     private Object fieldValue;
+    public List<String> fieldValues;
     private Object displayValue;
+    public List<String> displayValues;
     private String helpText;
     private String labelText;
     private String validationExpression;
     private boolean helpAvailable;
     private boolean required;
 
-    private int index;
+    private Object fieldToCheck;
+
+    public void setFieldToCheck(Object fieldToCheck) {
+        this.fieldToCheck = fieldToCheck;
+    }
 
     public List<String> getCodes() {
         return codes;
-    }
-
-    public List<String> getDisplayValues() {
-        return displayValues;
     }
 
     public String getFieldName() {
@@ -86,10 +88,6 @@ public class FieldVO {
         this.codes = codes;
     }
 
-    public void setDisplayValues(List<String> displayValues) {
-        this.displayValues = displayValues;
-    }
-
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
@@ -130,11 +128,16 @@ public class FieldVO {
         return fieldValue;
     }
 
+    @SuppressWarnings("unchecked")
     public void setFieldValue(Object fieldValue) {
         if (fieldValue instanceof String) {
             this.fieldValue = StringUtils.trimToNull((String) fieldValue);
         } else {
             this.fieldValue = fieldValue;
+        }
+        if (fieldValue != null && fieldValue.toString().indexOf(DELIMITER) > -1) {
+            String[] vals = org.springframework.util.StringUtils.commaDelimitedListToStringArray(fieldValue.toString());
+            this.fieldValues = CollectionUtils.arrayToList(vals);
         }
     }
 
@@ -150,11 +153,12 @@ public class FieldVO {
         return displayValue != null ? displayValue : fieldValue;
     }
 
+    @SuppressWarnings("unchecked")
     public void setDisplayValue(Object displayValue) {
         this.displayValue = displayValue;
         if (displayValue != null && displayValue.toString().indexOf(DELIMITER) > -1) {
-            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DELIMITER);
-            this.setDisplayValues(CollectionUtils.arrayToList(vals));
+            String[] vals = org.springframework.util.StringUtils.commaDelimitedListToStringArray(displayValue.toString());
+            this.displayValues = CollectionUtils.arrayToList(vals);
         }
     }
 
@@ -190,19 +194,39 @@ public class FieldVO {
         return ids;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public List<String> getFieldValues() {
+        return fieldValues;
     }
 
-    public Long getIdByIndex() {
-        return getIds().get(index);
+    public List<String> getDisplayValues() {
+        return displayValues;
     }
 
     public String getCodesString() {
-        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getCodes());
+        return getCSV(getCodes());
+    }
+
+    public String getDisplayValuesString() {
+        return getCSV(getDisplayValues());
+    }
+
+    public String getReferenceValuesString() {
+        return getCSV(getReferenceValues());
     }
 
     public String getIdsString() {
-        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getIds());
+        return getCSV(getIds());
+    }
+
+    public boolean isHasField() {
+        if (fieldValues == null || fieldValues.size() == 0) {
+            return fieldValue.equals(fieldToCheck);
+        }
+        return fieldValues.contains(fieldToCheck);
+    }
+
+    @SuppressWarnings("unchecked")
+    private String getCSV(Collection o) {
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(o);
     }
 }

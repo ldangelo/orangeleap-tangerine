@@ -2,7 +2,7 @@
 <div class="jqmWindow" id="dialog">
 	<div class="modalTopLeft">
 		<div class="modalTopRight">
-			<h4 class="dragHandle">Lookup</h4>
+			<h4 class="dragHandle" id="modalTitle">Lookup</h4>
 			<a href="javascript:void(0)" class="jqmClose hideText">Close</a>
 		</div>
 	</div>

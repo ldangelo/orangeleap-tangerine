@@ -110,8 +110,9 @@
 	    <div class="multiLookupField">
 	    	<c:set var="selectedCodes" value="" scope="page" />
 			<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-				<c:if test="${fieldVO.fieldValue eq code}">
-					<input type="text" name="<c:out value='${fieldVO.displayValues[status.index]}'/>" id="<c:out value='${fieldVO.displayValues[status.index]}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>"/>
+				<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
+				<c:if test="${fieldVO.hasField}">
+					<input type="text" name="<c:out value='${fieldVO.displayValues[status.index]}'/>" id="<c:out value='${fieldVO.displayValues[status.index]}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
 					<c:if test="${not empty selectedCodes}">
 						<c:set var="selectedCodes" value="${selectedCodes}," scope="page" />
 					</c:if>
@@ -119,39 +120,25 @@
 				</c:if>
 			</c:forEach>
 	        &nbsp;
-	        <input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>-allCodes" id="<c:out value='${fieldVO.fieldName}'/>-allCodes" value="${fieldVO.codesString}"/>
 	        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a> 
+		    <input type='hidden' name='availableCodes' id='<c:out value="${fieldVO.fieldName}"/>-availableCodes' value="<c:out value='${fieldVO.codesString}'/>"/>
+		    <input type='hidden' name='selectedCodes' id='<c:out value="${fieldVO.fieldName}"/>-selectedCodes' value="<c:out value='${selectedCodes}'/>"/>
+		    <input type='hidden' name='referenceValues' id='<c:out value="${fieldVO.fieldName}"/>-referenceValues' value="<c:out value='${fieldVO.referenceValuesString}'/>"/>
+		    <input type='hidden' name='displayValues' id='<c:out value="${fieldVO.fieldName}"/>-displayValues' value="<c:out value='${fieldVO.displayValuesString}'/>"/>
+		    <input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 	    </div>
-		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${selectedCodes}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${selectedCodes}'/>" />
 	</div>
-	<%-- <select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
-		<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-           <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
-           <c:choose>
-               <c:when test="${fieldVO.fieldValue eq code}">
-                   <c:set var="selected" value="selected" scope="page" />
-               </c:when>
-               <c:otherwise>
-                   <c:set var="selected" value="" scope="page"/>
-               </c:otherwise>
-           </c:choose>
-		   <option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
-			<c:out value='${fieldVO.displayValues[status.index]}'/>
-		   </option>
-		</c:forEach>
-	</select>--%>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">
 	<!-- TODO: move to tag library -->
 	<div class="lookupWrapper">
 	    <div class="multiLookupField linkableLookupField">
-	    	<c:set var="counter" value='0' scope='page'/>
-			<c:forEach var="val" items="${fieldVO.displayValues}">
-				<c:set target="${fieldVO}" property="index" value="${counter}"/>
+			<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
 				<c:choose>
-					<c:when test="${not empty fieldVO.idByIndex}">
+					<c:when test="${not empty fieldVO.ids[status.index]}">
 						<c:url value="/person.htm" var="entityLink" scope="page"> <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
-							<c:param name="id" value="${fieldVO.idByIndex}" />
+							<c:param name="id" value="${fieldVO.ids[status.index]}" />
 						</c:url>
 					</c:when>
 					<c:otherwise>
@@ -161,7 +148,6 @@
 				<c:set var="thisVal" value="${fn:trim(val)}"/>
 				<input type="text" name="<c:out value='${thisVal}'/>" id="<c:out value='${thisVal}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
 				<c:remove var="entityLink" scope="page" />
-				<c:set var="counter" value='${counter + 1}' scope='page'/>
 			</c:forEach>
 	        &nbsp;
 	        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>

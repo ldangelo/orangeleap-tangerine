@@ -5,6 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
+	<bean id="multiPicklist" class="com.mpower.controller.lookup.MultiPicklistController">
+		<property name="viewName" value="lookup/multiPicklist"/>
+	</bean>  
+       
 	<!-- Query Lookup -->
     <bean id="queryLookup" class="com.mpower.controller.lookup.QueryLookupController">
         <property name="queryLookupService" ref="queryLookupService"/>
@@ -19,6 +23,7 @@
     <bean id="queryLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
+                <prop key="/multiPicklist.htm">multiPicklist</prop>
                 <prop key="/queryLookup.htm">queryLookup</prop>
                 <prop key="/multiQueryLookup.htm">multiQueryLookup</prop>
 			</props>

@@ -334,8 +334,30 @@ var Lookup = {
 		this.lookupCaller = $(elem).parent();
 		
 		$("#dialog .modalContent").load("multiQueryLookup.htm?fieldDef=" + fieldDef, function() {
-			Lookup.multiLookupBindings();
+			Lookup.multiCommonBindings();
+			Lookup.multiQueryLookupBindings();
 			$("#dialog").jqmShow();
+		});
+	},
+	
+	loadMultiPicklist: function(elem) {
+		this.lookupCaller = $(elem).parent();
+		var queryString = this.lookupCaller.children("input[type=hidden]").serialize();
+		$.ajax({
+			type: "POST",
+			url: "multiPicklist.htm",
+			data: queryString,
+			success: function(html){
+				$("#dialog .modalContent").html(html);
+				$("#dialog h4#modalTitle").text($("#dialog input#modalTitleText").val());
+				Lookup.multiCommonBindings();
+				Lookup.multiPicklistBindings();
+				$("#dialog").jqmShow();
+			},
+			error: function(html){
+				$("#dialog .modalContent").html("The request was not available.  Please try again.");
+				$("#dialog").jqmShow();
+			}
 		});
 	},
 	
@@ -358,7 +380,7 @@ var Lookup = {
 		$("#availableOptions").load("multiQueryLookup.htm?view=resultsOnly&" + queryString);
 	},
 	
-	multiLookupBindings: function() {
+	multiQueryLookupBindings: function() {
 		$(".modalSearch input[type=text]").bind("focus", function() {
 			if ($(this).attr("defaultText") == $(this).val()) {
 				$(this).removeClass("defaultText");
@@ -371,6 +393,38 @@ var Lookup = {
 				$(this).val($(this).attr("defaultText"));
 			}
 		});
+		$(".modalSearch :input").bind("keyup", function(){
+			Lookup.doMultiQuery();
+		});
+		$(".modalSearch input#findButton").bind("click", function(){
+			Lookup.doMultiQuery();
+		});		
+		$("div.modalContent input#doneButton").bind("click", function() {
+			var idsStr = "";
+			var names = new Array();
+			var ids = new Array();
+			var hrefs = new Array();
+			$("ul#selectedOptions ol").each(function() {
+				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
+				var thisId = $chkBox.attr("id");
+				idsStr += thisId + ",";
+				ids[ids.length] = thisId;
+				names[names.length] = $.trim($(this).children("a[href='javascript:void(0)']").eq(0).text());
+				hrefs[hrefs.length] = $chkBox.attr("href");
+			});
+			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
+
+			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
+			
+			Lookup.lookupCaller.children("input[type=text]").remove();
+			for (var x = names.length - 1; x >= 0; x--) {
+				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
+			} 
+			$("#dialog").jqmHide();					
+		});		
+	},
+	
+	multiCommonBindings: function() {
 		$("table.multiSelect tbody").bind("click", function(event) {
 			var $target = $(event.target);
 			if ($target.is("ol,input[type=checkbox],a[href='javascript:void(0)']")) { 
@@ -415,27 +469,24 @@ var Lookup = {
 				$clone.appendTo("ul#availableOptions");
 			});
 		});
-		$(".modalSearch :input").bind("keyup", function(){
-			Lookup.doMultiQuery();
-		});
-		$("div.modalContent input#findButton").bind("click", function(){
-			Lookup.doMultiQuery();
-		});
 		$("div.modalContent input#cancelButton").bind("click", function() {
 			$("#dialog").jqmHide();					
 		});
+	},
+	
+	multiPicklistBindings: function() {
 		$("div.modalContent input#doneButton").bind("click", function() {
 			var idsStr = "";
 			var names = new Array();
 			var ids = new Array();
-			var hrefs = new Array();
+			var refs = new Array();
 			$("ul#selectedOptions ol").each(function() {
 				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
 				var thisId = $chkBox.attr("id");
 				idsStr += thisId + ",";
 				ids[ids.length] = thisId;
-				names[names.length] = $.trim($(this).children("a[href='javascript:void(0)']").eq(0).text());
-				hrefs[hrefs.length] = $chkBox.attr("href");
+				names[names.length] = $.trim($(this).text());
+				refs[refs.length] = $chkBox.attr("reference");
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 
@@ -443,7 +494,7 @@ var Lookup = {
 			
 			Lookup.lookupCaller.children("input[type=text]").remove();
 			for (var x = names.length - 1; x >= 0; x--) {
-				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
+				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' reference='" + refs[x] + "'></input>");
 			} 
 			$("#dialog").jqmHide();					
 		});		

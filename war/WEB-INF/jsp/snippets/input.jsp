@@ -89,7 +89,7 @@
 <c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 	<c:choose>
 		<c:when test="${!empty fieldVO.id}">
-			<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
+			<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
 				<c:param name="id" value="${fieldVO.id}" />
 			</c:url>
 		</c:when>
@@ -119,6 +119,7 @@
 				</c:if>
 			</c:forEach>
 	        &nbsp;
+	        <input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>-allCodes" id="<c:out value='${fieldVO.fieldName}'/>-allCodes" value="${fieldVO.codesString}"/>
 	        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a> 
 	    </div>
 		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${selectedCodes}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
@@ -149,7 +150,7 @@
 				<c:set target="${fieldVO}" property="index" value="${counter}"/>
 				<c:choose>
 					<c:when test="${not empty fieldVO.idByIndex}">
-						<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
+						<c:url value="/person.htm" var="entityLink" scope="page"> <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
 							<c:param name="id" value="${fieldVO.idByIndex}" />
 						</c:url>
 					</c:when>

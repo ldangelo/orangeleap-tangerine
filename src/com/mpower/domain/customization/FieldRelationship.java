@@ -41,6 +41,12 @@ public class FieldRelationship implements Serializable {
     @Enumerated(EnumType.STRING)
     private RelationshipType relationshipType;
 
+    // For ONE_TO_MANY relationships, if this flag is true, the following rule prohibiting loops in the tree will be enforced:
+    // User can't set the master (parent) field of an object to any of its children, or children's children, etc.
+    // (Adding a new detail child will also check this rule for the child.)
+    @Column(name = "CHECK_RECURSION")
+    private boolean recursive;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "MASTER_FIELD_DEFINITION_ID", referencedColumnName = "FIELD_DEFINITION_ID")
     private FieldDefinition masterField;
@@ -91,6 +97,14 @@ public class FieldRelationship implements Serializable {
 
 	public Site getSite() {
 		return site;
+	}
+
+	public void setRecursive(boolean recursive) {
+		this.recursive = recursive;
+	}
+
+	public boolean isRecursive() {
+		return recursive;
 	}
 
 

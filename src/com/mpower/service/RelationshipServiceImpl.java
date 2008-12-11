@@ -66,10 +66,10 @@ public class RelationshipServiceImpl implements RelationshipService {
     			
     			// Maintain the other related fields
 	   			for (FieldRelationship fr : masters) {
-   			    	maintainRelationShip(fieldlabel, person, fr.getMasterField(), RelationshipDirection.MASTER, fr.getRelationshipType(), oldids, newids, ex);
+   			    	maintainRelationShip(fieldlabel, person, fr.getMasterField(), RelationshipDirection.MASTER, fr.getRelationshipType(), fr.isRecursive(), oldids, newids, ex);
  	   			}
 	   			for (FieldRelationship fr : details) {
-   			    	maintainRelationShip(fieldlabel, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr.getRelationshipType(), oldids, newids, ex);
+   			    	maintainRelationShip(fieldlabel, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr.getRelationshipType(), fr.isRecursive(), oldids, newids, ex);
  	   			}
 	   			
     		}
@@ -113,11 +113,11 @@ public class RelationshipServiceImpl implements RelationshipService {
     
      
 	private void maintainRelationShip(String thisFieldLabel, Person person, FieldDefinition otherField, 
-			RelationshipDirection direction, RelationshipType fieldRelationshipType, 
+			RelationshipDirection direction, RelationshipType fieldRelationshipType, boolean isRecursive,
 			List<Long> oldIds, List<Long> newIds, PersonValidationException ex) 
 	throws PersonValidationException { 
 
-        logger.debug("maintainRelationShip() called for "+direction+","+fieldRelationshipType);	
+        logger.debug("maintainRelationShip() called for "+direction+","+fieldRelationshipType + ", recursive=" + isRecursive);	
         
         if (!otherField.isCustom()) { 
         	logger.error("Field Id specified in relationship is not a custom field: " + otherField.getId());

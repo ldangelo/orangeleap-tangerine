@@ -108,26 +108,21 @@
 	<!-- TODO: move to tag library -->
 	<div class="lookupWrapper">
 	    <div class="multiLookupField">
-	    	<c:set var="selectedCodes" value="" scope="page" />
 			<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 				<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
 				<c:if test="${fieldVO.hasField}">
 					<input type="text" name="<c:out value='${fieldVO.displayValues[status.index]}'/>" id="<c:out value='${fieldVO.displayValues[status.index]}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
-					<c:if test="${not empty selectedCodes}">
-						<c:set var="selectedCodes" value="${selectedCodes}," scope="page" />
-					</c:if>
-					<c:set var="selectedCodes" value="${selectedCodes}${code}" scope="page" />
 				</c:if>
 			</c:forEach>
 	        &nbsp;
 	        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a> 
 		    <input type='hidden' name='availableCodes' id='<c:out value="${fieldVO.fieldName}"/>-availableCodes' value="<c:out value='${fieldVO.codesString}'/>"/>
-		    <input type='hidden' name='selectedCodes' id='<c:out value="${fieldVO.fieldName}"/>-selectedCodes' value="<c:out value='${selectedCodes}'/>"/>
+		    <input type='hidden' name='selectedCodes' id='<c:out value="${fieldVO.fieldName}"/>-selectedCodes' value="<c:out value='${fieldVO.fieldValuesString}'/>"/>
 		    <input type='hidden' name='referenceValues' id='<c:out value="${fieldVO.fieldName}"/>-referenceValues' value="<c:out value='${fieldVO.referenceValuesString}'/>"/>
 		    <input type='hidden' name='displayValues' id='<c:out value="${fieldVO.fieldName}"/>-displayValues' value="<c:out value='${fieldVO.displayValuesString}'/>"/>
 		    <input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 	    </div>
-		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${selectedCodes}'/>" />
+		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
 	</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">

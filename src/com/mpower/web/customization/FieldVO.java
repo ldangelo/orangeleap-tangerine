@@ -16,7 +16,8 @@ public class FieldVO {
     protected final Log logger = LogFactory.getLog(getClass());
 
     // TODO: move elsewhere
-    public static final String DELIMITER = ",";
+    public static final String NORMAL_DELIMITER = ",";
+    public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
 
     public List<String> referenceValues;
     private boolean cascading;
@@ -135,8 +136,8 @@ public class FieldVO {
         } else {
             this.fieldValue = fieldValue;
         }
-        if (fieldValue != null && fieldValue.toString().indexOf(DELIMITER) > -1) {
-            String[] vals = org.springframework.util.StringUtils.commaDelimitedListToStringArray(fieldValue.toString());
+        if (fieldValue != null && fieldValue.toString().indexOf(NORMAL_DELIMITER) > -1) {
+            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(fieldValue.toString(), NORMAL_DELIMITER);
             this.fieldValues = CollectionUtils.arrayToList(vals);
         }
     }
@@ -156,8 +157,8 @@ public class FieldVO {
     @SuppressWarnings("unchecked")
     public void setDisplayValue(Object displayValue) {
         this.displayValue = displayValue;
-        if (displayValue != null && displayValue.toString().indexOf(DELIMITER) > -1) {
-            String[] vals = org.springframework.util.StringUtils.commaDelimitedListToStringArray(displayValue.toString());
+        if (displayValue != null && displayValue.toString().indexOf(DISPLAY_VALUE_DELIMITER) > -1) {
+            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
             this.displayValues = CollectionUtils.arrayToList(vals);
         }
     }
@@ -203,19 +204,23 @@ public class FieldVO {
     }
 
     public String getCodesString() {
-        return getCSV(getCodes());
+        return getDelimitedString(getCodes(), NORMAL_DELIMITER);
     }
 
     public String getDisplayValuesString() {
-        return getCSV(getDisplayValues());
+        return getDelimitedString(getDisplayValues(), DISPLAY_VALUE_DELIMITER);
+    }
+
+    public String getFieldValuesString() {
+        return getDelimitedString(getFieldValues(), NORMAL_DELIMITER);
     }
 
     public String getReferenceValuesString() {
-        return getCSV(getReferenceValues());
+        return getDelimitedString(getReferenceValues(), NORMAL_DELIMITER);
     }
 
     public String getIdsString() {
-        return getCSV(getIds());
+        return getDelimitedString(getIds(), NORMAL_DELIMITER);
     }
 
     public boolean isHasField() {
@@ -226,7 +231,7 @@ public class FieldVO {
     }
 
     @SuppressWarnings("unchecked")
-    private String getCSV(Collection o) {
-        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(o);
+    private String getDelimitedString(Collection o, String delimiter) {
+        return org.springframework.util.StringUtils.collectionToDelimitedString(o, delimiter);
     }
 }

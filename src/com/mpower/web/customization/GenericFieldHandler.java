@@ -119,7 +119,7 @@ public class GenericFieldHandler implements FieldHandler {
                         for (String id : ids) {
                             if (id.length() > 0) {
                                 if (sb.length() > 0) {
-                                    sb.append(", ");
+                                    sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
                                 }
                                 Long longid = Long.valueOf(id);
                                 sb.append(resolve(longid, entityType));

@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
+import com.mpower.web.customization.FieldVO;
 import com.mpower.web.customization.inputs.CodeValue;
 import com.mpower.web.customization.inputs.CodeValueComparator;
 
@@ -40,10 +41,10 @@ public class MultiPicklistController extends ParameterizableViewController {
         List<CodeValue> options = new ArrayList<CodeValue>();
 
         request.getParameterNames();
-        List<String> selectedCodes = getCSVParameterAsList(request.getParameter(SELECTED_CODES));
-        List<String> availableCodes = getCSVParameterAsList(request.getParameter(AVAILABLE_CODES));
-        List<String> referenceValues = getCSVParameterAsList(request.getParameter(REFERENCE_VALUES));
-        List<String> displayValues = getCSVParameterAsList(request.getParameter(DISPLAY_VALUES));
+        List<String> selectedCodes = getDelimitedStringAsList(request.getParameter(SELECTED_CODES), FieldVO.NORMAL_DELIMITER);
+        List<String> availableCodes = getDelimitedStringAsList(request.getParameter(AVAILABLE_CODES), FieldVO.NORMAL_DELIMITER);
+        List<String> referenceValues = getDelimitedStringAsList(request.getParameter(REFERENCE_VALUES), FieldVO.NORMAL_DELIMITER);
+        List<String> displayValues = getDelimitedStringAsList(request.getParameter(DISPLAY_VALUES), FieldVO.DISPLAY_VALUE_DELIMITER);
 
         for (int i = 0; i < availableCodes.size(); i++) {
             options.add(new CodeValue(availableCodes.get(i), displayValues.get(i), referenceValues.get(i), selectedCodes == null ? false : selectedCodes.contains(availableCodes.get(i))));
@@ -54,8 +55,8 @@ public class MultiPicklistController extends ParameterizableViewController {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> getCSVParameterAsList(String paramValue) {
-        String[] vals = StringUtils.commaDelimitedListToStringArray(paramValue);
+    private List<String> getDelimitedStringAsList(String paramValue, String delimiter) {
+        String[] vals = StringUtils.delimitedListToStringArray(paramValue, delimiter);
         return CollectionUtils.arrayToList(vals);
     }
 }

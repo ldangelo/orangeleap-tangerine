@@ -170,8 +170,15 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     	if (isOrganization()) {
     		return organizationName; 
     	} else {
-    	    return firstName + " " + lastName;
+    		return getFullName();
     	}
+    }
+    
+    public String getFullName() {
+	    String fullname = lastName + ", " + firstName;
+	    if (middleName != null && middleName.length() > 0) fullname = fullname + " " + middleName;
+	    if (suffix != null && suffix.length() > 0) fullname = fullname + ", " + suffix;
+	    return fullname;
     }
 
     public String getEntityName() {

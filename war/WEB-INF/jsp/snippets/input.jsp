@@ -86,7 +86,7 @@
 		</c:forEach>
 	</select>
 </c:when>
-<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">
+<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 	<c:choose>
 		<c:when test="${!empty fieldVO.id}">
 			<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
@@ -99,10 +99,74 @@
 	</c:choose>
 <div class="lookupWrapper">
 	<div style="float:left;" class="text lookupField" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>"><a target="_blank" href="<c:out value='${entityLink}'/>"><c:out value='${fieldVO.displayValue}'/></a>&nbsp;</div>
-	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
+	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="Lookup.loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
 	<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
 </div>
 <c:remove var="entityLink" scope="page" />
+</c:when>
+<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
+	<!-- TODO: move to tag library -->
+	<div class="lookupWrapper">
+	    <div class="multiLookupField">
+	    	<c:set var="selectedCodes" value="" scope="page" />
+			<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+				<c:if test="${fieldVO.fieldValue eq code}">
+					<input type="text" name="<c:out value='${fieldVO.displayValues[status.index]}'/>" id="<c:out value='${fieldVO.displayValues[status.index]}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>"/>
+					<c:if test="${not empty selectedCodes}">
+						<c:set var="selectedCodes" value="${selectedCodes}," scope="page" />
+					</c:if>
+					<c:set var="selectedCodes" value="${selectedCodes}${code}" scope="page" />
+				</c:if>
+			</c:forEach>
+	        &nbsp;
+	        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a> 
+	    </div>
+		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${selectedCodes}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+	</div>
+	<%-- <select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
+		<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+           <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
+           <c:choose>
+               <c:when test="${fieldVO.fieldValue eq code}">
+                   <c:set var="selected" value="selected" scope="page" />
+               </c:when>
+               <c:otherwise>
+                   <c:set var="selected" value="" scope="page"/>
+               </c:otherwise>
+           </c:choose>
+		   <option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
+			<c:out value='${fieldVO.displayValues[status.index]}'/>
+		   </option>
+		</c:forEach>
+	</select>--%>
+</c:when>
+<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">
+	<!-- TODO: move to tag library -->
+	<div class="lookupWrapper">
+	    <div class="multiLookupField linkableLookupField">
+	    	<c:set var="counter" value='0' scope='page'/>
+			<c:forEach var="val" items="${fieldVO.displayValues}">
+				<c:set target="${fieldVO}" property="index" value="${counter}"/>
+				<c:choose>
+					<c:when test="${not empty fieldVO.idByIndex}">
+						<c:url value="/${fieldVO.entityName}.htm" var="entityLink" scope="page">
+							<c:param name="id" value="${fieldVO.idByIndex}" />
+						</c:url>
+					</c:when>
+					<c:otherwise>
+						<c:set value="#" var="entityLink" scope="page" />
+					</c:otherwise>
+				</c:choose>
+				<c:set var="thisVal" value="${fn:trim(val)}"/>
+				<input type="text" name="<c:out value='${thisVal}'/>" id="<c:out value='${thisVal}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
+				<c:remove var="entityLink" scope="page" />
+				<c:set var="counter" value='${counter + 1}' scope='page'/>
+			</c:forEach>
+	        &nbsp;
+	        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>
+	    </div>
+		<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />		
+	</div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
 	<select name="<c:out value='${fieldVO.fieldName}'/>Month" id="<c:out value='${fieldVO.fieldName}'/>Month" class="expMonth">
@@ -139,7 +203,7 @@
 <div class="lookupWrapper">
 	<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 		codeType="<c:out value='${fieldVO.fieldName}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
+	<a tabindex="-1" style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
 </div>
 </c:when>
 <c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
@@ -176,9 +240,8 @@
 <c:when test="${fieldVO.fieldType == 'SPACER'}">
 	&nbsp;
 </c:when>
-<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES' or fieldVO.fieldType == 'MULTI_PICKLIST'}">
-	<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST'}">multiSelect </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
-		<c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST'}">multiple="true" size="3"</c:if>>
+<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
+	<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if>" id="<c:out value='${fieldVO.fieldName}'/>"
 		<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
            <c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
            <c:choose>

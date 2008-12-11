@@ -8,6 +8,8 @@
        http://www.directwebremoting.org/schema/spring-dwr
        http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
 
+	<import resource="contexts/lookup-context.xml"/>
+
     <!-- the application context definition for the mpower DispatcherServlet -->
 
     <bean id="messageSource" class="com.mpower.controller.validator.MpowerMessageSource">
@@ -442,10 +444,6 @@
         <property name="codeService" ref="codeService"/>
     </bean>
 
-    <bean id="queryLookup" class="com.mpower.controller.QueryLookupController">
-        <property name="queryLookupService" ref="queryLookupService"/>
-    </bean>
-
     <bean id="siteAudit" class="com.mpower.controller.AuditViewController">
         <property name="auditService" ref="auditService"/>
 		<property name="viewName" value="siteAudit"/>
@@ -494,7 +492,6 @@
                 <prop key="/siteAudit.htm">siteAudit</prop>
                 <prop key="/audit.htm">audit</prop>
                 <prop key="/welcome.htm">welcome</prop>
-                <prop key="/queryLookup.htm">queryLookup</prop>
                 <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
                 <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>

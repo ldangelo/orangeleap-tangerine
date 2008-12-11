@@ -101,7 +101,7 @@ jQuery.autocomplete = function(input, options) {
 				}
 				break;
 			case 113:  // F2
-				loadCodePopup($input);
+				Lookup.loadCodePopup($input);
 				break;
 			case 9:  // tab
 			case 13: // return

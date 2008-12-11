@@ -102,7 +102,7 @@ $(document).ready(function()
 		var queryString = $(".filters :input").serialize();
 		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
 	});
-	
+
 	$("input.code").each(function(){
 		if(typeof $(this).attr("autocomplete") == "undefined") {
 			$(this).autocomplete("codeHelper.htm?type="+$(this).attr("codeType"),
@@ -119,6 +119,14 @@ $(document).ready(function()
 	Date.format = 'mm/dd/yyyy';
 	$('input.date').datePicker({startDate:'01/01/1996'});
 	
+	/* TODO: move to a forms.js */
+	$("div.linkableLookupField").bind("click", function(event) {
+		var $target = $(event.target);
+		if ($target.is("input[href]")) { 
+			var linkHref = $target.attr("href");
+			window.open(linkHref, "_blank");
+		}
+	});
 
    }
 );
@@ -299,26 +307,162 @@ function getPage(elem) {
 		});
 		return false;
 }
-function loadCodePopup(elem) {
-	var lookupType = $(elem).eq(0).attr("lookup");
-	window.lookupCaller = elem;
-	$("#dialog .modalContent").load("codeHelper.htm?view=popup&type="+lookupType,function(){
-		$("#dialog").jqmShow();
-	});
+
+// TODO: move below to individual JS
+var Lookup = {
+	lookupCaller: null,
+	
+	loadCodePopup: function(elem) {
+		var lookupType = $(elem).eq(0).attr("lookup");
+		this.lookupCaller = elem;
+		$("#dialog .modalContent").load("codeHelper.htm?view=popup&type="+lookupType,function(){
+			$("#dialog").jqmShow();
+		});
+		return false;
+	},
+	
+	loadQueryLookup: function(elem) {
+		var fieldDef = $(elem).eq(0).attr("fieldDef");
+		this.lookupCaller = elem;
+		$("#dialog .modalContent").load("queryLookup.htm?fieldDef="+fieldDef,function(){
+			$("#dialog").jqmShow();
+		});
+	},
+	
+	loadMultiQueryLookup: function(elem) {
+		var fieldDef = $(elem).eq(0).attr("fieldDef");
+		this.lookupCaller = $(elem).parent();
+		
+		$("#dialog .modalContent").load("multiQueryLookup.htm?fieldDef=" + fieldDef, function() {
+			Lookup.multiLookupBindings();
+			$("#dialog").jqmShow();
+		});
+	},
+	
+	useQueryLookup: function(elem, value) {
+		this.lookupCaller.find("a").attr("href",$(elem).attr('gotourl')).html($(elem).attr('displayvalue'));
+		this.lookupCaller.nextAll(':hidden').val(value);
+		$('#dialog').jqmHide();
+		this.lookupCaller=null;
+	},
+	
+	setCodeValue: function(val) {
+		this.lookupCaller.val(val);
+		$('#dialog').jqmHide();
+		this.lookupCaller = null;
+		return false;
+	},
+	
+	doMultiQuery: function() {
+		var queryString = $("#searchOption").val() + "=" + $("#searchText").val() + "&fieldDef=" + $("#fieldDef").val();
+		$("#availableOptions").load("multiQueryLookup.htm?view=resultsOnly&" + queryString);
+	},
+	
+	multiLookupBindings: function() {
+		$(".modalSearch input[type=text]").bind("focus", function() {
+			if ($(this).attr("defaultText") == $(this).val()) {
+				$(this).removeClass("defaultText");
+				$(this).val("");
+			}
+		});
+		$(".modalSearch input[type=text]").bind("blur", function() {
+			if ($(this).val() == "") {
+				$(this).addClass("defaultText");
+				$(this).val($(this).attr("defaultText"));
+			}
+		});
+		$("table.multiSelect tbody").bind("click", function(event) {
+			var $target = $(event.target);
+			if ($target.is("ol,input[type=checkbox],a[href='javascript:void(0)']")) { 
+				if ($target.is("input[type=checkbox],a[href='javascript:void(0)']")) {
+					$target = $target.parent("ol").eq(0);
+				}
+				if ($target.hasClass("picked")) {
+					MultiSelect.uncheck($target);
+				}
+				else {
+					MultiSelect.check($target);
+				}
+			}
+		});
+		$("table.multiSelect thead input[type=checkbox]").bind("click", function() {
+			var isChecked = $(this).attr("checked");
+			var tdOrder = $(this).attr("selection") === "available" ? "first" : "last";
+			$("table.multiSelect tbody td:" + tdOrder + " ol").each(function() {
+				if (isChecked) {
+					MultiSelect.check($(this));
+				}
+				else {
+					MultiSelect.uncheck($(this));
+				}
+			});
+		});
+		$("table.multiSelect tbody a.rightArrow").bind("click", function() {
+			$("ul#availableOptions ol:has(':checkbox[checked]')").each(function() {
+				var $clone = $(this).clone();
+				MultiSelect.uncheck($clone);
+				$(this).remove();
+				$("input#availableAll").removeAttr("checked");
+				$clone.appendTo("ul#selectedOptions");
+			});
+		});
+		$("table.multiSelect tbody a.leftArrow").bind("click", function() {
+			$("ul#selectedOptions ol:has(':checkbox[checked]')").each(function() {
+				var $clone = $(this).clone();
+				MultiSelect.uncheck($clone);
+				$(this).remove();
+				$("input#selectedAll").removeAttr("checked");
+				$clone.appendTo("ul#availableOptions");
+			});
+		});
+		$(".modalSearch :input").bind("keyup", function(){
+			Lookup.doMultiQuery();
+		});
+		$("div.modalContent input#findButton").bind("click", function(){
+			Lookup.doMultiQuery();
+		});
+		$("div.modalContent input#cancelButton").bind("click", function() {
+			$("#dialog").jqmHide();					
+		});
+		$("div.modalContent input#doneButton").bind("click", function() {
+			var idsStr = "";
+			var names = new Array();
+			var ids = new Array();
+			var hrefs = new Array();
+			$("ul#selectedOptions ol").each(function() {
+				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
+				var thisId = $chkBox.attr("id");
+				idsStr += thisId + ",";
+				ids[ids.length] = thisId;
+				names[names.length] = $.trim($(this).children("a[href='javascript:void(0)']").eq(0).text());
+				hrefs[hrefs.length] = $chkBox.attr("href");
+			});
+			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
+
+			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
+			
+			Lookup.lookupCaller.children("input[type=text]").remove();
+			for (var x = names.length - 1; x >= 0; x--) {
+				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
+			} 
+			$("#dialog").jqmHide();					
+		});		
+	}
 }
-function loadQueryLookup(elem) {
-	var fieldDef = $(elem).eq(0).attr("fieldDef");
-	window.lookupCaller = elem;
-	$("#dialog .modalContent").load("queryLookup.htm?fieldDef="+fieldDef,function(){
-		$("#dialog").jqmShow();
-	});
+
+// TODO: move below to individual JS
+var MultiSelect = {
+	check: function(elem) {
+		elem.children("input[type=checkbox]").eq(0).attr("checked", "true");
+		elem.addClass("picked");
+	},
+	
+	uncheck: function(elem) {
+		elem.children("input[type=checkbox]").eq(0).removeAttr("checked");
+		elem.removeClass("picked");
+	}
 }
-function useQueryLookup(elem, value) {
-	window.lookupCaller.find("a").attr("href",$(elem).attr('gotourl')).html($(elem).attr('displayvalue'));
-	window.lookupCaller.nextAll(':hidden').val(value);
-	$('#dialog').jqmHide();
-	window.lookupCaller=null;
-}
+
 
 // Create a placeholder console object in case Firebug is not present.
 if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };

@@ -48,6 +48,28 @@
 .jqmOverlay { background-color: #000; }
 
 
+table.multiSelect { text-align: left; margin: auto 10px; }
+table.multiSelect thead th { text-align: left; background-color: #EFEFEF; padding-left: 2px; border-color: #D1D1D1 gray gray #D1D1D1; border-style: solid; border-width: 1px; line-height: 25px; }
+table.multiSelect thead th.arrows { width: 30px; background-color: transparent; border: 0; }
+table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }
+table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; margin-left: 0; }
+table.multiSelect tbody ul { height: 15em; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; margin: 0; }
+table.multiSelect tbody ul ol { padding-right: 25px; white-space: nowrap; border-bottom: 1px solid #DDDDDD; line-height: 25px; cursor: pointer; }
+table.multiSelect tbody ul ol:hover { background-color: #FFFFCC; }
+table.multiSelect tbody ul ol.picked { background-color:#BFE8FF; border-bottom:1px solid #FFFFFF; }
+table.multiSelect tbody ul ol a, table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
+div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
+div.modalSearch { margin-top: 10px; margin-bottom: 15px; }
+div.modalSearch input.defaultText { color: #AFAFAF; }
+div.modalSearch label { font-weight: bold; margin-right: 3px; }
+table.multiSelect tbody td.arrows { vertical-align: middle; text-align: center; border: 0; width: 30px; min-width: 30px; }
+table.multiSelect tbody td.arrows a { display: block; height: 18px; width: 19px; background-repeat: no-repeat; background-position: top left; overflow: hidden; margin: 7px auto; }
+table.multiSelect tbody td.arrows a:hover { background-position: bottom left; }
+table.multiSelect tbody td.arrows a.rightArrow { background-image: url(../images/rightArrow.gif); }
+table.multiSelect tbody td.arrows a.leftArrow { background-image: url(../images/leftArrow.gif); }
+
+
+
 
 /* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
 * iframe.jqm {position:absolute;top:0;left:0;z-index:-1;

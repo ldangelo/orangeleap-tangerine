@@ -76,15 +76,17 @@ public class GenericFieldHandler implements FieldHandler {
             }
         }
         fieldVO.setLabelText(labelText);
-        
+
         // For fields that depend on an entity attribute being selected to show.
         // For entity attributes like "employee,donor" the entity attribute css classes that activate this field are "ea-employee ea-donor"
         String entityAttributes = currentField.getFieldDefinition().getEntityAttributes();
-    	StringBuilder entityAttributesStyle = new StringBuilder();
-    	if (entityAttributes != null) {
-    		String[] entityAttributesArray = entityAttributes.split(",");
-    		for (String ea : entityAttributesArray) entityAttributesStyle.append(" ea-"+ea);
-    	}
+        StringBuilder entityAttributesStyle = new StringBuilder();
+        if (entityAttributes != null) {
+            String[] entityAttributesArray = entityAttributes.split(",");
+            for (String ea : entityAttributesArray) {
+                entityAttributesStyle.append(" ea-"+ea);
+            }
+        }
         fieldVO.setEntityAttributes(entityAttributesStyle.toString().trim());
 
 
@@ -97,52 +99,54 @@ public class GenericFieldHandler implements FieldHandler {
             Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
             fieldVO.setFieldValue(propertyValue);
             if (propertyValue!=null) {
-            	FieldType fieldType = currentField.getFieldDefinition().getFieldType();
-            	EntityType entityType = currentField.getFieldDefinition().getEntityType();
-            	boolean isCustom = currentField.getFieldDefinition().isCustom();
+                FieldType fieldType = currentField.getFieldDefinition().getFieldType();
+                EntityType entityType = currentField.getFieldDefinition().getEntityType();
+                boolean isCustom = currentField.getFieldDefinition().isCustom();
 
-            	BeanWrapper propBeanWrappermodel = new BeanWrapperImpl(propertyValue);
-	            if (propBeanWrappermodel.isReadableProperty("id")) {
-	            	fieldVO.setId((Long)propBeanWrappermodel.getPropertyValue("id"));
-	            }
-	            if (propBeanWrappermodel.isReadableProperty("displayValue")) {
-	            	fieldVO.setDisplayValue(propBeanWrappermodel.getPropertyValue("displayValue"));
-	            }
-	            if (isCustom) {
-   	            	if (fieldType == FieldType.QUERY_LOOKUP || fieldType == FieldType.MULTI_QUERY_LOOKUP) {
-   	            		List<Long> list = new ArrayList<Long>();
-   	            		fieldVO.setIds(list);
-	            		String[] ids = ((String)propertyValue).split(",");
-	            		StringBuffer sb = new StringBuffer();
-	            		for (String id : ids) {
-	            			if (id.length() > 0) {
-		            			if (sb.length() > 0) sb.append(", ");
-		            			Long longid = Long.valueOf(id);
-		            			sb.append(resolve(longid, entityType));
-			            	    fieldVO.setId(longid);  
-			            	    list.add(longid);
-	            			}
-	            		}
-	            	    fieldVO.setDisplayValue(sb.toString());
-	            	}
-	            }
-	            if (propBeanWrappermodel.isReadableProperty("entityName")) {
-	            	fieldVO.setEntityName(propBeanWrappermodel.getPropertyValue("entityName").toString());
-	            }
+                BeanWrapper propBeanWrappermodel = new BeanWrapperImpl(propertyValue);
+                if (propBeanWrappermodel.isReadableProperty("id")) {
+                    fieldVO.setId((Long)propBeanWrappermodel.getPropertyValue("id"));
+                }
+                if (propBeanWrappermodel.isReadableProperty("displayValue")) {
+                    fieldVO.setDisplayValue(propBeanWrappermodel.getPropertyValue("displayValue"));
+                }
+                if (isCustom) {
+                    if (fieldType == FieldType.QUERY_LOOKUP || fieldType == FieldType.MULTI_QUERY_LOOKUP) {
+                        List<Long> list = new ArrayList<Long>();
+                        fieldVO.setIds(list);
+                        String[] ids = ((String)propertyValue).split(",");
+                        StringBuffer sb = new StringBuffer();
+                        for (String id : ids) {
+                            if (id.length() > 0) {
+                                if (sb.length() > 0) {
+                                    sb.append(", ");
+                                }
+                                Long longid = Long.valueOf(id);
+                                sb.append(resolve(longid, entityType));
+                                fieldVO.setId(longid);
+                                list.add(longid);
+                            }
+                        }
+                        fieldVO.setDisplayValue(sb.toString());
+                    }
+                }
+                if (propBeanWrappermodel.isReadableProperty("entityName")) {
+                    fieldVO.setEntityName(propBeanWrappermodel.getPropertyValue("entityName").toString());
+                }
             }
         }
 
         return fieldVO;
     }
-    
+
     private String resolve(Long id, EntityType entityType) {
-	    if (entityType == EntityType.person) {
-	    	Person person = personService.readPersonById(id);
-	    	return person.getDisplayValue();
-	    }
-	    return ""+id;
+        if (entityType == EntityType.person) {
+            Person person = personService.readPersonById(id);
+            return person.getDisplayValue();
+        }
+        return ""+id;
     }
-    
-    
-    
+
+
+
 }

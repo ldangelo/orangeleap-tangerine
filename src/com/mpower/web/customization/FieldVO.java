@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.mpower.type.FieldType;
 
@@ -12,6 +13,9 @@ public class FieldVO {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    // TODO: move elsewhere
+    public static final String DELIMITER = ",";
 
     public List<String> referenceValues;
     private boolean cascading;
@@ -31,6 +35,8 @@ public class FieldVO {
     private String validationExpression;
     private boolean helpAvailable;
     private boolean required;
+
+    private int index;
 
     public List<String> getCodes() {
         return codes;
@@ -146,6 +152,10 @@ public class FieldVO {
 
     public void setDisplayValue(Object displayValue) {
         this.displayValue = displayValue;
+        if (displayValue != null && displayValue.toString().indexOf(DELIMITER) > -1) {
+            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DELIMITER);
+            this.setDisplayValues(CollectionUtils.arrayToList(vals));
+        }
     }
 
     public boolean isCascading() {
@@ -164,23 +174,35 @@ public class FieldVO {
         this.entityName = entityName;
     }
 
-	public void setEntityAttributes(String entityAttributes) {
-		this.entityAttributes = entityAttributes;
-	}
+    public void setEntityAttributes(String entityAttributes) {
+        this.entityAttributes = entityAttributes;
+    }
 
-	public String getEntityAttributes() {
-		return entityAttributes;
-	}
+    public String getEntityAttributes() {
+        return entityAttributes;
+    }
 
-	public void setIds(List<Long> ids) {
-		this.ids = ids;
-	}
+    public void setIds(List<Long> ids) {
+        this.ids = ids;
+    }
 
-	public List<Long> getIds() {
-		return ids;
-	}
-	
-	public String getIdsString() {
-		return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getIds());
-	}
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public Long getIdByIndex() {
+        return getIds().get(index);
+    }
+
+    public String getCodesString() {
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getCodes());
+    }
+
+    public String getIdsString() {
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(getIds());
+    }
 }

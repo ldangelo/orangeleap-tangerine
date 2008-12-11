@@ -10,7 +10,7 @@
 		<div class="lookupWrapper">
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> code" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 				codeType="<c:out value='${fieldVO.fieldName}'/>" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" />
-			<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#" onclick="loadCodePopup($(this).prev('input'));return false;">Lookup</a>
+			<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
 		</div>
 	</c:when>
 	<c:otherwise>

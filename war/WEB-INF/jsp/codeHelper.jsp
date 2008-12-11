@@ -34,7 +34,7 @@
 				<table style="width:100%">
 					<c:forEach items="${codes}" var="code">
 						<tr>
-							<td class="action"><a class="editInPlace" onclick="window.lookupCaller.val('<c:out value="${code.value}"/>');$('#dialog').jqmHide();window.lookupCaller=null;return false;" href="#">Use</a>
+							<td class="action"><a class="editInPlace" onclick="Lookup.setCodeValue('<c:out value="${code.value}"/>')" href="#">Use</a>
 							<td class="codeValue"><c:out value='${code.value}'/></td>
 							<td class="codeDescription"><c:out value='${code.description}'/></td>
 						</tr>
@@ -60,7 +60,7 @@
 			<table style="width:100%">
 				<c:forEach items="${codes}" var="code">
 					<tr>
-						<td class="action"><a class="editInPlace" onclick="window.lookupCaller.val('<c:out value="${code.value}"/>');$('#dialog').jqmHide();window.lookupCaller=null;return false;" href="#">Use</a>
+						<td class="action"><a class="editInPlace" onclick="Lookup.setCodeValue('<c:out value="${code.value}"/>')" href="#">Use</a>
 						<td class="codeValue"><c:out value='${code.value}'/></td>
 						<td class="codeDescription"><c:out value='${code.description}'/></td>
 					</tr>

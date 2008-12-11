@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+	<!-- Query Lookup -->
+    <bean id="queryLookup" class="com.mpower.controller.lookup.QueryLookupController">
+        <property name="queryLookupService" ref="queryLookupService"/>
+        <property name="viewName" value="queryLookup"/>
+    </bean>
+
+	<!-- Same as QueryLookup, except routes to multiQueryLookup page -->
+    <bean id="multiQueryLookup" class="com.mpower.controller.lookup.QueryLookupController" parent="queryLookup">
+        <property name="viewName" value="lookup/multiQueryLookup"/>
+    </bean>
+    
+    <bean id="queryLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/queryLookup.htm">queryLookup</prop>
+                <prop key="/multiQueryLookup.htm">multiQueryLookup</prop>
+			</props>
+		</property>
+	</bean>
+ 
+ </beans>
+       

@@ -6,4 +6,3 @@
 <%@ taglib prefix="spring" uri="/spring"%>
 <%@ taglib prefix="form" uri="/spring-form"%>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles"%>
-<%@ taglib prefix="widgets" uri="http://www.mpoweropen.com/widgets"%>

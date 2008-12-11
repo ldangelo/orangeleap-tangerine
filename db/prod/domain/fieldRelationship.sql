@@ -7,3 +7,7 @@
 // The participating field types of QUERY_LOOKUP and MULTI_QUERY_LOOKUP can currently fully determine the RELATIONSHIP_TYPE, however we may wish to add other, more refined, relationship types in the future. 
 // Spouse is a case of a ONE_TO_ONE relationship, and club membership would be a MANY_TO_MANY relationship.
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_MANY', 'person.customFieldMap[organization.employees]', 'person.customFieldMap[employee.organization]', null);
+INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_MANY', 'person.customFieldMap[headOfHousehold.familyMembers]', 'person.customFieldMap[familyMember.headOfHousehold]', null);
+INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('MANY_TO_MANY', 'person.customFieldMap[clubGroup.clubMembers]', 'person.customFieldMap[clubMember.clubGroups]', null);
+INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_ONE', 'person.customFieldMap[employee.alternate]', 'person.customFieldMap[employee.alternate]', null);
+INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_MANY', 'person.customFieldMap[organization.subsidiaryList]', 'person.customFieldMap[organization.parent]', null);

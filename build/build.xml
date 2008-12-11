@@ -145,6 +145,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/phoneManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/phone.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/phoneManagerEdit.sql"/>
+	     	<transaction src="${basedir}/db/dev/devSetup/rolluptest.sql"/>
 	     </sql>
 	</target>
 	

@@ -177,8 +177,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 			if (fieldRelationship.isRecursive() && newIds.contains(otherId)) {
 				// Self reference
 				if (thisId.equals(otherId)) {
-					String attemptToAddSelf = "Value for " + thisFieldLabel + " cannot reference itself.";
-					ex.addValidationResult(attemptToAddSelf);
+					//String attemptToAddSelf = "Value for " + thisFieldLabel + " cannot reference itself.";
+					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
 					continue;
 				}
 				if (thisCanBeMultiValued) {
@@ -186,15 +186,15 @@ public class RelationshipServiceImpl implements RelationshipService {
 					List<Long> descendants = new ArrayList<Long>();
 					getDescendants(descendants, otherPerson, customFieldName, 0);
 					if (descendants.contains(thisId)) {
-						String attemptToSetChildToAncestor = "A value in dependent list field " + thisFieldLabel + " cannot itself reference this item as one of its dependent items.";
-						ex.addValidationResult(attemptToSetChildToAncestor);
+						//String attemptToSetChildToAncestor = "A value in dependent list field " + thisFieldLabel + " cannot itself reference this item as one of its dependent items.";
+						ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
 						continue;
 					}
 				} else {
 					// Attempt to set parent to a descendant
 					if (checkDescendents.contains(otherId)) {
-						String attemptToSetParentToDescendent = "Value for field " + thisFieldLabel + " cannot reference a lower level item.";
-						ex.addValidationResult(attemptToSetParentToDescendent);
+						//String attemptToSetParentToDescendent = "Value for field " + thisFieldLabel + " cannot reference a lower level item.";
+						ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
 						continue;
 					}
 				}
@@ -256,7 +256,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 			String recursionError = "Relationship tree for "+customFieldName+" exceeds maximum number of levels.";
 			logger.error(recursionError);
 			PersonValidationException ex = new PersonValidationException();
-			ex.addValidationResult("", new Object[]{customFieldName}); //TODO add message key
+			ex.addValidationResult("relationshipTooManyLevels", new Object[]{customFieldName}); 
 			throw ex;
 		}
 

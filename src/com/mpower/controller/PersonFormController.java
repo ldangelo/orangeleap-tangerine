@@ -71,17 +71,21 @@ public class PersonFormController extends SimpleFormController {
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Person p = (Person) command;
         logger.info("**** p's first name is: " + p.getFirstName());
+        
+        boolean saved = true;
+        
         Person current = null;
         try {
             current = personService.maintainPerson(p);
         } catch (PersonValidationException e) {
         	current = p;
             e.createMessages(errors);
+            saved = false;
         }
 
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("person", current);
-        mav.addObject("saved", true);
+        mav.addObject("saved", saved);
         mav.addObject("id", current.getId());
         return mav;
     }

@@ -156,6 +156,10 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public Person() {
     }
     
+    public String toString() {
+    	return getDisplayValue();
+    }
+    
     public String getCustomFieldValue(String fieldName) {
     	CustomField customField = getCustomFieldMap().get(fieldName);
     	if (customField == null || customField.getValue() == null) return null;

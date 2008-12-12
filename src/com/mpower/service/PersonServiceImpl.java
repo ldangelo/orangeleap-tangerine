@@ -42,7 +42,7 @@ public class PersonServiceImpl implements PersonService {
     private SiteDao siteDao;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
     public Person maintainPerson(Person person) throws PersonValidationException {
         person = personDao.savePerson(person);
         relationshipService.maintainRelationships(person);

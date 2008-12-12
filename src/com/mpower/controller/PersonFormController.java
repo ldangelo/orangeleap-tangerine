@@ -75,6 +75,7 @@ public class PersonFormController extends SimpleFormController {
         try {
             current = personService.maintainPerson(p);
         } catch (PersonValidationException e) {
+        	current = p;
             e.createMessages(errors);
         }
 

@@ -109,4 +109,7 @@ img {
 .capitalized {
 	text-transform:capitalize;
 }
+.noDisplay {
+	display: none !important;
+}
 /* input field borders are #7f9db9 by default in firefox */

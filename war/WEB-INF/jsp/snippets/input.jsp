@@ -110,7 +110,7 @@
 			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<input type='<c:choose><c:when test="${fieldVO.hasField}">text</c:when><c:otherwise>hidden</c:otherwise></c:choose>' class="multiPicklistOption"
+						<input type='text' class='multiPicklistOption <c:if test="${fieldVO.hasField == false}">noDisplay</c:if>' 
 							name="<c:out value='${code}'/>" id="option-<c:out value='${code}'/>" code="<c:out value='${code}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
 					</c:forEach>
 			        &nbsp;

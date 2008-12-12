@@ -288,7 +288,7 @@ var MPower = {
 				var $picklists = $(selector).filter(".picklist");
 				var $nested = $(selector).find(".picklist");
 				$picklists = $picklists.add($nested);
-				if ((isMultiPicklist === true && this.type == "text") || 
+				if ((isMultiPicklist === true && $(this).hasClass("noDisplay") === false) || 
 					(isMultiPicklist === false && this.selected)) {
 					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
 					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
@@ -399,7 +399,7 @@ var Lookup = {
 		$(inputs).each(function() {
 			var $elem = $(this);
 			if ($elem.hasClass("multiPicklistOption")) {
-				queryString += counter++ + "=" + escape($elem.attr("code")) + "|" + escape($elem.attr("value")) + "|" + escape($elem.attr("reference")) + "|" + ($elem.attr("type") == "text" ? "true" : "false") + "&";
+				queryString += counter++ + "=" + escape($elem.attr("code")) + "|" + escape($elem.attr("value")) + "|" + escape($elem.attr("reference")) + "|" + ($elem.hasClass("noDisplay") ? "false" : "true") + "&";
 			}
 			else {
 				queryString += $elem.serialize();
@@ -537,10 +537,10 @@ var Lookup = {
 			
 			Lookup.lookupCaller.children("input.multiPicklistOption").each(function() {
 				if (selectedNames[this.name] === true) {
-					this.type = "text";
+					$(this).removeClass("noDisplay");
 				}
 				else {
-					this.type = "hidden";
+					$(this).addClass("noDisplay");
 				}
 			});
 			$(Lookup.lookupCaller).each(MPower.toggleReferencedElements);

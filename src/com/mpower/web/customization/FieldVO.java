@@ -130,16 +130,11 @@ public class FieldVO {
         return fieldValue;
     }
 
-    @SuppressWarnings("unchecked")
     public void setFieldValue(Object fieldValue) {
         if (fieldValue instanceof String) {
             this.fieldValue = StringUtils.trimToNull((String) fieldValue);
         } else {
             this.fieldValue = fieldValue;
-        }
-        if (fieldValue != null) {
-            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(fieldValue.toString(), NORMAL_DELIMITER);
-            this.fieldValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
         }
     }
 
@@ -155,13 +150,8 @@ public class FieldVO {
         return displayValue != null ? displayValue : fieldValue;
     }
 
-    @SuppressWarnings("unchecked")
     public void setDisplayValue(Object displayValue) {
         this.displayValue = displayValue;
-        if (displayValue != null) {
-            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
-            this.displayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
-        }
     }
 
     public boolean isCascading() {
@@ -196,12 +186,32 @@ public class FieldVO {
         return ids;
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getFieldValues() {
+        if (this.fieldValues == null) {
+            if (fieldValue == null) {
+                return null;
+            }
+            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(fieldValue.toString(), NORMAL_DELIMITER);
+            this.fieldValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
+        }
         return fieldValues;
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getDisplayValues() {
+        if (this.displayValues == null) {
+            if (displayValue == null) {
+                return null;
+            }
+            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
+            this.displayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
+        }
         return displayValues;
+    }
+
+    public void setDisplayValues(List<String> displayValues) {
+        this.displayValues = displayValues;
     }
 
     public String getCodesString() {

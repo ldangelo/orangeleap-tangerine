@@ -65,6 +65,7 @@ hurley/hurley/company2/<b>ROLE_USER</b>
 		if (savedOrgName != null && savedOrgName != "") {
 			$("#sitename").attr("value",savedOrgName);
 		}
+		$("input#j_username").focus();
 	});
 </script>
 </body>

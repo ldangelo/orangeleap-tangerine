@@ -1,5 +1,4 @@
-$(document).ready(function()
-   {
+$(document).ready(function() {
     //eliminate these
 	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
 
@@ -13,8 +12,8 @@ $(document).ready(function()
        	$("#savedMarker").fadeOut("slow");
 	});
 
-	$(".picklist").each(toggleReferencedElements);
-	$(".picklist").change(toggleReferencedElements);
+	$(".picklist").each(MPower.toggleReferencedElements);
+	$(".picklist").change(MPower.toggleReferencedElements);
 
 	$(".cluetip[rel]").cluetip({
 		cluetipClass:'default',
@@ -245,49 +244,6 @@ function editInPlace(elem) {
 	$(elem).parent().parent().load($(elem).attr("href"));
 	return false;
 }
-	
-function toggleReferencedElements() {
-	var elem=this;
-	var $toBeShown;
-	var $toBeHidden;
-	var $toBeToggled;
-	var $toBeHiddenNested;
-	for(var i = 0;i < elem.options.length; i++) {
-		var selector = elem[i].getAttribute('reference');
-		if(selector!=null && selector.length) {
-			var $target = $(selector);
-			var $picklists = $(selector).filter(".picklist");
-			var $nested = $(selector).find(".picklist");
-			$picklists = $picklists.add($nested);
-			if (elem.options[i].selected) {
-				$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-				$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
-			} else {
-				$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-				$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
-			}
-		}
-	}
-	if(typeof $toBeHidden != "undefined") { $toBeHidden.hide(); }
-	if(typeof $toBeHiddenNested != "undefined") { $toBeHiddenNested.each(hideAllReferencedElements); }
-	if(typeof $toBeToggled != "undefined") { $toBeToggled.each(toggleReferencedElements); }
-	if(typeof $toBeShown != "undefined") { $toBeShown.show(); }
-}
-function hideAllReferencedElements() {
-	var elem=this;
-	for(var i=0;i<elem.options.length;i++) {
-		var selector = elem[i].getAttribute('reference');
-		if(selector!=null && selector.length) {
-			var $target = $(selector);
-			var $picklists = $(selector).filter(".picklist");
-			var $nested = $(selector).find(".picklist");
-			$picklists = $picklists.add($nested);
-			$target.hide();
-			$picklists.each(hideAllReferencedElements);
-		}
-	}
-}
-
 
 function getPage(elem) {
 		var queryString = $(".searchForm").find("input").serialize();
@@ -306,6 +262,84 @@ function getPage(elem) {
 			}
 		});
 		return false;
+}
+
+var MPower = {
+	toggleReferencedElements: function () {
+		var elem = this;
+		var $toBeShown;
+		var $toBeHidden;
+		var $toBeToggled;
+		var $toBeHiddenNested;
+		
+/*		
+		var recursive = function() {
+			var elem = this;
+			for (var i = 0;i < elem.options.length; i++) {
+				var selector = elem[i].getAttribute('reference');
+				if (selector != null && selector.length) {
+					var $target = $(selector);
+					var $picklists = $(selector).filter(".picklist");
+					var $nested = $(selector).find(".picklist");
+					$picklists = $picklists.add($nested);
+					if (elem.options[i].selected) {
+						$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
+						$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
+					} else {
+						$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
+						$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
+					}
+				}
+			}
+			
+		}
+		*/
+		for (var i = 0;i < elem.options.length; i++) {
+			var selector = elem[i].getAttribute('reference');
+			if (selector != null && selector.length) {
+				var $target = $(selector);
+				var $picklists = $(selector).filter(".picklist");
+				var $nested = $(selector).find(".picklist");
+				$picklists = $picklists.add($nested);
+				if (elem.options[i].selected) {
+					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
+					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
+				} else {
+					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
+					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
+				}
+			}
+		}
+		if (typeof $toBeHidden != "undefined") { 
+			$toBeHidden.hide(); 
+		}
+		if (typeof $toBeShown != "undefined") { 
+			$toBeShown.show(); 
+		}
+		if (typeof $toBeHiddenNested != "undefined") { 
+			$toBeHiddenNested.each(MPower.hideAllReferencedElements); 
+		}
+		if (typeof $toBeToggled != "undefined") { 
+			$toBeToggled.each(MPower.toggleReferencedElements); 
+		}
+	},
+	
+	hideAllReferencedElements: function() {
+		var elem = this;
+		for(var i = 0; i < elem.options.length;i++) {
+			var selector = elem[i].getAttribute('reference');
+			if(selector != null && selector.length) {
+				var $target = $(selector);
+				var $picklists = $(selector).filter(".picklist");
+				var $nested = $(selector).find(".picklist");
+				$picklists = $picklists.add($nested);
+				$target.hide();
+				$picklists.each(MPower.hideAllReferencedElements);
+			}
+		}
+		/*
+		*/
+	}	
 }
 
 // TODO: move below to individual JS

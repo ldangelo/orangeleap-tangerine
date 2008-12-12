@@ -1,5 +1,6 @@
 package com.mpower.web.customization;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -136,9 +137,9 @@ public class FieldVO {
         } else {
             this.fieldValue = fieldValue;
         }
-        if (fieldValue != null && fieldValue.toString().indexOf(NORMAL_DELIMITER) > -1) {
+        if (fieldValue != null) {
             String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(fieldValue.toString(), NORMAL_DELIMITER);
-            this.fieldValues = CollectionUtils.arrayToList(vals);
+            this.fieldValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
         }
     }
 
@@ -157,9 +158,9 @@ public class FieldVO {
     @SuppressWarnings("unchecked")
     public void setDisplayValue(Object displayValue) {
         this.displayValue = displayValue;
-        if (displayValue != null && displayValue.toString().indexOf(DISPLAY_VALUE_DELIMITER) > -1) {
+        if (displayValue != null) {
             String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
-            this.displayValues = CollectionUtils.arrayToList(vals);
+            this.displayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
         }
     }
 

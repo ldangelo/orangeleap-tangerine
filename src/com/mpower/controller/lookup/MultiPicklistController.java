@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
@@ -24,39 +23,36 @@ public class MultiPicklistController extends ParameterizableViewController {
     protected final Log logger = LogFactory.getLog(getClass());
     private final CodeValueComparator comparator = new CodeValueComparator();
 
-    public static final String SELECTED_CODES = "selectedCodes";
-    public static final String AVAILABLE_CODES = "availableCodes";
-    public static final String REFERENCE_VALUES = "referenceValues";
-    public static final String DISPLAY_VALUES = "displayValues";
-
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView mv = new ModelAndView(getViewName());
-        mv.addObject("picklistOptions", getParameters(request));
+        mv.addObject("picklistOptions", getOptions(request));
         mv.addObject("modalTitle", "Select " + request.getParameter("labelText"));
         return mv;
     }
 
-    private List<CodeValue> getParameters( HttpServletRequest request) {
+    /**
+     * Expects a query string in the format A=code1|displayValue1|reference1|selected1&B=code2|displayValue2|reference2|selected2& ...
+     * where the key is irrelevant and the value includes the code (index 0), display value (index 1), reference (index 2), and if selected (index 3), in that order
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private List<CodeValue> getOptions( HttpServletRequest request) {
         List<CodeValue> options = new ArrayList<CodeValue>();
 
-        request.getParameterNames();
-        List<String> selectedCodes = getDelimitedStringAsList(request.getParameter(SELECTED_CODES), FieldVO.NORMAL_DELIMITER);
-        List<String> availableCodes = getDelimitedStringAsList(request.getParameter(AVAILABLE_CODES), FieldVO.NORMAL_DELIMITER);
-        List<String> referenceValues = getDelimitedStringAsList(request.getParameter(REFERENCE_VALUES), FieldVO.NORMAL_DELIMITER);
-        List<String> displayValues = getDelimitedStringAsList(request.getParameter(DISPLAY_VALUES), FieldVO.DISPLAY_VALUE_DELIMITER);
-
-        for (int i = 0; i < availableCodes.size(); i++) {
-            options.add(new CodeValue(availableCodes.get(i), displayValues.get(i), referenceValues.get(i), selectedCodes == null ? false : selectedCodes.contains(availableCodes.get(i))));
+        List<String[]> values = new ArrayList<String[]>(request.getParameterMap().values());
+        for (int x = 0; x < values.size(); x++) {
+            String[] optionString = values.get(x);
+            if (optionString != null && optionString.length > 0) {
+                String[] s = StringUtils.delimitedListToStringArray(optionString[0], FieldVO.DISPLAY_VALUE_DELIMITER);
+                if (s != null && s.length == 4) {
+                    options.add(new CodeValue(s[0], s[1], s[2], "true".equals(s[3])));
+                }
+            }
         }
 
         Collections.sort(options, comparator);
         return options;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> getDelimitedStringAsList(String paramValue, String delimiter) {
-        String[] vals = StringUtils.delimitedListToStringArray(paramValue, delimiter);
-        return CollectionUtils.arrayToList(vals);
     }
 }

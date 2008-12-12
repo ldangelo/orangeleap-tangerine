@@ -107,40 +107,17 @@
 		<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 			<%-- TODO: move to tag library --%>
 			<div class="lookupWrapper">
-			    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
+			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<c:if test="${fieldVO.hasField}">
-							<input type="text" name="<c:out value='${fieldVO.displayValues[status.index]}'/>" id="<c:out value='${fieldVO.displayValues[status.index]}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
-						</c:if>
+						<input type='<c:choose><c:when test="${fieldVO.hasField}">text</c:when><c:otherwise>hidden</c:otherwise></c:choose>' class="multiPicklistOption"
+							name="<c:out value='${code}'/>" id="option-<c:out value='${code}'/>" code="<c:out value='${code}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
 					</c:forEach>
 			        &nbsp;
-			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a> 
-				    <input type='hidden' name='availableCodes' id='<c:out value="${fieldVO.fieldName}"/>-availableCodes' value="<c:out value='${fieldVO.codesString}'/>"/>
-				    <input type='hidden' name='selectedCodes' id='<c:out value="${fieldVO.fieldName}"/>-selectedCodes' value="<c:out value='${fieldVO.fieldValuesString}'/>"/>
-				    <input type='hidden' name='referenceValues' id='<c:out value="${fieldVO.fieldName}"/>-referenceValues' value="<c:out value='${fieldVO.referenceValuesString}'/>"/>
-				    <input type='hidden' name='displayValues' id='<c:out value="${fieldVO.fieldName}"/>-displayValues' value="<c:out value='${fieldVO.displayValuesString}'/>"/>
-				    <input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
+			    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
+			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
 			    </div>
 				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
-				
-				<select multiple="multiple" size="4" name="hidden-<c:out value='${fieldVO.fieldName}'/>" class="<c:if test='${fieldVO.cascading}'>picklist </c:if>" id="hidden-<c:out value='${fieldVO.fieldName}'/>">
-					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-						<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
-						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<c:choose>
-							<c:when test="${fieldVO.hasField}">
-								<c:set var="selected" value="selected" scope="page" />
-							</c:when>
-							<c:otherwise>
-								<c:set var="selected" value="true" scope="page"/>
-							</c:otherwise>
-						</c:choose>
-						<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
-							<c:out value='${fieldVO.displayValues[status.index]}'/>
-						</option>
-					</c:forEach>
-				</select>
 			</div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">

@@ -19,7 +19,7 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
+
     public PreferredPhoneFieldHandler(ApplicationContext appContext) {
         super(appContext);
     }
@@ -28,12 +28,12 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
      * Reads each field on the page to get a list of phones types that are used to build the drop-down.
      */
     @Override
-	public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
-        fieldVO.codes = new ArrayList<String>();
-        fieldVO.codes.add("");
-        fieldVO.displayValues = new ArrayList<String>();
-        fieldVO.displayValues.add("");
+        fieldVO.setCodes(new ArrayList<String>());
+        fieldVO.getCodes().add("");
+        fieldVO.setDisplayValues(new ArrayList<String>());
+        fieldVO.getDisplayValues().add("");
         for (SectionField currentSectionField : sectionFields) {
             if (FieldType.PHONE == currentSectionField.getFieldDefinition().getFieldType()) {
                 FieldDefinition currentFieldDefinition = currentSectionField.getFieldDefinition();
@@ -41,9 +41,9 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
                 if (GenericValidator.isBlankOrNull(displayValue)) {
                     displayValue = currentSectionField.getFieldDefinition().getDefaultLabel();
                 }
-                fieldVO.displayValues.add(displayValue);
+                fieldVO.getDisplayValues().add(displayValue);
 
-                fieldVO.codes.add(currentFieldDefinition.getFieldName());
+                fieldVO.getCodes().add(currentFieldDefinition.getFieldName());
             }
         }
         return fieldVO;

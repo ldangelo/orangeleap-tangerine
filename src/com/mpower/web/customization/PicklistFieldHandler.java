@@ -28,21 +28,21 @@ public class PicklistFieldHandler extends GenericFieldHandler {
     @Override
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
-        fieldVO.codes = new ArrayList<String>();
-        fieldVO.displayValues = new ArrayList<String>();
-        fieldVO.referenceValues = new ArrayList<String>();
-        EntityType entityType = (currentField.getSecondaryFieldDefinition() != null) ? currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
+        fieldVO.setCodes(new ArrayList<String>());
+        fieldVO.setDisplayValues(new ArrayList<String>());
+        fieldVO.setReferenceValues(new ArrayList<String>());
+        EntityType entityType = currentField.getSecondaryFieldDefinition() != null ? currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
         Picklist picklist = fieldService.readPicklistBySiteAndFieldName(siteName, currentField.getPicklistName(), entityType);
         if (picklist != null) {
             for (Iterator<PicklistItem> iterator = picklist.getPicklistItems().iterator(); iterator.hasNext();) {
                 PicklistItem item = iterator.next();
-                fieldVO.codes.add(item.getItemName());
+                fieldVO.getCodes().add(item.getItemName());
                 String displayValue = messageService.lookupMessage(siteName, MessageResourceType.PICKLIST_VALUE, item.getItemName(), locale);
                 if (GenericValidator.isBlankOrNull(displayValue)) {
                     displayValue = item.getDefaultDisplayValue();
                 }
-                fieldVO.displayValues.add(displayValue);
-                fieldVO.referenceValues.add(item.getReferenceValue());
+                fieldVO.getDisplayValues().add(displayValue);
+                fieldVO.getReferenceValues().add(item.getReferenceValue());
                 if (fieldVO.getFieldValue()!=null && fieldVO.getFieldValue().equals(item.getItemName())){
                     fieldVO.setDisplayValue(displayValue);
                 }

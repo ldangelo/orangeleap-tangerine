@@ -20,9 +20,9 @@ public class FieldVO {
     public static final String NORMAL_DELIMITER = ",";
     public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
 
-    public List<String> referenceValues;
+    private List<String> referenceValues;
     private boolean cascading;
-    public List<String> codes;
+    private List<String> codes;
     private FieldType fieldType;
     private Long id;
     private List<Long> ids;
@@ -31,9 +31,9 @@ public class FieldVO {
     private String siteName;
     private String fieldName;
     private Object fieldValue;
-    public List<String> fieldValues;
+    private List<String> fieldValues;
     private Object displayValue;
-    public List<String> displayValues;
+    private List<String> displayValues;
     private String helpText;
     private String labelText;
     private String validationExpression;
@@ -235,7 +235,7 @@ public class FieldVO {
     }
 
     public boolean isHasField() {
-        if (fieldValues == null || fieldValues.size() == 0) {
+        if (getFieldValues() == null || getFieldValues().size() == 0) {
             if (fieldValue == null) {
                 if (fieldToCheck == null) {
                     return true;
@@ -244,7 +244,7 @@ public class FieldVO {
             }
             return fieldValue.equals(fieldToCheck);
         }
-        return fieldValues.contains(fieldToCheck);
+        return getFieldValues().contains(fieldToCheck);
     }
 
     @SuppressWarnings("unchecked")

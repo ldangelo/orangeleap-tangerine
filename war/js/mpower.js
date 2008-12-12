@@ -12,7 +12,7 @@ $(document).ready(function() {
        	$("#savedMarker").fadeOut("slow");
 	});
 
-	$(".picklist").each(MPower.toggleReferencedElements);
+	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
 	$(".picklist").change(MPower.toggleReferencedElements);
 
 	$(".cluetip[rel]").cluetip({
@@ -272,44 +272,34 @@ var MPower = {
 		var $toBeToggled;
 		var $toBeHiddenNested;
 		
-/*		
-		var recursive = function() {
-			var elem = this;
-			for (var i = 0;i < elem.options.length; i++) {
-				var selector = elem[i].getAttribute('reference');
-				if (selector != null && selector.length) {
-					var $target = $(selector);
-					var $picklists = $(selector).filter(".picklist");
-					var $nested = $(selector).find(".picklist");
-					$picklists = $picklists.add($nested);
-					if (elem.options[i].selected) {
-						$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-						$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
-					} else {
-						$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-						$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
-					}
-				}
-			}
-			
+		var $options = null;
+		var isMultiPicklist = $(elem).hasClass("multiPicklist");
+		if (isMultiPicklist) {
+			$options = $(elem).children("input.multiPicklistOption");
 		}
-		*/
-		for (var i = 0;i < elem.options.length; i++) {
-			var selector = elem[i].getAttribute('reference');
+		else {
+			$options = $(elem).children("option");
+		}
+		
+		$options.each(function() {
+			var selector = this.getAttribute('reference');
 			if (selector != null && selector.length) {
 				var $target = $(selector);
 				var $picklists = $(selector).filter(".picklist");
 				var $nested = $(selector).find(".picklist");
 				$picklists = $picklists.add($nested);
-				if (elem.options[i].selected) {
+				if ((isMultiPicklist === true && this.type == "text") || 
+					(isMultiPicklist === false && this.selected)) {
 					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
 					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
-				} else {
+				} 
+				else {
 					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
 					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
 				}
 			}
-		}
+		});
+
 		if (typeof $toBeHidden != "undefined") { 
 			$toBeHidden.hide(); 
 		}
@@ -326,9 +316,18 @@ var MPower = {
 	
 	hideAllReferencedElements: function() {
 		var elem = this;
-		for(var i = 0; i < elem.options.length;i++) {
-			var selector = elem[i].getAttribute('reference');
-			if(selector != null && selector.length) {
+		var $options = null;
+		var isMultiPicklist = $(elem).hasClass("multiPicklist");
+		if (isMultiPicklist) {
+			$options = $(elem).children("input.multiPicklistOption");
+		}
+		else {
+			$options = $(elem).children("option");
+		}
+		
+		$options.each(function() {
+			var selector = this.getAttribute('reference');
+			if (selector != null && selector.length) {
 				var $target = $(selector);
 				var $picklists = $(selector).filter(".picklist");
 				var $nested = $(selector).find(".picklist");
@@ -336,9 +335,7 @@ var MPower = {
 				$target.hide();
 				$picklists.each(MPower.hideAllReferencedElements);
 			}
-		}
-		/*
-		*/
+		});
 	}	
 }
 
@@ -376,7 +373,7 @@ var Lookup = {
 	
 	loadMultiPicklist: function(elem) {
 		this.lookupCaller = $(elem).parent();
-		var queryString = this.lookupCaller.children("input[type=hidden]").serialize();
+		var queryString = this.serializeMultiPicklist(this.lookupCaller.children("input"));
 		$.ajax({
 			type: "POST",
 			url: "multiPicklist.htm",
@@ -393,6 +390,22 @@ var Lookup = {
 				$("#dialog").jqmShow();
 			}
 		});
+	},
+	
+	/* Create a query string in the format 1=code1|displayValue1|reference1|selected1&2=code2|displayValue2|reference2|selected2& ... */
+	serializeMultiPicklist: function(inputs) {
+		var queryString = "";
+		var counter = 1;
+		$(inputs).each(function() {
+			var $elem = $(this);
+			if ($elem.hasClass("multiPicklistOption")) {
+				queryString += counter++ + "=" + escape($elem.attr("code")) + "|" + escape($elem.attr("value")) + "|" + escape($elem.attr("reference")) + "|" + ($elem.attr("type") == "text" ? "true" : "false") + "&";
+			}
+			else {
+				queryString += $elem.serialize();
+			}
+		});
+		return queryString;
 	},
 	
 	useQueryLookup: function(elem, value) {
@@ -511,27 +524,28 @@ var Lookup = {
 	multiPicklistBindings: function() {
 		$("div.modalContent input#doneButton").bind("click", function() {
 			var idsStr = "";
-			var names = new Array();
-			var ids = new Array();
-			var refs = new Array();
+			var selectedNames = new Object();
 			$("ul#selectedOptions ol").each(function() {
 				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
 				var thisId = $chkBox.attr("id");
 				idsStr += thisId + ",";
-				ids[ids.length] = thisId;
-				names[names.length] = $.trim($(this).text());
-				refs[refs.length] = $chkBox.attr("reference");
+				selectedNames[$chkBox.attr("name")] = true;
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 
 			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
 			
-			Lookup.lookupCaller.children("input[type=text]").remove();
-			for (var x = names.length - 1; x >= 0; x--) {
-				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' reference='" + refs[x] + "'></input>");
-			} 
-			$("#dialog").jqmHide();					
-		});		
+			Lookup.lookupCaller.children("input.multiPicklistOption").each(function() {
+				if (selectedNames[this.name] === true) {
+					this.type = "text";
+				}
+				else {
+					this.type = "hidden";
+				}
+			});
+			$(Lookup.lookupCaller).each(MPower.toggleReferencedElements);
+			$("#dialog").jqmHide();	
+		});			
 	}
 }
 

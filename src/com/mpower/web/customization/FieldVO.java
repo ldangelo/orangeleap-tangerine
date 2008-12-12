@@ -225,6 +225,12 @@ public class FieldVO {
 
     public boolean isHasField() {
         if (fieldValues == null || fieldValues.size() == 0) {
+            if (fieldValue == null) {
+                if (fieldToCheck == null) {
+                    return true;
+                }
+                return false;
+            }
             return fieldValue.equals(fieldToCheck);
         }
         return fieldValues.contains(fieldToCheck);

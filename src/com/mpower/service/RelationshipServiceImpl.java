@@ -100,15 +100,39 @@ public class RelationshipServiceImpl implements RelationshipService {
         return person;
     }
     
+    
+    // Return the entire tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
+    @Override
+    @Transactional(readOnly=true, propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
+	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+    	
+       	Map<String, FieldDefinition> map = person.getFieldTypeMap();
+    	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
+    		FieldDefinition fd = e.getValue();
+    		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
+    			List<FieldRelationship> masters = fd.getSiteMasterFieldRelationships(person.getSite());
+    			if (masters.size() == 0) return null;
+    			FieldRelationship fr = masters.get(0);
+    			if (fr.isRecursive()) {
+        			String childCustomFieldName = fr.getMasterField().getCustomFieldName();
+            		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childCustomFieldName);
+    				return tree;
+    			}
+    		}
+    	}
+    	return null;
+		
+	}
+
+    
     private void debugPrintTree(Person person, List<FieldRelationship> masters) throws PersonValidationException {
     	for (FieldRelationship fr: masters) {
     		if (fr.isRecursive()) {
     			String parentCustomFieldName = fr.getDetailField().getCustomFieldName();
-    			String childCustomFieldName = fr.getMasterField().getCustomFieldName();
     			
-    		   	PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childCustomFieldName);
+    		   	PersonTreeNode tree = getEntireTree(person, parentCustomFieldName);
     	    	String result = debugPrintTree(tree);
-    	    	logger.debug("Tree for "+childCustomFieldName+":\r\n"+result);
+    	    	logger.debug("Tree for "+parentCustomFieldName+":\r\n"+result);
     		   	PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
        	    	result = debugPrintTree(thisnode);
     	    	logger.debug("Subtree for "+person.getDisplayValue()+":\r\n"+result);

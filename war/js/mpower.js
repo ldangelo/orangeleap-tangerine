@@ -354,24 +354,35 @@ var Lookup = {
 	loadCodePopup: function(elem) {
 		var lookupType = $(elem).eq(0).attr("lookup");
 		this.lookupCaller = elem;
-		$("#dialog").load("codeHelper.htm?view=popup&type="+lookupType,function(){
+		$("#dialog").load("codeHelper.htm?view=popup&type=" + lookupType, function(){
 			$("#dialog").jqmShow();
 		});
 		return false;
 	},
 	
+	loadQueryLookupCommon: function(elem) {
+		this.lookupCaller = $(elem).parent();		
+		return $(elem).eq(0).attr("fieldDef");
+	},
+	
 	loadQueryLookup: function(elem) {
-		var fieldDef = $(elem).eq(0).attr("fieldDef");
-		this.lookupCaller = elem;
-		$("#dialog").load("queryLookup.htm?fieldDef="+fieldDef,function(){
-			$("#dialog").jqmShow();
+		$.ajax({
+			type: "POST",
+			url: "queryLookup.htm",
+			data: "fieldDef=" + Lookup.loadQueryLookupCommon(elem),
+			success: function(html){
+				$("#dialog").html(html);
+				$("#dialog").jqmShow();
+			},
+			error: function(html) {
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
+			}
 		});
 	},
 	
 	loadMultiQueryLookup: function(elem) {
-		var fieldDef = $(elem).eq(0).attr("fieldDef");
-		this.lookupCaller = $(elem).parent();
-		
+		var fieldDef = this.loadQueryLookupCommon(elem);		
 		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("input"));
 		$.ajax({
 			type: "POST",
@@ -437,10 +448,13 @@ var Lookup = {
 	},
 	
 	useQueryLookup: function(elem, value) {
-		this.lookupCaller.find("a").attr("href",$(elem).attr('gotourl')).html($(elem).attr('displayvalue'));
-		this.lookupCaller.nextAll(':hidden').val(value);
+		Lookup.lookupCaller.parent().children(":hidden").eq(0).val(value);
+
+		var displayVal = $(elem).attr('displayvalue');
+		Lookup.lookupCaller.children("input[type=text]").remove();
+		Lookup.lookupCaller.prepend("<input type='text' name='picked-" + displayVal + "' id='picked-" + displayVal + "' value='" + displayVal + "' href='" + $(elem).attr('gotourl') + "'></input>");
+
 		$('#dialog').jqmHide();
-		this.lookupCaller=null;
 	},
 	
 	setCodeValue: function(val) {
@@ -574,6 +588,8 @@ var Lookup = {
 		$("div.modalContent input#cancelButton").bind("click", function() {
 			$("#dialog").jqmHide();					
 		});
+//		$("table.multiSelect tbody ul ol").draggable({ containment: $("table.multiSelect tbody ul") });
+//		$("table.multiSelect tbody ul").droppable();
 	}
 }
 

@@ -57,7 +57,7 @@
 				</c:otherwise>
 			</c:choose>
 			<tr class="resultrow">
-				<td><a href="#" displayvalue="<c:out value='${row.displayValue}'/>" gotourl="<c:out value='${entityLink}'/>" onclick="Lookup.useQueryLookup(this,'${row.id}')">Use</a></td>
+				<td><a href="javascript:void(0)" displayvalue="<c:out value='${row.displayValue}'/>" gotourl="<c:out value='${entityLink}'/>" onclick="Lookup.useQueryLookup(this,'${row.id}')">Use</a></td>
 				<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 			</tr>
 			<c:remove var="entityLink" scope="page" />

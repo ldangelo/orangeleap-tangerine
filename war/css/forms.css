@@ -403,12 +403,10 @@ ul.formFields div.lookupWrapper input {
 	padding:1px 4px;
 	float:left;
 	width:100%;
-}
-.multiLookupField {
     padding-bottom: 2px; 
     position: relative;
 }
-.multiLookupField a {
+.lookupField a, .multiLookupField a {
 	background: transparent url(../images/icons/view.gif) no-repeat top left;
 	display: block;
 	height: 16px;
@@ -426,7 +424,7 @@ a.hideText {
     color: transparent;
 }	
 
-ul.formFields li div.multiLookupField input { 
+ul.formFields li div.multiLookupField input, ul.formFields li div.lookupField input  { 
     border: 0;
     padding: 1px 0 0;
     margin: 0;

@@ -10,9 +10,8 @@
 .jqmWindow {
     display: none;
     position: fixed;
-    top: 17%;
+    top: 50%;
     left: 50%;
-    margin-left: -300px;
     color: #333;
     font-family: arial, sans-serif; width: auto; min-width: 20em; border: 0;
 }

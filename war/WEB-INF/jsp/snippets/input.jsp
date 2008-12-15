@@ -87,22 +87,21 @@
 			</select>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
-			<c:choose>
-				<c:when test="${!empty fieldVO.id}">
-					<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
-						<c:param name="id" value="${fieldVO.id}" />
-					</c:url>
-				</c:when>
-				<c:otherwise>
-					<c:set value="#" var="entityLink" scope="page" />
-				</c:otherwise>
-			</c:choose>
 			<div class="lookupWrapper">
-				<div style="float:left" class="text lookupField <c:out value='${fieldVO.entityAttributes}'/>" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>"><a target="_blank" href="<c:out value='${entityLink}'/>"><c:out value='${fieldVO.displayValue}'/></a>&nbsp;</div>
-				<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
-				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+			    <div class="lookupField linkableLookupField <c:out value='${fieldVO.entityAttributes}'/>">
+					<c:if test="${!empty fieldVO.id}">
+						<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
+							<c:param name="id" value="${fieldVO.id}" />
+						</c:url>
+						<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
+						<input type="text" name="<c:out value='${thisVal}'/>" id="lookup-<c:out value='${thisVal}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
+						<c:remove var="entityLink" scope="page" />
+					</c:if>
+			        &nbsp;
+			        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>
+			    </div>
+				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />		
 			</div>
-		<c:remove var="entityLink" scope="page" />
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 			<%-- TODO: move to tag library --%>
@@ -133,7 +132,7 @@
 								</c:url>
 							</c:when>
 							<c:otherwise>
-								<c:set value="#" var="entityLink" scope="page" />
+								<c:set value="javascript:void(0)" var="entityLink" scope="page" />
 							</c:otherwise>
 						</c:choose>
 						<c:set var="thisVal" value="${fn:trim(val)}"/>

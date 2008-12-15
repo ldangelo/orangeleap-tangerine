@@ -68,22 +68,21 @@ public class PersonFormController extends SimpleFormController {
     }
 
     @Override
-    public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
+    public ModelAndView onSubmit(Object command, BindException errors) throws Exception {
         Person p = (Person) command;
         logger.info("**** p's first name is: " + p.getFirstName());
         
+        ModelAndView mav = super.onSubmit(command, errors);
         boolean saved = true;
-        
         Person current = null;
         try {
             current = personService.maintainPerson(p);
         } catch (PersonValidationException e) {
+            saved = false;
         	current = p;
             e.createMessages(errors);
-            saved = false;
         }
 
-        ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("person", current);
         mav.addObject("saved", saved);
         mav.addObject("id", current.getId());

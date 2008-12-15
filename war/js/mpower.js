@@ -31,7 +31,8 @@ $(document).ready(function() {
 		interval: 100,
 		over: function(){
 			$(this).find("span.secondary").filter(":hidden").slideDown();
-			},
+		},
+		out: function() {},
 		timeout: 1000
 	 });
 	 
@@ -39,9 +40,10 @@ $(document).ready(function() {
 		sensitivity: 7,
 		interval: 100,
 		timeout: 1000,
+		over: function() {},
 		out: function(){
 			$(this).find("span.secondary:not('.active')").filter(":visible").slideUp();
-			}
+		}
 	 });
 	 
 

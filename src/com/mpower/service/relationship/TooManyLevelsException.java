@@ -8,7 +8,7 @@ public class TooManyLevelsException extends PersonValidationException {
 
 	public TooManyLevelsException(String customFieldName) {
 		String recursionError = "Relationship tree for "+customFieldName+" exceeds maximum number of levels.";
-		logger.error(recursionError);
+		logger.error(recursionError, this);
 		this.addValidationResult("relationshipTooManyLevels", new Object[]{customFieldName}); 
 	}
 

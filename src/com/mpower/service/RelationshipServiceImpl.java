@@ -89,7 +89,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			
-		   	    	if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty()) debugPrintTree(person, masters);
+		   	    	if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty()) debugPrintTree(person, details);
 		   			
     			}
 	   			
@@ -125,8 +125,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
     
-    private void debugPrintTree(Person person, List<FieldRelationship> masters) throws PersonValidationException {
-    	for (FieldRelationship fr: masters) {
+    private void debugPrintTree(Person person, List<FieldRelationship> fieldRelationships) throws PersonValidationException {
+    	for (FieldRelationship fr: fieldRelationships) {
     		if (fr.isRecursive()) {
     			String parentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
     			

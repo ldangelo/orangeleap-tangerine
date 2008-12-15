@@ -89,7 +89,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			
-		   	    	if (logger.isDebugEnabled()) debugPrintTree(person, masters);
+		   	    	if (logger.isDebugEnabled()) debugPrintTree(person, details);
 		   			
     			}
 	   			
@@ -125,8 +125,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
     
-    private void debugPrintTree(Person person, List<FieldRelationship> masters) throws PersonValidationException {
-    	for (FieldRelationship fr: masters) {
+    private void debugPrintTree(Person person, List<FieldRelationship> details) throws PersonValidationException {
+    	for (FieldRelationship fr: details) {
     		if (fr.isRecursive()) {
     			String parentCustomFieldName = fr.getDetailField().getCustomFieldName();
     			
@@ -275,7 +275,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 	// Field must be a detail (child list) custom field.
 	private void getDescendantIds(List<Long> list, Person person, String customFieldName, int level) throws PersonValidationException {
 		
-		if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(customFieldName);
+		if (level > MAX_TREE_DEPTH) {
+			throw new TooManyLevelsException(customFieldName);
+		}
 
 		List<Person> referencedPersons = getPersons(person, customFieldName);
 		for (Person referencedPerson : referencedPersons) {
@@ -324,7 +326,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 		int level = 0;
 		while (true) {
 			level++;
-			if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(parentCustomFieldName);
+			if (level > MAX_TREE_DEPTH) {
+				throw new TooManyLevelsException(parentCustomFieldName);
+			}
 			List<Person> referencedPersons = getPersons(person, parentCustomFieldName);
 			if (referencedPersons.size() == 0) return person;
 			person = referencedPersons.get(0);
@@ -334,7 +338,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 	
 	public void getSubTree(PersonTreeNode personNode, String childCustomFieldName) throws PersonValidationException {
 		
-		if (personNode.getLevel() > MAX_TREE_DEPTH) throw new TooManyLevelsException(childCustomFieldName);
+		if (personNode.getLevel() > MAX_TREE_DEPTH) {
+			throw new TooManyLevelsException(childCustomFieldName);
+		}
 
 		List<Person> referencedPersons = getPersons(personNode.getPerson(), childCustomFieldName);
 		for (Person referencedPerson : referencedPersons) {
@@ -364,7 +370,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 		int level = 0;
 		while (true) {
 			level++;
-			if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(parentCustomFieldName);
+			if (level > MAX_TREE_DEPTH) {
+				throw new TooManyLevelsException(parentCustomFieldName);
+			}
 			List<Person> referencedPersons1 = getPersons(p1, parentCustomFieldName);
 			List<Person> referencedPersons2 = getPersons(p2, parentCustomFieldName);
 			if (referencedPersons1.size() == 0 && referencedPersons2.size() == 0) return null;

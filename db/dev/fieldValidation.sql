@@ -3,7 +3,7 @@ INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOUR
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldValidationFailure', 'FIELD_VALIDATION', '{0} value is incorrect');
 
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'fieldSelfReference', 'FIELD_VALIDATION', 'Value for {0} cannot reference itself.');
-INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'childReferenceError', 'FIELD_VALIDATION', 'A value in dependent list field {0} cannot itself reference this item as one of its dependent items.');
+INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'childReferenceError', 'FIELD_VALIDATION', 'A value in list field {0} cannot reference a higher level item.');
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'parentReferenceError', 'FIELD_VALIDATION', 'Value for field {0} cannot reference a lower level item.');
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'relationshipTooManyLevels', 'FIELD_VALIDATION', 'Relationship tree for {0} exceeds maximum number of levels.');
 

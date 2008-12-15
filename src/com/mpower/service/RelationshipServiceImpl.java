@@ -186,14 +186,12 @@ public class RelationshipServiceImpl implements RelationshipService {
 					List<Long> descendants = new ArrayList<Long>();
 					getDescendants(descendants, otherPerson, customFieldName, 0);
 					if (descendants.contains(thisId)) {
-						//String attemptToSetChildToAncestor = "A value in dependent list field " + thisFieldLabel + " cannot itself reference this item as one of its dependent items.";
 						ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
 						continue;
 					}
 				} else {
 					// Attempt to set parent to a descendant
 					if (checkDescendents.contains(otherId)) {
-						//String attemptToSetParentToDescendent = "Value for field " + thisFieldLabel + " cannot reference a lower level item.";
 						ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
 						continue;
 					}

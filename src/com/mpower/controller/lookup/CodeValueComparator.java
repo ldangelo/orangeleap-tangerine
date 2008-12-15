@@ -1,4 +1,4 @@
-package com.mpower.web.customization.inputs;
+package com.mpower.controller.lookup;
 
 import java.util.Comparator;
 

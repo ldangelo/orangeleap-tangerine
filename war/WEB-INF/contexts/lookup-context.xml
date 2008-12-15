@@ -5,27 +5,27 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="multiPicklist" class="com.mpower.controller.lookup.MultiPicklistController">
+	<bean id="multiPicklistController" class="com.mpower.controller.lookup.MultiPicklistController">
 		<property name="viewName" value="lookup/multiPicklist"/>
 	</bean>  
        
 	<!-- Query Lookup -->
-    <bean id="queryLookup" class="com.mpower.controller.lookup.QueryLookupController">
+    <bean id="queryLookupController" class="com.mpower.controller.lookup.QueryLookupController">
         <property name="queryLookupService" ref="queryLookupService"/>
-        <property name="viewName" value="queryLookup"/>
+        <property name="viewName" value="lookup/queryLookup"/>
     </bean>
 
-	<!-- Same as QueryLookup, except routes to multiQueryLookup page -->
-    <bean id="multiQueryLookup" class="com.mpower.controller.lookup.QueryLookupController" parent="queryLookup">
+	<!-- Multi-Query Lookup -->
+    <bean id="multiQueryLookupController" class="com.mpower.controller.lookup.MultiQueryLookupController" parent="queryLookupController">
         <property name="viewName" value="lookup/multiQueryLookup"/>
     </bean>
     
     <bean id="queryLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-                <prop key="/multiPicklist.htm">multiPicklist</prop>
-                <prop key="/queryLookup.htm">queryLookup</prop>
-                <prop key="/multiQueryLookup.htm">multiQueryLookup</prop>
+                <prop key="/multiPicklist.htm">multiPicklistController</prop>
+                <prop key="/queryLookup.htm">queryLookupController</prop>
+                <prop key="/multiQueryLookup.htm">multiQueryLookupController</prop>
 			</props>
 		</property>
 	</bean>

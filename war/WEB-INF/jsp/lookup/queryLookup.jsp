@@ -5,7 +5,7 @@
 <mp:page pageName='queryLookup' />
 <c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 	<c:if test="${sectionDefinition.sectionName eq queryLookup.sectionName}">
-		<c:if test="${param.view!='resultsOnly'}">
+		<c:if test="${param.view != 'resultsOnly'}">
 			<table cellspacing="0" cellpadding="0" style="width:100%" class="alignLeft <c:out value='${sectionDefinition.sectionName}'/>"> 
 				<thead> 
 					<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">

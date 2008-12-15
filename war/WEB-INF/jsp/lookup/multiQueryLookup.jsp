@@ -41,28 +41,29 @@
 			<div><span class="noResults">No results were found for your query.</span></div>
 		</c:if>
 --%>
-
-
 		<c:set var="counter" value="0"/>
 		<c:forEach items="${pagedListHolder.pageList}" var="row">
 			<c:set var="counter" value="${counter + 1}"/>
-			<c:choose>
-				<c:when test="${!empty row.id && !empty row.entityName}">
-					<c:url value="/${row.entityName}.htm" var="entityLink" scope="page">
-						<c:param name="id" value="${row.id}" />
-					</c:url>
-				</c:when>
-				<c:otherwise>
-					<c:set value="#" var="entityLink" scope="page" />
-				</c:otherwise>
-			</c:choose>
-			<ol>
-				<input type="checkbox" name="option${counter}" id="${row.id}" href="<c:out value='${entityLink}'/>"></input>
-				<a href="javascript:void(0)">
-					<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
-				</a>
-			</ol>
-			<c:remove var="entityLink" scope="page" />
+			<c:set target="${requestScope.selectedIds}" property="idToCheck" value="${row.id}"/>
+			<c:if test="${requestScope.selectedIds.checkSelectedId == false}">
+				<c:choose>
+					<c:when test="${!empty row.id && !empty row.entityName}">
+						<c:url value="/${row.entityName}.htm" var="entityLink" scope="page">
+							<c:param name="id" value="${row.id}" />
+						</c:url>
+					</c:when>
+					<c:otherwise>
+						<c:set value="javascript:void(0)" var="entityLink" scope="page" />
+					</c:otherwise>
+				</c:choose>
+				<ol>
+					<input type="checkbox" name="option${counter}" id="${row.id}" href="<c:out value='${entityLink}'/>"></input>
+					<a href="javascript:void(0)">
+						<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
+					</a>
+				</ol>
+				<c:remove var="entityLink" scope="page" />
+			</c:if>
 		</c:forEach>
 		
 		
@@ -75,6 +76,29 @@
 		                </td>
 		                <td>
 		                    <ul id="selectedOptions">
+		                    	<c:forEach items="${pagedListHolder.pageList}" var="row">
+									<c:set var="counter" value="${counter + 1}"/>
+									<c:set target="${requestScope.selectedIds}" property="idToCheck" value="${row.id}"/>
+									<c:if test="${requestScope.selectedIds.checkSelectedId == true}">
+										<c:choose>
+											<c:when test="${!empty row.id && !empty row.entityName}">
+												<c:url value="/${row.entityName}.htm" var="entityLink" scope="page">
+													<c:param name="id" value="${row.id}" />
+												</c:url>
+											</c:when>
+											<c:otherwise>
+												<c:set value="javascript:void(0)" var="entityLink" scope="page" />
+											</c:otherwise>
+										</c:choose>
+										<ol>
+											<input type="checkbox" name="option${counter}" id="${row.id}" href="<c:out value='${entityLink}'/>"></input>
+											<a href="javascript:void(0)">
+												<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
+											</a>
+										</ol>
+										<c:remove var="entityLink" scope="page" />
+									</c:if>
+								</c:forEach>
 		                    </ul>
 		                </td>
 		            </tr>

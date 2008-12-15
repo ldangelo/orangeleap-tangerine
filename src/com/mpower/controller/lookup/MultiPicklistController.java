@@ -14,8 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.mpower.web.customization.FieldVO;
-import com.mpower.web.customization.inputs.CodeValue;
-import com.mpower.web.customization.inputs.CodeValueComparator;
 
 public class MultiPicklistController extends ParameterizableViewController {
 

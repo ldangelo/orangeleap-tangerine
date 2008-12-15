@@ -99,7 +99,7 @@
 			</c:choose>
 			<div class="lookupWrapper">
 				<div style="float:left" class="text lookupField <c:out value='${fieldVO.entityAttributes}'/>" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>"><a target="_blank" href="<c:out value='${entityLink}'/>"><c:out value='${fieldVO.displayValue}'/></a>&nbsp;</div>
-				<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="Lookup.loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
+				<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadQueryLookup($(this).prev('div'));return false;">Lookup</a>
 				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
 			</div>
 		<c:remove var="entityLink" scope="page" />
@@ -117,6 +117,7 @@
 			    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
 			    </div>
+			    <%--  The following hidden field must not lie within the multiPicklist div above --%>
 				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
 			</div>
 		</c:when>
@@ -136,7 +137,7 @@
 							</c:otherwise>
 						</c:choose>
 						<c:set var="thisVal" value="${fn:trim(val)}"/>
-						<input type="text" name="<c:out value='${thisVal}'/>" id="<c:out value='${thisVal}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
+						<input type="text" name="<c:out value='${thisVal}'/>" id="lookup-<c:out value='${thisVal}'/>" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
 						<c:remove var="entityLink" scope="page" />
 					</c:forEach>
 			        &nbsp;
@@ -180,7 +181,7 @@
 		<div class="lookupWrapper">
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 				codeType="<c:out value='${fieldVO.fieldName}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-			<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="#" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
+			<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
 		</div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
@@ -197,7 +198,7 @@
 			<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" /><a class="lookupLink jqModal" href="#">Lookup</a>
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" /><a class="lookupLink jqModal" href="javascript:void(0)">Lookup</a>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'DATE_TIME'}">
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />

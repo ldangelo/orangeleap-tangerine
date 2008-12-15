@@ -364,11 +364,32 @@ var Lookup = {
 		var fieldDef = $(elem).eq(0).attr("fieldDef");
 		this.lookupCaller = $(elem).parent();
 		
-		$("#dialog .modalContent").load("multiQueryLookup.htm?fieldDef=" + fieldDef, function() {
-			Lookup.multiCommonBindings();
-			Lookup.multiQueryLookupBindings();
-			$("#dialog").jqmShow();
+		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("input"));
+		$.ajax({
+			type: "POST",
+			url: "multiQueryLookup.htm",
+			data: queryString + "fieldDef=" + fieldDef,
+			success: function(html){
+				$("#dialog .modalContent").html(html);
+				Lookup.multiCommonBindings();
+				Lookup.multiQueryLookupBindings();
+				$("#dialog").jqmShow();
+			},
+			error: function(html) {
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
+			}
 		});
+	},
+	
+	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedId1&selectedId=selectedId2&... */
+	serializeMultiQueryLookup: function(inputs) {
+		var queryString = "";
+		$(inputs).each(function() {
+			var $elem = $(this);
+			queryString += "selectedIds=" + escape($elem.attr("selectedId")) + "&";
+		});
+		return queryString;
 	},
 	
 	loadMultiPicklist: function(elem) {
@@ -386,13 +407,13 @@ var Lookup = {
 				$("#dialog").jqmShow();
 			},
 			error: function(html){
-				$("#dialog .modalContent").html("The request was not available.  Please try again.");
-				$("#dialog").jqmShow();
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
 			}
 		});
 	},
 	
-	/* Create a query string in the format 1=code1|displayValue1|reference1|selected1&2=code2|displayValue2|reference2|selected2& ... */
+	/* For previously selected options, create a query string in the format 1=code1|displayValue1|reference1|selected1&2=code2|displayValue2|reference2|selected2& ... */
 	serializeMultiPicklist: function(inputs) {
 		var queryString = "";
 		var counter = 1;
@@ -465,7 +486,7 @@ var Lookup = {
 			
 			Lookup.lookupCaller.children("input[type=text]").remove();
 			for (var x = names.length - 1; x >= 0; x--) {
-				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
+				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' selectedId='" + ids[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
 			} 
 			$("#dialog").jqmHide();					
 		});		

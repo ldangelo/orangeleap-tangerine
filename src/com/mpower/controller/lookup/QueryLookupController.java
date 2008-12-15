@@ -31,18 +31,9 @@ public class QueryLookupController extends ParameterizableViewController {
         this.queryLookupService = queryLookupService;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, String> queryParams = new HashMap<String, String>();
-        Enumeration<String> enu = request.getParameterNames();
-        while (enu.hasMoreElements()) {
-            String param = enu.nextElement();
-            String paramValue = StringUtils.trimToNull(request.getParameter(param));
-            if (paramValue != null && !param.equalsIgnoreCase("fieldDef") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("resultsOnly")) {
-                queryParams.put(param, paramValue);
-            }
-        }
+        Map<String, String> queryParams = findQueryParams(request);
 
         // List<String> displayColumns = new ArrayList<String>();
         // displayColumns.add("lastName");
@@ -53,7 +44,35 @@ public class QueryLookupController extends ParameterizableViewController {
                 queryParams);
         ModelAndView mav = new ModelAndView(super.getViewName());
         mav.addObject("objects", objects);
+        mav.addObject("queryLookup", queryLookup);
+        sortPaginate(request, mav, objects);
 
+        // mav.addObject("displayColumns", displayColumns);
+        // mav.addObject("parameterMap", request.getParameterMap());
+        return mav;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Map<String, String> findQueryParams(HttpServletRequest request) {
+        Map<String, String> queryParams = new HashMap<String, String>();
+        Enumeration<String> enu = request.getParameterNames();
+        while (enu.hasMoreElements()) {
+            String param = enu.nextElement();
+            String paramValue = StringUtils.trimToNull(request.getParameter(param));
+            if (paramValue != null && !param.equalsIgnoreCase("fieldDef") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("resultsOnly")) {
+                queryParams.put(param, paramValue);
+            }
+        }
+        return queryParams;
+    }
+
+    /**
+     * TODO: move to another class or an interceptor or an annotation
+     * @param request
+     * @param mav
+     * @param objects
+     */
+    protected void sortPaginate(HttpServletRequest request, ModelAndView mav, List<Object> objects) {
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;
@@ -62,8 +81,8 @@ public class QueryLookupController extends ParameterizableViewController {
         } else {
             sortAscending = new Boolean(true);
         }
-        MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
-        PagedListHolder pagedListHolder = new PagedListHolder(objects,sortDef);
+        MutableSortDefinition sortDef = new MutableSortDefinition(sort, true,sortAscending);
+        PagedListHolder pagedListHolder = new PagedListHolder(objects, sortDef);
         pagedListHolder.resort();
         pagedListHolder.setMaxLinkedPages(3);
         pagedListHolder.setPageSize(50);
@@ -76,14 +95,8 @@ public class QueryLookupController extends ParameterizableViewController {
 
         pagedListHolder.setPage(pg);
         mav.addObject("pagedListHolder", pagedListHolder);
-        mav.addObject("queryLookup", queryLookup);
         mav.addObject("currentSort", sort);
         mav.addObject("currentAscending", sortAscending);
-
-
-        // mav.addObject("displayColumns", displayColumns);
-        // mav.addObject("parameterMap", request.getParameterMap());
-        return mav;
     }
 
 }

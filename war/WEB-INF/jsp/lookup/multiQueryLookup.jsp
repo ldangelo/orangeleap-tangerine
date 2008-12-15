@@ -57,8 +57,8 @@
 					</c:otherwise>
 				</c:choose>
 				<ol>
-					<input type="checkbox" name="option${counter}" id="${row.id}" href="<c:out value='${entityLink}'/>"></input>
-					<a href="javascript:void(0)">
+					<input type="checkbox" name="option${counter}" id="${row.id}"></input>
+					<a href="<c:out value='${entityLink}'/>" target="_blank">
 						<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
 					</a>
 				</ol>
@@ -91,8 +91,8 @@
 											</c:otherwise>
 										</c:choose>
 										<ol>
-											<input type="checkbox" name="option${counter}" id="${row.id}" href="<c:out value='${entityLink}'/>"></input>
-											<a href="javascript:void(0)">
+											<input type="checkbox" name="option${counter}" id="${row.id}"></input>
+											<a href="<c:out value='${entityLink}'/>" target="_blank">
 												<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
 											</a>
 										</ol>

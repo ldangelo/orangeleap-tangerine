@@ -477,8 +477,9 @@ var Lookup = {
 				var thisId = $chkBox.attr("id");
 				idsStr += thisId + ",";
 				ids[ids.length] = thisId;
-				names[names.length] = $.trim($(this).children("a[href='javascript:void(0)']").eq(0).text());
-				hrefs[hrefs.length] = $chkBox.attr("href");
+				var $thisLink = $(this).children("a[href]").eq(0);
+				names[names.length] = $.trim($thisLink.text());
+				hrefs[hrefs.length] = $thisLink.attr("href");
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 
@@ -490,56 +491,6 @@ var Lookup = {
 			} 
 			$("#dialog").jqmHide();					
 		});		
-	},
-	
-	multiCommonBindings: function() {
-		$("table.multiSelect tbody").bind("click", function(event) {
-			var $target = $(event.target);
-			if ($target.is("ol,input[type=checkbox],a[href='javascript:void(0)']")) { 
-				if ($target.is("input[type=checkbox],a[href='javascript:void(0)']")) {
-					$target = $target.parent("ol").eq(0);
-				}
-				if ($target.hasClass("picked")) {
-					MultiSelect.uncheck($target);
-				}
-				else {
-					MultiSelect.check($target);
-				}
-			}
-		});
-		$("table.multiSelect thead input[type=checkbox]").bind("click", function() {
-			var isChecked = $(this).attr("checked");
-			var tdOrder = $(this).attr("selection") === "available" ? "first" : "last";
-			$("table.multiSelect tbody td:" + tdOrder + " ol").each(function() {
-				if (isChecked) {
-					MultiSelect.check($(this));
-				}
-				else {
-					MultiSelect.uncheck($(this));
-				}
-			});
-		});
-		$("table.multiSelect tbody a.rightArrow").bind("click", function() {
-			$("ul#availableOptions ol:has(':checkbox[checked]')").each(function() {
-				var $clone = $(this).clone();
-				MultiSelect.uncheck($clone);
-				$(this).remove();
-				$("input#availableAll").removeAttr("checked");
-				$clone.appendTo("ul#selectedOptions");
-			});
-		});
-		$("table.multiSelect tbody a.leftArrow").bind("click", function() {
-			$("ul#selectedOptions ol:has(':checkbox[checked]')").each(function() {
-				var $clone = $(this).clone();
-				MultiSelect.uncheck($clone);
-				$(this).remove();
-				$("input#selectedAll").removeAttr("checked");
-				$clone.appendTo("ul#availableOptions");
-			});
-		});
-		$("div.modalContent input#cancelButton").bind("click", function() {
-			$("#dialog").jqmHide();					
-		});
 	},
 	
 	multiPicklistBindings: function() {
@@ -567,11 +518,69 @@ var Lookup = {
 			$(Lookup.lookupCaller).each(MPower.toggleReferencedElements);
 			$("#dialog").jqmHide();	
 		});			
+	},
+	
+	multiCommonBindings: function() {
+		$("table.multiSelect tbody").bind("click", function(event) {
+			var $target = $(event.target);
+			if ($target.is("ol,input[type=checkbox]")) { 
+				if ($target.is("input[type=checkbox]")) {
+					$target = $target.parent("ol").eq(0);
+				}
+				if ($target.hasClass("picked")) {
+					MultiSelect.uncheck($target);
+				}
+				else {
+					MultiSelect.check($target);
+				}
+			}
+		});
+		$("table.multiSelect tbody").bind("dblclick", function(event) {
+			var $target = $(event.target);
+			if ($target.is("ol")) { 
+				var optionType = ($target.parent().attr("id") === "selectedOptions" ? "selected" : "available");
+				MultiSelect.moveOption($target, optionType);
+			}
+		});
+		$("table.multiSelect thead input[type=checkbox]").bind("click", function() {
+			var isChecked = $(this).attr("checked");
+			var tdOrder = $(this).attr("selection") === "available" ? "first" : "last";
+			$("table.multiSelect tbody td:" + tdOrder + " ol").each(function() {
+				if (isChecked) {
+					MultiSelect.check($(this));
+				}
+				else {
+					MultiSelect.uncheck($(this));
+				}
+			});
+		});
+		$("table.multiSelect tbody a.rightArrow").bind("click", function() {
+			$("ul#availableOptions ol:has(':checkbox[checked]')").each(function() {
+				MultiSelect.moveOption(this, "available");
+			});
+		});
+		$("table.multiSelect tbody a.leftArrow").bind("click", function() {
+			$("ul#selectedOptions ol:has(':checkbox[checked]')").each(function() {
+				MultiSelect.moveOption(this, "selected");
+			});
+		});
+		$("div.modalContent input#cancelButton").bind("click", function() {
+			$("#dialog").jqmHide();					
+		});
 	}
 }
 
 // TODO: move below to individual JS
 var MultiSelect = {
+	moveOption: function(optionElem, thisOptionType) {
+		var otherOptionType = (thisOptionType === "selected" ? "available" : "selected");
+		var $clone = $(optionElem).clone();
+		this.uncheck($clone);
+		$(optionElem).remove();
+		$("input#" + thisOptionType + "All").removeAttr("checked");
+		$clone.appendTo("ul#" + otherOptionType + "Options");
+	},
+	
 	check: function(elem) {
 		elem.children("input[type=checkbox]").eq(0).attr("checked", "true");
 		elem.addClass("picked");

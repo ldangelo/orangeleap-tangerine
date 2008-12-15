@@ -125,8 +125,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
     
-    private void debugPrintTree(Person person, List<FieldRelationship> details) throws PersonValidationException {
-    	for (FieldRelationship fr: details) {
+    private void debugPrintTree(Person person, List<FieldRelationship> masters) throws PersonValidationException {
+    	for (FieldRelationship fr: masters) {
     		if (fr.isRecursive()) {
     			String parentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
     			

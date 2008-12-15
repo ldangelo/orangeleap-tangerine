@@ -14,27 +14,27 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PersonDao;
-import com.mpower.dao.SiteDao;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRelationship;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.relationship.PersonTreeNode;
+import com.mpower.service.relationship.TooManyLevelsException;
 import com.mpower.type.FieldType;
 import com.mpower.type.RelationshipDirection;
 import com.mpower.type.RelationshipType;
 
 @Service("relationshipService")
 public class RelationshipServiceImpl implements RelationshipService {
+	
+	public static final int MAX_TREE_DEPTH = 200;
  
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name = "personDao")
     private PersonDao personDao;
-
-    @Resource(name = "siteDao")
-    private SiteDao siteDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
@@ -81,13 +81,15 @@ public class RelationshipServiceImpl implements RelationshipService {
 		   			for (FieldRelationship fr : masters) {
 			   			if (needToCheckForRecursion) {
 			   				descendants = new ArrayList<Long>();
-			   				getDescendants(descendants, person, fr.getMasterField().getCustomFieldName(), 0);
+			   				getDescendantIds(descendants, person, fr.getMasterField().getCustomFieldName(), 0);
 			   			}
 	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getMasterField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			for (FieldRelationship fr : details) {
 	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
+		   			
+		   	    	if (logger.isDebugEnabled()) debugPrintTree(person, masters);
 		   			
     			}
 	   			
@@ -96,6 +98,26 @@ public class RelationshipServiceImpl implements RelationshipService {
     	if (!ex.getValidationResults().isEmpty()) throw ex;
     	
         return person;
+    }
+    
+    private void debugPrintTree(Person person, List<FieldRelationship> masters) throws PersonValidationException {
+    	for (FieldRelationship fr: masters) {
+    		if (fr.isRecursive()) {
+    			String parentCustomFieldName = fr.getDetailField().getCustomFieldName();
+    			String childCustomFieldName = fr.getMasterField().getCustomFieldName();
+    			
+    		   	PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childCustomFieldName);
+    	    	String result = debugPrintTree(tree);
+    	    	logger.debug("Tree for "+childCustomFieldName+":\r\n"+result);
+    		   	PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
+       	    	result = debugPrintTree(thisnode);
+    	    	logger.debug("Subtree for "+person.getDisplayValue()+":\r\n"+result);
+    	    	Person head = getHeadOfTree(person, parentCustomFieldName);
+    	    	logger.debug("Head of tree: "+head.getDisplayValue());
+    	    	Person common = getFirstCommonAncestor(person, head, parentCustomFieldName);
+    	    	logger.debug("Common ancestor: "+common.getDisplayValue());
+    	    }
+    	}
     }
     
     private String getOldFieldValue(Person person, String fieldname) {
@@ -177,14 +199,13 @@ public class RelationshipServiceImpl implements RelationshipService {
 			if (fieldRelationship.isRecursive() && newIds.contains(otherId)) {
 				// Self reference
 				if (thisId.equals(otherId)) {
-					//String attemptToAddSelf = "Value for " + thisFieldLabel + " cannot reference itself.";
 					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
 					continue;
 				}
 				if (thisCanBeMultiValued) {
 					// Attempt to add an ancestor as a child
 					List<Long> descendants = new ArrayList<Long>();
-					getDescendants(descendants, otherPerson, customFieldName, 0);
+					getDescendantIds(descendants, otherPerson, customFieldName, 0);
 					if (descendants.contains(thisId)) {
 						ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
 						continue;
@@ -227,36 +248,10 @@ public class RelationshipServiceImpl implements RelationshipService {
 
 	}
 
-	private List<Long> getIdList(Person person, String customFieldName) {
-		
-		CustomField customField = person.getCustomFieldMap().get(customFieldName);
-		String customFieldValue = customField.getValue();
-		List<Long> ids = getIds(customFieldValue);
-        return ids;		
-        
-	}
-	
-	private List<Person> getPersons(Person person, String customFieldName) {
-		
-		List<Person> persons = personDao.readPersons(person.getSite().getName(), getIdList(person, customFieldName));
-		return persons;
-		
-	}
-
-	private static final int MAX_TREE_DEPTH = 200;
-	
 	// Field must be a detail (child list) custom field.
-	// This might be optimized by doing it closer to the database since we don't need the whole object unless there is an error.
-	private void getDescendants(List<Long> list, Person person, String customFieldName, int level) throws PersonValidationException {
+	private void getDescendantIds(List<Long> list, Person person, String customFieldName, int level) throws PersonValidationException {
 		
-		if (level > MAX_TREE_DEPTH) {
-			// This should not happen normally.
-			String recursionError = "Relationship tree for "+customFieldName+" exceeds maximum number of levels.";
-			logger.error(recursionError);
-			PersonValidationException ex = new PersonValidationException();
-			ex.addValidationResult("relationshipTooManyLevels", new Object[]{customFieldName}); 
-			throw ex;
-		}
+		if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(customFieldName);
 
 		List<Person> referencedPersons = getPersons(person, customFieldName);
 		for (Person referencedPerson : referencedPersons) {
@@ -268,9 +263,113 @@ public class RelationshipServiceImpl implements RelationshipService {
 				return;
 			}
 			list.add(referencedId);
-			getDescendants(list, referencedPerson, customFieldName, level + 1);
+			getDescendantIds(list, referencedPerson, customFieldName, level + 1);
 		}
 		
+	}
+	
+	// Returns list of person Ids in the reference type custom field.
+	private List<Long> getIdList(Person person, String customFieldName) {
+		
+		CustomField customField = person.getCustomFieldMap().get(customFieldName);
+		String customFieldValue = customField.getValue();
+		List<Long> ids = getIds(customFieldValue);
+        return ids;		
+        
+	}
+	
+	// Returns list of Person objects referenced by the custom field
+	private List<Person> getPersons(Person person, String customFieldName) {
+		
+		List<Person> persons = personDao.readPersons(person.getSite().getName(), getIdList(person, customFieldName));
+		return persons;
+		
+	}
+	
+	// Person is any member of the tree.  Returns the entire tree based on the recursive relationship defined by the custom fields.
+	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName, String childCustomFieldName) throws PersonValidationException {
+		person = getHeadOfTree(person, parentCustomFieldName);
+		PersonTreeNode personNode = new PersonTreeNode(person, 0);
+		getSubTree(personNode, childCustomFieldName);
+		return personNode;
+	}
+	
+	// Field must be a master (parent id) custom field.
+	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+	
+		int level = 0;
+		while (true) {
+			level++;
+			if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(parentCustomFieldName);
+			List<Person> referencedPersons = getPersons(person, parentCustomFieldName);
+			if (referencedPersons.size() == 0) return person;
+			person = referencedPersons.get(0);
+		}
+
+	}
+	
+	public void getSubTree(PersonTreeNode personNode, String childCustomFieldName) throws PersonValidationException {
+		
+		if (personNode.getLevel() > MAX_TREE_DEPTH) throw new TooManyLevelsException(childCustomFieldName);
+
+		List<Person> referencedPersons = getPersons(personNode.getPerson(), childCustomFieldName);
+		for (Person referencedPerson : referencedPersons) {
+			PersonTreeNode child = new PersonTreeNode(referencedPerson, personNode.getLevel() + 1);
+			personNode.getChildren().add(child);
+			getSubTree(child, childCustomFieldName);
+		}
+		
+	}
+	
+	// If person is in tree, return the node, otherwise return null.
+	public PersonTreeNode findPersonNodeInTree(Person person, PersonTreeNode tree) {
+		if (equals(person, tree.getPerson())) return tree;
+	    for (PersonTreeNode personNode: tree.getChildren()) {
+	    	PersonTreeNode node = findPersonNodeInTree(person, personNode);
+	    	if (node != null) return node;
+	    }
+	    return null;
+	}
+
+	public Person getFirstCommonAncestor(Person p1, Person p2, String parentCustomFieldName) throws PersonValidationException {
+		
+		List<Person> p1Parents = new ArrayList<Person>();
+		p1Parents.add(p1);
+		List<Person> p2Parents = new ArrayList<Person>();
+		p2Parents.add(p2);
+		int level = 0;
+		while (true) {
+			level++;
+			if (level > MAX_TREE_DEPTH) throw new TooManyLevelsException(parentCustomFieldName);
+			List<Person> referencedPersons1 = getPersons(p1, parentCustomFieldName);
+			List<Person> referencedPersons2 = getPersons(p2, parentCustomFieldName);
+			if (referencedPersons1.size() == 0 && referencedPersons2.size() == 0) return null;
+			if (referencedPersons1.size() > 0) p1 = referencedPersons1.get(0);
+			if (referencedPersons2.size() > 0) p2 = referencedPersons2.get(0);
+			if (contains(p1Parents, p2)) return p2;
+			if (contains(p2Parents, p1)) return p1;
+		}
+		
+	}
+	
+	public String debugPrintTree(PersonTreeNode tree) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < tree.getLevel(); i++) sb.append("\t");
+		sb.append(tree.getPerson().getDisplayValue()).append("\r\n");
+		for (PersonTreeNode child: tree.getChildren()) sb.append(debugPrintTree(child));
+		return sb.toString();
+	}
+	
+	private boolean contains(List<Person> persons, Person person) {
+		for (Person aperson: persons) if (equals(person, aperson)) return true;
+		return false;
+	}
+
+	// Don't want to add an equals method to the JPA object
+	private boolean equals(Person p1, Person p2) {
+		if (p1 == null && p2 == null) return true;
+		if (p1 == null || p2 == null) return false;
+		return p1.getId().equals(p2.getId());
 	}
 	
 	private boolean thisCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {

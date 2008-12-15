@@ -73,7 +73,7 @@ $(document).ready(function() {
 	rowCloner("#gift_distribution tr:last");
 	$("#gift_distribution tr:last .deleteButton").hide();
 
-	$('#dialog').jqm({overlay:50}).jqDrag($('.jqmWindow h4'));
+	$('#dialog').jqm({overlay: 50, onShow: MPower.centerDialog}).jqDrag($('.jqmWindow h4'));
 	
 //	$("#newCodeForm").submit(function(){
 //		$.ajax({
@@ -333,6 +333,15 @@ var MPower = {
 				$picklists.each(MPower.hideAllReferencedElements);
 			}
 		});
+	},
+	
+	centerDialog: function($hash) {
+		var $dialog = $hash.w;
+		var x = "-" + ($dialog.width() / 2) + "px";
+		var y = "-" + ($dialog.height() / 2) + "px";
+		$dialog.css("margin-left", x);
+		$dialog.css("margin-top", y);
+		$dialog.show();
 	}	
 }
 

@@ -1,6 +1,18 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<c:if test="${param.view!='resultsOnly'}">
-	<div class="codeList" style="border:0">
+<c:if test="${param.view != 'resultsOnly'}">
+	<div class="modalTopLeft">
+		<div class="modalTopRight">
+			<h4 class="dragHandle" id="modalTitle">
+				<c:choose>
+					<c:when test="${empty requestScope.modalTitle}">Lookup</c:when>
+					<c:otherwise><c:out value="${requestScope.modalTitle}"/></c:otherwise>
+				</c:choose>
+			</h4>
+			<a href="javascript:void(0)" class="jqmClose hideText">Close</a>
+		</div>
+	</div>
+	<div class="modalContentWrapper">
+		<div class="modalContent">
 </c:if>
 <mp:page pageName='queryLookup' />
 <c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -60,10 +72,12 @@
 		</c:if>
 	</c:if>
 </c:forEach>
-<c:if test="${param.view!='resultsOnly'}">
+<c:if test="${param.view != 'resultsOnly'}">
+			</div>
+		<div class='modalSideRight'>&nbsp;</div>
 	</div>
-</c:if>
-<c:if test="${param.view!='resultsOnly'}">
+	<div class="modalBottomLeft">&nbsp;<div class="modalBottomRight">&nbsp;</div></div>
+
 	<script type="text/javascript">
 		$(".filters :input").bind("keyup", function(){
 			QueryLookup.doQuery();

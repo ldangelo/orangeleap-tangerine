@@ -1,6 +1,19 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <c:if test="${param.view != 'resultsOnly'}">
-	<form method="POST" action="multiQueryLookup.htm">
+	<div class="modalTopLeft">
+		<div class="modalTopRight">
+			<h4 class="dragHandle" id="modalTitle">
+				<c:choose>
+					<c:when test="${empty requestScope.modalTitle}">Select Options</c:when>
+					<c:otherwise><c:out value="${requestScope.modalTitle}"/></c:otherwise>
+				</c:choose>
+			</h4>
+			<a href="javascript:void(0)" class="jqmClose hideText">Close</a>
+		</div>
+	</div>
+	<div class="modalContentWrapper">
+		<div class="modalContent">
+			<form method="POST" action="multiQueryLookup.htm">
 </c:if>
 <mp:page pageName='queryLookup' />
 <c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -108,9 +121,13 @@
 	</c:if>
 </c:forEach>
 <c:if test="${param.view!='resultsOnly'}">
-		<div class="buttonsDiv">
-			<input type="button" value="Done" class="saveButton" name="doneButton" id="doneButton" />
-			<input type="button" value="Cancel" class="saveButton" name="cancelButton" id="cancelButton" />
+				<div class="buttonsDiv">
+					<input type="button" value="Done" class="saveButton" name="doneButton" id="doneButton" />
+					<input type="button" value="Cancel" class="saveButton" name="cancelButton" id="cancelButton" />
+				</div>
+			</form>
 		</div>
-	</form>
+		<div class='modalSideRight'>&nbsp;</div>
+	</div>
+	<div class="modalBottomLeft">&nbsp;<div class="modalBottomRight">&nbsp;</div></div>
 </c:if>

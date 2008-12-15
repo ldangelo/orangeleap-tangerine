@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    //eliminate these
-	$("#giftListTable").tablesorter( { sortList: [[1,0]] , headers:{0:{sorter:false}} } );
+	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
+	$(".picklist").change(MPower.toggleReferencedElements);
 
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -11,9 +11,6 @@ $(document).ready(function() {
 	$("ul.formFields li input, ul.formFields li select").change(function() {
        	$("#savedMarker").fadeOut("slow");
 	});
-
-	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
-	$(".picklist").change(MPower.toggleReferencedElements);
 
 	$(".cluetip[rel]").cluetip({
 		cluetipClass:'default',
@@ -78,24 +75,24 @@ $(document).ready(function() {
 
 	$('#dialog').jqm({overlay:50}).jqDrag($('.jqmWindow h4'));
 	
-	$("#newCodeForm").submit(function(){
-		$.ajax({
-			type: "POST",
-			url: "code.htm",
-			data: $(this).serialize(),
-			success: function(html){
-				$("#dialog .modalContent").html(html);
-				$("#dialog").jqmShow();
-				return false;
-			},
-			error: function(html){
-				$("#dialog .modalContent").html("didn't work");
-				$("#dialog").jqmShow();
-				return false;
-			}
-		});
-		return false;
-	});
+//	$("#newCodeForm").submit(function(){
+//		$.ajax({
+//			type: "POST",
+//			url: "code.htm",
+//			data: $(this).serialize(),
+//			success: function(html){
+//				$("#dialog .modalContent").html(html);
+//				$("#dialog").jqmShow();
+//				return false;
+//			},
+//			error: function(html){
+//				$("#dialog .modalContent").html("didn't work");
+//				$("#dialog").jqmShow();
+//				return false;
+//			}
+//		});
+//		return false;
+//	});
 
 	$(".filters :input").bind("keyup change",function(){
 		var queryString = $(".filters :input").serialize();
@@ -346,7 +343,7 @@ var Lookup = {
 	loadCodePopup: function(elem) {
 		var lookupType = $(elem).eq(0).attr("lookup");
 		this.lookupCaller = elem;
-		$("#dialog .modalContent").load("codeHelper.htm?view=popup&type="+lookupType,function(){
+		$("#dialog").load("codeHelper.htm?view=popup&type="+lookupType,function(){
 			$("#dialog").jqmShow();
 		});
 		return false;
@@ -355,7 +352,7 @@ var Lookup = {
 	loadQueryLookup: function(elem) {
 		var fieldDef = $(elem).eq(0).attr("fieldDef");
 		this.lookupCaller = elem;
-		$("#dialog .modalContent").load("queryLookup.htm?fieldDef="+fieldDef,function(){
+		$("#dialog").load("queryLookup.htm?fieldDef="+fieldDef,function(){
 			$("#dialog").jqmShow();
 		});
 	},
@@ -370,7 +367,7 @@ var Lookup = {
 			url: "multiQueryLookup.htm",
 			data: queryString + "fieldDef=" + fieldDef,
 			success: function(html){
-				$("#dialog .modalContent").html(html);
+				$("#dialog").html(html);
 				Lookup.multiCommonBindings();
 				Lookup.multiQueryLookupBindings();
 				$("#dialog").jqmShow();
@@ -400,8 +397,7 @@ var Lookup = {
 			url: "multiPicklist.htm",
 			data: queryString,
 			success: function(html){
-				$("#dialog .modalContent").html(html);
-				$("#dialog h4#modalTitle").text($("#dialog input#modalTitleText").val());
+				$("#dialog").html(html);
 				Lookup.multiCommonBindings();
 				Lookup.multiPicklistBindings();
 				$("#dialog").jqmShow();

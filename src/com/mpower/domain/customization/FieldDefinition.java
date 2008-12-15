@@ -65,12 +65,12 @@ public class FieldDefinition implements Serializable {
     private String fieldInfo;
 
     // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="masterField")
-    private List<FieldRelationship> detailFieldRelationships;
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="masterRecordField")
+    private List<FieldRelationship> masterFieldRelationships;
 
     // There should only be one master field relationship active per FieldDefinition (for a particular site).
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="detailField")
-    private List<FieldRelationship> masterFieldRelationships;
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="detailRecordField")
+    private List<FieldRelationship> detailFieldRelationships;
     
     
 	// Helper methods

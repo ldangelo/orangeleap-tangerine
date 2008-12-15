@@ -49,11 +49,11 @@ public class FieldRelationship implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "MASTER_FIELD_DEFINITION_ID", referencedColumnName = "FIELD_DEFINITION_ID")
-    private FieldDefinition masterField;
+    private FieldDefinition masterRecordField;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "DETAIL_FIELD_DEFINITION_ID", referencedColumnName = "FIELD_DEFINITION_ID")
-    private FieldDefinition detailField;
+    private FieldDefinition detailRecordField;
 
     @ManyToOne
     @JoinColumn(name = "SITE_NAME")
@@ -75,20 +75,28 @@ public class FieldRelationship implements Serializable {
 		return relationshipType;
 	}
 
-	public void setMasterField(FieldDefinition masterField) {
-		this.masterField = masterField;
+	public void setRecursive(boolean recursive) {
+		this.recursive = recursive;
 	}
 
-	public FieldDefinition getMasterField() {
-		return masterField;
+	public boolean isRecursive() {
+		return recursive;
 	}
 
-	public void setDetailField(FieldDefinition detailField) {
-		this.detailField = detailField;
+	public void setMasterRecordField(FieldDefinition masterRecordField) {
+		this.masterRecordField = masterRecordField;
 	}
 
-	public FieldDefinition getDetailField() {
-		return detailField;
+	public FieldDefinition getMasterRecordField() {
+		return masterRecordField;
+	}
+
+	public void setDetailRecordField(FieldDefinition detailRecordField) {
+		this.detailRecordField = detailRecordField;
+	}
+
+	public FieldDefinition getDetailRecordField() {
+		return detailRecordField;
 	}
 
 	public void setSite(Site site) {
@@ -97,14 +105,6 @@ public class FieldRelationship implements Serializable {
 
 	public Site getSite() {
 		return site;
-	}
-
-	public void setRecursive(boolean recursive) {
-		this.recursive = recursive;
-	}
-
-	public boolean isRecursive() {
-		return recursive;
 	}
 
 

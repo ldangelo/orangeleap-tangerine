@@ -78,18 +78,18 @@ public class RelationshipServiceImpl implements RelationshipService {
 		   			List<Long> descendants = new ArrayList<Long>();
 	    			
 	    			// Maintain the other related fields
-		   			for (FieldRelationship fr : masters) {
+		   			for (FieldRelationship fr : details) {
 			   			if (needToCheckForRecursion) {
 			   				descendants = new ArrayList<Long>();
-			   				getDescendantIds(descendants, person, fr.getMasterField().getCustomFieldName(), 0);
+			   				getDescendantIds(descendants, person, fr.getMasterRecordField().getCustomFieldName(), 0);
 			   			}
-	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getMasterField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
+	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getMasterRecordField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
 	 	   			}
-		   			for (FieldRelationship fr : details) {
-	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
+		   			for (FieldRelationship fr : masters) {
+	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			
-		   	    	if (logger.isDebugEnabled()) debugPrintTree(person, details);
+		   	    	if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty()) debugPrintTree(person, masters);
 		   			
     			}
 	   			
@@ -110,13 +110,13 @@ public class RelationshipServiceImpl implements RelationshipService {
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
-    			List<FieldRelationship> masters = fd.getSiteMasterFieldRelationships(person.getSite());
-    			if (masters.size() == 0) return null;
-    			FieldRelationship fr = masters.get(0);
-    			if (fr.isRecursive()) {
-        			String childCustomFieldName = fr.getMasterField().getCustomFieldName();
-            		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childCustomFieldName);
-    				return tree;
+    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite());
+    			for (FieldRelationship fr : details) {
+	    			if (fr.isRecursive()) {
+	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
+	            		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childrenCustomFieldName);
+	    				return tree;
+	    			}
     			}
     		}
     	}
@@ -128,7 +128,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     private void debugPrintTree(Person person, List<FieldRelationship> details) throws PersonValidationException {
     	for (FieldRelationship fr: details) {
     		if (fr.isRecursive()) {
-    			String parentCustomFieldName = fr.getDetailField().getCustomFieldName();
+    			String parentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
     			
     		   	PersonTreeNode tree = getEntireTree(person, parentCustomFieldName);
     	    	String result = debugPrintTree(tree);
@@ -313,10 +313,10 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 	
 	// Person is any member of the tree.  Returns the entire tree based on the recursive relationship defined by the custom fields.
-	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName, String childCustomFieldName) throws PersonValidationException {
+	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName, String childrenCustomFieldName) throws PersonValidationException {
 		person = getHeadOfTree(person, parentCustomFieldName);
 		PersonTreeNode personNode = new PersonTreeNode(person, 0);
-		getSubTree(personNode, childCustomFieldName);
+		getSubTree(personNode, childrenCustomFieldName);
 		return personNode;
 	}
 	
@@ -336,17 +336,17 @@ public class RelationshipServiceImpl implements RelationshipService {
 
 	}
 	
-	public void getSubTree(PersonTreeNode personNode, String childCustomFieldName) throws PersonValidationException {
+	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName) throws PersonValidationException {
 		
 		if (personNode.getLevel() > MAX_TREE_DEPTH) {
-			throw new TooManyLevelsException(childCustomFieldName);
+			throw new TooManyLevelsException(childrenCustomFieldName);
 		}
 
-		List<Person> referencedPersons = getPersons(personNode.getPerson(), childCustomFieldName);
+		List<Person> referencedPersons = getPersons(personNode.getPerson(), childrenCustomFieldName);
 		for (Person referencedPerson : referencedPersons) {
 			PersonTreeNode child = new PersonTreeNode(referencedPerson, personNode.getLevel() + 1);
 			personNode.getChildren().add(child);
-			getSubTree(child, childCustomFieldName);
+			getSubTree(child, childrenCustomFieldName);
 		}
 		
 	}

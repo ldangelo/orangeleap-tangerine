@@ -100,7 +100,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     	if (!ex.getValidationResults().isEmpty()) throw ex;
     	
     	
-	    if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty() && lastRecursiveParentCustomFieldName != null) {
+	    if (logger.isDebugEnabled() && lastRecursiveParentCustomFieldName != null) {
 	    	debugPrintTree(person, lastRecursiveParentCustomFieldName);
 	    }
 			

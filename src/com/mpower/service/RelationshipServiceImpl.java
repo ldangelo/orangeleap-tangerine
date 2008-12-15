@@ -41,6 +41,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     public Person maintainRelationships(Person person) throws PersonValidationException {
     	
     	PersonValidationException ex = new PersonValidationException();
+    	String lastRecursiveParentCustomFieldName = null;
     	
     	Map<String, FieldDefinition> map = person.getFieldTypeMap();
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
@@ -73,7 +74,10 @@ public class RelationshipServiceImpl implements RelationshipService {
 		   				if (fr.isRecursive()) needToCheckForRecursion = true;
 		   			}
 		   			for (FieldRelationship fr : details) {
-		   				if (fr.isRecursive()) needToCheckForRecursion = true;
+		   				if (fr.isRecursive()) {
+		   					needToCheckForRecursion = true;
+		   					lastRecursiveParentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
+		   				}
 		   			}
 		   			List<Long> descendants = new ArrayList<Long>();
 	    			
@@ -89,14 +93,18 @@ public class RelationshipServiceImpl implements RelationshipService {
 	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			
-		   	    	if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty()) debugPrintTree(person, details);
-		   			
     			}
 	   			
     		}
     	}
     	if (!ex.getValidationResults().isEmpty()) throw ex;
     	
+    	
+	    if (logger.isDebugEnabled() && ex.getValidationResults().isEmpty() && lastRecursiveParentCustomFieldName != null) {
+	    	debugPrintTree(person, lastRecursiveParentCustomFieldName);
+	    }
+			
+
         return person;
     }
     
@@ -125,22 +133,20 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
     
-    private void debugPrintTree(Person person, List<FieldRelationship> fieldRelationships) throws PersonValidationException {
-    	for (FieldRelationship fr: fieldRelationships) {
-    		if (fr.isRecursive()) {
-    			String parentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
-    			
-    		   	PersonTreeNode tree = getEntireTree(person, parentCustomFieldName);
-    	    	String result = debugPrintTree(tree);
-    	    	logger.debug("Tree for "+parentCustomFieldName+":\r\n"+result);
-    		   	PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
-       	    	result = debugPrintTree(thisnode);
-    	    	logger.debug("Subtree for "+person.getDisplayValue()+":\r\n"+result);
-    	    	Person head = getHeadOfTree(person, parentCustomFieldName);
-    	    	logger.debug("Head of tree: "+head.getDisplayValue());
-    	    	Person common = getFirstCommonAncestor(person, head, parentCustomFieldName);
-    	    	logger.debug("Common ancestor: "+common.getDisplayValue());
-    	    }
+    private void debugPrintTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+    	try {
+    		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName);
+    		String result = debugPrintTree(tree);
+    		logger.debug("Tree for "+parentCustomFieldName+":\r\n"+result);
+    		PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
+    		result = debugPrintTree(thisnode);
+    		logger.debug("Subtree for "+person.getDisplayValue()+":\r\n"+result);
+    		Person head = getHeadOfTree(person, parentCustomFieldName);
+    		logger.debug("Head of tree: "+head.getDisplayValue());
+    		Person common = getFirstCommonAncestor(person, head, parentCustomFieldName);
+    		logger.debug("Common ancestor: "+common.getDisplayValue());
+    	} catch (Exception e) {
+    		logger.debug("debugPrintTree error:" ,e);
     	}
     }
     

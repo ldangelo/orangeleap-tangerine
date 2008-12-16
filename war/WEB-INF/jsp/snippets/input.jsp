@@ -86,22 +86,23 @@
 				</c:forEach>
 			</select>
 		</c:when>
-		<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
-			<div class="lookupWrapper">
-			    <div class="lookupField linkableLookupField <c:out value='${fieldVO.entityAttributes}'/>">
-					<c:if test="${!empty fieldVO.id}">
-						<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
-							<c:param name="id" value="${fieldVO.id}" />
-						</c:url>
-						<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
-						<input type="text" name="<c:out value='${thisVal}'/>" id="lookup-<c:out value='${thisVal}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
-						<c:remove var="entityLink" scope="page" />
-					</c:if>
-			        &nbsp;
-			        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>
-			    </div>
-				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />		
-			</div>
+		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
+			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
+				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
+					<c:choose>
+						<c:when test="${fieldVO.fieldValue eq code}">
+							<c:set var="selected" value="selected" scope="page" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="selected" value="" scope="page"/>
+						</c:otherwise>
+					</c:choose>
+					<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
+						<c:out value='${fieldVO.displayValues[status.index]}'/>
+					</option>
+				</c:forEach>
+			</select>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 			<%-- TODO: move to tag library --%>
@@ -109,9 +110,16 @@
 			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<input type='text' class='multiPicklistOption <c:if test="${fieldVO.hasField == false}">noDisplay</c:if>' 
-							name="<c:out value='${code}'/>" id="option-<c:out value='${code}'/>" code="<c:out value='${code}'/>" value="<c:out value='${fieldVO.displayValues[status.index]}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"/>
+						<div class='multiPicklistOption <c:if test="${fieldVO.hasField == false}">noDisplay</c:if>' 
+							id="option-<c:out value='${code}'/>" code="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
+							<c:out value='${fieldVO.displayValues[status.index]}'/>
+							<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
 					</c:forEach>
+					<%-- 
+					<div reference="li:has(.ea-organization2)" code="organization2" id="option-organization2" class="multiPicklistOption">
+							Organization a b c d e f g h i j k l <a style="margin-left: 5px; vertical-align: middle;" href="javascript:void(0)" class=""><img src="images/icons/deleteRow.png"/></a></div>
+					 --%>
 			        &nbsp;
 			    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
@@ -120,10 +128,32 @@
 				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
 			</div>
 		</c:when>
+		<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
+			<div class="lookupWrapper">
+			    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
+					<c:if test="${!empty fieldVO.id}">
+						<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
+							<c:param name="id" value="${fieldVO.id}" />
+						</c:url>
+						<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
+						<div id="lookup-<c:out value='${thisVal}'/>" class="queryLookupOption"><a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a></div>
+						<c:remove var="entityLink" scope="page" />
+					</c:if>
+			        &nbsp;
+			        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>
+			    </div>
+				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />		
+
+				<div class="queryLookupOption noDisplay clone">
+					<a href="" target="_blank"></a>
+					<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+				</div>
+			</div>
+		</c:when>
 		<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">
 			<%-- TODO: move to tag library --%>
 			<div class="lookupWrapper">
-			    <div class="multiLookupField linkableLookupField <c:out value='${fieldVO.entityAttributes}'/>">
+			    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
 						<c:choose>
 							<c:when test="${not empty fieldVO.ids[status.index]}">
@@ -136,13 +166,18 @@
 							</c:otherwise>
 						</c:choose>
 						<c:set var="thisVal" value="${fn:trim(val)}"/>
-						<input type="text" name="<c:out value='${thisVal}'/>" id="lookup-<c:out value='${thisVal}'/>" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>" value="<c:out value='${thisVal}'/>" href="<c:out value='${entityLink}'/>"/>
+						<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>"><a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a></div>
 						<c:remove var="entityLink" scope="page" />
 					</c:forEach>
 			        &nbsp;
 			        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText">Lookup</a>
 			    </div>
-				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />		
+				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+				
+				<div class="multiQueryLookupOption noDisplay clone" selectedId="">
+					<a href="" target="_blank"></a>
+					<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+				</div>		
 			</div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
@@ -216,24 +251,6 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'SPACER'}">
 			&nbsp;
-		</c:when>
-		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
-				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
-					<c:choose>
-						<c:when test="${fieldVO.fieldValue eq code}">
-							<c:set var="selected" value="selected" scope="page" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="selected" value="" scope="page"/>
-						</c:otherwise>
-					</c:choose>
-					<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
-						<c:out value='${fieldVO.displayValues[status.index]}'/>
-					</option>
-				</c:forEach>
-			</select>
 		</c:when>
 		<c:otherwise>
 			<c:out value="Field type ${fieldVO.fieldType} not yet implemented." />

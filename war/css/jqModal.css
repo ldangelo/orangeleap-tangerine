@@ -47,7 +47,7 @@
 .jqmOverlay { background-color: #000; }
 
 
-table.multiSelect { text-align: left; margin: auto 10px; }
+table.multiSelect { text-align: left; margin: auto; padding: 0 20px; }
 table.multiSelect thead th { text-align: left; background-color: #EFEFEF; padding-left: 2px; border-color: #D1D1D1 gray gray #D1D1D1; border-style: solid; border-width: 1px; line-height: 25px; }
 table.multiSelect thead th.arrows { width: 30px; background-color: transparent; border: 0; }
 table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }

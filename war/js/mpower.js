@@ -117,17 +117,17 @@ $(document).ready(function() {
 	Date.format = 'mm/dd/yyyy';
 	$('input.date').datePicker({startDate:'01/01/1996'});
 	
-	/* TODO: move to a forms.js */
-	$("div.linkableLookupField").bind("click", function(event) {
-		var $target = $(event.target);
-		if ($target.is("input[href]")) { 
-			var linkHref = $target.attr("href");
-			window.open(linkHref, "_blank");
-		}
-	});
-
-   }
-);
+	// <a href="javascript:void(0)" class="delete"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+	
+//	$("div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption").bind("mouseover", function(event) {
+//		var $target = $(event.target);
+//		$target.addClass("selected");		
+//	});
+//	$("div.multiPicklist :text, div.multiLookupField :text").bind("blur", function(event) {
+//		var $target = $(event.target);
+//		$target.removeClass("selected");
+//	});
+});
 
 /* END DOCUMENT READY CODE */
 
@@ -274,7 +274,7 @@ var MPower = {
 		var $options = null;
 		var isMultiPicklist = $(elem).hasClass("multiPicklist");
 		if (isMultiPicklist) {
-			$options = $(elem).children("input.multiPicklistOption");
+			$options = $(elem).children("div.multiPicklistOption");
 		}
 		else {
 			$options = $(elem).children("option");
@@ -318,7 +318,7 @@ var MPower = {
 		var $options = null;
 		var isMultiPicklist = $(elem).hasClass("multiPicklist");
 		if (isMultiPicklist) {
-			$options = $(elem).children("input.multiPicklistOption");
+			$options = $(elem).children("div.multiPicklistOption");
 		}
 		else {
 			$options = $(elem).children("option");
@@ -383,7 +383,7 @@ var Lookup = {
 	
 	loadMultiQueryLookup: function(elem) {
 		var fieldDef = this.loadQueryLookupCommon(elem);		
-		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("input"));
+		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("div.multiQueryLookupOption"));
 		$.ajax({
 			type: "POST",
 			url: "multiQueryLookup.htm",
@@ -402,9 +402,9 @@ var Lookup = {
 	},
 	
 	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedId1&selectedId=selectedId2&... */
-	serializeMultiQueryLookup: function(inputs) {
+	serializeMultiQueryLookup: function(options) {
 		var queryString = "";
-		$(inputs).each(function() {
+		$(options).each(function() {
 			var $elem = $(this);
 			queryString += "selectedIds=" + escape($elem.attr("selectedId")) + "&";
 		});
@@ -413,7 +413,7 @@ var Lookup = {
 	
 	loadMultiPicklist: function(elem) {
 		this.lookupCaller = $(elem).parent();
-		var queryString = this.serializeMultiPicklist(this.lookupCaller.children("input"));
+		var queryString = this.serializeMultiPicklist(this.lookupCaller.children());
 		$.ajax({
 			type: "POST",
 			url: "multiPicklist.htm",
@@ -432,15 +432,15 @@ var Lookup = {
 	},
 	
 	/* For previously selected options, create a query string in the format 1=code1|displayValue1|reference1|selected1&2=code2|displayValue2|reference2|selected2& ... */
-	serializeMultiPicklist: function(inputs) {
+	serializeMultiPicklist: function(options) {
 		var queryString = "";
 		var counter = 1;
-		$(inputs).each(function() {
+		$(options).each(function() {
 			var $elem = $(this);
 			if ($elem.hasClass("multiPicklistOption")) {
-				queryString += counter++ + "=" + escape($elem.attr("code")) + "|" + escape($elem.attr("value")) + "|" + escape($elem.attr("reference")) + "|" + ($elem.hasClass("noDisplay") ? "false" : "true") + "&";
+				queryString += counter++ + "=" + escape($elem.attr("code")) + "|" + escape($.trim($elem.text())) + "|" + escape($elem.attr("reference")) + "|" + ($elem.hasClass("noDisplay") ? "false" : "true") + "&";
 			}
-			else {
+			else if ($elem.attr("type") == "hidden"){
 				queryString += $elem.serialize();
 			}
 		});
@@ -451,8 +451,15 @@ var Lookup = {
 		Lookup.lookupCaller.parent().children(":hidden").eq(0).val(value);
 
 		var displayVal = $(elem).attr('displayvalue');
-		Lookup.lookupCaller.children("input[type=text]").remove();
-		Lookup.lookupCaller.prepend("<input type='text' name='picked-" + displayVal + "' id='picked-" + displayVal + "' value='" + displayVal + "' href='" + $(elem).attr('gotourl') + "'></input>");
+		Lookup.lookupCaller.children("div.queryLookupOption").remove();
+		
+		var $cloned = Lookup.lookupCaller.parent().find("div.clone").clone();
+		$cloned.attr("id", "lookup-" + displayVal);
+		var $popLink = $cloned.find("a[target='_blank']");
+		$popLink.attr("href", $(elem).attr('gotourl'));
+		$popLink.text(displayVal);
+		$cloned.removeClass("clone").removeClass("noDisplay");
+		$cloned.prependTo(Lookup.lookupCaller);
 
 		$('#dialog').jqmHide();
 	},
@@ -506,9 +513,20 @@ var Lookup = {
 
 			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
 			
-			Lookup.lookupCaller.children("input[type=text]").remove();
+			Lookup.lookupCaller.children("div.multiQueryLookupOption").remove();
+			
+			var $toBeCloned = Lookup.lookupCaller.parent().find("div.clone");
+			
 			for (var x = names.length - 1; x >= 0; x--) {
-				Lookup.lookupCaller.prepend("<input type='text' name='picked-" + names[x] + "' id='picked-" + names[x] + "' selectedId='" + ids[x] + "' value='" + names[x] + "' href='" + hrefs[x] + "'></input>");
+				var $cloned = $toBeCloned.clone();
+				var $popLink = $cloned.find("a[target='_blank']");
+				$cloned.attr("id", "lookup-" + names[x]);
+				$cloned.attr("selectedId", ids[x]);
+				$popLink.attr("href", hrefs[x]);
+				$popLink.text(names[x]);
+				
+				$cloned.removeClass("clone").removeClass("noDisplay");
+				$cloned.prependTo(Lookup.lookupCaller);
 			} 
 			$("#dialog").jqmHide();					
 		});		
@@ -522,14 +540,14 @@ var Lookup = {
 				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
 				var thisId = $chkBox.attr("id");
 				idsStr += thisId + ",";
-				selectedNames[$chkBox.attr("name")] = true;
+				selectedNames[$.trim($chkBox.attr("name"))] = true;
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 
 			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
 			
-			Lookup.lookupCaller.children("input.multiPicklistOption").each(function() {
-				if (selectedNames[this.name] === true) {
+			Lookup.lookupCaller.children("div.multiPicklistOption").each(function() {
+				if (selectedNames[$.trim($(this).attr("code"))] === true) {
 					$(this).removeClass("noDisplay");
 				}
 				else {

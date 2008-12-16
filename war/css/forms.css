@@ -400,7 +400,7 @@ ul.formFields div.lookupWrapper input {
 }
 .lookupField, .multiLookupField {
 	border:1px solid #7F9DB9;
-	padding:1px 4px 2px;
+	padding:1px 8px 2px 0;
 	float:left;
 	width:100%;
     position: relative;
@@ -422,8 +422,11 @@ a.hideText {
     line-height: 0;
     color: transparent;
 }
-div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption { float: left; clear: left; max-width: 94%; }
-a.deleteOption { vertical-align: middle; margin-left: 5px; }
+
+div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption { float: left; clear: left; width: 94%; padding-left: 4px; }
+div.multiPicklistOption:hover, div.queryLookupOption:hover, div.multiQueryLookupOption:hover { font-weight: bold; background-color: #FFF8DC; }
+a.deleteOption { vertical-align: bottom; margin-left: 3px; }
+a.deleteOption img { vertical-align: top; }
 
 table.alignLeft td,
 table.alignLeft th {

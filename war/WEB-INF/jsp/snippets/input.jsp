@@ -110,15 +110,15 @@
 			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<div class='multiPicklistOption <c:if test="${fieldVO.hasField == false}">noDisplay</c:if>' 
-							id="option-<c:out value='${code}'/>" code="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
+						<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
+							id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
 							<c:out value='${fieldVO.displayValues[status.index]}'/>
-							<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 						</div>
 					</c:forEach>
 					<%-- 
 					<div reference="li:has(.ea-organization2)" code="organization2" id="option-organization2" class="multiPicklistOption">
-							Organization a b c d e f g h i j k l <a style="margin-left: 5px; vertical-align: middle;" href="javascript:void(0)" class=""><img src="images/icons/deleteRow.png"/></a></div>
+							Organization a b c d e f g h i j k l d d s<a class="deleteOption" href="javascript:void(0)" class=""><img src="images/icons/deleteRow.png"/></a></div>
 					 --%>
 			        &nbsp;
 			    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
@@ -136,7 +136,10 @@
 							<c:param name="id" value="${fieldVO.id}" />
 						</c:url>
 						<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
-						<div id="lookup-<c:out value='${thisVal}'/>" class="queryLookupOption"><a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a></div>
+						<div id="lookup-<c:out value='${thisVal}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
+							<a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a>
+							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
 						<c:remove var="entityLink" scope="page" />
 					</c:if>
 			        &nbsp;
@@ -146,7 +149,7 @@
 
 				<div class="queryLookupOption noDisplay clone">
 					<a href="" target="_blank"></a>
-					<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+					<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 				</div>
 			</div>
 		</c:when>
@@ -166,7 +169,10 @@
 							</c:otherwise>
 						</c:choose>
 						<c:set var="thisVal" value="${fn:trim(val)}"/>
-						<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>"><a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a></div>
+						<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>">
+							<a href="<c:out value='${entityLink}'/>" target="_blank"><c:out value='${thisVal}'/></a>
+							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
 						<c:remove var="entityLink" scope="page" />
 					</c:forEach>
 			        &nbsp;
@@ -176,7 +182,7 @@
 				
 				<div class="multiQueryLookupOption noDisplay clone" selectedId="">
 					<a href="" target="_blank"></a>
-					<a href="javascript:void(0)" onclick="" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+					<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 				</div>		
 			</div>
 		</c:when>

@@ -424,7 +424,7 @@ a.hideText {
 }
 
 div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption { float: left; clear: left; width: 94%; padding-left: 4px; }
-div.multiPicklistOption:hover, div.queryLookupOption:hover, div.multiQueryLookupOption:hover { font-weight: bold; background-color: #FFF8DC; }
+div.multiPicklistOption:hover, div.queryLookupOption:hover, div.multiQueryLookupOption:hover { font-weight: bold; background-color: #DFF1FF; }
 a.deleteOption { vertical-align: bottom; margin-left: 3px; }
 a.deleteOption img { vertical-align: top; }
 
@@ -432,3 +432,5 @@ table.alignLeft td,
 table.alignLeft th {
 	text-align:left;
 }
+
+input:focus, textarea:focus, select:focus { background-color: #DFF1FF; } 

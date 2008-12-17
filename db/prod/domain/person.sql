@@ -29,8 +29,8 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[sponsor.effectiveDate]', 'person', 'customFieldMap[sponsor.effectiveDate]', 'Sponsorship Effective Date', 'DATE', 'sponsor');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[sponsor.years]', 'person', 'customFieldMap[sponsor.years]', 'Years as a Sponsor', 'NUMBER', 'sponsor');
 
-// Organization Employee relationship ONE_TO_MANY
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[employee.organization]', 'person', 'customFieldMap[employee.organization]', 'Employee''s Organization', 'QUERY_LOOKUP', 'employee');
+// Organization Employee relationship MANY_TO_MANY
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[employee.organizations]', 'person', 'customFieldMap[employee.organizations]', 'Employee''s Organizations', 'MULTI_QUERY_LOOKUP', 'employee');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[organization.employees]', 'person', 'customFieldMap[organization.employees]', 'Employee List', 'MULTI_QUERY_LOOKUP', 'organization');
 
 // Head of Household and family member fields ONE_TO_MANY

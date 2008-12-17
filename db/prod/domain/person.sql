@@ -41,6 +41,9 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[clubMember.clubGroups]', 'person', 'customFieldMap[clubMember.clubGroups]', 'Member of clubs', 'MULTI_QUERY_LOOKUP', 'clubMember');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[clubGroup.clubMembers]', 'person', 'customFieldMap[clubGroup.clubMembers]', 'Club members', 'MULTI_QUERY_LOOKUP', 'clubGroup');
 
+// Friend relationship MANY_TO_MANY
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[person.friends]', 'person', 'customFieldMap[person.friends]', 'Friends', 'MULTI_QUERY_LOOKUP', 'person');
+
 // Employee alternate ONE_TO_ONE 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[employee.alternate]', 'person', 'customFieldMap[employee.alternate]', 'Alternate', 'QUERY_LOOKUP', 'employee');
 

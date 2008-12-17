@@ -16,8 +16,9 @@ ul.formFields li.side label.desc {
 	width:30%;
 	text-align:right;
 	padding-right:1%;
+	color: #173D5F;
 	font-family:Arial, sans-serif;
-	padding-top:2px;
+	padding-top: 4px;
 }
 ul.formFields li input {
 	width:100%;
@@ -100,8 +101,7 @@ ul.width375 {
 	width:375px;
 }
 span.required {
-	font-weight:bold;
-	color:#f00;
+	font-size: 1.6em; color:#f00; vertical-align: text-top;
 }
 span.helpText {
 	display: none;
@@ -433,4 +433,5 @@ table.alignLeft th {
 	text-align:left;
 }
 
-input:focus, textarea:focus, select:focus { background-color: #DFF1FF; } 
+input:focus, textarea:focus, select:focus, .focused { background-color: #DFF1FF; }
+ul.formFields li.side label.inFocus { font-weight: bold; color: black; }

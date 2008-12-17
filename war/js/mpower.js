@@ -125,6 +125,19 @@ $(document).ready(function() {
 			$(this).find("a.deleteOption").addClass("noDisplay");		
 		}
 	);
+	
+	$(":input, select, textbox").bind("focus", function() {
+		if ($.browser.msie) {
+			$(this).addClass(focused);
+		}
+		$(this).prev("label.desc").addClass("inFocus");
+	});
+	$(":input, select, textbox").bind("blur", function() {
+		if ($.browser.msie) {
+			$(this).removeClass(focused);
+		}
+		$(this).prev("label.desc").removeClass("inFocus");
+	});
 });
 
 /* END DOCUMENT READY CODE */

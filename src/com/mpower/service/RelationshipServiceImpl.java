@@ -109,10 +109,10 @@ public class RelationshipServiceImpl implements RelationshipService {
     }
     
     
-    // Return the entire tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
+    // Return the tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
     @Override
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException {
     	
        	Map<String, FieldDefinition> map = person.getFieldTypeMap();
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
@@ -122,7 +122,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
-	            		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName, childrenCustomFieldName);
+	            		PersonTreeNode tree = getTree(person, parentCustomFieldName, childrenCustomFieldName, oneLevelOnly, fromHeadOfTree);
 	    				return tree;
 	    			}
     			}
@@ -132,10 +132,10 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 	}
 
-    
+    // TODO Turn off in production since getting the whole tree could be expensive.
     private void debugPrintTree(Person person, String parentCustomFieldName) throws PersonValidationException {
     	try {
-    		PersonTreeNode tree = getEntireTree(person, parentCustomFieldName);
+    		PersonTreeNode tree = getTree(person, parentCustomFieldName, false, true);
     		String result = debugPrintTree(tree);
     		logger.debug("Tree for "+parentCustomFieldName+":\r\n"+result);
     		PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
@@ -145,6 +145,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     		logger.debug("Head of tree: "+head.getDisplayValue());
     		Person common = getFirstCommonAncestor(person, head, parentCustomFieldName);
     		logger.debug("Common ancestor: "+common.getDisplayValue());
+    		logger.debug(tree.toJSONString());
     	} catch (Exception e) {
     		logger.debug("debugPrintTree error:" ,e);
     	}
@@ -318,11 +319,11 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 	}
 	
-	// Person is any member of the tree.  Returns the entire tree based on the recursive relationship defined by the custom fields.
-	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName, String childrenCustomFieldName) throws PersonValidationException {
-		person = getHeadOfTree(person, parentCustomFieldName);
+	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException {
+		if (fromHeadOfTree) person = getHeadOfTree(person, parentCustomFieldName);
 		PersonTreeNode personNode = new PersonTreeNode(person, 0);
-		getSubTree(personNode, childrenCustomFieldName);
+		getSubTree(personNode, childrenCustomFieldName, oneLevelOnly);
 		return personNode;
 	}
 	
@@ -342,7 +343,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 
 	}
 	
-	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName) throws PersonValidationException {
+	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName, boolean oneLevelOnly) throws PersonValidationException {
 		
 		if (personNode.getLevel() > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(childrenCustomFieldName);
@@ -352,7 +353,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		for (Person referencedPerson : referencedPersons) {
 			PersonTreeNode child = new PersonTreeNode(referencedPerson, personNode.getLevel() + 1);
 			personNode.getChildren().add(child);
-			getSubTree(child, childrenCustomFieldName);
+			if (!oneLevelOnly) getSubTree(child, childrenCustomFieldName, oneLevelOnly);
 		}
 		
 	}

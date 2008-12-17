@@ -8,7 +8,7 @@ public interface RelationshipService {
 	
 	public Person maintainRelationships(Person person) throws PersonValidationException;
 	
-	public PersonTreeNode getEntireTree(Person person, String parentCustomFieldName) throws PersonValidationException;
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException;
 
 
 }

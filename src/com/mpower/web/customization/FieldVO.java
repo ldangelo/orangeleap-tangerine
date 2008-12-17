@@ -39,6 +39,8 @@ public class FieldVO {
     private String validationExpression;
     private boolean helpAvailable;
     private boolean required;
+    private boolean isTree;
+    private boolean isRelationship;
 
     private Object fieldToCheck;
 
@@ -251,4 +253,20 @@ public class FieldVO {
     private String getDelimitedString(Collection o, String delimiter) {
         return org.springframework.util.StringUtils.collectionToDelimitedString(o, delimiter);
     }
+
+	public void setTree(boolean isTree) {
+		this.isTree = isTree;
+	}
+
+	public boolean isTree() {
+		return isTree;
+	}
+
+	public void setRelationship(boolean isRelationship) {
+		this.isRelationship = isRelationship;
+	}
+
+	public boolean isRelationship() {
+		return isRelationship;
+	}
 }

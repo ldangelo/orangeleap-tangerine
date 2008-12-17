@@ -108,6 +108,19 @@ public class FieldDefinition implements Serializable {
     public boolean isCustom() {
         return (fieldName != null && fieldName.startsWith(CUSTOM_FIELD_MAP));
     }
+    
+    public boolean isTree(Site site) {
+    	// This must be the parent reference field on the detail record.
+    	List<FieldRelationship> list = getSiteMasterFieldRelationships(site);
+    	for (FieldRelationship fr : list) {
+    		if (fr.isRecursive()) return true;
+    	}
+    	return false;
+    }
+    
+    public boolean isRelationship(Site site) {
+    	return (getSiteMasterFieldRelationships(site).size() > 0 || getSiteDetailFieldRelationships(site).size() > 0) ;
+    }
 
     public EntityType getEntityType() {
         return entityType;

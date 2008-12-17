@@ -20,9 +20,6 @@
 	<c:if test="${sectionDefinition.sectionName eq queryLookup.sectionName}">
 		<c:if test="${param.view != 'resultsOnly'}">
 	        <div class="modalSearch">
-	        	<label for="searchText">Search For</label>
-				<input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${param.fieldDef}'/>" />
-	        	<input type="text" value="" id="searchText" name="searchText"/>
 	        	<select name="searchOption" id="searchOption">
 					<c:forEach items="${pagedListHolder.pageList}" var="row" begin="0" end="0">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
@@ -33,6 +30,9 @@
 						</c:forEach>	
 					</c:forEach>
 				</select>        	
+	        	<label for="searchText" style="display:none">Search For</label>
+				<input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${param.fieldDef}'/>" />
+	        	<input type="text" value="" id="searchText" name="searchText"/>
 	        	<input type="button" id="findButton" name="findButton" value="Find" class="saveButton" />
 	        </div>
 	        <table cellspacing="0" class="multiSelect">
@@ -69,12 +69,12 @@
 						<c:set value="javascript:void(0)" var="entityLink" scope="page" />
 					</c:otherwise>
 				</c:choose>
-				<ol>
+				<li>
 					<input type="checkbox" name="option${counter}" id="${row.id}"></input>
 					<a href="<c:out value='${entityLink}'/>" target="_blank">
 						<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
 					</a>
-				</ol>
+				</li>
 				<c:remove var="entityLink" scope="page" />
 			</c:if>
 		</c:forEach>
@@ -103,12 +103,12 @@
 												<c:set value="javascript:void(0)" var="entityLink" scope="page" />
 											</c:otherwise>
 										</c:choose>
-										<ol>
+										<li>
 											<input type="checkbox" name="option${counter}" id="${row.id}"></input>
 											<a href="<c:out value='${entityLink}'/>" target="_blank">
 												<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
 											</a>
-										</ol>
+										</li>
 										<c:remove var="entityLink" scope="page" />
 									</c:if>
 								</c:forEach>

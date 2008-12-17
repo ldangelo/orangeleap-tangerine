@@ -225,29 +225,34 @@ public class RelationshipServiceImpl implements RelationshipService {
 		for (Person otherPerson : otherPersons) {
 			
 			Long otherId = otherPerson.getId();
+
+			if (newIds.contains(otherId)) {
 			
-			// Check for recursion loops
-			if (fieldRelationship.isRecursive() && newIds.contains(otherId)) {
 				// Self reference
 				if (thisId.equals(otherId)) {
 					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
 					continue;
 				}
-				if (thisCanBeMultiValued) {
-					// Attempt to add an ancestor as a child
-					List<Long> descendants = new ArrayList<Long>();
-					getDescendantIds(descendants, otherPerson, customFieldName, 0);
-					if (descendants.contains(thisId)) {
-						ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
-						continue;
-					}
-				} else {
-					// Attempt to set parent to a descendant
-					if (checkDescendents.contains(otherId)) {
-						ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
-						continue;
+	
+				// Check for recursion loops
+				if (fieldRelationship.isRecursive()) {
+					if (thisCanBeMultiValued) {
+						// Attempt to add an ancestor as a child
+						List<Long> descendants = new ArrayList<Long>();
+						getDescendantIds(descendants, otherPerson, customFieldName, 0);
+						if (descendants.contains(thisId)) {
+							ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
+							continue;
+						}
+					} else {
+						// Attempt to set parent to a descendant
+						if (checkDescendents.contains(otherId)) {
+							ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
+							continue;
+						}
 					}
 				}
+			
 			}
 			
 			// Check for additions or deletions

@@ -128,13 +128,13 @@ $(document).ready(function() {
 	
 	$(":input, select, textbox").bind("focus", function() {
 		if ($.browser.msie) {
-			$(this).addClass(focused);
+			$(this).addClass("focused");
 		}
 		$(this).prev("label.desc").addClass("inFocus");
 	});
 	$(":input, select, textbox").bind("blur", function() {
 		if ($.browser.msie) {
-			$(this).removeClass(focused);
+			$(this).removeClass("focused");
 		}
 		$(this).prev("label.desc").removeClass("inFocus");
 	});

@@ -25,10 +25,6 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 // Tax Id field is used by organization, donor and employee (only ENTITY_ATTRIBUTES is used to determine this; FIELD_DEFINITION_ID and FIELD_NAME just have different uniqueness constraints)
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[organization,donor.taxid]', 'person', 'customFieldMap[organization,donor.taxid]', 'Tax Id', 'TEXT', 'organization,donor');
 
-// Sponsor-specific typed fields
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[sponsor.effectiveDate]', 'person', 'customFieldMap[sponsor.effectiveDate]', 'Sponsorship Effective Date', 'DATE', 'sponsor');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[sponsor.years]', 'person', 'customFieldMap[sponsor.years]', 'Years as a Sponsor', 'NUMBER', 'sponsor');
-
 // Organization Employee relationship MANY_TO_MANY
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[individual.organizations]', 'person', 'customFieldMap[individual.organizations]', 'Individual''s Organizations', 'MULTI_QUERY_LOOKUP', 'individual');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES ('person.customFieldMap[organization.employees]', 'person', 'customFieldMap[organization.employees]', 'Employee List', 'MULTI_QUERY_LOOKUP', 'organization');

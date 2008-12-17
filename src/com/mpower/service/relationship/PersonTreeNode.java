@@ -3,6 +3,9 @@ package com.mpower.service.relationship;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.mpower.domain.Person;
 import com.mpower.service.exception.PersonValidationException;
 
@@ -43,6 +46,37 @@ public class PersonTreeNode {
 
 	public int getLevel() {
 		return level;
+	}
+	
+	public String toJSONString() {
+		try {
+			return toJSONObject().toString(3);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return "{}";
+		}
+	}
+	
+	public JSONObject toJSONObject() {
+
+		String sId = person == null ? "" : person.getId().toString();
+		String sPerson = person == null ? "" : person.getDisplayValue();
+		String sLevel = "" + level;
+		
+		JSONObject json = new JSONObject();
+		try {
+			json.put("id", sId);
+			json.put("name", sPerson);
+			json.put("level", sLevel);
+		  
+			for (PersonTreeNode pn : children) {
+				json.append("zchildren", pn.toJSONObject());
+			}
+		} catch (JSONException e) {
+		}
+		
+		return json;
+		
 	}
 
 }

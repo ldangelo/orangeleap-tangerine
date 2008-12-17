@@ -6,6 +6,7 @@
 // If the employee is edited to point to another organization, the reference on the old organization will be removed and a new reference added to the new organization employee list.
 // The participating field types of QUERY_LOOKUP and MULTI_QUERY_LOOKUP can currently fully determine the RELATIONSHIP_TYPE, however we may wish to add other, more refined, relationship types in the future. 
 // Spouse is a case of a ONE_TO_ONE relationship, and club membership would be a MANY_TO_MANY relationship.
+INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_ONE', FALSE, 'person.customFieldMap[person.spouse]', 'person.customFieldMap[person.spouse]', null);
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_MANY', FALSE, 'person.customFieldMap[organization.employees]', 'person.customFieldMap[employee.organization]', null);
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('ONE_TO_MANY', FALSE, 'person.customFieldMap[headOfHousehold.familyMembers]', 'person.customFieldMap[familyMember.headOfHousehold]', null);
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('MANY_TO_MANY', FALSE, 'person.customFieldMap[clubGroup.clubMembers]', 'person.customFieldMap[clubMember.clubGroups]', null);

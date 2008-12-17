@@ -59,9 +59,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "TITLE")
     private String title;
 
-    @Column(name = "SPOUSE_NAME")
-    private String spouseName;
-
     @Column(name = "FIRST_NAME")
     private String firstName;
 
@@ -76,13 +73,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Column(name = "MARITAL_STATUS")
     private String maritalStatus = "Unknown";
-
-    @Column(name = "SPOUSE_FIRST_NAME")
-    private String spouseFirstName;
-
-    @OneToOne
-    @JoinColumn(name = "SPOUSE", referencedColumnName = "PERSON_ID")
-    private Person spouse;
 
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
@@ -276,14 +266,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
         this.title = title;
     }
 
-    public String getSpouseName() {
-        return spouseName;
-    }
-
-    public void setSpouseName(String spouseName) {
-        this.spouseName = spouseName;
-    }
-
     public List<Address> getAddresses() {
         if (addresses == null) {
             addresses = new ArrayList<Address>();
@@ -358,14 +340,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setMaritalStatus(String maritalStatus) {
         this.maritalStatus = maritalStatus;
-    }
-
-    public String getSpouseFirstName() {
-        return spouseFirstName;
-    }
-
-    public void setSpouseFirstName(String spouseFirstName) {
-        this.spouseFirstName = spouseFirstName;
     }
 
     public String getOrganizationName() {
@@ -447,14 +421,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Override
     public Person getPerson() {
         return this;
-    }
-
-    public Person getSpouse() {
-        return spouse;
-    }
-
-    public void setSpouse(Person spouse) {
-        this.spouse = spouse;
     }
 
 	public void setConstituentAttributes(String constituentAttributes) {

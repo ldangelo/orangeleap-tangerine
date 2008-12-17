@@ -111,9 +111,11 @@ public class FieldDefinition implements Serializable {
     
     public boolean isTree(String siteName) {
     	// This must be the parent reference field on the detail record.
-    	List<FieldRelationship> list = getSiteMasterFieldRelationships(siteName);
+    	List<FieldRelationship> list = getSiteDetailFieldRelationships(siteName);
     	for (FieldRelationship fr : list) {
-    		if (fr.isRecursive()) return true;
+    		if (fr.isRecursive()) {
+    			return true;
+    		}
     	}
     	return false;
     }

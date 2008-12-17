@@ -39,7 +39,7 @@ public class FieldVO {
     private String validationExpression;
     private boolean helpAvailable;
     private boolean required;
-    private boolean isTree;
+    private boolean isHierarchy;
     private boolean isRelationship;
 
     private Object fieldToCheck;
@@ -254,12 +254,12 @@ public class FieldVO {
         return org.springframework.util.StringUtils.collectionToDelimitedString(o, delimiter);
     }
 
-	public void setTree(boolean isTree) {
-		this.isTree = isTree;
+	public void setHierarchy(boolean isHierarchy) {
+		this.isHierarchy = isHierarchy;
 	}
 
-	public boolean isTree() {
-		return isTree;
+	public boolean isHierarchy() {
+		return isHierarchy;
 	}
 
 	public void setRelationship(boolean isRelationship) {

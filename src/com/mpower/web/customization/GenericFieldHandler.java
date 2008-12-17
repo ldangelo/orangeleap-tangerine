@@ -92,6 +92,8 @@ public class GenericFieldHandler implements FieldHandler {
 
         FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);
         fieldVO.setRequired(fr != null && fr.isRequired() && !fr.hasConditions());
+        fieldVO.setHierarchy(currentField.getFieldDefinition().isTree(siteName));
+        fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName));
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
             String fieldProperty = fieldVO.getFieldName();

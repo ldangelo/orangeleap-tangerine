@@ -51,8 +51,8 @@ public class RelationshipServiceImpl implements RelationshipService {
     		if (isReferenceTypeField && fd.isCustom()) {
     			
     			// Determine if there is a relationship defined with another field.
-    			List<FieldRelationship> masters = fd.getSiteMasterFieldRelationships(person.getSite());
-    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite());
+    			List<FieldRelationship> masters = fd.getSiteMasterFieldRelationships(person.getSite().getName());
+    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite().getName());
     			if (masters.size() == 0 && details.size() == 0) continue;
 
     			String fieldlabel = fd.getDefaultLabel();
@@ -118,7 +118,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
-    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite());
+    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite().getName());
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();

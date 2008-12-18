@@ -17,6 +17,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.mpower.dao.AuditDao;
+import com.mpower.dao.PersonDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Audit;
 import com.mpower.domain.Auditable;
@@ -24,6 +25,8 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.Viewable;
+import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.service.relationship.RelationshipUtil;
 import com.mpower.type.AuditType;
 
 @Service("auditService")
@@ -31,6 +34,9 @@ public class AuditServiceImpl implements AuditService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name = "personDao")
+    private PersonDao personDao;
 
     @Resource(name = "auditDao")
     private AuditDao auditDao;
@@ -84,11 +90,20 @@ public class AuditServiceImpl implements AuditService {
                     if (logger.isDebugEnabled()) {
                         logger.debug("key = " + key);
                     }
+                    Object originalBeanProperty = viewable.getFieldValueMap().get(key);
                     String fieldName = key;
                     Object beanProperty = bean.getPropertyValue(fieldName);
                     if (beanProperty instanceof CustomField) {
                         fieldName = key + ".value";
                         beanProperty = bean.getPropertyValue(fieldName);
+                        if (viewable instanceof Person) {
+                        	FieldDefinition fd = ((Person)viewable).getFieldTypeMap().get(key);
+                        	String siteName = viewable.getSite().getName();
+                        	if (fd.isRelationship(siteName)) {
+                        		if (originalBeanProperty != null) originalBeanProperty = dereference(siteName, originalBeanProperty.toString());
+                        		if (beanProperty != null) beanProperty = dereference(siteName, beanProperty.toString());
+                        	}
+                        }
                     }
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
@@ -96,7 +111,6 @@ public class AuditServiceImpl implements AuditService {
                         fieldName = key + ".displayValue";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }
-                    Object originalBeanProperty = viewable.getFieldValueMap().get(key);
                     if (originalBeanProperty == null && beanProperty == null) {
                         continue;
                     } else if (originalBeanProperty == null && beanProperty != null) {
@@ -122,6 +136,16 @@ public class AuditServiceImpl implements AuditService {
             }
         }
         return audits;
+    }
+    
+    // Get Person name from id list.
+    private String dereference(String siteName, String fieldValue) {
+    	List<Long> list = RelationshipUtil.getIds(fieldValue);
+		List<Person> persons = personDao.readPersons(siteName, list);
+    	List<String> displayValues = new ArrayList<String>();
+    	// first name last name, without commas
+    	for (Person person : persons) displayValues.add(person.getFullName()); 
+    	return StringUtils.join(displayValues, ", ");
     }
 
     private List<Audit> auditAuditable(Auditable auditable) {

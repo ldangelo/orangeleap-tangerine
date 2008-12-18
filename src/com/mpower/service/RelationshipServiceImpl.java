@@ -20,6 +20,7 @@ import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRelationship;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.service.relationship.PersonTreeNode;
+import com.mpower.service.relationship.RelationshipUtil;
 import com.mpower.service.relationship.TooManyLevelsException;
 import com.mpower.type.FieldType;
 import com.mpower.type.RelationshipDirection;
@@ -61,8 +62,8 @@ public class RelationshipServiceImpl implements RelationshipService {
     			// Get old and new reference field value for comparison
     			String oldFieldValue = getOldFieldValue(person, key);
        			String newFieldValue = getNewFieldValue(person, key);  
-       		    List<Long> oldids = getIds(oldFieldValue);
-    			List<Long> newids = getIds(newFieldValue);
+       		    List<Long> oldids = RelationshipUtil.getIds(oldFieldValue);
+    			List<Long> newids = RelationshipUtil.getIds(newFieldValue);
     			
     			if (!oldFieldValue.equals(newFieldValue)) {
  
@@ -162,28 +163,6 @@ public class RelationshipServiceImpl implements RelationshipService {
     	return (result == null) ? "" : result;
     }
     
-    private List<Long> getIds(String fieldValue) {
-		List<Long> ids = new ArrayList<Long>();
-		if (fieldValue == null) return ids;
-		String[] sids = fieldValue.split(",");
-		for (String sid: sids) {
-			if (sid.length() > 0) {
-		   	   Long id = new Long(sid); 
-			   ids.add(id);
-			}
-		}
-        return ids;
-    }
-    
-    private String getIdString(List<Long> ids) {
-    	StringBuilder sb = new StringBuilder();
-    	for (Long id: ids) {
-    		if (sb.length() > 0) sb.append(",");
-    		sb.append(id);
-    	}
-    	return sb.toString();
-    }
-    
 	private void maintainRelationShip(String thisFieldLabel,
 			String customFieldName, 
 			Person person, 
@@ -258,7 +237,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 			// Check for additions or deletions
 			CustomField otherCustomField = otherPerson.getCustomFieldMap().get(otherfieldname);
 			String otherCustomFieldValue = otherCustomField.getValue();
-			List<Long> otherFieldIds = getIds(otherCustomFieldValue);
+			List<Long> otherFieldIds = RelationshipUtil.getIds(otherCustomFieldValue);
 			boolean found = otherFieldIds.contains(thisId);
 			boolean shouldBeFound = newIds.contains(otherId);
 			
@@ -274,7 +253,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 			}
 			
 			if (needToPersist) {
-				String newOtherFieldValue = getIdString(otherFieldIds);
+				String newOtherFieldValue = RelationshipUtil.getIdString(otherFieldIds);
 				logger.debug("Updating related field "+otherCustomField.getName()+" value on "+otherPerson.getDisplayValue() + " to " + newOtherFieldValue);
 				otherCustomField.setValue(newOtherFieldValue);
 				personDao.savePerson(otherPerson); 
@@ -311,7 +290,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		
 		CustomField customField = person.getCustomFieldMap().get(customFieldName);
 		String customFieldValue = customField.getValue();
-		List<Long> ids = getIds(customFieldValue);
+		List<Long> ids = RelationshipUtil.getIds(customFieldValue);
         return ids;		
         
 	}

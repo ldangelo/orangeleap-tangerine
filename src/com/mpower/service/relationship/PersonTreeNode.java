@@ -19,7 +19,7 @@ public class PersonTreeNode {
 	public PersonTreeNode() {
 	}
 	
-	public PersonTreeNode(Person person, int level) throws PersonValidationException {
+	public PersonTreeNode(Person person, int level) {
 		this.setPerson(person);
 		this.setLevel(level);
 	}

@@ -250,6 +250,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 				if (!otherCanBeMultiValued) otherFieldIds.clear();
 				otherFieldIds.add(thisId);
 				needToPersist = true;
+				ensureOtherPersonAttributeIsSet(otherField, otherPerson);
 			}
 			
 			if (needToPersist) {
@@ -259,6 +260,24 @@ public class RelationshipServiceImpl implements RelationshipService {
 				personDao.savePerson(otherPerson); 
 			}
 			
+		}
+
+	}
+	
+	private void ensureOtherPersonAttributeIsSet(FieldDefinition otherFieldDefinition, Person otherPerson) {
+		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
+		if (fieldAttributes == null) return;
+		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other person. 
+		// Otherwise we don't know which one to set so it would have to be set manually.
+		if (otherFieldDefinition.getEntityAttributes().indexOf(",") == -1) {
+			String otherAttributes = otherPerson.getConstituentAttributes();
+			if (otherAttributes == null) otherAttributes = "";
+			if (otherAttributes.indexOf(fieldAttributes) == -1) {
+				if (otherAttributes.length() > 0) {
+					otherAttributes = otherAttributes + ",";
+				}
+				otherPerson.setConstituentAttributes(otherAttributes + fieldAttributes);
+			}
 		}
 
 	}

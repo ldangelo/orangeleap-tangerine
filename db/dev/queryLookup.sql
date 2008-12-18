@@ -10,7 +10,7 @@ INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName'
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middleName', 4);
 
 // Head of Household relationship
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (5, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentAttributes like ''%headOfHousehold%'' ', 'person.customFieldMap[individual.headOfHousehold]', 'person.headOfHousehold', null);
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (5, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentAttributes like ''%individual%'' ', 'person.customFieldMap[individual.headOfHousehold]', 'person.headOfHousehold', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 5);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 5);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middleName', 5);

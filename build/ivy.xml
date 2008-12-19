@@ -9,11 +9,9 @@
 		<conf name="test"/>
 	</configurations>
 	
-<!--	
 	<publications>
-		<artifact name="mpower" type="war" conf="war" />
+		<artifact name="mpower" type="war" conf="war" ext="war" />
 	</publications>
--->
 
 	<dependencies>
 		<!-- MPower -->

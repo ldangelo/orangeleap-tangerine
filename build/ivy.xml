@@ -165,17 +165,17 @@
 		<dependency org="org.drools" name="drools-core" rev="4.0.7"/> 
 		
 		<!-- JSP/Servlets/Ajax -->
-		<dependency org="org.apache.tiles" name="tiles-api" transitive="false" rev="2.1.0">
+		<dependency org="org.apache.tiles" name="tiles-api" transitive="false" rev="2.0.5">
 			<artifact name="tiles-api" type="jar" />
 			<artifact name="tiles-api" type="source" ext="jar" m:classifier="sources" conf="sources"/>
 		</dependency>
 
-		<dependency org="org.apache.tiles" name="tiles-core" transitive="false" rev="2.1.0">
+		<dependency org="org.apache.tiles" name="tiles-core" transitive="false" rev="2.0.5">
 			<artifact name="tiles-core" type="jar" />
 			<artifact name="tiles-core" type="source" ext="jar" m:classifier="sources" conf="sources"/>
 		</dependency>
 
-		<dependency org="org.apache.tiles" name="tiles-jsp" transitive="false" rev="2.1.0">
+		<dependency org="org.apache.tiles" name="tiles-jsp" transitive="false" rev="2.0.5">
 			<artifact name="tiles-jsp" type="jar" />
 			<artifact name="tiles-jsp" type="source" ext="jar" m:classifier="sources" conf="sources"/>
 		</dependency>

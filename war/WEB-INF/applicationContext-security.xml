@@ -77,6 +77,8 @@
 	<!-- Uncomment this for local ldap, using ApacheDS, and comment the section below
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://localhost:10389/dc=mpowerOpen-dev"/>
+    	<property name="userDn" value="uid=admin,ou=system"/>
+    	<property name="password" value="secret"/>
 	</bean>
 	-->
 

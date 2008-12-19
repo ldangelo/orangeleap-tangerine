@@ -2,18 +2,18 @@
 <ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" 
 		xmlns:m="http://ant.apache.org/ivy/maven">
 	<info organisation="com.mpower" module="mpower" status="integration" />
-	
 	<configurations>
 		<conf name="compile"/>
 		<conf name="war"/>
-		<conf name="test" transitive="false"/>
+		<conf name="test"/>
 	</configurations>
 	
 <!--	
 	<publications>
 		<artifact name="mpower" type="war" conf="war" />
 	</publications>
--->	
+-->
+
 	<dependencies>
 		<!-- MPower -->
 		<dependency org="com.mpower" name="mpwidgets" transitive="true" rev="latest.integration">
@@ -100,12 +100,12 @@
 		</dependency>
 		
 		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" conf="test->default"> 
-			<artifact name="commons-dbcp" type="jar" />
+			<artifact name="commons-dbcp" type="test-jar" ext="jar" />
 			<artifact name="commons-dbcp" type="source" ext="jar" m:classifier="sources" />
 		</dependency>
 				
 		<dependency org="commons-pool" name="commons-pool" rev="1.3" conf="test->default">
-			<artifact name="commons-pool" type="jar" />
+			<artifact name="commons-pool" type="test-jar" ext="jar" />
 		</dependency>
 				
 		<!-- DOM -->
@@ -144,7 +144,7 @@
 		</dependency>
 		
 		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" transitive="false" conf="test->default"> 
-			<artifact name="hsqldb" type="jar" />
+			<artifact name="hsqldb"  type="test-jar" ext="jar" />
 		</dependency>
 		
 		<dependency org="javax.transaction" name="jta" transitive="false" rev="1.1"> <!-- TODO: 1.2? -->
@@ -153,7 +153,7 @@
 		
 		<!-- Test -->
 		<dependency org="org.testng" name="testng" rev="5.6" conf="test->default"> <!-- TODO: 5.7? -->
-			<artifact name="testng" type="jar" />
+			<artifact name="testng" type="test-jar" ext="jar" />
 		</dependency>
 		
 		<!-- Quartz -->

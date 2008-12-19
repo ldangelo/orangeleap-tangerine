@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" 
+		xmlns:m="http://ant.apache.org/ivy/maven">
+	<info organisation="com.mpower" module="mpower" status="integration" />
+	
+	<configurations>
+		<conf name="compile"/>
+		<conf name="war"/>
+		<conf name="test" transitive="false"/>
+	</configurations>
+	
+<!--	
+	<publications>
+		<artifact name="mpower" type="war" conf="war" />
+	</publications>
+-->	
+	<dependencies>
+		<!-- MPower -->
+		<dependency org="com.mpower" name="mpwidgets" transitive="true" rev="latest.integration">
+			<artifact name="mpwidgets" type="jar" />
+		</dependency>
+
+		<!-- Ant -->
+		<dependency org="ant-contrib" name="ant-contrib" rev="1.0b2" transitive="false" conf="compile->default">
+			<artifact name="ant-contrib" type="ant-contrib" ext="jar" />
+		</dependency>
+		
+		<dependency org="antlr" name="antlr" transitive="false" rev="2.7.6">
+			<artifact name="antlr" type="jar" ext="jar" />
+		</dependency>
+		
+		<dependency org="org.antlr" name="antlr-runtime" transitive="false" rev="3.0">
+			<artifact name="antlr-runtime" type="jar" ext="jar" />
+		</dependency>
+
+		<!-- ASM -->
+		<dependency org="asm" name="asm" transitive="false" rev="1.5.3">
+			<artifact name="asm" type="jar" />
+		</dependency>
+		
+		<dependency org="asm" name="asm-attrs" transitive="false" rev="1.5.3">
+			<artifact name="asm-attrs" type="jar" />
+		</dependency>
+		
+		<!-- Bytecode -->
+		<dependency org="org.aspectj" name="aspectjweaver" transitive="false" rev="1.5.4">
+			<artifact name="aspectjweaver" type="jar" />
+		</dependency>
+		
+		<dependency org="cglib" name="cglib" transitive="false" rev="2.1_3">
+			<artifact name="cglib" type="jar" />
+			<artifact name="cglib" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="javassist" name="javassist" transitive="false" rev="3.4.GA">
+			<artifact name="javassist" type="jar" />
+		</dependency>
+
+		<dependency org="jboss" name="jboss-archive-browsing" transitive="false" rev="5.0.0alpha-200607201-119">
+			<artifact name="jboss-archive-browsing" type="jar" />
+		</dependency>
+    		
+		<!-- Commons -->
+		<dependency org="commons-beanutils" name="commons-beanutils" transitive="false" rev="1.7.0">
+			<artifact name="commons-beanutils" type="jar" />
+			<artifact name="commons-beanutils" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-codec" name="commons-codec" transitive="false" rev="1.3">
+			<artifact name="commons-codec" type="jar" />
+			<artifact name="commons-codec" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-digester" name="commons-digester" transitive="false" rev="1.8">
+			<artifact name="commons-digester" type="jar" />
+			<artifact name="commons-digester" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-httpclient" name="commons-httpclient" transitive="false" rev="3.1">
+			<artifact name="commons-httpclient" type="jar" />
+		</dependency>
+		
+		<dependency org="commons-io" name="commons-io" transitive="false" rev="1.2">
+			<artifact name="commons-io" type="jar" />
+			<artifact name="commons-io" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-lang" name="commons-lang" transitive="false" rev="2.3">
+			<artifact name="commons-lang" type="jar" />
+			<artifact name="commons-lang" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-math" name="commons-math" transitive="false" rev="1.1">
+			<artifact name="commons-math" type="jar" />
+		</dependency>
+		
+		<dependency org="commons-validator" name="commons-validator" transitive="false" rev="1.3.0">
+			<artifact name="commons-validator" type="jar" />
+			<artifact name="commons-validator" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" conf="test->default"> 
+			<artifact name="commons-dbcp" type="jar" />
+			<artifact name="commons-dbcp" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+				
+		<dependency org="commons-pool" name="commons-pool" rev="1.3" conf="test->default">
+			<artifact name="commons-pool" type="jar" />
+		</dependency>
+				
+		<!-- DOM -->
+		<dependency org="dom4j" name="dom4j" transitive="false" rev="1.6.1">
+			<artifact name="dom4j" type="jar" />
+			<artifact name="dom4j" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<!-- JPA / Hibernate -->
+		<dependency org="org.hibernate" name="ejb3-persistence" transitive="false" rev="3.3.2.Beta1"> <!-- TODO: change to 3.0? -->
+			<artifact name="ejb3-persistence" type="jar" />
+		</dependency>
+		
+		<dependency org="org.hibernate" name="hibernate" transitive="false" rev="3.2.6.ga"> <!-- TODO: change to 3.0? -->
+			<artifact name="hibernate" type="jar" />
+			<artifact name="hibernate" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="org.hibernate" name="hibernate-annotations" transitive="false" rev="3.4.0.GA"> 
+			<artifact name="hibernate-annotations" type="jar" />
+			<artifact name="hibernate-annotations" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<dependency org="org.hibernate" name="hibernate-entitymanager" transitive="false" rev="3.3.2.GA"> 
+			<artifact name="hibernate-entitymanager" type="jar" />
+		</dependency>
+		
+		<dependency org="org.hibernate" name="hibernate-commons-annotations" transitive="false" rev="3.3.0.ga">  <!-- TODO: change to 3.1.0? -->
+			<artifact name="hibernate-commons-annotations" type="jar" />
+			<artifact name="hibernate-commons-annotations" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+		
+		<!-- JDBC / MySQL / DB-->
+		<dependency org="mysql" name="mysql-connector-java" rev="5.0.8" transitive="false" conf="compile->default"> 
+			<artifact name="mysql-connector-java" type="jar" />
+		</dependency>
+		
+		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" transitive="false" conf="test->default"> 
+			<artifact name="hsqldb" type="jar" />
+		</dependency>
+		
+		<dependency org="javax.transaction" name="jta" transitive="false" rev="1.1"> <!-- TODO: 1.2? -->
+			<artifact name="jta" type="jar" />
+		</dependency>
+		
+		<!-- Test -->
+		<dependency org="org.testng" name="testng" rev="5.6" conf="test->default"> <!-- TODO: 5.7? -->
+			<artifact name="testng" type="jar" />
+		</dependency>
+		
+		<!-- Quartz -->
+		<dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.0"/> <!-- TODO: NEEDS 1.6.1 or later -->
+		
+		<!-- Drools -->
+		<dependency org="org.drools" name="drools-compiler" rev="4.0.7"/> 
+		<dependency org="org.drools" name="drools-core" rev="4.0.7"/> 
+		
+		<!-- JSP/Servlets/Ajax -->
+		<dependency org="org.apache.tiles" name="tiles-api" transitive="false" rev="2.1.0">
+			<artifact name="tiles-api" type="jar" />
+			<artifact name="tiles-api" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+		<dependency org="org.apache.tiles" name="tiles-core" transitive="false" rev="2.1.0">
+			<artifact name="tiles-core" type="jar" />
+			<artifact name="tiles-core" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+		<dependency org="org.apache.tiles" name="tiles-jsp" transitive="false" rev="2.1.0">
+			<artifact name="tiles-jsp" type="jar" />
+			<artifact name="tiles-jsp" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+		<dependency org="org.json" name="json" transitive="false" rev="20080701">
+			<artifact name="json" type="jar" />
+			<artifact name="json" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+		<!-- Logging -->
+ 		<dependency org="org.slf4j" name="slf4j-log4j12" transitive="false" rev="1.5.0">
+			<artifact name="slf4j-log4j12" type="jar" />
+			<artifact name="slf4j-log4j12" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+ 		
+ 		<dependency org="org.slf4j" name="slf4j-api" transitive="false" rev="1.5.0">
+			<artifact name="slf4j-api" type="jar" />
+			<artifact name="slf4j-api" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+		<!-- Spring -->
+    	<dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.2.1">
+			<artifact name="spring-ldap" type="jar" />
+			<artifact name="spring-ldap" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+    	<dependency org="org.springmodules" name="spring-modules-validation" transitive="false" rev="0.8a"> <!-- TODO: 0.9 -->
+			<artifact name="spring-modules-validation" type="jar" />
+			<artifact name="spring-modules-validation" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+    	<dependency org="org.springframework.security" name="spring-security-acl" transitive="false" rev="2.0.4">
+			<artifact name="spring-security-acl" type="jar" />
+			<artifact name="spring-security-acl" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+    	<dependency org="org.springframework.security" name="spring-security-core" transitive="false" rev="2.0.4">
+			<artifact name="spring-security-core" type="jar" />
+			<artifact name="spring-security-core" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+    	<dependency org="org.springframework.security" name="spring-security-core-tiger" transitive="false" rev="2.0.4">
+			<artifact name="spring-security-core-tiger" type="jar" />
+			<artifact name="spring-security-core-tiger" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+
+    	<dependency org="org.springframework.security" name="spring-security-taglibs" transitive="false" rev="2.0.4">
+			<artifact name="spring-security-taglibs" type="jar" />
+			<artifact name="spring-security-taglibs" type="source" ext="jar" m:classifier="sources" />
+		</dependency> 
+		
+		<!-- Mvel -->
+    	<dependency org="org.mvel" name="mvel" transitive="false" rev="1.3.1-java1.4">
+			<artifact name="mvel" type="jar" />
+		</dependency>
+    
+		<!-- ActiveMQ -->
+		<dependency org="org.apache.activemq" name="activemq-all" transitive="false" rev="5.1.0">
+			<artifact name="activemq-all" type="jar" />
+			<artifact name="activemq-all" type="source" ext="jar" m:classifier="sources" />
+		</dependency>
+	</dependencies>
+</ivy-module>

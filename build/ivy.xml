@@ -22,10 +22,6 @@
 		</dependency>
 
 		<!-- Ant -->
-		<dependency org="ant-contrib" name="ant-contrib" rev="1.0b2" transitive="false" conf="compile->default">
-			<artifact name="ant-contrib" type="ant-contrib" ext="jar" />
-		</dependency>
-		
 		<dependency org="antlr" name="antlr" transitive="false" rev="2.7.6">
 			<artifact name="antlr" type="jar" ext="jar" />
 		</dependency>

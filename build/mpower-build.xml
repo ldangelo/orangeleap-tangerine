@@ -1,65 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="${app.name}" basedir=".." default="usage">
+<project name="mpower" basedir=".." default="usage">
 
-	<property name="war.dir" value="${basedir}/war" />
-	<property name="stage.dir" value="${basedir}/build/stage" />
-	<property name="src.dir" value="${basedir}/src" />
-	<property name="test.src.dir" value="${basedir}/test" />
-	<property name="config.dir" value="${basedir}/config" />
-	<property name="lib.dir" value="${basedir}/lib" />
-	<property name="compile.lib.dir" value="${lib.dir}/compile/bin" />
-	<property name="war.lib.dir" value="${lib.dir}/war/bin" />
 	<property file="${basedir}/build/build.properties" />
+	<property file="${commonBuild.dir}/commonBuild.properties"/>
+
+	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
-			<pathelement location="${lib.dir}/test/bin/ant-contrib-1.0b3.jar" />
+			<pathelement location="${antcontrib.jar}" />
 		</classpath>
 	</taskdef>
 
-	<fileset id="compile.lib" dir="${compile.lib.dir}" description="compile-time dependencies">
-		<include name="**/*.jar" />
-	</fileset>
-
-	<fileset id="war.lib" dir="${war.lib.dir}" description="war dependencies">
-		<include name="**/*.jar" />
-	</fileset>
-
-	<target name="deploy-integrated-war" depends="build-integrated-war">
-		<copy todir="${deploy.path}" file="${stage.dir}/${app.name}.war" />
+	<target name="build">
+		<antcall target="build-integrated-war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="build-exploded-war">
-		<copy todir="${deploy.path}/${app.name}">
-			<fileset dir="${stage.dir}/${app.name}.war" />
-		</copy>
-		<delete dir="${stage.dir}/${app.name}.war" quiet="true" />
+	<target name="setup" depends="clean-build, resolve">
+		<echo>Setting up for environment = ${build.env}</echo>
+		<mkdir dir="${stage.dir}" />
+		<if>
+			<equals arg1="${build.env}" arg2="dev" />
+			<then>
+				<property name="debug.compile" value="true" />
+			</then>
+			<elseif>
+				<equals arg1="${build.env}" arg2="unit-test" />
+				<then>
+					<property name="debug.compile" value="true" />
+				</then>
+			</elseif>
+			<else>
+				<property name="debug.compile" value="false" />
+			</else>
+		</if>
 	</target>
 
-	<target name="undeploy-war">
-		<delete dir="${deploy.path}/${app.name}.war" />
-		<delete dir="${deploy.path}/${app.name}" />
-		<delete>
-			<fileset dir="${deploy.path}" includes="${app.name}.war" />
-			<fileset dir="${deploy.path}" includes="${app.name}" />
-		</delete>
-	</target>
+	<target name="classes-jar" depends="setup">
+		<mkdir dir="${classes.dir}" />
 
-	<target name="build-integrated-war" depends="setup-war">
-		<war destfile="${stage.dir}/${app.name}.war" basedir="${stage.dir}/war">
-			<include name="**/*.*" />
-		</war>
-		<delete dir="${stage.dir}/war" />
-	</target>
+		<echo>Compiling with debug=${debug.compile}</echo>
+		<javac destdir="${stage.dir}/classes-jar" srcdir="${src.dir}" 
+			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
 
-	<target name="build-exploded-war" depends="setup-war">
-		<mkdir dir="${stage.dir}/${app.name}.war" />
-		<copy todir="${stage.dir}/${app.name}.war">
-			<fileset dir="${stage.dir}/war">
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
 				<include name="**/*.*" />
+				<exclude name="**/*.java" />
+				<exclude name="META-INF/persistence-container.xml"/>
+			</fileset>
+			<fileset dir="${config.dir}">
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+				<include name="**/*.drl" />
+				<include name="**/*.dslr" />
+				<include name="**/*.dsl" />
 			</fileset>
 		</copy>
-		<delete dir="${stage.dir}/war" />
+
+		<if>
+			<equals arg1="${build.env}" arg2="dev" casesensitive="false" />
+			<then>
+				<copy tofile="${classes.dir}/META-INF/persistence.xml">
+					<fileset dir="${src.dir}">
+						<include name="META-INF/persistence-container.xml" />
+					</fileset>
+				</copy>
+				<replace file="${classes.dir}/META-INF/persistence.xml"
+					token="@@DIALECT@@" value="${mysql.db.dialect}"/>
+			</then>
+			<elseif>
+				<equals arg1="${build.env}" arg2="unit-test" casesensitive="false" />
+				<then>
+					<!-- We have a special file for unit tests -->
+					<copy todir="${classes.dir}">
+						<fileset dir="${test.src.dir}">
+							<include name="META-INF/persistence.xml"/>
+						</fileset>
+					</copy>
+
+				</then>
+			</elseif>
+			<else>
+				<copy tofile="${classes.dir}/META-INF/persistence.xml">
+					<fileset dir="${src.dir}">
+						<include name="META-INF/persistence-container.xml" />
+					</fileset>
+				</copy>
+				<replace file="${classes.dir}/META-INF/persistence.xml"
+					token="@@DIALECT@@" value="${sqlserver.db.dialect}"/>
+			</else>
+		</if>
+
+		<jar jarfile="${stage.dir}/${app.name}.jar" basedir="${classes.dir}">
+			<include name="**/*.class" />
+			<include name="**/*.properties" />
+			<include name="**/*.xml" />
+			<include name="**/*.drl" />
+			<include name="**/*.dslr" />
+			<include name="**/*.dsl" />
+			<include name="META-INF/**" />
+			<exclude name="**/test/**/*.class" />
+		</jar>
+		<!--<delete dir="${classes.dir}" />-->
 	</target>
 
 	<target name="setup-war" depends="classes-jar">
@@ -81,119 +124,56 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${stage.dir}/war/WEB-INF/lib">
-			<fileset dir="${war.lib.dir}">
-				<include name="**/*.jar" />
-			</fileset>
+		<copy todir="${stage.dir}/war/WEB-INF/lib" flatten="true">
+		    <path>
+				<pathelement path="${war.lib}"/> <!-- war.lib from ivyBuild.xml -->
+		    </path>
 		</copy>
 	</target>
 
-	<target name="classes-jar" depends="setup">
-		<mkdir dir="${stage.dir}/classes-jar" />
+	<target name="build-integrated-war" depends="setup-war">
+		<war destfile="${stage.dir}/${app.name}.war" basedir="${stage.dir}/war">
+			<include name="**/*.*" />
+		</war>
+		<delete dir="${stage.dir}/war" />
+	</target>
 
-		<path id="compile-lib">
-			<fileset refid="compile.lib" />
-			<fileset refid="war.lib" />
-			<fileset file="${stage.dir}/*.jar" />
-		</path>
-
-		<echo>Compiling with debug=${debug.compile}</echo>
-		<javac destdir="${stage.dir}/classes-jar"
-			srcdir="${src.dir}" classpathref="compile-lib" debug="${debug.compile}"/>
-
-		<copy todir="${stage.dir}/classes-jar">
-			<fileset dir="${src.dir}">
+	<target name="build-exploded-war" depends="setup-war">
+		<mkdir dir="${stage.dir}/${app.name}.war" />
+		<copy todir="${stage.dir}/${app.name}.war">
+			<fileset dir="${stage.dir}/war">
 				<include name="**/*.*" />
-				<exclude name="**/*.java" />
-				<exclude name="META-INF/persistence-container.xml"/>
-			</fileset>
-			<fileset dir="${config.dir}">
-				<include name="**/*.properties" />
-				<include name="**/*.xml" />
-				<include name="**/*.drl" />
-				<include name="**/*.dslr" />
-				<include name="**/*.dsl" />
 			</fileset>
 		</copy>
-
-		<if>
-			<equals arg1="${build.env}" arg2="dev" casesensitive="false" />
-			<then>
-				<copy tofile="${stage.dir}/classes-jar/META-INF/persistence.xml">
-					<fileset dir="${src.dir}">
-						<include name="META-INF/persistence-container.xml" />
-					</fileset>
-				</copy>
-				<replace file="${stage.dir}/classes-jar/META-INF/persistence.xml"
-					token="@@DIALECT@@" value="${mysql.db.dialect}"/>
-			</then>
-			<elseif>
-				<equals arg1="${build.env}" arg2="unit-test" casesensitive="false" />
-				<then>
-					<!-- We have a special file for unit tests -->
-					<copy todir="${stage.dir}/classes-jar">
-						<fileset dir="${test.src.dir}">
-							<include name="META-INF/persistence.xml"/>
-						</fileset>
-					</copy>
-
-				</then>
-			</elseif>
-			<else>
-				<copy tofile="${stage.dir}/classes-jar/META-INF/persistence.xml">
-					<fileset dir="${src.dir}">
-						<include name="META-INF/persistence-container.xml" />
-					</fileset>
-				</copy>
-				<replace file="${stage.dir}/classes-jar/META-INF/persistence.xml"
-					token="@@DIALECT@@" value="${sqlserver.db.dialect}"/>
-			</else>
-		</if>
-
-		<jar jarfile="${stage.dir}/${app.name}.jar" basedir="${stage.dir}/classes-jar">
-			<include name="**/*.class" />
-			<include name="**/*.properties" />
-			<include name="**/*.xml" />
-			<include name="**/*.drl" />
-			<include name="**/*.dslr" />
-			<include name="**/*.dsl" />
-			<include name="META-INF/**" />
-			<exclude name="**/test/**/*.class" />
-		</jar>
-		<delete dir="${stage.dir}/classes-jar" />
+		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="setup" depends="clean">
-		<echo>Setting up for environment = ${build.env}</echo>
-		<mkdir dir="${stage.dir}" />
-		<if>
-			<equals arg1="${build.env}" arg2="dev" />
-			<then>
-				<property name="debug.compile" value="true" />
-			</then>
-			<elseif>
-				<equals arg1="${build.env}" arg2="unit-test" />
-				<then>
-					<property name="debug.compile" value="true" />
-				</then>
-			</elseif>
-			<else>
-				<property name="debug.compile" value="false" />
-			</else>
-		</if>
+	<target name="deploy-integrated-war" depends="build-integrated-war">
+		<copy todir="${deploy.path}" file="${stage.dir}/${app.name}.war" />
 	</target>
 
-	<target name="clean">
-		<delete dir="${stage.dir}" />
-		<delete dir="${test.output.dir}" />
+	<target name="deploy-exploded-war" depends="build-exploded-war">
+		<copy todir="${deploy.path}/${app.name}">
+			<fileset dir="${stage.dir}/${app.name}.war" />
+		</copy>
+		<delete dir="${stage.dir}/${app.name}.war" quiet="true" />
+	</target>
+
+	<target name="undeploy-war">
+		<delete dir="${deploy.path}/${app.name}.war" />
+		<delete dir="${deploy.path}/${app.name}" />
+		<delete>
+			<fileset dir="${deploy.path}" includes="${app.name}.war" />
+			<fileset dir="${deploy.path}" includes="${app.name}" />
+		</delete>
 	</target>
 
 	<target name="generate-javadocs">
 		<mkdir dir="${stage.dir}/javadocs" />
 
 		<path id="compile-lib">
-			<fileset refid="compile.lib" />
-			<fileset file="war.lib" />
+			<fileset refid="compile.path" /> <!-- compile.path from ivyBuild.xml -->
+			<fileset refid="war.path" /> <!-- war.path from ivyBuild.xml -->
 		</path>
 
 		<javadoc packagenames="com.mpower.*" destdir="${stage.dir}/javadocs" classpathref="compile-lib" useexternalfile="true">

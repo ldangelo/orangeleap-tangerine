@@ -1,78 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="mpower-unittests" default="runall" basedir="..">
 	<description>
-            MPower Test Execution File
+    	MPower Test Execution File
     </description>
 
-	<property name="stage.dir" value="${basedir}/build/stage"/>
-	<property name="lib.dir" value="${basedir}/lib"/>
-	<property name="compile.lib.dir" value="${lib.dir}/compile/bin"/>
-	<property name="war.lib.dir" value="${lib.dir}/war/bin"/>
-	<property name="test.lib.dir" value="${lib.dir}/test/bin"/>
-	<property name="test.src.dir" value="${basedir}/test"/>
-    <property name="internal.build.file" value="${basedir}/build/mpower-build.xml" />
+	<property file="${basedir}/build/build.properties" />
+	<property file="${commonBuild.dir}/commonBuild.properties"/>
+
+	<import file="${build.dir}/mpower-build.xml"/>
 	<property name="build.env" value="unit-test"/>
 
-	<fileset id="compile.lib" dir="${compile.lib.dir}"
-        description="compile-time dependencies">
-		<include name="**/*.jar"/>
-	</fileset>
-
-	<fileset id="war.lib" dir="${war.lib.dir}"
-        description="war dependencies">
-		<include name="**/*.jar"/>
-	</fileset>
-
-	<fileset id="test.lib" dir="${test.lib.dir}"
-        description="testing dependencies">
-		<include name="**/*.jar"/>
-	</fileset>
-
-	<taskdef resource="testngtasks" >
-		<classpath>
-			<pathelement location="${test.lib.dir}/testng-5.7-jdk15.jar"/>
-		</classpath>
-	</taskdef>
-
-    <target name="runall" depends="buildall">
-    	<path id="test-lib-path">
-    		<fileset refid="compile.lib"/>
-    		<fileset refid="war.lib"/>
-			<fileset refid="test.lib"/>
-			<fileset file="${stage.dir}/*.jar"/>
-    	</path>
-
-    	<mkdir dir="${stage.dir}/test-output"/>
-
-    	<testng classpathref="test-lib-path"
-    		outputdir="${stage.dir}/test-output" dumpcommand="yes" failureProperty="test.failed">
-    		<xmlfileset dir="${stage.dir}" includes="**/testng.xml"/>
-    	</testng>
-
-    	<mkdir dir="${stage.dir}/report"/>
-
-    	<junitreport todir="${stage.dir}/report">
-        	<fileset dir="${stage.dir}/test-output">
-        		<include name="**/*.xml"/>
-        		<exclude name="**/testng-failed.xml"/>
-        	</fileset>
-		</junitreport>
-
-        <fail message="Tests failed: check test reports." if="test.failed" />
-
-    	<echo>Report available at ${basedir}/report/index.html</echo>
-    </target>
-
-	<target name="buildall">
-		<ant antfile="${internal.build.file}" target="clean" />
-		<ant antfile="${internal.build.file}" target="build-integrated-war" />
-
+	<target name="init" depends="resolve">
+		<taskdef resource="testngtasks">
+			<classpath path="${test.lib}"/>
+		</taskdef>
+	</target>
+	
+	<target name="buildall" depends="init">
+		<antcall target="build">
+			<param name="build.env" value="unit-test"/>
+		</antcall>
 		<mkdir dir="${stage.dir}/test-folder"/>
 
 		<path id="compile-lib">
-			<fileset refid="compile.lib"/>
-		    <fileset refid="test.lib"/>
-			<fileset refid="war.lib"/>
+			<pathelement path="${compile.lib}"/>
+			<pathelement path="${test.lib}"/>
+			<pathelement path="${war.lib}"/>
 			<fileset file="${stage.dir}/*.jar"/>
 		</path>
 
@@ -104,4 +57,34 @@
 		<delete dir="${stage.dir}/test-folder"/>
 		
 	</target>
+
+    <target name="runall" depends="buildall">
+    	<path id="test-lib-path">
+			<pathelement path="${compile.lib}"/>
+			<pathelement path="${test.lib}"/>
+			<pathelement path="${war.lib}"/>
+			<fileset file="${stage.dir}/*.jar"/>
+    	</path>
+
+    	<mkdir dir="${stage.dir}/test-output"/>
+
+    	<testng classpathref="test-lib-path"
+    		outputdir="${stage.dir}/test-output" dumpcommand="yes" failureProperty="test.failed">
+    		<xmlfileset dir="${stage.dir}" includes="**/testng.xml"/>
+    	</testng>
+
+    	<mkdir dir="${stage.dir}/report"/>
+
+    	<junitreport todir="${stage.dir}/report">
+        	<fileset dir="${stage.dir}/test-output">
+        		<include name="**/*.xml"/>
+        		<exclude name="**/testng-failed.xml"/>
+        	</fileset>
+		</junitreport>
+
+        <fail message="Tests failed: check test reports." if="test.failed" />
+
+    	<echo>Report available at ${basedir}/report/index.html</echo>
+    </target>
+
 </project>

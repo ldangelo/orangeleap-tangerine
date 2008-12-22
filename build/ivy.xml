@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd" 
-		xmlns:m="http://ant.apache.org/ivy/maven">
+<ivy-module version="2.0">
 	<info organisation="com.mpower" module="mpower" status="integration" />
 	<configurations>
 		<conf name="sources"/>
@@ -44,7 +43,7 @@
 		
 		<dependency org="cglib" name="cglib" transitive="false" rev="2.1_3">
 			<artifact name="cglib" type="jar" />
-			<artifact name="cglib" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="cglib" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="javassist" name="javassist" transitive="false" rev="3.4.GA">
@@ -58,17 +57,17 @@
 		<!-- Commons -->
 		<dependency org="commons-beanutils" name="commons-beanutils" transitive="false" rev="1.7.0">
 			<artifact name="commons-beanutils" type="jar" />
-			<artifact name="commons-beanutils" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-beanutils" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-codec" name="commons-codec" transitive="false" rev="1.3">
 			<artifact name="commons-codec" type="jar" />
-			<artifact name="commons-codec" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-codec" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-digester" name="commons-digester" transitive="false" rev="1.8">
 			<artifact name="commons-digester" type="jar" />
-			<artifact name="commons-digester" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-digester" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-httpclient" name="commons-httpclient" transitive="false" rev="3.1">
@@ -77,12 +76,12 @@
 		
 		<dependency org="commons-io" name="commons-io" transitive="false" rev="1.2">
 			<artifact name="commons-io" type="jar" />
-			<artifact name="commons-io" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-io" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-lang" name="commons-lang" transitive="false" rev="2.3">
 			<artifact name="commons-lang" type="jar" />
-			<artifact name="commons-lang" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-lang" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-math" name="commons-math" transitive="false" rev="1.1">
@@ -91,12 +90,12 @@
 		
 		<dependency org="commons-validator" name="commons-validator" transitive="false" rev="1.3.0">
 			<artifact name="commons-validator" type="jar" />
-			<artifact name="commons-validator" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-validator" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" conf="test->default"> 
 			<artifact name="commons-dbcp" type="jar" ext="jar" />
-			<artifact name="commons-dbcp" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="commons-dbcp" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 				
 		<dependency org="commons-pool" name="commons-pool" rev="1.3" conf="test->default">
@@ -106,7 +105,7 @@
 		<!-- DOM -->
 		<dependency org="dom4j" name="dom4j" transitive="false" rev="1.6.1">
 			<artifact name="dom4j" type="jar" />
-			<artifact name="dom4j" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="dom4j" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<!-- JPA / Hibernate -->
@@ -116,12 +115,12 @@
 		
 		<dependency org="org.hibernate" name="hibernate" transitive="false" rev="3.2.6.ga"> <!-- TODO: change to 3.0? -->
 			<artifact name="hibernate" type="jar" />
-			<artifact name="hibernate" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="hibernate" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="org.hibernate" name="hibernate-annotations" transitive="false" rev="3.4.0.GA"> 
 			<artifact name="hibernate-annotations" type="jar" />
-			<artifact name="hibernate-annotations" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="hibernate-annotations" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<dependency org="org.hibernate" name="hibernate-entitymanager" transitive="false" rev="3.3.2.GA"> 
@@ -130,7 +129,7 @@
 		
 		<dependency org="org.hibernate" name="hibernate-commons-annotations" transitive="false" rev="3.3.0.ga">  <!-- TODO: change to 3.1.0? -->
 			<artifact name="hibernate-commons-annotations" type="jar" />
-			<artifact name="hibernate-commons-annotations" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="hibernate-commons-annotations" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
 		<!-- JDBC / MySQL / DB-->
@@ -147,8 +146,8 @@
 		</dependency>
 		
 		<!-- Test -->
-		<dependency org="org.testng" name="testng" rev="5.6" conf="test->default"> <!-- TODO: 5.7? -->
-			<artifact name="testng" type="jar" ext="jar" />
+		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">
+			<artifact name="testng" type="jar" ext="jar"/>
 		</dependency>
 		
 		<!-- Quartz -->
@@ -161,64 +160,64 @@
 		<!-- JSP/Servlets/Ajax -->
 		<dependency org="org.apache.tiles" name="tiles-api" transitive="false" rev="2.0.5">
 			<artifact name="tiles-api" type="jar" />
-			<artifact name="tiles-api" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="tiles-api" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
 		<dependency org="org.apache.tiles" name="tiles-core" transitive="false" rev="2.0.5">
 			<artifact name="tiles-core" type="jar" />
-			<artifact name="tiles-core" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="tiles-core" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
 		<dependency org="org.apache.tiles" name="tiles-jsp" transitive="false" rev="2.0.5">
 			<artifact name="tiles-jsp" type="jar" />
-			<artifact name="tiles-jsp" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="tiles-jsp" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
 		<dependency org="org.json" name="json" transitive="false" rev="20080701">
 			<artifact name="json" type="jar" />
-			<artifact name="json" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="json" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
 		<!-- Logging -->
  		<dependency org="org.slf4j" name="slf4j-log4j12" transitive="false" rev="1.5.0">
 			<artifact name="slf4j-log4j12" type="jar" />
-			<artifact name="slf4j-log4j12" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="slf4j-log4j12" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
  		
  		<dependency org="org.slf4j" name="slf4j-api" transitive="false" rev="1.5.0">
 			<artifact name="slf4j-api" type="jar" />
-			<artifact name="slf4j-api" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="slf4j-api" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
 		<!-- Spring -->
     	<dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.2.1">
 			<artifact name="spring-ldap" type="jar" />
-			<artifact name="spring-ldap" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-ldap" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
     	<dependency org="org.springmodules" name="spring-modules-validation" transitive="false" rev="0.8a"> <!-- TODO: 0.9 -->
 			<artifact name="spring-modules-validation" type="jar" />
-			<artifact name="spring-modules-validation" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-modules-validation" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
     	<dependency org="org.springframework.security" name="spring-security-acl" transitive="false" rev="2.0.4">
 			<artifact name="spring-security-acl" type="jar" />
-			<artifact name="spring-security-acl" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-security-acl" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
     	<dependency org="org.springframework.security" name="spring-security-core" transitive="false" rev="2.0.4">
 			<artifact name="spring-security-core" type="jar" />
-			<artifact name="spring-security-core" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-security-core" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
     	<dependency org="org.springframework.security" name="spring-security-core-tiger" transitive="false" rev="2.0.4">
 			<artifact name="spring-security-core-tiger" type="jar" />
-			<artifact name="spring-security-core-tiger" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-security-core-tiger" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
     	<dependency org="org.springframework.security" name="spring-security-taglibs" transitive="false" rev="2.0.4">
 			<artifact name="spring-security-taglibs" type="jar" />
-			<artifact name="spring-security-taglibs" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="spring-security-taglibs" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency> 
 		
 		<!-- Mvel -->
@@ -229,7 +228,7 @@
 		<!-- ActiveMQ -->
 		<dependency org="org.apache.activemq" name="activemq-all" transitive="false" rev="5.1.0">
 			<artifact name="activemq-all" type="jar" />
-			<artifact name="activemq-all" type="source" ext="jar" m:classifier="sources" conf="sources"/>
+			<artifact name="activemq-all" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 	</dependencies>
 </ivy-module>

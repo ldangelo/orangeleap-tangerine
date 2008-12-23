@@ -141,7 +141,7 @@
 			<artifact name="hsqldb"  type="jar" ext="jar" />
 		</dependency>
 		
-		<dependency org="javax.transaction" name="jta" transitive="false" rev="1.1"> <!-- TODO: 1.2? -->
+		<dependency org="javax.transaction" name="jta" transitive="false" rev="1.2"> 
 			<artifact name="jta" type="jar" />
 		</dependency>
 		
@@ -151,7 +151,7 @@
 		</dependency>
 		
 		<!-- Quartz -->
-		<dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.0"/> <!-- TODO: NEEDS 1.6.1 or later -->
+		<dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.1"/>
 		
 		<!-- Drools -->
 		<dependency org="org.drools" name="drools-compiler" rev="4.0.7"/> 

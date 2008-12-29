@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.controller.payment;
 
 import java.beans.PropertyEditorSupport;
 

@@ -1,4 +1,4 @@
-package com.mpower.controller;
+package com.mpower.controller.payment;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,5 +1,6 @@
-package com.mpower.controller;
+package com.mpower.controller.payment;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -21,7 +24,10 @@ import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
 
-public class PaymentManagerEditFormController extends SimpleFormController {
+public class PaymentManagerFormController extends SimpleFormController {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private PaymentSourceService paymentSourceService;
 
@@ -58,13 +64,23 @@ public class PaymentManagerEditFormController extends SimpleFormController {
             paymentSource = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
         }
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.paymentManager, SessionServiceImpl.lookupUserRoles(), request.getLocale());
             paymentSource.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), paymentSource);
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.paymentManager, SessionServiceImpl.lookupUserRoles(), paymentSource);
             paymentSource.setFieldValueMap(valueMap);
         }
         return paymentSource;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = new HashMap();
+        String personId = request.getParameter("personId");
+        List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
+        refData.put("paymentSources", paymentSources);
+        return refData;
     }
 
     @Override
@@ -78,7 +94,6 @@ public class PaymentManagerEditFormController extends SimpleFormController {
         mav.addObject("paymentSources", paymentSources);
         paymentSource = new PaymentSource();
         paymentSource.setPerson(person);
-        mav.addObject("redirect:/paymentManager.htm?personId=" + personId, errors.getModel());
         mav.addObject("paymentSource", paymentSource);
         mav.addObject(personId);
         return mav;

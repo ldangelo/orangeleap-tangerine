@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController">
+    	<property name="commandName" value="paymentSource" />
+    	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.PaymentSourceValidator">
+			        <property name="pageType" value="paymentManager"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="paymentManager"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="personService" ref="personService" />
+    	<property name="paymentSourceService" ref="paymentSourceService" />
+    	<property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerEditFormController">
+    	<property name="commandName" value="paymentSource" />
+    	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+    	<property name="personService" ref="personService" />
+    	<property name="paymentSourceService" ref="paymentSourceService" />
+    	<property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="paymentSourceDelete" class="com.mpower.controller.payment.PaymentSourceDeleteController">
+    	<property name="paymentSourceService" ref="paymentSourceService" />
+    </bean>
+    
+    <bean id="paymentLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/paymentManager.htm">paymentManager</prop>
+                <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
+                <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
+			</props>
+		</property>
+	</bean>
+ 
+ </beans>
+       

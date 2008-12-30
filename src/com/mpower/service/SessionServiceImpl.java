@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import com.mpower.dao.SiteDao;
@@ -30,8 +31,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     public static String lookupUserSiteName() {
-        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null ? authentication.getSite() : null;
+        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && authentication instanceof MpowerAuthenticationToken ? ((MpowerAuthenticationToken)authentication).getSite() : null;
     }
 
     public static String lookupUserName() {

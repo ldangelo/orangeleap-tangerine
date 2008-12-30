@@ -53,13 +53,21 @@
 				<include name="**/testng.xml"/>
 			</fileset>
 		</copy>
-		
+
 		<delete dir="${stage.dir}/test-folder"/>
 		
 	</target>
 
     <target name="runall" depends="buildall">
+    	<!-- JMockIt unfortunately looks for a jar named 'jmockit.jar' so we'll have to copy and rename it without the revision -->
+		<copy tofile="${stage.dir}/jmockit.jar">
+			<fileset dir="${lib.dir}">
+				<include name="**/jmockit*"/>
+			</fileset>
+		</copy>
+
     	<path id="test-lib-path">
+			<fileset file="${stage.dir}/jmockit.jar"/>
 			<pathelement path="${compile.lib}"/>
 			<pathelement path="${test.lib}"/>
 			<pathelement path="${war.lib}"/>
@@ -81,6 +89,8 @@
         		<exclude name="**/testng-failed.xml"/>
         	</fileset>
 		</junitreport>
+
+    	<delete file="${stage.dir}/jmockit.jar"/>
 
         <fail message="Tests failed: check test reports." if="test.failed" />
 

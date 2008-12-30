@@ -230,9 +230,5 @@
 		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">
 			<artifact name="testng" type="jar" ext="jar"/>
 		</dependency>
-
-		<dependency org="jmockit" name="jmockit" rev="0.95" conf="test->default" classifier="unix">
-			<artifact name="jmockit" type="jar" ext="jar"/>
-		</dependency>
 	</dependencies>
 </ivy-module>

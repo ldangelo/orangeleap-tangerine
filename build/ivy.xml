@@ -145,11 +145,6 @@
 			<artifact name="jta" type="jar" />
 		</dependency>
 		
-		<!-- Test -->
-		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">
-			<artifact name="testng" type="jar" ext="jar"/>
-		</dependency>
-		
 		<!-- Quartz -->
 		<dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.1"/>
 		
@@ -229,6 +224,15 @@
 		<dependency org="org.apache.activemq" name="activemq-all" transitive="false" rev="5.1.0">
 			<artifact name="activemq-all" type="jar" />
 			<artifact name="activemq-all" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+		
+		<!-- Test -->
+		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">
+			<artifact name="testng" type="jar" ext="jar"/>
+		</dependency>
+
+		<dependency org="jmockit" name="jmockit" rev="0.94" conf="test->default">
+			<artifact name="jmockit" type="jar" ext="jar"/>
 		</dependency>
 	</dependencies>
 </ivy-module>

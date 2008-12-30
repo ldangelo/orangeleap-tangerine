@@ -1,7 +1,5 @@
 package com.mpower.test.controller.validator;
 
-import mockit.Mockit;
-
 import org.springframework.validation.BindException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,7 +8,6 @@ import com.mpower.controller.validator.PaymentSourceValidator;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PaymentSourceServiceImpl;
 import com.mpower.test.BaseTest;
 
 public class PaymentSourceValidatorTest extends BaseTest {
@@ -22,7 +19,9 @@ public class PaymentSourceValidatorTest extends BaseTest {
     @BeforeMethod
     public void setupMocks() {
         validator = new PaymentSourceValidator();
-        PaymentSourceService service = (PaymentSourceService)applicationContext.getBean("paymentSourceService");
+        // TODO: switch to use JMock or EasyMock
+        //        PaymentSourceService service = (PaymentSourceService)applicationContext.getBean("paymentSourceService");
+        PaymentSourceService service = new PaymentSourceValidatorTestMockService();
         validator.setPaymentSourceService(service);
 
         source = new PaymentSource();
@@ -33,13 +32,13 @@ public class PaymentSourceValidatorTest extends BaseTest {
         errors = new BindException(source, "paymentSource");
     }
 
-    private void redefineMethods() {
-        Mockit.redefineMethods(PaymentSourceServiceImpl.class, new PaymentSourceValidatorTestMockService());
-    }
+    //    private void redefineMethods() {
+    //        Mockit.redefineMethods(PaymentSourceServiceImpl.class, new PaymentSourceValidatorTestMockService());
+    //    }
 
     @Test(groups = { "validatePaymentProfile" })
     public void testValidPaymentProfile() throws Exception {
-        redefineMethods();
+        //        redefineMethods();
         source.setProfile(null);
         validator.validatePaymentProfile(source, errors);
         assert errors.hasFieldErrors() == false;
@@ -47,7 +46,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
 
     @Test(groups = { "validatePaymentProfile" })
     public void testBlankPaymentProfile() throws Exception {
-        redefineMethods();
+        //        redefineMethods();
         source.setProfile("  ");
         validator.validatePaymentProfile(source, errors);
         assert "blankPaymentProfile".equals(errors.getFieldError("profile").getCode());
@@ -55,7 +54,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
 
     @Test(groups = { "validatePaymentProfile" })
     public void testExistingPaymentProfile() throws Exception {
-        redefineMethods();
+        //        redefineMethods();
         source.setProfile("MyProfile");
         validator.validatePaymentProfile(source, errors);
         assert "paymentProfileAlreadyExists".equals(errors.getFieldError("profile").getCode());

@@ -12,7 +12,7 @@
 			<list>
 	            <bean class="com.mpower.controller.validator.PaymentSourceValidator">
 			        <property name="pageType" value="paymentManager"/>
-			        <property name="siteService" ref="siteService" />
+			        <property name="paymentSourceService" ref="paymentSourceService" />
 	            </bean>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="paymentManager"/>

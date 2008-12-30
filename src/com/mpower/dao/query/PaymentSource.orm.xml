@@ -13,6 +13,14 @@
 		</query>
 	</named-query>
 
+	<named-query name="READ_PAYMENT_SOURCE_BY_PERSON_ID_PROFILE">
+		<query>
+			SELECT ps FROM com.mpower.domain.PaymentSource ps
+			WHERE ps.person.id = :personId
+			AND ps.profile = :profile
+		</query>
+	</named-query>
+
 	<named-query name="READ_GIFTS_BY_PAYMENT_SOURCE_ID">
 		<query>
 			SELECT gift FROM com.mpower.domain.Gift gift

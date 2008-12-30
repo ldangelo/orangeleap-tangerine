@@ -8,7 +8,9 @@ public interface PaymentSourceDao {
 
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource);
 
-    public List<PaymentSource> readPaymentSources(Long personId);
+    public PaymentSource findPaymentSourceProfile(Long personId, String profile);
+
+    public List<PaymentSource> readActivePaymentSources(Long personId);
 
     public PaymentSource readPaymentSource(Long paymentSourceId);
 }

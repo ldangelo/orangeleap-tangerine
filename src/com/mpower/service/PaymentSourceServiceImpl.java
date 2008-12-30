@@ -37,7 +37,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
     }
 
     public List<PaymentSource> readPaymentSources(Long personId) {
-        return paymentSourceDao.readPaymentSources(personId);
+        return paymentSourceDao.readActivePaymentSources(personId);
     }
 
     public void setAuditService(AuditService auditService) {
@@ -47,5 +47,13 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
         return paymentSourceDao.readPaymentSource(paymentSourceId);
+    }
+
+    @Override
+    public PaymentSource findPaymentSourceProfile(Long personId, String profile) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findPaymentSourceProfile: personId = " + personId + " profile = " + profile);
+        }
+        return paymentSourceDao.findPaymentSourceProfile(personId, profile);
     }
 }

@@ -69,7 +69,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     public Commitment maintainCommitment(Commitment commitment) {
         if ("Credit Card".equals(commitment.getPaymentType()) || "ACH".equals(commitment.getPaymentType())) {
             commitment.getPaymentSource().setType(commitment.getPaymentType());
-            List<PaymentSource> paymentSources = paymentSourceDao.readPaymentSources(commitment.getPerson().getId());
+            List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(commitment.getPerson().getId());
             if (paymentSources != null) {
                 for (PaymentSource paymentSource : paymentSources) {
                     if (commitment.getPaymentSource().equals(paymentSource)) {

@@ -44,6 +44,9 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
+    @Column(name = "PAYMENT_PROFILE")
+    private String profile;
+
     @Column(name = "PAYMENT_TYPE")
     private String type;
 
@@ -111,6 +114,14 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     public String getType() {

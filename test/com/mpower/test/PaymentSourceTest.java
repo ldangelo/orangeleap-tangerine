@@ -22,11 +22,11 @@ public class PaymentSourceTest extends BaseTest {
     @Autowired
     private AuditService auditService;
 
-    private List<String> siteIds = new ArrayList<String>();
+    private final List<String> siteIds = new ArrayList<String>();
 
-    private List<Long> personIds = new ArrayList<Long>();
+    private final List<Long> personIds = new ArrayList<Long>();
 
-    private List<Long> paymentSourceIds = new ArrayList<Long>();
+    private final List<Long> paymentSourceIds = new ArrayList<Long>();
 
     @Test(groups = { "createPaymentSource" }, dataProvider = "setupPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void createPaymentSource(Site site, Person person, PaymentSource ps) {
@@ -43,11 +43,29 @@ public class PaymentSourceTest extends BaseTest {
         paymentSourceIds.add(ps.getId());
         int end = paymentSourceService.readPaymentSources(person.getId()).size();
         logger.debug("change = " + (end - begin));
-        assert (end - begin) == 1;
+        assert end - begin == 1;
         em.getTransaction().commit();
     }
 
-    @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource" })
+    @Test(groups = { "checkPaymentSource" }, dependsOnGroups = { "createPaymentSource" })
+    public void checkForExistingPaymentSources() {
+        paymentSourceService.setAuditService(auditService);
+        PersonService personService = (PersonService) applicationContext.getBean("personService");
+        List<Person> persons = personService.readAllPeople();
+        Long personId = null;
+        for (Person person : persons) {
+            if ("createPaymentSourceLastName-4".equals(person.getLastName())) {
+                personId = person.getId();
+                break;
+            }
+        }
+        assert personId != null;
+        assert paymentSourceService.findPaymentSourceProfile(personId, "MyProfile") != null;
+        assert paymentSourceService.findPaymentSourceProfile(personId, "MyProfile2") == null;
+        assert paymentSourceService.findPaymentSourceProfile(personId.longValue() + 1, "MyProfile") == null;
+    }
+
+    @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource", "checkPaymentSource" })
     public void inactivatePaymentSources() {
         paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");

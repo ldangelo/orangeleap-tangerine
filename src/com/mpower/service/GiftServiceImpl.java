@@ -70,7 +70,7 @@ public class GiftServiceImpl implements GiftService {
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
             if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
                 gift.getPaymentSource().setType(gift.getPaymentType());
-                List<PaymentSource> paymentSources = paymentSourceDao.readPaymentSources(gift.getPerson().getId());
+                List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(gift.getPerson().getId());
                 if (paymentSources != null) {
                     for (PaymentSource paymentSource : paymentSources) {
                         if (gift.getPaymentSource().equals(paymentSource)) {
@@ -138,11 +138,11 @@ public class GiftServiceImpl implements GiftService {
     }
 
     public List<PaymentSource> readPaymentSources(Long personId) {
-        return paymentSourceDao.readPaymentSources(personId);
+        return paymentSourceDao.readActivePaymentSources(personId);
     }
 
     public void deletePaymentSource(Long paymentSourceId) {
-        paymentSourceDao.readPaymentSources(paymentSourceId);
+        paymentSourceDao.readActivePaymentSources(paymentSourceId);
     }
 
     @Override

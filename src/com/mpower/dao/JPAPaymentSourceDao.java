@@ -33,7 +33,24 @@ public class JPAPaymentSourceDao implements PaymentSourceDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PaymentSource> readPaymentSources(Long personId) {
+    public PaymentSource findPaymentSourceProfile(Long personId, String profile) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findPaymentSourceProfile: personId = " + personId + " profile = " + profile);
+        }
+        Query query = em.createNamedQuery("READ_PAYMENT_SOURCE_BY_PERSON_ID_PROFILE");
+        query.setParameter("personId", personId);
+        query.setParameter("profile", profile);
+        List<PaymentSource> l = query.getResultList();
+        PaymentSource source = null;
+        if (l != null && !l.isEmpty()) {
+            source = l.get(0);
+        }
+        return source;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PaymentSource> readActivePaymentSources(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_PAYMENT_SOURCES_BY_PERSON_ID");
         query.setParameter("personId", personId);
         List<PaymentSource> paymentSourceList = query.getResultList();

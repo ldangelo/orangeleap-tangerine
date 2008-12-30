@@ -13,4 +13,6 @@ public interface PaymentSourceService {
     public void setAuditService(AuditService auditService);
 
     public PaymentSource readPaymentSource(Long paymentSourceId);
+
+    public PaymentSource findPaymentSourceProfile(Long personId, String profile);
 }

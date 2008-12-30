@@ -31,7 +31,8 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value="new" reference="li:has(#paymentType)">Create New...</option>
+				<option value=""><spring:message code="select"/></option>
+				<option value="new" reference="li:has(#paymentType)"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 					<c:if test="${opt.type == 'ACH'}">
 						<c:choose>
@@ -58,7 +59,8 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value="new" reference="li:has(:input[name^='address'])">Create New...</option>
+				<option value=""><spring:message code="select"/></option>
+				<option value="new" reference="li:has(:input[name^='address'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${addresses}">
 					<c:choose>
 						<c:when test="${opt.id == commitment.address.id}">
@@ -73,7 +75,8 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value="new" reference="li:has(:input[name^='phone'])">Create New...</option>
+				<option value=""><spring:message code="select"/></option>
+				<option value="new" reference="li:has(:input[name^='phone'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${phones}">
 					<c:choose>
 						<c:when test="${opt.id == commitment.phone.id}">
@@ -88,6 +91,7 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
+				<option value=""><spring:message code="select"/></option>
 				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
 					<c:choose>
@@ -116,15 +120,11 @@
 							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 						</div>
 					</c:forEach>
-					<%-- 
-					<div reference="li:has(.ea-organization2)" code="organization2" id="option-organization2" class="multiPicklistOption">
-							Organization a b c d e f g h i j k l d d s<a class="deleteOption" href="javascript:void(0)" class=""><img src="images/icons/deleteRow.png"/></a></div>
-					 --%>
 			        &nbsp;
 			    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
 			    </div>
-			    <%--  The following hidden field must not lie within the multiPicklist div above --%>
+			    <%-- The following hidden field must not lie within the multiPicklist div above --%>
 				<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
 			</div>
 		</c:when>

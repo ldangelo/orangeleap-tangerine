@@ -19,6 +19,7 @@ import com.mpower.domain.AddressAware;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Email;
+import com.mpower.domain.EmailAware;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.PaymentSourceAware;
@@ -89,6 +90,16 @@ public class EntityValidator implements Validator {
                     PhoneValidator.validatePhone(target, errors);
                 }
             }
+            
+            if (target instanceof EmailAware) {
+            	EmailAware obj = (EmailAware) target;
+                Email selectedEmail = obj.getSelectedEmail();
+                if (selectedEmail.getId() != null) {
+                    obj.setEmail(selectedEmail);
+                    EmailValidator.validateEMail(target, errors);
+                }
+            }
+            
         }
 
         if (!errors.hasErrors()) {

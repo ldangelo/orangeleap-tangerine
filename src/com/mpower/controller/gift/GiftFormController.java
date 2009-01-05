@@ -20,17 +20,20 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.controller.address.AddressEditor;
+import com.mpower.controller.email.EmailEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
 import com.mpower.controller.phone.PhoneEditor;
 import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.service.AddressService;
 import com.mpower.service.CommitmentService;
+import com.mpower.service.EmailService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
@@ -87,6 +90,12 @@ public class GiftFormController extends SimpleFormController {
         this.phoneService = phoneService;
     }
 
+    private EmailService emailService;
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
@@ -94,6 +103,7 @@ public class GiftFormController extends SimpleFormController {
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
         binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
         binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
+        binder.registerCustomEditor(Email.class, new EmailEditor(emailService));
     }
 
     @SuppressWarnings("unchecked")
@@ -107,6 +117,8 @@ public class GiftFormController extends SimpleFormController {
         refData.put("addresses", addresses);
         List<Phone> phones = phoneService.readPhones(Long.valueOf(personId));
         refData.put("phones", phones);
+        List<Email> emails = emailService.readEmails(Long.valueOf(personId));
+        refData.put("emails", emails);
         return refData;
     }
 

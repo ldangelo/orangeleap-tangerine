@@ -30,6 +30,7 @@ import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
+import com.mpower.service.EmailService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
@@ -47,6 +48,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "phoneService")
     private PhoneService phoneService;
+
+    @Resource(name = "emailService")
+    private EmailService emailService;
 
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
@@ -101,6 +105,9 @@ public class GiftServiceImpl implements GiftService {
         }
         if (gift.getPhone().getId() == null) {
             gift.setPhone(phoneService.savePhone(gift.getPhone()));
+        }
+        if (gift.getEmail().getId() == null) {
+            gift.setEmail(emailService.saveEmail(gift.getEmail()));
         }
         gift = giftDao.maintainGift(gift);
 

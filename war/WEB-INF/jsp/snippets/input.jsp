@@ -89,6 +89,22 @@
 				</c:forEach>
 			</select>
 		</c:when>
+		<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
+			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
+				<option value=""><spring:message code="select"/></option>
+				<option value="new" reference="li:has(:input[name^='email'])"><spring:message code="createNew"/></option>
+				<c:forEach var="opt" varStatus="status" items="${emails}">
+					<c:choose>
+						<c:when test="${opt.id == fieldVO.model.email.id}">
+							<option value="${opt.id}" selected="selected"><c:out value='${opt.number}'/></option>
+						</c:when>
+						<c:otherwise>
+							<option value="${opt.id}"><c:out value='${opt.number}'/></option>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+			</select>
+		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
 				<option value=""><spring:message code="select"/></option>

@@ -22,6 +22,7 @@
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="personService" ref="personService" />
         <property name="phoneService" ref="phoneService" />
+        <property name="emailService" ref="emailService" />
         <property name="siteService" ref="siteService" />
     </bean>
 

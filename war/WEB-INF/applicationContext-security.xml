@@ -75,20 +75,20 @@
     </bean>
 
 	<!-- Uncomment this for local ldap, using ApacheDS, and comment the section below
-	-->
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://localhost:10389/dc=mpowerOpen-dev"/>
     	<property name="userDn" value="uid=admin,ou=system"/>
     	<property name="password" value="secret"/>
 	</bean>
+	-->
 
 	<!-- Comment this out if you want to connect locally to LDAP and uncomment the section above
+	-->
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://10.0.2.162:389/dc=mpowerOpen-dev"/>
     	<property name="userDn" value="cn=admin,dc=mpowerOpen-dev"/>
     	<property name="password" value="secret"/>
 	</bean>
-	-->
 
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>

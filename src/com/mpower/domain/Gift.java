@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -421,4 +422,12 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
             deductibleAmount = amount;
         }
     }
+    
+    @PostLoad
+    public void initTransient() {
+        if (address != null) selectedAddress = address;
+        if (phone != null) selectedPhone = phone;
+        if (email != null) selectedEmail = email;
+    }
+
 }

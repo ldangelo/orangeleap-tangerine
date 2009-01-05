@@ -20,6 +20,7 @@ public class FieldVO {
     public static final String NORMAL_DELIMITER = ",";
     public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
 
+    private Object model;
     private List<String> referenceValues;
     private boolean cascading;
     private List<String> codes;
@@ -46,6 +47,14 @@ public class FieldVO {
 
     public void setFieldToCheck(Object fieldToCheck) {
         this.fieldToCheck = fieldToCheck;
+    }
+
+    public Object getModel() {
+        return model;
+    }
+
+    public void setModel(Object model) {
+        this.model = model;
     }
 
     public List<String> getCodes() {
@@ -254,19 +263,19 @@ public class FieldVO {
         return org.springframework.util.StringUtils.collectionToDelimitedString(o, delimiter);
     }
 
-	public void setHierarchy(boolean isHierarchy) {
-		this.isHierarchy = isHierarchy;
-	}
+    public void setHierarchy(boolean isHierarchy) {
+        this.isHierarchy = isHierarchy;
+    }
 
-	public boolean isHierarchy() {
-		return isHierarchy;
-	}
+    public boolean isHierarchy() {
+        return isHierarchy;
+    }
 
-	public void setRelationship(boolean isRelationship) {
-		this.isRelationship = isRelationship;
-	}
+    public void setRelationship(boolean isRelationship) {
+        this.isRelationship = isRelationship;
+    }
 
-	public boolean isRelationship() {
-		return isRelationship;
-	}
+    public boolean isRelationship() {
+        return isRelationship;
+    }
 }

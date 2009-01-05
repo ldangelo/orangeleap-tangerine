@@ -61,6 +61,7 @@ public class GenericFieldHandler implements FieldHandler {
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = new FieldVO();
 
+        fieldVO.setModel(model);
         fieldVO.setFieldName(getFieldPropertyName(currentField));
         fieldVO.setFieldType(getFieldType(currentField));
 

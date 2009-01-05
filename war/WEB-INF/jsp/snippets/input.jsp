@@ -36,7 +36,7 @@
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 					<c:if test="${opt.type == 'ACH'}">
 						<c:choose>
-							<c:when test="${opt.id == commitment.paymentSource.id}">
+							<c:when test="${opt.id == fieldVO.model.paymentSource.id}">
 								<option value="${opt.id}" selected="selected" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.type}'/>&nbsp;<c:out value='${opt.achAccountNumberDisplay}'/></option>
 							</c:when>
 							<c:otherwise>
@@ -46,7 +46,7 @@
 					</c:if>
 					<c:if test="${opt.type == 'Credit Card'}">
 						<c:choose>
-							<c:when test="${opt.id == commitment.paymentSource.id}">
+							<c:when test="${opt.id == fieldVO.model.paymentSource.id}">
 								<option value="${opt.id}" selected="selected" reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.creditCardType}'/>&nbsp;<c:out value='${opt.creditCardNumberDisplay}'/>&nbsp;Exp.&nbsp;<c:out value='${opt.creditCardExpirationMonth}'/>/<c:out value='${opt.creditCardExpirationYear}'/></option>
 							</c:when>
 							<c:otherwise>
@@ -63,7 +63,7 @@
 				<option value="new" reference="li:has(:input[name^='address'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${addresses}">
 					<c:choose>
-						<c:when test="${opt.id == commitment.address.id}">
+						<c:when test="${opt.id == fieldVO.model.address.id}">
 							<option value="${opt.id}" selected="selected"><c:out value='${opt.shortDisplay}'/></option>
 						</c:when>
 						<c:otherwise>
@@ -79,7 +79,7 @@
 				<option value="new" reference="li:has(:input[name^='phone'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${phones}">
 					<c:choose>
-						<c:when test="${opt.id == commitment.phone.id}">
+						<c:when test="${opt.id == fieldVO.model.phone.id}">
 							<option value="${opt.id}" selected="selected"><c:out value='${opt.number}'/></option>
 						</c:when>
 						<c:otherwise>

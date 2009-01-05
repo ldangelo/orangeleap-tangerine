@@ -29,8 +29,8 @@ import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.FieldCondition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
-import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
 

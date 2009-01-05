@@ -92,7 +92,7 @@
 				<option value="people">People</option>
 				<option value="people">Gifts</option>
 			</select>
-			<input type="image" src="images/searchBtn.gif" value="Search" class="searchBarBtn" />
+			<input type="submit" value="Search" class="saveButton" />
 		</form>
 	</div>
 </div>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="membership" class="com.mpower.controller.membership.MembershipFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="pageType" value="membership"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="membership"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="membership"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+        <property name="formView" value="membership/membership" />
+        <property name="successView" value="membership/membershipView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="membershipSearch" class="com.mpower.controller.membership.MembershipSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="membership/membershipSearch"/>
+        <property name="successView" value="membership/membershipSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+
+    <bean id="membershipList" class="com.mpower.controller.membership.MembershipListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+        <property name="viewName" value="membership/membershipList"/>
+    </bean>
+
+    <bean id="membershipView" class="com.mpower.controller.membership.MembershipFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="membershipView"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
+        <property name="formView" value="membership/membershipView" />
+        <property name="successView" value="membership/membershipView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+    
+    <bean id="membershipUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/membership.htm">membership</prop>
+		        <prop key="/membershipList.htm">membershipList</prop>
+		        <prop key="/membershipSearch.htm">membershipSearch</prop>
+		    	<prop key="/membershipView.htm">membershipView</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

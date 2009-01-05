@@ -126,17 +126,25 @@ $(document).ready(function() {
 		}
 	);
 	
-	$(":input, select, textbox").bind("focus", function() {
+	$(":input, select, textbox").bind("focus", function(event) {
 		if ($.browser.msie) {
 			$(this).addClass("focused");
 		}
-		$(this).prev("label.desc").addClass("inFocus");
+		var target = $(this); 
+		if ($(this).parent("div.lookupWrapper").length) { 
+			target = $(this).parent("div.lookupWrapper");
+		}
+		target.prevAll("label.desc").addClass("inFocus");
 	});
 	$(":input, select, textbox").bind("blur", function() {
 		if ($.browser.msie) {
 			$(this).removeClass("focused");
 		}
-		$(this).prev("label.desc").removeClass("inFocus");
+		var target = $(this); 
+		if ($(this).parent("div.lookupWrapper").length) { 
+			target = $(this).parent("div.lookupWrapper");
+		}
+		target.prevAll("label.desc").removeClass("inFocus");
 	});
 });
 

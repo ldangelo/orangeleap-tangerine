@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="phoneManager" class="com.mpower.controller.phone.PhoneFormController">
+    	<property name="commandName" value="phone" />
+    	<property name="commandClass" value="com.mpower.domain.Phone" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.PhoneValidator">
+			        <property name="pageType" value="phone"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="phone"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="phoneService" ref="phoneService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="phone/phoneManager" />
+    </bean>
+
+    <bean id="phoneManagerEdit" class="com.mpower.controller.phone.PhoneManagerEditFormController">
+    	<property name="commandName" value="phone" />
+    	<property name="commandClass" value="com.mpower.domain.Phone" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.PhoneValidator">
+			        <property name="pageType" value="phone"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="phone"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="phoneService" ref="phoneService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="phone/phoneManagerEdit" />
+    </bean>
+
+    <bean id="phoneDelete" class="com.mpower.controller.phone.PhoneDeleteController">
+    	<property name="phoneService" ref="phoneService" />
+    </bean>
+    
+    <bean id="phoneUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/phoneManager.htm">phoneManager</prop>
+                <prop key="/phoneManagerEdit.htm">phoneManagerEdit</prop>
+                <prop key="/phoneDelete.htm">phoneDelete</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

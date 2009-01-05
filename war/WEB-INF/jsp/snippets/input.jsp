@@ -11,8 +11,8 @@
 	<label for="<c:out value='${fieldVO.fieldName}'/>" class="desc">
 		<c:if test="${fieldVO.fieldType != 'SPACER'}">
 			<c:if test="${fieldVO.helpAvailable == 'true'}"><a class="helpLink"><img src="images/icons/questionGreyTransparent.gif" /></a><span class="helpText"><c:out value="${fieldVO.helpText}" /></span></c:if>
+	    	<c:if test="${fieldVO.required == 'true'}"><span class="required">*</span>&nbsp;</c:if>
 		  	<c:out value="${fieldVO.labelText}" />
-	    	<c:if test="${fieldVO.required == 'true'}"><span class="required">&nbsp;*</span></c:if>
 		</c:if>
 	</label>
 	<c:choose>

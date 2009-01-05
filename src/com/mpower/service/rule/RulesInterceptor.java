@@ -22,7 +22,7 @@ import com.mpower.domain.Person;
 import com.mpower.domain.SiteAware;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
-import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.impl.SessionServiceImpl;
 
 @Aspect
 @Component("rulesInterceptor")

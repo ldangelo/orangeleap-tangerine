@@ -21,7 +21,7 @@ import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
 
-import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.impl.SessionServiceImpl;
 
 @Service("ldapService")
 public class LdapServiceImpl implements LdapService {

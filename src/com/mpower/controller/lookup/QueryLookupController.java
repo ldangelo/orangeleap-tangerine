@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.mpower.domain.QueryLookup;
 import com.mpower.service.QueryLookupService;
-import com.mpower.service.SessionServiceImpl;
+import com.mpower.service.impl.SessionServiceImpl;
 
 public class QueryLookupController extends ParameterizableViewController {
 

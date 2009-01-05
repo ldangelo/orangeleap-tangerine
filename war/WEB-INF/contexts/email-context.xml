@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController">
+    	<property name="commandName" value="email" />
+    	<property name="commandClass" value="com.mpower.domain.Email" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.EmailValidator">
+			        <property name="pageType" value="email"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="email"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="emailService" ref="emailService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="email/emailManager"/>
+    </bean>
+
+    <bean id="emailManagerEdit" class="com.mpower.controller.email.EmailManagerEditFormController">
+    	<property name="commandName" value="email" />
+    	<property name="commandClass" value="com.mpower.domain.Email" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.EmailValidator">
+			        <property name="pageType" value="email"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="email"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="emailService" ref="emailService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="email/emailManagerEdit"/>
+    </bean>
+
+    <bean id="emailDelete" class="com.mpower.controller.email.EmailDeleteController">
+    	<property name="emailService" ref="emailService" />
+    </bean>
+
+    <bean id="emailUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/emailManager.htm">emailManager</prop>
+                <prop key="/emailManagerEdit.htm">emailManagerEdit</prop>
+                <prop key="/emailDelete.htm">emailDelete</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <bean id="pledge" class="com.mpower.controller.pledge.PledgeFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="pageType" value="pledge"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="pledge"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="pledge"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+        <property name="formView" value="pledge/pledge" />
+        <property name="successView" value="pledge/pledgeView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="pledgeSearch" class="com.mpower.controller.pledge.PledgeSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="pledge/pledgeSearch"/>
+        <property name="successView" value="pledge/pledgeSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+
+    <bean id="pledgeList" class="com.mpower.controller.pledge.PledgeListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+        <property name="viewName" value="pledge/pledgeList"></property>
+    </bean>
+
+    <bean id="pledgeView" class="com.mpower.controller.pledge.PledgeFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+		<property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="pledgeView"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
+        <property name="formView" value="pledge/pledgeView" />
+        <property name="successView" value="pledge/pledgeView" />
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="pledgeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/pledge.htm">pledge</prop>
+		        <prop key="/pledgeList.htm">pledgeList</prop>
+		        <prop key="/pledgeSearch.htm">pledgeSearch</prop>
+		    	<prop key="/pledgeView.htm">pledgeView</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

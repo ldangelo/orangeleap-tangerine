@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+    <bean id="personSearch" class="com.mpower.controller.constituent.PersonSearchFormController">
+        <property name="commandName" value="person"/>
+        <property name="commandClass" value="com.mpower.domain.Person"/>
+<!--        <property name="validator">-->
+<!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
+<!--        </property>-->
+        <property name="formView" value="constituent/personSearch"/>
+        <property name="successView" value="constituent/personSearch"/>
+        <property name="personService" ref="personService"/>
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+    <bean id="person" class="com.mpower.controller.constituent.PersonFormController">
+        <property name="commandName" value="person"/>
+        <property name="commandClass" value="com.mpower.domain.Person"/>
+        <property name="validator">
+            <bean class="com.mpower.controller.validator.EntityValidator">
+		        <property name="pageType" value="person"/>
+		        <property name="siteService" ref="siteService" />
+            </bean>
+        </property>
+        <property name="formView" value="constituent/person" />
+        <property name="successView" value="constituent/person" />
+        <property name="personService" ref="personService" />
+        <property name="siteService" ref="siteService" />
+    </bean>
+
+    <bean id="personView" class="com.mpower.controller.constituent.PersonViewController">
+        <property name="personService" ref="personService"/>
+        <property name="giftService" ref="giftService" />
+        <property name="viewName" value="constituent/personView"/>
+    </bean>
+    
+    <bean id="personUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/person.htm">person</prop>
+		        <prop key="/personSearch.htm">personSearch</prop>
+		        <prop key="/personView.htm">personView</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

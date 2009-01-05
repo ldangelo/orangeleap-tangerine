@@ -10,8 +10,8 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
-import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.customization.MessageService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.MessageResourceType;
 
 /**

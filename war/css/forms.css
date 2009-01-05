@@ -197,29 +197,26 @@ a.tableLookupLink {
 }
 .personFormButtons input {
 	font-size:13px;
-	padding:3px 5px;
 	margin:0 5px;
 	font-family:arial;
 }
 
 .saveButton,.searchButton {
-	font-size:13px;
 	font-family:arial;
 	text-decoration:none;
 	font-weight:bold;
-	padding:3px 5px;
-	background: #c8c9c8 url(../images/buttonGradient.gif) repeat-x;
+	padding:0 5px 0 5px;
+	background: #c8c9c8 url(../images/buttonGradient.gif) repeat-x top left;
 	border:1px solid #777;
 	border-bottom:1px solid #535353;
 	margin:0 4px;
 	color:#000;
 	height:24px;
-	vertical-align: bottom;
 }
-.saveButton:hover,
-.searchButton:hover {
-	background: #c8c9c8 url(../images/buttonGradientBlue.gif) repeat-x;
+.saveButton:hover, .searchButton:hover {
+	background-position: bottom left; 
 	cursor:pointer;
+	background-color: #91b5d0;
 }
 
 /*

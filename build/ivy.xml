@@ -101,7 +101,13 @@
 		<dependency org="commons-pool" name="commons-pool" rev="1.3" conf="test->default">
 			<artifact name="commons-pool" type="jar" ext="jar" />
 		</dependency>
-				
+
+		<!-- ORO -->
+		<dependency org="oro" name="oro" transitive="false" rev="2.0.8">
+			<artifact name="oro" type="jar" />
+			<artifact name="oro" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+						
 		<!-- DOM -->
 		<dependency org="dom4j" name="dom4j" transitive="false" rev="1.6.1">
 			<artifact name="dom4j" type="jar" />
@@ -229,6 +235,18 @@
 		<!-- Test -->
 		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">
 			<artifact name="testng" type="jar" ext="jar"/>
+		</dependency>
+
+		<dependency org="org.jmock" name="jmock" rev="2.5.1" conf="test->default">
+			<artifact name="jmock" type="jar" ext="jar"/>
+		</dependency>
+
+		<dependency org="org.hamcrest" name="hamcrest-core" rev="1.1" conf="test->default">
+			<artifact name="hamcrest-core" type="jar" ext="jar"/>
+		</dependency>
+
+		<dependency org="org.hamcrest" name="hamcrest-library" rev="1.1" conf="test->default">
+			<artifact name="hamcrest-library" type="jar" ext="jar"/>
 		</dependency>
 	</dependencies>
 </ivy-module>

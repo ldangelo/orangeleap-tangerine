@@ -20,8 +20,8 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
-import com.mpower.service.SessionServiceImpl;
 import com.mpower.service.SiteService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 
 public class PaymentManagerFormController extends SimpleFormController {
@@ -47,6 +47,7 @@ public class PaymentManagerFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
@@ -90,7 +91,7 @@ public class PaymentManagerFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
         Person person = personService.readPersonById(Long.valueOf(personId));
-        ModelAndView mav = new ModelAndView("paymentManager");
+        ModelAndView mav = new ModelAndView("payment/paymentManager"); // TODO: move to context XML
         mav.addObject("paymentSources", paymentSources);
         paymentSource = new PaymentSource();
         paymentSource.setPerson(person);

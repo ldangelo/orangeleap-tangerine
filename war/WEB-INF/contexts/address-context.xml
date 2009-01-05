@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+   	<bean id="addressManager" class="com.mpower.controller.address.AddressFormController">
+    	<property name="commandName" value="address" />
+    	<property name="commandClass" value="com.mpower.domain.Address" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.AddressValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="addressService" ref="addressService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="address/addressManager"/>
+    </bean>
+
+    <bean id="addressManagerEdit" class="com.mpower.controller.address.AddressManagerEditFormController">
+    	<property name="commandName" value="address" />
+    	<property name="commandClass" value="com.mpower.domain.Address" />
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.AddressValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="address"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+    	<property name="addressService" ref="addressService" />
+    	<property name="personService" ref="personService" />
+    	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="address/addressManagerEdit"/>
+    </bean>
+
+    <bean id="addressDelete" class="com.mpower.controller.address.AddressDeleteController">
+    	<property name="addressService" ref="addressService" />
+    </bean>
+
+    <bean id="addressUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+				<prop key="/addressManager.htm">addressManager</prop>
+				<prop key="/addressManagerEdit.htm">addressManagerEdit</prop>
+				<prop key="/addressDelete.htm">addressDelete</prop>
+			</props>
+		</property>
+	</bean>
+       
+       
+</beans>

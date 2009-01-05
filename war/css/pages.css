@@ -358,10 +358,10 @@ margin-right:30px;
 }
 
 .mpHeaderSortDown {
-	background-image: url(../images/asc.gif);
+	background-image: url(../images/desc.gif);
 }
 .mpHeaderSortUp {
-	background-image: url(../images/desc.gif);
+	background-image: url(../images/asc.gif);
 } 
 .mpHeaderSortDown, .mpHeaderSortUp {
     background-repeat: no-repeat;

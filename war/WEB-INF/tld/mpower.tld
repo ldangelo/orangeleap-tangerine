@@ -8,7 +8,7 @@
 
     <tag>
     	<name>page</name>
-     	<tag-class>com.mpower.web.customization.PageTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.PageTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns the correct pageAccess given the page name.</description>
      	<attribute>
@@ -20,7 +20,7 @@
 
     <tag>
     	<name>section</name>
-     	<tag-class>com.mpower.web.customization.SectionTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.SectionTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns the section fields for this section</description>
      	<attribute>
@@ -32,7 +32,7 @@
 
     <tag>
     	<name>field</name>
-     	<tag-class>com.mpower.web.customization.FieldTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.FieldTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns a FieldVO for the given field id.</description>
      	<attribute>
@@ -54,7 +54,7 @@
 
     <tag>
     	<name>sectionHeader</name>
-     	<tag-class>com.mpower.web.customization.SectionHeaderTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.SectionHeaderTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns the internationalized section header.</description>
      	<attribute>
@@ -66,7 +66,7 @@
 
     <tag>
     	<name>content</name>
-     	<tag-class>com.mpower.web.customization.ContentTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.ContentTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns the internationalized content from the database.</description>
      	<attribute>
@@ -78,7 +78,7 @@
 
     <tag>
     	<name>pageTitle</name>
-     	<tag-class>com.mpower.web.customization.PageTitleTag</tag-class>
+     	<tag-class>com.mpower.web.customization.tag.PageTitleTag</tag-class>
      	<body-content>empty</body-content>
      	<description>Returns the internationalized page title and substitutes model values</description>
      	<attribute>

@@ -1,5 +1,7 @@
 package com.mpower.test.controller.validator;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.springframework.validation.BindException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,48 +17,53 @@ public class PaymentSourceValidatorTest extends BaseTest {
     private PaymentSourceValidator validator;
     private PaymentSource source;
     private BindException errors;
+    private Mockery mockery;
+    private final Long PERSON_ID = 1L;
 
     @BeforeMethod
     public void setupMocks() {
+        mockery = new Mockery();
         validator = new PaymentSourceValidator();
-        // TODO: switch to use JMock or EasyMock
-        //        PaymentSourceService service = (PaymentSourceService)applicationContext.getBean("paymentSourceService");
-        PaymentSourceService service = new PaymentSourceValidatorTestMockService();
-        validator.setPaymentSourceService(service);
 
         source = new PaymentSource();
         Person person = new Person();
-        person.setId(1L);
+        person.setId(PERSON_ID);
         source.setPerson(person);
 
         errors = new BindException(source, "paymentSource");
-    }
 
-    //    private void redefineMethods() {
-    //        Mockit.redefineMethods(PaymentSourceServiceImpl.class, new PaymentSourceValidatorTestMockService());
-    //    }
+        final PaymentSourceService service = mockery.mock(PaymentSourceService.class);
+        validator.setPaymentSourceService(service);
+
+        mockery.checking(new Expectations() {{
+            allowing (service).findPaymentSourceProfile(PERSON_ID, "MyProfile"); will(returnValue(new PaymentSource()));
+        }});
+    }
 
     @Test(groups = { "validatePaymentProfile" })
     public void testValidPaymentProfile() throws Exception {
-        //        redefineMethods();
         source.setProfile(null);
         validator.validatePaymentProfile(source, errors);
+
+        mockery.assertIsSatisfied();
         assert errors.hasFieldErrors() == false;
     }
 
     @Test(groups = { "validatePaymentProfile" })
     public void testBlankPaymentProfile() throws Exception {
-        //        redefineMethods();
         source.setProfile("  ");
         validator.validatePaymentProfile(source, errors);
+
+        mockery.assertIsSatisfied();
         assert "blankPaymentProfile".equals(errors.getFieldError("profile").getCode());
     }
 
     @Test(groups = { "validatePaymentProfile" })
     public void testExistingPaymentProfile() throws Exception {
-        //        redefineMethods();
         source.setProfile("MyProfile");
         validator.validatePaymentProfile(source, errors);
+
+        mockery.assertIsSatisfied();
         assert "paymentProfileAlreadyExists".equals(errors.getFieldError("profile").getCode());
     }
 }

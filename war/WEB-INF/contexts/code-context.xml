@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       
+    <bean id="codeHelper" class="com.mpower.controller.code.CodeHelperController">
+        <property name="codeService" ref="codeService"/>
+        <property name="viewName" value="code/codeHelper"/>
+    </bean>
+
+    <bean id="codes" class="com.mpower.controller.code.CodeManageController">
+        <property name="codeService" ref="codeService"/>
+        <property name="viewName" value="code/codes"/>
+    </bean>
+
+	<bean id="code" class="com.mpower.controller.code.CodeFormController">
+        <property name="commandName" value="code"/>
+        <property name="commandClass" value="com.mpower.domain.customization.Code"/>
+        <property name="formView" value="code/code" />
+        <property name="successView" value="code/code" />
+        <property name="codeService" ref="codeService"/>
+    </bean>
+
+    <bean id="codeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/codeHelper.htm">codeHelper</prop>
+                <prop key="/code.htm">code</prop>
+                <prop key="/codes.htm">codes</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

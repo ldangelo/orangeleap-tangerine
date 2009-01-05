@@ -23,6 +23,7 @@
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="payment/paymentManager" />
     </bean>
 
     <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerEditFormController">
@@ -31,6 +32,7 @@
     	<property name="personService" ref="personService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     	<property name="siteService" ref="siteService" />
+    	<property name="formView" value="payment/paymentManagerEdit" />
     </bean>
 
     <bean id="paymentSourceDelete" class="com.mpower.controller.payment.PaymentSourceDeleteController">

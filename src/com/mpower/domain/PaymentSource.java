@@ -44,6 +44,9 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
+    @Transient
+    private Address address;
+
     @Column(name = "PAYMENT_PROFILE")
     private String profile;
 
@@ -114,6 +117,17 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public Address getAddress() {
+        if (address == null) {
+            address = new Address(this.getPerson());
+        }
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getProfile() {

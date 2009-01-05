@@ -42,6 +42,8 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
     public Person maintainRelationships(Person person) throws PersonValidationException {
     	
+    	if (person.getSite() == null) return person;
+    	
     	PersonValidationException ex = new PersonValidationException();
     	String lastRecursiveParentCustomFieldName = null;
     	

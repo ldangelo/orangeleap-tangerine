@@ -106,7 +106,7 @@
 			</select>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
+			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>">
 				<option value=""><spring:message code="select"/></option>
 				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />

@@ -96,10 +96,10 @@
 				<c:forEach var="opt" varStatus="status" items="${emails}">
 					<c:choose>
 						<c:when test="${opt.id == fieldVO.model.email.id}">
-							<option value="${opt.id}" selected="selected"><c:out value='${opt.number}'/></option>
+							<option value="${opt.id}" selected="selected"><c:out value='${opt.emailAddress}'/></option>
 						</c:when>
 						<c:otherwise>
-							<option value="${opt.id}"><c:out value='${opt.number}'/></option>
+							<option value="${opt.id}"><c:out value='${opt.emailAddress}'/></option>
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>

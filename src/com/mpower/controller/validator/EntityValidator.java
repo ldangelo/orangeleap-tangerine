@@ -77,8 +77,8 @@ public class EntityValidator implements Validator {
                 Address selectedAddress = obj.getSelectedAddress();
                 if (selectedAddress.getId() != null) {
                     obj.setAddress(selectedAddress);
+                    AddressValidator.validateAddress(target, errors);
                 }
-                AddressValidator.validateAddress(target, errors);
             }
 
             if (target instanceof PhoneAware) {
@@ -86,8 +86,8 @@ public class EntityValidator implements Validator {
                 Phone selectedPhone = obj.getSelectedPhone();
                 if (selectedPhone.getId() != null) {
                     obj.setPhone(selectedPhone);
+                    PhoneValidator.validatePhone(target, errors);
                 }
-                PhoneValidator.validatePhone(target, errors);
             }
         }
 

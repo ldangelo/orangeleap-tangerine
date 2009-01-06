@@ -32,6 +32,9 @@ public class FieldTag extends TagSupport {
         ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
         FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
         FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
+        if (fieldHandler == null) {
+        	logger.error("No field handler found for "+sectionField.getFieldPropertyName());
+        }
 
         Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
         FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionServiceImpl.lookupUserSiteName(), modelParam);

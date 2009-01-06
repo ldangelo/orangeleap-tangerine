@@ -40,10 +40,16 @@ public class CommitmentValidator implements Validator {
     public void validate(Object target, Errors errors) {
         logger.debug("in CommitmentValidator");
         Commitment commitment = (Commitment) target;
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "invalidStartDate", "Start Date is required");
+        
+        boolean isNonRecurringPledge = CommitmentType.PLEDGE.equals(commitment.getCommitmentType()) && !commitment.isRecurring();
+        if (!isNonRecurringPledge) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "invalidStartDate", "Start Date is required");
+        }
+        
         if (CommitmentType.RECURRING_GIFT.equals(commitment.getCommitmentType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
         }
+        
         if (!errors.hasErrors()) {
             if (commitment.getEndDate() != null) {
                 if (commitment.getEndDate().before(commitment.getStartDate())) {

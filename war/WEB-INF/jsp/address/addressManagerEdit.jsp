@@ -35,10 +35,11 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
-		<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit" class="saveButton" />
-		<c:if test="${address.id != null}">
-			<a class="actionLink" href="addressManager.htm?personId=${person.id}">Cancel</a>
-		</c:if>
+		<div class="formButtonFooter personFormButtons">
+			<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
+			<c:if test="${address.id != null}">
+				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="MPower.gotoUrl('addressManager.htm?personId=${person.id}')"/>
+			</c:if>
 		</div>
 
 	</form:form>

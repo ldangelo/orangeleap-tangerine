@@ -27,17 +27,17 @@
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
 				</div>
+				<div class="formButtonFooter">
+					<input type="button" value="<spring:message code='receiveGift'/>" class="saveButton" onclick="MPower.gotoUrl('gift.htm?personId=${person.id}&commitmentId=${commitment.id}')"/>
+					<c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='viewPledgeHistory'/>" class="saveButton" onclick="MPower.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
+					</c:if>
+					<input type="button" value="<spring:message code='enterNewPledge'/>" class="saveButton" onclick="MPower.gotoUrl('pledge.htm?personId=${person.id}')"/>
+				</div>
 			</form:form>
 
-			<div class="formButtonFooter">
-				<a class="actionLink" href="gift.htm?personId=${person.id}&commitmentId=${commitment.id}">Receive Gift</a>
-				<c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-					<a class="actionLink" href="pledgeList.htm?personId=${person.id}">View pledge history</a>
-				</c:if>
-				<a class="actionLink" href="pledge.htm?personId=${person.id}">Enter a new pledge</a>
-			</div>
 			<c:forEach var="gift" items="${gifts}">
-			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
+				<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
 			</c:forEach>
 		</div>
 	</tiles:putAttribute>

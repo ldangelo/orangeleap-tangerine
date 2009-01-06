@@ -28,49 +28,49 @@
 				<c:if test="${gift.refundGiftId != null}">
 					<h3 style="color:#070;">This gift was <a href="giftView.htm?giftId=${gift.refundGiftId}">refunded</a> on <fmt:formatDate value="${gift.refundGiftTransactionDate}"/> at <fmt:formatDate value="${gift.refundGiftTransactionDate}" type="time" />.</h3>
 				</c:if>
-					<div class="columns">
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
-								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-						</c:forEach>
-						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1" end="3">
-							<c:if test="${sectionDefinition.defaultLabel==gift.paymentType}">
-								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-							</c:if>
-						</c:forEach>
-						<div class="clearColumns"></div>
-					</div>
-					<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="4">
-						<c:if test="${!empty sectionDefinition.defaultLabel}">
-							<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-						</c:if>
-						<table class="tablesorter" cellspacing="0" cellpadding="0">
-							<thead>
-								<c:forEach items="${gift.distributionLines}" var="row" begin="0" end="0">
-									<tr>
-										<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
-									</tr>
-								</c:forEach>
-							</thead>
-							<tbody>
-								<c:forEach items="${gift.distributionLines}" var="row">
-									<tr>
-										<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
+				<div class="columns">
+					<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
+							<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 					</c:forEach>
-			</form:form>
+					<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="1" end="3">
+						<c:if test="${sectionDefinition.defaultLabel==gift.paymentType}">
+							<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
+						</c:if>
+					</c:forEach>
+					<div class="clearColumns"></div>
+				</div>
+				<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="4">
+					<c:if test="${!empty sectionDefinition.defaultLabel}">
+						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+					</c:if>
+					<table class="tablesorter" cellspacing="0" cellpadding="0">
+						<thead>
+							<c:forEach items="${gift.distributionLines}" var="row" begin="0" end="0">
+								<tr>
+									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
+								</tr>
+							</c:forEach>
+						</thead>
+						<tbody>
+							<c:forEach items="${gift.distributionLines}" var="row">
+								<tr>
+									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:forEach>
 
-			<div class="formButtonFooter">
-				<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-					<a class="actionLink" href="giftList.htm?personId=${person.id}">View gift history</a>
-				</c:if>
-				<a class="actionLink" href="gift.htm?personId=${person.id}">Enter a new gift</a>
-				<c:if test="${gift.originalGiftId == null && gift.refundGiftId == null}">
-					<a class="actionLink" onclick="return(confirm('Are you sure you want to refund this gift?'));" href="giftRefund.htm?giftId=${gift.id}">Refund this gift</a>
-				</c:if>
-			</div>
+				<div class="formButtonFooter">
+					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='viewGiftHistory'/>" class="saveButton" onclick="MPower.gotoUrl('giftList.htm?personId=${person.id}')"/>
+					</c:if>
+					<input type="button" value="<spring:message code='enterNewGift'/>" class="saveButton" onclick="MPower.gotoUrl('gift.htm?personId=${person.id}')"/>
+					<c:if test="${gift.originalGiftId == null && gift.refundGiftId == null}">
+						<input type="button" value="<spring:message code='refundGift'/>" class="saveButton" onclick="MPower.confirmGoToUrl('giftRefund.htm?giftId=${gift.id}', '<spring:message code='confirmRefundGift'/>')"/>
+					</c:if>
+				</div>
+			</form:form>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

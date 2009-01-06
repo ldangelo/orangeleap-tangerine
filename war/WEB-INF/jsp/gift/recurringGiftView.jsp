@@ -27,16 +27,16 @@
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
 				</div>
-			</form:form>
 
-			<div class="formButtonFooter">
-				<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-					<a class="actionLink" href="recurringGiftList.htm?personId=${person.id}">View recurring gift history</a>
-				</c:if>
-				<a class="actionLink" href="recurringGift.htm?personId=${person.id}">Enter a new recurring gift</a>
-			</div>
+				<div class="formButtonFooter">
+					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='viewRecurringGiftHistory'/>" class="saveButton" onclick="MPower.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
+					</c:if>
+					<input type="button" value="<spring:message code='enterNewRecurringGift'/>" class="saveButton" onclick="MPower.gotoUrl('recurringGift.htm?personId=${person.id}')"/>
+				</div>
+			</form:form>
 			<c:forEach var="gift" items="${gifts}">
-			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
+				<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
 			</c:forEach>
 			Sum:<c:out value='${giftSum}'/>
 		</div>

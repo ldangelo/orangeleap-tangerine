@@ -242,22 +242,6 @@ form input.file {
 	color:red;
 	font-weight:normal;
 }
-a.actionLink {
-	text-decoration:none;
-	font-weight:bold;
-	padding:5px 8px;
-	background: #eee url(../images/buttonGradient.gif) repeat-x;
-	border:1px solid #777;
-	border-bottom:1px solid #535353;
-	margin:0 4px;
-	color:#000;
-	font-size:12px;
-	line-height:24px;
-	font-family:verdana,sans-serif;
-}
-a.actionLink:hover {
-	background: #eee url(../images/buttonGradientBlue.gif) repeat-x;
-}
 span.majorDonor {
 	font-size:14px;
 	font-weight:bold;

@@ -36,9 +36,9 @@
 
 			<div class="formButtonFooter">
 				<c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
-					<a class="actionLink" href="membershipList.htm?personId=${person.id}">View membership history</a>
+					<input type="button" value="<spring:message code='viewMembershipHistory'/>" class="saveButton" onclick="MPower.gotoUrl('membershipList.htm?personId=${person.id}')"/>
 				</c:if>
-				<a class="actionLink" href="membership.htm?personId=${person.id}">Enter a new membership</a>
+				<input type="button" value="<spring:message code='enterNewMembership'/>" class="saveButton" onclick="MPower.gotoUrl('membership.htm?personId=${person.id}')"/>
 			</div>
 			<c:forEach var="gift" items="${gifts}">
 			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />

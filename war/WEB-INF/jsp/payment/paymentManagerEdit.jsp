@@ -35,10 +35,12 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
-		<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit" class="saveButton" /></div>
-		<c:if test="${paymentSource.id != null}">
-			<a class="actionLink" href="paymentManager.htm?personId=${person.id}">Cancel</a>
-		</c:if>
+		<div class="formButtonFooter personFormButtons">
+			<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
+			<c:if test="${paymentSource.id != null}">
+				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="MPower.gotoUrl('paymentManager.htm?personId=${person.id}')"/>
+			</c:if>
+		</div>
 	</form:form>
 
 	<!--<jsp:include page="paymentSource.jsp" />-->

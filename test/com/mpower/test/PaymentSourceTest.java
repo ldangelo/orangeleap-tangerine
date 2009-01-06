@@ -39,7 +39,7 @@ public class PaymentSourceTest extends BaseTest {
         personIds.add(person.getId());
         ps.setPerson(person);
         int begin = paymentSourceService.readPaymentSources(person.getId()).size();
-        ps = paymentSourceService.savePaymentSource(ps);
+        ps = paymentSourceService.maintainPaymentSource(ps);
         paymentSourceIds.add(ps.getId());
         int end = paymentSourceService.readPaymentSources(person.getId()).size();
         logger.debug("change = " + (end - begin));
@@ -75,7 +75,7 @@ public class PaymentSourceTest extends BaseTest {
             for (PaymentSource ps : sources) {
                 ps = em.getReference(PaymentSource.class, ps.getId());
                 ps.setInactive(true);
-                paymentSourceService.savePaymentSource(ps);
+                paymentSourceService.maintainPaymentSource(ps);
             }
             logger.debug("size = " + paymentSourceService.readPaymentSources(person.getId()).size());
             assert paymentSourceService.readPaymentSources(person.getId()).size() == 0;

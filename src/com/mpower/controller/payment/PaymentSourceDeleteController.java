@@ -28,7 +28,7 @@ public class PaymentSourceDeleteController implements Controller {
         String personId = request.getParameter("personId");
         PaymentSource ps = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
         ps.setInactive(true);
-        paymentSourceService.savePaymentSource(ps);
+        paymentSourceService.maintainPaymentSource(ps);
         // Gift gift = giftService.refundGift(Long.valueOf(giftId));
         ModelAndView mav = new ModelAndView("redirect:/paymentManager.htm?personId=" + personId);
         // mav.addObject("paymentSourceId", gift.getId());

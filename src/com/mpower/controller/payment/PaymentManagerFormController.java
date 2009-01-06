@@ -108,16 +108,8 @@ public class PaymentManagerFormController extends SimpleFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         PaymentSource paymentSource = (PaymentSource) command;
-        paymentSourceService.savePaymentSource(paymentSource);
-        String personId = request.getParameter("personId");
-        List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
-        Person person = personService.readPersonById(Long.valueOf(personId));
-        ModelAndView mav = new ModelAndView(super.getSuccessView() + "?personId=" + personId);
-        mav.addObject("paymentSources", paymentSources);
-        paymentSource = new PaymentSource();
-        paymentSource.setPerson(person);
-        mav.addObject("paymentSource", paymentSource);
-        mav.addObject(personId);
-        return mav;
+        paymentSourceService.maintainPaymentSource(paymentSource);
+
+        return new ModelAndView(super.getSuccessView() + "?personId=" + request.getParameter("personId"));
     }
 }

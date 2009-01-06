@@ -107,7 +107,7 @@ public class CommitmentServiceImpl implements CommitmentService {
             commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
         }
         if (commitment.getPaymentSource().getId() == null) {
-            commitment.setPaymentSource(paymentSourceService.savePaymentSource(commitment.getPaymentSource()));
+            commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
         }
         if (commitment.getPhone().getId() == null) {
             commitment.setPhone(phoneService.savePhone(commitment.getPhone()));

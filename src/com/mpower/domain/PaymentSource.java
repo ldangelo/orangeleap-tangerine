@@ -47,7 +47,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address defaultAddress;
+    private Address address;
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
@@ -132,14 +132,14 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Address getAddress() {
-        if (defaultAddress == null) {
-            defaultAddress = new Address(this.getPerson());
+        if (address == null) {
+            address = new Address(this.getPerson());
         }
-        return defaultAddress;
+        return address;
     }
 
     public void setAddress(Address address) {
-        this.defaultAddress = address;
+        this.address = address;
     }
 
     public Phone getPhone() {
@@ -450,8 +450,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @PostLoad
     public void initTransient() {
-        if (defaultAddress != null) {
-            selectedAddress = defaultAddress;
+        if (address != null) {
+            selectedAddress = address;
         }
         if (phone != null) {
             selectedPhone = phone;

@@ -101,7 +101,7 @@ public class GiftServiceImpl implements GiftService {
             gift.setAddress(addressService.saveAddress(gift.getAddress()));
         }
         if (gift.getPaymentSource().getId() == null) {
-            gift.setPaymentSource(paymentSourceService.savePaymentSource(gift.getPaymentSource()));
+            gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
         }
         if (gift.getPhone().getId() == null) {
             gift.setPhone(phoneService.savePhone(gift.getPhone()));
@@ -185,7 +185,7 @@ public class GiftServiceImpl implements GiftService {
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(giftEntryType);
         for (DistributionLine dl : commitment.getDistributionLines()) {
-        	DistributionLine gdl = new DistributionLine(gift);
+            DistributionLine gdl = new DistributionLine(gift);
             gdl.setProjectCode(dl.getProjectCode());
             gdl.setAmount(dl.getAmount());
             gift.addDistributionLine(gdl);

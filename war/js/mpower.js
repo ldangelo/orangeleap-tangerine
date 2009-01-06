@@ -283,6 +283,16 @@ function getPage(elem) {
 }
 
 var MPower = {
+	gotoUrl: function(url) {
+		window.location.href = url;
+	},
+	
+	confirmGoToUrl: function(url, msg) {
+		if (confirm(msg)) {
+			this.gotoUrl(url);
+		}
+	},
+	
 	toggleReferencedElements: function () {
 		var elem = this;
 		var $toBeShown;

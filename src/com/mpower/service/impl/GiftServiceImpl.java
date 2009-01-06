@@ -185,7 +185,7 @@ public class GiftServiceImpl implements GiftService {
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(giftEntryType);
         for (DistributionLine dl : commitment.getDistributionLines()) {
-        	DistributionLine gdl = new DistributionLine(commitment);
+        	DistributionLine gdl = new DistributionLine(gift);
             gdl.setProjectCode(dl.getProjectCode());
             gdl.setAmount(dl.getAmount());
             gift.addDistributionLine(gdl);

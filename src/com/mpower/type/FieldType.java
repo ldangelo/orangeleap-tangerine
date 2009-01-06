@@ -4,6 +4,7 @@ public enum FieldType {
     DATE,
     DATE_DISPLAY,
     TEXT,
+    DUAL_PCT_AMT,
     READ_ONLY_TEXT,
     LOOKUP,
     CODE,

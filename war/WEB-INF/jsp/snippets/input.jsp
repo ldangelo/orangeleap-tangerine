@@ -230,6 +230,9 @@
 				</c:forEach>
 			</select>
 		</c:when>
+		<c:when test="${fieldVO.fieldType == 'DUAL_PCT_AMT'}">
+			<input value=""> <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+		</c:when>
 		<c:when test="${fieldVO.fieldType == 'TEXT'}">
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
 		</c:when>

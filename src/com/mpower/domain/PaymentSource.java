@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -27,7 +28,7 @@ import com.mpower.util.AES;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE")
-public class PaymentSource implements SiteAware, Viewable, Serializable {
+public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,8 +45,13 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @Transient
-    private Address address;
+    @ManyToOne
+    @JoinColumn(name = "ADDRESS_ID")
+    private Address defaultAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "PHONE_ID")
+    private Phone phone;
 
     @Column(name = "PAYMENT_PROFILE")
     private String profile;
@@ -96,6 +102,12 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    @Transient
+    private Address selectedAddress = new Address();
+
+    @Transient
+    private Phone selectedPhone = new Phone();
+
     public PaymentSource() {
     }
 
@@ -120,14 +132,25 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
     }
 
     public Address getAddress() {
-        if (address == null) {
-            address = new Address(this.getPerson());
+        if (defaultAddress == null) {
+            defaultAddress = new Address(this.getPerson());
         }
-        return address;
+        return defaultAddress;
     }
 
     public void setAddress(Address address) {
-        this.address = address;
+        this.defaultAddress = address;
+    }
+
+    public Phone getPhone() {
+        if (phone == null) {
+            phone = new Phone(this.getPerson());
+        }
+        return phone;
+    }
+
+    public void setPhone(Phone phone) {
+        this.phone = phone;
     }
 
     public String getProfile() {
@@ -351,6 +374,38 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
         return yearList;
     }
 
+    public Address getSelectedAddress() {
+        return selectedAddress;
+    }
+
+    public void setSelectedAddress(Address selectedAddress) {
+        this.selectedAddress = selectedAddress;
+    }
+
+    public Phone getSelectedPhone() {
+        return selectedPhone;
+    }
+
+    public void setSelectedPhone(Phone selectedPhone) {
+        this.selectedPhone = selectedPhone;
+    }
+
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PaymentSource)) {
@@ -393,19 +448,13 @@ public class PaymentSource implements SiteAware, Viewable, Serializable {
         }
     }
 
-    public Map<String, String> getFieldLabelMap() {
-        return fieldLabelMap;
-    }
-
-    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-        this.fieldLabelMap = fieldLabelMap;
-    }
-
-    public Map<String, Object> getFieldValueMap() {
-        return fieldValueMap;
-    }
-
-    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-        this.fieldValueMap = fieldValueMap;
+    @PostLoad
+    public void initTransient() {
+        if (defaultAddress != null) {
+            selectedAddress = defaultAddress;
+        }
+        if (phone != null) {
+            selectedPhone = phone;
+        }
     }
 }

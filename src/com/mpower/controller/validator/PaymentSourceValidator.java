@@ -87,7 +87,7 @@ public class PaymentSourceValidator implements Validator {
                 if (StringUtils.hasText(source.getProfile()) == false) {
                     errors.rejectValue("profile", "blankPaymentProfile");
                 }
-                else {
+                else if (source.getId() == null){
                     PaymentSource existingPaymentProfile = paymentSourceService.findPaymentSourceProfile(source.getPerson().getId(), source.getProfile());
 
                     // a payment source with this profile name already exists; reject

@@ -253,7 +253,7 @@
 				</c:otherwise>
 			</c:choose>
 		</c:when>
-		<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' or fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">
+		<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 			<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
@@ -276,6 +276,17 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'SPACER'}">
 			&nbsp;
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">
+		    <div class="readOnlyField multiPicklist <c:out value='${fieldVO.entityAttributes}'/>">
+				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+					<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
+					<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
+						id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
+						<c:out value='${fieldVO.displayValues[status.index]}'/></a>
+					</div>
+				</c:forEach>
+		    </div>
 		</c:when>
 		<c:otherwise>
 			<c:out value="Field type ${fieldVO.fieldType} not yet implemented." />

@@ -16,10 +16,16 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.controller.address.AddressEditor;
+import com.mpower.controller.phone.PhoneEditor;
+import com.mpower.domain.Address;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
+import com.mpower.service.AddressService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.service.PhoneService;
 import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
@@ -30,8 +36,10 @@ public class PaymentManagerFormController extends SimpleFormController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private PaymentSourceService paymentSourceService;
-
     private PersonService personService;
+    private SiteService siteService;
+    private AddressService addressService;
+    private PhoneService phoneService;
 
     public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
         this.paymentSourceService = paymentSourceService;
@@ -41,15 +49,23 @@ public class PaymentManagerFormController extends SimpleFormController {
         this.personService = personService;
     }
 
-    private SiteService siteService;
-
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+
+    public void setAddressService(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
     }
 
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
+        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
     }
 
     @Override
@@ -61,7 +77,8 @@ public class PaymentManagerFormController extends SimpleFormController {
             Person person = personService.readPersonById(Long.valueOf(personId));
             paymentSource = new PaymentSource();
             paymentSource.setPerson(person);
-        } else {
+        }
+        else {
             paymentSource = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
         }
         if (isFormSubmission(request)) {
@@ -81,6 +98,10 @@ public class PaymentManagerFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
         refData.put("paymentSources", paymentSources);
+        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
+        refData.put("addresses", addresses);
+        List<Phone> phones = phoneService.readPhones(Long.valueOf(personId));
+        refData.put("phones", phones);
         return refData;
     }
 
@@ -91,7 +112,7 @@ public class PaymentManagerFormController extends SimpleFormController {
         String personId = request.getParameter("personId");
         List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(Long.valueOf(personId));
         Person person = personService.readPersonById(Long.valueOf(personId));
-        ModelAndView mav = new ModelAndView("payment/paymentManager"); // TODO: move to context XML
+        ModelAndView mav = new ModelAndView(super.getSuccessView() + "?personId=" + personId);
         mav.addObject("paymentSources", paymentSources);
         paymentSource = new PaymentSource();
         paymentSource.setPerson(person);

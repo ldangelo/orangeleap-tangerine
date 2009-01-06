@@ -59,11 +59,22 @@ public class PaymentSourceValidatorTest extends BaseTest {
     }
 
     @Test(groups = { "validatePaymentProfile" })
-    public void testExistingPaymentProfile() throws Exception {
+    public void testExistingPaymentProfileForNewPaymentSource() throws Exception {
+        source.setId(new Long(-1));
         source.setProfile("MyProfile");
         validator.validatePaymentProfile(source, errors);
 
         mockery.assertIsSatisfied();
         assert "paymentProfileAlreadyExists".equals(errors.getFieldError("profile").getCode());
+    }
+
+    @Test(groups = { "validatePaymentProfile" })
+    public void testExistingPaymentProfileForExistingPaymentSource() throws Exception {
+        source.setId(new Long(1));
+        source.setProfile("MyProfile");
+        validator.validatePaymentProfile(source, errors);
+
+        mockery.assertIsSatisfied();
+        assert errors.hasFieldErrors() == false;
     }
 }

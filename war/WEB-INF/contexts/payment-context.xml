@@ -21,17 +21,15 @@
 			</list>
         </property>
     	<property name="personService" ref="personService" />
+     	<property name="phoneService" ref="phoneService" />
+     	<property name="addressService" ref="addressService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
     	<property name="siteService" ref="siteService" />
     	<property name="formView" value="payment/paymentManager" />
+    	<property name="successView" value="redirect:/paymentManager.htm"/>
     </bean>
 
-    <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerEditFormController">
-    	<property name="commandName" value="paymentSource" />
-    	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
-    	<property name="personService" ref="personService" />
-    	<property name="paymentSourceService" ref="paymentSourceService" />
-    	<property name="siteService" ref="siteService" />
+    <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerFormController" parent="paymentManager">
     	<property name="formView" value="payment/paymentManagerEdit" />
     </bean>
 

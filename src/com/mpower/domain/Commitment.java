@@ -27,6 +27,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.FactoryUtils;
+import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -91,17 +93,11 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Column(name = "CHECK_NUMBER")
     private Integer checkNumber;
 
-    @Column(name = "COMMITMENT_CODE")
-    private String commitmentCode;
-
-    @Column(name = "PROJECT_CODE")
-    private String projectCode;
-
-    @Column(name = "MOTIVATION_CODE")
-    private String motivationCode;
-
     @OneToMany(mappedBy = "commitment", cascade = CascadeType.ALL)
     private List<CommitmentCustomField> commitmentCustomFields;
+
+    @OneToMany(mappedBy = "commitment", cascade = CascadeType.ALL)
+    private List<DistributionLine> distributionLines;
 
     @Column(name = "START_DATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -261,6 +257,22 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         }
         return customFieldMap;
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<DistributionLine> getDistributionLines() {
+        if (distributionLines == null) {
+            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Commitment.class }, new Object[] { this }));
+        }
+        return distributionLines;
+    }
+
+    public void setDistributionLines(List<DistributionLine> distributionLines) {
+        this.distributionLines = distributionLines;
+    }
+
+    public void addDistributionLine(DistributionLine distributionLine) {
+        getDistributionLines().add(distributionLine);
+    }
 
     public String getComments() {
         return comments;
@@ -289,30 +301,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Override
     public Site getSite() {
         return person != null ? person.getSite() : null;
-    }
-
-    public String getCommitmentCode() {
-        return commitmentCode;
-    }
-
-    public void setCommitmentCode(String commitmentCode) {
-        this.commitmentCode = commitmentCode;
-    }
-
-    public String getProjectCode() {
-        return projectCode;
-    }
-
-    public void setProjectCode(String projectCode) {
-        this.projectCode = projectCode;
-    }
-
-    public String getMotivationCode() {
-        return motivationCode;
-    }
-
-    public void setMotivationCode(String motivationCode) {
-        this.motivationCode = motivationCode;
     }
 
     public Date getStartDate() {

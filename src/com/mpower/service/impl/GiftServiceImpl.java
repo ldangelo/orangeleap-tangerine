@@ -184,12 +184,12 @@ public class GiftServiceImpl implements GiftService {
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(giftEntryType);
-        DistributionLine dl = new DistributionLine(gift);
-        dl.setCommitmentCode(commitment.getCommitmentCode());
-        dl.setProjectCode(commitment.getProjectCode());
-        dl.setMotivationCode(commitment.getMotivationCode());
-        dl.setAmount(commitment.getAmountPerGift());
-        gift.addDistributionLine(dl);
+        for (DistributionLine dl : commitment.getDistributionLines()) {
+        	DistributionLine gdl = new DistributionLine(commitment);
+            gdl.setProjectCode(dl.getProjectCode());
+            gdl.setAmount(dl.getAmount());
+            gift.addDistributionLine(gdl);
+        }
         gift.setAddress(commitment.getAddress());
         gift.setPhone(commitment.getPhone());
         return gift;
@@ -216,7 +216,7 @@ public class GiftServiceImpl implements GiftService {
             List<DistributionLine> lines = originalGift.getDistributionLines();
             for (DistributionLine line : lines) {
                 BigDecimal negativeAmount = line.getAmount() == null ? null : line.getAmount().negate();
-                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode(), line.getMotivationCode()));
+                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode()));
             }
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());

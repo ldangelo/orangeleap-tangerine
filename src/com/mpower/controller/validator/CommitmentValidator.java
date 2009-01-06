@@ -41,9 +41,6 @@ public class CommitmentValidator implements Validator {
         logger.debug("in CommitmentValidator");
         Commitment commitment = (Commitment) target;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "invalidStartDate", "Start Date is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "commitmentCode", "invalidCommitmentCode", "Commitment code is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectCode", "invalidProjectCode", "Project code is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "motivationCode", "invalidMotivationCode", "Motivation code is required");
         if (CommitmentType.RECURRING_GIFT.equals(commitment.getCommitmentType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
         }

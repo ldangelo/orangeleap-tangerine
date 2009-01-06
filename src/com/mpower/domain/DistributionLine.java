@@ -40,24 +40,22 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
     @Column(name = "DISTRO_LINE_ID")
     private Long id;
 
-    @Column(name = "COMMITMENT_CODE")
-    private String commitmentCode;
-
     @Column(name = "AMOUNT")
     private BigDecimal amount;
 
     @Column(name = "PROJECT_CODE")
     private String projectCode;
 
-    @Column(name = "MOTIVATION_CODE")
-    private String motivationCode;
-
     @OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
     private List<DistributionLineCustomField> distributionLineCustomFields;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "GIFT_ID")
     private Gift gift;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COMMITMENT_ID")
+    private Commitment commitment;
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
@@ -75,11 +73,20 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
         this.gift = gift;
     }
 
-    public DistributionLine(Gift gift, BigDecimal amount, String projectCode, String motivationCode) {
+    public DistributionLine(Gift gift, BigDecimal amount, String projectCode) {
         this.gift = gift;
         this.amount = amount;
         this.projectCode = projectCode;
-        this.motivationCode = motivationCode;
+    }
+
+    public DistributionLine(Commitment commitment) {
+        this.commitment = commitment;
+    }
+
+    public DistributionLine(Commitment commitment, BigDecimal amount, String projectCode) {
+        this.commitment = commitment;
+        this.amount = amount;
+        this.projectCode = projectCode;
     }
 
     public Long getId() {
@@ -88,14 +95,6 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCommitmentCode() {
-        return commitmentCode;
-    }
-
-    public void setCommitmentCode(String commitmentCode) {
-        this.commitmentCode = commitmentCode;
     }
 
     public BigDecimal getAmount() {
@@ -112,14 +111,6 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
-    }
-
-    public String getMotivationCode() {
-        return motivationCode;
-    }
-
-    public void setMotivationCode(String motivationCode) {
-        this.motivationCode = motivationCode;
     }
 
     public List<DistributionLineCustomField> getCustomFields() {
@@ -143,6 +134,14 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     public void setGift(Gift gift) {
         this.gift = gift;
+    }
+
+    public Commitment getCommitment() {
+        return commitment;
+    }
+
+    public void setCommitment(Commitment commitment) {
+        this.commitment = commitment;
     }
 
     @Override

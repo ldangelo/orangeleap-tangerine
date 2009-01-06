@@ -24,6 +24,7 @@ import com.mpower.dao.GiftDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.Commitment;
+import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
@@ -139,16 +140,17 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     @Override
     public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType) {
-        // get initial gift with built-in defaults
+        // get initial commitment with built-in defaults
         Commitment commitment = new Commitment(commitmentType);
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.gift }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.commitment }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
+        
+        commitment.addDistributionLine(new DistributionLine(commitment));
 
-        // TODO: consider caching techniques for the default Gift
         return commitment;
     }
 

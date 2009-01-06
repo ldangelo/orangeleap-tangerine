@@ -13,5 +13,7 @@ public interface SiteDao {
 	public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
 	
 	public List<Site> readSites();
-	
+
+	public Site createSite(String siteName, String merchantNumber, Site parentSite);
+
 }

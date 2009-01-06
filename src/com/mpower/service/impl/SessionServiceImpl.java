@@ -28,7 +28,10 @@ public class SessionServiceImpl implements SessionService {
     private SiteDao siteDao;
 
     public Site lookupSite() {
-        return siteDao.readSite(lookupUserSiteName());
+    	String siteName = lookupUserSiteName();
+        Site site = siteDao.readSite(siteName);
+        if (site == null) site = siteDao.createSite(siteName, "", null);
+        return site;
     }
 
     public static String lookupUserSiteName() {

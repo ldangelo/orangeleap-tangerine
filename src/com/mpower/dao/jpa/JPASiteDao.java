@@ -48,4 +48,17 @@ public class JPASiteDao implements SiteDao {
 		Query query = em.createNamedQuery("READ_SITES");
 		return query.getResultList();
 	}
+
+	@Transactional(propagation=Propagation.REQUIRED)
+	@Override
+	public Site createSite(String siteName, String merchantNumber, Site parentSite) {
+		Site site = new Site();
+		site.setMerchantNumber(merchantNumber);
+		site.setName(siteName);
+		em.persist(site);
+		return site;
+	}
+
+	
+	
 }

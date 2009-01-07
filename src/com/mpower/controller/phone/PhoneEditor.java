@@ -36,7 +36,7 @@ public class PhoneEditor extends RequiresConstituentEditor {
             Phone a = phoneService.readPhone(phoneId);
             setValue(a);
         }
-        else {
+        else if ("new".equals(text)){
             Phone a = new Phone(super.getPerson());
             a.setActivationStatus("permanent");
             a.setPhoneType("home");

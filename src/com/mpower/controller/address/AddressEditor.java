@@ -36,7 +36,7 @@ public class AddressEditor extends RequiresConstituentEditor {
             Address a = addressService.readAddress(addressId);
             setValue(a);
         }
-        else {
+        else if ("new".equals(text)){
             Address a = new Address(super.getPerson());
             a.setActivationStatus("permanent");
             a.setAddressType("home");

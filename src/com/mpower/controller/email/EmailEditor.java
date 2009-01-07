@@ -36,7 +36,7 @@ public class EmailEditor extends RequiresConstituentEditor {
             Email a = emailService.readEmail(emailId);
             setValue(a);
         }
-        else {
+        else if ("new".equals(text)) {
             Email a = new Email(super.getPerson());
             a.setActivationStatus("permanent");
             a.setEmailType("home");

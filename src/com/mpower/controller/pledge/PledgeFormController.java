@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.controller.payment.PaymentSourceEditor;
 import com.mpower.domain.Commitment;
+import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
@@ -142,6 +143,17 @@ public class PledgeFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Commitment commitment = (Commitment) command;
+
+        
+        // TODO: This code is temporary validation to strip out invalid distribution lines.
+        Iterator<DistributionLine> distLineIter = commitment.getDistributionLines().iterator();
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line == null || line.getAmount() == null) {
+                distLineIter.remove();
+            }
+        }
+        
 
         // validate required fields
         Commitment current = commitmentService.maintainCommitment(commitment);

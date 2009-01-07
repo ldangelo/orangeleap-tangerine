@@ -20,7 +20,11 @@
 	<import resource="contexts/pledge-context.xml"/>
 	<import resource="contexts/quartz-context.xml"/>
 
-    <!-- the application context definition for the mpower DispatcherServlet -->
+	<!-- Abstract Controllers for Tangerine -->
+	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true">
+    	<property name="personService" ref="personService"/>
+    	<property name="siteService" ref="siteService"/>
+	</bean>
 
     <bean id="account" class="com.mpower.controller.AccountFormController">
         <property name="commandName" value="user"/>
@@ -67,6 +71,7 @@
        	<property name="suffix" value=".jsp"></property>
     </bean>
 
+<!-- 
 	<bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
 		<property name="customEditors">
 	    	<map>
@@ -78,5 +83,5 @@
 			</map>
 		</property>
 	</bean>
-
+ -->
 </beans>

@@ -454,8 +454,15 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         if (getAddress() != null) {
             selectedAddress = getAddress();
         }
+        else {
+            selectedAddress = new Address(getPerson());
+        }
         if (getPhone() != null) {
             selectedPhone = getPhone();
         }
+        else {
+            selectedPhone = new Phone(getPerson());
+        }
+
     }
 }

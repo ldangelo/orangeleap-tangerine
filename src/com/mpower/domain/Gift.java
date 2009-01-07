@@ -428,14 +428,26 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         if (getPaymentSource() != null) {
             selectedPaymentSource = getPaymentSource();
         }
+        else {
+            selectedPaymentSource = new PaymentSource(getPerson());
+        }
         if (getAddress() != null) {
             selectedAddress = getAddress();
+        }
+        else {
+            selectedAddress = new Address(getPerson());
         }
         if (getPhone() != null) {
             selectedPhone = getPhone();
         }
+        else {
+            selectedPhone = new Phone(getPerson());
+        }
         if (getEmail() != null) {
             selectedEmail = getEmail();
+        }
+        else {
+            selectedEmail = new Email(getPerson());
         }
     }
 

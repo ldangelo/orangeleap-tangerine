@@ -149,7 +149,7 @@ public class PledgeFormController extends SimpleFormController {
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
-        String redirectView = current.getGifts().isEmpty() ? "recurringGift" : "recurringGiftView";
+        String redirectView = current.getGifts().isEmpty() ? "pledge" : "pledgeView";
         setSuccessView(redirectView);
         ModelAndView mav = new ModelAndView("redirect:/" + redirectView + ".htm", errors.getModel());
         mav.addObject("commitmentId", current.getId());

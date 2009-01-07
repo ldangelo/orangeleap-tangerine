@@ -66,7 +66,7 @@ public class EntityValidator implements Validator {
             if (target instanceof PaymentSourceAware) {
                 PaymentSourceAware obj = (PaymentSourceAware) target;
                 PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
-                if (selectedPaymentSource.getId() != null) {
+                if (selectedPaymentSource != null && selectedPaymentSource.getId() != null) {
                     obj.setPaymentSource(selectedPaymentSource);
                 }
                 obj.getPaymentSource().setType(obj.getPaymentType());
@@ -76,7 +76,7 @@ public class EntityValidator implements Validator {
             if (target instanceof AddressAware) {
                 AddressAware obj = (AddressAware) target;
                 Address selectedAddress = obj.getSelectedAddress();
-                if (selectedAddress.getId() != null) {
+                if (selectedAddress != null && selectedAddress.getId() != null) {
                     obj.setAddress(selectedAddress);
                     AddressValidator.validateAddress(target, errors);
                 }
@@ -85,7 +85,7 @@ public class EntityValidator implements Validator {
             if (target instanceof PhoneAware) {
                 PhoneAware obj = (PhoneAware) target;
                 Phone selectedPhone = obj.getSelectedPhone();
-                if (selectedPhone.getId() != null) {
+                if (selectedPhone != null && selectedPhone.getId() != null) {
                     obj.setPhone(selectedPhone);
                     PhoneValidator.validatePhone(target, errors);
                 }
@@ -94,7 +94,7 @@ public class EntityValidator implements Validator {
             if (target instanceof EmailAware) {
             	EmailAware obj = (EmailAware) target;
                 Email selectedEmail = obj.getSelectedEmail();
-                if (selectedEmail.getId() != null) {
+                if (selectedEmail != null && selectedEmail.getId() != null) {
                     obj.setEmail(selectedEmail);
                     EmailValidator.validateEMail(target, errors);
                 }

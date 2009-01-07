@@ -41,7 +41,7 @@ public class PersonDataProvider {
         person.setLastName("lastname");
         person.setSite(site);
 
-        Address address1 = new Address();
+        Address address1 = new Address(person);
         address1.setAddressLine1("addressLine1");
         address1.setAddressLine2("addressLine2");
         address1.setAddressLine3("addressLine3");
@@ -51,7 +51,7 @@ public class PersonDataProvider {
         address1.setPostalCode("postalCode");
         address1.setStateProvince("TX");
 
-        Address address2 = new Address();
+        Address address2 = new Address(person);
         address2.setAddressLine1("addressLine1");
         address2.setAddressLine2("addressLine2");
         address2.setAddressLine3("addressLine3");
@@ -74,11 +74,11 @@ public class PersonDataProvider {
         person.setLastName("lastname");
         person.setSite(site);
 
-        Phone phone1 = new Phone();
+        Phone phone1 = new Phone(person);
         phone1.setNumber("111-222-3333");
         phone1.setPhoneType("homePhone");
 
-        Phone phone2 = new Phone();
+        Phone phone2 = new Phone(person);
         phone2.setNumber("111-222-3333");
         phone2.setPhoneType("workPhone");
 

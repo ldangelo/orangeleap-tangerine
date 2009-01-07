@@ -12,10 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.domain.PaymentSource;
-import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PhoneService;
 
 @Service("paymentSourceService")
 public class PaymentSourceServiceImpl implements PaymentSourceService {
@@ -26,30 +24,17 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "addressService")
-    private AddressService addressService;
-
-    @Resource(name = "phoneService")
-    private PhoneService phoneService;
-
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
+        paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
         if (paymentSource.isInactive()) {
-            paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
             auditService.auditObjectInactive(paymentSource);
         }
         else {
-            if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
-                paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
-            }
-            if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
-                paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
-            }
-            paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
             auditService.auditObject(paymentSource);
         }
         return paymentSource;

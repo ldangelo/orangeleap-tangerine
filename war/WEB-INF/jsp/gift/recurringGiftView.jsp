@@ -17,6 +17,10 @@
 					<jsp:param name="currentFunctionTitleText" value="View Recurring Gift" />
 				</jsp:include>
 
+				<c:set var="gridCollectionName" value="distributionLines" />
+				<c:set var="gridCollection" value="${commitment.distributionLines}" />
+				<c:set var="paymentSource" value="${commitment.paymentSource}" />
+
 				<h3 style="color:#070;">This recurring gift was entered on <fmt:formatDate value="${commitment.createDate}"/> at <fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
 					<div class="columns">
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}">

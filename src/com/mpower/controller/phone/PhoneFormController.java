@@ -64,8 +64,7 @@ public class PhoneFormController extends SimpleFormController {
         Phone phone = null;
         if (phoneId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            phone = new Phone();
-            phone.setPerson(person);
+            phone = new Phone(person);
         } else {
             phone = phoneService.readPhone(Long.valueOf(phoneId));
         }
@@ -107,14 +106,16 @@ public class PhoneFormController extends SimpleFormController {
         Long personId = Long.valueOf(personIdString);
         List<Phone> phones = phoneService.readPhones(personId);
         Person person = personService.readPersonById(personId);
-        ModelAndView mav = new ModelAndView("phone/phoneManager"); // TODO: Move to context XML
+        ModelAndView mav = new ModelAndView("phone/phoneManager"); // TODO: use redirect: & Move to context XML
+
+        // TODO: remove below
         mav.addObject("phones", phones);
         List<Phone> currentPhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), false);
         mav.addObject("currentPhones", currentPhones);
         List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondencePhones", currentCorrespondencePhones);
         mav.addObject("person", person);
-        mav.addObject("phone", new Phone());
+        mav.addObject("phone", new Phone(person));
         mav.addObject(personIdString);
         return mav;
     }

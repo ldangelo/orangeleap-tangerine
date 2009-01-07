@@ -101,9 +101,9 @@ public class GiftFormController extends SimpleFormController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
-        binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
-        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
-        binder.registerCustomEditor(Email.class, new EmailEditor(emailService));
+        binder.registerCustomEditor(Address.class, new AddressEditor(addressService, personService, request.getParameter("personId")));
+        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, personService, request.getParameter("personId")));
+        binder.registerCustomEditor(Email.class, new EmailEditor(emailService, personService, request.getParameter("personId")));
     }
 
     @SuppressWarnings("unchecked")

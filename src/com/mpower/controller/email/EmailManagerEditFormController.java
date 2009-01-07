@@ -27,6 +27,7 @@ import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 
+// TODO: extend EmailManagerFormController and override formBackingObject method
 public class EmailManagerEditFormController extends SimpleFormController {
 
     private EmailService emailService;
@@ -69,8 +70,7 @@ public class EmailManagerEditFormController extends SimpleFormController {
         Email email = null;
         if (emailId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            email = new Email();
-            email.setPerson(person);
+            email = new Email(person);
         } else {
             Email originalEmail = emailService.readEmail(Long.valueOf(emailId));
             try {
@@ -104,8 +104,7 @@ public class EmailManagerEditFormController extends SimpleFormController {
         mav.addObject("currentEmails", currentEmails);
         List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondenceEmails", currentCorrespondenceEmails);
-        email = new Email();
-        email.setPerson(person);
+        email = new Email(person);
         mav.addObject("redirect:/emailManager.htm?personId=" + personIdString, errors.getModel());
         mav.addObject("person", person);
         mav.addObject("email", email);

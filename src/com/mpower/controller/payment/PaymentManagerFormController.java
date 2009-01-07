@@ -64,8 +64,8 @@ public class PaymentManagerFormController extends SimpleFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-        binder.registerCustomEditor(Address.class, new AddressEditor(addressService));
-        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService));
+        binder.registerCustomEditor(Address.class, new AddressEditor(addressService, personService, request.getParameter("personId")));
+        binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, personService, request.getParameter("personId")));
     }
 
     @Override

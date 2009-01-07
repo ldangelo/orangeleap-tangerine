@@ -27,6 +27,7 @@ import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 
+// TODO: extend AddressFormController, override just formBackingObject() method
 public class AddressManagerEditFormController extends SimpleFormController {
 
     private AddressService addressService;
@@ -69,8 +70,7 @@ public class AddressManagerEditFormController extends SimpleFormController {
         Address address = null;
         if (addressId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            address = new Address();
-            address.setPerson(person);
+            address = new Address(person);
         } else {
             Address originalAddress = addressService.readAddress(Long.valueOf(addressId));
             try {
@@ -98,14 +98,15 @@ public class AddressManagerEditFormController extends SimpleFormController {
         Long personId = Long.valueOf(personIdString);
         List<Address> addresses = addressService.readAddresses(personId);
         Person person = personService.readPersonById(personId);
-        ModelAndView mav = new ModelAndView("address/addressManager"); // TODO: move to context XML
+        ModelAndView mav = new ModelAndView("address/addressManager"); // TODO: use redirect: & move to context XML
+
+        // TODO: remove below
         mav.addObject("addresses", addresses);
         List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), false);
         mav.addObject("currentAddresses", currentAddresses);
         List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
-        address = new Address();
-        address.setPerson(person);
+        address = new Address(person);
         mav.addObject("redirect:/addressManager.htm?personId=" + personIdString, errors.getModel());
         mav.addObject("person", person);
         mav.addObject("address", address);

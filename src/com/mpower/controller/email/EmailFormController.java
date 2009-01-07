@@ -64,8 +64,7 @@ public class EmailFormController extends SimpleFormController {
         Email email = null;
         if (emailId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            email = new Email();
-            email.setPerson(person);
+            email = new Email(person);
         } else {
             email = emailService.readEmail(Long.valueOf(emailId));
         }
@@ -107,14 +106,16 @@ public class EmailFormController extends SimpleFormController {
         Long personId = Long.valueOf(personIdString);
         List<Email> emails = emailService.readEmails(personId);
         Person person = personService.readPersonById(personId);
-        ModelAndView mav = new ModelAndView("email/emailManager"); // TODO: move to context XML
+        ModelAndView mav = new ModelAndView("email/emailManager"); // TODO: use redirect: & move to context XML
+
+        // TODO: Remove below
         mav.addObject("emails", emails);
         List<Email> currentEmails = emailService.readCurrentEmails(personId, Calendar.getInstance(), false);
         mav.addObject("currentEmails", currentEmails);
         List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondenceEmails", currentCorrespondenceEmails);
         mav.addObject("person", person);
-        mav.addObject("email", new Email());
+        mav.addObject("email", new Email(person));
         mav.addObject(personIdString);
         return mav;
     }

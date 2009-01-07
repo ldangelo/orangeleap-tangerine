@@ -64,8 +64,7 @@ public class AddressFormController extends SimpleFormController {
         Address address = null;
         if (addressId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            address = new Address();
-            address.setPerson(person);
+            address = new Address(person);
         } else {
             address = addressService.readAddress(Long.valueOf(addressId));
         }
@@ -107,14 +106,16 @@ public class AddressFormController extends SimpleFormController {
         Long personId = Long.valueOf(personIdString);
         List<Address> addresses = addressService.readAddresses(personId);
         Person person = personService.readPersonById(personId);
-        ModelAndView mav = new ModelAndView("address/addressManager"); // TODO: move to context XML
+        ModelAndView mav = new ModelAndView("address/addressManager"); // TODO: USE redirect: & move to context XML
+
+        // TODO: remove below
         mav.addObject("addresses", addresses);
         List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), false);
         mav.addObject("currentAddresses", currentAddresses);
         List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
         mav.addObject("person", person);
-        mav.addObject("address", new Address());
+        mav.addObject("address", new Address(person));
         mav.addObject(personIdString);
         return mav;
     }

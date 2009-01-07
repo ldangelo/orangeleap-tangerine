@@ -27,6 +27,7 @@ import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 
+// TODO: extend PhoneFormController and override formBackingObject method
 public class PhoneManagerEditFormController extends SimpleFormController {
 
     private PhoneService phoneService;
@@ -69,8 +70,7 @@ public class PhoneManagerEditFormController extends SimpleFormController {
         Phone phone = null;
         if (phoneId == null) {
             Person person = personService.readPersonById(Long.valueOf(personId));
-            phone = new Phone();
-            phone.setPerson(person);
+            phone = new Phone(person);
         } else {
             Phone originalPhone = phoneService.readPhone(Long.valueOf(phoneId));
             try {
@@ -98,14 +98,14 @@ public class PhoneManagerEditFormController extends SimpleFormController {
         Long personId = Long.valueOf(personIdString);
         List<Phone> phones = phoneService.readPhones(personId);
         Person person = personService.readPersonById(personId);
-        ModelAndView mav = new ModelAndView("phone/phoneManager");
+        ModelAndView mav = new ModelAndView("phone/phoneManager"); // TODO: use redirect: & move to context XML
+
         mav.addObject("phones", phones);
         List<Phone> currentPhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), false);
         mav.addObject("currentPhones", currentPhones);
         List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), true);
         mav.addObject("currentCorrespondencePhones", currentCorrespondencePhones);
-        phone = new Phone();
-        phone.setPerson(person);
+        phone = new Phone(person);
         mav.addObject("redirect:/phoneManager.htm?personId=" + personIdString, errors.getModel());
         mav.addObject("person", person);
         mav.addObject("phone", phone);

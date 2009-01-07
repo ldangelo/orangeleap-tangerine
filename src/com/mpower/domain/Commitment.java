@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -165,13 +166,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource = new PaymentSource();
+    private PaymentSource selectedPaymentSource;
 
     @Transient
-    private Address selectedAddress = new Address();
+    private Address selectedAddress;
 
     @Transient
-    private Phone selectedPhone = new Phone();
+    private Phone selectedPhone;
 
     public Commitment() {
     }
@@ -257,7 +258,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         }
         return customFieldMap;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<DistributionLine> getDistributionLines() {
         if (distributionLines == null) {
@@ -521,6 +522,19 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
             }
         } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
+        }
+    }
+
+    @PostLoad
+    public void initTransient() {
+        if (paymentSource != null) {
+            selectedPaymentSource = paymentSource;
+        }
+        if (address != null) {
+            selectedAddress = address;
+        }
+        if (phone != null) {
+            selectedPhone = phone;
         }
     }
 }

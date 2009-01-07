@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,11 +46,11 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "PHONE_ID")
     private Phone phone;
 
@@ -103,10 +104,10 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private Address selectedAddress = new Address();
+    private Address selectedAddress;
 
     @Transient
-    private Phone selectedPhone = new Phone();
+    private Phone selectedPhone;
 
     public PaymentSource() {
     }
@@ -450,11 +451,11 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @PostLoad
     public void initTransient() {
-        if (address != null) {
-            selectedAddress = address;
+        if (getAddress() != null) {
+            selectedAddress = getAddress();
         }
-        if (phone != null) {
-            selectedPhone = phone;
+        if (getPhone() != null) {
+            selectedPhone = getPhone();
         }
     }
 }

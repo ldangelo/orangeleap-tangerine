@@ -134,16 +134,16 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource = new PaymentSource();
+    private PaymentSource selectedPaymentSource;
 
     @Transient
-    private Address selectedAddress = new Address();
+    private Address selectedAddress;
 
     @Transient
-    private Phone selectedPhone = new Phone();
+    private Phone selectedPhone;
 
     @Transient
-    private Email selectedEmail = new Email();
+    private Email selectedEmail;
 
     public Gift() {
     }
@@ -422,12 +422,21 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
             deductibleAmount = amount;
         }
     }
-    
+
     @PostLoad
     public void initTransient() {
-        if (address != null) selectedAddress = address;
-        if (phone != null) selectedPhone = phone;
-        if (email != null) selectedEmail = email;
+        if (getPaymentSource() != null) {
+            selectedPaymentSource = getPaymentSource();
+        }
+        if (getAddress() != null) {
+            selectedAddress = getAddress();
+        }
+        if (getPhone() != null) {
+            selectedPhone = getPhone();
+        }
+        if (getEmail() != null) {
+            selectedEmail = getEmail();
+        }
     }
 
 }

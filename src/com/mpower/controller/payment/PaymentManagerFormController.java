@@ -29,6 +29,7 @@ import com.mpower.service.PhoneService;
 import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
+import com.mpower.util.StringConstants;
 
 public class PaymentManagerFormController extends SimpleFormController {
 
@@ -87,8 +88,19 @@ public class PaymentManagerFormController extends SimpleFormController {
 
             Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.paymentManager, SessionServiceImpl.lookupUserRoles(), paymentSource);
             paymentSource.setFieldValueMap(valueMap);
+
+            createNew(request, paymentSource);
         }
         return paymentSource;
+    }
+
+    protected void createNew(HttpServletRequest request, PaymentSource paymentSource) {
+        if (StringConstants.NEW.equals(request.getParameter("selectedPhone"))) {
+            paymentSource.createNewPhone();
+        }
+        if (StringConstants.NEW.equals(request.getParameter("selectedAddress"))) {
+            paymentSource.createNewAddress();
+        }
     }
 
     @SuppressWarnings("unchecked")

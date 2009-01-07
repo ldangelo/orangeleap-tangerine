@@ -104,10 +104,10 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private Address selectedAddress;
+    private Address selectedAddress = new Address();
 
     @Transient
-    private Phone selectedPhone;
+    private Phone selectedPhone = new Phone();
 
     public PaymentSource() {
     }
@@ -130,11 +130,18 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     public void setPerson(Person person) {
         this.person = person;
+
+        if (getSelectedAddress().getPerson() == null) {
+            getSelectedAddress().setPerson(person);
+        }
+        if (getSelectedPhone().getPerson() == null) {
+            getSelectedPhone().setPerson(person);
+        }
     }
 
     public Address getAddress() {
         if (address == null) {
-            address = new Address(this.getPerson());
+            createNewAddress();
         }
         return address;
     }
@@ -143,15 +150,23 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         this.address = address;
     }
 
+    public void createNewAddress() {
+        setAddress(new Address(this.getPerson()));
+    }
+
     public Phone getPhone() {
-        if (phone == null) {
-            phone = new Phone(this.getPerson());
+        if (phone == null) {;
+        createNewPhone();
         }
         return phone;
     }
 
     public void setPhone(Phone phone) {
         this.phone = phone;
+    }
+
+    public void createNewPhone() {
+        setPhone(new Phone(this.getPerson()));
     }
 
     public String getProfile() {
@@ -454,14 +469,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         if (getAddress() != null) {
             selectedAddress = getAddress();
         }
-        else {
-            selectedAddress = new Address(getPerson());
-        }
         if (getPhone() != null) {
             selectedPhone = getPhone();
-        }
-        else {
-            selectedPhone = new Phone(getPerson());
         }
 
     }

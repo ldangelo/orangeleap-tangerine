@@ -127,15 +127,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Column(name = "NOTES")
     private String notes;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
     private PaymentSource paymentSource;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "PHONE_ID")
     private Phone phone;
 
@@ -527,14 +527,14 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @PostLoad
     public void initTransient() {
-        if (paymentSource != null) {
-            selectedPaymentSource = paymentSource;
+        if (getPaymentSource() != null) {
+            selectedPaymentSource = getPaymentSource();
         }
-        if (address != null) {
-            selectedAddress = address;
+        if (getAddress() != null) {
+            selectedAddress = getAddress();
         }
-        if (phone != null) {
-            selectedPhone = phone;
+        if (getPhone() != null) {
+            selectedPhone = getPhone();
         }
     }
 }

@@ -72,7 +72,7 @@ public class MembershipFormController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService));
+        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, personService, request.getParameter("personId")));
     }
 
     @SuppressWarnings("unchecked")

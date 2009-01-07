@@ -155,8 +155,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Phone getPhone() {
-        if (phone == null) {;
-        createNewPhone();
+        if (phone == null) {
+            createNewPhone();
         }
         return phone;
     }
@@ -467,10 +467,10 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @PostLoad
     public void initTransient() {
         if (getAddress() != null) {
-            selectedAddress = getAddress();
+            setSelectedAddress(getAddress());
         }
         if (getPhone() != null) {
-            selectedPhone = getPhone();
+            setSelectedPhone(getPhone());
         }
 
     }

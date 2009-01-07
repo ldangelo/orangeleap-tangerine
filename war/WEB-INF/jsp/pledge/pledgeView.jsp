@@ -16,6 +16,12 @@
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="View Pledge" />
 				</jsp:include>
+				
+			    <c:set var="gridCollectionName" value="distributionLines" />
+				<c:set var="gridCollection" value="${commitment.distributionLines}" />
+				<c:set var="paymentSource" value="${commitment.paymentSource}" />
+
+				
 
 				<h3 style="color:#070;">This pledge was entered on <fmt:formatDate value="${commitment.createDate}"/> at <fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
 					<div class="columns">

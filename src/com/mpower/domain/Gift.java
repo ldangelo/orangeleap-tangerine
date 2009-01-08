@@ -134,16 +134,16 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource;
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     @Transient
-    private Address selectedAddress;
+    private Address selectedAddress = new Address();
 
     @Transient
-    private Phone selectedPhone;
+    private Phone selectedPhone = new Phone();
 
     @Transient
-    private Email selectedEmail;
+    private Email selectedEmail = new Email();
 
     public Gift() {
     }
@@ -169,6 +169,19 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     public void setPerson(Person person) {
         this.person = person;
+
+        if (getSelectedPaymentSource().getPerson() == null) {
+            getSelectedPaymentSource().setPerson(person);
+        }
+        if (getSelectedAddress().getPerson() == null) {
+            getSelectedAddress().setPerson(person);
+        }
+        if (getSelectedPhone().getPerson() == null) {
+            getSelectedPhone().setPerson(person);
+        }
+        if (getSelectedEmail().getPerson() == null) {
+            getSelectedEmail().setPerson(person);
+        }
     }
 
     public Commitment getCommitment() {
@@ -428,26 +441,14 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         if (getPaymentSource() != null) {
             selectedPaymentSource = getPaymentSource();
         }
-        else {
-            selectedPaymentSource = new PaymentSource(getPerson());
-        }
         if (getAddress() != null) {
             selectedAddress = getAddress();
-        }
-        else {
-            selectedAddress = new Address(getPerson());
         }
         if (getPhone() != null) {
             selectedPhone = getPhone();
         }
-        else {
-            selectedPhone = new Phone(getPerson());
-        }
         if (getEmail() != null) {
             selectedEmail = getEmail();
-        }
-        else {
-            selectedEmail = new Email(getPerson());
         }
     }
 

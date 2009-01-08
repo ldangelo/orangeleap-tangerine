@@ -166,13 +166,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource;
+    private PaymentSource selectedPaymentSource = new PaymentSource();
 
     @Transient
-    private Address selectedAddress;
+    private Address selectedAddress = new Address();
 
     @Transient
-    private Phone selectedPhone;
+    private Phone selectedPhone = new Phone();
 
     public Commitment() {
     }
@@ -195,6 +195,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     public void setPerson(Person person) {
         this.person = person;
+        if (getSelectedPaymentSource().getPerson() == null) {
+            getSelectedPaymentSource().setPerson(person);
+        }
+        if (getSelectedAddress().getPerson() == null) {
+            getSelectedAddress().setPerson(person);
+        }
+        if (getSelectedPhone().getPerson() == null) {
+            getSelectedPhone().setPerson(person);
+        }
     }
 
     public CommitmentType getCommitmentType() {
@@ -529,18 +538,12 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     public void initTransient() {
         if (getPaymentSource() != null) {
             selectedPaymentSource = getPaymentSource();
-        } else {
-        	selectedPaymentSource = new PaymentSource(person);
         }
         if (getAddress() != null) {
             selectedAddress = getAddress();
-        } else {
-        	selectedAddress = new Address(person);
         }
         if (getPhone() != null) {
             selectedPhone = getPhone();
-        } else {
-            selectedPhone = new Phone(person);
         }
     }
 }

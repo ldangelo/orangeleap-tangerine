@@ -30,7 +30,7 @@
 
     <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerFormController" parent="paymentManager">
     	<property name="formView" value="payment/paymentManagerEdit" />
-   		<property name="pageType" value="paymentSource"/>
+   		<property name="pageType" value="paymentManagerEdit"/>
     </bean>
         
     <bean id="paymentSourceDelete" class="com.mpower.controller.TangerineDeleteController">

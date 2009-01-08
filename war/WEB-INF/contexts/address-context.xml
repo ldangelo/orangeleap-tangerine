@@ -29,8 +29,9 @@
     	<property name="formView" value="address/addressManagerEdit"/>
     </bean>
 
-    <bean id="addressDelete" class="com.mpower.controller.address.AddressDeleteController">
-    	<property name="addressService" ref="addressService"/>
+    <bean id="addressDelete" class="com.mpower.controller.TangerineDeleteController">
+    	<property name="service" ref="addressService"/>
+    	<property name="idParameterName" value="addressId"/>
     	<property name="viewName" value="redirect:/addressManager.htm"/>
     </bean>
 

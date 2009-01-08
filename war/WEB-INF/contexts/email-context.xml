@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController">
+	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineFormController">
     	<property name="commandName" value="email" />
     	<property name="commandClass" value="com.mpower.domain.Email" />
 		<property name="validators">
@@ -21,34 +21,18 @@
 			</list>
         </property>
     	<property name="emailService" ref="emailService" />
-    	<property name="personService" ref="personService" />
-    	<property name="siteService" ref="siteService" />
     	<property name="formView" value="email/emailManager"/>
+    	<property name="successView" value="redirect:/emailManager.htm"/>
     </bean>
 
-    <bean id="emailManagerEdit" class="com.mpower.controller.email.EmailManagerEditFormController">
-    	<property name="commandName" value="email" />
-    	<property name="commandClass" value="com.mpower.domain.Email" />
-		<property name="validators">
-			<list>
-	            <bean class="com.mpower.controller.validator.EmailValidator">
-			        <property name="pageType" value="email"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="email"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
-			</list>
-        </property>
-    	<property name="emailService" ref="emailService" />
-    	<property name="personService" ref="personService" />
-    	<property name="siteService" ref="siteService" />
+    <bean id="emailManagerEdit" class="com.mpower.controller.email.EmailManagerEditFormController" parent="emailManager">
     	<property name="formView" value="email/emailManagerEdit"/>
     </bean>
-
-    <bean id="emailDelete" class="com.mpower.controller.email.EmailDeleteController">
-    	<property name="emailService" ref="emailService" />
+    
+    <bean id="emailDelete" class="com.mpower.controller.TangerineDeleteController">
+    	<property name="service" ref="emailService"/>
+    	<property name="idParameterName" value="emailId"/>
+    	<property name="viewName" value="redirect:/emailManager.htm"/>
     </bean>
 
     <bean id="emailUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

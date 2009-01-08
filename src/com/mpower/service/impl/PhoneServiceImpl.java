@@ -14,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PhoneDao;
 import com.mpower.domain.Phone;
+import com.mpower.domain.Viewable;
 import com.mpower.service.AuditService;
+import com.mpower.service.CloneService;
+import com.mpower.service.InactivateService;
 import com.mpower.service.PhoneService;
 
 @Service("phoneService")
-public class PhoneServiceImpl implements PhoneService {
+public class PhoneServiceImpl implements PhoneService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -78,5 +81,35 @@ public class PhoneServiceImpl implements PhoneService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivatePhones() {
         phoneDao.inactivatePhones();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivate(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate: id = " + id);
+        }
+        Phone phone = this.readPhone(id);
+        phone.setInactive(true);
+        this.savePhone(phone);
+    }
+
+    @Override
+    public Viewable clone(Viewable viewable) {
+        Phone phone = (Phone)viewable;
+        if (phone.getId() != null) {
+            Phone originalPhone = this.readPhone(phone.getId());
+
+            try {
+                phone = (Phone)BeanUtils.cloneBean(originalPhone);
+                phone.setId(null);
+            }
+            catch (Exception e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("clone: Exception occurred", e);
+                }
+            }
+        }
+        return phone;
     }
 }

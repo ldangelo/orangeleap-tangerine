@@ -14,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.AddressDao;
 import com.mpower.domain.Address;
+import com.mpower.domain.Viewable;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
+import com.mpower.service.CloneService;
+import com.mpower.service.InactivateService;
 
 @Service("addressService")
-public class AddressServiceImpl implements AddressService {
+public class AddressServiceImpl implements AddressService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -78,5 +81,35 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivateAddresses() {
         addressDao.inactivateAddresses();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivate(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate: id = " + id);
+        }
+        Address addr = this.readAddress(id);
+        addr.setInactive(true);
+        this.saveAddress(addr);
+    }
+
+    @Override
+    public Viewable clone(Viewable viewable) {
+        Address address = (Address)viewable;
+        if (address.getId() != null) {
+            Address originalAddress = this.readAddress(address.getId());
+
+            try {
+                address = (Address)BeanUtils.cloneBean(originalAddress);
+                address.setId(null);
+            }
+            catch (Exception e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("clone: Exception occurred", e);
+                }
+            }
+        }
+        return address;
     }
 }

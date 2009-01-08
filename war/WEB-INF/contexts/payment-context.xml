@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController">
+	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController" parent="tangerineFormController">
     	<property name="commandName" value="paymentSource" />
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
 		<property name="validators">
@@ -20,11 +20,9 @@
 	            </bean>
 			</list>
         </property>
-    	<property name="personService" ref="personService" />
      	<property name="phoneService" ref="phoneService" />
      	<property name="addressService" ref="addressService" />
     	<property name="paymentSourceService" ref="paymentSourceService" />
-    	<property name="siteService" ref="siteService" />
     	<property name="formView" value="payment/paymentManager" />
     	<property name="successView" value="redirect:/paymentManager.htm"/>
     </bean>
@@ -32,9 +30,11 @@
     <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerFormController" parent="paymentManager">
     	<property name="formView" value="payment/paymentManagerEdit" />
     </bean>
-
-    <bean id="paymentSourceDelete" class="com.mpower.controller.payment.PaymentSourceDeleteController">
-    	<property name="paymentSourceService" ref="paymentSourceService" />
+        
+    <bean id="paymentSourceDelete" class="com.mpower.controller.TangerineDeleteController">
+    	<property name="service" ref="paymentSourceService"/>
+    	<property name="idParameterName" value="paymentSourceId"/>
+    	<property name="viewName" value="redirect:/paymentManager.htm"/>
     </bean>
     
     <bean id="paymentLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

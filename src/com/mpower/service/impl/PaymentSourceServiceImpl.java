@@ -13,10 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.domain.PaymentSource;
 import com.mpower.service.AuditService;
+import com.mpower.service.InactivateService;
 import com.mpower.service.PaymentSourceService;
 
 @Service("paymentSourceService")
-public class PaymentSourceServiceImpl implements PaymentSourceService {
+public class PaymentSourceServiceImpl implements PaymentSourceService, InactivateService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -51,6 +52,17 @@ public class PaymentSourceServiceImpl implements PaymentSourceService {
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
         return paymentSourceDao.readPaymentSource(paymentSourceId);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivate(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate: id = " + id);
+        }
+        PaymentSource ps = this.readPaymentSource(id);
+        ps.setInactive(true);
+        this.maintainPaymentSource(ps);
     }
 
     @Override

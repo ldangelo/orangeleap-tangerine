@@ -35,7 +35,7 @@ import com.mpower.util.AddressCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "ADDRESS")
-public class Address implements SiteAware, Customizable, Viewable, Serializable {
+public class Address implements SiteAware, Customizable, Viewable, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
 

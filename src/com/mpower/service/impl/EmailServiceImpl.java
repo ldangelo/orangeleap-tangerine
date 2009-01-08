@@ -14,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.EmailDao;
 import com.mpower.domain.Email;
+import com.mpower.domain.Viewable;
 import com.mpower.service.AuditService;
+import com.mpower.service.CloneService;
 import com.mpower.service.EmailService;
+import com.mpower.service.InactivateService;
 
 @Service("emailService")
-public class EmailServiceImpl implements EmailService {
+public class EmailServiceImpl implements EmailService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -78,5 +81,34 @@ public class EmailServiceImpl implements EmailService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivateEmails() {
         emailDao.inactivateEmails();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivate(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate: id = " + id);
+        }
+        Email email = this.readEmail(id);
+        email.setInactive(true);
+        this.saveEmail(email);
+    }
+
+    @Override
+    public Viewable clone(Viewable viewable) {
+        Email email = (Email)viewable;
+        if (email != null) {
+            Email originalEmail = this.readEmail(email.getId());
+            try {
+                email = (Email) BeanUtils.cloneBean(originalEmail);
+                email.setId(null);
+            }
+            catch (Exception e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("clone: Exception occurred", e);
+                }
+            }
+        }
+        return email;
     }
 }

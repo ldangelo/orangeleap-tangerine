@@ -34,7 +34,7 @@ import com.mpower.util.EmailCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "EMAIL")
-public class Email implements SiteAware, Customizable, Viewable, Serializable {
+public class Email implements SiteAware, Customizable, Viewable, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
 

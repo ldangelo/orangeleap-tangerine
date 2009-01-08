@@ -2,14 +2,18 @@ package com.mpower.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -58,6 +62,23 @@ public abstract class TangerineFormController extends SimpleFormController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        Viewable viewable = findViewable(request);
+        this.createFieldMaps(request, viewable);
+        return viewable;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = new HashMap();
+        this.addPersonToReferenceData(request, refData);
+        addRefData(request, this.getPersonId(request), refData);
+
+        return refData;
+    }
+
     protected void createFieldMaps(HttpServletRequest request, Viewable viewable) {
         if (isFormSubmission(request)) {
             Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
@@ -68,7 +89,16 @@ public abstract class TangerineFormController extends SimpleFormController {
         }
     }
 
-    protected ModelAndView redirectToView(HttpServletRequest request) {
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        save(request, response, command, errors);
         return new ModelAndView(getSuccessView() + "?" + StringConstants.PERSON_ID + "=" + getPersonId(request));
     }
+
+    protected abstract Viewable findViewable(HttpServletRequest request);
+
+    @SuppressWarnings("unchecked")
+    protected abstract void addRefData(HttpServletRequest request, Long personId, Map refData);
+
+    protected abstract void save(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception;
 }

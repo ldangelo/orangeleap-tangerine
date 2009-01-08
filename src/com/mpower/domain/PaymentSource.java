@@ -29,7 +29,7 @@ import com.mpower.util.AES;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE")
-public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewable, Serializable {
+public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewable, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
 

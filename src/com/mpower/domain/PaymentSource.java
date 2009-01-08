@@ -466,12 +466,11 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @PostLoad
     public void initTransient() {
-        if (getAddress() != null) {
-            setSelectedAddress(getAddress());
+        if (address != null) {
+            selectedAddress = address;
         }
-        if (getPhone() != null) {
-            setSelectedPhone(getPhone());
+        if (phone != null) {
+            selectedPhone = phone;
         }
-
     }
 }

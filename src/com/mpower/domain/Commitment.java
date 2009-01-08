@@ -536,14 +536,14 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @PostLoad
     public void initTransient() {
-        if (getPaymentSource() != null) {
-            selectedPaymentSource = getPaymentSource();
+        if (paymentSource != null) {
+            selectedPaymentSource = paymentSource;
         }
-        if (getAddress() != null) {
-            selectedAddress = getAddress();
+        if (address != null) {
+            selectedAddress = address;
         }
-        if (getPhone() != null) {
-            selectedPhone = getPhone();
+        if (phone != null) {
+            selectedPhone = phone;
         }
     }
 }

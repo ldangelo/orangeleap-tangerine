@@ -438,17 +438,17 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     @PostLoad
     public void initTransient() {
-        if (getPaymentSource() != null) {
-            selectedPaymentSource = getPaymentSource();
+        if (paymentSource != null) {
+            selectedPaymentSource = paymentSource;
         }
-        if (getAddress() != null) {
-            selectedAddress = getAddress();
+        if (address != null) {
+            selectedAddress = address;
         }
-        if (getPhone() != null) {
-            selectedPhone = getPhone();
+        if (phone != null) {
+            selectedPhone = phone;
         }
-        if (getEmail() != null) {
-            selectedEmail = getEmail();
+        if (email != null) {
+            selectedEmail = email;
         }
     }
 

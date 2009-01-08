@@ -31,7 +31,7 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value=""><spring:message code="select"/></option>
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
 				<option value="new" reference="li:has(#paymentType)"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 					<c:if test="${opt.type == 'ACH'}">
@@ -59,7 +59,7 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value=""><spring:message code="select"/></option>
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
 				<option value="new" reference="li:has(:input[name^='address'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${addresses}">
 					<c:choose>
@@ -75,7 +75,7 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value=""><spring:message code="select"/></option>
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
 				<option value="new" reference="li:has(:input[name^='phone'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${phones}">
 					<c:choose>
@@ -91,7 +91,7 @@
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
-				<option value=""><spring:message code="select"/></option>
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
 				<option value="new" reference="li:has(:input[name^='email'])"><spring:message code="createNew"/></option>
 				<c:forEach var="opt" varStatus="status" items="${emails}">
 					<c:choose>
@@ -105,9 +105,28 @@
 				</c:forEach>
 			</select>
 		</c:when>
-		<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
+		<c:when test="${fieldVO.fieldType == 'PICKLIST'}">
 			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>">
-				<option value=""><spring:message code="select"/></option>
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
+				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
+					<c:choose>
+						<c:when test="${fieldVO.fieldValue eq code}">
+							<c:set var="selected" value="selected" scope="page" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="selected" value="" scope="page"/>
+						</c:otherwise>
+					</c:choose>
+					<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
+						<c:out value='${fieldVO.displayValues[status.index]}'/>
+					</option>
+				</c:forEach>
+			</select>
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
+			<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>">
+				<c:if test="${fieldVO.required != 'true'}"><option value=""><spring:message code="none"/></option></c:if>
 				<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 					<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
 					<c:choose>

@@ -32,9 +32,7 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
         fieldVO.setCodes(new ArrayList<String>());
-        fieldVO.getCodes().add("");
         fieldVO.setDisplayValues(new ArrayList<String>());
-        fieldVO.getDisplayValues().add("");
         for (SectionField currentSectionField : sectionFields) {
             if (FieldType.PHONE == currentSectionField.getFieldDefinition().getFieldType()) {
                 FieldDefinition currentFieldDefinition = currentSectionField.getFieldDefinition();

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PaymentSourceDao;
+import com.mpower.domain.Address;
 import com.mpower.domain.PaymentSource;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -40,21 +42,41 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
     	
-        if (paymentSource.getAddress().getId() == null) {
-        	paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
-        }
-        if (paymentSource.getPhone().getId() == null) {
-        	paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
-        }
+    	boolean found = false;
+    	if (paymentSource.getId() == null) {
+    		List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
+    		for (PaymentSource a : paymentSourceList) {
+    			if (paymentSource.equals(a)) {
+    				found = true;
+    				Long id = a.getId();
+    				try {
+    					BeanUtils.copyProperties(a, paymentSource);
+    					a.setId(id);
+    				} catch (Exception e) {
+    					logger.debug(e.getMessage(), e);
+    				}
+    				paymentSource = a;
+    			}
+    		}
+    	}
+    	if (!found) {
+    		if (paymentSource.getAddress().getId() == null) {
+    			paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
+    		}
+    		if (paymentSource.getPhone().getId() == null) {
+    			paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
+    		}
 
-        paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
-        
-        if (paymentSource.isInactive()) {
-            auditService.auditObjectInactive(paymentSource);
-        }
-        else {
-            auditService.auditObject(paymentSource);
-        }
+    		paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
+
+    		if (paymentSource.isInactive()) {
+    			auditService.auditObjectInactive(paymentSource);
+    		}
+    		else {
+    			auditService.auditObject(paymentSource);
+    		}
+    	}
+
         return paymentSource;
     }
 

@@ -28,8 +28,12 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.EntityDefault;
+import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
+import com.mpower.service.EmailService;
 import com.mpower.service.GiftService;
+import com.mpower.service.PaymentSourceService;
+import com.mpower.service.PhoneService;
 import com.mpower.type.EntityType;
 import com.mpower.type.GiftEntryType;
 
@@ -38,6 +42,18 @@ public class GiftServiceImpl implements GiftService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name = "addressService")
+    private AddressService addressService;
+
+    @Resource(name = "phoneService")
+    private PhoneService phoneService;
+
+    @Resource(name = "emailService")
+    private EmailService emailService;
+
+    @Resource(name = "paymentSourceService")
+    private PaymentSourceService paymentSourceService;
 
     @Resource(name = "auditService")
     private AuditService auditService;
@@ -80,6 +96,19 @@ public class GiftServiceImpl implements GiftService {
             }
         }
 
+        // TODO: need to see if they exist if null id
+        if (gift.getAddress().getId() == null) {
+            gift.setAddress(addressService.saveAddress(gift.getAddress()));
+        }
+        if (gift.getPaymentSource().getId() == null) {
+            gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
+        }
+        if (gift.getPhone().getId() == null) {
+            gift.setPhone(phoneService.savePhone(gift.getPhone()));
+        }
+        if (gift.getEmail().getId() == null) {
+            gift.setEmail(emailService.saveEmail(gift.getEmail()));
+        }
         gift = giftDao.maintainGift(gift);
 
         // this was a part of our JMS/MOM poc

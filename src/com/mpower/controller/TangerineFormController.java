@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +34,7 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     protected PersonService personService;
     protected SiteService siteService;
+    protected String pageType;
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -42,6 +44,17 @@ public abstract class TangerineFormController extends SimpleFormController {
         this.siteService = siteService;
     }
 
+    /**
+     * The default page type is the commandName.  Override for specific page types
+     * @return pageType, the commandName
+     */
+    protected String getPageType() {
+        return StringUtils.hasText(pageType) ? pageType: getCommandName();
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
+    }
 
     protected Long getPersonId(HttpServletRequest request) {
         return Long.valueOf(request.getParameter(StringConstants.PERSON_ID));
@@ -69,6 +82,12 @@ public abstract class TangerineFormController extends SimpleFormController {
         return viewable;
     }
 
+    @Override
+    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
+        super.onBindAndValidate(request, command, errors);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
@@ -81,10 +100,10 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     protected void createFieldMaps(HttpServletRequest request, Viewable viewable) {
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
             viewable.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles(), viewable);
+            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles(), viewable);
             viewable.setFieldValueMap(valueMap);
         }
     }

@@ -149,7 +149,7 @@
 			    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
 					<c:if test="${!empty fieldVO.id}">
 						<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
-							<c:param name="id" value="${fieldVO.id}" />
+							<c:param name="personId" value="${fieldVO.id}" />
 						</c:url>
 						<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
 						<div id="lookup-<c:out value='${thisVal}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
@@ -177,7 +177,7 @@
 						<c:choose>
 							<c:when test="${not empty fieldVO.ids[status.index]}">
 								<c:url value="/person.htm" var="entityLink" scope="page"> <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
-									<c:param name="id" value="${fieldVO.ids[status.index]}" />
+									<c:param name="personId" value="${fieldVO.ids[status.index]}" />
 								</c:url>
 							</c:when>
 							<c:otherwise>

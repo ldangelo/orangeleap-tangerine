@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -109,6 +108,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @Transient
     private Phone selectedPhone = new Phone();
 
+    @Transient
+    private boolean userCreated = false;
+
     public PaymentSource() {
     }
 
@@ -150,8 +152,19 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         this.address = address;
     }
 
+    /**
+     * Invoked when the system creates a new address
+     */
     public void createNewAddress() {
         setAddress(new Address(this.getPerson()));
+    }
+
+    /**
+     * Invoked only when a USER creates a new address object via the 'Create New' option
+     */
+    public void userCreateNewAddress() {
+        createNewAddress();
+        getAddress().setUserCreated(true);
     }
 
     public Phone getPhone() {
@@ -165,8 +178,19 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         this.phone = phone;
     }
 
+    /**
+     * Invoked when the system creates a new phone
+     */
     public void createNewPhone() {
         setPhone(new Phone(this.getPerson()));
+    }
+
+    /**
+     * Invoked only when a USER creates a new phone object via the 'Create New' option
+     */
+    public void userCreateNewPhone() {
+        createNewPhone();
+        getPhone().setUserCreated(true);
     }
 
     public String getProfile() {
@@ -422,6 +446,14 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         this.fieldValueMap = fieldValueMap;
     }
 
+    public boolean isUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(boolean userCreated) {
+        this.userCreated = userCreated;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PaymentSource)) {
@@ -466,11 +498,13 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @PostLoad
     public void initTransient() {
+        // NOTE: do not use getXX() to obtain the object, else JPA will inadvertently create a new object attached to the Entity Manager
         if (address != null) {
-            selectedAddress = address;
+            setSelectedAddress(address);
         }
         if (phone != null) {
-            selectedPhone = phone;
+            setSelectedPhone(phone);
         }
+
     }
 }

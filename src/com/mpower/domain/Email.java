@@ -120,6 +120,9 @@ public class Email implements SiteAware, Customizable, Viewable, Inactivatible, 
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    @Transient
+    private boolean userCreated = false;
+
     public Email() {
     }
 
@@ -290,6 +293,14 @@ public class Email implements SiteAware, Customizable, Viewable, Inactivatible, 
 
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    public boolean isUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(boolean userCreated) {
+        this.userCreated = userCreated;
     }
 
     @PrePersist

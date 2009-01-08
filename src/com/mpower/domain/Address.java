@@ -136,6 +136,9 @@ public class Address implements SiteAware, Customizable, Viewable, Inactivatible
     @Transient
     private Map<String, Object> fieldValueMap = null;
 
+    @Transient
+    private boolean userCreated = false;
+
     public Address() {
     }
 
@@ -346,6 +349,14 @@ public class Address implements SiteAware, Customizable, Viewable, Inactivatible
 
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    public boolean isUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(boolean userCreated) {
+        this.userCreated = userCreated;
     }
 
     public String getShortDisplay() {

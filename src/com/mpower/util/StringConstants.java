@@ -3,6 +3,7 @@ package com.mpower.util;
 
 public final class StringConstants {
     public static final String NEW = "new";
+    public static final String COMMAND_OBJECT = "commandObject";
 
     public static final String ADDRESS = "address";
     public static final String ADDRESS_ID = "addressId";

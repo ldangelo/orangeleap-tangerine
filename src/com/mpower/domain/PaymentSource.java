@@ -46,11 +46,11 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @JoinColumn(name = "PERSON_ID")
     private Person person;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "PHONE_ID")
     private Phone phone;
 

@@ -95,10 +95,10 @@ public class PaymentManagerFormController extends TangerineFormController {
 
     protected void createNew(HttpServletRequest request, PaymentSource paymentSource) {
         if (StringConstants.NEW.equals(request.getParameter("selectedPhone"))) {
-            paymentSource.createNewPhone();
+            paymentSource.userCreateNewPhone();
         }
         if (StringConstants.NEW.equals(request.getParameter("selectedAddress"))) {
-            paymentSource.createNewAddress();
+            paymentSource.userCreateNewAddress();
         }
     }
 }

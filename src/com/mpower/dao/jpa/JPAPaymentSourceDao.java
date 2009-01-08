@@ -3,6 +3,7 @@ package com.mpower.dao.jpa;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -39,6 +40,7 @@ public class JPAPaymentSourceDao implements PaymentSourceDao {
             logger.debug("findPaymentSourceProfile: personId = " + personId + " profile = " + profile);
         }
         Query query = em.createNamedQuery("READ_PAYMENT_SOURCE_BY_PERSON_ID_PROFILE");
+        query.setFlushMode(FlushModeType.COMMIT);
         query.setParameter("personId", personId);
         query.setParameter("profile", profile);
         List<PaymentSource> l = query.getResultList();

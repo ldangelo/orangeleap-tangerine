@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -46,6 +47,7 @@ public class JPAEmailDao implements EmailDao {
     public List<Email> readEmails(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_EMAILS_BY_PERSON_ID");
         query.setParameter("personId", personId);
+        query.setFlushMode(FlushModeType.COMMIT);
         return query.getResultList();
     }
 

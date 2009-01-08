@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -45,6 +46,7 @@ public class JPAAddressDao implements AddressDao {
     @Override
     public List<Address> readAddresses(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_ADDRESSES_BY_PERSON_ID");
+        query.setFlushMode(FlushModeType.COMMIT);
         query.setParameter("personId", personId);
         return query.getResultList();
     }

@@ -211,7 +211,7 @@ public class GiftServiceImpl implements GiftService {
             refundGift.getPaymentSource().setCreditCardExpiration(null);
             refundGift.setAmount(originalGift.getAmount().negate());
             refundGift.setOriginalGiftId(originalGift.getId());
-            refundGift = giftDao.maintainGift(refundGift);
+            refundGift = maintainGift(refundGift);
             refundGift.setDistributionLines(null);
             List<DistributionLine> lines = originalGift.getDistributionLines();
             for (DistributionLine line : lines) {
@@ -220,7 +220,7 @@ public class GiftServiceImpl implements GiftService {
             }
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
-            giftDao.maintainGift(originalGift);
+            maintainGift(originalGift);
             auditService.auditObject(refundGift);
             return refundGift;
         } catch (IllegalAccessException e) {

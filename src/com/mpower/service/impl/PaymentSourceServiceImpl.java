@@ -60,10 +60,10 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     		}
     	}
     	if (!found) {
-    		if (paymentSource.getAddress().getId() == null) {
+    		if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
     			paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
     		}
-    		if (paymentSource.getPhone().getId() == null) {
+    		if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
     			paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
     		}
 

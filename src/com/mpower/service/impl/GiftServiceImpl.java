@@ -97,16 +97,16 @@ public class GiftServiceImpl implements GiftService {
         }
 
         // TODO: need to see if they exist if null id
-        if (gift.getAddress().getId() == null) {
+        if (gift.getAddress() != null && gift.getAddress().getId() == null) {
             gift.setAddress(addressService.saveAddress(gift.getAddress()));
         }
-        if (gift.getPaymentSource().getId() == null) {
+        if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
             gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
         }
-        if (gift.getPhone().getId() == null) {
+        if (gift.getPhone() != null && gift.getPhone().getId() == null) {
             gift.setPhone(phoneService.savePhone(gift.getPhone()));
         }
-        if (gift.getEmail().getId() == null) {
+        if (gift.getEmail() != null && gift.getEmail().getId() == null) {
             gift.setEmail(emailService.saveEmail(gift.getEmail()));
         }
         gift = giftDao.maintainGift(gift);

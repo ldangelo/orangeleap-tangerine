@@ -103,13 +103,13 @@ public class CommitmentServiceImpl implements CommitmentService {
         }
 
         // TODO: need to see if they exist if null id
-        if (commitment.getAddress().getId() == null) {
+        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
             commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
         }
-        if (commitment.getPaymentSource().getId() == null) {
+        if (commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == null) {
             commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
         }
-        if (commitment.getPhone().getId() == null) {
+        if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
             commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
         }
         commitment = commitmentDao.maintainCommitment(commitment);

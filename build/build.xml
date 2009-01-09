@@ -98,6 +98,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/recurringPicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/stateprovince.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/constituentAttributesPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/ncaisCodePicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>

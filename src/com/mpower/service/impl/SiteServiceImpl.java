@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,9 +55,10 @@ public class SiteServiceImpl implements SiteService {
         return siteDao.readSites();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, FieldRequired> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
-        Map<String, FieldRequired> returnMap = new HashMap<String, FieldRequired>();
+        Map<String, FieldRequired> returnMap = new ListOrderedMap(); // ListOrderedMap used to ensure the order of the fields is maintained
         List<SectionField> fields = getSectionFields(siteName, pageType, roles);
         if (fields != null) {
             for (SectionField sectionField : fields) {

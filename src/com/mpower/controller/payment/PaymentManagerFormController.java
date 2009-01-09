@@ -93,7 +93,9 @@ public class PaymentManagerFormController extends TangerineFormController {
         return paymentSource;
     }
 
-    // TODO: refactor
+    /**
+     * If a new address/phone is to be created, this must be done prior to binding so that fields will be bound to the new object, not the old one
+     */
     protected void createNew(HttpServletRequest request, PaymentSource paymentSource) {
         if (StringConstants.NEW.equals(request.getParameter("selectedPhone"))) {
             paymentSource.userCreateNewPhone();
@@ -104,19 +106,25 @@ public class PaymentManagerFormController extends TangerineFormController {
     }
 
     @Override
-    // TODO: refactor
     protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
         super.onBindAndValidate(request, command, errors);
 
         if (!errors.hasErrors()) {
             if (isFormSubmission(request)) {
-                if ("".equals(request.getParameter("selectedPhone"))) {
-                    ((PaymentSource)command).createNewPhone(); // this is equivalent to setting it to the dummy (empty) phone
-                }
-                if ("".equals(request.getParameter("selectedAddress"))) {
-                    ((PaymentSource)command).createNewAddress(); // this is equivalent to setting it to the dummy (empty) address
-                }
+                createNone(request, command, errors);
             }
+        }
+    }
+
+    /**
+     * If NO address/phone is associated with this paymentSource, this must be done AFTER binding and validation
+     */
+    protected void createNone(HttpServletRequest request, Object command, BindException errors) {
+        if (StringConstants.EMPTY.equals(request.getParameter("selectedPhone"))) {
+            ((PaymentSource)command).createNewPhone(); // this is equivalent to setting it to the dummy (empty) phone
+        }
+        if (StringConstants.EMPTY.equals(request.getParameter("selectedAddress"))) {
+            ((PaymentSource)command).createNewAddress(); // this is equivalent to setting it to the dummy (empty) address
         }
     }
 }

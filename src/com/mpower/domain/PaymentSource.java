@@ -47,17 +47,17 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address address;
+    private Address address = new Address();
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
-    private Phone phone;
+    private Phone phone = new Phone();
 
     @Column(name = "PAYMENT_PROFILE")
     private String profile;
 
     @Column(name = "PAYMENT_TYPE")
-    private String type;
+    private String type = "Credit Card";
 
     @Column(name = "CREDIT_CARD_TYPE")
     private String creditCardType;
@@ -139,12 +139,16 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         if (getSelectedPhone().getPerson() == null) {
             getSelectedPhone().setPerson(person);
         }
+        if (getAddress().getPerson() == null) {
+            getAddress().setPerson(person);
+        }
+        if (getPhone().getPerson() == null) {
+            getPhone().setPerson(person);
+        }
     }
 
     public Address getAddress() {
-        if (address == null) {
-            createNewAddress();
-        }
+    
         return address;
     }
 
@@ -168,9 +172,6 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Phone getPhone() {
-        if (phone == null) {
-            createNewPhone();
-        }
         return phone;
     }
 
@@ -461,6 +462,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         }
         PaymentSource ps = (PaymentSource) obj;
         EqualsBuilder eb = new EqualsBuilder();
+        eb.append(getType(), ps.getType());
         if ("ACH".equals(getType())) {
             eb.append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
         } else if ("Credit Card".equals(getType())) {
@@ -472,6 +474,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
+        hcb.append(getType());
         if ("ACH".equals(getType())) {
             hcb.append(achAccountNumber).append(achRoutingNumber);
         } else if ("Credit Card".equals(getType())) {

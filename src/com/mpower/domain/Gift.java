@@ -106,19 +106,19 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     @ManyToOne
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
-    private PaymentSource paymentSource;
+    private PaymentSource paymentSource = new PaymentSource();
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address address;
+    private Address address = new Address();
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
-    private Phone phone;
+    private Phone phone = new Phone();
 
     @ManyToOne
     @JoinColumn(name = "EMAIL_ID")
-    private Email email;
+    private Email email = new Email();
 
     @Column(name = "ENTRY_TYPE")
     @Enumerated(EnumType.STRING)
@@ -181,6 +181,19 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         }
         if (getSelectedEmail().getPerson() == null) {
             getSelectedEmail().setPerson(person);
+        }
+        
+        if (getPaymentSource().getPerson() == null) {
+            getPaymentSource().setPerson(person);
+        }
+        if (getAddress().getPerson() == null) {
+            getAddress().setPerson(person);
+        }
+        if (getPhone().getPerson() == null) {
+            getPhone().setPerson(person);
+        }
+        if (getEmail().getPerson() == null) {
+            getEmail().setPerson(person);
         }
     }
 
@@ -345,9 +358,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public PaymentSource getPaymentSource() {
-        if (paymentSource == null) {
-            paymentSource = new PaymentSource(this.getPerson());
-        }
+       
         return paymentSource;
     }
 
@@ -356,9 +367,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public Address getAddress() {
-        if (address == null) {
-            address = new Address(this.getPerson());
-        }
+    
         return address;
     }
 
@@ -367,9 +376,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public Phone getPhone() {
-        if (phone == null) {
-            phone = new Phone(this.getPerson());
-        }
+    
         return phone;
     }
 
@@ -378,9 +385,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public Email getEmail() {
-        if (email == null) {
-            email = new Email(this.getPerson());
-        }
+       
         return email;
     }
 

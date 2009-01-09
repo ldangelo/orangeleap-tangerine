@@ -129,15 +129,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @ManyToOne
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
-    private PaymentSource paymentSource;
+    private PaymentSource paymentSource = new PaymentSource();
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address address;
+    private Address address = new Address();
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
-    private Phone phone;
+    private Phone phone = new Phone();
 
     @Column(name = "FREQUENCY")
     private String frequency;
@@ -203,6 +203,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         }
         if (getSelectedPhone().getPerson() == null) {
             getSelectedPhone().setPerson(person);
+        }
+        if (getPaymentSource().getPerson() == null) {
+            getPaymentSource().setPerson(person);
+        }
+        if (getAddress().getPerson() == null) {
+            getAddress().setPerson(person);
+        }
+        if (getPhone().getPerson() == null) {
+            getPhone().setPerson(person);
         }
     }
 
@@ -370,9 +379,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public PaymentSource getPaymentSource() {
-        if (paymentSource == null) {
-            paymentSource = new PaymentSource(this.getPerson());
-        }
         return paymentSource;
     }
 
@@ -381,9 +387,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Address getAddress() {
-        if (address == null) {
-            address = new Address(this.getPerson());
-        }
         return address;
     }
 
@@ -392,9 +395,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Phone getPhone() {
-        if (phone == null) {
-            phone = new Phone(this.getPerson());
-        }
         return phone;
     }
 

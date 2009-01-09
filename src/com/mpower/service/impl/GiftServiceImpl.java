@@ -139,6 +139,7 @@ public class GiftServiceImpl implements GiftService {
     	if (gift.getPhone() == null) gift.setPhone(new Phone(gift.getPerson()));
     	if (gift.getEmail() == null) gift.setEmail(new Email(gift.getPerson()));
     	if (gift.getPaymentSource() == null) gift.setPaymentSource(new PaymentSource(gift.getPerson()));
+    	gift.getPaymentSource().setPerson(gift.getPerson());
     	return gift;
     }
 
@@ -215,7 +216,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift refundGift(Long giftId) {
-        Gift originalGift = giftDao.readGift(giftId);
+        Gift originalGift = readGiftById(giftId);
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
             refundGift.setId(null);

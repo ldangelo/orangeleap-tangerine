@@ -131,6 +131,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     	if (commitment.getAddress() == null) commitment.setAddress(new Address(commitment.getPerson()));
     	if (commitment.getPhone() == null) commitment.setPhone(new Phone(commitment.getPerson()));
     	if (commitment.getPaymentSource() == null) commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+    	commitment.getPaymentSource().setPerson(commitment.getPerson());
     	return commitment;
     }
 

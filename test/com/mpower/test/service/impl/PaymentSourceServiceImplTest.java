@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,10 @@ import com.mpower.domain.Site;
 import com.mpower.service.AuditService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.PaymentSourceDataProvider;
 
-public class PaymentSourceTest extends BaseTest {
+public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Autowired
     private PaymentSourceService paymentSourceService;
@@ -65,6 +66,42 @@ public class PaymentSourceTest extends BaseTest {
         assert paymentSourceService.findPaymentSourceProfile(personId.longValue() + 1, "MyProfile") == null;
     }
 
+    @Test(groups = { "createEtcPaymentSource" }, dataProvider = "setupEtcPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
+    public void createEtcPaymentSource(Site site, Person person, PaymentSource ps) {
+        paymentSourceService.setAuditService(auditService);
+        em.getTransaction().begin();
+        em.persist(site);
+        siteIds.add(site.getName());
+        person.setSite(site);
+        em.persist(person);
+        personIds.add(person.getId());
+        ps.setPerson(person);
+        paymentSourceService.readPaymentSources(person.getId()).size();
+        ps = paymentSourceService.maintainPaymentSource(ps);
+        paymentSourceIds.add(ps.getId());
+        paymentSourceService.readPaymentSources(person.getId()).size();
+        em.getTransaction().commit();
+    }
+
+    @Test(groups = { "checkEtcPaymentSource" }, dependsOnGroups = { "createEtcPaymentSource" })
+    public void testReadActivePaymentSourcesACHCreditCard() {
+        paymentSourceService.setAuditService(auditService);
+        PersonService personService = (PersonService) applicationContext.getBean("personService");
+        List<Person> persons = personService.readAllPeople();
+        Long personId = null;
+        for (Person person : persons) {
+            if ("createPaymentSourceLastName-5".equals(person.getLastName())) {
+                personId = person.getId();
+                break;
+            }
+        }
+        assert personId != null;
+        List<PaymentSource> sources = paymentSourceService.readActivePaymentSourcesACHCreditCard(personId);
+        assert sources != null;
+        assert sources.size() == 1;
+        assert PaymentSource.CREDIT_CARD.equals(sources.get(0).getType());
+    }
+
     @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource", "checkPaymentSource" })
     public void inactivatePaymentSources() {
         paymentSourceService.setAuditService(auditService);
@@ -81,10 +118,16 @@ public class PaymentSourceTest extends BaseTest {
             assert paymentSourceService.readPaymentSources(person.getId()).size() == 0;
         }
         for (Long personId : personIds) {
-            em.remove(em.find(Person.class, personId));
+            Person person = em.find(Person.class, personId);
+            if (person != null) {
+                em.remove(person);
+            }
         }
         for (String siteId : siteIds) {
-            em.remove(em.find(Site.class, siteId));
+            Site site = em.find(Site.class, siteId);
+            if (site != null) {
+                em.remove(site);
+            }
         }
     }
 }

@@ -12,6 +12,16 @@
 			ORDER BY ps.type
 		</query>
 	</named-query>
+	
+	<named-query name="READ_ACTIVE_PAYMENT_SOURCES_BY_PERSON_ID_TYPES">
+		<query>
+			SELECT ps FROM com.mpower.domain.PaymentSource ps
+			WHERE ps.person.id = :personId
+			AND ps.type IN (:paymentTypes)
+			AND ps.inactive = false
+			ORDER BY ps.type
+		</query>
+	</named-query>
 
 	<named-query name="READ_PAYMENT_SOURCE_BY_PERSON_ID_PROFILE">
 		<query>

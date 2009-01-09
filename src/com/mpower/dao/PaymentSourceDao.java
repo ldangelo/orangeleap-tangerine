@@ -12,5 +12,7 @@ public interface PaymentSourceDao {
 
     public List<PaymentSource> readActivePaymentSources(Long personId);
 
+    public List<PaymentSource> readActivePaymentSourcesByTypes(Long personId, List<String> paymentTypes);
+
     public PaymentSource readPaymentSource(Long paymentSourceId);
 }

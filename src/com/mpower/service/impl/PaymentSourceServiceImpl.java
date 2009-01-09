@@ -1,5 +1,6 @@
 package com.mpower.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PaymentSourceDao;
-import com.mpower.domain.Address;
 import com.mpower.domain.PaymentSource;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -41,47 +41,65 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
-    	
-    	boolean found = false;
-    	if (paymentSource.getId() == null) {
-    		List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
-    		for (PaymentSource a : paymentSourceList) {
-    			if (paymentSource.equals(a)) {
-    				found = true;
-    				Long id = a.getId();
-    				try {
-    					BeanUtils.copyProperties(a, paymentSource);
-    					a.setId(id);
-    				} catch (Exception e) {
-    					logger.debug(e.getMessage(), e);
-    				}
-    				paymentSource = a;
-    			}
-    		}
-    	}
-    	if (!found) {
-    		if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
-    			paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
-    		}
-    		if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
-    			paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
-    		}
 
-    		paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
+        boolean found = false;
+        if (paymentSource.getId() == null) {
+            List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
+            for (PaymentSource a : paymentSourceList) {
+                if (paymentSource.equals(a)) {
+                    found = true;
+                    Long id = a.getId();
+                    try {
+                        BeanUtils.copyProperties(a, paymentSource);
+                        a.setId(id);
+                    } catch (Exception e) {
+                        logger.debug(e.getMessage(), e);
+                    }
+                    paymentSource = a;
+                }
+            }
+        }
+        if (!found) {
+            if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
+                paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
+            }
+            if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
+                paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
+            }
 
-    		if (paymentSource.isInactive()) {
-    			auditService.auditObjectInactive(paymentSource);
-    		}
-    		else {
-    			auditService.auditObject(paymentSource);
-    		}
-    	}
+            paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
+
+            if (paymentSource.isInactive()) {
+                auditService.auditObjectInactive(paymentSource);
+            }
+            else {
+                auditService.auditObject(paymentSource);
+            }
+        }
 
         return paymentSource;
     }
 
     public List<PaymentSource> readPaymentSources(Long personId) {
         return paymentSourceDao.readActivePaymentSources(personId);
+    }
+
+    public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long personId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readActivePaymentSourcesACHCreditCard: personId = " + personId);
+        }
+        List<String> paymentTypes = new ArrayList<String>(2);
+        paymentTypes.add(PaymentSource.ACH);
+        paymentTypes.add(PaymentSource.CREDIT_CARD);
+
+        return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
+    }
+
+    public List<PaymentSource> readActivePaymentSourcesByTypes(Long personId, List<String> paymentTypes) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readActivePaymentSourcesByTypes: personId = " + personId + " paymentTypes = " + paymentTypes);
+        }
+        return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
     }
 
     public void setAuditService(AuditService auditService) {

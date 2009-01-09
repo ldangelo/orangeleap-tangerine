@@ -51,6 +51,31 @@ public class PaymentSourceDataProvider {
         ps4.setType(PaymentSource.CREDIT_CARD);
         ps4.setProfile("MyProfile");
 
-        return new Object[][] { new Object[] { site1, person1, ps1 }, new Object[] { site2, person2, ps2 }, new Object[] { site3, person3, ps3 }, new Object[] { site4, person4, ps4 } };
+        return new Object[][] { new Object[] { site1, person1, ps1 }, new Object[] { site2, person2, ps2 }, new Object[] { site3, person3, ps3 }, new Object[] { site4, person4, ps4 }  };
+    }
+
+
+    @DataProvider(name = "setupEtcPaymentSource")
+    public static Object[][] createEtcPaymentSource() {
+        Site site5 = new Site();
+        site5.setName("setupPaymentSourceSite-5");
+
+        Person person5 = new Person();
+        person5.setFirstName("createPaymentSourceFirstName-5");
+        person5.setLastName("createPaymentSourceLastName-5");
+
+        PaymentSource ps5 = new PaymentSource();
+        ps5.setType(PaymentSource.CASH);
+        ps5.setProfile("MyCash");
+
+        PaymentSource ps6 = new PaymentSource();
+        ps6.setType(PaymentSource.CHECK);
+        ps6.setProfile("MyCheck");
+
+        PaymentSource ps7 = new PaymentSource();
+        ps6.setType(PaymentSource.CREDIT_CARD);
+        ps6.setProfile("MyCreditCard");
+
+        return new Object[][] { new Object[] { site5, person5, ps5 }, new Object[] { site5, person5, ps6 }, new Object[] { site5, person5, ps7 }  };
     }
 }

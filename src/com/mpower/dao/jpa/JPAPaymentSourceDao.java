@@ -61,6 +61,17 @@ public class JPAPaymentSourceDao implements PaymentSourceDao {
         return paymentSourceList;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PaymentSource> readActivePaymentSourcesByTypes(Long personId, List<String> paymentTypes) {
+        Query query = em.createNamedQuery("READ_ACTIVE_PAYMENT_SOURCES_BY_PERSON_ID_TYPES");
+        query.setFlushMode(FlushModeType.COMMIT);
+        query.setParameter("personId", personId);
+        query.setParameter("paymentTypes", paymentTypes);
+        List<PaymentSource> paymentSourceList = query.getResultList();
+        return paymentSourceList;
+    }
+
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
         return em.find(PaymentSource.class, paymentSourceId);

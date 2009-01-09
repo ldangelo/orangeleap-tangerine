@@ -57,7 +57,7 @@ public class PaymentManagerFormController extends TangerineFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
-        List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
+        List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(personId);
         refData.put("paymentSources", paymentSources);
         List<Address> addresses = addressService.filterValidAddresses(Long.valueOf(personId));
         refData.put("addresses", addresses);

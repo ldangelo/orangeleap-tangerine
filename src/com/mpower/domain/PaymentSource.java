@@ -33,6 +33,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
     public static final String CREDIT_CARD = "Credit Card";
+    public static final String CASH = "Cash";
+    public static final String CHECK = "Check";
 
     @SuppressWarnings("unused")
     @Transient

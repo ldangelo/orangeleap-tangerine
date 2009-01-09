@@ -23,11 +23,14 @@ import com.mpower.dao.CommitmentDao;
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
+import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -120,7 +123,15 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     @Override
     public Commitment readCommitmentById(Long commitmentId) {
-        return commitmentDao.readCommitment(commitmentId);
+        return normalize(commitmentDao.readCommitment(commitmentId));
+    }
+    
+    // only needed for commitments not entered by the program and entered via sql.
+    private Commitment normalize(Commitment commitment) {
+    	if (commitment.getAddress() == null) commitment.setAddress(new Address(commitment.getPerson()));
+    	if (commitment.getPhone() == null) commitment.setPhone(new Phone(commitment.getPerson()));
+    	if (commitment.getPaymentSource() == null) commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+    	return commitment;
     }
 
     @Override

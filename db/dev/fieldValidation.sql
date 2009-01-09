@@ -21,7 +21,7 @@ INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECO
 INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'paymentSource.creditCard', 'paymentSource.creditCardNumber', null, 'extensions:isCreditCard');
 
 -- make zip code required, and contain 5 digits, for company1
-INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'person.contactInfo', 'person.addressMap[home]', 'address.postalCode', '^\\d{5}$');
+--INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'person.contactInfo', 'person.addressMap[home]', 'address.postalCode', '^\\d{5}$');
 --INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES (1, 'company1', 'person.contactInfo', 'person.addressMap[home]', 'address.postalCode', TRUE);
 
 -- Gift Value messages for company1

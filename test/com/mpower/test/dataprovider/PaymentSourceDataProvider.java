@@ -2,7 +2,6 @@ package com.mpower.test.dataprovider;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.controller.validator.PaymentSourceValidator;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
@@ -19,7 +18,7 @@ public class PaymentSourceDataProvider {
         person1.setLastName("createPaymentSourceLastName-1");
 
         PaymentSource ps1 = new PaymentSource();
-        ps1.setType(PaymentSourceValidator.ACH);
+        ps1.setType(PaymentSource.ACH);
 
         Site site2 = new Site();
         site2.setName("setupPaymentSourceSite-2");
@@ -29,7 +28,7 @@ public class PaymentSourceDataProvider {
         person2.setLastName("createPaymentSourceLastName-2");
 
         PaymentSource ps2 = new PaymentSource();
-        ps2.setType(PaymentSourceValidator.ACH);
+        ps2.setType(PaymentSource.ACH);
 
         Site site3 = new Site();
         site3.setName("setupPaymentSourceSite-3");
@@ -39,7 +38,7 @@ public class PaymentSourceDataProvider {
         person3.setLastName("createPaymentSourceLastName-3");
 
         PaymentSource ps3 = new PaymentSource();
-        ps3.setType(PaymentSourceValidator.ACH);
+        ps3.setType(PaymentSource.ACH);
 
         Site site4 = new Site();
         site4.setName("setupPaymentSourceSite-4");
@@ -49,7 +48,7 @@ public class PaymentSourceDataProvider {
         person4.setLastName("createPaymentSourceLastName-4");
 
         PaymentSource ps4 = new PaymentSource();
-        ps4.setType(PaymentSourceValidator.CREDIT_CARD);
+        ps4.setType(PaymentSource.CREDIT_CARD);
         ps4.setProfile("MyProfile");
 
         return new Object[][] { new Object[] { site1, person1, ps1 }, new Object[] { site2, person2, ps2 }, new Object[] { site3, person3, ps3 }, new Object[] { site4, person4, ps4 } };

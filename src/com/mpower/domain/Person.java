@@ -87,9 +87,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Temporal(TemporalType.DATE)
     private Date birthDate;
 
-    @Column(name = "DECEASED")
-    private boolean deceased = false;
-    
     @Column(name = "PREFERRED_PHONE_TYPE")
     private String preferredPhoneType;
 
@@ -452,13 +449,5 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 		return recognitionName;
 	}
 
-	public void setDeceased(boolean deceased) {
-		this.deceased = deceased;
-	}
-
-	public boolean isDeceased() {
-		return deceased;
-	}
-	
 
 }

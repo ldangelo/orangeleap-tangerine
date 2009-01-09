@@ -40,6 +40,7 @@ public class PhoneEditor extends RequiresConstituentEditor {
             Phone a = new Phone(super.getPerson());
             a.setActivationStatus("permanent");
             a.setPhoneType("home");
+            a.setUserCreated(true);
             setValue(a);
         }
     }

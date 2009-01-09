@@ -56,6 +56,7 @@ public class AddressValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city", "invalidCity", "City is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required");
+        //        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required"); // TODO: country
         if (!errors.hasErrors()) {
             if ("seasonal".equals(address.getActivationStatus())) {
                 if (address.getSeasonalStartDate() == null) {

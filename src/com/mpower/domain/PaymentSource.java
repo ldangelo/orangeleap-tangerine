@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -25,12 +24,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.util.AES;
+import com.mpower.util.Utilities;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE")
-public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewable, Inactivatible, Serializable {
+public class PaymentSource implements SiteAware, AddressAware, PhoneAware, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String ACH = "ACH";
+    public static final String CREDIT_CARD = "Credit Card";
 
     @SuppressWarnings("unused")
     @Transient
@@ -47,17 +49,17 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address address = new Address();
+    private Address address = new Address(person);
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
-    private Phone phone = new Phone();
+    private Phone phone = new Phone(person);
 
     @Column(name = "PAYMENT_PROFILE")
     private String profile;
 
     @Column(name = "PAYMENT_TYPE")
-    private String type = "Credit Card";
+    private String type = CREDIT_CARD;
 
     @Column(name = "CREDIT_CARD_TYPE")
     private String creditCardType;
@@ -103,10 +105,10 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private Address selectedAddress = new Address();
+    private Address selectedAddress = new Address(person);
 
     @Transient
-    private Phone selectedPhone = new Phone();
+    private Phone selectedPhone = new Phone(person);
 
     @Transient
     private boolean userCreated = false;
@@ -132,23 +134,10 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
 
     public void setPerson(Person person) {
         this.person = person;
-
-        if (getSelectedAddress().getPerson() == null) {
-            getSelectedAddress().setPerson(person);
-        }
-        if (getSelectedPhone().getPerson() == null) {
-            getSelectedPhone().setPerson(person);
-        }
-        if (getAddress().getPerson() == null) {
-            getAddress().setPerson(person);
-        }
-        if (getPhone().getPerson() == null) {
-            getPhone().setPerson(person);
-        }
     }
 
     public Address getAddress() {
-    
+        Utilities.populateIfNullPerson(address, person);
         return address;
     }
 
@@ -172,6 +161,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Phone getPhone() {
+        Utilities.populateIfNullPerson(phone, person);
         return phone;
     }
 
@@ -416,6 +406,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Address getSelectedAddress() {
+        Utilities.populateIfNullPerson(selectedAddress, person);
         return selectedAddress;
     }
 
@@ -424,6 +415,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     }
 
     public Phone getSelectedPhone() {
+        Utilities.populateIfNullPerson(selectedPhone, person);
         return selectedPhone;
     }
 
@@ -463,9 +455,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
         PaymentSource ps = (PaymentSource) obj;
         EqualsBuilder eb = new EqualsBuilder();
         eb.append(getType(), ps.getType());
-        if ("ACH".equals(getType())) {
+        if (ACH.equals(getType())) {
             eb.append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
-        } else if ("Credit Card".equals(getType())) {
+        } else if (CREDIT_CARD.equals(getType())) {
             eb.append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
         }
         return eb.isEquals();
@@ -475,9 +467,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb.append(getType());
-        if ("ACH".equals(getType())) {
+        if (ACH.equals(getType())) {
             hcb.append(achAccountNumber).append(achRoutingNumber);
-        } else if ("Credit Card".equals(getType())) {
+        } else if (CREDIT_CARD.equals(getType())) {
             hcb.append(creditCardType).append(creditCardNumber);
         }
         return hcb.hashCode();
@@ -487,27 +479,15 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Viewa
     @PreUpdate
     public void normalize() {
         if (type != null) {
-            if ("ACH".equals(getType())) {
+            if (ACH.equals(getType())) {
                 setCreditCardExpiration(null);
                 setCreditCardNumber(null);
                 setCreditCardSecurityCode(null);
                 setCreditCardType(null);
-            } else if ("Credit Card".equals(getType())) {
+            } else if (CREDIT_CARD.equals(getType())) {
                 setAchAccountNumber(null);
                 setAchRoutingNumber(null);
             }
         }
-    }
-
-    @PostLoad
-    public void initTransient() {
-        // NOTE: do not use getXX() to obtain the object, else JPA will inadvertently create a new object attached to the Entity Manager
-        if (address != null) {
-            setSelectedAddress(address);
-        }
-        if (phone != null) {
-            setSelectedPhone(phone);
-        }
-
     }
 }

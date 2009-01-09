@@ -32,6 +32,7 @@ public class FieldHandlerHelper {
 
     private static void initializeFieldHandlerMap(ApplicationContext appContext) {
         GenericFieldHandler genericFieldHandler = new GenericFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.HIDDEN, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.DATE, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.DATE_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.TEXT, genericFieldHandler);

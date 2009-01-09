@@ -11,6 +11,8 @@ public interface PhoneService {
 
     public List<Phone> readPhones(Long personId);
 
+    public List<Phone> filterValidPhones(Long personId);
+
     public void setAuditService(AuditService auditService);
 
     public Phone readPhone(Long phoneId);

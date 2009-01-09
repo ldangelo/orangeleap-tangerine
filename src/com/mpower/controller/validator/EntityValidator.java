@@ -90,16 +90,16 @@ public class EntityValidator implements Validator {
                     PhoneValidator.validatePhone(target, errors);
                 }
             }
-            
+
             if (target instanceof EmailAware) {
-            	EmailAware obj = (EmailAware) target;
+                EmailAware obj = (EmailAware) target;
                 Email selectedEmail = obj.getSelectedEmail();
                 if (selectedEmail != null && selectedEmail.getId() != null) {
                     obj.setEmail(selectedEmail);
                     EmailValidator.validateEMail(target, errors);
                 }
             }
-            
+
         }
 
         if (!errors.hasErrors()) {
@@ -215,14 +215,14 @@ public class EntityValidator implements Validator {
                 boolean valid;
                 String validator = "extensions:";
                 if (regex.startsWith(validator)) {
-                	if (propertyString.length() == 0) {
-                       // 'required' is validated in validateRequiredFields()
-                	   valid = true;
-                	} else {
-                	   valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
-                	} 
+                    if (propertyString.length() == 0) {
+                        // 'required' is validated in validateRequiredFields()
+                        valid = true;
+                    } else {
+                        valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
+                    }
                 } else {
-                	valid = propertyString.matches(regex);
+                    valid = propertyString.matches(regex);
                 }
                 if (!valid && !errorSet.contains(key)) {
                     // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);

@@ -1,5 +1,6 @@
 package com.mpower.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -64,6 +65,21 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
 
     public List<Phone> readPhones(Long personId) {
         return phoneDao.readPhones(personId);
+    }
+
+    @Override
+    public List<Phone> filterValidPhones(Long personId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("filterValidPhones: personId = " + personId);
+        }
+        List<Phone> phones = this.readPhones(personId);
+        List<Phone> filteredPhones = new ArrayList<Phone>();
+        for (Phone phone : phones) {
+            if (phone.isValid()) {
+                filteredPhones.add(phone);
+            }
+        }
+        return filteredPhones;
     }
 
     public void setAuditService(AuditService auditService) {

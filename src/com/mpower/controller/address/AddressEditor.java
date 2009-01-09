@@ -38,6 +38,7 @@ public class AddressEditor extends RequiresConstituentEditor {
         }
         else if ("new".equals(text)){
             Address a = new Address(super.getPerson());
+            a.setUserCreated(true);
             a.setActivationStatus("permanent");
             a.setAddressType("home");
             setValue(a);

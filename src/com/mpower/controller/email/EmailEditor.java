@@ -40,6 +40,7 @@ public class EmailEditor extends RequiresConstituentEditor {
             Email a = new Email(super.getPerson());
             a.setActivationStatus("permanent");
             a.setEmailType("home");
+            a.setUserCreated(true);
 
             setValue(a);
         }

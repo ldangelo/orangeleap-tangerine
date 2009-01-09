@@ -37,7 +37,9 @@ public class PaymentSourceEditor extends RequiresConstituentEditor {
             setValue(ps);
         }
         else if ("new".equals(text)) {
-            setValue(new PaymentSource(super.getPerson()));
+            PaymentSource ps = new PaymentSource(super.getPerson());
+            ps.setUserCreated(true);
+            setValue(ps);
         }
     }
 }

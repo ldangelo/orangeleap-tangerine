@@ -34,7 +34,7 @@ import com.mpower.util.PhoneCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "PHONE")
-public class Phone implements SiteAware, Customizable, Viewable, Inactivatible, Serializable {
+public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -301,6 +301,14 @@ public class Phone implements SiteAware, Customizable, Viewable, Inactivatible, 
 
     public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
+    }
+
+    /**
+     * Check if this is a dummy object; This is not a dummy object all required fields (number) are populated
+     * @return true if this Address has all required fields populated
+     */
+    public boolean isValid() {
+        return (org.springframework.util.StringUtils.hasText(number));
     }
 
     @PrePersist

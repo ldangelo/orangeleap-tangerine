@@ -11,6 +11,8 @@ public interface AddressService {
 
     public List<Address> readAddresses(Long personId);
 
+    public List<Address> filterValidAddresses(Long personId);
+
     public void setAuditService(AuditService auditService);
 
     public Address readAddress(Long addressId);

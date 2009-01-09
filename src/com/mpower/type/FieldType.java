@@ -1,6 +1,7 @@
 package com.mpower.type;
 
 public enum FieldType {
+    HIDDEN,
     DATE,
     DATE_DISPLAY,
     TEXT,

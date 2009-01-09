@@ -59,9 +59,9 @@ public class PaymentManagerFormController extends TangerineFormController {
     protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
         List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
         refData.put("paymentSources", paymentSources);
-        List<Address> addresses = addressService.readAddresses(Long.valueOf(personId));
+        List<Address> addresses = addressService.filterValidAddresses(Long.valueOf(personId));
         refData.put("addresses", addresses);
-        List<Phone> phones = phoneService.readPhones(Long.valueOf(personId));
+        List<Phone> phones = phoneService.filterValidPhones(Long.valueOf(personId));
         refData.put("phones", phones);
     }
 
@@ -93,12 +93,30 @@ public class PaymentManagerFormController extends TangerineFormController {
         return paymentSource;
     }
 
+    // TODO: refactor
     protected void createNew(HttpServletRequest request, PaymentSource paymentSource) {
         if (StringConstants.NEW.equals(request.getParameter("selectedPhone"))) {
             paymentSource.userCreateNewPhone();
         }
         if (StringConstants.NEW.equals(request.getParameter("selectedAddress"))) {
             paymentSource.userCreateNewAddress();
+        }
+    }
+
+    @Override
+    // TODO: refactor
+    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        super.onBindAndValidate(request, command, errors);
+
+        if (!errors.hasErrors()) {
+            if (isFormSubmission(request)) {
+                if ("".equals(request.getParameter("selectedPhone"))) {
+                    ((PaymentSource)command).createNewPhone(); // this is equivalent to setting it to the dummy (empty) phone
+                }
+                if ("".equals(request.getParameter("selectedAddress"))) {
+                    ((PaymentSource)command).createNewAddress(); // this is equivalent to setting it to the dummy (empty) address
+                }
+            }
         }
     }
 }

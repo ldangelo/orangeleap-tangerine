@@ -20,7 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -37,6 +36,7 @@ import com.mpower.domain.annotation.AutoPopulate;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.CommitmentType;
 import com.mpower.util.CommitmentCustomFieldMap;
+import com.mpower.util.Utilities;
 
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
@@ -129,15 +129,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @ManyToOne
     @JoinColumn(name = "PAYMENT_SOURCE_ID")
-    private PaymentSource paymentSource = new PaymentSource();
+    private PaymentSource paymentSource = new PaymentSource(person);
 
     @ManyToOne
     @JoinColumn(name = "ADDRESS_ID")
-    private Address address = new Address();
+    private Address address = new Address(person);
 
     @ManyToOne
     @JoinColumn(name = "PHONE_ID")
-    private Phone phone = new Phone();
+    private Phone phone = new Phone(person);
 
     @Column(name = "FREQUENCY")
     private String frequency;
@@ -166,13 +166,13 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     private Map<String, Object> fieldValueMap = null;
 
     @Transient
-    private PaymentSource selectedPaymentSource = new PaymentSource();
+    private PaymentSource selectedPaymentSource = new PaymentSource(person);
 
     @Transient
-    private Address selectedAddress = new Address();
+    private Address selectedAddress = new Address(person);
 
     @Transient
-    private Phone selectedPhone = new Phone();
+    private Phone selectedPhone = new Phone(person);
 
     public Commitment() {
     }
@@ -195,24 +195,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     public void setPerson(Person person) {
         this.person = person;
-        if (getSelectedPaymentSource().getPerson() == null) {
-            getSelectedPaymentSource().setPerson(person);
-        }
-        if (getSelectedAddress().getPerson() == null) {
-            getSelectedAddress().setPerson(person);
-        }
-        if (getSelectedPhone().getPerson() == null) {
-            getSelectedPhone().setPerson(person);
-        }
-        if (getPaymentSource().getPerson() == null) {
-            getPaymentSource().setPerson(person);
-        }
-        if (getAddress().getPerson() == null) {
-            getAddress().setPerson(person);
-        }
-        if (getPhone().getPerson() == null) {
-            getPhone().setPerson(person);
-        }
     }
 
     public CommitmentType getCommitmentType() {
@@ -379,6 +361,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public PaymentSource getPaymentSource() {
+        Utilities.populateIfNullPerson(paymentSource, person);
         return paymentSource;
     }
 
@@ -387,6 +370,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Address getAddress() {
+        Utilities.populateIfNullPerson(address, person);
         return address;
     }
 
@@ -395,6 +379,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Phone getPhone() {
+        Utilities.populateIfNullPerson(phone, person);
         return phone;
     }
 
@@ -482,6 +467,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public PaymentSource getSelectedPaymentSource() {
+        Utilities.populateIfNullPerson(selectedPaymentSource, person);
         return selectedPaymentSource;
     }
 
@@ -490,6 +476,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Address getSelectedAddress() {
+        Utilities.populateIfNullPerson(selectedAddress, person);
         return selectedAddress;
     }
 
@@ -498,6 +485,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     }
 
     public Phone getSelectedPhone() {
+        Utilities.populateIfNullPerson(selectedPhone, person);
         return selectedPhone;
     }
 
@@ -531,19 +519,6 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
             }
         } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
-        }
-    }
-
-    @PostLoad
-    public void initTransient() {
-        if (paymentSource != null) {
-            selectedPaymentSource = paymentSource;
-        }
-        if (address != null) {
-            selectedAddress = address;
-        }
-        if (phone != null) {
-            selectedPhone = phone;
         }
     }
 }

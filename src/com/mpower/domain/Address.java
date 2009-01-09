@@ -35,7 +35,7 @@ import com.mpower.util.AddressCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "ADDRESS")
-public class Address implements SiteAware, Customizable, Viewable, Inactivatible, Serializable {
+public class Address implements SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -360,7 +360,23 @@ public class Address implements SiteAware, Customizable, Viewable, Inactivatible
     }
 
     public String getShortDisplay() {
-        return StringUtils.substring(addressLine1, 0, 10) + " ... " + StringUtils.substring(postalCode, 0, 5);
+        String shortDisplay = null;
+        if (isValid()) {
+            shortDisplay = StringUtils.substring(addressLine1, 0, 10) + " ... " + StringUtils.substring(postalCode, 0, 5);
+        }
+        return shortDisplay;
+    }
+
+    /**
+     * Check if this is a dummy object; This is not a dummy object all required fields (addressLine1, city, stateProvince, postalCode, country) are populated
+     * @return true if this Address has all required fields populated
+     */
+    public boolean isValid() {
+        return (org.springframework.util.StringUtils.hasText(addressLine1) &&
+                org.springframework.util.StringUtils.hasText(city) &&
+                org.springframework.util.StringUtils.hasText(stateProvince) &&
+                org.springframework.util.StringUtils.hasText(postalCode) &&
+                org.springframework.util.StringUtils.hasText(country));
     }
 
     @PrePersist

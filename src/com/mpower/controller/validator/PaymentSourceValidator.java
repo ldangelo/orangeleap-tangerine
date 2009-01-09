@@ -20,8 +20,6 @@ public class PaymentSourceValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    public static final String ACH = "ACH";
-    public static final String CREDIT_CARD = "Credit Card";
 
     private PaymentSourceService paymentSourceService;
 
@@ -61,11 +59,12 @@ public class PaymentSourceValidator implements Validator {
             errors.setNestedPath("paymentSource");
         }
 
-        if (ACH.equals(source.getType())) {
+        if (PaymentSource.ACH.equals(source.getType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achAccountNumber", "invalidAchAccountNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achRoutingNumber", "invalidAchRoutingNumber");
         }
-        else if (CREDIT_CARD.equals(source.getType())) {
+        else if (PaymentSource.CREDIT_CARD.equals(source.getType())) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardType", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardNumber", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardExpiration", "invalidCreditCardExpiration");
             if (!errors.hasErrors()) {

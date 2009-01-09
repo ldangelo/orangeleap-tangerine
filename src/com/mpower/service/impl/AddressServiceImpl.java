@@ -1,5 +1,6 @@
 package com.mpower.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -64,6 +65,21 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
 
     public List<Address> readAddresses(Long personId) {
         return addressDao.readAddresses(personId);
+    }
+
+    @Override
+    public List<Address> filterValidAddresses(Long personId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("filterValidAddresses: personId = " + personId);
+        }
+        List<Address> addresses = this.readAddresses(personId);
+        List<Address> filteredAddresses = new ArrayList<Address>();
+        for (Address address : addresses) {
+            if (address.isValid()) {
+                filteredAddresses.add(address);
+            }
+        }
+        return filteredAddresses;
     }
 
     public void setAuditService(AuditService auditService) {

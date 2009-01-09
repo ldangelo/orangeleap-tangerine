@@ -80,10 +80,12 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
         return paymentSource;
     }
 
+    @Override
     public List<PaymentSource> readPaymentSources(Long personId) {
         return paymentSourceDao.readActivePaymentSources(personId);
     }
 
+    @Override
     public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long personId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSourcesACHCreditCard: personId = " + personId);
@@ -95,6 +97,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
         return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
     }
 
+    @Override
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long personId, List<String> paymentTypes) {
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSourcesByTypes: personId = " + personId + " paymentTypes = " + paymentTypes);
@@ -102,6 +105,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
         return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
     }
 
+    @Override
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
     }

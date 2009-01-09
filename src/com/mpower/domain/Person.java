@@ -71,20 +71,25 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "SUFFIX")
     private String suffix;
 
+    @Column(name = "RECOGNITION_NAME")
+    private String recognitionName;
+
     @Column(name = "MARITAL_STATUS")
     private String maritalStatus = "Unknown";
 
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
 
+    @Column(name = "NCAIS_CODE")
+    private String ncaisCode;
+
     @Column(name = "BIRTHDATE")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
 
-    @Column(name = "ANNIVERSARY")
-    @Temporal(TemporalType.DATE)
-    private Date anniversary;
-
+    @Column(name = "DECEASED")
+    private boolean deceased = false;
+    
     @Column(name = "PREFERRED_PHONE_TYPE")
     private String preferredPhoneType;
 
@@ -176,7 +181,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     	}
     }
     
-    private String createName(boolean lastFirst) {
+    public String createName(boolean lastFirst) {
     	StringBuilder sb = new StringBuilder();
     	if (lastFirst) sb.append(lastName == null ? "" : lastName).append(", ");
 	    sb.append(firstName == null ? "" : firstName);
@@ -240,14 +245,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public Date getAnniversary() {
-        return anniversary;
-    }
-
-    public void setAnniversary(Date anniversary) {
-        this.anniversary = anniversary;
     }
 
     public String getPreferredPhoneType() {
@@ -437,6 +434,30 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
 	public Map<String, FieldDefinition> getFieldTypeMap() {
 		return fieldTypeMap;
+	}
+
+	public void setNcaisCode(String ncaisCode) {
+		this.ncaisCode = ncaisCode;
+	}
+
+	public String getNcaisCode() {
+		return ncaisCode;
+	}
+
+	public void setRecognitionName(String recognitionName) {
+		this.recognitionName = recognitionName;
+	}
+
+	public String getRecognitionName() {
+		return recognitionName;
+	}
+
+	public void setDeceased(boolean deceased) {
+		this.deceased = deceased;
+	}
+
+	public boolean isDeceased() {
+		return deceased;
 	}
 	
 

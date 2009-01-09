@@ -22,11 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.dao.SiteDao;
+import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -127,7 +130,16 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public Gift readGiftById(Long giftId) {
-        return giftDao.readGift(giftId);
+        return normalize(giftDao.readGift(giftId));
+    }
+    
+    // only needed for gifts not entered by the program and entered via sql.
+    private Gift normalize(Gift gift) {
+    	if (gift.getAddress() == null) gift.setAddress(new Address(gift.getPerson()));
+    	if (gift.getPhone() == null) gift.setPhone(new Phone(gift.getPerson()));
+    	if (gift.getEmail() == null) gift.setEmail(new Email(gift.getPerson()));
+    	if (gift.getPaymentSource() == null) gift.setPaymentSource(new PaymentSource(gift.getPerson()));
+    	return gift;
     }
 
     @Override

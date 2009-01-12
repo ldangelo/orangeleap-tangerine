@@ -5,7 +5,7 @@
 </c:when>
 <c:otherwise>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Search People" />
+	<tiles:putAttribute name="browserTitle" value="Search Constituents" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="mainContent" type="string">
@@ -21,7 +21,7 @@
 						<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 					    <div class="personFormButtons searchPersonButtons">
 							<input class="searchButton" type="submit" value="Search" />
-							<a href="person.htm" class="newAccountButton">Add New Person &raquo; </a>
+							<a href="person.htm" class="newAccountButton">Add New Constituent &raquo; </a>
 						</div>
 					</div>
 				</c:forEach>

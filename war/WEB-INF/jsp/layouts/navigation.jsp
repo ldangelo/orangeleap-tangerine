@@ -39,7 +39,7 @@
 				<a href="#">Create New...</a>
 				<ul>
 					<li>
-						<a href="person.htm">Person</a>
+						<a href="person.htm">Constituent</a>
 					</li>
 					<c:if test="${viewingPerson}">
 						<li class="sectionTitle">For <c:out value="${person.firstName}"/>&nbsp;<c:out value="${person.lastName}"/> ...</li>
@@ -65,7 +65,7 @@
 				<a href="#">Go To...</a>
 				<ul>
 					<li>
-						<a href="personSearch.htm">Search People</a>
+						<a href="personSearch.htm">Search Constituents</a>
 					</li>
 					<li>
 						<a href="giftSearch.htm">Search Gifts</a>
@@ -89,7 +89,7 @@
 		<form method="post" action="personSearch.htm">
 			<input size="30" name="lastName" />
 			<select name="type">
-				<option value="people">People</option>
+				<option value="people">Constituents</option>
 				<option value="people">Gifts</option>
 			</select>
 			<input type="submit" value="Search" class="saveButton" />

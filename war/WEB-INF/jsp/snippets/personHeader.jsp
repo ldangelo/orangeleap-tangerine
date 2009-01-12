@@ -12,7 +12,7 @@
 	</c:when>
 	<c:otherwise>
 		<h2 class="personEdit">
-			New Person
+			New Constituent
 		</h2>
 	</c:otherwise>
 	</c:choose>

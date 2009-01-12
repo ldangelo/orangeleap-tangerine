@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Person Profile" />
+	<tiles:putAttribute name="browserTitle" value="Constituent Profile" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Profile" />
@@ -31,7 +31,7 @@
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
-					<a class="newAccountButton" href="person.htm">Add New Person » </a>
+					<a class="newAccountButton" href="person.htm">Add New Constituent » </a>
 				</div>
 			</form:form>
 		</div>

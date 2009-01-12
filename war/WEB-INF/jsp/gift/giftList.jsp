@@ -1,9 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Gift History" />
+	<tiles:putAttribute name="browserTitle" value="Gifts" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Gift History" />
+	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='giftList' />
 		<c:set var="person" value="${person}" scope="request" />

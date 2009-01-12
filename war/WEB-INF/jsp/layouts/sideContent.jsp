@@ -7,6 +7,9 @@
 				<h3>
 					<c:out value='${person.displayValue}'/>:
 				</h3>
+				
+				<%-- TODO: Refactor the way sidebarNav works!!!! --%>
+				
 				<div class="accountOptions">
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="profile"/></a>
@@ -24,24 +27,26 @@
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gifts</a>
-			            <span class="secondary ${sidebarNav=='Gift History'?'active':''}">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="giftManager"/></a>
+			            <span class="secondary ${sidebarNav=='Gifts'?'active':''}">
+				            <a class="${sidebarNav=='New Gift'?'active':''}" href="gift.htm?personId=${person.id}"><spring:message code="newGift"/></a>
 							<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-			            		<a class="${sidebarNav=='Gift History'?'active':''}" href="giftList.htm?personId=${person.id}">Gift History</a>
+			            		<a class="${sidebarNav=='Gifts'?'active':''}" href="giftList.htm?personId=${person.id}"><spring:message code="gifts"/></a>
 							</c:if>
-				            <a class="${sidebarNav=='Enter Gift'?'active':''}" href="gift.htm?personId=${person.id}">New Gift</a>
-							<a class="${sidebarNav=='Enter Recurring Gift'?'active':''}" href="recurringGift.htm?personId=${person.id}&type=recurringGift">Enter Recurring Gift</a>
+							<a class="${sidebarNav=='New Recurring Gift'?'active':''}" href="recurringGift.htm?personId=${person.id}&type=recurringGift"><spring:message code="newRecurringGift"/></a>
 				            <c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-								<a class="${sidebarNav=='Recurring Gifts'?'active':''}" href="recurringGiftList.htm?personId=${person.id}&type=recurringGift">Recurring Gifts</a>
+								<a class="${sidebarNav=='Recurring Gifts'?'active':''}" href="recurringGiftList.htm?personId=${person.id}&type=recurringGift"><spring:message code="recurringGifts"/></a>
 				            </c:if>
-							<a class="${sidebarNav=='Enter Pledge'?'active':''}" href="pledge.htm?personId=${person.id}&type=pledge">Enter Pledge</a>
+							<a class="${sidebarNav=='New Pledge'?'active':''}" href="pledge.htm?personId=${person.id}&type=pledge"><spring:message code="newPledge"/></a>
 				            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-								<a class="${sidebarNav=='Pledges'?'active':''}" href="pledgeList.htm?personId=${person.id}&type=pledge">Pledges</a>
+								<a class="${sidebarNav=='Pledges'?'active':''}" href="pledgeList.htm?personId=${person.id}&type=pledge"><spring:message code="pledges"/></a>
 				            </c:if>
-							<a class="${sidebarNav=='Enter Membership'?'active':''}" href="membership.htm?personId=${person.id}&type=membership">Enter Membership</a>
+				            <%--
+							<a class="${sidebarNav=='New Membership'?'active':''}" href="membership.htm?personId=${person.id}&type=membership"><spring:message code="newMembership"/></a>
 				            <c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
-								<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership">Memberships</a>
+								<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership"><spring:message code="memberships"/></a>
 				            </c:if>
+				            --%>
 			            </span>
 		            </div>
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}">Audit</a>

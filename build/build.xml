@@ -102,6 +102,9 @@
 	     	<transaction src="${basedir}/db/prod/picklists/genderPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/militaryPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/racePicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/communicationPreferencesPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/emailFormatPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/matchingPicklist.sql"/>
 	     	<!-- Setup payment type picklist and add to gift page -->
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>

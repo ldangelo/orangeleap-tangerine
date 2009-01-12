@@ -63,6 +63,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     @Column(name = "PAYMENT_TYPE")
     private String type = CREDIT_CARD;
 
+    @Column(name = "CREDIT_CARD_HOLDER_NAME")
+    private String creditCardHolderName;
+
     @Column(name = "CREDIT_CARD_TYPE")
     private String creditCardType;
 
@@ -71,6 +74,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     @Column(name = "CREDIT_CARD_EXPIRATION")
     private Date creditCardExpiration;
+
+    @Column(name = "ACH_HOLDER_NAME")
+    private String achHolderName;
 
     @Column(name = "ACH_ROUTING_NUMBER")
     private String achRoutingNumber;
@@ -200,6 +206,22 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCreditCardHolderName() {
+        return creditCardHolderName;
+    }
+
+    public void setCreditCardHolderName(String creditCardHolderName) {
+        this.creditCardHolderName = creditCardHolderName;
+    }
+
+    public String getAchHolderName() {
+        return achHolderName;
+    }
+
+    public void setAchHolderName(String achHolderName) {
+        this.achHolderName = achHolderName;
     }
 
     public String getCreditCardType() {
@@ -449,6 +471,43 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.userCreated = userCreated;
     }
 
+    public void createDefaultHolderNames() {
+        if (creditCardHolderName == null && person != null) {
+            creditCardHolderName = person.getFirstLast();
+        }
+        if (achHolderName == null && person != null) {
+            achHolderName = person.getFirstLast();
+        }
+    }
+
+    /**
+     * If no profile name was entered, create one from the last 4 digits of the account/card number
+     */
+    public void createDefaultProfileName() {
+        if (this.profile == null) {
+            StringBuilder sb = new StringBuilder();
+
+            if (ACH.equals(type)) {
+                sb.append("ach"); // TODO: move to message bundle and lookup
+                sb.append("****");
+                sb.append(findLastFourDigits(this.achAccountNumber));
+                this.profile = sb.toString();
+            }
+            else if (CREDIT_CARD.equals(type)) {
+                if (creditCardType != null) {
+                    sb.append(creditCardType);
+                }
+                sb.append("****");
+                sb.append(findLastFourDigits(this.creditCardNumber));
+                this.profile = sb.toString();
+            }
+        }
+    }
+
+    private String findLastFourDigits(String number) {
+        return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PaymentSource)) {
@@ -482,11 +541,14 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     public void normalize() {
         if (type != null) {
             if (ACH.equals(getType())) {
+                setCreditCardHolderName(null);
                 setCreditCardExpiration(null);
                 setCreditCardNumber(null);
                 setCreditCardSecurityCode(null);
                 setCreditCardType(null);
-            } else if (CREDIT_CARD.equals(getType())) {
+            }
+            else if (CREDIT_CARD.equals(getType())) {
+                setAchHolderName(null);
                 setAchAccountNumber(null);
                 setAchRoutingNumber(null);
             }

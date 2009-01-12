@@ -67,15 +67,8 @@ public class PaymentManagerFormController extends TangerineFormController {
 
     @Override
     protected Viewable findViewable(HttpServletRequest request) {
-        String paymentSourceId = request.getParameter("paymentSourceId");
-        PaymentSource paymentSource = null;
-        if (paymentSourceId == null) {
-            paymentSource = new PaymentSource(super.getPerson(request));
-        }
-        else {
-            paymentSource = paymentSourceService.readPaymentSource(Long.valueOf(paymentSourceId));
-        }
-        return paymentSource;
+        boolean isGet = !super.isFormSubmission(request);
+        return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getPerson(request), isGet);
     }
 
     @Override

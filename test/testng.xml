@@ -3,6 +3,7 @@
 	<test name="mpower-tests">
         <packages>
         	<package name="com.mpower.test"></package>
+        	<package name="com.mpower.test.service.impl"></package>
         </packages>
     </test>
 </suite>

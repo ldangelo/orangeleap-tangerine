@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.domain.PaymentSource;
+import com.mpower.domain.Person;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.InactivateService;
@@ -41,7 +42,6 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
-
         boolean found = false;
         if (paymentSource.getId() == null) {
             List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
@@ -66,6 +66,7 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
             if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
                 paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
             }
+            paymentSource.createDefaultProfileName();
 
             paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
 
@@ -113,6 +114,21 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
         return paymentSourceDao.readPaymentSource(paymentSourceId);
+    }
+
+    @Override
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person, boolean setDefaultHolder) {
+        PaymentSource paymentSource = null;
+        if (paymentSourceId == null) {
+            paymentSource = new PaymentSource(person);
+        }
+        else {
+            paymentSource = this.readPaymentSource(Long.valueOf(paymentSourceId));
+        }
+        if (setDefaultHolder) {
+            paymentSource.createDefaultHolderNames();
+        }
+        return paymentSource;
     }
 
     @Override

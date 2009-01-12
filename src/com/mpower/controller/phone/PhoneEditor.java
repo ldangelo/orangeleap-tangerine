@@ -8,6 +8,7 @@ import com.mpower.controller.constituent.RequiresConstituentEditor;
 import com.mpower.domain.Phone;
 import com.mpower.service.PersonService;
 import com.mpower.service.PhoneService;
+import com.mpower.util.StringConstants;
 
 public class PhoneEditor extends RequiresConstituentEditor {
 
@@ -36,7 +37,7 @@ public class PhoneEditor extends RequiresConstituentEditor {
             Phone a = phoneService.readPhone(phoneId);
             setValue(a);
         }
-        else if ("new".equals(text)){
+        else if (StringConstants.NEW.equals(text)){
             Phone a = new Phone(super.getPerson());
             a.setActivationStatus("permanent");
             a.setPhoneType("home");

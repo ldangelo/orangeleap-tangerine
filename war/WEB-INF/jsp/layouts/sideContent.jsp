@@ -9,13 +9,18 @@
 				</h3>
 				<div class="accountOptions">
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
-						<span class="secondary ${sidebarNav=='Profile'?'active':''}">
-							<a class="${sidebarNav=='Profile'?'active':''}" href="person.htm?personId=${person.id}">Contact Information</a>
-							<a class="${sidebarNav=='Address Manager'?'active':''}" href="addressManager.htm?personId=${person.id}">Addresses</a>
-							<a class="${sidebarNav=='Email Manager'?'active':''}" href="emailManager.htm?personId=${person.id}">Emails</a>
-							<a class="${sidebarNav=='Phone Manager'?'active':''}" href="phoneManager.htm?personId=${person.id}">Phone Numbers</a>
-							<a class="${sidebarNav=='Payment Manager'?'active':''}" href="paymentManager.htm?personId=${person.id}">Payment Methods</a>
+						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="profile"/></a>
+						<span class="secondary ${sidebarNav == 'Profile' ? 'active' : ''}">
+							<a class="${sidebarNav == 'Profile' ? 'active' : ''}" href="person.htm?personId=${person.id}"><spring:message code="contactInformation"/></a>
+							<a class="${sidebarNav == 'Address Manager' ? 'active' : ''}" href="addressManager.htm?personId=${person.id}"><spring:message code="addresses"/></a>
+							<a class="${sidebarNav == 'Email Manager' ? 'active' : ''}" href="emailManager.htm?personId=${person.id}"><spring:message code="emails"/></a>
+							<a class="${sidebarNav == 'Phone Manager' ? 'active' : ''}" href="phoneManager.htm?personId=${person.id}"><spring:message code="phoneNumbers"/></a>
+						</span>
+					</div>
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
+						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
+							<a class="${sidebarNav == 'Payment Manager' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
 						</span>
 					</div>
 					<div class="navGroup">

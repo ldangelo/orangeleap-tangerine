@@ -56,8 +56,12 @@ public abstract class TangerineFormController extends SimpleFormController {
         this.pageType = pageType;
     }
 
+    public Long getIdAsLong(HttpServletRequest request, String id) {
+        return Long.valueOf(request.getParameter(id));
+    }
+
     protected Long getPersonId(HttpServletRequest request) {
-        return Long.valueOf(request.getParameter(StringConstants.PERSON_ID));
+        return this.getIdAsLong(request, StringConstants.PERSON_ID);
     }
 
     protected Person getPerson(HttpServletRequest request) {

@@ -3,6 +3,7 @@ package com.mpower.service;
 import java.util.List;
 
 import com.mpower.domain.PaymentSource;
+import com.mpower.domain.Person;
 
 public interface PaymentSourceService {
 
@@ -13,6 +14,8 @@ public interface PaymentSourceService {
     public void setAuditService(AuditService auditService);
 
     public PaymentSource readPaymentSource(Long paymentSourceId);
+
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person, boolean setDefaultHolder);
 
     public PaymentSource findPaymentSourceProfile(Long personId, String profile);
 

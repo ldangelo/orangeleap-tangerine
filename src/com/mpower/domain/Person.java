@@ -37,6 +37,9 @@ import com.mpower.util.PhoneMap;
 public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    public static final String INDIVIDUAL = "individual";
+    public static final String ORGANIZATION = "organization";
 
     @SuppressWarnings("unused")
     @Transient
@@ -50,10 +53,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @ManyToOne
     @JoinColumn(name = "SITE_NAME")
     private Site site;
-
-    // This could become a OneToMany relationship, instead of a comma-delimited string as it is now.
-    @Column(name = "CONSTITUENT_ATTRIBUTES")
-    private String constituentAttributes = "person";
+    
+    @Column(name = "CONSTITUENT_TYPE")
+    private String constituentType = INDIVIDUAL;
 
     @Column(name = "TITLE")
     private String title;
@@ -73,14 +75,17 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "RECOGNITION_NAME")
     private String recognitionName;
 
-    @Column(name = "MARITAL_STATUS")
-    private String maritalStatus = "Unknown";
-
     @Column(name = "ORGANIZATION_NAME")
     private String organizationName;
 
+    @Column(name = "LEGAL_NAME")
+    private String legalName;
+
     @Column(name = "NCAIS_CODE")
     private String ncaisCode;
+
+    @Column(name = "MARITAL_STATUS")
+    private String maritalStatus = "Unknown";
 
     @Column(name = "BIRTHDATE")
     @Temporal(TemporalType.DATE)
@@ -113,6 +118,12 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "LAPSED_DONOR")
     private boolean lapsedDonor = false;
 
+    @Column(name = "CONSTITUENT_INDIVIDUAL_ROLES")
+    private String constituentIndividualRoles = "";
+
+    @Column(name = "CONSTITUENT_ORGANIZATION_ROLES")
+    private String constituentOrganizationRoles = "";
+
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
@@ -140,78 +151,66 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
-
+    
     @Transient
     private Map<String, FieldDefinition> fieldTypeMap = null;
-
+    
     public Person() {
     }
-
-    @Override
+    
     public String toString() {
-        return getDisplayValue();
+    	return getDisplayValue();
     }
-
+    
     public String getCustomFieldValue(String fieldName) {
-        CustomField customField = getCustomFieldMap().get(fieldName);
-        if (customField == null || customField.getValue() == null) {
-            return null;
-        }
+    	CustomField customField = getCustomFieldMap().get(fieldName);
+    	if (customField == null || customField.getValue() == null) return null;
         return customField.getValue();
     }
-
+    
     public boolean isOrganization() {
-        return getConstituentAttributes().contains("organization");
+    	return getConstituentType().equals(ORGANIZATION);
     }
 
     public String getDisplayValue() {
-        if (isOrganization()) {
-            return organizationName;
-        } else {
-            return createName(true);
-        }
+    	if (isOrganization()) {
+    		return organizationName; 
+    	} else {
+    		return createName(true);
+    	}
     }
-
-    public String getFullName() {
-        if (isOrganization()) {
-            return organizationName;
-        } else {
-            return createName(false);
-        }
-    }
-
+    
     public String getFirstLast() {
-        StringBuilder sb = new StringBuilder();
-        if (isOrganization()) {
-            sb.append(organizationName);
-        }
-        else {
-            if (firstName != null) {
-                sb.append(firstName).append(" ");
-            }
-            if (lastName != null) {
-                sb.append(lastName);
-            }
-        }
-        return sb.toString();
+		StringBuilder sb = new StringBuilder();
+		if (isOrganization()) {
+			sb.append(organizationName);
+		} else {
+			if (firstName != null) {
+				sb.append(firstName).append(" ");
+			}
+			if (lastName != null) {
+				sb.append(lastName);
+			}
+		}
+		return sb.toString();
+	}
+    
+    public String getFullName() {
+    	if (isOrganization()) {
+    		return organizationName; 
+    	} else {
+    		return createName(false);
+    	}
     }
-
+    
     public String createName(boolean lastFirst) {
-        StringBuilder sb = new StringBuilder();
-        if (lastFirst) {
-            sb.append(lastName == null ? "" : lastName).append(", ");
-        }
-        sb.append(firstName == null ? "" : firstName);
-        if (middleName != null && middleName.length() > 0) {
-            sb.append(" ").append(middleName);
-        }
-        if (!lastFirst) {
-            sb.append(" ").append(lastName == null ? "" : lastName);
-        }
-        if (suffix != null && suffix.length() > 0) {
-            sb.append(", ").append(suffix);
-        }
-        return sb.toString();
+    	StringBuilder sb = new StringBuilder();
+    	if (lastFirst) sb.append(lastName == null ? "" : lastName).append(", ");
+	    sb.append(firstName == null ? "" : firstName);
+	    if (middleName != null && middleName.length() > 0) sb.append(" ").append(middleName);
+    	if (!lastFirst) sb.append(" ").append(lastName == null ? "" : lastName);
+	    if (suffix != null && suffix.length() > 0) sb.append(", ").append(suffix);
+	    return sb.toString();
     }
 
     public String getEntityName() {
@@ -443,37 +442,96 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
         return this;
     }
 
-    public void setConstituentAttributes(String constituentAttributes) {
-        this.constituentAttributes = constituentAttributes;
-    }
+	public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+		this.fieldTypeMap = fieldTypeMap;
+	}
 
-    public String getConstituentAttributes() {
-        return constituentAttributes == null ? "" : constituentAttributes;
-    }
+	public Map<String, FieldDefinition> getFieldTypeMap() {
+		return fieldTypeMap;
+	}
 
-    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-        this.fieldTypeMap = fieldTypeMap;
-    }
+	public void setNcaisCode(String ncaisCode) {
+		this.ncaisCode = ncaisCode;
+	}
 
-    public Map<String, FieldDefinition> getFieldTypeMap() {
-        return fieldTypeMap;
-    }
+	public String getNcaisCode() {
+		return ncaisCode;
+	}
 
-    public void setNcaisCode(String ncaisCode) {
-        this.ncaisCode = ncaisCode;
-    }
+	public void setRecognitionName(String recognitionName) {
+		this.recognitionName = recognitionName;
+	}
 
-    public String getNcaisCode() {
-        return ncaisCode;
-    }
+	public String getRecognitionName() {
+		return recognitionName;
+	}
 
-    public void setRecognitionName(String recognitionName) {
-        this.recognitionName = recognitionName;
-    }
+	public void setConstituentType(String constituentType) {
+		this.constituentType = constituentType;
+	}
 
-    public String getRecognitionName() {
-        return recognitionName;
-    }
+	public String getConstituentType() {
+		if (constituentType == null) return "individual"; 
+		return constituentType;
+	}
+
+	public void setConstituentIndividualRoles(String constituentIndividualRoles) {
+		this.constituentIndividualRoles = constituentIndividualRoles;
+	}
+
+	public String getConstituentIndividualRoles() {
+		return constituentIndividualRoles;
+	}
+
+	public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
+		this.constituentOrganizationRoles = constituentOrganizationRoles;
+	}
+
+	public String getConstituentOrganizationRoles() {
+		return constituentOrganizationRoles;
+	}
+	
+	public void addConstituentRole(String constituentRole) {
+		if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) return;
+		if (isOrganization()) {
+			setConstituentOrganizationRoles(addToList(getConstituentOrganizationRoles(), constituentRole));
+		} else {
+			setConstituentIndividualRoles(addToList(getConstituentIndividualRoles(), constituentRole));
+		}
+	}
+	
+	private String addToList(String list, String s) {
+		if (list == null) list = "";
+		if (!list.contains(s)) {
+			if (list.length() > 0) list += ",";
+			list += s;
+		}
+		return list;
+	}
+	
+	public void setConstituentAttributes(String constituentAttributes) {
+		  //noop - read only field for Spring MVC
+	}
+
+	public String getConstituentAttributes() {
+		String constituentAttributes;
+		if (isOrganization()) {
+      		constituentAttributes = ORGANIZATION;
+      		if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
+		} else {
+			constituentAttributes = INDIVIDUAL;
+      		if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
+		}
+		return constituentAttributes;
+	}
+
+	public void setLegalName(String legalName) {
+		this.legalName = legalName;
+	}
+
+	public String getLegalName() {
+		return legalName;
+	}
 
 
 }

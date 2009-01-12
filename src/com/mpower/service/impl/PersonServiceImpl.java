@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -47,6 +48,14 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
     public Person maintainPerson(Person person) throws PersonValidationException {
+    	
+    	if (StringUtils.isBlank(person.getLegalName())) {
+    		person.setLegalName(person.getOrganizationName());
+    	}
+    	if (StringUtils.isBlank(person.getRecognitionName())) {
+    		person.setRecognitionName(person.createName(false));
+    	}
+    	
         person = personDao.savePerson(person);
         relationshipService.maintainRelationships(person);
         auditService.auditObject(person);

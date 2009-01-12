@@ -264,14 +264,13 @@
 		</div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-			<c:choose>
-				<c:when test="${fieldVO.fieldValue}">
-					<input type="checkbox" value="true" class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" checked="checked" />
-				</c:when>
-				<c:otherwise>
-					<input type="checkbox" value="true" class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-				</c:otherwise>
-			</c:choose>
+            <input type="hidden" name="_<c:out value="${fieldVO.fieldName}"/>" value="visible" />
+            <input type="checkbox" value="true" 
+                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
+                   name="<c:out value='${fieldVO.fieldName}'/>" 
+                   id="<c:out value='${fieldVO.fieldName}'/>"  
+                   <c:if test="${fieldVO.fieldValue}">checked</c:if> 
+            />
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 			<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>

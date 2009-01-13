@@ -21,10 +21,7 @@
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
-						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
-							<a class="${sidebarNav == 'Payment Manager' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
-						</span>
+						<a class="${sidebarNav == 'Payment Manager' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentManager"/></a>
 					</div>
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="giftManager"/></a>

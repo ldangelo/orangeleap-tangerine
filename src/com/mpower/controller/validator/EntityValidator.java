@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.Address;
@@ -58,6 +59,7 @@ public class EntityValidator implements Validator {
         return Person.class.equals(clazz) || Gift.class.equals(clazz) || Commitment.class.equals(clazz) || Address.class.equals(clazz) || Email.class.equals(clazz) || Phone.class.equals(clazz) || PaymentSource.class.equals(clazz);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
         logger.debug("in EntityValidator");
@@ -67,8 +69,6 @@ public class EntityValidator implements Validator {
                 PaymentSourceAware obj = (PaymentSourceAware) target;
                 PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
                 if (selectedPaymentSource != null && selectedPaymentSource.getId() != null) {
-//                    obj.setPaymentSource(selectedPaymentSource);
-//                    obj.getPaymentSource().setType(obj.getPaymentType());
                     PaymentSourceValidator.validatePaymentSource(target, errors);
                 }
             }
@@ -77,7 +77,6 @@ public class EntityValidator implements Validator {
                 AddressAware obj = (AddressAware) target;
                 Address selectedAddress = obj.getSelectedAddress();
                 if (selectedAddress != null && selectedAddress.getId() != null) {
-//                    obj.setAddress(selectedAddress);
                     AddressValidator.validateAddress(target, errors);
                 }
             }
@@ -86,7 +85,6 @@ public class EntityValidator implements Validator {
                 PhoneAware obj = (PhoneAware) target;
                 Phone selectedPhone = obj.getSelectedPhone();
                 if (selectedPhone != null && selectedPhone.getId() != null) {
-//                    obj.setPhone(selectedPhone);
                     PhoneValidator.validatePhone(target, errors);
                 }
             }
@@ -95,29 +93,34 @@ public class EntityValidator implements Validator {
                 EmailAware obj = (EmailAware) target;
                 Email selectedEmail = obj.getSelectedEmail();
                 if (selectedEmail != null && selectedEmail.getId() != null) {
-//                    obj.setEmail(selectedEmail);
                     EmailValidator.validateEMail(target, errors);
                 }
             }
 
         }
 
-        if (!errors.hasErrors()) {
-            Viewable viewable = (Viewable) target;
-            Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
+        Set<String> errorSet = new HashSet<String>();
 
-            // used as a cache to prevent having to use reflection if the value has already been read
-            Map<String, Object> fieldValueMap = new HashMap<String, Object>();
-
-            // used to know that a field already has an error, so don't add another
-            Set<String> errorSet = new HashSet<String>();
-
-            // first, validate required fields
-            validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
-
-            // next, validate custom validation (regex)
-            validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+        if (errors.hasErrors()) {
+            List<FieldError> e = errors.getFieldErrors();
+            for (FieldError error : e) {
+                errorSet.add(error.getField());
+            }
         }
+        
+        Viewable viewable = (Viewable) target;
+        Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
+
+        // used as a cache to prevent having to use reflection if the value has already been read
+        Map<String, Object> fieldValueMap = new HashMap<String, Object>();
+
+        // used to know that a field already has an error, so don't add another
+
+        // first, validate required fields
+        validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+
+        // next, validate custom validation (regex)  
+        validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
     }
 
     private void validateRequiredFields(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {

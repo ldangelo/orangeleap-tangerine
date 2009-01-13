@@ -11,6 +11,8 @@ public interface PaymentSourceService {
 
     public List<PaymentSource> readPaymentSources(Long personId);
 
+    public List<PaymentSource> filterValidPaymentSources(Long personId);
+
     public void setAuditService(AuditService auditService);
 
     public PaymentSource readPaymentSource(Long paymentSourceId);

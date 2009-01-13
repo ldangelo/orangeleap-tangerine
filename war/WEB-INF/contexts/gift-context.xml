@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="gift" class="com.mpower.controller.gift.GiftFormController">
+	<bean id="gift" class="com.mpower.controller.gift.GiftFormController" parent="tangerineFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validator">
@@ -15,15 +15,12 @@
             </bean>
         </property>
         <property name="formView" value="gift/gift" />
-        <property name="successView" value="gift/giftView" />
+        <property name="successView" value="redirect:/giftView.htm" />
         <property name="addressService" ref="addressService" />
-        <property name="commitmentService" ref="commitmentService" />
         <property name="giftService" ref="giftService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
         <property name="phoneService" ref="phoneService" />
         <property name="emailService" ref="emailService" />
-        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="giftRefund" class="com.mpower.controller.gift.GiftRefundController">

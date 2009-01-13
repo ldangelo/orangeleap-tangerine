@@ -11,6 +11,8 @@ public interface EmailService {
 
     public List<Email> readEmails(Long personId);
 
+    public List<Email> filterValidEmails(Long personId);
+
     public void setAuditService(AuditService auditService);
 
     public Email readEmail(Long emailId);

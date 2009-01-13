@@ -153,21 +153,6 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.address = address;
     }
 
-    /**
-     * Invoked when the system creates a new address
-     */
-    public void createNewAddress() {
-        setAddress(new Address(this.getPerson()));
-    }
-
-    /**
-     * Invoked only when a USER creates a new address object via the 'Create New' option
-     */
-    public void userCreateNewAddress() {
-        createNewAddress();
-        getAddress().setUserCreated(true);
-    }
-
     public Phone getPhone() {
         Utilities.populateIfNullPerson(phone, person);
         return phone;
@@ -175,21 +160,6 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     public void setPhone(Phone phone) {
         this.phone = phone;
-    }
-
-    /**
-     * Invoked when the system creates a new phone
-     */
-    public void createNewPhone() {
-        setPhone(new Phone(this.getPerson()));
-    }
-
-    /**
-     * Invoked only when a USER creates a new phone object via the 'Create New' option
-     */
-    public void userCreateNewPhone() {
-        createNewPhone();
-        getPhone().setUserCreated(true);
     }
 
     public String getProfile() {
@@ -508,6 +478,26 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
     }
 
+    /**
+     * Check if this is a dummy object; This is not a dummy object all required fields are populated
+     * @return true if this PaymentSource has all required fields populated
+     */
+    public boolean isValid() {
+        if (ACH.equals(type)) {
+            return org.springframework.util.StringUtils.hasText(achAccountNumber) &&
+            org.springframework.util.StringUtils.hasText(achRoutingNumber);
+        }
+        else if (CREDIT_CARD.equals(type)) {
+            return org.springframework.util.StringUtils.hasText(creditCardType) &&
+            org.springframework.util.StringUtils.hasText(creditCardNumber);
+
+        }
+        else if (CASH.equals(type) || CHECK.equals(type)) {
+            return true; // TODO: what are the validity constraints for CASH and CHECK?
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PaymentSource)) {
@@ -541,17 +531,29 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     public void normalize() {
         if (type != null) {
             if (ACH.equals(getType())) {
-                setCreditCardHolderName(null);
-                setCreditCardExpiration(null);
-                setCreditCardNumber(null);
-                setCreditCardSecurityCode(null);
-                setCreditCardType(null);
+                clearCredit();
             }
             else if (CREDIT_CARD.equals(getType())) {
-                setAchHolderName(null);
-                setAchAccountNumber(null);
-                setAchRoutingNumber(null);
+                clearACH();
+            }
+            else if (CHECK.equals(getType()) || CASH.equals(getType())) {
+                clearCredit();
+                clearACH();
             }
         }
+    }
+    
+    private void clearCredit() {
+        setCreditCardHolderName(null);
+        setCreditCardExpiration(null);
+        setCreditCardNumber(null);
+        setCreditCardSecurityCode(null);
+        setCreditCardType(null);       
+    }
+    
+    private void clearACH() {
+        setAchHolderName(null);
+        setAchAccountNumber(null);
+        setAchRoutingNumber(null);
     }
 }

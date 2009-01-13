@@ -30,6 +30,10 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
     @Resource(name = "auditService")
     private AuditService auditService;
 
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
+
     @Resource(name = "addressDao")
     private AddressDao addressDao;
 
@@ -80,10 +84,6 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
             }
         }
         return filteredAddresses;
-    }
-
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
     }
 
     public Address readAddress(Long addressId) {

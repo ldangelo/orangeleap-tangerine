@@ -87,6 +87,21 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     }
 
     @Override
+    public List<PaymentSource> filterValidPaymentSources(Long personId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("filterValidPaymentSources: personId = " + personId);
+        }
+        List<PaymentSource> paymentSources = this.readPaymentSources(personId);
+        List<PaymentSource> filteredPaymentSources = new ArrayList<PaymentSource>();
+        for (PaymentSource paymentSource : paymentSources) {
+            if (paymentSource.isValid()) {
+                filteredPaymentSources.add(paymentSource);
+            }
+        }
+        return filteredPaymentSources;
+    }
+
+    @Override
     public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long personId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSourcesACHCreditCard: personId = " + personId);

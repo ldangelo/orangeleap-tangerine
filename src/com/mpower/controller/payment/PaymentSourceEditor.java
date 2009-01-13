@@ -8,6 +8,7 @@ import com.mpower.controller.constituent.RequiresConstituentEditor;
 import com.mpower.domain.PaymentSource;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.util.StringConstants;
 
 public class PaymentSourceEditor extends RequiresConstituentEditor {
 
@@ -36,7 +37,7 @@ public class PaymentSourceEditor extends RequiresConstituentEditor {
             PaymentSource ps = paymentSourceService.readPaymentSource(paymentSourceId);
             setValue(ps);
         }
-        else if ("new".equals(text)) {
+        else if (StringConstants.NEW.equals(text)) {
             PaymentSource ps = new PaymentSource(super.getPerson());
             ps.setUserCreated(true);
             setValue(ps);

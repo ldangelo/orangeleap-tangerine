@@ -15,6 +15,8 @@ public interface GiftService {
 
     public Gift readGiftById(Long giftId);
 
+    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person);
+
     public List<Gift> readGifts(Person person);
 
     public List<Gift> readGifts(Long personId);

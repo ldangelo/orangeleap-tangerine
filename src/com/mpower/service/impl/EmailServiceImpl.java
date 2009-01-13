@@ -1,5 +1,6 @@
 package com.mpower.service.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
 
     @Resource(name = "emailDao")
     private EmailDao emailDao;
+
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Email saveEmail(Email email) {
@@ -66,8 +71,19 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         return emailDao.readEmails(personId);
     }
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
+    @Override
+    public List<Email> filterValidEmails(Long personId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("filterValidEmails: personId = " + personId);
+        }
+        List<Email> emails = this.readEmails(personId);
+        List<Email> filteredEmails = new ArrayList<Email>();
+        for (Email email : emails) {
+            if (email.isValid()) {
+                filteredEmails.add(email);
+            }
+        }
+        return filteredEmails;
     }
 
     public Email readEmail(Long emailId) {

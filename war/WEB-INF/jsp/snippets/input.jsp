@@ -39,12 +39,7 @@
 					<optgroup label="<spring:message code='orChoose'/>">
 				</c:if>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-					<c:if test="${opt.type == 'ACH'}">
-						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.type}'/>&nbsp;<c:out value='${opt.achAccountNumberDisplay}'/></option>
-					</c:if>
-					<c:if test="${opt.type == 'Credit Card'}">
-						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.creditCardType}'/>&nbsp;<c:out value='${opt.creditCardNumberDisplay}'/>&nbsp;Exp.&nbsp;<c:out value='${opt.creditCardExpirationMonth}'/>/<c:out value='${opt.creditCardExpirationYear}'/></option>
-					</c:if>
+					<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.profile}'/></option>
 				</c:forEach>
 				<c:if test="${not empty paymentSources}">
 					</optgroup>

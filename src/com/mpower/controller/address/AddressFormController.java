@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.Address;
@@ -59,7 +60,8 @@ public class AddressFormController extends TangerineFormController {
     }
 
     @Override
-    protected void save(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         addressService.saveAddress((Address)command);
+        return super.onSubmit(request, response, command, errors);
     }
 }

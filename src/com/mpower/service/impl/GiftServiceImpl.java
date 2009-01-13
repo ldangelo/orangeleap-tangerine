@@ -33,6 +33,7 @@ import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
+import com.mpower.service.CommitmentService;
 import com.mpower.service.EmailService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentSourceService;
@@ -57,6 +58,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
+
+    @Resource(name = "commitmentService")
+    private CommitmentService commitmentService;
 
     @Resource(name = "auditService")
     private AuditService auditService;
@@ -100,11 +104,11 @@ public class GiftServiceImpl implements GiftService {
         }
 
         // TODO: need to see if they exist if null id
-        if (gift.getAddress() != null && gift.getAddress().getId() == null) {
-            gift.setAddress(addressService.saveAddress(gift.getAddress()));
-        }
         if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
             gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
+        }
+        if (gift.getAddress() != null && gift.getAddress().getId() == null) {
+            gift.setAddress(addressService.saveAddress(gift.getAddress()));
         }
         if (gift.getPhone() != null && gift.getPhone().getId() == null) {
             gift.setPhone(phoneService.savePhone(gift.getPhone()));
@@ -132,15 +136,47 @@ public class GiftServiceImpl implements GiftService {
     public Gift readGiftById(Long giftId) {
         return normalize(giftDao.readGift(giftId));
     }
-    
+
+    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person) {
+        Gift gift = null;
+        if (giftId == null) {
+            Commitment commitment = null;
+            if (commitmentId != null) {
+                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+                if (commitment == null) {
+                    logger.error("readGiftByIdCreateIfNull: commitment not found for commitmentId = " + commitmentId);
+                    return gift;
+                }
+                gift = this.createGift(commitment, GiftEntryType.MANUAL);
+                gift.setPerson(commitment.getPerson());
+            }
+            if (gift == null) {
+                gift = this.createDefaultGift(person);
+                gift.setPerson(person);
+            }
+        }
+        else {
+            gift = this.readGiftById(Long.valueOf(giftId));
+        }
+        return gift;
+    }
+
     // only needed for gifts not entered by the program and entered via sql.
     private Gift normalize(Gift gift) {
-    	if (gift.getAddress() == null) gift.setAddress(new Address(gift.getPerson()));
-    	if (gift.getPhone() == null) gift.setPhone(new Phone(gift.getPerson()));
-    	if (gift.getEmail() == null) gift.setEmail(new Email(gift.getPerson()));
-    	if (gift.getPaymentSource() == null) gift.setPaymentSource(new PaymentSource(gift.getPerson()));
-    	gift.getPaymentSource().setPerson(gift.getPerson());
-    	return gift;
+        if (gift.getAddress() == null) {
+            gift.setAddress(new Address(gift.getPerson()));
+        }
+        if (gift.getPhone() == null) {
+            gift.setPhone(new Phone(gift.getPerson()));
+        }
+        if (gift.getEmail() == null) {
+            gift.setEmail(new Email(gift.getPerson()));
+        }
+        if (gift.getPaymentSource() == null) {
+            gift.setPaymentSource(new PaymentSource(gift.getPerson()));
+        }
+        gift.getPaymentSource().setPerson(gift.getPerson());
+        return gift;
     }
 
     @Override

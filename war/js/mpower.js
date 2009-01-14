@@ -115,7 +115,7 @@ $(document).ready(function() {
 	});
 	
 	Date.format = 'mm/dd/yyyy';
-	$('input.date').datePicker({startDate:'01/01/1996'});
+	$('input.date').datePicker({startDate:'01/01/1900'});
 	
 	$("div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption").hover(
 		function() {

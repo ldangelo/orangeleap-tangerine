@@ -317,14 +317,14 @@ var MPower = {
 				var $nested = $(selector).find(".picklist"); // the actual picklist <select>
 				$picklists = $picklists.add($nested);
 
-				if ((isMultiPicklist === true && $(this).css("display") == "none") || 
-					(isMultiPicklist === false && this.selected === false)) {
-					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
+				if ((isMultiPicklist === true && $(this).css("display") != "none") || 
+					(isMultiPicklist === false && this.selected)) {
+					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
+					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
 				} 
 				else {
-					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-					$toBeToggled = $toBeToggled ? $toBeToggled.add($nested) : $nested;
+					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
+					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
 				}
 			}
 		});
@@ -332,11 +332,11 @@ var MPower = {
 		if (typeof $toBeHidden != "undefined") { 
 			$toBeHidden.hide(); 
 		}
-		if (typeof $toBeShown != "undefined") { 
-			$toBeShown.show(); 
-		}
 		if (typeof $toBeHiddenNested != "undefined") { 
 			$toBeHiddenNested.each(MPower.hideAllReferencedElements); 
+		}
+		if (typeof $toBeShown != "undefined") { 
+			$toBeShown.show(); 
 		}
 		if (typeof $toBeToggled != "undefined") { 
 			$toBeToggled.each(MPower.toggleReferencedElements); 

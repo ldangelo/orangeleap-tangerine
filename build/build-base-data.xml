@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mpower" basedir="." default="load.base.data">
+
+	
+	<!-- This loads the contents of the 'prod' db scripts.  'prod' should be reserved for only non-site-specific data. -->
+	<target name="load.base.data">
+	     <sql driver="${mysql.db.driver}"
+	          url="${mysql.db.url}"
+	          userid="${mysql.db.user}"
+	          password="${mysql.db.pw}"
+	          encoding="UTF-8"
+	          classpath="${mysql.db.classpath}">
+	     	
+	     	<transaction src="${basedir}/db/prod/clearTable.sql"/>
+            
+	     	<!-- Field Definitions -->
+	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/email.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/phone.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/codeType.sql"/>
+	     	
+	     	<!-- Page and Section Definitions -->
+	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentManager.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentSource.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGift.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/recurringGiftSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledge.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/pledgeSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membership.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipView.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipList.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipSearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/addressManager.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/address.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/addressManagerEdit.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/emailManager.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/email.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/emailManagerEdit.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/phoneManager.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/phone.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/phoneManagerEdit.sql"/>
+
+	     	<!-- Query Lookups -->
+	     	<transaction src="${basedir}/db/prod/domain/queryLookup.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/queryLookup.sql"/>
+	     	
+	     	<!-- Field Validation -->
+	     	<transaction src="${basedir}/db/prod/pages/fieldValidation.sql"/>
+
+	     	<!-- Picklists -->
+	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/maritalStatusPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/suffixPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/titlePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/paymentTypePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/creditCardTypePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/frequencyPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/statusPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/recurringPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/stateprovince.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/constituentTypePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/constituentIndividualRolesPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/constituentOrganizationRolesPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/ncaisCodePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/genderPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/militaryPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/racePicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/communicationPreferencesPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/emailFormatPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/matchingPicklist.sql"/>
+
+	     	
+	     </sql>
+	</target>
+
+</project>

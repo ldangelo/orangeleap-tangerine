@@ -1,6 +1,3 @@
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('projectCode','Project Code','company1');
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('motivationCode','Motivation Code','company1');
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('commitmentCode','Commitment Code','company1');
 
 INSERT INTO CODE SET CODE_VALUE='001000',CODE_DESCRIPTION='General Fund - President',CODE_TYPE_ID='1';
 INSERT INTO CODE SET CODE_VALUE='001100',CODE_DESCRIPTION='Prayer Newsletter',CODE_TYPE_ID='1';

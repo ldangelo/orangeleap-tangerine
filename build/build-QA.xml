@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower" basedir="." default="deploy">
+<project name="mpower" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
 	<property name="deploy.dir" value="/usr/local/credera/apache-tomcat-6.0.18/webapps" />
+	<property name="mysql.port" value="3306" />
+	<property name="build.deploy.file" value="${basedir}/build/build-deploy.xml" />
 
 	<target name="deploy" description="Deploy build output to QA instance" >
-		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true" preservelastmodified="true" />
+		<ant antfile="${build.deploy.file}" target="deploy" />
 	</target> 
 	
 </project>

@@ -97,20 +97,24 @@ public abstract class TangerineFormController extends SimpleFormController {
         this.createFieldMaps(request, viewable);
         
         if (isFormSubmission(request)) {
-            if (viewable instanceof AddressAware) {
-                this.userCreateNewAddress(request, (AddressAware)viewable);
-            }
-            if (viewable instanceof PhoneAware) {
-                this.userCreateNewPhone(request, (PhoneAware)viewable);
-            }
-            if (viewable instanceof EmailAware) {
-                this.userCreateNewEmail(request, (EmailAware)viewable);
-            }
-            if (viewable instanceof PaymentSourceAware) {
-                this.userCreateNewPaymentSource(request, (PaymentSourceAware)viewable);
-            }
+            userCreateNew(request, viewable);
         }
         return viewable;
+    }
+    
+    protected void userCreateNew(HttpServletRequest request, Viewable viewable) {
+        if (viewable instanceof AddressAware) {
+            this.userCreateNewAddress(request, (AddressAware)viewable);
+        }
+        if (viewable instanceof PhoneAware) {
+            this.userCreateNewPhone(request, (PhoneAware)viewable);
+        }
+        if (viewable instanceof EmailAware) {
+            this.userCreateNewEmail(request, (EmailAware)viewable);
+        }
+        if (viewable instanceof PaymentSourceAware) {
+            this.userCreateNewPaymentSource(request, (PaymentSourceAware)viewable);
+        }
     }
 
     @Override
@@ -122,6 +126,14 @@ public abstract class TangerineFormController extends SimpleFormController {
                 if (selectedPaymentSource.getId() != null) {
                     obj.setPaymentSource(selectedPaymentSource);
                     obj.setPaymentType(selectedPaymentSource.getType());
+                    
+                    // copy the valid address & phone of the selected payment source to the target
+                    if (command instanceof AddressAware && selectedPaymentSource.getAddress().isValid()) {
+                        ((AddressAware)command).setAddress(selectedPaymentSource.getAddress());
+                    }
+                    if (command instanceof PhoneAware && selectedPaymentSource.getPhone().isValid()) {
+                        ((PhoneAware)command).setPhone(selectedPaymentSource.getPhone());
+                    }
                 }
                 else {
                     // new payment source, set the type
@@ -160,7 +172,7 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
         request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         super.onBindAndValidate(request, command, errors);
-        
+
         /**
          * If NO address/phone/etc is requested, this must be done AFTER binding and validation
          */
@@ -177,7 +189,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             if (command instanceof PaymentSourceAware) {
                 this.setPaymentSourceToNone(request, (PaymentSourceAware)command);
             }
-        }
+        }        
     }
 
     @SuppressWarnings("unchecked")

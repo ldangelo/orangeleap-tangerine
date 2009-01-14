@@ -132,16 +132,13 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     }
 
     @Override
-    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person, boolean setDefaultHolder) {
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person) {
         PaymentSource paymentSource = null;
         if (paymentSourceId == null) {
             paymentSource = new PaymentSource(person);
         }
         else {
             paymentSource = this.readPaymentSource(Long.valueOf(paymentSourceId));
-        }
-        if (setDefaultHolder) {
-            paymentSource.createDefaultHolderNames();
         }
         return paymentSource;
     }

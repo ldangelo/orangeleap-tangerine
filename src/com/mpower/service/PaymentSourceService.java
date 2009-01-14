@@ -17,7 +17,7 @@ public interface PaymentSourceService {
 
     public PaymentSource readPaymentSource(Long paymentSourceId);
 
-    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person, boolean setDefaultHolder);
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person);
 
     public PaymentSource findPaymentSourceProfile(Long personId, String profile);
 

@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
 	$(".picklist").change(MPower.toggleReferencedElements);
+	$(".paymentSourcePicklist").change(MPower.pickAddressPhone);
 
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -378,6 +379,23 @@ var MPower = {
 		$dialog.css("margin-left", x);
 		$dialog.css("margin-top", y);
 		$dialog.show();
+	},
+	
+	pickAddressPhone: function() {
+		var $option = $(this).find("option:selected");
+		if ($option.length) {
+			var addressId = $option.attr("address");
+			var phoneId = $option.attr("phone");
+			
+			$("select#selectedAddress").resetToFirstOption(); // reset to first before setting to the right value, just in case that value does not exist
+			$("select#selectedPhone").resetToFirstOption(); // reset to first before setting to the right value, just in case that value does not exist
+			if (addressId) {
+				$("select#selectedAddress").selectOptions(addressId);
+			}
+			if (phoneId) {
+				$("select#selectedPhone").selectOptions(phoneId);
+			}
+		}
 	}	
 }
 

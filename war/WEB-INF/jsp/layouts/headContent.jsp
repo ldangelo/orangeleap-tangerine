@@ -16,6 +16,7 @@
 <script type="text/javascript" src="js/jquery.hoverIntent.js"></script>
 <script type="text/javascript" src="js/jquery.cluetip.js"></script>
 <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="js/jquery.selectboxes.js"></script>
 <script type="text/javascript" src="js/jqModal.js"></script>
 <script type="text/javascript" src="js/jqDnR.js"></script>
 <script type="text/javascript" src="js/date.js"></script>

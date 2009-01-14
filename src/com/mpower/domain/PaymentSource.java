@@ -179,6 +179,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     }
 
     public String getCreditCardHolderName() {
+        if (creditCardHolderName == null && person != null) {
+            creditCardHolderName = person.getFirstLast();
+        }
         return creditCardHolderName;
     }
 
@@ -187,6 +190,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     }
 
     public String getAchHolderName() {
+        if (achHolderName == null && person != null) {
+            achHolderName = person.getFirstLast();
+        }
         return achHolderName;
     }
 
@@ -439,15 +445,6 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
-    }
-
-    public void createDefaultHolderNames() {
-        if (creditCardHolderName == null && person != null) {
-            creditCardHolderName = person.getFirstLast();
-        }
-        if (achHolderName == null && person != null) {
-            achHolderName = person.getFirstLast();
-        }
     }
 
     /**

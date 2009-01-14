@@ -30,7 +30,7 @@
 			<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
-			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>">
+			<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>">
 				<c:if test="${fieldVO.required != 'true'}">
 					<option value=""><spring:message code="none"/></option>
 				</c:if>
@@ -39,7 +39,12 @@
 					<optgroup label="<spring:message code='orChoose'/>">
 				</c:if>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-					<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference="li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.profile}'/></option>
+					<c:if test="${opt.type == 'ACH'}">
+						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" address="${opt.address.id}" phone="${opt.phone.id}"><c:out value='${opt.profile}'/></option>
+					</c:if>
+					<c:if test="${opt.type == 'Credit Card'}">
+						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" address="${opt.address.id}" phone="${opt.phone.id}"><c:out value='${opt.profile}'/></option>
+					</c:if>
 				</c:forEach>
 				<c:if test="${not empty paymentSources}">
 					</optgroup>

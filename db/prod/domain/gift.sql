@@ -34,8 +34,19 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.paymentSource.creditCardNumberReadOnly', 'gift', 'paymentSource', 'Number', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.paymentSource.creditCardExpirationDisplay', 'gift', 'paymentSource', 'Expiration', 'CC_EXPIRATION_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.paymentSource.creditCardSecurityCode', 'gift', 'paymentSource', 'Security Code', 'TEXT');
+
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource', 'gift', 'selectedPaymentSource', 'Payment Source', 'PAYMENT_SOURCE_PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.creditCardHolderNameReadOnly', 'gift', 'selectedPaymentSource', 'Cardholder Name', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.creditCardTypeReadOnly', 'gift', 'selectedPaymentSource', 'Credit Card', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.creditCardNumberReadOnly', 'gift', 'selectedPaymentSource', 'Number', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.creditCardExpirationDisplay', 'gift', 'selectedPaymentSource', 'Expiration', 'CC_EXPIRATION_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.creditCardSecurityCode', 'gift', 'selectedPaymentSource', 'Security Code', 'TEXT');
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.achHolderNameReadOnly', 'gift', 'selectedPaymentSource', 'ACH Holder Name', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.achRoutingNumberReadOnly', 'gift', 'selectedPaymentSource', 'Routing Number', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedPaymentSource.achAccountNumberReadOnly', 'gift', 'selectedPaymentSource', 'Account Number', 'READ_ONLY_TEXT');
+
+
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.selectedAddress', 'gift', 'selectedAddress', 'Billing Address', 'ADDRESS_PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.address.addressLine1', 'gift', 'address', 'Address Line 1', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('gift.address.addressLine2', 'gift', 'address', 'Address Line 2', 'TEXT');

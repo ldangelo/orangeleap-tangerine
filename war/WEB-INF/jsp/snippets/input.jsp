@@ -39,7 +39,7 @@
 					<optgroup label="<spring:message code='orChoose'/>">
 				</c:if>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-					<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.profile}'/></option>
+					<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference="li:has(#selectedAddress), li:has(#selectedPhone)"><c:out value='${opt.profile}'/></option>
 				</c:forEach>
 				<c:if test="${not empty paymentSources}">
 					</optgroup>

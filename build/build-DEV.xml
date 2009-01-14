@@ -29,7 +29,7 @@
 		
 		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
 		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true" preservelastmodified="true" />
-		<sleep seconds="10"/>
+		<sleep seconds="30"/>
 		
 		
 		<!-- for a clean base new instance -->

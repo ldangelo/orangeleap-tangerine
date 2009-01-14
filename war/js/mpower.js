@@ -306,7 +306,7 @@ var MPower = {
 			$options = $(elem).children("div.multiPicklistOption");
 		}
 		else {
-			$options = $(elem).children("option");
+			$options = $(elem).find("option");
 		}
 		
 		$options.each(function() {
@@ -315,11 +315,9 @@ var MPower = {
 				var $target = $(selector);
 				var $picklists = $(selector).filter(".picklist"); // the <li> the picklist resides in
 				var $nested = $(selector).find(".picklist"); // the actual picklist <select>
-//				$picklists = $picklists.add($nested);
-				
-				var thisAlreadyHidden = $(this).parents('li.side').is(':hidden');
+				$picklists = $picklists.add($nested);
 
-				if (thisAlreadyHidden || (isMultiPicklist === true && $(this).css("display") == "none") || 
+				if ((isMultiPicklist === true && $(this).css("display") == "none") || 
 					(isMultiPicklist === false && this.selected === false)) {
 					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
 					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;

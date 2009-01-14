@@ -313,17 +313,20 @@ var MPower = {
 			var selector = this.getAttribute('reference');
 			if (selector != null && selector.length) {
 				var $target = $(selector);
-				var $picklists = $(selector).filter(".picklist");
-				var $nested = $(selector).find(".picklist");
-				$picklists = $picklists.add($nested);
-				if ((isMultiPicklist === true && $(this).css("display") != "none") || 
-					(isMultiPicklist === false && this.selected)) {
-					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
+				var $picklists = $(selector).filter(".picklist"); // the <li> the picklist resides in
+				var $nested = $(selector).find(".picklist"); // the actual picklist <select>
+//				$picklists = $picklists.add($nested);
+				
+				var thisAlreadyHidden = $(this).parents('li.side').is(':hidden');
+
+				if (thisAlreadyHidden || (isMultiPicklist === true && $(this).css("display") == "none") || 
+					(isMultiPicklist === false && this.selected === false)) {
+					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
+					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
 				} 
 				else {
-					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($picklists) : $picklists;
+					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
+					$toBeToggled = $toBeToggled ? $toBeToggled.add($nested) : $nested;
 				}
 			}
 		});

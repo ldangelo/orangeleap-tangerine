@@ -126,14 +126,6 @@ public abstract class TangerineFormController extends SimpleFormController {
                 if (selectedPaymentSource.getId() != null) {
                     obj.setPaymentSource(selectedPaymentSource);
                     obj.setPaymentType(selectedPaymentSource.getType());
-                    
-                    // copy the valid address & phone of the selected payment source to the target
-                    if (command instanceof AddressAware && selectedPaymentSource.getAddress().isValid()) {
-                        ((AddressAware)command).setAddress(selectedPaymentSource.getAddress());
-                    }
-                    if (command instanceof PhoneAware && selectedPaymentSource.getPhone().isValid()) {
-                        ((PhoneAware)command).setPhone(selectedPaymentSource.getPhone());
-                    }
                 }
                 else {
                     // new payment source, set the type

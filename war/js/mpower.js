@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
 	$(".picklist").change(MPower.toggleReferencedElements);
-	$(".paymentSourcePicklist").change(MPower.pickAddressPhone);
+	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
 
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -318,6 +318,20 @@ var MPower = {
 				var $nested = $(selector).find(".picklist"); // the actual picklist <select>
 				$picklists = $picklists.add($nested);
 
+/*
+				var thisAlreadyHidden = $(this).parents('li.side').is(':hidden');
+
+				if (thisAlreadyHidden || (isMultiPicklist === true && $(this).css("display") == "none") || 
+					(isMultiPicklist === false && this.selected === false)) {
+					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
+					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
+				} 
+				else {
+					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
+					$toBeToggled = $toBeToggled ? $toBeToggled.add($nested) : $nested;
+				}
+				* */
+
 				if ((isMultiPicklist === true && $(this).css("display") != "none") || 
 					(isMultiPicklist === false && this.selected)) {
 					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
@@ -381,7 +395,7 @@ var MPower = {
 		$dialog.show();
 	},
 	
-	pickAddressPhone: function() {
+	populatePaymentSourceAttributes: function() {
 		var $option = $(this).find("option:selected");
 		if ($option.length) {
 			var addressId = $option.attr("address");
@@ -394,6 +408,38 @@ var MPower = {
 			}
 			if (phoneId) {
 				$("select#selectedPhone").selectOptions(phoneId);
+			}
+			
+			// ACH
+			var achholder = $option.attr("achholder");
+			if (achholder) {
+				$("div.gift_editAch div#paymentSource\\.achHolderName").text(achholder);
+			}
+			var routing = $option.attr("routing");
+			if (routing) {
+				$("div.gift_editAch div#paymentSource\\.achRoutingNumber").text(routing);
+			}
+			var acct = $option.attr("acct");
+			if (acct) {
+				$("div.gift_editAch div#paymentSource\\.achAccountNumber").text(acct);
+			}
+			
+			// Credit Card
+			var cardholder = $option.attr("cardholder");
+			if (cardholder) {
+				$("div.gift_editCreditCard div#paymentSource\\.creditCardHolderName").text(cardholder);
+			}
+			var cardType = $option.attr("cardType");
+			if (cardType) {
+				$("div.gift_editCreditCard div#paymentSource\\.creditCardType").text(cardType);
+			}
+			var number = $option.attr("number");
+			if (number) {
+				$("div.gift_editCreditCard div#paymentSource\\.creditCardNumber").text(number);
+			}
+			var exp = $option.attr("exp");
+			if (exp) {
+				$("div.gift_editCreditCard div#paymentSource\\.creditCardExpiration").text(exp);
 			}
 		}
 	}	

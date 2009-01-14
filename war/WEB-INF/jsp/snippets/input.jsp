@@ -40,10 +40,12 @@
 				</c:if>
 				<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 					<c:if test="${opt.type == 'ACH'}">
-						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" address="${opt.address.id}" phone="${opt.phone.id}"><c:out value='${opt.profile}'/></option>
+						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
+							address="${opt.address.id}" phone="${opt.phone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumber}'/>" acct="<c:out value='${opt.achAccountNumber}'/>"><c:out value='${opt.profile}'/></option>
 					</c:if>
 					<c:if test="${opt.type == 'Credit Card'}">
-						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" address="${opt.address.id}" phone="${opt.phone.id}"><c:out value='${opt.profile}'/></option>
+						<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
+							address="${opt.address.id}" phone="${opt.phone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumber}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
 					</c:if>
 				</c:forEach>
 				<c:if test="${not empty paymentSources}">

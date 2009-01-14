@@ -71,7 +71,7 @@ public class Address implements SiteAware, Customizable, ConstituentInfo, Inacti
     private String stateProvince;
 
     @Column(name = "COUNTRY")
-    private String country = "US";
+    private String country;
 
     @Column(name = "POSTAL_CODE")
     private String postalCode;

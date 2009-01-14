@@ -3,9 +3,43 @@
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
 	<property name="deploy.dir" value="/opt/mpower/DEV/tomcat/webapps" />
+	
+	<property name="dev.build.file" value="${basedir}/build/build.xml" />
+	<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
+
+	
+	<property name="mysql.db.driver" value="com.mysql.jdbc.Driver" />
+	<property name="mysql.db.url" value="jdbc:mysql://localhost:10006/mpoweropen?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+	<property name="mysql.db.user" value="mpower" />
+	<property name="mysql.db.pw" value="mpower" />
+	<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+	<property name="mysql.db.classpath" value="${deploy.dir}/../lib/mysql-connector-java-5.0.8.jar" />
 
 	<target name="deploy" description="Deploy build output to DEV instance" >
+		
+		<!-- Reset schema -->
+	     <sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${mysql.db.classpath}">
+		    <transaction src="${basedir}/db/clearSchema.sql"/>
+	    </sql>
+		
+		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
 		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true" preservelastmodified="true" />
-	</target> 
+		<sleep seconds="10"/>
+		
+		
+		<!-- for a clean base new instance -->
+		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
+
+		<!-- for a dev data new instance -->
+		<ant antfile="${dev.build.file}" target="9. Load Data" />
+		
+		
+		
+    </target> 
 	
 </project>

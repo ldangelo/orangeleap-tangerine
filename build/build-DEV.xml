@@ -13,7 +13,7 @@
 	<property name="mysql.db.user" value="mpower" />
 	<property name="mysql.db.pw" value="mpower" />
 	<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-	<property name="mysql.db.classpath" value="${deploy.dir}/../lib/mysql-connector-java-5.0.8.jar" />
+	<property name="mysql.db.classpath" value="${deploy.dir}/../lib/mysql-connector-java-5.0.8-bin.jar" />
 
 	<target name="deploy" description="Deploy build output to DEV instance" >
 		

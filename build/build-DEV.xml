@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower" basedir="." default="deploy">
+<project name="mpower" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
 	<property name="deploy.dir" value="/opt/mpower/DEV/tomcat/webapps" />

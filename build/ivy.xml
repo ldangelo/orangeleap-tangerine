@@ -73,6 +73,10 @@
 		<dependency org="commons-httpclient" name="commons-httpclient" transitive="false" rev="3.1">
 			<artifact name="commons-httpclient" type="jar" />
 		</dependency>
+
+		<dependency org="commons-fileupload" name="commons-fileupload" transitive="false" rev="1.2.1">
+			<artifact name="commons-fileupload" type="jar" />
+		</dependency>
 		
 		<dependency org="commons-io" name="commons-io" transitive="false" rev="1.2">
 			<artifact name="commons-io" type="jar" />
@@ -102,6 +106,12 @@
 			<artifact name="commons-pool" type="jar" ext="jar" />
 		</dependency>
 
+		<!-- Open CSV -->
+		<dependency org="net.sf.opencsv" name="opencsv" transitive="false" rev="1.8">
+			<artifact name="opencsv" type="jar" />
+			<artifact name="opencsv" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+		
 		<!-- ORO -->
 		<dependency org="oro" name="oro" transitive="false" rev="2.0.8">
 			<artifact name="oro" type="jar" />

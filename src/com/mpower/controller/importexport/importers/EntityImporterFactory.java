@@ -7,7 +7,7 @@ public class EntityImporterFactory {
 	
 	public EntityImporter getEntityImporter(String entity, ApplicationContext applicationContext) {
 		
-		if ("person".equals(entity)) return new PersonImporter(applicationContext);
+		if ("person".equals(entity)) return new PersonImporter(entity, applicationContext);
 		
 		return null;
 	}

@@ -26,7 +26,7 @@
 	    </sql>
 		
 		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
-		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true" preservelastmodified="true" />
+		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true"  />
 		<sleep seconds="60"/>
 		
 		

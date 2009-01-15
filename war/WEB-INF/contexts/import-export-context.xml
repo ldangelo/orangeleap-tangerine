@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+ 
+ 
+    <bean id="multipartResolver"
+    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+       <property name="maxUploadSize" value="2000000"/>
+    </bean>
+ 
+    <bean id="importExportUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+				<prop key="/importexport.htm">importexportController</prop>
+				<prop key="/export.htm">exportController</prop>
+				<prop key="/import.htm">importController</prop>
+			</props>
+		</property>
+	</bean>
+
+    <!--  Page accessible by admins only that allows the selection of import and export options -->
+    <bean id="importexportController" class="com.mpower.controller.importexport.ImportExportController">
+    	<property name="viewName" value="importexport/importexport"/>
+        <property name="siteService" ref="siteService" />
+    </bean>
+	
+	<!-- Csv file download  -->
+    <bean id="exportController" class="com.mpower.controller.importexport.CsvExportController">
+        <property name="siteService" ref="siteService" />
+    </bean>
+	
+	<!-- Csv file upload  -->
+	 <bean id="importController" class="com.mpower.controller.importexport.CsvImportController">
+        <property name="commandClass" value="com.mpower.controller.importexport.FileUploadBean"/>
+    	<property name="successView" value="redirect:/importexport.htm"/>
+        <property name="siteService" ref="siteService" />
+    </bean>
+       
+       
+</beans>

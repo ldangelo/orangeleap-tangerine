@@ -11,7 +11,7 @@
 	        <form method="post" action="export.htm" >
 		        <select name="entity">
 		          <option value="person">Constituents</option>
-		          <option value="gift">Gifts</option>
+<!--		          <option value="gift">Gifts</option> -->
 		        </select>            
 		        <input type="submit" value="Export" />
 	        </form>
@@ -21,7 +21,7 @@
 	        <form method="post" action="import.htm" enctype="multipart/form-data">
 		        <select name="entity">
 		          <option value="person">Constituents</option>
-		          <option value="gift">Gifts</option>
+<!-- 		          <option value="gift">Gifts</option> -->
 		        </select>            
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import" />

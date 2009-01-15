@@ -58,7 +58,7 @@ public abstract class EntityExporter {
 			for (int i = 0; i < fields.size(); i++) {
 				FieldDescriptor fd = fields.get(i);
 				String value = getFieldValue(o, fd);
-				//logger.debug("name="+fd.getName()+", value="+value);
+				logger.debug("name="+fd.getName()+", value="+value);
 				line[i+1] = value;
 			}
 		}
@@ -117,6 +117,12 @@ public abstract class EntityExporter {
 				Map map = (Map)m.invoke(o);
 				Object so = map.get(getKey(name));
 				return BeanUtils.getProperty(so, getSubField(name));
+			} else if (isDependentField(name)) {
+				String depobject = getDependentObject(name);
+				Method m = o.getClass().getMethod("get"+toInitialUpperCase(depobject));
+				Object so = m.invoke(o);
+				if (so == null) return "";
+				return BeanUtils.getProperty(so, getDependentField(name));
 			} else {
 				return BeanUtils.getProperty(o, name);
 			}
@@ -130,11 +136,19 @@ public abstract class EntityExporter {
 		return name.contains("Map[");
 	}
 
+	private boolean isDependentField(String name) {
+		return name.contains(".");
+	}
+
 	private String getMapType(String name) {
 		int i = name.indexOf("Map[");
 		if (i < 0 ) return "";
 		String type = name.substring(0,i);
-		return type.substring(0,1).toUpperCase()+type.substring(1);
+		return toInitialUpperCase(type);
+	}
+	
+	private String toInitialUpperCase(String s) {
+		return s.substring(0,1).toUpperCase()+s.substring(1);
 	}
 	
 	private String getKey(String name) {
@@ -150,6 +164,17 @@ public abstract class EntityExporter {
 		return name.substring(j+2);
 	}
 	
+	private String getDependentObject(String name) {
+		int j = name.indexOf(".");
+		if (j < 0) return "";
+		return name.substring(0,j);
+	}
+	
+	private String getDependentField(String name) {
+		int j = name.indexOf(".");
+		if (j < 0) return "";
+		return name.substring(j+1);
+	}
 	
 	// Create an export field name for a mapped field.
 	protected String getExportFieldNameForMap(String name) {

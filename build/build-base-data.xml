@@ -26,6 +26,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/codeType.sql"/>
 	     	
 	     	<!-- Page and Section Definitions -->
+	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>

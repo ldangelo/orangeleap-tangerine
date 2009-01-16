@@ -80,7 +80,9 @@
 						<a href="siteAudit.htm">Site Audit</a>
 					</li>
 					<li>
-						<a href="importexport.htm">Import/Export</a>
+			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">
+						   <a href="importexport.htm">Import/Export</a>
+						</c:if>
 					</li>
 				</ul>
 			</li>

@@ -48,6 +48,11 @@ public class RelationshipServiceImpl implements RelationshipService {
     	String lastRecursiveParentCustomFieldName = null;
     	
     	Map<String, FieldDefinition> map = person.getFieldTypeMap();
+    	if (map == null) {
+    		logger.debug("FieldTypeMap not set, skipping relationship maintenance.");
+    		return person;
+    	}
+    	
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		String key = e.getKey();
     		FieldDefinition fd = e.getValue();

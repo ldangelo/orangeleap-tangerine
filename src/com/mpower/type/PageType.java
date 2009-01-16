@@ -37,7 +37,8 @@ public enum PageType {
     email("/email.htm"),
     phoneManager("/phoneManager.htm"),
     phoneManagerEdit("/phoneManagerEdit.htm"),
-    phone("/phone.htm");
+    phone("/phone.htm"),
+    importexport("/importexport.htm");
 
     private String pageName;
 

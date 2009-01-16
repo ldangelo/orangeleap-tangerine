@@ -65,6 +65,10 @@ public class FieldVO {
         return fieldName;
     }
 
+    public String getFieldHtmlName() {
+        return fieldName == null ? "" : fieldName.replace('.', '_').replace('[', '-').replace(']', '-');
+    }
+    
     public FieldType getFieldType() {
         return fieldType;
     }

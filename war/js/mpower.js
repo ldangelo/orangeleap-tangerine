@@ -314,8 +314,8 @@ var MPower = {
 		}
 		var $recursiveTargets = null;
 
-		var $picklists = $parentNode.filter(".picklist"); // either THIS is a picklist
-		var $nested = $parentNode.find(".picklist"); // or it COULD have immediate descendent picklists
+		var $picklists = $parentNode.filter(".picklist, .multiPicklist"); // either THIS is a picklist
+		var $nested = $parentNode.find(".picklist, .multiPicklist"); // or it COULD have immediate descendent picklists
 		$picklists = $picklists.add($nested); // these are all the children of this node
 		$picklists.each(function() {
 			var $myPicklist = $(this);

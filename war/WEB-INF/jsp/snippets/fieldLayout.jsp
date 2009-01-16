@@ -27,7 +27,7 @@
 		</div>
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN'}">
-		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" style="padding-right:8px;">
+		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" style="padding-right:8px;">
 			<c:if test="${!empty sectionDefinition.defaultLabel}">
 				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 			</c:if>
@@ -41,7 +41,7 @@
 		</div>
 	</c:when>
 	<c:when test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
-		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" style="display:none;padding-right:8px;">
+		<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" style="display:none;padding-right:8px;">
 			<c:if test="${!empty sectionDefinition.defaultLabel}">
 				<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 			</c:if>

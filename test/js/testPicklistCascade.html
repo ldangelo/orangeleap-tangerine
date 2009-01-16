@@ -1,0 +1,1209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+                    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>QUnit Test Picklist Cascade</title>
+		<script type="text/javascript" src="../../war/js/jquery.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.tablesorter.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.bgiframe.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.hoverIntent.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.cluetip.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.autocomplete.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.selectboxes.js"></script>
+		<script type="text/javascript" src="../../war/js/jqModal.js"></script>
+		
+		<script type="text/javascript" src="../../war/js/jqDnR.js"></script>
+		<script type="text/javascript" src="../../war/js/date.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.datePicker.js"></script>
+		<script type="text/javascript" src="../../war/js/mpower.js"></script>
+<!--	
+		<link rel="stylesheet" type="text/css" media="screen, projection" href="../../war/css/screen.css" />
+		<link rel="stylesheet" type="text/css" media="print" href="../../war/css/print.css" />
+		-->
+		<!--[if IE]>
+			<link href="../../war/css/master_IE.css" rel="stylesheet" type="text/css" />
+		<![endif]-->
+		<!--[if lte IE 6]>
+			<link href="../../war/css/master_IE6.css" rel="stylesheet" type="text/css" />
+		<![endif]-->
+		
+		
+		
+		<!-- TEST resources below -->
+		<script type="text/javascript" src="http://jqueryjs.googlecode.com/svn/trunk/qunit/testrunner.js"></script>
+		<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/qunit/testsuite.css" type="text/css" media="screen" />
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				module("test tree structure");
+				test("MPower.RootTree", function() {
+					ok(MPower.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
+					ok(MPower.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
+					
+					var len = 0;
+					for (var obj in MPower.rootTrees) { len++; }
+					ok(len === 2, len + " items in rootTrees");
+				});
+				test("MPower.SelectedPaymentSource", function() {
+					var tree = $("li#li-gift_info-selectedPaymentSource").data("tree"); 
+					ok(tree.parents.length == 0, "0 parents for SelectedPaymentSource was expected");
+					ok(5 === tree.children.length, "5 child fields for SelectedPaymentSource was expected"); 
+					
+					for (var id in tree.childIds) {
+						ok(id === "li-gift_info-paymentType" || 
+							id === "li-gift_info-selectedAddress" ||
+							id === "li-gift_info-selectedPhone" ||
+							id === "gift_editAch" ||
+							id === "gift_editCreditCard", id + " was expected as a child");
+					}
+					ok(tree.isSelected == true, "SelectedPaymentSource was expected to have isSelected='true', instead = " + tree.isSelected); 
+				});
+				test("MPower.PaymentType", function() {
+					var tree = $("li#li-gift_info-paymentType").data("tree"); 
+					ok(tree.parents.length === 1, "1 parent for paymentType was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
+					}
+					ok(5 === tree.children.length, "5 child fields for paymentType was expected"); 
+					ok(tree.isSelected == false, "paymentType was expected to have isSelected='false', instead = " + tree.isSelected); 
+				});
+				test("MPower.SelectedAddress", function() {
+					var tree = $("li:has(#selectedAddress)").data("tree"); 
+					ok(tree.parents.length === 2, "2 parents for selectedAddress was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-selectedPaymentSource" || id === "li-gift_info-paymentType", id + " was expected as a parent");
+					}
+					ok($(":input[name^='address']").length === tree.children.length, $(":input[name^='address']").length + " child fields for selectedAddress was expected"); 
+					ok(tree.isSelected, "selectedAddress was expected to have isSelected='true'"); 
+				});
+				test("MPower.SelectedPhone", function() {
+					var tree = $("li:has(#selectedPhone)").data("tree"); 
+					ok(tree.parents.length === 2, "2 parents for selectedPhone was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-selectedPaymentSource" || id === "li-gift_info-paymentType", id + " was expected as a parent");
+					}
+					ok($(":input[name^='phone']").length === tree.children.length, $(":input[name^='phone']").length + " child fields for selectedPhone was expected"); 
+					ok(tree.isSelected, "selectedPhone was expected to have isSelected='true'"); 
+				});
+				test("MPower.gift_editCreditCard", function() {
+					var tree = $("#gift_editCreditCard").data("tree"); 
+					ok(tree.parents.length === 1, "1 parent for gift_editCreditCard was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
+					}
+					ok(tree.isSelected == false, "gift_editCreditCard was expected to have isSelected='false'"); 
+				});
+				test("MPower.gift_editAch", function() {
+					var tree = $("#gift_editAch").data("tree"); 
+					ok(tree.parents.length === 1, "1 parent for gift_editAch was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
+					}
+					ok(tree.isSelected == true, "gift_editAch was expected to have isSelected='true'"); 
+				});
+				test("MPower.gift_ach", function() {
+					var tree = $("#gift_ach").data("tree"); 
+					ok(tree.parents.length === 1, "1 parent for gift_ach was expected");
+					
+					for (var id in tree.parentIds) {
+						ok(id === "li-gift_info-paymentType", id + " was expected as a parent");
+					}
+//					ok(tree.isSelected == false, "gift_ach was expected to have isSelected='false'"); TODO: put back 
+				});
+			});
+			
+		</script>
+	</head>
+	<body>
+	 	<!-- START OF Standard QUnit HTML elements -->
+		<h1>QUnit example</h1>
+		<h2 id="banner"></h2>
+		<h2 id="userAgent"></h2>
+		<ol id="tests"></ol>
+		<div id="main"></div>
+	 	<!-- END OF Standard QUnit HTML elements -->
+		 
+		 
+		 
+		<!-- START OF test -->
+				<div class="bodyContent">
+
+			<div id="banner">
+	<ol>
+		<li>
+			<span id="greeting">Logged into <b>company1</b> as <b>nolan</b></span>
+		</li>
+		<li>
+
+			<a href="account.htm">My Account</a>
+		</li>
+		<li>
+			<a href="#">Help</a>
+		</li>
+		<li>
+			<a href="/mpower/logout">Logout</a>
+
+		</li>
+	</ol>
+</div>
+
+<div id="navmain">
+	<div class="navLeftCap"></div>
+	<div class="container">
+		<ul class="primaryNav">
+			<li>
+				<a href="welcome.htm" class=""><div class="homeIcon">&nbsp;</div></a>
+
+			</li>
+			<li>
+				<a href="#">My Work</a>
+			</li>
+			<li>
+				<a href="#">Recent</a>
+			</li>
+			<li>
+
+				<a href="#">Bookmarks</a>
+			</li>
+			<li>
+				<a href="#">Create New...</a>
+				<ul>
+					<li>
+						<a href="person.htm">Constituent</a>
+
+					</li>
+					<li class="sectionTitle">For Adam&nbsp;Smith ...</li>
+						<li>
+							<a href="gift.htm?personId=1">Gift</a>
+						</li>
+						<li>
+							<a href="addressManager.htm?personId=1">Address</a>
+
+						</li>
+						<li>
+							<a href="recurringGift.htm?personId=1&type=recurringGift">Recurring Gift</a>
+						</li>
+						<li>
+							<a href="pledge.htm?personId=1&type=pledge">Pledge</a>
+						</li>
+						<li>
+
+							<a href="membership.htm?personId=1&type=membership">Membership</a>
+						</li>
+					</ul>
+			</li>
+			<li>
+				<a href="#">Go To...</a>
+				<ul>
+					<li>
+
+						<a href="personSearch.htm">Search Constituents</a>
+					</li>
+					<li>
+						<a href="giftSearch.htm">Search Gifts</a>
+					</li>
+					<li>
+						<a href="codes.htm">Manage Codes</a>
+
+					</li>
+					<li>
+						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank">Reporting</a>
+					</li>
+					<li>
+						<a href="siteAudit.htm">Site Audit</a>
+					</li>
+				</ul>
+
+			</li>
+		</ul>
+		<div class="clearBoth"></div>
+	</div>
+	<div class="navRightCap"></div>
+	<div class="searchBar">
+		<form method="post" action="personSearch.htm">
+			<input size="30" name="lastName" />
+			<select name="type">
+
+				<option value="people">Constituents</option>
+				<option value="people">Gifts</option>
+			</select>
+			<input type="submit" value="Search" class="saveButton" />
+		</form>
+	</div>
+</div><div class="clearBoth"></div>
+			<div class="sideBar">
+
+	<div class="wrapper">
+		<div class="innerContent" style="height:600px;">
+			<h3>
+					Smith, Adam Jay:
+				</h3>
+				
+				<div class="accountOptions">
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
+						<span class="secondary ">
+
+							<a class="" href="person.htm?personId=1">Contact Information</a>
+							<a class="" href="addressManager.htm?personId=1">Addresses</a>
+							<a class="" href="emailManager.htm?personId=1">Emails</a>
+							<a class="" href="phoneManager.htm?personId=1">Phone Numbers</a>
+						</span>
+					</div>
+					<div class="navGroup">
+
+						<a class="" href="paymentManager.htm?personId=1">Payment Manager</a>
+					</div>
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gift Manager</a>
+			            <span class="secondary ">
+				            <a class="active" href="gift.htm?personId=1">New Gift</a>
+							<a class="" href="giftList.htm?personId=1">Gifts</a>
+
+							<a class="" href="recurringGift.htm?personId=1&type=recurringGift">New Recurring Gift</a>
+				            <a class="" href="recurringGiftList.htm?personId=1&type=recurringGift">Recurring Gifts</a>
+				            <a class="" href="pledge.htm?personId=1&type=pledge">New Pledge</a>
+				            <a class="" href="pledgeList.htm?personId=1&type=pledge">Pledges</a>
+				            </span>
+		            </div>
+					<a class="" href="audit.htm?object=person&id=1">Audit</a>
+
+				</div>
+			<h3>
+				My Tasks
+			</h3>
+			<div class="myTasks">
+				<a href="#">Due Today <span href="#" class="taskCount">(1)</span></a>
+				<a href="#">New Tasks <span href="#" class="taskCount">(3)</span></a>
+
+				<a href="#">All Tasks (9)</a>
+			</div>
+		</div>
+	</div>
+</div><div class="content760 mainForm">
+			<form id="gift" action="/mpower/gift.htm?personId=1" method="post"><div class="columns iconHeader">
+	<div class="column">
+		<img src="images/dude2.gif" />
+	</div>
+
+	<div class="column">
+	<h2 class="personEdit cluetip" rel="personView.htm?personId=1" id="personTitle">
+			Smith, Adam</h2>
+	<h3 id="currentFunctionTitle" class="personEdit">
+			Enter Gift</h3>
+	</div>
+	<div class="columnRight" style="padding:19px 19px 0 0;">
+			<input type="submit" value="Submit Payment" class="saveButton" />
+
+		</div>
+	<div class="clearColumns"></div>
+</div><div class="globalFormErrors">
+		<h5>Please correct the following errors on this page:</h5>
+		<ul>
+		<li>Amount is required</li>
+		</ul>
+	</div>
+
+<div class="columns">
+						<div class="column gift_info" id="gift_info" style="padding-right:8px;">
+			<h4 class="formSectionHeader">Gift Information</h4>
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_info-amount">
+	<label for="amount" class="desc">
+		<span class="required">*</span>&nbsp;Amount</label>
+	<input value="" class="text textError" name="amount" id="amount" />
+
+		</li><li class="side" id="li-gift_info-comments">
+	<label for="comments" class="desc">
+		Comments</label>
+	<input value="" class="text " name="comments" id="comments" />
+		</li><li class="side" id="li-gift_info-postmarkDate">
+	<label for="postmarkDate" class="desc">
+		Postmark Date</label>
+	<div class="lookupWrapper">
+
+			    <input id="postmarkDate" name="postmarkDate" class="text date " type="text" value="" size="16"/></div>
+		</li><li class="side" id="li-gift_info-selectedPaymentSource">
+	<label for="selectedPaymentSource" class="desc">
+		<span class="required">*</span>&nbsp;Payment Source</label>
+	<select name="selectedPaymentSource" id="selectedPaymentSource" class="picklist paymentSourcePicklist ">
+				<option value="new" reference="li:has(#paymentType)" >+ Create New</option>
+				<optgroup label="-- Or Choose From Below ---------">
+
+				<option value="2" selected="selected" reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
+							address="542" phone="42" achholder="Adam Smith" routing="111" acct="000">adam&#039;s ach</option>
+					<option value="1"  reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
+							address="1" phone="1" cardholder="Adam Smith" cardType="Discover" number="6011008400223068" exp="03 / 2009">discover</option>
+					</optgroup>
+				</select>
+		</li><li class="side" id="li-gift_info-paymentType">
+	<label for="paymentType" class="desc">
+		<span class="required">*</span>&nbsp;Payment Method</label>
+
+	<select name="paymentType" class="picklist " id="paymentType">
+				<option reference=".gift_creditCard, li:has(#selectedAddress), li:has(#selectedPhone)"value="Credit Card" >
+						Credit Card</option>
+				<option reference=".gift_ach, li:has(#selectedAddress), li:has(#selectedPhone)"value="ACH" selected>
+						ACH</option>
+				<option reference=".gift_check"value="Check" >
+						Check</option>
+
+				<option reference=".gift_cash"value="Cash" >
+						Cash</option>
+				</select>
+		</li><li class="side" id="li-gift_info-selectedAddress">
+	<label for="selectedAddress" class="desc">
+		Billing Address</label>
+	<select name="selectedAddress" id="selectedAddress" class="picklist ">
+				<option value="">None</option>
+
+				<option value="new" reference="li:has(:input[name^='address'])" >+ Create New</option>
+				<optgroup label="-- Or Choose From Below ---------">
+				<option value="1" >8070 FIRST ... 75478</option>
+				</optgroup>
+				</select>
+		</li><li class="side" id="li-gift_info-address_addressLine1">
+	<label for="address.addressLine1" class="desc">
+		<span class="required">*</span>&nbsp;Address Line 1</label>
+
+	<input value="" class="text " name="address.addressLine1" id="address.addressLine1" />
+		</li><li class="side" id="li-gift_info-address_addressLine2">
+	<label for="address.addressLine2" class="desc">
+		Address Line 2</label>
+	<input value="" class="text " name="address.addressLine2" id="address.addressLine2" />
+		</li><li class="side" id="li-gift_info-address_addressLine3">
+	<label for="address.addressLine3" class="desc">
+		Address Line 3</label>
+
+	<input value="" class="text " name="address.addressLine3" id="address.addressLine3" />
+		</li><li class="side" id="li-gift_info-address_city">
+	<label for="address.city" class="desc">
+		<span class="required">*</span>&nbsp;City</label>
+	<input value="" class="text " name="address.city" id="address.city" />
+		</li><li class="side" id="li-gift_info-address_stateProvince">
+	<label for="address.stateProvince" class="desc">
+		<span class="required">*</span>&nbsp;State</label>
+
+	<input value="" class="text " name="address.stateProvince" id="address.stateProvince" />
+		</li><li class="side" id="li-gift_info-address_postalCode">
+	<label for="address.postalCode" class="desc">
+		<span class="required">*</span>&nbsp;Zip Code</label>
+	<input value="" class="text " name="address.postalCode" id="address.postalCode" />
+		</li><li class="side" id="li-gift_info-address_country">
+	<label for="address.country" class="desc">
+		<span class="required">*</span>&nbsp;Country</label>
+
+	<select name="address.country" class="" id="address.country">
+				<option value="AF" selected>
+						Afghanistan</option>
+				<option value="AX" >
+						Aland Islands</option>
+				<option value="AL" >
+						Albania</option>
+
+				<option value="DZ" >
+						Algeria</option>
+				<option value="AS" >
+						American Samoa</option>
+				<option value="AD" >
+						Andorra</option>
+				<option value="AO" >
+
+						Angola</option>
+				<option value="AI" >
+						Anguilla</option>
+				<option value="AQ" >
+						Antarctica</option>
+				<option value="AG" >
+						Antigua And Barbuda</option>
+
+				<option value="AR" >
+						Argentina</option>
+				<option value="AM" >
+						Armenia</option>
+				<option value="AW" >
+						Aruba</option>
+				<option value="AU" >
+
+						Australia</option>
+				<option value="AT" >
+						Austria</option>
+				<option value="AZ" >
+						Azerbaijan</option>
+				<option value="BS" >
+						Bahamas</option>
+
+				<option value="BH" >
+						Bahrain</option>
+				<option value="BD" >
+						Bangladesh</option>
+				<option value="BB" >
+						Barbados</option>
+				<option value="BY" >
+
+						Belarus</option>
+				<option value="BE" >
+						Belgium</option>
+				<option value="BZ" >
+						Belize</option>
+				<option value="BJ" >
+						Benin</option>
+
+				<option value="BM" >
+						Bermuda</option>
+				<option value="BT" >
+						Bhutan</option>
+				<option value="BO" >
+						Bolivia</option>
+				<option value="BA" >
+
+						Bosnia And Herzegovina</option>
+				<option value="BW" >
+						Botswana</option>
+				<option value="BV" >
+						Bouvet Island</option>
+				<option value="BR" >
+						Brazil</option>
+
+				<option value="IO" >
+						British Indian Ocean Territory</option>
+				<option value="BN" >
+						Brunei Darussalam</option>
+				<option value="BG" >
+						Bulgaria</option>
+				<option value="BF" >
+
+						Burkina Faso</option>
+				<option value="BI" >
+						Burundi</option>
+				<option value="KH" >
+						Cambodia</option>
+				<option value="CM" >
+						Cameroon</option>
+
+				<option value="CA" >
+						Canada</option>
+				<option value="CV" >
+						Cape Verde</option>
+				<option value="KY" >
+						Cayman Islands</option>
+				<option value="CF" >
+
+						Central African Republic</option>
+				<option value="TD" >
+						Chad</option>
+				<option value="CL" >
+						Chile</option>
+				<option value="CN" >
+						China</option>
+
+				<option value="CX" >
+						Christmas Island</option>
+				<option value="CC" >
+						Cocos (Keeling) Islands</option>
+				<option value="CO" >
+						Colombia</option>
+				<option value="KM" >
+
+						Comoros</option>
+				<option value="CG" >
+						Congo</option>
+				<option value="CD" >
+						Congo, The Democratic Republic Of The</option>
+				<option value="CK" >
+						Cook Islands</option>
+
+				<option value="CR" >
+						Costa Rica</option>
+				<option value="CI" >
+						Cote D&#039;Ivoire</option>
+				<option value="HR" >
+						Croatia</option>
+				<option value="CU" >
+
+						Cuba</option>
+				<option value="CY" >
+						Cyprus</option>
+				<option value="CZ" >
+						Czech Republic</option>
+				<option value="DK" >
+						Denmark</option>
+
+				<option value="DJ" >
+						Djibouti</option>
+				<option value="DM" >
+						Dominica</option>
+				<option value="DO" >
+						Dominican Republic</option>
+				<option value="EC" >
+
+						Ecuador</option>
+				<option value="EG" >
+						Egypt</option>
+				<option value="SV" >
+						El Salvador</option>
+				<option value="GQ" >
+						Equatorial Guinea</option>
+
+				<option value="ER" >
+						Eritrea</option>
+				<option value="EE" >
+						Estonia</option>
+				<option value="ET" >
+						Ethiopia</option>
+				<option value="FK" >
+
+						Falkland Islands (Malvinas)</option>
+				<option value="FO" >
+						Faroe Islands</option>
+				<option value="FJ" >
+						Fiji</option>
+				<option value="FI" >
+						Finland</option>
+
+				<option value="FR" >
+						France</option>
+				<option value="GF" >
+						French Guiana</option>
+				<option value="PF" >
+						French Polynesia</option>
+				<option value="TF" >
+
+						French Southern Territories</option>
+				<option value="GA" >
+						Gabon</option>
+				<option value="GM" >
+						Gambia</option>
+				<option value="GE" >
+						Georgia</option>
+
+				<option value="DE" >
+						Germany</option>
+				<option value="GH" >
+						Ghana</option>
+				<option value="GI" >
+						Gibraltar</option>
+				<option value="GR" >
+
+						Greece</option>
+				<option value="GL" >
+						Greenland</option>
+				<option value="GD" >
+						Grenada</option>
+				<option value="GP" >
+						Guadeloupe</option>
+
+				<option value="GU" >
+						Guam</option>
+				<option value="GT" >
+						Guatemala</option>
+				<option value="GG" >
+						Guernsey</option>
+				<option value="GN" >
+
+						Guinea</option>
+				<option value="GW" >
+						Guinea-Bissau</option>
+				<option value="GY" >
+						Guyana</option>
+				<option value="HT" >
+						Haiti</option>
+
+				<option value="HM" >
+						Heard Island And Mcdonald Islands</option>
+				<option value="VA" >
+						Holy See (Vatican City State)</option>
+				<option value="HN" >
+						Honduras</option>
+				<option value="HK" >
+
+						Hong Kong</option>
+				<option value="HU" >
+						Hungary</option>
+				<option value="IS" >
+						Iceland</option>
+				<option value="IN" >
+						India</option>
+
+				<option value="ID" >
+						Indonesia</option>
+				<option value="IR" >
+						Iran, Islamic Republic Of</option>
+				<option value="IQ" >
+						Iraq</option>
+				<option value="IE" >
+
+						Ireland</option>
+				<option value="IM" >
+						Isle Of Man</option>
+				<option value="IL" >
+						Israel</option>
+				<option value="IT" >
+						Italy</option>
+
+				<option value="JM" >
+						Jamaica</option>
+				<option value="JP" >
+						Japan</option>
+				<option value="JE" >
+						Jersey</option>
+				<option value="JO" >
+
+						Jordan</option>
+				<option value="KZ" >
+						Kazakhstan</option>
+				<option value="KE" >
+						Kenya</option>
+				<option value="KI" >
+						Kiribati</option>
+
+				<option value="KP" >
+						Korea, Democratic People&#039;s Republic Of</option>
+				<option value="KR" >
+						Korea, Republic Of</option>
+				<option value="KW" >
+						Kuwait</option>
+				<option value="KG" >
+
+						Kyrgyzstan</option>
+				<option value="LA" >
+						Lao People&#039;s Democratic Republic</option>
+				<option value="LV" >
+						Latvia</option>
+				<option value="LB" >
+						Lebanon</option>
+
+				<option value="LS" >
+						Lesotho</option>
+				<option value="LR" >
+						Liberia</option>
+				<option value="LY" >
+						Libyan Arab Jamahiriya</option>
+				<option value="LI" >
+
+						Liechtenstein</option>
+				<option value="LT" >
+						Lithuania</option>
+				<option value="LU" >
+						Luxembourg</option>
+				<option value="MO" >
+						Macao</option>
+
+				<option value="MK" >
+						Macedonia, The Former Yugoslav Republic Of</option>
+				<option value="MG" >
+						Madagascar</option>
+				<option value="MW" >
+						Malawi</option>
+				<option value="MY" >
+
+						Malaysia</option>
+				<option value="MV" >
+						Maldives</option>
+				<option value="ML" >
+						Mali</option>
+				<option value="MT" >
+						Malta</option>
+
+				<option value="MH" >
+						Marshall Islands</option>
+				<option value="MQ" >
+						Martinique</option>
+				<option value="MR" >
+						Mauritania</option>
+				<option value="MU" >
+
+						Mauritius</option>
+				<option value="YT" >
+						Mayotte</option>
+				<option value="MX" >
+						Mexico</option>
+				<option value="FM" >
+						Micronesia, Federated States Of</option>
+
+				<option value="MD" >
+						Moldova</option>
+				<option value="MC" >
+						Monaco</option>
+				<option value="MN" >
+						Mongolia</option>
+				<option value="ME" >
+
+						Montenegro</option>
+				<option value="MS" >
+						Montserrat</option>
+				<option value="MA" >
+						Morocco</option>
+				<option value="MZ" >
+						Mozambique</option>
+
+				<option value="MM" >
+						Myanmar</option>
+				<option value="NA" >
+						Namibia</option>
+				<option value="NR" >
+						Nauru</option>
+				<option value="NP" >
+
+						Nepal</option>
+				<option value="NL" >
+						Netherlands</option>
+				<option value="AN" >
+						Netherlands Antilles</option>
+				<option value="NC" >
+						New Caledonia</option>
+
+				<option value="NZ" >
+						New Zealand</option>
+				<option value="NI" >
+						Nicaragua</option>
+				<option value="NE" >
+						Niger</option>
+				<option value="NG" >
+
+						Nigeria</option>
+				<option value="NU" >
+						Niue</option>
+				<option value="NF" >
+						Norfolk Island</option>
+				<option value="MP" >
+						Northern Mariana Islands</option>
+
+				<option value="NO" >
+						Norway</option>
+				<option value="OM" >
+						Oman</option>
+				<option value="PK" >
+						Pakistan</option>
+				<option value="PW" >
+
+						Palau</option>
+				<option value="PS" >
+						Palestinian Territory, Occupied</option>
+				<option value="PA" >
+						Panama</option>
+				<option value="PG" >
+						Papua New Guinea</option>
+
+				<option value="PY" >
+						Paraguay</option>
+				<option value="PE" >
+						Peru</option>
+				<option value="PH" >
+						Philippines</option>
+				<option value="PN" >
+
+						Pitcairn</option>
+				<option value="PL" >
+						Poland</option>
+				<option value="PT" >
+						Portugal</option>
+				<option value="PR" >
+						Puerto Rico</option>
+
+				<option value="QA" >
+						Qatar</option>
+				<option value="RE" >
+						Reunion</option>
+				<option value="RO" >
+						Romania</option>
+				<option value="RU" >
+
+						Russian Federation</option>
+				<option value="RW" >
+						Rwanda</option>
+				<option value="BL" >
+						Saint Barthelemy</option>
+				<option value="SH" >
+						Saint Helena</option>
+
+				<option value="KN" >
+						Saint Kitts And Nevis</option>
+				<option value="LC" >
+						Saint Lucia</option>
+				<option value="MF" >
+						Saint Martin</option>
+				<option value="PM" >
+
+						Saint Pierre And Miquelon</option>
+				<option value="VC" >
+						Saint Vincent And The Grenadines</option>
+				<option value="WS" >
+						Samoa</option>
+				<option value="SM" >
+						San Marino</option>
+
+				<option value="ST" >
+						Sao Tome And Principe</option>
+				<option value="SA" >
+						Saudi Arabia</option>
+				<option value="SN" >
+						Senegal</option>
+				<option value="RS" >
+
+						Serbia</option>
+				<option value="SC" >
+						Seychelles</option>
+				<option value="SL" >
+						Sierra Leone</option>
+				<option value="SG" >
+						Singapore</option>
+
+				<option value="SK" >
+						Slovakia</option>
+				<option value="SI" >
+						Slovenia</option>
+				<option value="SB" >
+						Solomon Islands</option>
+				<option value="SO" >
+
+						Somalia</option>
+				<option value="ZA" >
+						South Africa</option>
+				<option value="GS" >
+						South Georgia And The South Sandwich Islands</option>
+				<option value="ES" >
+						Spain</option>
+
+				<option value="LK" >
+						Sri Lanka</option>
+				<option value="SD" >
+						Sudan</option>
+				<option value="SR" >
+						Suriname</option>
+				<option value="SJ" >
+
+						Svalbard And Jan Mayen</option>
+				<option value="SZ" >
+						Swaziland</option>
+				<option value="SE" >
+						Sweden</option>
+				<option value="CH" >
+						Switzerland</option>
+
+				<option value="SY" >
+						Syrian Arab Republic</option>
+				<option value="TW" >
+						Taiwan, Province Of China</option>
+				<option value="TJ" >
+						Tajikistan</option>
+				<option value="TZ" >
+
+						Tanzania, United Republic Of</option>
+				<option value="TH" >
+						Thailand</option>
+				<option value="TL" >
+						Timor-Leste</option>
+				<option value="TG" >
+						Togo</option>
+
+				<option value="TK" >
+						Tokelau</option>
+				<option value="TO" >
+						Tonga</option>
+				<option value="TT" >
+						Trinidad And Tobago</option>
+				<option value="TN" >
+
+						Tunisia</option>
+				<option value="TR" >
+						Turkey</option>
+				<option value="TM" >
+						Turkmenistan</option>
+				<option value="TC" >
+						Turks And Caicos Islands</option>
+
+				<option value="TV" >
+						Tuvalu</option>
+				<option value="UG" >
+						Uganda</option>
+				<option value="UA" >
+						Ukraine</option>
+				<option value="AE" >
+
+						United Arab Emirates</option>
+				<option value="GB" >
+						United Kingdom</option>
+				<option value="US" >
+						United States</option>
+				<option value="UM" >
+						United States Minor Outlying Islands</option>
+
+				<option value="UY" >
+						Uruguay</option>
+				<option value="UZ" >
+						Uzbekistan</option>
+				<option value="VU" >
+						Vanuatu</option>
+				<option value="VA" >
+
+						Vatican City State</option>
+				<option value="VE" >
+						Venezuela</option>
+				<option value="VN" >
+						Viet Nam</option>
+				<option value="VG" >
+						Virgin Islands, British</option>
+
+				<option value="VI" >
+						Virgin Islands, U.S.</option>
+				<option value="WF" >
+						Wallis And Futuna</option>
+				<option value="EH" >
+						Western Sahara</option>
+				<option value="YE" >
+
+						Yemen</option>
+				<option value="ZM" >
+						Zambia</option>
+				<option value="ZW" >
+						Zimbabwe</option>
+				</select>
+		</li><li class="side" id="li-gift_info-selectedPhone">
+
+	<label for="selectedPhone" class="desc">
+		Billing Phone</label>
+	<select name="selectedPhone" id="selectedPhone" class="picklist ">
+				<option value="">None</option>
+				<option value="new" reference="li:has(:input[name^='phone'])" >+ Create New</option>
+				<optgroup label="-- Or Choose From Below ---------">
+				<option value="1" >2144436829</option>
+
+				<option value="43" >972-935-4387</option>
+				</optgroup>
+				</select>
+		</li><li class="side" id="li-gift_info-phone_number">
+	<label for="phone.number" class="desc">
+		<span class="required">*</span>&nbsp;Phone Number</label>
+	<input value="" class="text " name="phone.number" id="phone.number" />
+
+		</li><li class="side" id="li-gift_info-selectedEmail">
+	<label for="selectedEmail" class="desc">
+		Receive EMail</label>
+	<select name="selectedEmail" id="selectedEmail" class="picklist ">
+				<option value="">None</option>
+				<option value="new" reference="li:has(:input[name^='email'])" >+ Create New</option>
+				<optgroup label="-- Or Choose From Below ---------">
+
+				<option value="1" >thepatriarch@gmail.com</option>
+				<option value="543" >jow@gmail.com</option>
+				</optgroup>
+				</select>
+		</li><li class="side" id="li-gift_info-email_emailAddress">
+	<label for="email.emailAddress" class="desc">
+		<span class="required">*</span>&nbsp;Email Address</label>
+
+	<input value="" class="text " name="email.emailAddress" id="email.emailAddress" />
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+	<div class="column gift_creditCard" id="gift_creditCard" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader">Credit Card</h4>
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_creditCard-paymentSource_creditCardHolderName">
+
+	<label for="paymentSource.creditCardHolderName" class="desc">
+		<span class="required">*</span>&nbsp;Cardholder Name</label>
+	<input value="Adam Smith" class="text " name="paymentSource.creditCardHolderName" id="paymentSource.creditCardHolderName" />
+		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardType">
+	<label for="paymentSource.creditCardType" class="desc">
+		<span class="required">*</span>&nbsp;Credit Card</label>
+	<select name="paymentSource.creditCardType" class="" id="paymentSource.creditCardType">
+
+				<option value="Visa" >
+						Visa</option>
+				<option value="Master Card" >
+						Master Card</option>
+				<option value="American Express" >
+						American Express</option>
+				<option value="Discover" >
+
+						Discover</option>
+				</select>
+		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardNumber">
+	<label for="paymentSource.creditCardNumber" class="desc">
+		<span class="required">*</span>&nbsp;Number</label>
+	<input value="" class="text " name="paymentSource.creditCardNumber" id="paymentSource.creditCardNumber" />
+		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardExpiration">
+
+	<label for="paymentSource.creditCardExpiration" class="desc">
+		<span class="required">*</span>&nbsp;Expiration</label>
+	<select name="paymentSource.creditCardExpirationMonth" id="paymentSource.creditCardExpirationMonth" class="expMonth ">
+				<option value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						</select>
+			<select name="paymentSource.creditCardExpirationYear" id="paymentSource.creditCardExpirationYear" class="expYear ">
+				<option value="2009">2009</option>
+						<option value="2010">2010</option>
+
+						<option value="2011">2011</option>
+						<option value="2012">2012</option>
+						<option value="2013">2013</option>
+						<option value="2014">2014</option>
+						<option value="2015">2015</option>
+						<option value="2016">2016</option>
+
+						<option value="2017">2017</option>
+						<option value="2018">2018</option>
+						</select>
+		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardSecurityCode">
+	<label for="paymentSource.creditCardSecurityCode" class="desc">
+		Security Code</label>
+	<input value="" class="text " name="paymentSource.creditCardSecurityCode" id="paymentSource.creditCardSecurityCode" />
+
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+	<div class="column gift_ach" id="gift_ach" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader">ACH</h4>
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_ach-paymentSource_achHolderName">
+	<label for="paymentSource.achHolderName" class="desc">
+
+		<span class="required">*</span>&nbsp;ACH Holder Name</label>
+	<input value="Adam Smith" class="text " name="paymentSource.achHolderName" id="paymentSource.achHolderName" />
+		</li><li class="side" id="li-gift_ach-paymentSource_achRoutingNumber">
+	<label for="paymentSource.achRoutingNumber" class="desc">
+		<span class="required">*</span>&nbsp;Routing Number</label>
+	<input value="111" class="text " name="paymentSource.achRoutingNumber" id="paymentSource.achRoutingNumber" />
+		</li><li class="side" id="li-gift_ach-paymentSource_achAccountNumber">
+
+	<label for="paymentSource.achAccountNumber" class="desc">
+		<span class="required">*</span>&nbsp;Account Number</label>
+	<input value="000" class="text " name="paymentSource.achAccountNumber" id="paymentSource.achAccountNumber" />
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+	<div class="column gift_check" id="gift_check" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader">Check</h4>
+
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_check-checkNumber">
+	<label for="checkNumber" class="desc">
+		<span class="required">*</span>&nbsp;Check Number</label>
+	<input value="" class="text " name="checkNumber" id="checkNumber" />
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+
+	<div class="column gift_editCreditCard" id="gift_editCreditCard" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader">Credit Card</h4>
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_editCreditCard-paymentSource_creditCardHolderName">
+	<label for="paymentSource.creditCardHolderName" class="desc">
+		Cardholder Name</label>
+	<div id="paymentSource.creditCardHolderName" class="readOnlyField ">Adam Smith</div>
+
+		</li><li class="side" id="li-gift_editCreditCard-paymentSource_creditCardType">
+	<label for="paymentSource.creditCardType" class="desc">
+		Credit Card</label>
+	<div id="paymentSource.creditCardType" class="readOnlyField ">&nbsp;</div>
+		</li><li class="side" id="li-gift_editCreditCard-paymentSource_creditCardNumber">
+	<label for="paymentSource.creditCardNumber" class="desc">
+		Number</label>
+	<div id="paymentSource.creditCardNumber" class="readOnlyField ">&nbsp;</div>
+
+		</li><li class="side" id="li-gift_editCreditCard-paymentSource_creditCardExpiration">
+	<label for="paymentSource.creditCardExpiration" class="desc">
+		Expiration</label>
+	<div id="paymentSource.creditCardExpiration" class="readOnlyField ">&nbsp;</div>
+		</li><li class="side" id="li-gift_editCreditCard-selectedPaymentSource_creditCardSecurityCode">
+	<label for="selectedPaymentSource.creditCardSecurityCode" class="desc">
+		Security Code</label>
+	<input value="" class="text " name="selectedPaymentSource.creditCardSecurityCode" id="selectedPaymentSource.creditCardSecurityCode" />
+
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+	<div class="column gift_editAch" id="gift_editAch" style="display:none;padding-right:8px;">
+			<h4 class="formSectionHeader">ACH</h4>
+			<ul class="formFields width375">
+				<li class="side" id="li-gift_editAch-paymentSource_achHolderName">
+	<label for="paymentSource.achHolderName" class="desc">
+
+		ACH Holder Name</label>
+	<div id="paymentSource.achHolderName" class="readOnlyField ">Adam Smith</div>
+		</li><li class="side" id="li-gift_editAch-paymentSource_achRoutingNumber">
+	<label for="paymentSource.achRoutingNumber" class="desc">
+		Routing Number</label>
+	<div id="paymentSource.achRoutingNumber" class="readOnlyField ">111</div>
+		</li><li class="side" id="li-gift_editAch-paymentSource_achAccountNumber">
+
+	<label for="paymentSource.achAccountNumber" class="desc">
+		Account Number</label>
+	<div id="paymentSource.achAccountNumber" class="readOnlyField ">000</div>
+		</li><li class="clear"></li>
+			</ul>
+		</div>
+	<div class="clearColumns"></div>
+					</div>
+
+					<h4 class="gridSectionHeader">Gift Distribution</h4>
+		<table class="tablesorter" style="table-layout:fixed;" id="gift_distribution" cellspacing="0" cellpadding="0"> 
+			<thead> 
+				<tr>
+						<th class="header">
+				<a href="&sort=amount" onclick="return getPage(this)">Amount</a>
+			</th>
+		<th class="header">
+				<a href="&sort=projectCode" onclick="return getPage(this)">Designation</a>
+
+			</th>
+		<th class="actionColumn">&nbsp;</th>
+					</tr>
+				</thead>
+			<tbody>
+				<tr rowindex="0">
+							<td><input value="" class="text amount" 
+			name="distributionLines[0].amount" />
+	</td>
+<td><div class="lookupWrapper">
+
+			<input value="" class="text projectCode code" lookup="projectCode" 
+				codeType="projectCode" name="distributionLines[0].projectCode" />
+			<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
+		</div>
+	</td>
+<td><img style="cursor: pointer;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
+						</tr>
+					</tbody>
+		</table>
+	<p class="gridActions">&nbsp;<span id="subTotal">Total <span class="warningText">(must match gift value)</span> <span class="value">0</span></span></p>
+
+						<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
+				</form></div>
+	<div class="clearBoth"></div>
+			<div id="footer">
+	<div class="container">
+		<p style="margin-bottom:0" class="legal">
+		Last login Fri Jan 16 09:08:52 CST 2009</p>
+		<p class="legal">
+
+			(800) 562-5150 | &#169; Copyright 2008 - 2009 MPower Open. All Rights Reserved. |
+			<a href="#">Articles</a> |
+			<a href="#">Resources</a>
+		</p>
+	</div>
+</div></div>
+		<div class="jqmWindow" id="dialog">
+</div> 
+		<!-- END OF test -->
+	</body>
+</html>

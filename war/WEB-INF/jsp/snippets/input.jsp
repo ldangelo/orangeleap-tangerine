@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<li class="side">
+<li class="side" id="li-<c:out value='${sectionDefinition.sectionHtmlName}'/>-<c:out value='${fieldVO.fieldHtmlName}'/>">
 	<c:remove var="errorClass" scope="page" />
 	<c:if test="${commandObject != null}">
 		<spring:hasBindErrors name="${commandObject}">
@@ -149,7 +149,7 @@
 		<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 			<%-- TODO: move to tag library --%>
 			<div class="lookupWrapper">
-			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
+			    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>">
 					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
 						<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 

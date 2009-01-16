@@ -1,8 +1,20 @@
 $(document).ready(function() {
-	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
+	(function() {
+//		console.time("buildTree");
+		$("li.side:has(.picklist), li.side:has(.multiPicklist)").each(MPower.buildPicklistTree);
+//		console.timeEnd("buildTree");
+//		console.time("cascade");
+		MPower.cascadeElementsRoot();
+//		console.timeEnd("cascade");
+	})();
+//		console.time("cascade");
+//	$(".picklist, .multiPicklist").each(MPower.toggleReferencedElements);
+//		console.timeEnd("cascade");
+
 	$(".picklist").change(MPower.toggleReferencedElements);
 	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
-
+	
+	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
 	}).blur(function() {
@@ -284,6 +296,9 @@ function getPage(elem) {
 }
 
 var MPower = {
+	rootTrees: {},
+	blarg: null,
+	
 	gotoUrl: function(url) {
 		window.location.href = url;
 	},
@@ -294,6 +309,151 @@ var MPower = {
 		}
 	},
 	
+	/** When the document is ready, build the tree(s) of items that cascade each other */
+	buildPicklistTree: function() {
+		var $parentNode = $(this); // this may be an li, or div
+		var tree = MPower.getTree($parentNode);
+		
+		if (tree.parents.length == 0) {
+			tree.isRoot = true; // assume this is the root, will be reset in 'setParentForChild' if not
+		}
+		var $targets = null;
+
+		var $picklists = $parentNode.filter(".picklist"); // either THIS is a picklist
+		var $nested = $parentNode.find(".picklist"); // or it COULD have immediate descendent picklists
+		$picklists = $picklists.add($nested); // these are all the children of this node
+		$picklists.each(function() {
+			var $myPicklist = $(this);
+			var $options = MPower.findOptions($myPicklist);
+			if ($options) {
+				var isMultiPicklist = $myPicklist.hasClass("multiPicklist");
+				
+				$options.each(function() {
+					var $optElem = $(this);
+					var selector = $optElem.attr('reference');
+					if (selector != null && selector.length) {
+						var optionSelected = false;
+						if ((isMultiPicklist === true && $optElem.css("display") != "none") || 
+							(isMultiPicklist === false && $optElem.attr("selected"))) {
+							 optionSelected = true;
+						}
+						$targets = $targets ? $targets.add($(selector)) : $(selector);
+						$targets.each(function() {
+							MPower.setChildForParent($parentNode, $(this));
+							MPower.setParentForChild($(this), $parentNode, optionSelected);
+						});
+					}
+				});		
+			}
+		});	
+		if (tree.isRoot) {
+			var thisId = $parentNode.attr("id");
+			tree.isSelected = true;
+			MPower.rootTrees[thisId] = tree;				
+		}				
+		if ($targets) {
+			$targets.each(MPower.buildPicklistTree);
+		}
+	},
+	
+	setParentForChild: function($childNode, $parentNode, optionSelected) {
+		var tree = MPower.getTree($childNode);
+		var parentId = $parentNode.attr("id");
+		if (!tree.parentIds[parentId]) {
+			tree.parents.push($parentNode);
+			tree.parentIds[parentId] = true;
+			tree.isRoot = false;
+			tree.isSelected = tree.isSelected | optionSelected;
+			
+			var thisId = $childNode.attr("id");
+			delete MPower.rootTrees[thisId];
+		}
+	},
+	
+	setChildForParent: function($parentNode, $childNode) {
+		var tree = MPower.getTree($parentNode);
+		var childId = $childNode.attr("id");
+		if (!tree.childIds[childId]) {
+			tree.children.push($childNode);
+			tree.childIds[childId] = true;
+		}
+	},
+	
+	getTree: function($elem) {
+		var tree = $elem.data("tree");
+		if (!tree) {
+			tree = { node: $elem, 
+				parents: new Array(), 
+				children: new Array(), 
+				parentIds: new Object(), 
+				childIds: new Object(), 
+				isRoot: false, 
+				isSelected: false, 
+				isInit: false,
+				isParentSelected: function() {
+					var pSel = false;
+					for (var p in this.parents) {
+						if ($(this.parents[p]).data("tree").isSelected) {
+							pSel = true;
+							break;
+						}
+					}
+					return pSel;
+				} 
+			};
+			$elem.data("tree", tree);
+		}
+		return tree;
+	},
+	
+	findOptions: function($elem) {
+		var $options = null;
+		var isMultiPicklist = $elem.hasClass("multiPicklist");
+		if (isMultiPicklist) {
+			$options = $elem.children("div.multiPicklistOption");
+		}
+		else {
+			$options = $elem.find("option");
+		}
+		return $options;
+	},
+		
+	cascadeElementsRoot: function () {
+		var cascaders = { shown: null, hidden: null, ids: {} };
+		for (var treeId in MPower.rootTrees) {
+			var tree = MPower.rootTrees[treeId];
+			var $elem = tree.node;
+
+			cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem; // all root elements are expected to be visible
+			cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);												
+		}		
+		if (cascaders.hidden) { 
+			cascaders.hidden.hide(); 
+		}
+		if (cascaders.shown) { 
+			cascaders.shown.show(); 
+		}
+	},
+	
+	cascadeElementsChildren: function($children, cascaders) {
+		var $nextLevelChildren = null;
+		if ($children) {
+			$children.each(function() {
+				var $child = $(this);
+				var tree = $child.data("tree"); 
+				if (tree.isSelected && tree.isParentSelected()) { // if the child node is selected, check the parent(s) to make sure at least one is selected
+					cascaders.shown = cascaders.shown ? cascaders.shown.add($child) : $child;
+				}
+				else {
+					cascaders.hidden = cascaders.hidden ? cascaders.hidden.add($child) : $child;
+				}
+				$nextLevelChildren = $nextLevelChildren ? $nextLevelChildren.add($(tree.children)): $(tree.children);
+			});
+			cascaders = MPower.cascadeElementsChildren($nextLevelChildren, cascaders);
+		}
+		return cascaders;
+	},
+	
 	toggleReferencedElements: function () {
 		var elem = this;
 		var $toBeShown;
@@ -301,36 +461,16 @@ var MPower = {
 		var $toBeToggled;
 		var $toBeHiddenNested;
 		
-		var $options = null;
+		var $options = MPower.findOptions($(elem));
 		var isMultiPicklist = $(elem).hasClass("multiPicklist");
-		if (isMultiPicklist) {
-			$options = $(elem).children("div.multiPicklistOption");
-		}
-		else {
-			$options = $(elem).find("option");
-		}
 		
 		$options.each(function() {
 			var selector = this.getAttribute('reference');
 			if (selector != null && selector.length) {
 				var $target = $(selector);
-				var $picklists = $(selector).filter(".picklist"); // the <li> the picklist resides in
-				var $nested = $(selector).find(".picklist"); // the actual picklist <select>
+				var $picklists = $(selector).filter(".picklist"); // filter if THIS is a picklist
+				var $nested = $(selector).find(".picklist"); // find all descendent picklists
 				$picklists = $picklists.add($nested);
-
-/*
-				var thisAlreadyHidden = $(this).parents('li.side').is(':hidden');
-
-				if (thisAlreadyHidden || (isMultiPicklist === true && $(this).css("display") == "none") || 
-					(isMultiPicklist === false && this.selected === false)) {
-					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
-				} 
-				else {
-					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-					$toBeToggled = $toBeToggled ? $toBeToggled.add($nested) : $nested;
-				}
-				* */
 
 				if ((isMultiPicklist === true && $(this).css("display") != "none") || 
 					(isMultiPicklist === false && this.selected)) {
@@ -778,8 +918,9 @@ var MultiSelect = {
 	}
 }
 
-
+/*
 // Create a placeholder console object in case Firebug is not present.
 if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };
 // Initialize the console (workaround for current Firebug defect)
 console.log();
+*/

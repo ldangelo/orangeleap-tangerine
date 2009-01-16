@@ -4,6 +4,7 @@
 	<head>
 		<title>QUnit Test Picklist Cascade</title>
 		<script type="text/javascript" src="../../war/js/jquery.js"></script>
+		
 		<script type="text/javascript" src="../../war/js/jquery.tablesorter.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.bgiframe.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.hoverIntent.js"></script>
@@ -16,6 +17,7 @@
 		<script type="text/javascript" src="../../war/js/date.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.datePicker.js"></script>
 		<script type="text/javascript" src="../../war/js/mpower.js"></script>
+		<link rel="shortcut icon" type="image/ico" href="../../war/images/favicon.ico" />
 <!--	
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="../../war/css/screen.css" />
 		<link rel="stylesheet" type="text/css" media="print" href="../../war/css/print.css" />
@@ -113,8 +115,10 @@
 					for (var id in tree.parentIds) {
 						ok(id === "li-gift_info-paymentType", id + " was expected as a parent");
 					}
-//					ok(tree.isSelected == false, "gift_ach was expected to have isSelected='false'"); TODO: put back 
 				});
+				
+				module("test cascade for load");
+				
 			});
 			
 		</script>

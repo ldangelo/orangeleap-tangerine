@@ -27,6 +27,10 @@
 	            <input type="submit" value="Import" />
 	        </form>
         	
+            <c:forEach var="line" items="${importResult}">
+				<c:out value="${line}"/><br/>
+       	    </c:forEach>
+        	
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

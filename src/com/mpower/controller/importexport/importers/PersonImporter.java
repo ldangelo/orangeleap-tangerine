@@ -50,6 +50,7 @@ public class PersonImporter extends EntityImporter {
 		} else {
 			if (id == null) throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
 		    person = personservice.readPersonById(new Long(id));
+			if (person == null) throw new RuntimeException(getIdField() + " " + id + " not found.");
 			logger.debug("Importing entity "+id+"...");
 		}
 		

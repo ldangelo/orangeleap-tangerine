@@ -24,8 +24,10 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.mpower.service.SiteService;
 
 public class CsvImportController extends SimpleFormController {
-	
-    protected final Log logger = LogFactory.getLog(getClass());
+
+    public static final String IMPORT_RESULT = "importResult";
+
+	protected final Log logger = LogFactory.getLog(getClass());
 	
 	private SiteService siteService;
 
@@ -51,30 +53,42 @@ public class CsvImportController extends SimpleFormController {
 		
 		ApplicationContext applicationContext = getApplicationContext();
 
+		List<String> result = new ArrayList<String>();
 		byte[] file = bean.getFile();
-		if (file != null) {
-			importFile(entity, file, errors, applicationContext);
+		if (file != null && file.length > 0) {
+			result = importFile(entity, file, errors, applicationContext);
+		} else {
+			result.add("Import file required.");
 		}
-
-		return super.onSubmit(request, response, command, errors);
+		
+        ModelAndView mav = super.onSubmit(request, response, command, errors);
+        mav.addObject(IMPORT_RESULT, result);
+        request.getSession().setAttribute(IMPORT_RESULT, result);
+        return mav;
 
 	}
 
 	// Can also import in separate thread, if it is slow for large files, and return a request id for the response which can be polled for when ready
-	private void importFile(String entity, byte[] file, BindException errors, ApplicationContext applicationContext) {
+	private List<String> importFile(String entity, byte[] file, BindException errors, ApplicationContext applicationContext) {
 
 		List<String[]> data = parseFile(file);
 		
 		ImportHandler handler = new ImportHandler(entity, data, applicationContext);
 		handler.importData();
-		List<String> validationErrors = handler.getErrors();
-		for (String error : validationErrors) {
-			if (errors.getAllErrors().size() > 100) break;
-			errors.addError(new ObjectError("", error));  // TODO fix
+		
+		List<String> result = new ArrayList<String>();
+		String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + ", Deletes: " + handler.getDeletes() + ", Errors: " + handler.getErrors().size();
+		result.add(summary);
+		if (handler.getErrors().size() == 0) result.add("Import successful.");
+		for (String error : handler.getErrors()) {
+			if (errors.getAllErrors().size() > 1000) {
+				result.add("more...");
+				break;
+			} else {
+				result.add(error);
+			}
 		}
-
-		// TODO return validation errors if any, otherwise summary of how many records added, changed, or deleted
-		//handler.getAdds();
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")

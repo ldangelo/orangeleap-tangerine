@@ -59,7 +59,7 @@ public abstract class EntityExporter {
 			for (int i = 0; i < fields.size(); i++) {
 				FieldDescriptor fd = fields.get(i);
 				String value = getFieldValue(o, fd);
-				logger.debug("name="+fd.getName()+", value="+value);
+				//logger.debug("name="+fd.getName()+", value="+value);
 				line[i+1] = value;
 			}
 		}

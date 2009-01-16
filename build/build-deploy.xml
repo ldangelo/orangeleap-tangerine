@@ -12,7 +12,7 @@
 		<property name="mysql.db.user" value="mpower" />
 		<property name="mysql.db.pw" value="mpower" />
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-		<property name="mysql.db.classpath" value="${deploy.dir}/../lib/mysql-connector-java-5.0.8-bin.jar" />
+		<property name="mysql.db.classpath" value="${target.tomcat.dir}/lib/mysql-connector-java-5.0.8-bin.jar" />
 
 
 		<!-- Reset schema -->
@@ -24,11 +24,15 @@
 		          classpath="${mysql.db.classpath}">
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
 	    </sql>
-		
+
+		<exec executable="${tomcat.dir}/bin/shutdown.sh" spawn="true" />
+		<sleep seconds="30" />
+				
 		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
-		<copy file="${build.output.dir}/mpower.war" todir="${deploy.dir}" overwrite="true"  />
-		<sleep seconds="60"/>
-		
+		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
+
+		<exec executable="${tomcat.dir}/bin/startup.sh" spawn="true" />
+		<sleep seconds="90" />
 		
 		<!-- for a clean base new instance -->
 		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->

@@ -2,7 +2,7 @@
 <project name="mpower" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
-	<property name="deploy.dir" value="/opt/mpower/DEV/tomcat/webapps" />
+	<property name="target.tomcat.dir" value="/opt/mpower/DEV/tomcat" />
 	<property name="mysql.port" value="10006" />
 	<property name="build.deploy.file" value="${basedir}/build/build-deploy.xml" />
 

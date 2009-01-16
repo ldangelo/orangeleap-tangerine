@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.mpower.service.SiteService;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.type.PageType;
 
 public abstract class EntityImporter {
 	
@@ -25,5 +26,7 @@ public abstract class EntityImporter {
 	
 	public abstract void importValueMap(String action, Map<String, String> m) throws PersonValidationException;
 	public abstract String getIdField();
+	protected abstract PageType getPageType();
+
 	
 }

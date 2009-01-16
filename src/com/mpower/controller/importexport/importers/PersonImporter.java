@@ -1,5 +1,6 @@
 package com.mpower.controller.importexport.importers;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -7,9 +8,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.Person;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.type.PageType;
 
 
 public class PersonImporter extends EntityImporter {
@@ -27,8 +30,15 @@ public class PersonImporter extends EntityImporter {
 	public String getIdField() {
 		return "accountNumber";
 	}
+	
+	@Override
+	protected PageType getPageType() {
+	    return PageType.person;
+	}
 
-	// TODO move to superclass
+
+
+	// TODO move some parts to superclass
 	@Override
 	public void importValueMap(String action, Map<String, String> values) throws PersonValidationException {
 		
@@ -44,7 +54,15 @@ public class PersonImporter extends EntityImporter {
 			logger.debug("Importing entity "+id+"...");
 		}
 		
-		
+		// We want relationship maintenance, so type maps are required, similar to manual edit screen.
+        Map<String, String> fieldLabelMap = siteservice.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles(), Locale.getDefault());
+        person.setFieldLabelMap(fieldLabelMap);
+
+        Map<String, Object> valueMap = siteservice.readFieldValues(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles(), person);
+        person.setFieldValueMap(valueMap);
+
+        Map<String, FieldDefinition> typeMap = siteservice.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles());
+        person.setFieldTypeMap(typeMap);
 
 		if (action.equals(EntityImporter.ACTION_DELETE)) {
 			// How to delete or set person to inactive?

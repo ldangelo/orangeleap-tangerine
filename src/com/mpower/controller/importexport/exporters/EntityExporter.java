@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.type.FieldType;
 import com.mpower.type.PageType;
 
 
@@ -76,6 +77,7 @@ public abstract class EntityExporter {
 		for (Map.Entry<String, FieldDefinition> es : fields.entrySet()) {
 			String name = es.getKey();
 			FieldDefinition fd = es.getValue();
+			if (exclude(name, fd)) continue;
 			logger.debug("HEADER_FIELD : "+ name);
 			if (fd.isCustom()) {
 				list.add(new FieldDescriptor(fd.getCustomFieldName(), FieldDescriptor.CUSTOM));
@@ -103,6 +105,15 @@ public abstract class EntityExporter {
 
 		return list;
 		
+	}
+	
+	protected boolean exclude(String name, FieldDefinition fd) {
+		return  
+				fd.getFieldType() == FieldType.ADDRESS_PICKLIST
+				|| fd.getFieldType() == FieldType.EMAIL_PICKLIST
+				|| fd.getFieldType() == FieldType.PHONE_PICKLIST
+				|| fd.getFieldType() == FieldType.PAYMENT_SOURCE_PICKLIST
+				;
 	}
 
 	@SuppressWarnings("unchecked")

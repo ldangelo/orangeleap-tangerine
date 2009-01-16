@@ -81,7 +81,9 @@ public class ImportHandler {
 			}
 
 		} catch (Exception e) {
-			errors.add("Error in import file line "+linenumber+": "+e.getMessage());
+			String msg = "Error in import file line "+linenumber+": "+e.getMessage();
+			logger.error(msg);
+			errors.add(msg);
 		}
 
 	}

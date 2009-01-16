@@ -87,10 +87,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "MARITAL_STATUS")
     private String maritalStatus = "Unknown";
 
-    @Column(name = "BIRTHDATE")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
-
     @Column(name = "PREFERRED_PHONE_TYPE")
     private String preferredPhoneType;
 
@@ -167,7 +163,13 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     	if (customField == null || customField.getValue() == null) return null;
         return customField.getValue();
     }
-    
+
+    public void setCustomFieldValue(String fieldName, String value) {
+    	CustomField customField = getCustomFieldMap().get(fieldName);
+    	if (customField == null) throw new RuntimeException("Invlid custom field name "+fieldName);
+    	customField.setValue(value);
+    }
+
     public boolean isOrganization() {
     	return getConstituentType().equals(ORGANIZATION);
     }
@@ -259,14 +261,6 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
     }
 
     public String getPreferredPhoneType() {

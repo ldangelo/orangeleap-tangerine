@@ -38,7 +38,6 @@ public class PersonImporter extends EntityImporter {
 
 
 
-	// TODO move some parts to superclass
 	@Override
 	public void importValueMap(String action, Map<String, String> values) throws PersonValidationException {
 		
@@ -54,7 +53,7 @@ public class PersonImporter extends EntityImporter {
 			logger.debug("Importing entity "+id+"...");
 		}
 		
-		// We want relationship maintenance, so type maps are required, similar to manual edit screen.
+		// We want person relationship maintenance, so type maps are required, similar to manual edit screen.
         Map<String, String> fieldLabelMap = siteservice.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles(), Locale.getDefault());
         person.setFieldLabelMap(fieldLabelMap);
 
@@ -65,18 +64,15 @@ public class PersonImporter extends EntityImporter {
         person.setFieldTypeMap(typeMap);
 
 		if (action.equals(EntityImporter.ACTION_DELETE)) {
-			// How to delete or set person to inactive?
+			// TODO How to delete or set person to inactive?
 		} else {
 			mapValuesToObject(values, person);
 		}
 		
 		personservice.maintainPerson(person);
 		
-		
 	}
 	
-	protected void mapValuesToObject(Map<String, String> values, Object o) {
-		// TODO
-	}
-
+	
+	
 }

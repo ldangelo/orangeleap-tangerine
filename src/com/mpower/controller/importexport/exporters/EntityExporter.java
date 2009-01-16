@@ -47,7 +47,7 @@ public abstract class EntityExporter {
 		header[0] = "action";
 		for (int i = 0; i < fields.size();i++) {
 			FieldDescriptor fd = fields.get(i);
-			header[i+1] = getExportFieldNameForMap(fd.getName());
+			header[i+1] = fd.getExportFieldNameForInternalName();
 		}
 		result.add(header);
 		
@@ -68,7 +68,7 @@ public abstract class EntityExporter {
 		
 	}
 	
-	protected List<FieldDescriptor> getExportFieldDescriptors() {
+	public List<FieldDescriptor> getExportFieldDescriptors() {
 		
 		Map<String, FieldDefinition> fields = siteservice.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles());
 		
@@ -80,15 +80,15 @@ public abstract class EntityExporter {
 			if (exclude(name, fd)) continue;
 			logger.debug("HEADER_FIELD : "+ name);
 			if (fd.isCustom()) {
-				list.add(new FieldDescriptor(fd.getCustomFieldName(), FieldDescriptor.CUSTOM));
+				list.add(new FieldDescriptor(fd.getCustomFieldName(), FieldDescriptor.CUSTOM, fd));
 			} else if (name.contains("addressMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.ADDRESS));
+				list.add(new FieldDescriptor(name, FieldDescriptor.ADDRESS, fd));
 			} else if (name.contains("phoneMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.PHONE));
+				list.add(new FieldDescriptor(name, FieldDescriptor.PHONE, fd));
 			} else if (name.contains("emailMap[")) {
-				list.add(new FieldDescriptor(name, FieldDescriptor.EMAIL));
+				list.add(new FieldDescriptor(name, FieldDescriptor.EMAIL, fd));
 			} else {
-				list.add(new FieldDescriptor(name, FieldDescriptor.NATIVE));
+				list.add(new FieldDescriptor(name, FieldDescriptor.NATIVE, fd));
 			}
 		}
 		
@@ -123,17 +123,17 @@ public abstract class EntityExporter {
 			if (fd.getType() == FieldDescriptor.CUSTOM) {
 				Method m = o.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
 				return (String)m.invoke(o, name);
-			} else if (isMap(name)) {
-				Method m = o.getClass().getMethod("get"+getMapType(name)+"Map");
+			} else if (fd.isMap()) {
+				Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
 				Map map = (Map)m.invoke(o);
-				Object so = map.get(getKey(name));
-				return BeanUtils.getProperty(so, getSubField(name));
-			} else if (isDependentField(name)) {
-				String depobject = getDependentObject(name);
-				Method m = o.getClass().getMethod("get"+toInitialUpperCase(depobject));
+				Object so = map.get(fd.getKey());
+				return BeanUtils.getProperty(so, fd.getSubField());
+			} else if (fd.isDependentField()) {
+				String depobject = fd.getDependentObject();
+				Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 				Object so = m.invoke(o);
 				if (so == null) return "";
-				return BeanUtils.getProperty(so, getDependentField(name));
+				return BeanUtils.getProperty(so, fd.getDependentField());
 			} else {
 				return BeanUtils.getProperty(o, name);
 			}
@@ -143,56 +143,6 @@ public abstract class EntityExporter {
 		}
 	}
 	
-	private boolean isMap(String name) {
-		return name.contains("Map[");
-	}
-
-	private boolean isDependentField(String name) {
-		return name.contains(".");
-	}
-
-	private String getMapType(String name) {
-		int i = name.indexOf("Map[");
-		if (i < 0 ) return "";
-		String type = name.substring(0,i);
-		return toInitialUpperCase(type);
-	}
-	
-	private String toInitialUpperCase(String s) {
-		return s.substring(0,1).toUpperCase()+s.substring(1);
-	}
-	
-	private String getKey(String name) {
-		int i = name.indexOf("[");
-		int j = name.indexOf("]");
-		if (i < 0 || j < 0 || i > j) return "";
-		return name.substring(i + 1, j);
-	}
-	
-	private String getSubField(String name) {
-		int j = name.indexOf("]");
-		if (j < 0) return "";
-		return name.substring(j+2);
-	}
-	
-	private String getDependentObject(String name) {
-		int j = name.indexOf(".");
-		if (j < 0) return "";
-		return name.substring(0,j);
-	}
-	
-	private String getDependentField(String name) {
-		int j = name.indexOf(".");
-		if (j < 0) return "";
-		return name.substring(j+1);
-	}
-	
-	// Create an export field name for a mapped field.
-	protected String getExportFieldNameForMap(String name) {
-		if (!isMap(name)) return name;
-		return getMapType(name) + "[" + getKey(name) + "]" + getSubField(name);
-	}
-		
 
 
 	

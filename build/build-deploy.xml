@@ -25,13 +25,13 @@
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
 	    </sql>
 
-		<exec executable="${tomcat.dir}/bin/shutdown.sh" spawn="true" />
+		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
 		<sleep seconds="30" />
 				
 		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 
-		<exec executable="${tomcat.dir}/bin/startup.sh" spawn="true" />
+		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
 		<sleep seconds="90" />
 		
 		<!-- for a clean base new instance -->

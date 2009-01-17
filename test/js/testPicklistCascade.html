@@ -41,10 +41,11 @@
 				test("MPower.RootTree", function() {
 					ok(MPower.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
 					ok(MPower.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
+					ok(MPower.rootTrees["li-person_contactInfo-constituentType"], "constituentType exists as a root");
 					
 					var len = 0;
 					for (var obj in MPower.rootTrees) { len++; }
-					ok(len === 2, len + " items in rootTrees");
+					ok(len === 3, len + " items in rootTrees, expected 3");
 				});
 				test("MPower.SelectedPaymentSource", function() {
 					var tree = $("li#li-gift_info-selectedPaymentSource").data("tree"); 
@@ -69,6 +70,11 @@
 					}
 					ok(5 === tree.children.length, "5 child fields for paymentType was expected"); 
 					ok(tree.isSelected == false, "paymentType was expected to have isSelected='false', instead = " + tree.isSelected); 
+					ok(tree.optionValues["new"] == true, "paymentType was expected to have optionValue = 'new'"); 
+
+					var len = 0;
+					for (var obj in tree.optionValues) { len++; }
+					ok(len === 1, len + " items in optionValues, expected 1");
 				});
 				test("MPower.SelectedAddress", function() {
 					var tree = $("li:has(#selectedAddress)").data("tree"); 
@@ -118,7 +124,23 @@
 				});
 				
 				module("test cascade for load");
-				
+				test("elements shown or hidden", function() {
+					// ON PAGE LOAD, the ACH PAYMENT is already SELECTED
+					ok($("#li-gift_info-selectedPaymentSource").is(":hidden") != true, "li-gift_info-selectedPaymentSource is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":hidden") != true, "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":hidden") != true, "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_editAch").is(":hidden") != true, "gift_editAch is expected to be visible");
+
+					ok($("#li-gift_info-paymentType").is(":hidden") == true, "li-gift_info-paymentType is expected to be hidden");
+					ok($("#gift_creditCard").is(":hidden") == true, "gift_creditCard is expected to be hidden");
+					ok($("#gift_editCreditCard").is(":hidden") == true, "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden") == true, "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden") == true, "gift_check is expected to be hidden");
+
+					ok($("#li-gift_info-selectedEmail").is(":hidden") != true, "li-gift_info-selectedEmail is expected to be visible");
+					ok($("#li-gift_info-email_emailAddress").is(":hidden") == true, "li-gift_info-email_emailAddress is expected to be hidden");
+					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":hidden") == true, "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be hidden");
+				});
 			});
 			
 		</script>
@@ -1136,6 +1158,8 @@
 		</li><li class="clear"></li>
 			</ul>
 		</div>
+		
+		
 	<div class="column gift_editAch" id="gift_editAch" style="display:none;padding-right:8px;">
 			<h4 class="formSectionHeader">ACH</h4>
 			<ul class="formFields width375">
@@ -1156,6 +1180,146 @@
 		</li><li class="clear"></li>
 			</ul>
 		</div>
+		
+		
+		<!-- MULTIPICKLISTS -->
+	<div class="column constituentInfo" id="constituentInfo" style="display:none;padding-right:8px;">
+		<li class="side" id="li-person_contactInfo-constituentType">
+	<label for="constituentType" class="desc">
+		<span class="required">*</span>&nbsp;Constituent Type</label>
+	<select name="constituentType" class="picklist " id="constituentType">
+				<option reference="li:has(.ea-individual)"value="individual" selected>
+						Individual</option>
+
+				<option reference="li:has(.ea-organization)"value="organization" >
+						Organization</option>
+				</select>
+		</li><li class="side" id="li-person_contactInfo-constituentIndividualRoles">
+	<label for="constituentIndividualRoles" class="desc">
+		Constituent Roles</label>
+	<div class="lookupWrapper">
+			    <div class="multiPicklist multiLookupField ea-individual" id="constituentIndividualRoles">
+
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
+							Donor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-sponsor" selectedId="sponsor" reference="li:has(.ea-sponsor)">
+							Sponsor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-affiliate" selectedId="affiliate" reference="li:has(.ea-affiliate)">
+							Affiliate<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-volunteer" selectedId="volunteer" reference="li:has(.ea-volunteer)">
+							Volunteer<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-member" selectedId="member" reference="li:has(.ea-member)">
+							Member<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-prospect" selectedId="prospect" reference="li:has(.ea-prospect)">
+
+							Prospect<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='' 
+							id="option-alumni" selectedId="alumni" reference="li:has(.ea-alumni)">
+							Alumni<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-headOfHousehold" selectedId="headOfHousehold" reference="li:has(.ea-headOfHousehold)">
+							Head of Household<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-contact" selectedId="contact" reference="li:has(.ea-contact)">
+							Contact<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					
+			        &nbsp;
+			    	<input type='hidden' name='labelText' id='constituentIndividualRoles-labelText' value="Constituent Roles"/>
+			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
+			    </div>
+
+			    <input type="hidden" name="constituentIndividualRoles" id="constituentIndividualRoles" value="alumni,headOfHousehold" />
+			</div>
+		</li><li class="side" id="li-person_contactInfo-constituentOrganizationRoles">
+	<label for="constituentOrganizationRoles" class="desc">
+		Constituent Roles</label>
+	<div class="lookupWrapper">
+			    <div class="multiPicklist multiLookupField ea-organization" id="constituentOrganizationRoles">
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
+
+							Donor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-sponsor" selectedId="sponsor" reference="li:has(.ea-sponsor)">
+							Sponsor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-affiliate" selectedId="affiliate" reference="li:has(.ea-affiliate)">
+							Affiliate<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-volunteer" selectedId="volunteer" reference="li:has(.ea-volunteer)">
+							Volunteer<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-member" selectedId="member" reference="li:has(.ea-member)">
+							Member<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-prospect" selectedId="prospect" reference="li:has(.ea-prospect)">
+
+							Prospect<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-trust" selectedId="trust" reference="li:has(.ea-trust)">
+							Trust<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-foundation" selectedId="foundation" reference="li:has(.ea-foundation)">
+							Foundation<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+
+						</div>
+					<div class='multiPicklistOption' style='display:none' 
+							id="option-vendor" selectedId="vendor" reference="li:has(.ea-vendor)">
+							Vendor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+						</div>
+					
+			        &nbsp;
+			    	<input type='hidden' name='labelText' id='constituentOrganizationRoles-labelText' value="Constituent Roles"/>
+			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText">Lookup</a>
+			    </div>
+
+			    <input type="hidden" name="constituentOrganizationRoles" id="constituentOrganizationRoles" value="" />
+			</div>
+		</li>
+		<li class="side" id="li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value">
+	<label for="customFieldMap[headOfHousehold.householdMembers].value" class="desc">
+		Household members</label>
+	<div class="lookupWrapper">
+			    <div class="multiLookupField ea-headOfHousehold">
+					
+			        &nbsp;
+			        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="person.customFieldMap[headOfHousehold.householdMembers]" class="hideText">Lookup</a>
+			    </div>
+
+				<input type="hidden" name="customFieldMap[headOfHousehold.householdMembers].value" value="" id="customFieldMap[headOfHousehold.householdMembers].value" />
+				
+				<div class="multiQueryLookupOption noDisplay clone" selectedId="">
+					<a href="" target="_blank"></a>
+					<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
+				</div>		
+			</div>
+		</li>
+	</div>
 	<div class="clearColumns"></div>
 					</div>
 

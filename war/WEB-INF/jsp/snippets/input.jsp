@@ -34,7 +34,7 @@
 				<c:if test="${fieldVO.required != 'true'}">
 					<option value=""><spring:message code="none"/></option>
 				</c:if>
-				<option value="new" reference="li:has(#paymentType)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+				<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 				<c:if test="${not empty paymentSources}">
 					<optgroup label="<spring:message code='orChoose'/>">
 				</c:if>

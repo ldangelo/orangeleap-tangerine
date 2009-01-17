@@ -7,7 +7,15 @@ $(document).ready(function() {
 		MPower.cascadeElementsRoot();
 //		console.timeEnd("cascade");
 	})();
-	$(".picklist").change(MPower.toggleReferencedElements);
+	$(".picklist").change(MPower.togglePicklist);
+	/*
+	$(".picklist").change(function() {
+		console.time("togglePicklist");
+		MPower.togglePicklist();
+		console.timeEnd("togglePicklist");
+	});
+	*/
+	//$(".picklist").change(MPower.toggleReferencedElements);
 	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
 	
 	
@@ -321,14 +329,14 @@ var MPower = {
 			var $myPicklist = $(this);
 			var $options = MPower.findOptions($myPicklist);
 			if ($options) {
-				var isMultiPicklist = $myPicklist.hasClass("multiPicklist");
+				var isMultiPicklist = MPower.isMultiPicklist($myPicklist);
 				
 				$options.each(function() {
 					var $optElem = $(this);
 					var selector = $optElem.attr('reference');
 					if (selector != null && selector.length) {
 						var optionSelected = false;
-						if ((isMultiPicklist === true && $optElem.css("display") != "none") || 
+						if ((isMultiPicklist === true && $optElem.is(":hidden") == false) || 
 							(isMultiPicklist === false && $optElem.attr("selected"))) {
 							 optionSelected = true;
 						}
@@ -336,7 +344,7 @@ var MPower = {
 						$targets.each(function() {
 							var parentChildSet = false;
 							parentChildSet |= MPower.setChildForParent($parentNode, $(this));
-							parentChildSet |= MPower.setParentForChild($(this), $parentNode, optionSelected);
+							parentChildSet |= MPower.setParentForChild($(this), $parentNode, optionSelected, $optElem.val());
 
 							if (parentChildSet) {
 								// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
@@ -357,11 +365,13 @@ var MPower = {
 		}
 	},
 	
-	setParentForChild: function($childNode, $parentNode, optionSelected) {
+	setParentForChild: function($childNode, $parentNode, optionSelected, optionVal) {
 		var tree = MPower.getTree($childNode);
 		var parentId = $parentNode.attr("id");
 		
 		tree.isSelected = tree.isSelected | optionSelected; // this is an OR operation regardless of whether or not the parent has been already set
+		tree.optionValues[optionVal] = true;
+		
 		var parentChildSet = false;
 		if (!tree.parentIds[parentId]) {
 			tree.parents.push($parentNode);
@@ -392,6 +402,7 @@ var MPower = {
 		var tree = $elem.data("tree");
 		if (!tree) {
 			tree = { node: $elem, 
+				optionValues: new Object(), // the option values that correspond to this node
 				parents: new Array(), 
 				children: new Array(), 
 				parentIds: new Object(), 
@@ -407,16 +418,20 @@ var MPower = {
 						}
 					}
 					return pSel;
-				} 
+				}
 			};
 			$elem.data("tree", tree);
 		}
 		return tree;
 	},
 	
+	isMultiPicklist: function($elem) {
+		return $elem.hasClass("multiPicklist");
+	},
+	
 	findOptions: function($elem) {
 		var $options = null;
-		var isMultiPicklist = $elem.hasClass("multiPicklist");
+		var isMultiPicklist = MPower.isMultiPicklist($elem);
 		if (isMultiPicklist) {
 			$options = $elem.children("div.multiPicklistOption");
 		}
@@ -425,22 +440,30 @@ var MPower = {
 		}
 		return $options;
 	},
-		
-	cascadeElementsRoot: function () {
-		var cascaders = { shown: null, hidden: null, ids: {} };
-		for (var treeId in MPower.rootTrees) {
-			var tree = MPower.rootTrees[treeId];
-			var $elem = tree.node;
-
-			cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem; // all root elements are expected to be visible
-			cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);												
-		}		
+	
+	getCascaders: function() {
+		return { shown: null, hidden: null, ids: {} };
+	},
+	
+	hideShowCascaders: function(cascaders) {
 		if (cascaders.hidden) { 
 			cascaders.hidden.hide(); 
 		}
 		if (cascaders.shown) { 
 			cascaders.shown.show(); 
 		}
+	},
+		
+	cascadeElementsRoot: function () {
+		var cascaders = MPower.getCascaders();
+		for (var treeId in MPower.rootTrees) {
+			var tree = MPower.rootTrees[treeId];
+			var $elem = tree.node;
+
+			cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem; // all root elements are expected to be visible
+			cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);												
+		}
+		MPower.hideShowCascaders(cascaders);		
 	},
 	
 	cascadeElementsChildren: function($children, cascaders) {
@@ -460,6 +483,48 @@ var MPower = {
 			cascaders = MPower.cascadeElementsChildren($nextLevelChildren, cascaders);
 		}
 		return cascaders;
+	},
+	
+	togglePicklist: function() {
+		var $elem = $(this);
+		var isMultiPicklist = MPower.isMultiPicklist($elem);
+		var $options = MPower.findOptions($elem);
+
+		var $children = null;
+		var $parentElem = $elem.parents("li.side"); // get this picklist's parent element
+		var tree = $parentElem.data("tree");
+		tree.isSelected = true;
+		
+		var cascaders = MPower.getCascaders();
+		cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem;
+		
+		var prevSelectorIds = {};
+		
+		$options.each(function() {
+			var $optElem = $(this);
+			var optionSelected = false;
+			if ((isMultiPicklist === true && $optElem.is(":hidden") == false) || 
+				(isMultiPicklist === false && $optElem.attr("selected"))) {
+				 optionSelected = true;
+			}
+			var selector = $optElem.attr('reference');
+			if (selector != null && selector.length) {
+				$(selector).each(function() {
+					var $elem = $(this);
+					var tree = $elem.data("tree");
+					var id = $elem.attr("id");
+					if (prevSelectorIds[id]) {
+						tree.isSelected |= optionSelected;
+					}
+					else {
+						prevSelectorIds[id] = true;
+						tree.isSelected = optionSelected;
+					}
+				});
+			}
+		});	
+		cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);
+		MPower.hideShowCascaders(cascaders);					
 	},
 	
 	toggleReferencedElements: function () {

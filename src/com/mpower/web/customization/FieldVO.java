@@ -3,6 +3,8 @@ package com.mpower.web.customization;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -155,6 +157,20 @@ public class FieldVO {
 
     public List<String> getReferenceValues() {
         return referenceValues;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public String getUniqueReferenceValues() {
+        if (referenceValues == null) {
+            return "";
+        }
+        Set<String> s = new TreeSet<String>();
+        for (int i = 0; i < referenceValues.size(); i++) {
+            if (referenceValues.get(i) != null) {
+                s.addAll(org.springframework.util.StringUtils.commaDelimitedListToSet(referenceValues.get(i)));
+            }
+        } 
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(s);
     }
 
     public void setReferenceValues(List<String> referenceValues) {

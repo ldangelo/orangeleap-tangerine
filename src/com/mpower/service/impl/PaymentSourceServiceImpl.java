@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.PaymentSourceDao;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.InactivateService;
@@ -59,24 +60,26 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
                 }
             }
         }
-        if (!found) {
-            if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
-                paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
-            }
-            if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
-                paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
-            }
-            paymentSource.createDefaultProfileName();
 
-            paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
-
-            if (paymentSource.isInactive()) {
-                auditService.auditObjectInactive(paymentSource);
-            }
-            else {
-                auditService.auditObject(paymentSource);
-            }
+        // Payment source is editable in place in the database, unlike address, email and phone, so always save to avoid a transient error.
+        if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
+            paymentSource.setAddress(addressService.saveAddress(paymentSource.getAddress()));
         }
+        if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
+            paymentSource.setPhone(phoneService.savePhone(paymentSource.getPhone()));
+        }
+        paymentSource.createDefaultProfileName();
+
+        paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
+
+        if (paymentSource.isInactive()) {
+            auditService.auditObjectInactive(paymentSource);
+        }
+        else {
+            auditService.auditObject(paymentSource);
+        }
+        
+        
 
         return paymentSource;
     }

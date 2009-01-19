@@ -27,7 +27,11 @@
 
 		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
 		<sleep seconds="30" />
-				
+		<delete dir="${target.tomcat.dir}/work" />
+		<delete dir="${target.tomcat.dir}/temp" />
+		<delete dir="${target.tomcat.dir}/webapps/mpower" />
+
+		
 		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 

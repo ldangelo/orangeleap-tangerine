@@ -23,7 +23,6 @@
 	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/codeType.sql"/>
 	     	
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>

@@ -7,16 +7,10 @@ $(document).ready(function() {
 		MPower.cascadeElementsRoot();
 //		console.timeEnd("cascade");
 	})();
-	$(".picklist").change(MPower.togglePicklist);
-	/*
-	$(".picklist").change(function() {
-		console.time("togglePicklist");
-		MPower.togglePicklist();
-		console.timeEnd("togglePicklist");
-	});
-	*/
-	//$(".picklist").change(MPower.toggleReferencedElements);
-	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
+	$(".picklist:not(.paymentSourcePicklist)").bind("change", MPower.togglePicklist);
+	$(".paymentSourcePicklist").bind("change", MPower.populatePaymentSourceAttributes);
+//	$(".picklist").change(MPower.toggleReferencedElements);
+//	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
 	
 	
 	$("table.tablesorter tbody td input").focus(function() {
@@ -327,7 +321,9 @@ var MPower = {
 		$picklists = $picklists.add($nested); // these are all the children of this node
 		$picklists.each(function() {
 			var $myPicklist = $(this);
+			
 			var $options = MPower.findOptions($myPicklist);
+			
 			if ($options) {
 				var isMultiPicklist = MPower.isMultiPicklist($myPicklist);
 				
@@ -340,15 +336,15 @@ var MPower = {
 							(isMultiPicklist === false && $optElem.attr("selected"))) {
 							 optionSelected = true;
 						}
-						var $targets = $targets ? $targets.add($(selector)) : $(selector);
+						var $targets = $(selector);
 						$targets.each(function() {
+							var $myTarget = $(this);
 							var parentChildSet = false;
-							parentChildSet |= MPower.setChildForParent($parentNode, $(this));
-							parentChildSet |= MPower.setParentForChild($(this), $parentNode, optionSelected, $optElem.val());
-
+							parentChildSet |= MPower.setChildForParent($parentNode, $myTarget);
+							parentChildSet |= MPower.setParentForChild($myTarget, $parentNode, optionSelected);
 							if (parentChildSet) {
 								// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
-								$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($(this)) : $(this);
+								$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
 							}
 						});
 					}
@@ -370,7 +366,6 @@ var MPower = {
 		var parentId = $parentNode.attr("id");
 		
 		tree.isSelected = tree.isSelected | optionSelected; // this is an OR operation regardless of whether or not the parent has been already set
-		tree.optionValues[optionVal] = true;
 		
 		var parentChildSet = false;
 		if (!tree.parentIds[parentId]) {
@@ -402,7 +397,6 @@ var MPower = {
 		var tree = $elem.data("tree");
 		if (!tree) {
 			tree = { node: $elem, 
-				optionValues: new Object(), // the option values that correspond to this node
 				parents: new Array(), 
 				children: new Array(), 
 				parentIds: new Object(), 
@@ -471,7 +465,7 @@ var MPower = {
 		if ($children) {
 			$children.each(function() {
 				var $child = $(this);
-				var tree = $child.data("tree"); 
+				var tree = MPower.getTree($child); 
 				if (tree.isSelected && tree.isParentSelected()) { // if the child node is selected, check the parent(s) to make sure at least one is selected
 					cascaders.shown = cascaders.shown ? cascaders.shown.add($child) : $child;
 				}
@@ -492,7 +486,7 @@ var MPower = {
 
 		var $children = null;
 		var $parentElem = $elem.parents("li.side"); // get this picklist's parent element
-		var tree = $parentElem.data("tree");
+		var tree = MPower.getTree($parentElem);
 		tree.isSelected = true;
 		
 		var cascaders = MPower.getCascaders();
@@ -511,7 +505,7 @@ var MPower = {
 			if (selector != null && selector.length) {
 				$(selector).each(function() {
 					var $elem = $(this);
-					var tree = $elem.data("tree");
+					var tree = MPower.getTree($elem);
 					var id = $elem.attr("id");
 					if (prevSelectorIds[id]) {
 						tree.isSelected |= optionSelected;
@@ -527,78 +521,6 @@ var MPower = {
 		MPower.hideShowCascaders(cascaders);					
 	},
 	
-	toggleReferencedElements: function () {
-		var elem = this;
-		var $toBeShown;
-		var $toBeHidden;
-		var $toBeToggled;
-		var $toBeHiddenNested;
-		
-		var $options = MPower.findOptions($(elem));
-		var isMultiPicklist = $(elem).hasClass("multiPicklist");
-		
-		$options.each(function() {
-			var selector = this.getAttribute('reference');
-			if (selector != null && selector.length) {
-				var $target = $(selector);
-				var $picklists = $(selector).filter(".picklist"); // filter if THIS is a picklist
-				var $nested = $(selector).find(".picklist"); // find all descendent picklists
-				$picklists = $picklists.add($nested);
-
-				if ((isMultiPicklist === true && $(this).css("display") != "none") || 
-					(isMultiPicklist === false && this.selected)) {
-					$toBeShown = $toBeShown ? $toBeShown.add($target) : $target;
-					$toBeToggled = $toBeToggled ? $toBeToggled.add($picklists) : $picklists;
-				} 
-				else {
-					$toBeHidden = $toBeHidden ? $toBeHidden.add($target) : $target;
-					$toBeHiddenNested = $toBeHiddenNested ? $toBeHiddenNested.add($nested) : $nested;
-				}
-			}
-		});
-
-		if (typeof $toBeHidden != "undefined") { 
-			$toBeHidden.hide(); 
-		}
-		if (typeof $toBeHiddenNested != "undefined") { 
-			$toBeHiddenNested.each(MPower.hideAllReferencedElements); 
-		}
-		if (typeof $toBeShown != "undefined") { 
-			$toBeShown.show(); 
-		}
-		if (typeof $toBeToggled != "undefined") { 
-			$toBeToggled.each(MPower.toggleReferencedElements); 
-		}
-	},
-	
-	hideAllReferencedElements: function() {
-		var elem = this;
-		var $options = null;
-		var isMultiPicklist = $(elem).hasClass("multiPicklist");
-		if (isMultiPicklist) {
-			$options = $(elem).children("div.multiPicklistOption");
-		}
-		else {
-			$options = $(elem).children("option");
-		}
-		
-		$options.each(function() {
-			MPower.hideOptionElement(this);
-		});
-	},
-	
-	hideOptionElement: function(elem) {
-		var selector = elem.getAttribute('reference');
-		if (selector != null && selector.length) {
-			var $target = $(selector);
-			var $picklists = $(selector).filter(".picklist");
-			var $nested = $(selector).find(".picklist");
-			$picklists = $picklists.add($nested);
-			$target.hide();
-			$picklists.each(MPower.hideAllReferencedElements);
-		}
-	},
-	
 	centerDialog: function($hash) {
 		var $dialog = $hash.w;
 		var x = "-" + ($dialog.width() / 2) + "px";
@@ -608,20 +530,42 @@ var MPower = {
 		$dialog.show();
 	},
 	
+	setSelectedAddressPhoneByValue: function($select, value) {
+		var tree = MPower.getTree($select.parents("li.side"));
+		
+		// If no numeric ID selected, use empty string, which is "none"
+		if (isNaN(parseInt(value, 10)) || $select.containsOption(value) == false) {
+			value = "";
+		}
+
+		var $options = MPower.findOptions($select);
+		
+		$options.each(function() {
+			var $optElem = $(this);
+			var optionSelected = false;
+			if (value == $optElem.val()) {
+				optionSelected = true;
+				$optElem.attr("selected", "true");
+			}
+			var selector = $optElem.attr('reference');
+			if (selector != null && selector.length) {
+				var $targets = $(selector);
+				$targets.each(function() {
+					var $myTarget = $(this);
+					MPower.getTree($myTarget).isSelected = optionSelected;
+				});
+			}
+		});		
+	},
+	
 	populatePaymentSourceAttributes: function() {
 		var $option = $(this).find("option:selected");
-		if ($option.length) {
+		if ($option.length && isNaN(parseInt($option.val(), 10)) == false) {
 			var addressId = $option.attr("address");
 			var phoneId = $option.attr("phone");
 			
-			$("select#selectedAddress").resetToFirstOption(); // reset to first before setting to the right value, just in case that value does not exist
-			$("select#selectedPhone").resetToFirstOption(); // reset to first before setting to the right value, just in case that value does not exist
-			if (addressId) {
-				$("select#selectedAddress").selectOptions(addressId);
-			}
-			if (phoneId) {
-				$("select#selectedPhone").selectOptions(phoneId);
-			}
+			MPower.setSelectedAddressPhoneByValue($("select#selectedAddress"), addressId);
+			MPower.setSelectedAddressPhoneByValue($("select#selectedPhone"), addressId);
 			
 			// ACH
 			var achholder = $option.attr("achholder");
@@ -655,6 +599,7 @@ var MPower = {
 				$("div.gift_editCreditCard div#paymentSource\\.creditCardExpiration").text(exp);
 			}
 		}
+		$(this).each(MPower.togglePicklist);
 	}	
 }
 

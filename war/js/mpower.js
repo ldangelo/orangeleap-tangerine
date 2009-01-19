@@ -332,7 +332,7 @@ var MPower = {
 					var selector = $optElem.attr('reference');
 					if (selector != null && selector.length) {
 						var optionSelected = false;
-						if ((isMultiPicklist === true && $optElem.is(":hidden") == false) || 
+						if ((isMultiPicklist === true && $optElem.is(":visible")) || 
 							(isMultiPicklist === false && $optElem.attr("selected"))) {
 							 optionSelected = true;
 						}
@@ -497,7 +497,7 @@ var MPower = {
 		$options.each(function() {
 			var $optElem = $(this);
 			var optionSelected = false;
-			if ((isMultiPicklist === true && $optElem.is(":hidden") == false) || 
+			if ((isMultiPicklist === true && $optElem.is(":visible")) || 
 				(isMultiPicklist === false && $optElem.attr("selected"))) {
 				 optionSelected = true;
 			}
@@ -811,7 +811,7 @@ var Lookup = {
 					$(this).css("display", "none");
 				}
 			});
-			$(Lookup.lookupCaller).each(MPower.toggleReferencedElements);
+			$(Lookup.lookupCaller).each(MPower.togglePicklist);
 			$("#dialog").jqmHide();	
 		});			
 	},
@@ -905,10 +905,9 @@ var Lookup = {
 				$(this).remove();
 			}
 			else {
-				MPower.hideOptionElement(this);
-				
 				// For multi-picklists, don't remove, just hide
 				$(this).css("display", "none");
+				$parent.parent("div.multiPicklist").each(MPower.togglePicklist);
 			}
 		});
 	}

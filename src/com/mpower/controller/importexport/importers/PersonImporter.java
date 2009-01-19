@@ -51,7 +51,7 @@ public class PersonImporter extends EntityImporter {
 			if (id == null) throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
 		    person = personservice.readPersonById(new Long(id));
 			if (person == null) throw new RuntimeException(getIdField() + " " + id + " not found.");
-			logger.debug("Importing entity "+id+"...");
+			logger.debug("Importing constituent "+id+"...");
 		}
 		
 		// We want person relationship maintenance, so type maps are required, similar to manual edit screen.

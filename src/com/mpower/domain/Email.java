@@ -128,7 +128,7 @@ public class Email implements SiteAware, Customizable, ConstituentInfo, Inactiva
 
     public Email(Person person) {
         this.person = person;
-        this.emailType = "home";
+        this.emailType = "unknown";  
         this.activationStatus = "permanent";
     }
 

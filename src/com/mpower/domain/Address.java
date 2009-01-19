@@ -144,7 +144,7 @@ public class Address implements SiteAware, Customizable, ConstituentInfo, Inacti
 
     public Address(Person person) {
         this.person = person;
-        this.addressType = "home";
+        this.addressType = "unknown";  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = "permanent";
     }
 

@@ -128,7 +128,7 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
 
     public Phone(Person person) {
         this.person = person;
-        this.phoneType = "home";
+        this.phoneType = "unknown";  // defaulting to 'home' would change the home phone on the constituent whenever a new payment type is created with a new phone.
         this.activationStatus = "permanent";
     }
 

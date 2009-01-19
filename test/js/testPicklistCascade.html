@@ -47,6 +47,7 @@
 					for (var obj in MPower.rootTrees) { len++; }
 					ok(len === 3, len + " items in rootTrees, expected 3");
 				});
+				module("test picklist");
 				test("MPower.SelectedPaymentSource", function() {
 					var tree = $("li#li-gift_info-selectedPaymentSource").data("tree"); 
 					ok(tree.parents.length == 0, "0 parents for SelectedPaymentSource was expected");
@@ -122,6 +123,45 @@
 						ok(id === "li-gift_info-paymentType", id + " was expected as a parent");
 					}
 				});
+				test("MPower.li-person_contactInfo-constituentType", function() {
+					var tree = $("li#li-person_contactInfo-constituentType").data("tree"); 
+					ok(tree.parents.length == 0, "0 parents for constituentType was expected");
+					ok(2 === tree.children.length, "2 child fields for constituentType was expected"); 
+
+					for (var id in tree.childIds) {
+						ok(id === "li-person_contactInfo-constituentOrganizationRoles" || 
+							id === "li-person_contactInfo-constituentIndividualRoles", id + " was expected as a child");
+					}
+					ok(tree.isSelected == true, "constituentType was expected to have isSelected='true', instead = " + tree.isSelected);
+				});
+
+				module("test multipicklist");
+				test("MPower.constituentIndividualRoles", function() {
+					var tree = $("li#li-person_contactInfo-constituentIndividualRoles").data("tree"); 
+					ok(tree.parents.length == 1, "1 parent for constituentIndividualRoles was expected");
+					ok(1 === tree.children.length, "1 child fields for constituentIndividualRoles was expected, instead " + tree.children.length); 
+
+					for (var id in tree.childIds) {
+						ok(id === "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value", id + " was expected as a child");
+					}
+					ok(tree.isSelected == true, "constituentIndividualRoles was expected to have isSelected='true', instead = " + tree.isSelected);
+				});
+
+				test("MPower.constituentOrganizationRoles", function() {
+					var tree = $("li#li-person_contactInfo-constituentOrganizationRoles").data("tree"); 
+					ok(tree.parents.length == 1, "1 parent for constituentOrganizationRoles was expected");
+					ok(0 === tree.children.length, "0 child fields for constituentOrganizationRoles was expected, instead " + tree.children.length); 
+
+					ok(tree.isSelected == false, "constituentOrganizationRoles was expected to have isSelected='false', instead = " + tree.isSelected);
+				});
+				
+				test("MPower.headOfHousehold_householdMembers", function() {
+					var tree = $("li#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").data("tree"); 
+					ok(tree.parents.length == 1, "1 parent for headOfHousehold_householdMembers was expected");
+					ok(0 === tree.children.length, "0 child fields for headOfHousehold_householdMembers was expected, instead " + tree.children.length); 
+
+					ok(tree.isSelected == true, "headOfHousehold_householdMembers was expected to have isSelected='true', instead = " + tree.isSelected);
+				});
 				
 				module("test cascade for load");
 				test("elements shown or hidden", function() {
@@ -139,7 +179,12 @@
 
 					ok($("#li-gift_info-selectedEmail").is(":hidden") != true, "li-gift_info-selectedEmail is expected to be visible");
 					ok($("#li-gift_info-email_emailAddress").is(":hidden") == true, "li-gift_info-email_emailAddress is expected to be hidden");
-					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":hidden") == true, "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be hidden");
+
+
+					ok($("#li-person_contactInfo-constituentType").is(":hidden") != true, "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden") != true, "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":hidden") != true, "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden") == true, "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
 				});
 			});
 			
@@ -1230,7 +1275,7 @@
 							id="option-alumni" selectedId="alumni" reference="li:has(.ea-alumni)">
 							Alumni<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 						</div>
-					<div class='multiPicklistOption' style='display:none' 
+					<div class='multiPicklistOption' style='' 
 							id="option-headOfHousehold" selectedId="headOfHousehold" reference="li:has(.ea-headOfHousehold)">
 							Head of Household<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
 

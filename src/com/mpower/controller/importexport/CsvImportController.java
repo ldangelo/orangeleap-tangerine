@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.mpower.service.SiteService;
+import com.mpower.type.AccessType;
 
 public class CsvImportController extends SimpleFormController {
 
@@ -39,13 +40,19 @@ public class CsvImportController extends SimpleFormController {
 		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
 
+	@SuppressWarnings("unchecked")
+	public static boolean importexportAllowed(HttpServletRequest request) {
+		Map<String, AccessType> pageAccess = (Map<String, AccessType>)request.getSession().getAttribute("pageAccess");
+		return pageAccess.get("/importexport.htm") == AccessType.ALLOWED;
+	}
+	
 	protected ModelAndView onSubmit(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Object command,
 			BindException errors) throws Exception {
 
-		// TODO check rights?
+		if (!importexportAllowed(request)) return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
 
 		String entity = request.getParameter("entity");
 

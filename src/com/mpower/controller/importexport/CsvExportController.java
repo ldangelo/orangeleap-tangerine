@@ -34,7 +34,7 @@ public class CsvExportController extends SimpleFormController {
 
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-        // TODO check rights?
+		if (!CsvImportController.importexportAllowed(request)) return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
 		
 		String entity = request.getParameter("entity");
 		String exportData = getExport(entity);

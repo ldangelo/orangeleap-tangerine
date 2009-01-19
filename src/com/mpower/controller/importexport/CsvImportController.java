@@ -78,23 +78,31 @@ public class CsvImportController extends SimpleFormController {
 	// Can also import in separate thread, if it is slow for large files, and return a request id for the response which can be polled for when ready
 	private List<String> importFile(String entity, byte[] file, BindException errors, ApplicationContext applicationContext) {
 
-		List<String[]> data = parseFile(file);
-		
-		ImportHandler handler = new ImportHandler(entity, data, applicationContext);
-		handler.importData();
-		
 		List<String> result = new ArrayList<String>();
-		String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrors().size();
-		result.add(summary);
-		if (handler.getErrors().size() == 0) result.add("Import successful.");
-		for (String error : handler.getErrors()) {
-			if (errors.getAllErrors().size() > 1000) {
-				result.add("more...");
-				break;
-			} else {
-				result.add(error);
+		
+		try {
+			
+			List<String[]> data = parseFile(file);
+    		ImportHandler handler = new ImportHandler(entity, data, applicationContext);
+	    	handler.importData();
+	    	
+			String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrors().size();
+			result.add(summary);
+			if (handler.getErrors().size() == 0) result.add("Import successful.");
+			for (String error : handler.getErrors()) {
+				if (errors.getAllErrors().size() > 1000) {
+					result.add("more...");
+					break;
+				} else {
+					result.add(error);
+				}
 			}
+		
+		} catch (Exception e) {
+		    result.add(e.getMessage());
 		}
+		
+
 		return result;
 	}
 

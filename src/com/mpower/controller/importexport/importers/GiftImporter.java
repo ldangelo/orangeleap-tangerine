@@ -6,8 +6,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.mpower.domain.Address;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
+import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
+import com.mpower.domain.Phone;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
@@ -29,7 +33,7 @@ public class GiftImporter extends EntityImporter {
 	
 	@Override
 	public String getIdField() {
-		return "accountNumber";
+		return "person.accountNumber";
 	}
 	
 	@Override
@@ -46,13 +50,19 @@ public class GiftImporter extends EntityImporter {
 			throw new RuntimeException("Gifts can only be ADDed.");
 		} 
 		
+		String paymentType = values.get("paymentType");
+		if (!"Cash".equals(paymentType) && !"Check".equals(paymentType)) {
+			throw new RuntimeException("Gift payment type must be Cash or Check for import.");
+		}
+		
 		String id = values.get(getIdField());
 		if (id == null) throw new RuntimeException(getIdField() + " field is required.");
 	    Person person = personservice.readPersonById(new Long(id));
 		if (person == null) throw new RuntimeException(getIdField() + " " + id + " not found.");
 		logger.debug("Importing gift for constituent "+id+"...");
 		
-		Gift gift = giftservice.createDefaultGift(person);
+		Gift gift = giftservice.readGiftByIdCreateIfNull(null, null, person);
+		
 		mapValuesToObject(values, gift);
 		
 		giftservice.maintainGift(gift);

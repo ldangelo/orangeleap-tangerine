@@ -1,6 +1,8 @@
 package com.mpower.controller.importexport.importers;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.controller.importexport.exporters.EntityExporter;
@@ -75,13 +78,13 @@ public abstract class EntityImporter {
 					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
 					Map map = (Map)m.invoke(o);
 					Object so = map.get(fd.getKey()); 
-					if (so == null) return; // TODO create new if null
+					if (so == null) throw new RuntimeException("Unable to import field.");
 					BeanUtils.setProperty(so, fd.getSubField(), value);
 				} else if (fd.isDependentField()) {
 					String depobject = fd.getDependentObject();
 					Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 					Object so = m.invoke(o);
-					if (so == null) return; // TODO create new
+					if (so == null) throw new RuntimeException("Unable to import field."); 
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
 				} else {
 					BeanUtils.setProperty(o, key, value);
@@ -93,10 +96,14 @@ public abstract class EntityImporter {
 		
 	}
 	
-	// TODO Convert to Long, BigDecimal, etc. for native fields on entity or subentity.  Not needed for custom fields since they are all strings.
+	// Convert types for native fields on entity or subentity.  Not needed for custom fields since they are all strings.
 	protected Object convertToObject(String svalue, FieldDescriptor fd) {
-		//if (fd.getFieldDefinition().getFieldType() == FieldType.DATE) {
-		//}
+		FieldType fieldType = fd.getFieldDefinition().getFieldType();
+		if (fieldType == FieldType.DATE || fieldType == FieldType.CC_EXPIRATION) {
+			CustomDateEditor ed = new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true);
+			ed.setAsText(svalue);
+			return ed.getValue();
+		}
 		return svalue;
 	}
 	

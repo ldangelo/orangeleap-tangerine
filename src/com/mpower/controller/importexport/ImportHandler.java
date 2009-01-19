@@ -28,7 +28,7 @@ public class ImportHandler {
 	public ImportHandler(String entity, List<String[]> data, ApplicationContext applicationContext) {
 
 		entityImporter = new EntityImporterFactory().getEntityImporter(entity, applicationContext);
-		if (entityImporter == null) throw new RuntimeException("invalid entity");
+		if (entityImporter == null) throw new RuntimeException("Select import type.");
 		this.data = data;
 
 	}

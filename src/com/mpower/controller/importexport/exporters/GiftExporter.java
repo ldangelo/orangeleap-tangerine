@@ -6,7 +6,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.mpower.domain.Gift;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.GiftService;
+import com.mpower.type.EntityType;
+import com.mpower.type.FieldType;
 import com.mpower.type.PageType;
 
 
@@ -32,5 +36,30 @@ public class GiftExporter extends EntityExporter {
 	    return PageType.gift;
 	}
 
+	@Override
+	protected boolean exclude(String name, FieldDefinition fd) {
+		return super.exclude(name, fd) 
+		|| fd.getFieldName().startsWith("selected") 
+		|| fd.getFieldName().equals("creditCardSecurityCode");
+	}
+	
+	@Override
+	public List<FieldDescriptor> getExportFieldDescriptors() {
+		
+		List<FieldDescriptor> list = super.getExportFieldDescriptors();
+
+		// Add a column for person id
+		FieldDefinition fd = new FieldDefinition();
+		fd.setId("gift.personId");
+		fd.setEntityType(EntityType.gift);
+		fd.setFieldName("person.accountNumber");
+		fd.setFieldType(FieldType.TEXT);
+		
+		FieldDescriptor fieldDescriptor = new FieldDescriptor("person.accountNumber", FieldDescriptor.NATIVE, fd);
+		list.add(0, fieldDescriptor);
+		
+		return list;
+		
+	}
 
 }

@@ -71,11 +71,6 @@
 					}
 					ok(5 === tree.children.length, "5 child fields for paymentType was expected"); 
 					ok(tree.isSelected == false, "paymentType was expected to have isSelected='false', instead = " + tree.isSelected); 
-					ok(tree.optionValues["new"] == true, "paymentType was expected to have optionValue = 'new'"); 
-
-					var len = 0;
-					for (var obj in tree.optionValues) { len++; }
-					ok(len === 1, len + " items in optionValues, expected 1");
 				});
 				test("MPower.SelectedAddress", function() {
 					var tree = $("li:has(#selectedAddress)").data("tree"); 
@@ -166,25 +161,122 @@
 				module("test cascade for load");
 				test("elements shown or hidden", function() {
 					// ON PAGE LOAD, the ACH PAYMENT is already SELECTED
-					ok($("#li-gift_info-selectedPaymentSource").is(":hidden") != true, "li-gift_info-selectedPaymentSource is expected to be visible");
-					ok($("#li-gift_info-selectedAddress").is(":hidden") != true, "li-gift_info-selectedAddress is expected to be visible");
-					ok($("#li-gift_info-selectedPhone").is(":hidden") != true, "li-gift_info-selectedPhone is expected to be visible");
-					ok($("#gift_editAch").is(":hidden") != true, "gift_editAch is expected to be visible");
+					ok($("#li-gift_info-selectedPaymentSource").is(":visible"), "li-gift_info-selectedPaymentSource is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_editAch").is(":visible"), "gift_editAch is expected to be visible");
 
-					ok($("#li-gift_info-paymentType").is(":hidden") == true, "li-gift_info-paymentType is expected to be hidden");
-					ok($("#gift_creditCard").is(":hidden") == true, "gift_creditCard is expected to be hidden");
-					ok($("#gift_editCreditCard").is(":hidden") == true, "gift_editCreditCard is expected to be hidden");
-					ok($("#gift_ach").is(":hidden") == true, "gift_ach is expected to be hidden");
-					ok($("#gift_check").is(":hidden") == true, "gift_check is expected to be hidden");
+					ok($("#li-gift_info-paymentType").is(":hidden"), "li-gift_info-paymentType is expected to be hidden");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be hidden");
 
-					ok($("#li-gift_info-selectedEmail").is(":hidden") != true, "li-gift_info-selectedEmail is expected to be visible");
-					ok($("#li-gift_info-email_emailAddress").is(":hidden") == true, "li-gift_info-email_emailAddress is expected to be hidden");
+					ok($("#li-gift_info-selectedEmail").is(":visible"), "li-gift_info-selectedEmail is expected to be visible");
+					ok($("#li-gift_info-email_emailAddress").is(":hidden"), "li-gift_info-email_emailAddress is expected to be hidden");
 
 
-					ok($("#li-person_contactInfo-constituentType").is(":hidden") != true, "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden") != true, "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":hidden") != true, "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden") == true, "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":visible"), "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+				});
+
+				module("test toggle picklist");
+				test("toggle payment source picklist to 'create new' for paymentType = credit card", function() {
+					$("#selectedPaymentSource").selectOptions("new");
+					$("#selectedPaymentSource").change();
+					$("#paymentType").selectOptions("Credit Card");
+					$("#paymentType").change();
+					ok($("#li-gift_info-paymentType").is(":visible"), "li-gift_info-paymentType is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":visible"), "gift_creditCard is expected to be visible");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be hidden");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
+				});
+
+				test("toggle payment source picklist to 'create new' for paymentType = ach", function() {
+					$("#paymentType").selectOptions("ACH");
+					$("#paymentType").change();
+					ok($("#li-gift_info-paymentType").is(":visible"), "li-gift_info-paymentType is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_ach").is(":visible"), "gift_ach is expected to be visible");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be hidden");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
+				});
+
+				test("toggle payment source picklist to 'create new' for paymentType = cash", function() {
+					$("#paymentType").selectOptions("Cash");
+					$("#paymentType").change();
+					ok($("#li-gift_info-paymentType").is(":visible"), "li-gift_info-paymentType is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be hidden");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
+				});
+
+				test("toggle payment source picklist to 'create new' for paymentType = check", function() {
+					$("#paymentType").selectOptions("Check");
+					$("#paymentType").change();
+					ok($("#li-gift_info-paymentType").is(":visible"), "li-gift_info-paymentType is expected to be visible");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":visible"), "gift_check is expected to be visible");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
+				});
+
+				test("toggle payment source picklist to Adam's ACH (value = '2')", function() {
+					$("#selectedPaymentSource").selectOptions("2");
+					$("#selectedPaymentSource").change();
+					ok($("#li-gift_info-paymentType").is(":hidden"), "li-gift_info-paymentType is expected to be hidden");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be visible");
+					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
+					ok($("#gift_editAch").is(":visible"), "gift_editAch is expected to be visible");
+					ok("" == $("#selectedAddress").val(), "selectedAddress expected to reset to 'None'");
+					ok("" == $("#selectedPhone").val(), "selectedPhone expected to reset to 'None'");
+				});
+
+				test("toggle payment source picklist to discover (value = '1')", function() {
+					$("#selectedPaymentSource").selectOptions("1");
+					$("#selectedPaymentSource").change();
+					ok($("#li-gift_info-paymentType").is(":hidden"), "li-gift_info-paymentType is expected to be hidden");
+					ok($("#li-gift_info-selectedAddress").is(":visible"), "li-gift_info-selectedAddress is expected to be visible");
+					ok($("#li-gift_info-selectedPhone").is(":visible"), "li-gift_info-selectedPhone is expected to be visible");
+					ok($("#gift_creditCard").is(":hidden"), "gift_creditCard is expected to be hidden");
+					ok($("#gift_ach").is(":hidden"), "gift_ach is expected to be hidden");
+					ok($("#gift_check").is(":hidden"), "gift_check is expected to be visible");
+					ok($("#gift_editCreditCard").is(":visible"), "gift_editCreditCard is expected to be visible");
+					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
+					ok("1" == $("#selectedAddress").val(), "selectedAddress expected to set to value='1'");
+					ok("1" == $("#selectedPhone").val(), "selectedPhone expected to set to value='1'");
+
+					$("#selectedAddress").selectOptions("new");
+					$("#selectedAddress").change();
+					$("li:has(:input[name^='address'])").each(function() {
+						ok($(this).is(":visible"), this.id + " is expected to be visible");
+					});
+
+					$("#selectedPhone").selectOptions("");
+					$("#selectedPhone").change();
+					$("li:has(:input[name^='phone'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 				});
 			});
 			
@@ -403,7 +495,7 @@
 	<label for="selectedPaymentSource" class="desc">
 		<span class="required">*</span>&nbsp;Payment Source</label>
 	<select name="selectedPaymentSource" id="selectedPaymentSource" class="picklist paymentSourcePicklist ">
-				<option value="new" reference="li:has(#paymentType)" >+ Create New</option>
+				<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" >+ Create New</option>
 				<optgroup label="-- Or Choose From Below ---------">
 
 				<option value="2" selected="selected" reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
@@ -417,14 +509,14 @@
 		<span class="required">*</span>&nbsp;Payment Method</label>
 
 	<select name="paymentType" class="picklist " id="paymentType">
-				<option reference=".gift_creditCard, li:has(#selectedAddress), li:has(#selectedPhone)"value="Credit Card" >
+				<option reference=".gift_creditCard, li:has(#selectedAddress), li:has(#selectedPhone)" value="Credit Card" >
 						Credit Card</option>
-				<option reference=".gift_ach, li:has(#selectedAddress), li:has(#selectedPhone)"value="ACH" selected>
+				<option reference=".gift_ach, li:has(#selectedAddress), li:has(#selectedPhone)" value="ACH">
 						ACH</option>
-				<option reference=".gift_check"value="Check" >
+				<option reference=".gift_check, li:has(#selectedAddress), li:has(#selectedPhone)" value="Check" >
 						Check</option>
 
-				<option reference=".gift_cash"value="Cash" >
+				<option reference=".gift_cash, li:has(#selectedAddress), li:has(#selectedPhone)" value="Cash" >
 						Cash</option>
 				</select>
 		</li><li class="side" id="li-gift_info-selectedAddress">
@@ -1228,12 +1320,12 @@
 		
 		
 		<!-- MULTIPICKLISTS -->
-	<div class="column constituentInfo" id="constituentInfo" style="display:none;padding-right:8px;">
+	<div class="column constituentInfo" id="constituentInfo" style="padding-right:8px;">
 		<li class="side" id="li-person_contactInfo-constituentType">
 	<label for="constituentType" class="desc">
 		<span class="required">*</span>&nbsp;Constituent Type</label>
 	<select name="constituentType" class="picklist " id="constituentType">
-				<option reference="li:has(.ea-individual)"value="individual" selected>
+				<option reference="li:has(.ea-individual)"value="individual" selected="selected"
 						Individual</option>
 
 				<option reference="li:has(.ea-organization)"value="organization" >

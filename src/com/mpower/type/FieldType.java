@@ -5,7 +5,7 @@ public enum FieldType {
     DATE,
     DATE_DISPLAY,
     TEXT,
-    DUAL_PCT_AMT,
+    PERCENTAGE,
     READ_ONLY_TEXT,
     LOOKUP,
     CODE,

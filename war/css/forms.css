@@ -343,7 +343,7 @@ p.gridActions {
 	color:#c00;
 	display:inline;
 }
-#gift_distribution input.amount {
+#gift_distribution input.amount, input.percentage {
 	text-align:right;
 }
 #gift_distribution thead tr th {

@@ -42,9 +42,15 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     @Column(name = "AMOUNT")
     private BigDecimal amount;
+    
+    @Column(name = "PERCENTAGE")
+    private Short percentage;
 
     @Column(name = "PROJECT_CODE")
     private String projectCode;
+
+    @Column(name = "MOTIVATION_CODE")
+    private String motivationCode;
 
     @OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
     private List<DistributionLineCustomField> distributionLineCustomFields;
@@ -73,20 +79,22 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
         this.gift = gift;
     }
 
-    public DistributionLine(Gift gift, BigDecimal amount, String projectCode) {
+    public DistributionLine(Gift gift, BigDecimal amount, String projectCode, String motivationCode) {
         this.gift = gift;
         this.amount = amount;
         this.projectCode = projectCode;
+        this.motivationCode = motivationCode;
     }
 
     public DistributionLine(Commitment commitment) {
         this.commitment = commitment;
     }
 
-    public DistributionLine(Commitment commitment, BigDecimal amount, String projectCode) {
+    public DistributionLine(Commitment commitment, BigDecimal amount, String projectCode, String motivationCode) {
         this.commitment = commitment;
         this.amount = amount;
         this.projectCode = projectCode;
+        this.motivationCode = motivationCode;
     }
 
     public Long getId() {
@@ -105,12 +113,28 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
         this.amount = amount;
     }
 
+    public Short getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(Short percentage) {
+        this.percentage = percentage;
+    }
+
     public String getProjectCode() {
         return projectCode;
     }
 
     public void setProjectCode(String projectCode) {
         this.projectCode = projectCode;
+    }
+
+    public String getMotivationCode() {
+        return motivationCode;
+    }
+
+    public void setMotivationCode(String motivationCode) {
+        this.motivationCode = motivationCode;
     }
 
     public List<DistributionLineCustomField> getCustomFields() {

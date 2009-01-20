@@ -69,7 +69,7 @@ a:hover {
 }
 .columns {
 	padding: 0;
-	margin: 0;
+	margin: 0 0 15px;
 	clear: both;
 }
 

@@ -265,7 +265,7 @@ public class GiftServiceImpl implements GiftService {
             List<DistributionLine> lines = originalGift.getDistributionLines();
             for (DistributionLine line : lines) {
                 BigDecimal negativeAmount = line.getAmount() == null ? null : line.getAmount().negate();
-                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode()));
+                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode(), line.getMotivationCode()));
             }
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());

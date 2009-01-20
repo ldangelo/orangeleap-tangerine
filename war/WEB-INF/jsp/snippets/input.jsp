@@ -9,7 +9,7 @@
 		</spring:hasBindErrors>
 	</c:if>
 	<label for="<c:out value='${fieldVO.fieldName}'/>" class="desc">
-		<c:if test="${fieldVO.fieldType != 'SPACER'}">
+		<c:if test="${fieldVO.fieldType != 'SPACER' && fieldVO.fieldType != 'HIDDEN'}">
 			<c:if test="${fieldVO.helpAvailable == 'true'}"><a class="helpLink"><img src="images/icons/questionGreyTransparent.gif" /></a><span class="helpText"><c:out value="${fieldVO.helpText}" /></span></c:if>
 	    	<c:if test="${fieldVO.required == 'true'}"><span class="required">*</span>&nbsp;</c:if>
 		  	<c:out value="${fieldVO.labelText}" />
@@ -294,12 +294,6 @@
 				</c:forEach>
 			</select>
 		</c:when>
-		<c:when test="${fieldVO.fieldType == 'DUAL_PCT_AMT'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-		</c:when>
-		<c:when test="${fieldVO.fieldType == 'TEXT'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-		</c:when>
 		<c:when test="${fieldVO.fieldType == 'CODE'}">
 		<div class="lookupWrapper">
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
@@ -319,23 +313,29 @@
 		<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
 			<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 		</c:when>
-		<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" /><a class="lookupLink jqModal" href="javascript:void(0)">Lookup</a>
-		</c:when>
-		<c:when test="${fieldVO.fieldType == 'DATE_TIME'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-		</c:when>
-		<c:when test="${fieldVO.fieldType == 'ADDRESS'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
-		</c:when>
-		<c:when test="${fieldVO.fieldType == 'PHONE'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+		<c:when test="${fieldVO.fieldType == 'TEXT'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
 			<textarea rows="2" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>"></textarea>
 		</c:when>
+		<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/><a class="lookupLink jqModal" href="javascript:void(0)">Lookup</a>
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'DATE_TIME'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'ADDRESS'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'PHONE'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+		</c:when>
 		<c:when test="${fieldVO.fieldType == 'NUMBER'}">
-		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+		</c:when>
+		<c:when test="${fieldVO.fieldType == 'PERCENTAGE'}">
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" maxlength="3" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'HIDDEN'}">
 		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="hidden"/>

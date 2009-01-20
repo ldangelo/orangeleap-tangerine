@@ -68,13 +68,23 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Column(name = "DEDUCTIBLE_AMOUNT")
     private BigDecimal deductibleAmount;
 
+    @Column(name = "CURRENCY_CODE")
+    private String currencyCode;
+
     @Column(name = "TRANSACTION_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date transactionDate;
+    
+    @Column(name = "DONATION_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date donationDate;
 
     @Column(name = "POSTMARK_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date postmarkDate;
+    
+    @Column(name = "REFERENCE")
+    private String reference;
 
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
@@ -95,6 +105,13 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Temporal(TemporalType.TIMESTAMP)
     private Date refundGiftTransactionDate;
 
+    @Column(name = "SEND_ACKNOWLEDGMENT")
+    private boolean sendAcknowledgment = false;
+    
+    @Column(name = "ACKNOWLEDGMENT_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date acknowledgmentDate;
+    
     @OneToMany(mappedBy = "gift", cascade = CascadeType.ALL)
     private List<GiftCustomField> giftCustomFields;
 
@@ -203,6 +220,14 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         this.deductibleAmount = deductibleAmount;
     }
 
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
     public Date getTransactionDate() {
         return transactionDate;
     }
@@ -211,12 +236,28 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         this.transactionDate = transactionDate;
     }
 
+    public Date getDonationDate() {
+        return donationDate;
+    }
+
+    public void setDonationDate(Date donationDate) {
+        this.donationDate = donationDate;
+    }
+
     public Date getPostmarkDate() {
         return postmarkDate;
     }
 
     public void setPostmarkDate(Date postmarkDate) {
         this.postmarkDate = postmarkDate;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public void setPaymentType(String paymentType) {
@@ -265,6 +306,22 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
         this.refundGiftTransactionDate = refundGiftTransactionDate;
+    }
+
+    public boolean isSendAcknowledgment() {
+        return sendAcknowledgment;
+    }
+
+    public void setSendAcknowledgment(boolean sendAcknowledgment) {
+        this.sendAcknowledgment = sendAcknowledgment;
+    }
+
+    public Date getAcknowledgmentDate() {
+        return acknowledgmentDate;
+    }
+
+    public void setAcknowledgmentDate(Date acknowledgmentDate) {
+        this.acknowledgmentDate = acknowledgmentDate;
     }
 
     public List<GiftCustomField> getCustomFields() {

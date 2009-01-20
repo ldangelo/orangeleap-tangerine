@@ -74,3 +74,9 @@ INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName'
 INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (24, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''organization'' ', 'person.customFieldMap[individual.publicRelationsContactFor]', 'person.publicRelationsContactFor', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('organizationName', 24);
 
+// Gift reference
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (25, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'gift.reference', 'gift.donation', null);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 25);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 25);
+
+

@@ -37,13 +37,14 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.DATE_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CODE, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CHECKBOX, genericFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.PERCENTAGE, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PAYMENT_SOURCE_PICKLIST, genericFieldHandler);

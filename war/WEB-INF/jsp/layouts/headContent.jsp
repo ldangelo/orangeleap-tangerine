@@ -21,4 +21,10 @@
 <script type="text/javascript" src="js/jqDnR.js"></script>
 <script type="text/javascript" src="js/date.js"></script>
 <script type="text/javascript" src="js/jquery.datePicker.js"></script>
+<script type="text/javascript" src="js/jquery/plugins/jquery.percentage.js"></script>
+<script type="text/javascript" src="js/jquery/plugins/jquery.numeric.pack.js"></script>
 <script type="text/javascript" src="js/mpower.js"></script>
+
+<!--  <script type='text/javascript' 
+        src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script> -->
+        

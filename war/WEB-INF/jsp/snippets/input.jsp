@@ -332,10 +332,10 @@
 			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'NUMBER'}">
-		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text number <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'PERCENTAGE'}">
-			<input value="<c:out value='${fieldVO.fieldValue}'/>" maxlength="3" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+			<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
 		</c:when>
 		<c:when test="${fieldVO.fieldType == 'HIDDEN'}">
 		    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="hidden"/>

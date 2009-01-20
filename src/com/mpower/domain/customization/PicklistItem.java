@@ -14,9 +14,13 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.Auditable;
+import com.mpower.domain.Person;
+import com.mpower.domain.Site;
+
 @Entity
 @Table(name = "PICKLIST_ITEM")
-public class PicklistItem implements Serializable {
+public class PicklistItem implements Serializable, Auditable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,6 +48,11 @@ public class PicklistItem implements Serializable {
     @ManyToOne
     @JoinColumn(name = "PICKLIST_ID")
     private Picklist picklist;
+    
+    @Transient
+    private Auditable originalObject;
+
+
 
     public Long getId() {
         return id;
@@ -92,4 +101,22 @@ public class PicklistItem implements Serializable {
     public void setPicklist(Picklist picklist) {
         this.picklist = picklist;
     }
+
+	public void setOriginalObject(Auditable originalObject) {
+		this.originalObject = originalObject;
+	}
+
+	public Auditable getOriginalObject() {
+		return originalObject;
+	}
+
+	@Override
+	public Person getPerson() {
+		return null;
+	}
+
+	@Override
+	public Site getSite() {
+		return picklist.getSite();
+	}
 }

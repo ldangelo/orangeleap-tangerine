@@ -10,10 +10,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
+import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.Picklist;
+import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.EntityType;
 
 @Repository("fieldDao")
@@ -25,11 +27,36 @@ public class JPAFieldDao implements FieldDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
     public FieldDefinition readFieldById(String fieldId) {
         return em.find(FieldDefinition.class, fieldId);
     }
 
+    @Override
+    public Picklist readPicklist(String picklistId) {
+    	return em.find(Picklist.class, picklistId);
+    }
+
+    @Override
+    public PicklistItem readPicklistItem(Long picklistItemId) {
+    	return em.find(PicklistItem.class, picklistItemId);
+    }
+
+    @Override
+	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
+		return em.merge(picklistItem);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> listPicklists(String siteName) {
+		Query query = em.createNamedQuery("READ_SITE_PICKLISTS");
+		query.setParameter("siteName", siteName);
+		return query.getResultList();
+	}
+    
     @SuppressWarnings("unchecked")
+    @Override
     public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType) {
         Query query = em.createNamedQuery("READ_PICKLIST_BY_SITE_AND_FIELDNAME");
         query.setParameter("siteName", siteName);
@@ -100,4 +127,5 @@ public class JPAFieldDao implements FieldDao {
         }
         return null;
     }
+
 }

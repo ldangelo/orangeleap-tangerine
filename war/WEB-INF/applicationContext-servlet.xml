@@ -16,6 +16,7 @@
 	<import resource="contexts/lookup-context.xml"/>
 	<import resource="contexts/membership-context.xml"/>
 	<import resource="contexts/payment-context.xml"/>
+	<import resource="contexts/picklist-context.xml"/>
 	<import resource="contexts/phone-context.xml"/>
 	<import resource="contexts/pledge-context.xml"/>
 	<import resource="contexts/quartz-context.xml"/>

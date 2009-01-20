@@ -73,6 +73,9 @@
 					<li>
 						<a href="codes.htm">Manage Codes</a>
 					</li>
+			<!--  		<li>
+						<a href="picklistItems.htm">Manage Picklist Items</a>
+					</li> -->
 					<li>
 						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank">Reporting</a>
 					</li>

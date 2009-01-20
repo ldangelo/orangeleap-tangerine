@@ -106,7 +106,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     private Date refundGiftTransactionDate;
 
     @Column(name = "SEND_ACKNOWLEDGMENT")
-    private boolean sendAcknowledgment = false;
+    private Boolean sendAcknowledgment = false;
     
     @Column(name = "ACKNOWLEDGMENT_DATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -308,11 +308,11 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         this.refundGiftTransactionDate = refundGiftTransactionDate;
     }
 
-    public boolean isSendAcknowledgment() {
+    public Boolean getSendAcknowledgment() {
         return sendAcknowledgment;
     }
 
-    public void setSendAcknowledgment(boolean sendAcknowledgment) {
+    public void setSendAcknowledgment(Boolean sendAcknowledgment) {
         this.sendAcknowledgment = sendAcknowledgment;
     }
 

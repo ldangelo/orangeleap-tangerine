@@ -1,5 +1,4 @@
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('projectCode','Project Code', 'company1');
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('motivationCode','Motivation Code', 'company1');
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('commitmentCode','Commitment Code', 'company1');
-INSERT INTO CODE_TYPE (NAME, LABEL, SITE_NAME) VALUES ('currencyCode', 'Currency Code', 'company1');
+INSERT INTO CODE_TYPE (ID, NAME, LABEL, SITE_NAME) VALUES (1, 'projectCode','Designation Code', 'company1');
+INSERT INTO CODE_TYPE (ID, NAME, LABEL, SITE_NAME) VALUES (2, 'motivationCode','Motivation Code', 'company1');
+INSERT INTO CODE_TYPE (ID, NAME, LABEL, SITE_NAME) VALUES (4, 'currencyCode', 'Currency Code', 'company1');
 

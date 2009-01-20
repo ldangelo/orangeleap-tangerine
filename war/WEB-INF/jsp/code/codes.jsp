@@ -23,8 +23,8 @@
 				<table>
 					<tr>
 						<td class="action">&nbsp;</td>
-						<td class="codeValue">Value</td>
-						<td class="codeDescription">Description</td>
+						<td class="codeValue">Short Description</td>
+						<td class="codeDescription">Long Description</td>
 						<td class="inactive">Inactive</td>
 					</tr>
 					<tr>

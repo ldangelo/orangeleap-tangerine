@@ -8,10 +8,7 @@ $(document).ready(function() {
 //		console.timeEnd("cascade");
 	})();
 	$(".picklist:not(.paymentSourcePicklist)").bind("change", MPower.togglePicklist);
-	$(".paymentSourcePicklist").bind("change", MPower.populatePaymentSourceAttributes);
-//	$(".picklist").change(MPower.toggleReferencedElements);
-//	$(".paymentSourcePicklist").change(MPower.populatePaymentSourceAttributes);
-	
+	$(".paymentSourcePicklist").bind("change", MPower.populatePaymentSourceAttributes);	
 	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -73,6 +70,8 @@ $(document).ready(function() {
 			$(this).find("ul").hide().prev("a").removeClass("bactive");
 		});
 
+	$("input.number").numeric();
+	$("input.percentage").percentage();
 
 	$("form#gift input#amount").bind("keyup change",function(){
 		var amounts=$("table#gift_distribution input.amount");
@@ -86,26 +85,10 @@ $(document).ready(function() {
 	rowCloner("#gift_distribution tr:last");
 	$("#gift_distribution tr:last .deleteButton").hide();
 
-	$('#dialog').jqm({overlay: 50, onShow: MPower.centerDialog}).jqDrag('.dragHandle');
 	
-//	$("#newCodeForm").submit(function(){
-//		$.ajax({
-//			type: "POST",
-//			url: "code.htm",
-//			data: $(this).serialize(),
-//			success: function(html){
-//				$("#dialog .modalContent").html(html);
-//				$("#dialog").jqmShow();
-//				return false;
-//			},
-//			error: function(html){
-//				$("#dialog .modalContent").html("didn't work");
-//				$("#dialog").jqmShow();
-//				return false;
-//			}
-//		});
-//		return false;
-//	});
+	
+
+	$('#dialog').jqm({overlay: 50, onShow: MPower.centerDialog}).jqDrag('.dragHandle');
 
 	$(".filters :input").bind("keyup change",function(){
 		var queryString = $(".filters :input").serialize();
@@ -114,8 +97,7 @@ $(document).ready(function() {
 
 	$("input.code").each(function(){
 		if(typeof $(this).attr("autocomplete") == "undefined") {
-			$(this).autocomplete("codeHelper.htm?type="+$(this).attr("codeType"),
-			{
+			$(this).autocomplete("codeHelper.htm?type="+$(this).attr("codeType"), {
 				delay:10,
 				minChars:0,
 				maxItemsToShow:20,
@@ -160,7 +142,6 @@ $(document).ready(function() {
 });
 
 /* END DOCUMENT READY CODE */
-
 function updateTotals() {
 		var subTotal = 0;
 		$("table#gift_distribution input.amount").each(function(){
@@ -229,6 +210,7 @@ function deleteRow(row) {
 		alert("Sorry, you cannot delete that row since it's the only remaining row.")
 	};
 }
+
 function formatItem(row) {
 	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
 }

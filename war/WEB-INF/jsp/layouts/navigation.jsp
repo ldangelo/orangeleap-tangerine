@@ -5,16 +5,16 @@
 <div id="banner">
 	<ol>
 		<li>
-			<span id="greeting">Logged into <b><security:authentication property="site" /></b> as <b><security:authentication property="principal.username" /></b></span>
+			<span id="greeting"><spring:message code="loggedInto"/> <strong><security:authentication property="site" /></strong> <spring:message code="as"/> <strong><security:authentication property="principal.username" /></strong></span>
 		</li>
 		<li>
-			<a href="account.htm">My Account</a>
+			<a href="account.htm"><spring:message code="myAccount"/></a>
 		</li>
 		<li>
-			<a href="#">Help</a>
+			<a href="#"><spring:message code="help"/></a>
 		</li>
 		<li>
-			<a href="<c:url value="/logout"/>">Logout</a>
+			<a href="<c:url value='/logout'/>"><spring:message code="logout"/></a>
 		</li>
 	</ol>
 </div>
@@ -27,64 +27,60 @@
 				<a href="welcome.htm" class="${primaryNav=='Welcome'?'active':''}"><div class="homeIcon">&nbsp;</div></a>
 			</li>
 			<li>
-				<a href="#">My Work</a>
+				<a href="#"><spring:message code="myWork"/></a>
 			</li>
 			<li>
-				<a href="#">Recent</a>
+				<a href="#"><spring:message code="history"/></a>
 			</li>
 			<li>
-				<a href="#">Bookmarks</a>
+				<a href="#"><spring:message code="bookmarks"/></a>
 			</li>
 			<li>
-				<a href="#">Create New...</a>
+				<a href="#"><spring:message code="menuCreateNew"/></a>
 				<ul>
 					<li>
-						<a href="person.htm">Constituent</a>
+						<a href="person.htm"><spring:message code="constituent"/></a>
 					</li>
 					<c:if test="${viewingPerson}">
 						<li class="sectionTitle">For <c:out value="${person.firstName}"/>&nbsp;<c:out value="${person.lastName}"/> ...</li>
 						<li>
-							<a href="gift.htm?personId=${person.id}">Gift</a>
+							<a href="gift.htm?personId=${person.id}"><spring:message code="gift"/></a>
 						</li>
 						<li>
-							<a href="addressManager.htm?personId=${person.id}">Address</a>
+							<a href="addressManager.htm?personId=${person.id}"><spring:message code="address"/></a>
 						</li>
 						<li>
-							<a href="recurringGift.htm?personId=${person.id}&type=recurringGift">Recurring Gift</a>
+							<a href="recurringGift.htm?personId=${person.id}&type=recurringGift"><spring:message code="recurringGift"/></a>
 						</li>
 						<li>
-							<a href="pledge.htm?personId=${person.id}&type=pledge">Pledge</a>
+							<a href="pledge.htm?personId=${person.id}&type=pledge"><spring:message code="pledge"/></a>
 						</li>
+						<%-- Removed for BETA
 						<li>
-							<a href="membership.htm?personId=${person.id}&type=membership">Membership</a>
+							<a href="membership.htm?personId=${person.id}&type=membership"><spring:message code="membership"/></a>
 						</li>
+						--%>
 					</c:if>
 				</ul>
 			</li>
 			<li>
-				<a href="#">Go To...</a>
+				<a href="#"><spring:message code="menuGoTo"/></a>
 				<ul>
 					<li>
-						<a href="personSearch.htm">Search Constituents</a>
-					</li>
-					<li>
-						<a href="giftSearch.htm">Search Gifts</a>
-					</li>
-					<li>
-						<a href="codes.htm">Manage Codes</a>
+						<a href="codes.htm"><spring:message code="manageCodes"/></a>
 					</li>
 			<!--  		<li>
-						<a href="picklistItems.htm">Manage Picklist Items</a>
+						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 					</li> -->
 					<li>
-						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank">Reporting</a>
+						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
-						<a href="siteAudit.htm">Site Audit</a>
+						<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
 					</li>
 					<li>
 			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">
-						   <a href="importexport.htm">Import/Export</a>
+						   <a href="importexport.htm"><spring:message code="importExport"/></a>
 						</c:if>
 					</li>
 				</ul>
@@ -95,12 +91,12 @@
 	<div class="navRightCap"></div>
 	<div class="searchBar">
 		<form method="post" action="personSearch.htm">
-			<input size="30" name="lastName" />
+			<input size="30" name="lastName" type="text" />
 			<select name="type">
-				<option value="people">Constituents</option>
-				<option value="people">Gifts</option>
+				<option value="people"><spring:message code="constituents"/></option>
+				<option value="people"><spring:message code="gifts"/></option>
 			</select>
-			<input type="submit" value="Search" class="saveButton" />
+			<input type="submit" value="<spring:message code='search'/>" class="saveButton" />
 		</form>
 	</div>
 </div>

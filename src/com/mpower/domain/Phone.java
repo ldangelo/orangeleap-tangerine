@@ -52,7 +52,7 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
     private Person person;
 
     @Column(name = "PHONE_TYPE", nullable = false)
-    private String phoneType = "home";
+    private String phoneType = "unknown";
 
     @Column(name = "NUMBER")
     private String number;

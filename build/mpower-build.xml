@@ -162,6 +162,8 @@
 	<target name="undeploy-war">
 		<delete dir="${deploy.path}/${app.name}.war" />
 		<delete dir="${deploy.path}/${app.name}" />
+		<delete dir="${deploy.path}/../work" quiet="true" />
+		<delete dir="${deploy.path}/../temp" quiet="true" />
 		<delete>
 			<fileset dir="${deploy.path}" includes="${app.name}.war" />
 			<fileset dir="${deploy.path}" includes="${app.name}" />

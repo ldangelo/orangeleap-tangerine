@@ -10,6 +10,7 @@ import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.EntityType;
 
 public interface FieldDao {
+	
     public FieldDefinition readFieldById(String fieldId);
 
     public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType);
@@ -18,13 +19,15 @@ public interface FieldDao {
 
     public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
 
-	public Picklist readPicklist(String picklistId);
+    
+	public Picklist readPicklistById(String picklistId);
 
-	public PicklistItem readPicklistItem(Long picklistItemId);
+	public PicklistItem readPicklistItemById(Long picklistItemId);
+
+	public Picklist maintainPicklist(Picklist picklist);
 
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
-	public List<String> listPicklists(String siteName);
+	public List<Picklist> listPicklists(String siteName);
 
-	public List<PicklistItem> readPicklistItemsByPicklistId(String picklistId, String startsWith, String partialDescription);
 }

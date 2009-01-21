@@ -3,6 +3,7 @@ package com.mpower.domain.customization;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -50,7 +51,7 @@ public class Picklist implements Serializable {
     @Column(name = "MULTISELECT")
     private Boolean multiselect;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PICKLIST_ID")
     @OrderBy("itemOrder")
     private List<PicklistItem> picklistItems;

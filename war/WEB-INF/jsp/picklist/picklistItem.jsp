@@ -3,7 +3,7 @@
 <c:when test="${param.view=='inPlace'}">
 		<td><a href="#" class="saveInPlace" onclick="return saveInPlace(this,'picklistItem.htm');">Save</a>
 		<c:if test="${picklistItem.id!=null}">
-			<input type="hidden" name="id" value="<c:out value='${picklistItem.id}'/>" />
+			<input type="hidden" name="picklistItemId" value="<c:out value='${picklistItem.id}'/>" />
 		</c:if>
 		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklist.id}'/>" />
 		</td>
@@ -17,7 +17,7 @@
 <c:when test="${param.view=='newInPlace'}">
 		<td class="action"><a href="#" class="saveInPlace" onclick="return newInPlace(this,'picklistItem.htm');">Save</a>
 		<c:if test="${picklistItem.id!=null}">
-			<input type="hidden" name="id" value="<c:out value='${picklistItem.id}'/>" />
+			<input type="hidden" name="picklistItemId" value="<c:out value='${picklistItem.id}'/>" />
 		</c:if>
 		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklist.id}'/>" />
 		</td>

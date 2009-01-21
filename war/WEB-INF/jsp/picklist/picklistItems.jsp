@@ -14,7 +14,7 @@
 			<select id="picklistId" name="picklistId" onchange="this.form.submit()">
 			<option value="" ${currentPicklistId==''?'selected':''}>Select...</option>
 			<c:forEach var="picklist" items="${picklists}">
-			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.id}'/></option>
+			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.picklistName}'/></option>
 			</c:forEach>
 			</select>
 		</form>

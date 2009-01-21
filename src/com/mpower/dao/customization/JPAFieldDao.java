@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
@@ -32,32 +31,21 @@ public class JPAFieldDao implements FieldDao {
         return em.find(FieldDefinition.class, fieldId);
     }
 
+
+	@Override
+	public Picklist readPicklistById(String picklistId) {
+        return em.find(Picklist.class, picklistId);
+	}
+	
     @Override
-    public Picklist readPicklist(String picklistId) {
-    	return em.find(Picklist.class, picklistId);
+    public PicklistItem readPicklistItemById(Long picklistItemId) {
+        return em.find(PicklistItem.class, picklistItemId);
     }
 
     @Override
-    public PicklistItem readPicklistItem(Long picklistItemId) {
-    	return em.find(PicklistItem.class, picklistItemId);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<PicklistItem> readPicklistItemsByPicklistId(String picklistId, String startsWith, String partialDescription) {
-    	
-    	if (startsWith == null) startsWith = "";
-    	if (partialDescription == null) partialDescription = "";
-    	if (!startsWith.endsWith("%")) startsWith += "%";
-    	if (!partialDescription.endsWith("%")) partialDescription += "%";
-    	
-        Query query = em.createNamedQuery("READ_PICKLIST_ITEMS_BY_PICKLIST_ID_AND_FILTER");
-        query.setParameter("picklistId", picklistId);
-        query.setParameter("startsWith", startsWith);
-        query.setParameter("partialDescription", partialDescription);
-        List<PicklistItem> picklistItems = query.getResultList();
-        return picklistItems;
-    }
+	public Picklist maintainPicklist(Picklist picklist) {
+		return em.merge(picklist);
+	}
 
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
@@ -66,10 +54,11 @@ public class JPAFieldDao implements FieldDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> listPicklists(String siteName) {
+	public List<Picklist> listPicklists(String siteName) {
 		Query query = em.createNamedQuery("READ_SITE_PICKLISTS");
 		query.setParameter("siteName", siteName);
-		return query.getResultList();
+        List<Picklist> picklists = query.getResultList();
+		return picklists;
 	}
     
     @SuppressWarnings("unchecked")

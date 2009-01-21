@@ -7,6 +7,7 @@
 		<query>
 		    SELECT picklist FROM com.mpower.domain.customization.Picklist picklist
 		    WHERE (picklist.site.name = :siteName OR picklist.site.name is null)
+		    AND picklist.entityType IS NULL
 		    ORDER BY picklist.site.name, picklist.entityType
 		</query>
 	</named-query>
@@ -18,16 +19,6 @@
 		    AND (picklist.site.name = :siteName OR picklist.site.name is null))
 		    AND (picklist.entityType = :entityType OR picklist.entityType is null))
 		    ORDER BY picklist.site.name, picklist.entityType
-		</query>
-	</named-query>
-
-	<named-query name="READ_PICKLIST_ITEMS_BY_PICKLIST_ID_AND_FILTER" >
-		<query>
-		    SELECT picklistItem FROM com.mpower.domain.customization.PicklistItem picklistItem
-		    WHERE picklistItem.picklist.id = :picklistId
-		    AND picklistItem.itemName LIKE :startsWith
-		    AND picklistItem.defaultDisplayValue LIKE :partialDescription
-		    ORDER BY picklistItem.itemOrder
 		</query>
 	</named-query>
 

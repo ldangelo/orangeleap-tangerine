@@ -16,6 +16,15 @@ $(document).ready(function() {
 		$(this).parents("tr:first").removeClass("focused");
 	});
 
+	$("#searchForm #typeSearch").bind("change", function() {
+		if ($(this).val() == "gifts") {
+			$("#searchForm").attr("action", "giftSearch.htm");	
+		}
+		else {
+			// assume people search
+			$("#searchForm").attr("action", "personSearch.htm");	
+		}
+	});
 	$("ul.formFields li input, ul.formFields li select").change(function() {
        	$("#savedMarker").fadeOut("slow");
 	});

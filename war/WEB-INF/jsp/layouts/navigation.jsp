@@ -90,11 +90,11 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="personSearch.htm">
+		<form method="post" action="personSearch.htm" id="searchForm">
 			<input size="30" name="lastName" type="text" />
-			<select name="type">
+			<select name="type" id="typeSearch">
 				<option value="people"><spring:message code="constituents"/></option>
-				<option value="people"><spring:message code="gifts"/></option>
+				<option value="gifts"><spring:message code="gifts"/></option>
 			</select>
 			<input type="submit" value="<spring:message code='search'/>" class="saveButton" />
 		</form>

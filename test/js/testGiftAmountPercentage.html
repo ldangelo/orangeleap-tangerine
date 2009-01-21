@@ -45,11 +45,13 @@
 					ok($("#distributionLines-0-amount").val() == "100", "Gift Distribution Amount was expected to be 100");
 					ok($("#distributionLines-0-percentage").val() == "100", "Gift Distribution Percentage was expected to be 100");
 					ok($("#subTotal").text() == "100", "Gift Distribution subTotal was expected to be 100");
+					ok($("#amountsErrorSpan").is(":hidden"), "The error message was expected to be hidden");
 
 					$("#amount").val("50").change();
 					ok($("#distributionLines-0-amount").val() == "50", "Gift Distribution Amount was expected to be 50");
 					ok($("#distributionLines-0-percentage").val() == "100", "Gift Distribution Percentage was expected to be 100");
 					ok($("#subTotal").text() == "50", "Gift Distribution subTotal was expected to be 50");
+					ok($("#amountsErrorSpan").is(":hidden"), "The error message was expected to be hidden");
 				});
 
 				test("change amount", function() {
@@ -58,11 +60,13 @@
 					$("#distributionLines-0-amount").keyup();
 					ok($("#distributionLines-0-percentage").val() == "20", "Gift Distribution Percentage was expected to be 20");
 					ok($("#subTotal").text() == "10", "Gift Distribution subTotal was expected to be 10");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
 
 					$("#distributionLines-0-amount").val(".05");
 					$("#distributionLines-0-amount").keyup();
 					ok(parseFloat($("#distributionLines-0-percentage").val()) == 0.1, "Gift Distribution Percentage was expected to be 0.1");
 					ok($("#subTotal").text() == "0.05", "Gift Distribution subTotal was expected to be 0.05");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
 				});
 				
 				test("change percentage", function() {
@@ -71,11 +75,51 @@
 					$("#distributionLines-0-percentage").keyup();
 					ok($("#distributionLines-0-amount").val() == "5", "Gift Distribution Amount was expected to be 5");
 					ok($("#subTotal").text() == "5", "Gift Distribution subTotal was expected to be 5");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
 
 					$("#distributionLines-0-percentage").val(".1");
 					$("#distributionLines-0-percentage").keyup();
 					ok(parseFloat($("#distributionLines-0-amount").val()) == 0.05, "Gift Distribution Percentage was expected to be 0.05");
 					ok($("#subTotal").text() == "0.05", "Gift Distribution subTotal was expected to be 0.05");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
+				});
+
+				test("create new row", function() {
+					$("#amount").val("50").change();
+					$("#distributionLines-0-percentage").val("10");
+					$("#distributionLines-0-percentage").keyup();
+
+					Distribution.addNewRow(Distribution.distributionLineBuilder);
+					Distribution.rowCloner("#gift_distribution tr:last");
+
+					ok($("#distributionLines-1-amount").length, "A new Gift Distribution row was expected to be created");
+					ok($("#distributionLines-1-amount").val() == "", "New Gift Distribution row's amount was expected to be ''");
+					ok($("#distributionLines-1-percentage").val() == "", "New Gift Distribution row's percentage was expected to be ''");
+
+					$("#distributionLines-1-percentage").val("20");
+					$("#distributionLines-1-percentage").keyup();
+					ok($("#distributionLines-1-amount").val() == "10", "Gift Distribution amount was expected to be 10");
+					ok($("#subTotal").text() == "15", "Gift Distribution subTotal was expected to be 15");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
+
+					$("#distributionLines-1-amount").val("45");
+					$("#distributionLines-1-amount").keyup();
+					ok($("#distributionLines-1-percentage").val() == "90", "Gift Distribution percentage was expected to be 90");
+					ok($("#subTotal").text() == "50", "Gift Distribution subTotal was expected to be 50");
+					ok($("#amountsErrorSpan").is(":hidden"), "The error message was expected to be hidden");
+
+					$("#amount").val("50").change();
+					$("#distributionLines-0-amount").val("10");
+					$("#distributionLines-0-amount").keyup();
+					$("#distributionLines-1-amount").val("20");
+					$("#distributionLines-1-amount").keyup();
+					$("#amount").val("100").change();
+					ok($("#distributionLines-0-percentage").val() == "10", "Gift Distribution percentage was expected to be 10");
+					ok($("#distributionLines-1-percentage").val() == "20", "Gift Distribution percentage was expected to be 20");
+					ok($("#amountsErrorSpan").is(":visible"), "The error message was expected to be visible");
+		
+//					Distribution.deleteRow($("#gift_distribution .deleteButton:first").parent().parent());
+//					ok($("#distributionLines-1-amount").length == false, "Gift Distribution row 1 was expected to be deleted");
 				});
 			});
 			

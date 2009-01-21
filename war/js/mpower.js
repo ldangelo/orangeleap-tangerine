@@ -95,6 +95,11 @@ $(document).ready(function() {
 		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
 	});
 
+	$(".picklistItemFilters :input").bind("keyup change",function(){
+		var queryString = $(".picklistItemFilters :input").serialize();
+		$(".picklistItemList").load("picklistItemHelper.htm?view=table&"+queryString);
+	});
+
 	$("input.code").each(function(){
 		if(typeof $(this).attr("autocomplete") == "undefined") {
 			$(this).autocomplete("codeHelper.htm?type="+$(this).attr("codeType"), {

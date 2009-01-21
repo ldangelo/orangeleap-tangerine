@@ -25,4 +25,6 @@ public interface FieldDao {
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
 	public List<String> listPicklists(String siteName);
+
+	public List<PicklistItem> readPicklistItemsByPicklistId(String picklistId, String startsWith, String partialDescription);
 }

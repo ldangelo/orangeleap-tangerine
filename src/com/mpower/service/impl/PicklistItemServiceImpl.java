@@ -79,19 +79,21 @@ public class PicklistItemServiceImpl implements PicklistItemService {
     @Override
     public List<PicklistItem> readPicklistItems(String siteName, String picklistId, String startsWith) {
     	if (picklistId == null || picklistId.length() == 0) return new ArrayList<PicklistItem>();
-        //return picklistItemDao.readPicklistBySiteAndFieldName(picklistId, startsWith).getPicklistItems();  //TODO
-        return picklistItemDao.readPicklist(picklistId).getPicklistItems();
+        return picklistItemDao.readPicklistItemsByPicklistId(picklistId, startsWith, null); 
     }
 
     @Override
     public List<PicklistItem> readPicklistItems(String siteName, String picklistId, String startsWith, String partialDescription, Boolean inactive) {
-        //return picklistItemDao.readPicklistItems(siteName, picklistId, startsWith, partialDescription, inactive); //TODO
-        return picklistItemDao.readPicklist(picklistId).getPicklistItems();
+        return picklistItemDao.readPicklistItemsByPicklistId(picklistId, startsWith, partialDescription); 
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
+    	
+    	// Sanity check
+    	if (picklistItem.getPicklist() == null || picklistItem.getPicklist().getSite() == null) throw new RuntimeException("Cannot update non-site-specific entry for PicklistItem "+picklistItem.getId());
+    	
     	// TODO cleanup code from Code maint
     	PicklistItem oldPicklistItem = null;
         if (picklistItem.getId() != null) {

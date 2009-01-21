@@ -12,13 +12,14 @@
 		<form method="get" action="picklistItems.htm">
 			<h4>Picklist to Manage</h4>
 			<select id="picklistId" name="picklistId" onchange="this.form.submit()">
+			<option value="" ${currentPicklistId==''?'selected':''}>Select...</option>
 			<c:forEach var="picklist" items="${picklists}">
 			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.id}'/></option>
 			</c:forEach>
 			</select>
 		</form>
 		</div>
-			<div class="filters simplebox">
+			<div class="picklistItemFilters simplebox">
 				<input type="hidden" name="picklistId" value="<c:out value='${currentPicklistId}'/>" />
 				<table>
 					<tr>
@@ -39,7 +40,7 @@
 					</tr>
 				</table>
 			</div>
-			<div class="codeList simplebox">
+			<div class="picklistItemList simplebox">
 				<jsp:include page="/picklistItemHelper.htm?picklistId=${currentPicklistId}&q=&view=table" />
 			</div>
 			<div class="justAdded simplebox">

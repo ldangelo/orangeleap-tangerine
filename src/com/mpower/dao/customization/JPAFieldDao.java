@@ -42,6 +42,23 @@ public class JPAFieldDao implements FieldDao {
     	return em.find(PicklistItem.class, picklistItemId);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PicklistItem> readPicklistItemsByPicklistId(String picklistId, String startsWith, String partialDescription) {
+    	
+    	if (startsWith == null) startsWith = "";
+    	if (partialDescription == null) partialDescription = "";
+    	if (!startsWith.endsWith("%")) startsWith += "%";
+    	if (!partialDescription.endsWith("%")) partialDescription += "%";
+    	
+        Query query = em.createNamedQuery("READ_PICKLIST_ITEMS_BY_PICKLIST_ID_AND_FILTER");
+        query.setParameter("picklistId", picklistId);
+        query.setParameter("startsWith", startsWith);
+        query.setParameter("partialDescription", partialDescription);
+        List<PicklistItem> picklistItems = query.getResultList();
+        return picklistItems;
+    }
+
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
 		return em.merge(picklistItem);

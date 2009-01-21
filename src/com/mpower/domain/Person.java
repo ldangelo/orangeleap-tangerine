@@ -465,7 +465,7 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 	}
 
 	public String getConstituentType() {
-		if (constituentType == null) return "individual"; 
+		if (constituentType == null) return INDIVIDUAL; 
 		return constituentType;
 	}
 

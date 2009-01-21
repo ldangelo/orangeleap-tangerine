@@ -70,9 +70,8 @@ $(document).ready(function() {
 			$(this).find("ul").hide().prev("a").removeClass("bactive");
 		});
 
-	$("input.number").numeric();
-	$("input.percentage").percentage();
-
+	$("input.number, input.percentage").numeric();
+/*
 	$("form#gift input#amount").bind("keyup change",function(){
 		var amounts=$("table#gift_distribution input.amount");
 		if(amounts.length == 1) {
@@ -84,7 +83,7 @@ $(document).ready(function() {
 	distributionLineBuilder($("#gift_distribution tr"));
 	rowCloner("#gift_distribution tr:last");
 	$("#gift_distribution tr:last .deleteButton").hide();
-
+*/	
 	
 	
 
@@ -147,6 +146,7 @@ $(document).ready(function() {
 });
 
 /* END DOCUMENT READY CODE */
+/*
 function updateTotals() {
 		var subTotal = 0;
 		$("table#gift_distribution input.amount").each(function(){
@@ -215,7 +215,7 @@ function deleteRow(row) {
 		alert("Sorry, you cannot delete that row since it's the only remaining row.")
 	};
 }
-
+*/
 function formatItem(row) {
 	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
 }

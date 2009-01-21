@@ -319,11 +319,26 @@ table.formTable {
 .tablesorter td input.lookup {
 	width:80%;
 }
+
+div.gridActions {
+	margin: 0 24px 0 4px;
+	text-align: left;
+}
+div.gridActions .value {
+	background-color:#f0f0f0;
+	border:1px solid #444;
+	padding:0px 2px 1px 8px;
+	text-align: right;
+	width: 174px;
+}
+#totalText { font-weight: normal; }
+
+/* will be depreciated below */
 p.gridActions {
 	margin:6px 0;
 	position:relative;
 }
-.gridActions #subTotal {
+p.gridActions #subTotal {
 	position:absolute;
 	right:24px;
 }
@@ -332,6 +347,8 @@ p.gridActions {
 	border:1px solid #444;
 	padding:0px 2px 1px 8px;
 }
+/* will be depreciated above */
+
 .gridActions .warning {
 	padding-left:20px;
 	background:transparent url(../images/icons/warning.png) no-repeat left 2px;

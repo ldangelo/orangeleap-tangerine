@@ -121,13 +121,19 @@
 								<c:if test="${row!=null}">
 									<tr rowindex="<c:out value='${status.index}'/>">
 										<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
-										<td><img style="cursor: pointer;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
+										<td><img style="cursor: pointer; display: none;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
 									</tr>
 								</c:if>
 							</c:forEach>
 						</tbody>
 					</table>
-					<p class="gridActions">&nbsp;<span id="subTotal"><spring:message code='total'/><span class="warningText"><spring:message code='mustMatchGiftValue'/></span> <span class="value">0</span></span></p>
+					<div class="gridActions">
+						<div id="totalText">
+							<spring:message code='total'/>&nbsp;
+							<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchGiftValue'/></span> 
+						</div>
+						<div class="value" id="subTotal">0</div>
+					</div>
 				</c:forEach>
 							
 <%-- 
@@ -149,5 +155,6 @@
 				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitPayment'/>" class="saveButton" /></div>
 			</form:form>
 		</div>
+		<script type="text/javascript" src="js/gift/distribution.js"></script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

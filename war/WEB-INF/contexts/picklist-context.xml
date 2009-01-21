@@ -23,7 +23,7 @@
         <property name="picklistItemService" ref="picklistItemService"/>
     </bean>
 
-    <bean id="codeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+    <bean id="picklistItemUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/picklistItemHelper.htm">picklistItemHelper</prop>

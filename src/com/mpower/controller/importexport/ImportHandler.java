@@ -65,8 +65,11 @@ public class ImportHandler {
 		if (action == null) {
 			action = EntityImporter.ACTION_ADD; // default if not specified
 		}
+		action = action.toLowerCase();
 
 		try {
+			
+			if (!action.equals(EntityImporter.ACTION_ADD) && !action.equals(EntityImporter.ACTION_CHANGE) && !action.equals(EntityImporter.ACTION_DELETE)) throw new RuntimeException("Invalid action.");
 			
 			entityImporter.importValueMap(action, values);
 
@@ -81,6 +84,7 @@ public class ImportHandler {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			String msg = "Error in import file line "+linenumber+": "+e.getMessage();
 			logger.error(msg);
 			errors.add(msg);

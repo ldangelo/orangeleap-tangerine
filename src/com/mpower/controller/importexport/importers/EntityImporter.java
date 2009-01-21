@@ -99,7 +99,7 @@ public abstract class EntityImporter {
 	// Convert types for native fields on entity or subentity.  Not needed for custom fields since they are all strings.
 	protected Object convertToObject(String svalue, FieldDescriptor fd) {
 		FieldType fieldType = fd.getFieldDefinition().getFieldType();
-		if (fieldType == FieldType.DATE || fieldType == FieldType.CC_EXPIRATION) {
+		if (fd.getType() != FieldDescriptor.CUSTOM && (fieldType == FieldType.DATE || fieldType == FieldType.CC_EXPIRATION)) {
 			CustomDateEditor ed = new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true);
 			ed.setAsText(svalue);
 			return ed.getValue();

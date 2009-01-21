@@ -49,10 +49,11 @@ public class PersonServiceImpl implements PersonService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
     public Person maintainPerson(Person person) throws PersonValidationException {
     	
-    	if (StringUtils.isBlank(person.getLegalName())) {
+    	if (person.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(person.getLegalName())) {
     		person.setLegalName(person.getOrganizationName());
     	}
-    	if (StringUtils.isBlank(person.getRecognitionName())) {
+    	
+    	if (person.getConstituentType().equals(Person.INDIVIDUAL) && StringUtils.isBlank(person.getRecognitionName())) {
     		person.setRecognitionName(person.createName(false));
     	}
     	

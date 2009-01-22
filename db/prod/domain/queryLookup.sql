@@ -44,10 +44,12 @@ INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName',
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 14);
 
 // Organization contacts
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (15, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'person.customFieldMap[organization.accountManager]', 'person.accountManager', null);
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (15, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'person.customFieldMap[accountManager]', 'person.accountManager', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 15);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 15);
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (16, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''organization'' ', 'person.customFieldMap[individual.accountManagerFor]', 'person.accountManagerFor', null);
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (16, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName ', 'person.customFieldMap[individual.accountManagerFor]', 'person.accountManagerFor', null);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 16);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 16);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('organizationName', 16);
 
 INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (17, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'person.customFieldMap[organization.primaryContacts]', 'person.primaryContacts', null);

@@ -52,7 +52,7 @@ public class Email implements SiteAware, Customizable, ConstituentInfo, Inactiva
     private Person person;
 
     @Column(name = "EMAIL_TYPE")
-    private String emailType;
+    private String emailType = "unknown";
 
     @Column(name = "EMAIL_ADDRESS")
     private String emailAddress;

@@ -53,7 +53,7 @@ public class Address implements SiteAware, Customizable, ConstituentInfo, Inacti
     private Person person;
 
     @Column(name = "ADDRESS_TYPE")
-    private String addressType;
+    private String addressType = "unknown";
 
     @Column(name = "ADDRESS_LINE_1")
     private String addressLine1;

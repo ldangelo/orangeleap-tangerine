@@ -93,6 +93,9 @@
 	     	<transaction src="${basedir}/db/dev/pageAccess.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/conferenceDemoData.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/rolluptest.sql"/>
+	     	
+			<transaction src="${basedir}/db/prod/picklists/setPicklistItemsActive.sql"/>
+
 	     </sql>
 	</target>
 	

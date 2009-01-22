@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
@@ -34,6 +35,13 @@ public class PicklistItemHelperController extends ParameterizableViewController 
 
         if (currentPicklist == null) return null;
     	List<PicklistItem> currentPicklistItems = currentPicklist.getPicklistItems();
+
+    	Boolean showInactive;
+        if (StringUtils.equalsIgnoreCase(request.getParameter("inactive"), "all")) {
+            showInactive = null;
+        } else {
+            showInactive = Boolean.valueOf(request.getParameter("inactive"));
+        }
     	
         String searchString = request.getParameter("q");
         if (GenericValidator.isBlankOrNull(searchString)) {
@@ -50,11 +58,13 @@ public class PicklistItemHelperController extends ParameterizableViewController 
         
         List<PicklistItem> picklistItems = new ArrayList<PicklistItem>();
     	for (PicklistItem item : currentPicklistItems) {
-	        if (description.length() > 0) {
-	        	if (item.getDefaultDisplayValue() != null && item.getDefaultDisplayValue().toUpperCase().startsWith(description)) picklistItems.add(item);
-	        } else {
-	        	if (item.getItemName() != null && item.getItemName().toUpperCase().startsWith(searchString)) picklistItems.add(item);
-	        }
+    		if (showInactive || !item.isInactive()) {
+		        if (description.length() > 0) {
+		        	if (item.getDefaultDisplayValue() != null && item.getDefaultDisplayValue().toUpperCase().startsWith(description)) picklistItems.add(item);
+		        } else {
+		        	if (item.getItemName() != null && item.getItemName().toUpperCase().startsWith(searchString)) picklistItems.add(item);
+		        }
+    		}
     	}
     	
         ModelAndView mav = new ModelAndView(super.getViewName());

@@ -9,7 +9,7 @@
 							<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="picklistItem.htm?picklistItemId=${picklistItem.id}&view=inPlace">Edit</a>
 							<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
 							<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
-						<!-- 	<td class="inactive"><input disabled="disabled" name="inactive" value="true" type="checkbox" ${code.inactive?'checked':''}/></td> -->
+						 	<td class="inactive"><input disabled="disabled" name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 
 						</tr>
 					</c:forEach>
 				</table>

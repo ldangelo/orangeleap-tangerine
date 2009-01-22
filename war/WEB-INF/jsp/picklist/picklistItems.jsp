@@ -26,17 +26,17 @@
 						<td class="action">&nbsp;</td>
 						<td class="codeValue">Short Description</td>
 						<td class="codeDescription">Long Description</td>
-					<!-- 	<td class="inactive">Inactive</td>  -->
+					 	<td class="inactive">Inactive</td>  
 					</tr>
 					<tr>
 						<td><h4 style="margin:0;">Filters</h4></td>
 						<td><input class="valueFilter" name="value" size="16" /></td>
 						<td><input class="descriptionFilter" name="description" size="40" /></td>
-					<!-- 	<td><select name="inactive">
+					 	<td><select name="inactive">
 						  <option value="all">All</option>
 						  <option value="true">Only Inactive</option>
 						  <option value="false">Only Active</option>
-						</select></td> -->
+						</select></td> 
 					</tr>
 				</table>
 			</div>

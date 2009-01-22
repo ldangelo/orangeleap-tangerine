@@ -33,7 +33,7 @@ public class PicklistItem implements Serializable, Auditable {
     @Column(name = "PICKLIST_ITEM_ID")
     private Long id;
 
-    @Column(name = "ITEM_NAME")
+    @Column(name = "ITEM_NAME", nullable = false)
     private String itemName;
 
     @Column(name = "DEFAULT_DISPLAY_VALUE")
@@ -44,6 +44,9 @@ public class PicklistItem implements Serializable, Auditable {
 
     @Column(name = "ITEM_ORDER")
     private Integer itemOrder;
+
+    @Column(name = "INACTIVE")
+    private boolean inactive = false;
 
     @ManyToOne
     @JoinColumn(name = "PICKLIST_ID")
@@ -118,5 +121,13 @@ public class PicklistItem implements Serializable, Auditable {
 	@Override
 	public Site getSite() {
 		return picklist.getSite();
+	}
+
+	public void setInactive(boolean inactive) {
+		this.inactive = inactive;
+	}
+
+	public boolean isInactive() {
+		return inactive;
 	}
 }

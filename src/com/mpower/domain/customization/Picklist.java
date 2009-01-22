@@ -1,6 +1,7 @@
 package com.mpower.domain.customization;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -62,6 +63,12 @@ public class Picklist implements Serializable {
 
     public String getPicklistName() {
         return picklistName;
+    }
+
+    public List<PicklistItem> getActivePicklistItems() {
+    	List<PicklistItem> list = new ArrayList<PicklistItem>();
+    	for (PicklistItem item: getPicklistItems()) if (!item.isInactive()) list.add(item);
+        return list;
     }
 
     public List<PicklistItem> getPicklistItems() {

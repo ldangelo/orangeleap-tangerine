@@ -113,6 +113,7 @@ public abstract class EntityExporter {
 				|| fd.getFieldType() == FieldType.EMAIL_PICKLIST
 				|| fd.getFieldType() == FieldType.PHONE_PICKLIST
 				|| fd.getFieldType() == FieldType.PAYMENT_SOURCE_PICKLIST
+				|| fd.getFieldType() == FieldType.PREFERRED_PHONE_TYPES
 				;
 	}
 

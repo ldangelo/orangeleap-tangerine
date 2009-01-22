@@ -35,7 +35,7 @@ public class PicklistFieldHandler extends GenericFieldHandler {
         EntityType entityType = currentField.getSecondaryFieldDefinition() != null ? currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
         Picklist picklist = fieldService.readPicklistBySiteAndFieldName(siteName, currentField.getPicklistName(), entityType);
         if (picklist != null) {
-            for (Iterator<PicklistItem> iterator = picklist.getPicklistItems().iterator(); iterator.hasNext();) {
+            for (Iterator<PicklistItem> iterator = picklist.getActivePicklistItems().iterator(); iterator.hasNext();) {
                 PicklistItem item = iterator.next();
                 fieldVO.getCodes().add(item.getItemName());
                 String displayValue = messageService.lookupMessage(siteName, MessageResourceType.PICKLIST_VALUE, item.getItemName(), locale);

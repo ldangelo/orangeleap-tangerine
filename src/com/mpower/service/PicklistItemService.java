@@ -10,6 +10,8 @@ public interface PicklistItemService {
 
 	List<Picklist> listPicklists(String siteName);
 
-	PicklistItem maintainPicklistItem(PicklistItem picklistItem);
+	Picklist getPicklist(String siteName, String picklistId);
+
+	PicklistItem maintainPicklistItem(String siteName, PicklistItem picklistItem);
 
 }

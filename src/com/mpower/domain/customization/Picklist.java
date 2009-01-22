@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -52,7 +53,7 @@ public class Picklist implements Serializable {
     @Column(name = "MULTISELECT")
     private Boolean multiselect;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "PICKLIST_ID")
     @OrderBy("itemOrder")
     private List<PicklistItem> picklistItems;
@@ -63,6 +64,21 @@ public class Picklist implements Serializable {
 
     public String getPicklistName() {
         return picklistName;
+    }
+    
+    public String getPicklistViewName() {
+    	String result = picklistName;
+    	if (result == null) result = "";
+    	int i = result.indexOf("[");
+   		if (i > -1) {
+   			result = result.substring(i+1);
+   			result = result.substring(0, result.length()-1);
+   		}
+        return result;
+    }
+    
+    public boolean isPersisted() {
+    	return picklistItems != null && picklistItems.size() > 0 && picklistItems.get(0).getId() > 0;
     }
 
     public List<PicklistItem> getActivePicklistItems() {

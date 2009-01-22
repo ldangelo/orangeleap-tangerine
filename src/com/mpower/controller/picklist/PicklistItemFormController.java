@@ -1,7 +1,5 @@
 package com.mpower.controller.picklist;
 
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +13,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.PicklistItem;
 import com.mpower.service.PicklistItemService;
+import com.mpower.service.impl.PicklistItemServiceImpl;
 import com.mpower.service.impl.SessionServiceImpl;
 
 public class PicklistItemFormController extends SimpleFormController {
@@ -27,37 +26,38 @@ public class PicklistItemFormController extends SimpleFormController {
     public void setPicklistItemService(PicklistItemService picklistItemService) {
         this.picklistItemService = picklistItemService;
     }
-
-    @SuppressWarnings("unchecked")
-	public static Picklist getCurrentPicklist(HttpServletRequest request) {
-        String picklistId = request.getParameter("picklistId");
-        Picklist currentPicklist = null;
-        List<Picklist> picklists = (List<Picklist>)request.getSession().getAttribute(PicklistItemManageController.PICKLIST_MANAGE_DATA);  
-        for (Picklist picklist : picklists) {
-        	if (picklist.getId().equals(picklistId)) {
-        		currentPicklist = picklist;
-        	}
-        }
-        return currentPicklist;
-    }
+    
+	public static void removeSiteFromId(Picklist picklist) {
+		String id = picklist.getId();
+		int i = id.indexOf("-");
+		if (i > -1) id = id.substring(i+1);
+		picklist.setId(id);
+	}
+	
+	public static void addSiteToId(String siteName, Picklist picklist) {
+		picklist.setId(PicklistItemServiceImpl.addSiteToId(siteName, picklist.getId()));
+	}
     
 	@Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
        
-		Picklist currentPicklist = getCurrentPicklist(request);
-
+        String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
 
+        PicklistItem picklistItem = new PicklistItem();
         if (picklistItemId != null) {
-            for (PicklistItem item : currentPicklist.getPicklistItems()) {
-            	if (picklistItemId.equals(item.getId().toString())) {
-            		return item;
-            	}
-            }
+	        Picklist picklist = picklistItemService.getPicklist(SessionServiceImpl.lookupUserSiteName(), picklistId);
+	        if (picklist != null) {
+	        	removeSiteFromId(picklist);
+	            for (PicklistItem item : picklist.getPicklistItems()) {
+	            	if (picklistItemId.equals(item.getId().toString())) {
+	            		return item;
+	            	}
+	            }
+	            picklistItem.setPicklist(picklist);
+	        }
         }
         
-        PicklistItem picklistItem = new PicklistItem();
-        picklistItem.setPicklist(currentPicklist);
         return picklistItem;
     }
 
@@ -70,13 +70,13 @@ public class PicklistItemFormController extends SimpleFormController {
     ) throws ServletException {
     	
         PicklistItem picklistItem = (PicklistItem) command;
+        String siteName = SessionServiceImpl.lookupUserSiteName();
         
-        PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(picklistItem);
+        // Need to modify id outside of transaction
+        addSiteToId(siteName, picklistItem.getPicklist());
+        PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(SessionServiceImpl.lookupUserSiteName(), picklistItem);
+        removeSiteFromId(picklistItem.getPicklist());
         
-        // Update working copy
-        List<Picklist> picklists = picklistItemService.listPicklists(SessionServiceImpl.lookupUserSiteName());
-		request.getSession().setAttribute(PicklistItemManageController.PICKLIST_MANAGE_DATA, picklists);  
-		
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("picklistItem", newPicklistItem);
         return mav;

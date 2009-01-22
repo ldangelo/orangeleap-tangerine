@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.PicklistItem;
 import com.mpower.service.PicklistItemService;
+import com.mpower.service.impl.SessionServiceImpl;
 
 public class PicklistItemHelperController extends ParameterizableViewController {
 
@@ -31,18 +32,25 @@ public class PicklistItemHelperController extends ParameterizableViewController 
 	@Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
     	
-		Picklist currentPicklist = PicklistItemFormController.getCurrentPicklist(request);
+        String picklistId = request.getParameter("picklistId");
 
-        if (currentPicklist == null) return null;
-    	List<PicklistItem> currentPicklistItems = currentPicklist.getPicklistItems();
+        Picklist picklist = picklistItemService.getPicklist(SessionServiceImpl.lookupUserSiteName(), picklistId);
+        if (picklist == null) return null;
+        PicklistItemFormController.removeSiteFromId(picklist);
 
+
+    	List<PicklistItem> picklistItems = picklist.getPicklistItems();
+
+    	String inactive = request.getParameter("inactive");
+    	if (inactive == null || inactive.length() == 0) inactive = "all";
+    	
     	Boolean showInactive;
-        if (StringUtils.equalsIgnoreCase(request.getParameter("inactive"), "all")) {
+        if (StringUtils.equalsIgnoreCase(inactive, "all")) {
             showInactive = null;
         } else {
-            showInactive = Boolean.valueOf(request.getParameter("inactive"));
-        }
-    	
+            showInactive = Boolean.valueOf(inactive);
+        } 	
+        
         String searchString = request.getParameter("q");
         if (GenericValidator.isBlankOrNull(searchString)) {
             searchString = request.getParameter("value");
@@ -56,19 +64,19 @@ public class PicklistItemHelperController extends ParameterizableViewController 
         searchString = searchString.toUpperCase();
         description = description.toUpperCase();
         
-        List<PicklistItem> picklistItems = new ArrayList<PicklistItem>();
-    	for (PicklistItem item : currentPicklistItems) {
-    		if (showInactive || !item.isInactive()) {
+        List<PicklistItem> filteredPicklistItems = new ArrayList<PicklistItem>();
+    	for (PicklistItem item : picklistItems) {
+    		if (showInactive == null || showInactive.equals(item.isInactive())) {
 		        if (description.length() > 0) {
-		        	if (item.getDefaultDisplayValue() != null && item.getDefaultDisplayValue().toUpperCase().startsWith(description)) picklistItems.add(item);
+		        	if (item.getDefaultDisplayValue() != null && item.getDefaultDisplayValue().toUpperCase().startsWith(description)) filteredPicklistItems.add(item);
 		        } else {
-		        	if (item.getItemName() != null && item.getItemName().toUpperCase().startsWith(searchString)) picklistItems.add(item);
+		        	if (item.getItemName() != null && item.getItemName().toUpperCase().startsWith(searchString)) filteredPicklistItems.add(item);
 		        }
     		}
     	}
     	
         ModelAndView mav = new ModelAndView(super.getViewName());
-        mav.addObject("picklistItems", picklistItems);
+        mav.addObject("picklistItems", filteredPicklistItems);
         return mav;
         
     }

@@ -31,6 +31,11 @@ public class JPAFieldDao implements FieldDao {
         return em.find(FieldDefinition.class, fieldId);
     }
 
+    @Override
+    public void flush() {
+        em.flush();
+    }
+
 
 	@Override
 	public Picklist readPicklistById(String picklistId) {

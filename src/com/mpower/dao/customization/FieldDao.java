@@ -30,4 +30,6 @@ public interface FieldDao {
 
 	public List<Picklist> listPicklists(String siteName);
 
+	void flush();
+
 }

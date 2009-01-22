@@ -40,24 +40,58 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 
     @Resource(name = "fieldDao")
     private FieldDao picklistItemDao;
+    
+	// The unique key for PICKLIST is just id, not site + id, so id's have to be kept unique
+	public static String addSiteToId(String siteName, String picklistId) {
+		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		return siteName + "-" + picklistId;
+	}
+
+	private boolean exclude(Picklist picklist) {
+		String name = picklist.getPicklistName();
+		return name == null 
+			|| name.equals("frequency")
+			|| name.equals("constituentType")
+//			|| name.equals("phoneType")
+//			|| name.equals("emailType")
+//			|| name.equals("addressType")
+		;
+	}
+	
+	@Override
+	public Picklist getPicklist(String siteName, String picklistId) {
+		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklist id.");
+		Picklist picklist = picklistItemDao.readPicklistById(addSiteToId(siteName, picklistId));
+		if (picklist == null) picklist = picklistItemDao.readPicklistById(picklistId);
+		if (picklist == null) return null;
+		if (picklist.getSite() == null) {
+			return createCopy(picklist, siteName);
+		} else if (picklist.getSite().getName().equals(siteName)) {
+			return picklist;
+		} else {
+			return null;
+		}
+	}
 
     
 	@Override
 	public List<Picklist> listPicklists(String siteName) {
+		
 		List<Picklist> list = picklistItemDao.listPicklists(siteName);
 		Iterator<Picklist> it = list.iterator();
 		while (it.hasNext()) {
 			if (exclude(it.next())) it.remove();
 		}
 		
-		// Only return overridden site or non-overridden global definitions
+		// Overridden, site-specific picklists
 		List<Picklist> result = new ArrayList<Picklist>();
 		for (Picklist picklist : list) {
 			if (picklist.getSite() != null) {
 				result.add(picklist);
 			}
 		}
-		// Look for non-overriden global picklists
+		
+		// Non-overriden, global picklists
 		for (Picklist picklist : list) {
 			if (picklist.getSite() == null) {
 				boolean found = false;
@@ -67,15 +101,8 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 				}
 			}
 		}
+		
 		return result;
-	}
-	
-	private boolean exclude(Picklist picklist) {
-		String name = picklist.getPicklistName();
-		return name == null 
-			|| name.equals("frequency")
-			|| name.equals("constituentType")
-		;
 	}
 	
 	private Picklist createCopy(Picklist template, String siteName) {
@@ -88,12 +115,12 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 			result = (Picklist)BeanUtils.cloneBean(template);
 			result.setSite(getSite(siteName));
 			result.setPicklistItems(new ArrayList<PicklistItem>());
-			result.setId(siteName+"-"+template.getId());
+			result.setId(template.getId());
 			result.setPicklistItems(new ArrayList<PicklistItem>());
 			List<PicklistItem> items = template.getPicklistItems();
 			for (PicklistItem item: items) {
 				PicklistItem newItem = (PicklistItem)BeanUtils.cloneBean(item);
-				newItem.setId(new Long(-item.getId())); // use for unique identifier only while in working copy
+				newItem.setId(new Long(-item.getId())); // not persisted yet, but needs unique id
 				newItem.setPicklist(result);
 				result.getPicklistItems().add(newItem);
 			}
@@ -118,20 +145,25 @@ public class PicklistItemServiceImpl implements PicklistItemService {
     	}
 	}
 
+	// Note caller must add siteName to picklist id before saving
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
+    public PicklistItem maintainPicklistItem(String siteName, PicklistItem picklistItem) {
     	
     	// Sanity checks
     	if (picklistItem == null || picklistItem.getItemName() == null || picklistItem.getItemName().length() == 0) {
     		throw new RuntimeException("PicklistItem is blank.");
     	}
     	Picklist picklist = picklistItem.getPicklist();
-    	if (picklist == null || picklist.getSite() == null || picklist.getSite().getName().length() == 0) {
+    	if (picklist == null 
+    			|| !picklist.getId().contains("-")
+    			|| picklist.getSite() == null 
+    			|| picklist.getSite().getName().length() == 0
+    			) {
     		throw new RuntimeException("Cannot update non-site-specific entry for PicklistItem "+picklistItem.getId());
     	}
 
-    	// See if picklist already exists in db
+    	// See if site-specific picklist already exists in db
     	Picklist dbPicklist = picklistItemDao.readPicklistById(picklist.getId());
     	if (dbPicklist == null) {
     		
@@ -148,13 +180,15 @@ public class PicklistItemServiceImpl implements PicklistItemService {
         	// Set order and reset item ids.
         	for (int i = 0; i < picklist.getPicklistItems().size(); i++) {
         		PicklistItem apicklistItem = picklist.getPicklistItems().get(i);
-        		apicklistItem.setItemOrder(new Integer(i));
+        		apicklistItem.setItemOrder(new Integer(i+1));
         	    apicklistItem.setId(null);
         	    apicklistItem.setPicklist(picklist);
         	}
-            picklist = picklistItemDao.maintainPicklist(picklist);
-    		removeBlankItems(picklist);
+            
+        	picklist = picklistItemDao.maintainPicklist(picklist);
 
+    		removeBlankItems(picklist);
+    		
             for (PicklistItem apicklistItem: picklist.getPicklistItems()) {
             	if (apicklistItem.getItemName().equals(picklistItem.getItemName())) {
             		auditService.auditObject(apicklistItem);
@@ -172,20 +206,25 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 	        	PicklistItem dbPicklistItem = picklistItemDao.readPicklistItemById(picklistItem.getId());
 	        	PicklistItem oldPicklistItem = new PicklistItem();
 	            try {
-	                BeanUtils.copyProperties(dbPicklistItem, oldPicklistItem);
+	                BeanUtils.copyProperties(oldPicklistItem, dbPicklistItem);
+	                
+	                BeanUtils.copyProperties(dbPicklistItem, picklistItem);
+	                picklistItem = dbPicklistItem;
+	                
 	                picklistItem.setOriginalObject(oldPicklistItem);
 	            } catch (IllegalAccessException e) {
 	            } catch (InvocationTargetException e) {
 	            }
 	        }
+    		
 	        picklistItem = picklistItemDao.maintainPicklistItem(picklistItem);
 	        auditService.auditObject(picklistItem);
+    		
 	        return picklistItem;
 	        
     	}
     	
     }
 
-	
 
 }

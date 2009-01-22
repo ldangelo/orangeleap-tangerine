@@ -16,8 +16,6 @@ import com.mpower.service.impl.SessionServiceImpl;
 
 public class PicklistItemManageController extends ParameterizableViewController {
 	
-	public static final String PICKLIST_MANAGE_DATA = "PICKLIST_MANAGE_DATA";
-
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -27,17 +25,13 @@ public class PicklistItemManageController extends ParameterizableViewController 
         this.picklistItemService = picklistItemService;
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
     public ModelAndView handleRequestInternal(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
 
-    	// Use a working copy of picklists for site-specific modifications
-    	List<Picklist> picklists = (List<Picklist>)request.getSession().getAttribute(PICKLIST_MANAGE_DATA);
-    	if (picklists == null) {
-    		picklists = picklistItemService.listPicklists(SessionServiceImpl.lookupUserSiteName());
-    		request.getSession().setAttribute(PICKLIST_MANAGE_DATA, picklists);  
-    	}
+    	List<Picklist> picklists = picklistItemService.listPicklists(SessionServiceImpl.lookupUserSiteName());
+		for (Picklist picklist : picklists) PicklistItemFormController.removeSiteFromId(picklist);
+
 
         ModelAndView mav = new ModelAndView(super.getViewName());
         mav.addObject("picklists", picklists);

@@ -14,18 +14,21 @@
 				<c:set var="totalFields" value="${sectionFieldCount}" />
 				<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 					<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />
-					<c:if test="${fieldVO.fieldValue!=null}">
-						<c:choose>
-							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
-								<p style="margin: 0;">
+					<p style="margin: 0;">
+						<c:if test="${fieldVO.fieldValue!=null}">
+							<c:choose>
+								<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
-								</p>
-							</c:when>
-							<c:otherwise>
-								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
-							</c:otherwise>
-						</c:choose>
-					</c:if>
+								</c:when>
+								<c:when test="${fieldVO.fieldType == 'DATE'}">
+									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
+								</c:when>
+								<c:otherwise>
+									<c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</p>
 				</c:forEach>
 				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}"">Edit</a>
 				<a onclick="return(confirm('Are you sure you want to remove this address?'));" href="addressDelete.htm?addressId=${row.id}&personId=${person.id}"">Remove</a>
@@ -57,12 +60,15 @@
 					<c:if test="${fieldVO.fieldValue!=null}">
 						<c:choose>
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
-								<p style="margin: 0;">
+								<div>
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
-								</p>
+								</div>
+							</c:when>
+							<c:when test="${fieldVO.fieldType == 'DATE'}">
+								<div><c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" /></div>
 							</c:when>
 							<c:otherwise>
-								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
+								<div><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></div>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -98,6 +104,11 @@
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 								<p style="margin: 0;">
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
+								</p>
+							</c:when>
+							<c:when test="${fieldVO.fieldType == 'DATE'}">
+								<p style="margin: 0;">
+									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
 							<c:otherwise>

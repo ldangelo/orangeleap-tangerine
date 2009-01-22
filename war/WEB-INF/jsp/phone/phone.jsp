@@ -21,6 +21,11 @@
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
+							<c:when test="${fieldVO.fieldType == 'DATE'}">
+								<p style="margin: 0;">
+									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
+								</p>
+							</c:when>
 							<c:otherwise>
 								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
 							</c:otherwise>
@@ -61,6 +66,11 @@
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
+							<c:when test="${fieldVO.fieldType == 'DATE'}">
+								<p style="margin: 0;">
+									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
+								</p>
+							</c:when>
 							<c:otherwise>
 								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
 							</c:otherwise>
@@ -98,6 +108,11 @@
 							<c:when test="${fieldVO.fieldName=='creditCardExpiration'}">
 								<p style="margin: 0;">
 									<c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MM/yyyy" value="${fieldVO.fieldValue}" />
+								</p>
+							</c:when>
+							<c:when test="${fieldVO.fieldType == 'DATE'}">
+								<p style="margin: 0;">
+									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
 								</p>
 							</c:when>
 							<c:otherwise>

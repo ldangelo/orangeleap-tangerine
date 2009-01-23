@@ -36,7 +36,6 @@ public class PicklistItemHelperController extends ParameterizableViewController 
 
         Picklist picklist = picklistItemService.getPicklist(SessionServiceImpl.lookupUserSiteName(), picklistId);
         if (picklist == null) return null;
-        PicklistItemFormController.removeSiteFromId(picklist);
 
 
     	List<PicklistItem> picklistItems = picklist.getPicklistItems();

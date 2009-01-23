@@ -46,6 +46,11 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
 		return siteName + "-" + picklistId;
 	}
+	public static String removeSiteFromId(String picklistId) {
+		if (!picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		return picklistId.substring(picklistId.indexOf("-") + 1);
+	}
+	
 
 	private boolean exclude(Picklist picklist) {
 		String name = picklist.getPicklistName();
@@ -59,10 +64,13 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 	}
 	
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklist(String siteName, String picklistId) {
-		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklist id.");
-		Picklist picklist = picklistItemDao.readPicklistById(addSiteToId(siteName, picklistId));
-		if (picklist == null) picklist = picklistItemDao.readPicklistById(picklistId);
+		if (picklistId == null || picklistId.length() == 0) return null;
+		Picklist picklist = picklistItemDao.readPicklistById(picklistId);
+		if (picklist == null) {
+			picklist = picklistItemDao.readPicklistById(removeSiteFromId(picklistId));
+		}
 		if (picklist == null) return null;
 		if (picklist.getSite() == null) {
 			return createCopy(picklist, siteName);
@@ -75,6 +83,7 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 
     
 	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
 	public List<Picklist> listPicklists(String siteName) {
 		
 		List<Picklist> list = picklistItemDao.listPicklists(siteName);
@@ -113,9 +122,8 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 		Picklist result = null;
 		try {
 			result = (Picklist)BeanUtils.cloneBean(template);
+			result.setId(addSiteToId(siteName, template.getId()));
 			result.setSite(getSite(siteName));
-			result.setPicklistItems(new ArrayList<PicklistItem>());
-			result.setId(template.getId());
 			result.setPicklistItems(new ArrayList<PicklistItem>());
 			List<PicklistItem> items = template.getPicklistItems();
 			for (PicklistItem item: items) {

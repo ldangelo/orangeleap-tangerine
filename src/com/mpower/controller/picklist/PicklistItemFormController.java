@@ -27,17 +27,6 @@ public class PicklistItemFormController extends SimpleFormController {
         this.picklistItemService = picklistItemService;
     }
     
-	public static void removeSiteFromId(Picklist picklist) {
-		String id = picklist.getId();
-		int i = id.indexOf("-");
-		if (i > -1) id = id.substring(i+1);
-		picklist.setId(id);
-	}
-	
-	public static void addSiteToId(String siteName, Picklist picklist) {
-		picklist.setId(PicklistItemServiceImpl.addSiteToId(siteName, picklist.getId()));
-	}
-    
 	@Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
        
@@ -45,15 +34,16 @@ public class PicklistItemFormController extends SimpleFormController {
         String picklistItemId = request.getParameter("picklistItemId");
 
         PicklistItem picklistItem = new PicklistItem();
-        if (picklistItemId != null) {
+        if (picklistId != null) {
 	        Picklist picklist = picklistItemService.getPicklist(SessionServiceImpl.lookupUserSiteName(), picklistId);
 	        if (picklist != null) {
-	        	removeSiteFromId(picklist);
-	            for (PicklistItem item : picklist.getPicklistItems()) {
-	            	if (picklistItemId.equals(item.getId().toString())) {
-	            		return item;
-	            	}
-	            }
+	        	if (picklistItemId != null) {
+		            for (PicklistItem item : picklist.getPicklistItems()) {
+		            	if (picklistItemId.equals(item.getId().toString())) {
+		            		return item;
+		            	}
+		            }
+	        	}
 	            picklistItem.setPicklist(picklist);
 	        }
         }
@@ -73,9 +63,7 @@ public class PicklistItemFormController extends SimpleFormController {
         String siteName = SessionServiceImpl.lookupUserSiteName();
         
         // Need to modify id outside of transaction
-        addSiteToId(siteName, picklistItem.getPicklist());
         PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(SessionServiceImpl.lookupUserSiteName(), picklistItem);
-        removeSiteFromId(picklistItem.getPicklist());
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("picklistItem", newPicklistItem);

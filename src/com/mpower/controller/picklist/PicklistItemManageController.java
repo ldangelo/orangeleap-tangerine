@@ -30,7 +30,6 @@ public class PicklistItemManageController extends ParameterizableViewController 
             HttpServletResponse response) throws Exception {
 
     	List<Picklist> picklists = picklistItemService.listPicklists(SessionServiceImpl.lookupUserSiteName());
-		for (Picklist picklist : picklists) PicklistItemFormController.removeSiteFromId(picklist);
 
 
         ModelAndView mav = new ModelAndView(super.getViewName());

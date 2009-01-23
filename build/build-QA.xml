@@ -2,8 +2,8 @@
 <project name="mpower" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
-	<property name="target.tomcat.dir" value="/usr/local/credera/apache-tomcat-6.0.18" />
-	<property name="mysql.port" value="3306" />
+	<property name="target.tomcat.dir" value="/opt/mpower/QA/tomcat" />
+	<property name="mysql.port" value="30006" />
 	<property name="build.deploy.file" value="${basedir}/build/build-deploy.xml" />
 
 	<target name="deploy" description="Deploy build output to QA instance" >

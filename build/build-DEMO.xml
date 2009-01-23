@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="mpower" basedir=".." default="deploy">
+
+	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
+	<property name="target.tomcat.dir" value="/opt/mpower/DEMO/tomcat" />
+	<property name="mysql.port" value="20006" />
+	<property name="build.deploy.file" value="${basedir}/build/build-deploy.xml" />
+
+	<target name="deploy" description="Deploy build output to DEV instance" >
+		<ant antfile="${build.deploy.file}" target="deploy" />
+    </target> 
+	
+</project>

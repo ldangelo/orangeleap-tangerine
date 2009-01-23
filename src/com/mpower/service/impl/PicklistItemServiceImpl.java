@@ -66,12 +66,15 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklist(String siteName, String picklistId) {
+		
 		if (picklistId == null || picklistId.length() == 0) return null;
+		
 		Picklist picklist = picklistItemDao.readPicklistById(picklistId);
 		if (picklist == null) {
 			picklist = picklistItemDao.readPicklistById(removeSiteFromId(picklistId));
 		}
 		if (picklist == null) return null;
+		
 		if (picklist.getSite() == null) {
 			return createCopy(picklist, siteName);
 		} else if (picklist.getSite().getName().equals(siteName)) {
@@ -79,6 +82,7 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 		} else {
 			return null;
 		}
+		
 	}
 
     

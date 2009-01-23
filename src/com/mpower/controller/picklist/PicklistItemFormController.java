@@ -32,6 +32,7 @@ public class PicklistItemFormController extends SimpleFormController {
        
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
+        String itemName = request.getParameter("itemName");
 
         PicklistItem picklistItem = new PicklistItem();
         if (picklistId != null) {
@@ -40,6 +41,11 @@ public class PicklistItemFormController extends SimpleFormController {
 	        	if (picklistItemId != null) {
 		            for (PicklistItem item : picklist.getPicklistItems()) {
 		            	if (picklistItemId.equals(item.getId().toString())) {
+		            		return item;
+		            	}
+		            }
+		            for (PicklistItem item : picklist.getPicklistItems()) {
+		            	if (item.getItemName().equals(itemName)) {
 		            		return item;
 		            	}
 		            }
@@ -63,7 +69,7 @@ public class PicklistItemFormController extends SimpleFormController {
         String siteName = SessionServiceImpl.lookupUserSiteName();
         
         // Need to modify id outside of transaction
-        PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(SessionServiceImpl.lookupUserSiteName(), picklistItem);
+        PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(siteName, picklistItem);
         
         ModelAndView mav = new ModelAndView(getSuccessView());
         mav.addObject("picklistItem", newPicklistItem);

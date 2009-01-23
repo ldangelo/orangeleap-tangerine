@@ -6,7 +6,7 @@
 				<table class="tablesorter">
 					<c:forEach items="${picklistItems}" var="picklistItem">
 						<tr>
-							<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="picklistItem.htm?picklistId=${picklistItem.picklist.id}&picklistItemId=${picklistItem.id}&view=inPlace">Edit</a>
+							<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="picklistItem.htm?picklistId=${picklistItem.picklist.id}&picklistItemId=${picklistItem.id}&itemName=<c:out value='${picklistItem.itemName}'/>&view=inPlace">Edit</a>
 							<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
 							<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
 						 	<td class="inactive"><input disabled="disabled" name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 

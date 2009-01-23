@@ -50,6 +50,7 @@ public class PicklistItemFormController extends SimpleFormController {
 		            	}
 		            }
 	        	}
+	        	picklistItem.setItemOrder(picklist.getPicklistItems().size());
 	            picklistItem.setPicklist(picklist);
 	        }
         }

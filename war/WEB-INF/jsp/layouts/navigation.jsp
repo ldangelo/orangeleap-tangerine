@@ -5,7 +5,7 @@
 <div id="banner">
 	<ol>
 		<li>
-			<span id="greeting"><spring:message code="loggedInto"/> <strong><security:authentication property="site" /></strong> <spring:message code="as"/> <strong><security:authentication property="principal.username" /></strong></span>
+			<span id="greeting"><spring:message code="loggedInto"/>&nbsp;<strong><security:authentication property="site" /></strong> <spring:message code="as"/>&nbsp;<strong><security:authentication property="principal.username" /></strong></span>
 		</li>
 		<li>
 			<a href="account.htm"><spring:message code="myAccount"/></a>

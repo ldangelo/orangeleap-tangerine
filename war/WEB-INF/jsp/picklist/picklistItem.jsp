@@ -29,7 +29,13 @@
 		<td><input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td>
 </c:when>
 <c:otherwise>
-	<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="picklistItem.htm?picklistId=${picklistItem.picklist.id}&picklistItemId=${picklistItem.id}&itemName=<c:out value='${picklistItem.itemName}'/>&view=inPlace">Edit</a>
+    <c:url var="picklistItemUrl" value="picklistItem.htm">
+      <c:param name="picklistId" value="${picklistItem.picklist.id}" />
+      <c:param name="picklistItemId" value="${picklistItem.id}" />
+      <c:param name="itemName" value="${picklistItemName}" />
+      <c:param name="view" value="inPlace" />
+    </c:url>
+	<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="${picklistItemUrl}">Edit</a>
 	<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
 	<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
     <td><input disabled="disabled" name="inactive" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 

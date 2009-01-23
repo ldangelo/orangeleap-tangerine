@@ -69,9 +69,9 @@
 					<li>
 						<a href="codes.htm"><spring:message code="manageCodes"/></a>
 					</li>
-			<!--  		<li>
+			  		<li>
 						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
-					</li> -->
+					</li> 
 					<li>
 						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
 					</li>

@@ -73,7 +73,7 @@
 						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 					</li> 
 					<li>
-						<a href="http://10.0.2.162:8080/jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
+						<a href="../jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
 						<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>

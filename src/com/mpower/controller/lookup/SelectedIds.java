@@ -1,12 +1,12 @@
 package com.mpower.controller.lookup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 public class SelectedIds {
 
@@ -17,12 +17,12 @@ public class SelectedIds {
     private String idToCheck;
 
     @SuppressWarnings("unchecked")
-    public SelectedIds(final String[] idsStrings) {
-        if (idsStrings == null) {
+    public SelectedIds(final String idsString) {
+        if (idsString == null) {
             this.ids = UnmodifiableList.decorate(new ArrayList<String>(0));
         }
         else {
-            this.ids = Arrays.asList(idsStrings);
+            this.ids = UnmodifiableList.decorate(new ArrayList<String>(StringUtils.commaDelimitedListToSet(idsString)));
         }
     }
 
@@ -36,5 +36,10 @@ public class SelectedIds {
 
     public boolean isCheckSelectedId() {
         return getIds().contains(idToCheck);
+    }
+    
+    @Override
+    public String toString() {
+        return StringUtils.collectionToCommaDelimitedString(this.ids);
     }
 }

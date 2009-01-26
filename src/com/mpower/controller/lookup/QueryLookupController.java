@@ -32,31 +32,50 @@ public class QueryLookupController extends SimpleFormController {
         this.queryLookupService = queryLookupService;
     }
     
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+    protected String findFieldDef(HttpServletRequest request) {
+        return StringUtils.trimToNull(request.getParameter("fieldDef"));
+    }
+    
+    protected List<Object> executeQueryLookup(HttpServletRequest request, String fieldDef) {
         Map<String, String> queryParams = findQueryParams(request);
-
-        String fieldDef = StringUtils.trimToNull(request.getParameter("fieldDef"));
-        Boolean showOtherField = Boolean.valueOf(request.getParameter("showOtherField"));
-        QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
         List<Object> objects = queryLookupService.executeQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef,
                 queryParams);
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        map.put("objects", objects);
-        map.put("queryLookup", queryLookup);
-        map.put("showOtherField", showOtherField);
+        request.setAttribute("objects", objects);
+        return objects;
+    }
+    
+    protected QueryLookup doQueryLookup(HttpServletRequest request, String fieldDef) {
+        QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
+        request.setAttribute("queryLookup", queryLookup);
+        return queryLookup;
+    }
+    
+    protected void performQuery(HttpServletRequest request, HttpServletResponse response) {
+        String fieldDef = findFieldDef(request);
         
-        sortPaginate(request, map, objects);
-        return new ModelAndView(super.getSuccessView(), map);
+        QueryLookup queryLookup = doQueryLookup(request, fieldDef);
+        if (logger.isDebugEnabled()) {
+            logger.debug("performQuery: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getJpaQuery());
+        }
+        List<Object> objects = executeQueryLookup(request, fieldDef);
+        sortPaginate(request, objects, queryLookup);
+    }
+    
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        performQuery(request, response);
+        return new ModelAndView(super.getSuccessView());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
-        String fieldDef = StringUtils.trimToNull(request.getParameter("fieldDef"));
-        QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
+        String fieldDef = findFieldDef(request);
+        QueryLookup queryLookup = doQueryLookup(request, fieldDef);
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSubmit: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getJpaQuery());
+        }
         request.setAttribute("fieldDef", fieldDef);
-        request.setAttribute("queryLookup", queryLookup);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));
         return super.showForm(request, response, errors, controlModel);
     }
@@ -73,9 +92,7 @@ public class QueryLookupController extends SimpleFormController {
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
             String paramValue = StringUtils.trimToNull(request.getParameter(param));
-            if (paramValue != null && !param.equalsIgnoreCase("fieldDef") && !param.equalsIgnoreCase("view") && !param.equalsIgnoreCase("resultsOnly")) {
-                queryParams.put(param, paramValue);
-            }
+            queryParams.put(param, paramValue);
         }
         return queryParams;
     }
@@ -83,35 +100,20 @@ public class QueryLookupController extends SimpleFormController {
     /**
      * TODO: move to another class or an interceptor or an annotation
      * @param request
-     * @param mav
      * @param objects
+     * @param queryLookup
      */
-    protected void sortPaginate(HttpServletRequest request, Map<String, Object> map, List<Object> objects) {
-        String sort = request.getParameter("sort");
-        String ascending = request.getParameter("ascending");
-        Boolean sortAscending;
-        if (StringUtils.trimToNull(ascending) != null) {
-            sortAscending = new Boolean(ascending);
-        } 
-        else {
-            sortAscending = new Boolean(true);
+    protected void sortPaginate(HttpServletRequest request, List<Object> objects, QueryLookup queryLookup) {
+        String searchOption = StringUtils.trimToNull(request.getParameter("searchOption"));
+        if (searchOption == null) {
+            searchOption = queryLookup.getQueryLookupParams().get(0).getName();
         }
-        MutableSortDefinition sortDef = new MutableSortDefinition(sort, true,sortAscending);
+        
+        Boolean sortAscending = new Boolean(true);
+        MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
         PagedListHolder pagedListHolder = new PagedListHolder(objects, sortDef);
         pagedListHolder.resort();
-        pagedListHolder.setMaxLinkedPages(3);
-        pagedListHolder.setPageSize(50);
-        String page = request.getParameter("page");
 
-        Integer pg = 0;
-        if (!StringUtils.isBlank(page)) {
-            pg = Integer.valueOf(page);
-        }
-
-        pagedListHolder.setPage(pg);
-        map.put("pagedListHolder", pagedListHolder);
-        map.put("currentSort", sort);
-        map.put("currentAscending", sortAscending);
+        request.setAttribute("results", pagedListHolder.getSource());
     }
-
 }

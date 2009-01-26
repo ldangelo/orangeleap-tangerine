@@ -19,7 +19,7 @@
 	<!-- Multi-Query Lookup -->
     <bean id="multiQueryLookupController" class="com.mpower.controller.lookup.MultiQueryLookupController" parent="queryLookupController">
         <property name="formView" value="lookup/multiQueryLookup"/>
-        <property name="successView" value="lookup/multiQueryLookup"/>
+        <property name="successView" value="lookup/multiQueryLookupResults"/>
     </bean>
     
     <bean id="queryLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

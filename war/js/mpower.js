@@ -669,7 +669,7 @@ var Lookup = {
 		});		
 		$("div.modalContent input#doneButton").bind("click", function() {
 			Lookup.useQueryLookup();
-			$("#dialog").jqmHide();					
+			$("#dialog").jqmHide();	
 		});
 		$("div.modalContent input#cancelButton").bind("click", function() {
 			$("#dialog").jqmHide();					
@@ -700,7 +700,7 @@ var Lookup = {
 	
 	doQuery: function() {
 		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
-		$("#queryResultsDiv").load("queryLookup.htm?" + queryString, { view: "resultsOnly", fieldDef: $("#fieldDef").val() }, function() {
+		$("#queryResultsDiv").load("queryLookup.htm?" + queryString, { view: "resultsOnly", fieldDef: $("#fieldDef").val(), searchOption: $("#searchOption").val() }, function() {
 			var $prevElem = null;
 			$("div.modalContent ul.queryUl :radio").bind("click", function() {
 				if ($prevElem) {
@@ -723,9 +723,9 @@ var Lookup = {
 		var fieldDef = this.loadQueryLookupCommon(elem);		
 		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("div.multiQueryLookupOption"));
 		$.ajax({
-			type: "POST",
+			type: "GET",
 			url: "multiQueryLookup.htm",
-			data: queryString + "fieldDef=" + fieldDef,
+			data: queryString + "&fieldDef=" + fieldDef,
 			success: function(html){
 				$("#dialog").html(html);
 				Lookup.multiCommonBindings();
@@ -739,12 +739,12 @@ var Lookup = {
 		});
 	},
 	
-	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedId1&selectedId=selectedId2&... */
+	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedId,selectedId2,... */
 	serializeMultiQueryLookup: function(options) {
-		var queryString = "";
+		var queryString = "selectedIds=";
 		$(options).each(function() {
 			var $elem = $(this);
-			queryString += "selectedIds=" + escape($elem.attr("selectedId")) + "&";
+			queryString += escape($elem.attr("selectedId")) + ",";
 		});
 		return queryString;
 	},
@@ -801,6 +801,7 @@ var Lookup = {
 			$popLink.text(displayVal);
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
+//			$cloned.animate({ "background-color": "#F00" }, "fast").animate({ "background-color": "#000" }, "fast");
 		}
 		else {
 			var $optionElem = $("div.modalContent input#otherOptionText");
@@ -815,6 +816,7 @@ var Lookup = {
 				$cloned.find("span").text(typedVal);
 				$cloned.removeClass("clone").removeClass("noDisplay");
 				$cloned.prependTo(Lookup.lookupCaller);
+//				$cloned.animate({ "background-color": "#F00" }, "fast").animate({ "background-color": "#000" }, "fast");
 			}
 		}
 	},
@@ -839,41 +841,31 @@ var Lookup = {
 	
 	doMultiQuery: function() {
 		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
-		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { view: "resultsOnly", fieldDef: $("#fieldDef").val() });
+		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { fieldDef: $("#fieldDef").val(), selectedIds: $("#selectedIds").val(), searchOption: $("#searchOption").val() });
 	},
 	
 	multiQueryLookupBindings: function() {
-		$(".modalSearch input[type=text]").bind("focus", function() {
-			if ($(this).attr("defaultText") == $(this).val()) {
-				$(this).removeClass("defaultText");
-				$(this).val("");
-			}
-		});
-		$(".modalSearch input[type=text]").bind("blur", function() {
-			if ($(this).val() == "") {
-				$(this).addClass("defaultText");
-				$(this).val($(this).attr("defaultText"));
-			}
-		});
 		$(".modalSearch :input").bind("keyup", function(){
 			Lookup.doMultiQuery();
 		});
 		$(".modalSearch input#findButton").bind("click", function(){
 			Lookup.doMultiQuery();
 		});		
+		$("div.modalContent form").bind("submit", function() {
+			return false;
+		});
 		$("div.modalContent input#doneButton").bind("click", function() {
 			var idsStr = "";
 			var names = new Array();
 			var ids = new Array();
 			var hrefs = new Array();
-			$("ul#selectedOptions li").each(function() {
-				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
-				var thisId = $chkBox.attr("id");
+			$("ul#selectedOptions :checkbox").each(function() {
+				var $chkboxElem = $(this);
+				var thisId = $chkboxElem.attr("id");
 				idsStr += thisId + ",";
 				ids[ids.length] = thisId;
-				var $thisLink = $(this).children("a[href]").eq(0);
-				names[names.length] = $.trim($thisLink.text());
-				hrefs[hrefs.length] = $thisLink.attr("href");
+				names[names.length] = $.trim($chkboxElem.parent("li").text());
+				hrefs[hrefs.length] = $chkboxElem.siblings("a[href]").attr("href");
 			});
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 
@@ -928,23 +920,14 @@ var Lookup = {
 	multiCommonBindings: function() {
 		$("table.multiSelect tbody").bind("click", function(event) {
 			var $target = $(event.target);
-			if ($target.is("li,input[type=checkbox]")) { 
-				if ($target.is("input[type=checkbox]")) {
-					$target = $target.parent("li").eq(0);
-				}
-				if ($target.hasClass("picked")) {
+			if ($target.is("input[type=checkbox]")) { 
+				$target = $target.parent("li").eq(0);
+				if ($target.hasClass("selected")) {
 					MultiSelect.uncheck($target);
 				}
 				else {
 					MultiSelect.check($target);
 				}
-			}
-		});
-		$("table.multiSelect tbody").bind("dblclick", function(event) {
-			var $target = $(event.target);
-			if ($target.is("li")) { 
-				var optionType = ($target.parent().attr("id") === "selectedOptions" ? "selected" : "available");
-				MultiSelect.moveOption($target, optionType);
 			}
 		});
 		$("table.multiSelect thead input[type=checkbox]").bind("click", function() {
@@ -1043,12 +1026,12 @@ var MultiSelect = {
 	
 	check: function(elem) {
 		elem.children("input[type=checkbox]").eq(0).attr("checked", "true");
-		elem.addClass("picked");
+		elem.addClass("selected");
 	},
 	
 	uncheck: function(elem) {
 		elem.children("input[type=checkbox]").eq(0).removeAttr("checked");
-		elem.removeClass("picked");
+		elem.removeClass("selected");
 	}
 }
 

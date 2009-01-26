@@ -49,20 +49,22 @@
 
 input#otherOptionText { width: 307px; }
 table.multiSelect { text-align: left; margin: auto; padding: 0 20px; }
-table.multiSelect thead th { text-align: left; background-color: #EFEFEF; padding-left: 2px; border-color: #D1D1D1 gray gray #D1D1D1; border-style: solid; border-width: 1px; line-height: 25px; }
-table.multiSelect thead th.arrows { width: 30px; background-color: transparent; border: 0; }
+table.multiSelect thead th { text-align: left; background: #DCDCDC url(../images/glossyGray.png) repeat-x scroll left top; padding-left: 2px; border-color: #DCDCDC; border-style: solid; border-width: 1px; line-height: 25px; }
+table.multiSelect thead th.arrows { width: 30px; background-color: transparent; background-image: url(none); border: 0; }
 table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }
 table.multiSelect tbody ul { list-style-image:none; list-style-position:outside; list-style-type:none; }
 table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; margin-left: 0; }
 table.multiSelect tbody ul { height: 15em; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; margin: 0; }
-table.multiSelect tbody ul li, div.modalContent ul.queryUl li { padding-right: 25px; border-bottom: 1px solid #DDDDDD; line-height: 25px; cursor: pointer; }
-table.multiSelect tbody ul li.odd, div.modalContent ul.queryUl li.odd { background-color: #EEEEEE; }
-table.multiSelect tbody ul li:hover, div.modalContent ul.queryUl li:hover { background-color: #316AC5; color: #FFF; }
-table.multiSelect tbody ul li.picked { background-color:#BFE8FF; border-bottom:1px solid #FFFFFF; }
-table.multiSelect tbody ul li a, table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
+table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em; border-bottom:1px solid #FFF; color: #000; line-height: 25px; border-bottom: 1px solid #EEE; white-space: nowrap; padding-right: 35px; }
+
+table.multiSelect tbody ul li:nth-child(2n+1), div.modalContent ul.queryUl li:nth-child(2n+1) { background-color: #EEE; border-bottom: #FFF; }
+table.multiSelect tbody ul li:nth-child(2n), div.modalContent ul.queryUl li:nth-child(2n) { border-bottom: #FFF; }
+
+table.multiSelect tbody ul li:hover, div.modalContent ul.queryUl li:hover { background-color: #AFCEFF; color: #000; }
+table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
 div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
 
-div.modalSearch, div.otherOptionDiv { margin-bottom: 15px; padding-left: 10px; padding-right: 10px; }
+div.modalSearch, div.otherOptionDiv { margin-bottom: 15px; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
 div.modalSearch select { margin-right: 3px; }
 div.modalSearch label, div.otherOptionDiv label { font-weight: bold; margin-right: 3px; width: 70px; }
 div.modalSearch label { margin-left: 20px; text-align: right; }
@@ -76,12 +78,12 @@ table.multiSelect tbody td.arrows a.leftArrow { background-image: url(../images/
 
 div.modalContent ul.queryUl { list-style-image: none; list-style-position: outside; list-style-type: none; text-align: left; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; 
 	padding-left: 0; margin: 0 20px 20px; border-color:#D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; }
-div.modalContent ul.queryUl li { font-size: 1.1em; padding-left: 7px; border-bottom:1px solid #FFF; color: #000; }
+div.modalContent ul.queryUl li { padding-left: 7px; }
 div.modalContent ul.queryUl li input { margin-right: 7px; vertical-align: baseline; }
-div.modalContent ul.queryUl li a { margin-left: 7px; }
+table.multiSelect tbody ul li a, div.modalContent ul.queryUl li a { margin-left: 7px; }
 
 div.noResults { font-weight: bold; background-color: #FFF; text-align: center; padding: 10px 5px 20px; font-size: 1.1em; color: navy; max-width: 420px; }
-table.multiSelect tbody ul li.selected, div.modalContent ul.queryUl li.selected { background-color: navy; color: #FFF; font-size: 1.2em; }
+table.multiSelect tbody ul li.selected, div.modalContent ul.queryUl li.selected { background-color: #9FFFB5; color: #000; font-size: 1.2em; }
 
 /* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
 * iframe.jqm {position:absolute;top:0;left:0;z-index:-1;

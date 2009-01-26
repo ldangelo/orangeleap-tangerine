@@ -148,11 +148,17 @@
 		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="deploy-integrated-war" depends="build-integrated-war">
+	<target name="copy-mpower.properties">
+		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
+		<copy todir="${deploy.lib.dir}" file="${basedir}/mpower.properties" />
+		<echo message="Copied mpower.properties to ${deploy.lib.dir}"/>
+	</target>
+	
+	<target name="deploy-integrated-war" depends="build-integrated-war, copy-mpower.properties">
 		<copy todir="${deploy.path}" file="${stage.dir}/${app.name}.war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="build-exploded-war">
+	<target name="deploy-exploded-war" depends="build-exploded-war, copy-mpower.properties">
 		<copy todir="${deploy.path}/${app.name}">
 			<fileset dir="${stage.dir}/${app.name}.war" />
 		</copy>

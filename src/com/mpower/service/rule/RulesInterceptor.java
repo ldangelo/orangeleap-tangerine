@@ -31,17 +31,26 @@ public class RulesInterceptor implements ApplicationContextAware {
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
+	
+	public static Properties getDroolsProperties() {
+		String host = System.getProperty("drools.host");
+		String port = System.getProperty("drools.port");
+		String url = "http://"+host+":"+port+"/brms/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
+		logger.debug("Setting Drools URL to "+url);
+		Properties props = new Properties();
+		props.put("url", url);
+		props.put("newInstance", "true");
+		props.put("name","testagent");
+		return props;
+	}
 
 	@Around(value = "execution(* com.mpower.service..*.maintain*(..)) " + "|| execution(* com.mpower.service..*.save*(..))" + "|| execution(* com.mpower.service..*.refund*(..))")
 	public Object doApplyRules(ProceedingJoinPoint pjp) throws Throwable {
 
 		Object[] args = pjp.getArgs();
 
-		Properties props = new Properties();
-		props.put("url", "http://localhost:8080/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST");
-		props.put("newInstance", "true");
-		props.put("name", "testagent");
-
+		Properties props = getDroolsProperties();
+	
 		RuleAgent agent = RuleAgent.newRuleAgent(props);
 		RuleBase ruleBase = agent.getRuleBase();
 

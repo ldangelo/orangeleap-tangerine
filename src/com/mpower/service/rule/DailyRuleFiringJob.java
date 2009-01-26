@@ -53,11 +53,8 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 		List<Site> sites = null;
 		sites = ss.readSites();
 
-		Properties props = new Properties();
-		props.put("url", "http://localhost:8080/brms/org.drools.brms.JBRMS/package/com.mpower/NEWEST");
-		props.put("newInstance", "true");
-		props.put("name","testagent");
-
+		Properties props = RulesInterceptor.getDroolsProperties();
+		
 		for (Site site : sites) {
 
 			siteName = site.getName();

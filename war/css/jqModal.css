@@ -60,7 +60,7 @@ table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em
 table.multiSelect tbody ul li:nth-child(2n+1), div.modalContent ul.queryUl li:nth-child(2n+1) { background-color: #EEE; border-bottom: #FFF; }
 table.multiSelect tbody ul li:nth-child(2n), div.modalContent ul.queryUl li:nth-child(2n) { border-bottom: #FFF; }
 
-table.multiSelect tbody ul li:hover, div.modalContent ul.queryUl li:hover { background-color: #AFCEFF; color: #000; }
+table.multiSelect tbody ul li:hover, div.modalContent ul.queryUl li:hover { background-color: #DFF1FF; color: #000; }
 table.multiSelect thead th strong { margin-left: 3px; vertical-align: baseline; }
 div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
 

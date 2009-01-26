@@ -149,9 +149,17 @@
 	</target>
 
 	<target name="copy-mpower.properties">
+		<!-- Only copy if mpower.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
-		<copy todir="${deploy.lib.dir}" file="${basedir}/mpower.properties" />
-		<echo message="Copied mpower.properties to ${deploy.lib.dir}"/>
+		<available file="${deploy.lib.dir}/mpower.properties" property="mpower.properties.present"/>
+		<if>
+			<equals arg1="${mpower.properties.present}" arg2="true" />
+			<else>
+				<copy todir="${deploy.lib.dir}" file="${basedir}/mpower.properties" />
+				<echo message="Copied mpower.properties to ${deploy.lib.dir}"/>
+			</else>
+		</if>
+	
 	</target>
 	
 	<target name="deploy-integrated-war" depends="build-integrated-war, copy-mpower.properties">

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 public class MultiQueryLookupController extends QueryLookupController {
@@ -14,8 +15,8 @@ public class MultiQueryLookupController extends QueryLookupController {
     private static final String SELECTED_IDS = "selectedIds";
 
     @Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        final ModelAndView mav = super.handleRequestInternal(request, response);
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        final ModelAndView mav = super.onSubmit(request, response, command, errors);
         findPreviouslySelected(request, mav);
         return mav;
     }

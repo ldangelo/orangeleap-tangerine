@@ -160,14 +160,7 @@ var Distribution = {
 		});		
 		
 		newRow.find("input.code").each(function(){
-			var codeType = $(this).attr("codeType");
-			$(this).autocomplete("codeHelper.htm?type=" + codeType, {
-				delay: 10,
-				minChars: 0,
-				maxItemsToShow: 20,
-				formatItem: formatItem,
-				loadingClass: ""
-			});
+			Lookup.codeAutoComplete($(this));
 		});
 		newRow.removeClass("focused");
 	},

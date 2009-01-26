@@ -83,9 +83,6 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Temporal(TemporalType.TIMESTAMP)
     private Date postmarkDate;
     
-    @Column(name = "REFERENCE")
-    private String reference;
-
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
 
@@ -221,6 +218,9 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public String getCurrencyCode() {
+        if (currencyCode == null) {
+            currencyCode = "USD";
+        }
         return currencyCode;
     }
 
@@ -237,6 +237,9 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     }
 
     public Date getDonationDate() {
+        if (donationDate == null) {
+            donationDate = new Date();
+        }
         return donationDate;
     }
 
@@ -250,14 +253,6 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     public void setPostmarkDate(Date postmarkDate) {
         this.postmarkDate = postmarkDate;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
     }
 
     public void setPaymentType(String paymentType) {

@@ -21,6 +21,8 @@ public class FieldVO {
     // TODO: move elsewhere
     public static final String NORMAL_DELIMITER = ",";
     public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
+    public static final String OTHER_PREFIX = "other_";
+    private static final String DOT_VALUE = ".value";
 
     private Object model;
     private List<String> referenceValues;
@@ -66,9 +68,51 @@ public class FieldVO {
     public String getFieldName() {
         return fieldName;
     }
+    
+    private String escapeChars(String str) {
+        return str == null ? "" : str.replace('.', '_').replace('[', '-').replace(']', '-');
+    }
 
-    public String getFieldHtmlName() {
-        return fieldName == null ? "" : fieldName.replace('.', '_').replace('[', '-').replace(']', '-');
+    public String getFieldId() {
+        return escapeChars(fieldName);
+    }
+    
+    public String getOtherFieldId() {
+        return escapeChars(getOtherFieldName());
+    }
+    
+    /**
+     * Get the 'other' field name, i.e, customFieldMap[reference] --> customFieldMap[other_reference], motivationCode --> other_motivationCode, customFieldMap[individual.spouse] --> customFieldMap[individual.other_spouse]
+     * @param fieldName
+     * @return
+     */
+    public String getOtherFieldName() {
+        String aFieldName = fieldName;
+        String otherFieldName = null;
+        
+        boolean endsInValue = false;
+        if (aFieldName.endsWith(DOT_VALUE)) {
+            aFieldName = aFieldName.substring(0, aFieldName.length() - DOT_VALUE.length());
+            endsInValue = true;
+        }
+        
+        int startBracketIndex = aFieldName.indexOf('[');
+        if (startBracketIndex > -1) {
+            int periodIndex = aFieldName.indexOf('.', startBracketIndex);
+            if (periodIndex > -1) {
+                otherFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(OTHER_PREFIX).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString(); 
+            }
+            else {
+                otherFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(OTHER_PREFIX).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString(); 
+            }
+        }
+        if (otherFieldName == null) {
+            otherFieldName = new StringBuilder(OTHER_PREFIX).append(aFieldName).toString();
+        }
+        if (endsInValue) {
+            otherFieldName = otherFieldName.concat(DOT_VALUE);
+        }
+        return otherFieldName;
     }
     
     public FieldType getFieldType() {

@@ -13,43 +13,57 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.QueryLookup;
 import com.mpower.service.QueryLookupService;
 import com.mpower.service.impl.SessionServiceImpl;
 
-public class QueryLookupController extends ParameterizableViewController {
+public class QueryLookupController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private QueryLookupService queryLookupService;
+    protected QueryLookupService queryLookupService;
 
     public void setQueryLookupService(QueryLookupService queryLookupService) {
         this.queryLookupService = queryLookupService;
     }
-
+    
     @Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Map<String, String> queryParams = findQueryParams(request);
 
-        // List<String> displayColumns = new ArrayList<String>();
-        // displayColumns.add("lastName");
-        // displayColumns.add("firstName");
         String fieldDef = StringUtils.trimToNull(request.getParameter("fieldDef"));
+        Boolean showOtherField = Boolean.valueOf(request.getParameter("showOtherField"));
         QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
         List<Object> objects = queryLookupService.executeQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef,
                 queryParams);
-        ModelAndView mav = new ModelAndView(super.getViewName());
-        mav.addObject("objects", objects);
-        mav.addObject("queryLookup", queryLookup);
-        sortPaginate(request, mav, objects);
+        Map<String, Object> map = new HashMap<String, Object>(3);
+        map.put("objects", objects);
+        map.put("queryLookup", queryLookup);
+        map.put("showOtherField", showOtherField);
+        
+        sortPaginate(request, map, objects);
+        return new ModelAndView(super.getSuccessView(), map);
+    }
 
-        // mav.addObject("displayColumns", displayColumns);
-        // mav.addObject("parameterMap", request.getParameterMap());
-        return mav;
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+        String fieldDef = StringUtils.trimToNull(request.getParameter("fieldDef"));
+        QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
+        request.setAttribute("fieldDef", fieldDef);
+        request.setAttribute("queryLookup", queryLookup);
+        request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));
+        return super.showForm(request, response, errors, controlModel);
+    }
+
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+        return "";
     }
 
     @SuppressWarnings("unchecked")
@@ -72,13 +86,14 @@ public class QueryLookupController extends ParameterizableViewController {
      * @param mav
      * @param objects
      */
-    protected void sortPaginate(HttpServletRequest request, ModelAndView mav, List<Object> objects) {
+    protected void sortPaginate(HttpServletRequest request, Map<String, Object> map, List<Object> objects) {
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;
         if (StringUtils.trimToNull(ascending) != null) {
             sortAscending = new Boolean(ascending);
-        } else {
+        } 
+        else {
             sortAscending = new Boolean(true);
         }
         MutableSortDefinition sortDef = new MutableSortDefinition(sort, true,sortAscending);
@@ -94,9 +109,9 @@ public class QueryLookupController extends ParameterizableViewController {
         }
 
         pagedListHolder.setPage(pg);
-        mav.addObject("pagedListHolder", pagedListHolder);
-        mav.addObject("currentSort", sort);
-        mav.addObject("currentAscending", sortAscending);
+        map.put("pagedListHolder", pagedListHolder);
+        map.put("currentSort", sort);
+        map.put("currentAscending", sortAscending);
     }
 
 }

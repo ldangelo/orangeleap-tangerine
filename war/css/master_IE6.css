@@ -45,3 +45,4 @@ a.hideText {
 .jqmWindow .modalBottomLeft { background-image: url(none); }
 .jqmWindow .modalBottomRight { background-image: url(none); position: static; }
 .jqmWindow .modalSideRight { display: none; }
+div.modalContent ul.queryUl { height: 15em; }

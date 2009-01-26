@@ -1,6 +1,5 @@
 package com.mpower.web.customization.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,13 +10,11 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Person;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.service.PersonService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
-import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
 import com.mpower.type.MessageResourceType;
 import com.mpower.web.customization.FieldVO;
@@ -97,42 +94,18 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setHierarchy(currentField.getFieldDefinition().isTree(siteName));
         fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName));
 
-        if (!FieldType.SPACER.equals(fieldVO.getFieldType())) {
+        if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
             String fieldProperty = fieldVO.getFieldName();
             BeanWrapper modelBeanWrapper = new BeanWrapperImpl(model);
             Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
             fieldVO.setFieldValue(propertyValue);
-            if (propertyValue!=null) {
-                FieldType fieldType = currentField.getFieldDefinition().getFieldType();
-                EntityType entityType = currentField.getFieldDefinition().getEntityType();
-                boolean isCustom = currentField.getFieldDefinition().isCustom();
-
+            if (propertyValue != null) {
                 BeanWrapper propBeanWrappermodel = new BeanWrapperImpl(propertyValue);
                 if (propBeanWrappermodel.isReadableProperty("id")) {
                     fieldVO.setId((Long)propBeanWrappermodel.getPropertyValue("id"));
                 }
                 if (propBeanWrappermodel.isReadableProperty("displayValue")) {
                     fieldVO.setDisplayValue(propBeanWrappermodel.getPropertyValue("displayValue"));
-                }
-                if (isCustom) {
-                    if (fieldType == FieldType.QUERY_LOOKUP || fieldType == FieldType.MULTI_QUERY_LOOKUP) {
-                        List<Long> list = new ArrayList<Long>();
-                        fieldVO.setIds(list);
-                        String[] ids = ((String)propertyValue).split(",");
-                        StringBuffer sb = new StringBuffer();
-                        for (String id : ids) {
-                            if (id.length() > 0) {
-                                if (sb.length() > 0) {
-                                    sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
-                                }
-                                Long longid = Long.valueOf(id);
-                                sb.append(resolve(longid, entityType));
-                                fieldVO.setId(longid);
-                                list.add(longid);
-                            }
-                        }
-                        fieldVO.setDisplayValue(sb.toString());
-                    }
                 }
                 if (propBeanWrappermodel.isReadableProperty("entityName")) {
                     fieldVO.setEntityName(propBeanWrappermodel.getPropertyValue("entityName").toString());
@@ -142,15 +115,4 @@ public class GenericFieldHandler implements FieldHandler {
 
         return fieldVO;
     }
-
-    private String resolve(Long id, EntityType entityType) {
-        if (entityType == EntityType.person) {
-            Person person = personService.readPersonById(id);
-            return person.getDisplayValue();
-        }
-        return ""+id;
-    }
-
-
-
 }

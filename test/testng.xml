@@ -4,6 +4,7 @@
         <packages>
         	<package name="com.mpower.test"></package>
         	<package name="com.mpower.test.service.impl"></package>
+        	<package name="com.mpower.test.web.customization.handler"></package>
         </packages>
     </test>
 </suite>

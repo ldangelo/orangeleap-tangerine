@@ -51,6 +51,9 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     @Column(name = "MOTIVATION_CODE")
     private String motivationCode;
+    
+    @Column(name = "OTHER_MOTIVATION")
+    private String other_motivationCode;
 
     @OneToMany(mappedBy = "distributionLine", cascade = CascadeType.ALL)
     private List<DistributionLineCustomField> distributionLineCustomFields;
@@ -135,6 +138,14 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
 
     public void setMotivationCode(String motivationCode) {
         this.motivationCode = motivationCode;
+    }
+
+    public String getOther_motivationCode() {
+        return other_motivationCode;
+    }
+
+    public void setOther_motivationCode(String other_motivationCode) {
+        this.other_motivationCode = other_motivationCode;
     }
 
     public List<DistributionLineCustomField> getCustomFields() {

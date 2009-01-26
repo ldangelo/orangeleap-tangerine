@@ -12,12 +12,14 @@
 	<!-- Query Lookup -->
     <bean id="queryLookupController" class="com.mpower.controller.lookup.QueryLookupController">
         <property name="queryLookupService" ref="queryLookupService"/>
-        <property name="viewName" value="lookup/queryLookup"/>
+        <property name="formView" value="lookup/queryLookup"/>
+        <property name="successView" value="lookup/queryLookupResults"/>
     </bean>
 
 	<!-- Multi-Query Lookup -->
     <bean id="multiQueryLookupController" class="com.mpower.controller.lookup.MultiQueryLookupController" parent="queryLookupController">
-        <property name="viewName" value="lookup/multiQueryLookup"/>
+        <property name="formView" value="lookup/multiQueryLookup"/>
+        <property name="successView" value="lookup/multiQueryLookup"/>
     </bean>
     
     <bean id="queryLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

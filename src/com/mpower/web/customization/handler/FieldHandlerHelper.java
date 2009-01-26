@@ -39,14 +39,12 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.CODE, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.CODE, genericFieldHandler); 
         fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CHECKBOX, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.NUMBER, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PERCENTAGE, genericFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, genericFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PAYMENT_SOURCE_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.ADDRESS_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PHONE_PICKLIST, genericFieldHandler);
@@ -65,6 +63,14 @@ public class FieldHandlerHelper {
 
         PreferredPhoneFieldHandler preferredPhoneFieldHandler = new PreferredPhoneFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.PREFERRED_PHONE_TYPES, preferredPhoneFieldHandler);
+
+        LookupFieldHandler lookupFieldHandler = new LookupFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, lookupFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, lookupFieldHandler);
+
+        LookupOtherFieldHandler lookupOtherFieldHandler = new LookupOtherFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, lookupOtherFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, lookupOtherFieldHandler);
 
         fieldTypeToHandlerMap.put(FieldType.SPACER, new SpacerFieldHandler());
         initialized = true;

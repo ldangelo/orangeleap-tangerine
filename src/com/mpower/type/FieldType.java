@@ -9,6 +9,7 @@ public enum FieldType {
     READ_ONLY_TEXT,
     LOOKUP,
     CODE,
+    CODE_OTHER,
     PICKLIST,
     PICKLIST_DISPLAY,
     MULTI_PICKLIST,
@@ -28,5 +29,6 @@ public enum FieldType {
     PHONE_PICKLIST,
     EMAIL_PICKLIST,
     QUERY_LOOKUP,
+    QUERY_LOOKUP_OTHER,
     MULTI_QUERY_LOOKUP
 }

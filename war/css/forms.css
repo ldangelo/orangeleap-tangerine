@@ -147,7 +147,7 @@ a.lookupLink {
 	display:block;
 	float:left;
 	height:16px;
-	margin:5px 3px 0pt;
+	/*margin:5px 3px 0pt;*/
 	overflow:hidden;
 	padding:0pt;
 	text-indent:-2000px;
@@ -316,6 +316,12 @@ table.formTable {
 	padding:0;
 	width:100%;
 }
+.tablesorter td input.code {
+	width:90%;
+}
+table tr td input.code {
+	padding:1px 20px 1px 1px;
+}
 .tablesorter td input.lookup {
 	width:80%;
 }
@@ -397,6 +403,10 @@ div.lookupWrapper a.dp-choose-date {
 ul.formFields div.lookupWrapper input {
 	width:100%;
 }
+ul.formFields div.lookupWrapper input.code {
+	width:90%;
+	padding-right:28px;
+}
 
 .lookupImg {
 	position:absolute;
@@ -414,6 +424,7 @@ ul.formFields div.lookupWrapper input {
 }
 .lookupField, .multiLookupField {
 	border:1px solid #7F9DB9;
+	/*padding:2px 8px 2px 0;*/
 	padding:1px 8px 2px 0;
 	float:left;
 	width:100%;
@@ -437,8 +448,18 @@ a.hideText {
     color: transparent;
 }
 
+
 div.lookupWrapper div.multiPicklistOption, div.lookupWrapper div.queryLookupOption, div.lookupWrapper div.multiQueryLookupOption { float: left; clear: left; width: 94%; padding-left: 4px; }
-div.lookupWrapper div.multiPicklistOption:hover, div.lookupWrapper div.queryLookupOption:hover, div.lookupWrapper div.multiQueryLookupOption:hover { font-weight: bold; background-color: #DFF1FF; }
+div.lookupWrapper div.multiPicklistOption:hover, div.lookupWrapper div.multiQueryLookupOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF; }
+/*div.lookupWrapper div.queryLookupField { cursor: text; padding: 0; }
+div.lookupWrapper div.queryLookupOption span { padding-left: 4px; vertical-align: middle; }
+div.queryLookupWrapper { width: 255px; }
+div.lookupWrapper div.queryLookupOption { line-height: 22px; width: 97%; }
+div.lookupWrapper div.queryLookupOption a { cursor: pointer; margin-left: 7px; }
+div.lookupWrapper div.queryLookupOption a img { margin: 0; padding: 0; vertical-align: middle; }
+div.queryLookupFieldPad { padding: 0 8px 0 0; }
+ul.formFields div.queryLookupOption input { border: 0; padding-right: 21px; width: 230px; }
+*/
 a.deleteOption { vertical-align: bottom; margin-left: 3px; }
 a.deleteOption img { vertical-align: top; }
 
@@ -448,4 +469,5 @@ table.alignLeft th {
 }
 
 input:focus, textarea:focus, select:focus, .focused { background-color: #DFF1FF; }
+input.defaultText { color: #AFAFAF; }
 ul.formFields li.side label.inFocus { font-weight: bold; color: black; }

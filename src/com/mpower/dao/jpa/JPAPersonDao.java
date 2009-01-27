@@ -58,11 +58,15 @@ public class JPAPersonDao implements PersonDao {
     @Override
     public List<Person> readPersons(String siteName, List<Long> ids) {
     	
-    	if (ids == null || ids.size() == 0) return new ArrayList<Person>();
+    	if (ids == null || ids.size() == 0) {
+            return new ArrayList<Person>();
+        }
     	
         StringBuilder queryString = new StringBuilder();
         for (Long id : ids) {
-        	if (queryString.length() > 0) queryString.append(',');
+        	if (queryString.length() > 0) {
+                queryString.append(',');
+            }
         	queryString.append(id);
         }
         queryString.insert(0, "SELECT person FROM com.mpower.domain.Person person WHERE person.site.name = :siteName AND person.id IN (");
@@ -90,6 +94,7 @@ public class JPAPersonDao implements PersonDao {
         }
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
+        Map<String, Object> emailParams = new HashMap<String, Object>();
         Map<String, String> customParams = new HashMap<String, String>();
         LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
         if (params != null) {
@@ -101,7 +106,8 @@ public class JPAPersonDao implements PersonDao {
                     if (GenericValidator.isBlankOrNull((String) value)) {
                         continue;
                     }
-                } else {
+                } 
+                else {
                     if (value == null) {
                         continue;
                     }
@@ -109,11 +115,17 @@ public class JPAPersonDao implements PersonDao {
                 }
                 if (key.startsWith("addressMap[")) {
                     addressParams.put(key.substring(key.indexOf('.') + 1), value);
-                } else if (key.startsWith("phoneMap[")) {
+                } 
+                else if (key.startsWith("phoneMap[")) {
                     phoneParams.put(key.substring(key.indexOf('.') + 1), value);
-                } else if (key.startsWith("customFieldMap[")) {
+                } 
+                else if (key.startsWith("emailMap[")) {
+                    emailParams.put(key.substring(key.indexOf('.') + 1), value);
+                } 
+                else if (key.startsWith("customFieldMap[")) {
                     customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), (String) value);
-                } else {
+                } 
+                else {
                     whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
                     queryString.append(" person.");
                     queryString.append(key);
@@ -130,8 +142,9 @@ public class JPAPersonDao implements PersonDao {
                 }
             }
         }
-        queryString.append(getAddressString(addressParams, parameterMap));
-        queryString.append(getPhoneString(phoneParams, parameterMap));
+        queryString.append(getStringForType(addressParams, parameterMap, "address"));
+        queryString.append(getStringForType(phoneParams, parameterMap, "phone"));
+        queryString.append(getStringForType(emailParams, parameterMap, "email"));
         queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
 
         Query query = em.createQuery(queryString.toString());
@@ -145,50 +158,27 @@ public class JPAPersonDao implements PersonDao {
         return query.getResultList();
     }
 
-    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
-        StringBuilder addressString = new StringBuilder();
-        if (addressParams != null && !addressParams.isEmpty()) {
-            addressString.append(" AND EXISTS ( SELECT address FROM com.mpower.domain.Address address WHERE address.person.id = person.id ");
-            for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
+    private StringBuilder getStringForType(Map<String, Object> params, LinkedHashMap<String, Object> parameterMap, String type) {
+        StringBuilder str = new StringBuilder();
+        if (params != null && !params.isEmpty()) {
+            str.append(" AND EXISTS ( SELECT ").append(type).append(" FROM com.mpower.domain.").append(StringUtils.capitalize(type)).append(" ").append(type).append(" WHERE ").append(type).append(".person.id = person.id ");
+            for (Map.Entry<String, Object> pair : params.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-                addressString.append(" AND address.");
-                addressString.append(key);
-                addressString.append(" LIKE :");
+                str.append(" AND ").append(type).append(".");
+                str.append(key);
+                str.append(" LIKE :");
                 String paramName = key.replace(".", "_");
-                addressString.append(paramName);
+                str.append(paramName);
                 if (value instanceof String) {
                     parameterMap.put(paramName, "%" + value + "%");
                 } else {
                     parameterMap.put(paramName, value);
                 }
             }
-            addressString.append(")");
+            str.append(")");
         }
-        return addressString;
-    }
-
-    private StringBuilder getPhoneString(Map<String, Object> phoneParams, LinkedHashMap<String, Object> parameterMap) {
-        StringBuilder phoneString = new StringBuilder();
-        if (phoneParams != null && !phoneParams.isEmpty()) {
-            phoneString.append(" AND EXISTS ( SELECT phone FROM com.mpower.domain.Phone phone WHERE phone.person.id = person.id ");
-            for (Map.Entry<String, Object> pair : phoneParams.entrySet()) {
-                String key = pair.getKey();
-                Object value = pair.getValue();
-                phoneString.append(" AND phone.");
-                phoneString.append(key);
-                phoneString.append(" LIKE :");
-                String paramName = key.replace(".", "_");
-                phoneString.append(paramName);
-                if (value instanceof String) {
-                    parameterMap.put(paramName, "%" + value + "%");
-                } else {
-                    parameterMap.put(paramName, value);
-                }
-            }
-            phoneString.append(")");
-        }
-        return phoneString;
+        return str;
     }
 
     @SuppressWarnings("unchecked")

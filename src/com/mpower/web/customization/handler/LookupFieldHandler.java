@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.Person;
 import com.mpower.domain.customization.SectionField;
-import com.mpower.type.EntityType;
+import com.mpower.type.ReferenceType;
 import com.mpower.web.customization.FieldVO;
 
 public class LookupFieldHandler extends GenericFieldHandler {
@@ -33,7 +33,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
         Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
 
         if (propertyValue != null && isCustom) {
-            EntityType entityType = currentField.getFieldDefinition().getEntityType();
+            ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
 
             List<Long> list = new ArrayList<Long>();
             fieldVO.setIds(list);
@@ -45,7 +45,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
                         sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
                     }
                     Long longid = Long.valueOf(id);
-                    sb.append(resolve(longid, entityType));
+                    sb.append(resolve(longid, referenceType));
                     fieldVO.setId(longid);
                     list.add(longid);
                 }
@@ -55,11 +55,11 @@ public class LookupFieldHandler extends GenericFieldHandler {
         return fieldVO;
     }
 
-    private String resolve(Long id, EntityType entityType) {
-        if (entityType == EntityType.person) {
+    private String resolve(Long id, ReferenceType referenceType) {
+        if (referenceType == ReferenceType.person) {
             Person person = personService.readPersonById(id);
             return person.getDisplayValue();
         }
-        return ""+id;
+        return "" + id;
     }
 }

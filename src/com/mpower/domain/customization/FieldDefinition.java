@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.domain.Site;
 import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
+import com.mpower.type.ReferenceType;
 
 @Entity
 @Table(name = "FIELD_DEFINITION")
@@ -40,6 +41,13 @@ public class FieldDefinition implements Serializable {
     @Column(name = "ENTITY_TYPE")
     @Enumerated(EnumType.STRING)
     private EntityType entityType;
+
+    /**
+     * If this field is a pointer to another entity, the type of entity pointed to (person, gift, etc)
+     */
+    @Column(name = "REFERENCE_TYPE")
+    @Enumerated(EnumType.STRING)
+    private ReferenceType referenceType;
 
     @Column(name = "FIELD_NAME")
     private String fieldName;
@@ -92,13 +100,21 @@ public class FieldDefinition implements Serializable {
     private List<FieldRelationship> getSiteFieldRelationships(String siteName, List<FieldRelationship> list) {
     	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
 		for (FieldRelationship fr : list) {
-			if (fr.getSite() == null) continue;
-			if (fr.getSite().getName().equals(siteName))  result.add(fr);
+			if (fr.getSite() == null) {
+                continue;
+            }
+			if (fr.getSite().getName().equals(siteName)) {
+                result.add(fr);
+            }
 		}
 		// If no site specific relationships exist for this field, the default relationships apply.
-		if (result.size() == 0) for (FieldRelationship fr : list) {
-			if (fr.getSite() == null) result.add(fr);
-		}
+		if (result.size() == 0) {
+            for (FieldRelationship fr : list) {
+            	if (fr.getSite() == null) {
+                    result.add(fr);
+                }
+            }
+        }
 		return result;
     }
     
@@ -137,7 +153,9 @@ public class FieldDefinition implements Serializable {
     }
 
     public String getCustomFieldName() {
-    	if (!isCustom()) return "";
+    	if (!isCustom()) {
+            return "";
+        }
         return fieldName.substring(CUSTOM_FIELD_MAP.length(), fieldName.length() - 1);
     }
 
@@ -155,6 +173,14 @@ public class FieldDefinition implements Serializable {
 
     public void setEntityType(EntityType entityType) {
         this.entityType = entityType;
+    }
+
+    public ReferenceType getReferenceType() {
+        return referenceType;
+    }
+
+    public void setReferenceType(ReferenceType referenceType) {
+        this.referenceType = referenceType;
     }
 
     public void setFieldInfo(String fieldInfo) {

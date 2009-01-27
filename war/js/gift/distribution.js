@@ -172,10 +172,13 @@ var Distribution = {
 		var j = parseInt(i, 10) + 1;
 		newRow.attr("rowindex", j);
 		newRow.find("input").each(function() {
-				var field = $(this);
-				field.attr('name', field.attr('name').replace(new RegExp("\\[" + i + "\\]","gi"), "[" + j + "]"));
-				field.attr('id', field.attr('id').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
-				field.val("");
+				var $field = $(this);
+				$field.attr('name', $field.attr('name').replace(new RegExp("\\[" + i + "\\]","gi"), "[" + j + "]"));
+				$field.attr('id', $field.attr('id').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
+				if ($field.attr('otherFieldId')) {
+					$field.attr('otherFieldId', $field.attr('otherFieldId').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
+				}
+				$field.val("");
 			});
 		$(".tablesorter tr:last .deleteButton").show();
 		$(".tablesorter").append(newRow);

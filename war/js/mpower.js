@@ -352,7 +352,7 @@ var MPower = {
 		}
 	},
 		
-	setParentForChild: function($childNode, $parentNode, optionSelected, optionVal) {
+	setParentForChild: function($childNode, $parentNode, optionSelected) {
 		var tree = MPower.getTree($childNode);
 		var parentId = $parentNode.attr("id");
 		
@@ -607,32 +607,91 @@ var Lookup = {
 	},
 	
 	codeAutoComplete: function($elem) {
-		$elem.autocomplete("codeHelper.htm?type=" + $elem.attr("codeType"), {
+		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
 			delay:10,
 			minChars:0,
 			maxItemsToShow:20,
 			formatItem:formatItem,
 			loadingClass:"",
+			mustMatch: 1,
 			onItemSelect: function(itemSelected) {
-//				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
+				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
 			}
 		});
 	},
 	
 	codeAutoCompleteCallback: function(itemSelected, $input) {
-		var text = Lookup.removeNbsp(itemSelected);
-		$input.val(itemSelected.selectValue + " - " + text);
+		$("#" + $input.attr("otherFieldId")).val("");
 		$input.siblings("input:hidden").val(itemSelected.selectValue);
+//		var text = Lookup.removeNbsp(itemSelected);
+//		$input.val(itemSelected.selectValue + " - " + text);
+//		$input.siblings("input:hidden").val(itemSelected.selectValue);
 	},
 	
-	loadCodePopup: function(elem) {
+	loadCodePopup: function(elem, showOtherField) {
 		var $elem = $(elem).siblings(':text');
 		var lookupType = $elem.attr("lookup");
 		this.lookupCaller = $elem;
-		$("#dialog").load("codeHelper.htm?view=popup&type=" + lookupType, function(){
-			$("#dialog").jqmShow();
+
+		if (!showOtherField) {
+			showOtherField = false;
+		}
+		$.ajax({
+			type: "GET",
+			url: "codeHelper.htm",
+			data: "type=" + lookupType + "&showOtherField=" + showOtherField,
+			success: function(html){
+				$("#dialog").html(html);
+				Lookup.singleCommonBindings();
+				Lookup.codeLookupBindings();
+				Lookup.radioClickEventHandler();
+				$("#dialog").jqmShow();
+			},
+			error: function(html) {
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
+			}
 		});
 		return false;
+	},
+	
+	codeLookupBindings: function() {
+		$("div.modalContent input#doneButton").bind("click", function() {
+			Lookup.useCode();
+			$("#dialog").jqmHide();	
+		});
+		$(".modalSearch input[type=text]").bind("keyup", function(){
+			Lookup.doQuery(Lookup.getCodeData);
+		});
+		$(".modalSearch input#findButton").bind("click", function(){
+			Lookup.doQuery(Lookup.getCodeData);
+		});		
+	},
+	
+	getCodeData: function() {
+		return { view: "resultsOnly", type: $("div.modalSearch input#type").val() };
+	},
+	
+	useCode: function() {
+		var $elem = $('#codeResultsUl input[name=option]:checked');
+		var selectedVal = $elem.val();
+		
+		if (selectedVal) {
+			$("#" + Lookup.lookupCaller.attr("otherFieldId")).val("");
+			Lookup.lookupCaller.siblings("input:hidden").val(selectedVal);
+			Lookup.lookupCaller.val(selectedVal);
+			Lookup.lookupCaller.vkfade();
+		}
+		else {
+			var $optionElem = $("div.modalContent input#otherOptionText");
+			var typedVal = $optionElem.val();
+			if (typedVal != $optionElem.attr("defaultValue")) {
+				Lookup.lookupCaller.siblings("input:hidden").val("");
+				$("#" + Lookup.lookupCaller.attr("otherFieldId")).val(typedVal);
+				Lookup.lookupCaller.val(typedVal);
+				Lookup.lookupCaller.vkfade();
+			}
+		}
 	},
 	
 	loadQueryLookupCommon: function(elem) {
@@ -650,6 +709,7 @@ var Lookup = {
 			data: "fieldDef=" + Lookup.loadQueryLookupCommon(elem) + "&showOtherField=" + showOtherField,
 			success: function(html){
 				$("#dialog").html(html);
+				Lookup.singleCommonBindings();
 				Lookup.queryLookupBindings();
 				$("#dialog").jqmShow();
 			},
@@ -660,17 +720,7 @@ var Lookup = {
 		});
 	},
 	
-	queryLookupBindings: function() {
-		$(".modalSearch input[type=text]").bind("keyup", function(){
-			Lookup.doQuery();
-		});
-		$(".modalSearch input#findButton").bind("click", function(){
-			Lookup.doQuery();
-		});		
-		$("div.modalContent input#doneButton").bind("click", function() {
-			Lookup.useQueryLookup();
-			$("#dialog").jqmHide();	
-		});
+	singleCommonBindings: function() {
 		$("div.modalContent input#cancelButton").bind("click", function() {
 			$("#dialog").jqmHide();					
 		});
@@ -698,25 +748,45 @@ var Lookup = {
 		});
 	},
 	
-	doQuery: function() {
-		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
-		$("#queryResultsDiv").load("queryLookup.htm?" + queryString, { view: "resultsOnly", fieldDef: $("#fieldDef").val(), searchOption: $("#searchOption").val() }, function() {
-			var $prevElem = null;
-			$("div.modalContent ul.queryUl :radio").bind("click", function() {
-				if ($prevElem) {
-					$prevElem.parent("li").removeClass("selected");
-				} 
-				var $elem = $(this);
-				if ($elem.get(0).checked) {
-					$elem.parent("li").addClass("selected"); 
-				}
-				else {
-					$elem.parent("li").removeClass("selected"); 
-				}
-				$prevElem = $elem;
-			});		
-			$("#queryResultsDiv").removeClass("noDisplay");
+	queryLookupBindings: function() {
+		$("div.modalContent input#doneButton").bind("click", function() {
+			Lookup.useQueryLookup();
+			$("#dialog").jqmHide();	
 		});
+		$(".modalSearch input[type=text]").bind("keyup", function(){
+			Lookup.doQuery(Lookup.getQueryData);
+		});
+		$(".modalSearch input#findButton").bind("click", function(){
+			Lookup.doQuery(Lookup.getQueryData);
+		});		
+	},
+	
+	getQueryData: function() {
+		return { view: "resultsOnly", fieldDef: $("div.modalSearch input#fieldDef").val(), searchOption: $("#searchOption").val() };
+	},
+	
+	radioClickEventHandler: function() {
+		var $prevElem = null;
+		$("div.modalContent ul.queryUl :radio").bind("click", function() {
+			if ($prevElem) {
+				$prevElem.parent("li").removeClass("selected");
+			} 
+			var $elem = $(this);
+			if ($elem.get(0).checked) {
+				$elem.parent("li").addClass("selected"); 
+			}
+			else {
+				$elem.parent("li").removeClass("selected"); 
+			}
+			$prevElem = $elem;
+		});		
+		$("#queryResultsDiv").removeClass("noDisplay");
+	},
+	
+	doQuery: function(dataFunction) {
+		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
+		var url = $("div.modalContent form").attr("action");
+		$("#queryResultsDiv").load(url + "?" + queryString, dataFunction(), Lookup.radioClickEventHandler);
 	},
 	
 	loadMultiQueryLookup: function(elem) {
@@ -794,20 +864,22 @@ var Lookup = {
 			var displayVal = $elem.attr('displayvalue');
 			Lookup.lookupCaller.children("div.queryLookupOption").remove();
 			var $cloned = Lookup.lookupCaller.parent().find("div.clone").clone(true);
+			$("#" + Lookup.lookupCaller.parent().children(":hidden").attr("otherFieldId")).val("");
 			$cloned.attr("selectedId", selectedVal);
-			$cloned.attr("id", "lookup-" + displayVal);
+			$cloned.attr("id", "lookup-" + selectedVal);
 			var $popLink = $cloned.find("a[target='_blank']");
 			$popLink.attr("href", $elem.attr('gotourl'));
 			$popLink.text(displayVal);
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
-//			$cloned.animate({ "background-color": "#F00" }, "fast").animate({ "background-color": "#000" }, "fast");
+			$cloned.vkfade();
 		}
 		else {
 			var $optionElem = $("div.modalContent input#otherOptionText");
 			var typedVal = $optionElem.val();
 			if (typedVal != $optionElem.attr("defaultValue")) {
 				Lookup.lookupCaller.children("div.queryLookupOption").remove();
+				Lookup.lookupCaller.parent().children(":hidden").eq(0).val(""); // reset the corresponding field to nothing
 				var $cloned = Lookup.lookupCaller.parent().find("div.clone").clone(true);
 				$("#" + Lookup.lookupCaller.parent().children(":hidden").attr("otherFieldId")).val(typedVal);
 				$cloned.attr("id", "lookup-" + typedVal);
@@ -816,11 +888,12 @@ var Lookup = {
 				$cloned.find("span").text(typedVal);
 				$cloned.removeClass("clone").removeClass("noDisplay");
 				$cloned.prependTo(Lookup.lookupCaller);
-//				$cloned.animate({ "background-color": "#F00" }, "fast").animate({ "background-color": "#000" }, "fast");
+				$cloned.vkfade();
 			}
 		}
 	},
 	
+	/** Deprecated, to be removed */
 	setCodeValue: function(val, text) {
 //		if (text) {
 //			this.lookupCaller.val(val + " - " + text);
@@ -893,6 +966,7 @@ var Lookup = {
 				
 				$cloned.removeClass("clone").removeClass("noDisplay");
 				$cloned.prependTo(Lookup.lookupCaller);
+				$cloned.vkfade();
 			} 
 			$("#dialog").jqmHide();					
 		});		
@@ -914,7 +988,7 @@ var Lookup = {
 			
 			Lookup.lookupCaller.children("div.multiPicklistOption").each(function() {
 				if (selectedNames[$.trim($(this).attr("selectedId"))] === true) {
-					$(this).css("display", "");
+					$(this).css("display", "").vkfade();
 				}
 				else {
 					$(this).css("display", "none");

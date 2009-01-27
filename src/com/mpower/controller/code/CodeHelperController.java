@@ -20,11 +20,27 @@ public class CodeHelperController extends ParameterizableViewController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    public static final String VIEW = "view";
 
     private CodeService codeService;
+    private String tableView;
+    private String autoCompleteView;
+    private String resultsOnlyView;
 
     public void setCodeService(CodeService codeService) {
         this.codeService = codeService;
+    }
+
+    public void setTableView(String tableView) {
+        this.tableView = tableView;
+    }
+
+    public void setAutoCompleteView(String autoCompleteView) {
+        this.autoCompleteView = autoCompleteView;
+    }
+
+    public void setResultsOnlyView(String resultsOnlyView) {
+        this.resultsOnlyView = resultsOnlyView;
     }
 
     @Override
@@ -33,7 +49,8 @@ public class CodeHelperController extends ParameterizableViewController {
         Boolean showInactive;
         if (StringUtils.equalsIgnoreCase(request.getParameter("inactive"), "all")) {
             showInactive = null;
-        } else {
+        } 
+        else {
             showInactive = Boolean.valueOf(request.getParameter("inactive"));
         }
         if (GenericValidator.isBlankOrNull(searchString)) {
@@ -44,16 +61,27 @@ public class CodeHelperController extends ParameterizableViewController {
         }
         String description = request.getParameter("description");
         String codeType = request.getParameter("type");
+        if (logger.isDebugEnabled()) {
+            logger.debug("handleRequestInternal: searchString = " + searchString + " showInactive = " + showInactive + " description = " + description + " codeType = " + codeType);
+        }
         List<Code> codes;
         if (description != null) {
-            codes = codeService.readCodes(SessionServiceImpl.lookupUserSiteName(), codeType, searchString, description,
-                    showInactive);
-        } else {
+            codes = codeService.readCodes(SessionServiceImpl.lookupUserSiteName(), codeType, searchString, description, showInactive);
+        } 
+        else {
             codes = codeService.readCodes(SessionServiceImpl.lookupUserSiteName(), codeType, searchString);
         }
-        ModelAndView mav = new ModelAndView(super.getViewName());
-        mav.addObject("codes", codes);
-        return mav;
+        String view = super.getViewName();
+        if ("table".equals(request.getParameter(VIEW))) {
+            view = this.tableView;
+        }
+        if ("autoComplete".equals(request.getParameter(VIEW))) {
+            view = this.autoCompleteView;
+        }
+        if ("resultsOnly".equals(request.getParameter(VIEW))) {
+            view = this.resultsOnlyView;
+        }
+        return new ModelAndView(view, "codes", codes);
     }
 
 }

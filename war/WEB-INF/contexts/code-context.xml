@@ -8,6 +8,9 @@
     <bean id="codeHelper" class="com.mpower.controller.code.CodeHelperController">
         <property name="codeService" ref="codeService"/>
         <property name="viewName" value="code/codeHelper"/>
+        <property name="resultsOnlyView" value="code/codeHelperResults"/>
+        <property name="tableView" value="code/codeTable"/>
+        <property name="autoCompleteView" value="code/codeAutoComplete"/>
     </bean>
 
     <bean id="codes" class="com.mpower.controller.code.CodeManageController">

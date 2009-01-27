@@ -1,97 +1,51 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
-<c:choose>
-	<c:when test="${param.view=='table'}">
-		<c:choose>
-			<c:when test="${!empty codes}">
-				<table class="tablesorter">
-					<c:forEach items="${codes}" var="code">
-						<tr>
-							<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="code.htm?codeId=${code.id}&view=inPlace">Edit</a>
-							<td class="codeValue"><c:out value='${code.value}'/></td>
-							<td class="codeDescription"><c:out value='${code.description}'/></td>
-							<td class="inactive"><input disabled="disabled" name="inactive" value="true" type="checkbox" ${code.inactive?'checked':''}/></td>
-						</tr>
-					</c:forEach>
-				</table>
-			</c:when>
-			<c:otherwise>
-				<p>No codes were found matching those criteria.</p>
-			</c:otherwise>
-		</c:choose>
-	</c:when>
-	<c:when test="${param.view=='popup'}">
-		<div class="modalTopLeft">
-			<div class="modalTopRight">
-				<h4 class="dragHandle" id="modalTitle">
-					<c:choose>
-						<c:when test="${empty requestScope.modalTitle}">Lookup</c:when>
-						<c:otherwise><c:out value="${requestScope.modalTitle}"/></c:otherwise>
-					</c:choose>
-				</h4>
-				<a href="javascript:void(0)" class="jqmClose hideText">Close</a>
+<div class="modalTopLeft">
+	<div class="modalTopRight">
+		<h4 class="dragHandle" id="modalTitle">
+			<c:choose>
+				<c:when test="${empty requestScope.modalTitle}"><spring:message code='lookup'/></c:when>
+				<c:otherwise><c:out value="${requestScope.modalTitle}"/></c:otherwise>
+			</c:choose>
+		</h4>
+		<a href="javascript:void(0)" class="jqmClose hideText"><spring:message code='close'/></a>
+	</div>
+</div>
+<div class="modalContentWrapper">
+	<div class="modalContent">
+		<form method="POST" action="codeHelper.htm" id="codeHelperLookup">
+	        <div class="modalSearch">
+	        	<label for="searchText"><spring:message code="searchBy"/></label>
+	        	<select name="searchOption" id="searchOption">
+					<option value="value"><spring:message code="code"/></option>
+					<option value="description"><spring:message code="description"/></option>
+				</select>        	
+				<input type="hidden" name="type" value="<c:out value='${param.type}'/>" id="type" />
+	        	<input type="text" value="" id="searchText" name="searchText"/>
+	        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="saveButton" />
+	        </div>
+			<div id="queryResultsDiv">
+               	<jsp:include page="codeHelperResults.jsp"/>		 
 			</div>
-		</div>
-		<div class="modalContentWrapper">
-			<div class="modalContent">
-				<div class="codeList" style="border:0"> <%-- TODO: move to stylesheet --%>
-					<table style="width:100%" class="popupFilters">
-						<tr>
-							<td class="action"><input type="hidden" name="type" value="<c:out value='${param.type}'/>" /></td>
-							<td class="codeValue"><input style="width:80%" name="value" /></td>
-							<td class="codeDescription"><input style="width:80%" name="description" /></td>
-						</tr>
-					</table>
-					<div class="filterReplace">
-						<c:choose>
-						<c:when test="${!empty codes}">
-							<table style="width:100%">
-								<c:forEach items="${codes}" var="code">
-									<tr>
-										<td class="action"><a class="editInPlace" onclick='Lookup.setCodeValue("<c:out value="${code.value}"/>", "<c:out value='${code.description}'/>")' href="#">Use</a>
-										<td class="codeValue"><c:out value='${code.value}'/></td>
-										<td class="codeDescription"><c:out value='${code.description}'/></td>
-									</tr>
-								</c:forEach>
-							</table>
-						</c:when>
-							<c:otherwise>
-								<p>No codes were found matching those criteria.</p>
-							</c:otherwise>
-						</c:choose>
-					</div>
-				</div>
+	        <c:if test="${param.showOtherField}">
+		        <div class="otherOptionDiv">
+		        	<label for="otherOptionText"><spring:message code='orEnter'/></label>
+		        	<input type="text" value="<spring:message code="description"/>" defaultValue="<spring:message code="description"/>" id="otherOptionText" name="otherOptionText" class="defaultText"/>
+		        </div>
+	        </c:if>
+			<div class="buttonsDiv">
+				<input type="button" value="<spring:message code='done'/>" class="saveButton" name="doneButton" id="doneButton" />
+				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" name="cancelButton" id="cancelButton" />
 			</div>
-			<div class='modalSideRight'>&nbsp;</div>
-		</div>
-		<div class="modalBottomLeft">&nbsp;<div class="modalBottomRight">&nbsp;</div></div>
-		<script type="text/javascript">
-			$(".popupFilters :input").bind("keyup",function(){
-				var queryString = $(".popupFilters :input").serialize();
-				$(".filterReplace").load("codeHelper.htm?view=popupTable&"+queryString);
-			});
-		</script>
-	</c:when>
-	<c:when test="${param.view=='popupTable'}">
-		<c:choose>
-			<c:when test="${!empty codes}">
-				<table style="width:100%">
-					<c:forEach items="${codes}" var="code">
-						<tr>
-							<td class="action"><a class="editInPlace" onclick='Lookup.setCodeValue("<c:out value="${code.value}"/>", "<c:out value='${code.description}'/>")' href="#">Use</a>
-							<td class="codeValue"><c:out value='${code.value}'/></td>
-							<td class="codeDescription"><c:out value='${code.description}'/></td>
-						</tr>
-					</c:forEach>
-				</table>
-			</c:when>
-			<c:otherwise>
-				<p>No codes were found matching those criteria.</p>
-			</c:otherwise>
-		</c:choose>
-	</c:when>
-	<c:otherwise>
-		<c:forEach items="${codes}" var="code">
-			<c:out value='${code.value}'/>|<c:out value='${code.description}'/>&nbsp;
-		</c:forEach>
-	</c:otherwise>
-</c:choose>
+		</form>
+	</div>
+	<div class='modalSideRight'>&nbsp;</div>
+</div>
+<div class="modalBottomLeft">&nbsp;<div class="modalBottomRight">&nbsp;</div></div>
+<script type="text/javascript">
+/*
+	$(".popupFilters :input").bind("keyup",function(){
+		var queryString = $(".popupFilters :input").serialize();
+		$(".filterReplace").load("codeHelper.htm?view=results&"+queryString);
+	});
+	*/
+</script>

@@ -54,7 +54,8 @@ table.multiSelect thead th.spacer, table.multiSelect tbody td.spacer { width: 30
 table.multiSelect tbody td { min-width: 13em; border-color: #D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; border-top: 0; vertical-align: top; }
 table.multiSelect tbody ul { list-style-image:none; list-style-position:outside; list-style-type:none; }
 table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; margin-left: 0; }
-table.multiSelect tbody ul { height: 15em; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; margin: 0; }
+div.modalContent ul.queryUl, table.multiSelect tbody ul { max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; } 
+table.multiSelect tbody ul { height: 15em; margin: 0; }
 table.multiSelect tbody ul li input[type=checkbox] { cursor: pointer; }
 table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em; border-bottom:1px solid #FFF; color: #000; line-height: 25px; border-bottom: 1px solid #EEE; white-space: nowrap; padding-right: 35px; }
 
@@ -72,8 +73,8 @@ div.modalSearch label { margin-left: 20px; text-align: right; }
 
 div.otherOptionDiv { margin-bottom: 30px; }
 
-div.modalContent ul.queryUl { list-style-image: none; list-style-position: outside; list-style-type: none; text-align: left; max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; 
-	padding-left: 0; margin: 0 20px 20px; border-color:#D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; }
+div.modalContent ul.queryUl { list-style-image: none; list-style-position: outside; list-style-type: none; text-align: left; padding-left: 0; margin: 0 20px 20px;
+	border-color:#D1D1D1 gray gray #D1D1D1; border-style:solid; border-width:1px; }
 div.modalContent ul.queryUl li { padding-left: 7px; }
 div.modalContent ul.queryUl li input { margin-right: 7px; vertical-align: baseline; }
 table.multiSelect tbody ul li a, div.modalContent ul.queryUl li a { margin-left: 7px; }

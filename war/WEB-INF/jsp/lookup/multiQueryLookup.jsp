@@ -27,17 +27,16 @@
 							</c:forEach>	
 						</select>        	
 						<input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${fieldDef}'/>" />
-						<input type="hidden" name="selectedIds" id="selectedIds" value="<c:out value='${selectedIdsString}'/>" />
 			        	<input type="text" value="" id="searchText" name="searchText"/>
 			        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="saveButton" />
 			        </div>
-					<div id="noResultsDiv" class="noDisplay"><span class="noResults"><spring:message code="searchNoResults"/></span></div>
+					<div id="noResultsDiv" class="noDisplay noResults"><spring:message code="searchNoResults"/></div>
 			        <table cellspacing="0" class="multiSelect">
 			            <thead>
 			                <tr>
-			                    <th><input type="checkbox" title="<spring:message code='selectUnselectAll'/>" selection="available" id="availableAll"/><strong><spring:message code='available'/></strong></th>
-			                    <th class="arrows">&nbsp;</th>
-			                    <th><input type="checkbox" title="<spring:message code='selectUnselectAll'/>" selection="selected" id="selectedAll"/><strong><spring:message code='selected'/></strong></th>
+			                    <th><input type="checkbox" title="<spring:message code='selectAllOptions'/>" selection="available" id="availableAll"/><strong><spring:message code='available'/></strong></th>
+			                    <th class="spacer">&nbsp;</th>
+			                    <th><input type="checkbox" title="<spring:message code='selectAllOptions'/>" selection="selected" id="selectedAll"/><strong><spring:message code='selected'/></strong></th>
 			                </tr>
 			            </thead>
 			            <tbody>
@@ -48,10 +47,7 @@
 				                    	<jsp:include page="multiQueryLookupResults.jsp"/>		 
 				                    </ul>
 				                </td>
-				                <td class="arrows">
-				                	<a href="javascript:void(0)" class="hideText rightArrow">Right</a>
-				                	<a href="javascript:void(0)" class="hideText leftArrow">Left</a>
-				                </td>
+			                    <td class="spacer">&nbsp;</td>
 				                <td>
 				                    <ul id="selectedOptions">
 				                    	<c:set var="showSelectedIds" value="true" scope="request"/>

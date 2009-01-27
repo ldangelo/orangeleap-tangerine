@@ -4,7 +4,7 @@
 <c:choose>
 	<c:when test="${empty results}">
 		<script type="text/javascript">
-			$("div.modalContent div#noResultsDiv").show();
+			$("div.modalContent div#noResultsDiv").removeClass("noDisplay");
 		</script>
 	</c:when>
 	<c:otherwise>
@@ -24,7 +24,7 @@
 								<c:set value="javascript:void(0)" var="entityLink" scope="page" />
 							</c:otherwise>
 						</c:choose>
-						<li>
+						<li id="<c:out value='${row.id}'/>-li">
 							<input type="checkbox" name="option${counter}" id="${row.id}" title="<spring:message code='clickToSelect'/>" displayvalue="<c:out value='${row.displayValue}'/>" />
 							<%@ include file="/WEB-INF/jsp/snippets/unformattedSectionFields.jsp" %>
 							<a href="<c:out value='${entityLink}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
@@ -34,7 +34,7 @@
 					</c:if>
 				</c:forEach>
 				<script type="text/javascript">
-					$("div.modalContent div#noResultsDiv").hide();
+					$("div.modalContent div#noResultsDiv").addClass("noDisplay");
 				</script>
 			</c:if>
 		</c:forEach>

@@ -16,9 +16,9 @@
 			<table cellspacing="0" class="multiSelect">
 				<thead>
 			    	<tr>
-	                    <th><input type="checkbox" title="<spring:message code='selectUnselectAll'/>" selection="available" id="availableAll"/><strong><spring:message code='available'/></strong></th>
-			            <th class="arrows">&nbsp;</th>
-	                    <th><input type="checkbox" title="<spring:message code='selectUnselectAll'/>" selection="selected" id="selectedAll"/><strong><spring:message code='selected'/></strong></th>
+	                    <th><input type="checkbox" title="<spring:message code='selectAllOptions'/>" selection="available" id="availableAll"/><strong><spring:message code='available'/></strong></th>
+	                    <th class="spacer">&nbsp;</th>
+	                    <th><input type="checkbox" title="<spring:message code='selectAllOptions'/>" selection="selected" id="selectedAll"/><strong><spring:message code='selected'/></strong></th>
 			        </tr>
 			    </thead>
 			    <tbody>
@@ -27,22 +27,19 @@
 							<ul id="availableOptions">
 								<c:forEach items="${requestScope.picklistOptions}" var="option">
 									<c:if test="${!option.selected}">		 
-										<li>
+										<li id="<c:out value='${option.code}'/>-li">
 											<input type="checkbox" name="<c:out value='${option.code}'/>" id="<c:out value='${option.code}'/>" reference="<c:out value='${option.reference}'/>"></input> <c:out value="${option.displayValue}"/>
 										</li>
 									</c:if>
 								</c:forEach>
 			                </ul>
 			            </td>
-			            <td class="arrows">
-			            	<a href="javascript:void(0)" class="hideText rightArrow">Right</a>
-			            	<a href="javascript:void(0)" class="hideText leftArrow">Left</a>
-			            </td>
+	                    <td class="spacer">&nbsp;</td>
 			            <td>
 			                <ul id="selectedOptions">
 								<c:forEach items="${requestScope.picklistOptions}" var="option">
 									<c:if test="${option.selected}">		 
-										<li>
+										<li id="<c:out value='${option.code}'/>-li">
 											<input type="checkbox" name="<c:out value='${option.code}'/>" id="<c:out value='${option.code}'/>" reference="<c:out value='${option.reference}'/>"></input> <c:out value="${option.displayValue}"/>
 										</li>
 									</c:if>

@@ -10,7 +10,7 @@
 				<spring:hasBindErrors name="${commandObject}">
 					<c:forEach items="${errors.fieldErrors}" var="error">
 						<c:if test="${error.field == fieldVO.fieldName}"><c:set scope="page" var="errorClass" value="textError" /></c:if>
-					</c:forEach>
+					</c:forEach> 
 				</spring:hasBindErrors>
 			</c:if>
 			<label for="<c:out value='${fieldVO.fieldName}'/>" class="desc">
@@ -35,7 +35,7 @@
 					<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
+					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
 						references="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone), .gift_editAch, .gift_editCreditCard">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
@@ -68,10 +68,10 @@
 							</optgroup>
 						</c:if>
 					</select>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
+					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='address'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
@@ -91,10 +91,10 @@
 							</optgroup>
 						</c:if>
 					</select>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
+					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='phone'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
@@ -117,7 +117,7 @@
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
+					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='email'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
@@ -137,10 +137,10 @@
 							</optgroup>
 						</c:if>
 					</select>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
+					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
 						references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
@@ -157,10 +157,10 @@
 							</c:if>
 						</c:forEach>
 					</select>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>">
+					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>">
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value=""><spring:message code="none"/></option>
 						</c:if>
@@ -183,7 +183,7 @@
 				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 					<%-- TODO: move to tag library --%>
 					<div class="lookupWrapper">
-					    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldName}'/>"
+					    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
 					    	references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
 							<c:set var="selectedRef" value="" scope="page"/>
 							<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
@@ -205,13 +205,13 @@
 								</c:if>
 							</c:forEach>
 					        &nbsp;
-					    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldName}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
+					    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldId}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 					        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					    </div>
 					    <%-- The following hidden field must not lie within the multiPicklist div above --%>
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
 					</div>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 					<div class="lookupWrapper">
@@ -293,7 +293,7 @@
 					        &nbsp;
 					        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					    </div>
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldName}'/>" />
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldId}'/>" />
 						
 						<div class="multiQueryLookupOption noDisplay clone" selectedId="">
 							<a href="" target="_blank"></a>
@@ -302,7 +302,7 @@
 					</div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>Month" id="<c:out value='${fieldVO.fieldName}'/>Month" class="expMonth <c:out value='${fieldVO.entityAttributes}'/>">
+					<select name="<c:out value='${fieldVO.fieldName}'/>Month" id="<c:out value='${fieldVO.fieldId}'/>Month" class="expMonth <c:out value='${fieldVO.entityAttributes}'/>">
 						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
 							<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
 							<c:choose>
@@ -315,7 +315,7 @@
 							</c:choose>
 						</c:forEach>
 					</select>
-					<select name="<c:out value='${fieldVO.fieldName}'/>Year" id="<c:out value='${fieldVO.fieldName}'/>Year" class="expYear <c:out value='${fieldVO.entityAttributes}'/>">
+					<select name="<c:out value='${fieldVO.fieldName}'/>Year" id="<c:out value='${fieldVO.fieldId}'/>Year" class="expYear <c:out value='${fieldVO.entityAttributes}'/>">
 						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
 							<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear}" />
 							<c:choose>
@@ -332,8 +332,8 @@
 				<c:when test="${fieldVO.fieldType == 'CODE'}">
 					<div class="lookupWrapper">
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
-							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldName}'/>" />
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
+							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldId}'/>" />
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
 						<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup(this)" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					</div>
 				</c:when>
@@ -342,36 +342,36 @@
 		            <input type="checkbox" value="true" 
 		                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
 		                   name="<c:out value='${fieldVO.fieldName}'/>" 
-		                   id="<c:out value='${fieldVO.fieldName}'/>"  
+		                   id="<c:out value='${fieldVO.fieldId}'/>"  
 		                   <c:if test="${fieldVO.fieldValue}">checked</c:if> 
 		            />
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
-					<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
+					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'TEXT'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
-					<textarea rows="2" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>"></textarea>
+					<textarea rows="2" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>"></textarea>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/><a class="lookupLink jqModal" href="javascript:void(0)"><spring:message code='lookup'/></a>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/><a class="lookupLink jqModal" href="javascript:void(0)"><spring:message code='lookup'/></a>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'DATE_TIME'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'ADDRESS'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PHONE'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'NUMBER'}">
-				    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text number <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+				    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text number <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PERCENTAGE'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldName}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'SPACER'}">
 					&nbsp;

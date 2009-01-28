@@ -20,9 +20,11 @@
 			<form:form method="post" commandName="gift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 			
+				<spring:message code='enterGift' var="titleText" />
+				<spring:message code='submitGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
-					<jsp:param name="currentFunctionTitleText" value="Enter Gift" />
-					<jsp:param name="submitButtonText" value="Submit Payment" />
+					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
+					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -152,7 +154,7 @@
 						</c:if>
 					</c:forEach>
 					--%>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitPayment'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" /></div>
 			</form:form>
 		</div>
 		<script type="text/javascript" src="js/gift/distribution.js"></script>

@@ -36,7 +36,7 @@
 						<tbody>
 							<c:forEach items="${giftList}" var="row">
 								<tr>
-									<td><a href="giftView.htm?giftId=${row.id}">View</a></td>
+									<td><a href="giftView.htm?giftId=${row.id}&personId=${row.person.id}">View</a></td>
 									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 								</tr>
 							</c:forEach>

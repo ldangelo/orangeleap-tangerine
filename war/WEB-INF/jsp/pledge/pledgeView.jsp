@@ -23,7 +23,7 @@
 
 				
 
-				<h3 style="color:#070;">This pledge was entered on <fmt:formatDate value="${commitment.createDate}"/> at <fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
+				<h3 class="info">This pledge was entered on <fmt:formatDate value="${commitment.createDate}"/> at <fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
 					<div class="columns">
 						<c:forEach var="sectionDefinition" items="${sectionDefinitions}" begin="0" end="0">
 								<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>

@@ -65,7 +65,14 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
 
     public Long getIdAsLong(HttpServletRequest request, String id) {
-        return Long.valueOf(request.getParameter(id));
+        if (logger.isDebugEnabled()) {
+            logger.debug("getIdAsLong: id = " + id);
+        }
+        String paramId = request.getParameter(id);
+        if (StringUtils.hasText(paramId)) {
+            return Long.valueOf(request.getParameter(id));
+        }
+        return null;
     }
 
     protected Long getPersonId(HttpServletRequest request) {
@@ -77,12 +84,19 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
     
     protected Person getPerson(HttpServletRequest request) {
-        return personService.readPersonById(getPersonId(request)); // TODO: do we need to check if the user can view this person (authorization)?
+        Long personId = getPersonId(request);
+        if (personId != null) {
+            return personService.readPersonById(personId); // TODO: do we need to check if the user can view this person (authorization)?
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     protected void addPersonToReferenceData(HttpServletRequest request, Map refData) {
-        refData.put(StringConstants.PERSON, getPerson(request));
+        Person person = getPerson(request);
+        if (person != null) {
+            refData.put(StringConstants.PERSON, getPerson(request));
+        }
     }
 
     @Override

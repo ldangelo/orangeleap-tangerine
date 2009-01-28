@@ -35,7 +35,7 @@
 										<a href="person.htm?personId=${audit.objectId}">View</a>
 									</c:when>
 									<c:when test="${audit.entityType=='gift'}">
-										<a href="giftView.htm?giftId=${audit.objectId}">View</a>
+										<a href="giftView.htm?giftId=${audit.objectId}&personId=${audit.person.id}">View</a>
 									</c:when>
 								</c:choose></td>
 							</tr>

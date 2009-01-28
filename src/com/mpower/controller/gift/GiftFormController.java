@@ -37,11 +37,11 @@ public class GiftFormController extends TangerineFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private GiftService giftService;
-    private PaymentSourceService paymentSourceService;
-    private AddressService addressService;
-    private PhoneService phoneService;
-    private EmailService emailService;
+    protected GiftService giftService;
+    protected PaymentSourceService paymentSourceService;
+    protected AddressService addressService;
+    protected PhoneService phoneService;
+    protected EmailService emailService;
 
     public void setGiftService(GiftService giftService) {
         this.giftService = giftService;
@@ -107,6 +107,6 @@ public class GiftFormController extends TangerineFormController {
         }
 
         Gift current = giftService.maintainGift(gift);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId());
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
     }
 }

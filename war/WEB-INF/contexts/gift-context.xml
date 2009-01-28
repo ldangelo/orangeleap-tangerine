@@ -25,6 +25,7 @@
 
     <bean id="giftRefund" class="com.mpower.controller.gift.GiftRefundController">
         <property name="giftService" ref="giftService" />
+        <property name="viewName" value="redirect:/giftView.htm" />
     </bean>
 
 
@@ -44,9 +45,9 @@
         <property name="viewName" value="gift/giftList"/>
     </bean>
 
-    <bean id="giftView" class="com.mpower.controller.gift.GiftViewController">
-        <property name="giftService" ref="giftService" />
-        <property name="viewName" value="gift/giftView"/>
+    <bean id="giftView" class="com.mpower.controller.gift.GiftViewController" parent="gift">
+        <property name="formView" value="gift/giftView"/>
+        <property name="successView" value="gift/giftView"/>
     </bean>
 
     <bean id="recurringGift" class="com.mpower.controller.gift.RecurringGiftFormController">

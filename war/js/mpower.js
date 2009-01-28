@@ -556,7 +556,7 @@ var MPower = {
 			var phoneId = $option.attr("phone");
 			
 			MPower.setSelectedAddressPhoneByValue($("select#selectedAddress"), addressId);
-			MPower.setSelectedAddressPhoneByValue($("select#selectedPhone"), addressId);
+			MPower.setSelectedAddressPhoneByValue($("select#selectedPhone"), phoneId);
 			
 			// ACH
 			var achholder = $option.attr("achholder");

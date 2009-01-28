@@ -17,9 +17,11 @@
 				<input type="hidden" name="id" value="<c:out value='${id}'/>"/>
 			</c:if>
 	
+			<spring:message code='paymentMethods' var="titleText" />
+			<spring:message code='submitPayment' var="submitText" />
 			<jsp:include page="../snippets/personHeader.jsp">
-				<jsp:param name="currentFunctionTitleText" value="Payment Methods"/>
-				<jsp:param name="submitButtonText" value="Submit"/>
+				<jsp:param name="currentFunctionTitleText" value="${titleText}" />
+				<jsp:param name="submitButtonText" value="${submitText}" />
 			</jsp:include>
 	
 			<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -33,7 +35,7 @@
 				<div class="clearColumns"></div>
 			</div>
 			<div class="formButtonFooter personFormButtons">
-				<input type="submit" value="<spring:message code='submit'/>" class="saveButton"/>
+				<input type="submit" value="<spring:message code='submitPayment'/>" class="saveButton"/>
 				<c:if test="${paymentSource.id != null}">
 					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="MPower.gotoUrl('paymentManager.htm?personId=${person.id}')"/>
 				</c:if>

@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -161,7 +162,7 @@ public class GiftServiceImpl implements GiftService {
     	StringBuilder sb = new StringBuilder();
     	
     	if ("ACH".equals(gift.getPaymentType())) {
-    	   sb.append("ACH Number: "+gift.getPaymentSource().getAchAccountNumberDisplay());
+    	    sb.append("ACH Number: "+gift.getPaymentSource().getAchAccountNumberDisplay());
     	}
     	if ("Credit Card".equals(gift.getPaymentType())) {
     		sb.append("Credit Card Number: "+gift.getPaymentSource().getCreditCardNumberDisplay());
@@ -177,13 +178,19 @@ public class GiftServiceImpl implements GiftService {
     	Address address = gift.getAddress();
     	if (address != null) {
         	sb.append(" ");
-    		sb.append(address.getAddressLine1() + " " + address.getAddressLine2() + " " + address.getAddressLine3() 
-    				+ " " + address.getCity() + " " + address.getStateProvince() + " " + address.getCountry() + " " + address.getPostalCode());
+    		sb.append(StringUtils.trimToEmpty(address.getAddressLine1()) 
+    				+ " " + StringUtils.trimToEmpty(address.getAddressLine2()) 
+    				+ " " + StringUtils.trimToEmpty(address.getAddressLine3()) 
+    				+ " " + StringUtils.trimToEmpty(address.getCity()) 
+    				+ " " + StringUtils.trimToEmpty(address.getStateProvince()) 
+    				+ " " + StringUtils.trimToEmpty(address.getCountry()) 
+    				+ " " + StringUtils.trimToEmpty(address.getPostalCode())
+    				);
     	}
     	Phone phone = gift.getPhone();
     	if (phone != null) {
-        	sb.append(" ");
-    		sb.append(phone.getNumber());
+        	sb.append(" ph.");
+    		sb.append(StringUtils.trimToEmpty(phone.getNumber()));
     	}
     	    	
     	return sb.toString();

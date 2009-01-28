@@ -28,11 +28,11 @@
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
 					<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
-					<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
+					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY'}">
 					<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / yyyy" var="formattedDate" />
-					<div id="<c:out value='${fieldVO.fieldName}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
+					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
@@ -114,7 +114,7 @@
 							</optgroup>
 						</c:if>
 					</select>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldName}'/>"><c:out value='${selectedRef}'/></div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"

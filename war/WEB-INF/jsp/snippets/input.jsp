@@ -39,7 +39,7 @@
 						references="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone), .gift_editAch, .gift_editCreditCard">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 						<c:if test='${fieldVO.model.paymentSource.userCreated}'>
@@ -75,7 +75,7 @@
 						references="li:has(:input[name^='address'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<option value="new" reference="li:has(:input[name^='address'])" <c:if test='${fieldVO.model.address.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 						<c:if test='${fieldVO.model.address.userCreated}'>
@@ -98,7 +98,7 @@
 						references="li:has(:input[name^='phone'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<option value="new" reference="li:has(:input[name^='phone'])" <c:if test='${fieldVO.model.phone.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 						<c:if test='${fieldVO.model.phone.userCreated}'>
@@ -121,7 +121,7 @@
 						references="li:has(:input[name^='email'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<option value="new" reference="li:has(:input[name^='email'])" <c:if test='${fieldVO.model.email.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 						<c:if test='${fieldVO.model.email.userCreated}'>
@@ -144,7 +144,7 @@
 						references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 							<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
@@ -162,7 +162,7 @@
 				<c:when test="${fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>">
 						<c:if test="${fieldVO.required != 'true'}">
-							<option value=""><spring:message code="none"/></option>
+							<option value="none"><spring:message code="none"/></option>
 						</c:if>
 						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 							<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />

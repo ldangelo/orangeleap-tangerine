@@ -524,9 +524,9 @@ var MPower = {
 	setSelectedAddressPhoneByValue: function($select, value) {
 		var tree = MPower.getTree($select.parents("li.side"));
 		
-		// If no numeric ID selected, use empty string, which is "none"
+		// If no numeric ID selected, use "none"
 		if (isNaN(parseInt(value, 10)) || $select.containsOption(value) == false) {
-			value = "";
+			value = "none";
 		}
 
 		var $options = MPower.findOptions($select);

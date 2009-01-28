@@ -256,24 +256,24 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
     
     protected void setAddressToNone(HttpServletRequest request, AddressAware addressAware) {
-        if (false == StringUtils.hasText(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
+        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
             addressAware.setAddress(new Address(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
     protected void setPhoneToNone(HttpServletRequest request, PhoneAware phoneAware) {
-        if (false == StringUtils.hasText(request.getParameter(StringConstants.SELECTED_PHONE))) {
+        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PHONE))) {
             phoneAware.setPhone(new Phone(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
 
     protected void setEmailToNone(HttpServletRequest request, EmailAware emailAware) {
-        if (false == StringUtils.hasText(request.getParameter(StringConstants.SELECTED_EMAIL))) {
+        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_EMAIL))) {
             emailAware.setEmail(new Email(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
 
     protected void setPaymentSourceToNone(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
-        if (false == StringUtils.hasText(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
+        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
             paymentSourceAware.setPaymentSource(new PaymentSource(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }

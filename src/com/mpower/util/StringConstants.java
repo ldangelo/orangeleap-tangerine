@@ -4,6 +4,7 @@ package com.mpower.util;
 public final class StringConstants {
     public static final String EMPTY = "";
     public static final String NEW = "new";
+    public static final String NONE = "none";
     public static final String COMMAND_OBJECT = "commandObject";
 
     public static final String ADDRESS = "address";

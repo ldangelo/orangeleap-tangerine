@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
+
+    <bean id="paymentHistory" class="com.mpower.controller.payment.PaymentHistoryListController">
+        <property name="personService" ref="personService"/>
+        <property name="paymentHistoryService" ref="paymentHistoryService"/>
+		<property name="viewName" value="payment/paymentHistory"/>
+    </bean>
+    
+    <bean id="paymentHistoryUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+                <prop key="/paymentHistory.htm">paymentHistory</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

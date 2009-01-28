@@ -21,6 +21,7 @@
 	<import resource="contexts/pledge-context.xml"/>
 	<import resource="contexts/quartz-context.xml"/>
 	<import resource="contexts/import-export-context.xml"/>
+	<import resource="contexts/paymentHistory-context.xml"/>
 
 	<!-- Abstract Controllers for Tangerine -->
 	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true">

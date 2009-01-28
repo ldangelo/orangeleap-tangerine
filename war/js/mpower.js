@@ -607,17 +607,26 @@ var Lookup = {
 	},
 	
 	codeAutoComplete: function($elem) {
-		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
-			delay:10,
-			minChars:0,
-			maxItemsToShow:20,
-			formatItem:formatItem,
-			loadingClass:"",
-			mustMatch: 1,
-			onItemSelect: function(itemSelected) {
-				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
-			}
+		/* Temporarily disable auto-completion for BETA */
+		$elem.bind("focus", function() {
+			this.blur(); 
 		});
+		
+		/*
+		var oldVal = $elem.val();
+		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
+			//delay:10,
+			minChars:0,
+			max:20,
+			width: 185,
+//			formatItem:formatItem,
+//			loadingClass:"",
+			mustMatch: true//,
+//			onItemSelect: function(itemSelected) {
+//				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
+//			}
+		});
+		*/ 
 	},
 	
 	codeAutoCompleteCallback: function(itemSelected, $input) {

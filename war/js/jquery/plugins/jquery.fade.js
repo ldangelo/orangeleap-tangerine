@@ -67,12 +67,12 @@ var Fat = {
 			b = Math.floor(bf * ((frames-frame)/frames) + bt * (frame/frames));
 			h = this.make_hex(r,g,b);
 
-			setTimeout("Fat.set_bgcolor('"+id+"','"+h+"')", delay);
+			setTimeout("Fat.set_bgcolor('"+id.replace("\'", "\\'")+"','"+h+"')", delay);
 
 			frame++;
 			delay = interval * frame; 
 		}
-		setTimeout("Fat.set_bgcolor('"+id+"','"+to+"')", delay);
+		setTimeout("Fat.set_bgcolor('"+id.replace("\'", "\\'")+"','"+to+"')", delay);
 	},
 	set_bgcolor : function (id, c)
 	{

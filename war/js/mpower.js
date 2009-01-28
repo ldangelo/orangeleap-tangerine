@@ -689,7 +689,7 @@ var Lookup = {
 			$("#" + Lookup.lookupCaller.attr("otherFieldId")).val("");
 			Lookup.lookupCaller.siblings("input:hidden").val(selectedVal);
 			Lookup.lookupCaller.val(selectedVal);
-			Lookup.lookupCaller.vkfade();
+			Lookup.lookupCaller.vkfade(true);
 		}
 		else {
 			var $optionElem = $("div.modalContent input#otherOptionText");
@@ -698,7 +698,7 @@ var Lookup = {
 				Lookup.lookupCaller.siblings("input:hidden").val("");
 				$("#" + Lookup.lookupCaller.attr("otherFieldId")).val(typedVal);
 				Lookup.lookupCaller.val(typedVal);
-				Lookup.lookupCaller.vkfade();
+				Lookup.lookupCaller.vkfade(true);
 			}
 		}
 	},
@@ -881,7 +881,7 @@ var Lookup = {
 			$popLink.text(displayVal);
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
-			$cloned.vkfade();
+			$cloned.vkfade(true);
 		}
 		else {
 			var $optionElem = $("div.modalContent input#otherOptionText");
@@ -897,7 +897,7 @@ var Lookup = {
 				$cloned.find("span").text(typedVal);
 				$cloned.removeClass("clone").removeClass("noDisplay");
 				$cloned.prependTo(Lookup.lookupCaller);
-				$cloned.vkfade();
+				$cloned.vkfade(true);
 			}
 		}
 	},
@@ -975,7 +975,7 @@ var Lookup = {
 				
 				$cloned.removeClass("clone").removeClass("noDisplay");
 				$cloned.prependTo(Lookup.lookupCaller);
-				$cloned.vkfade();
+				$cloned.vkfade(true);
 			} 
 			$("#dialog").jqmHide();					
 		});		
@@ -997,7 +997,7 @@ var Lookup = {
 			
 			Lookup.lookupCaller.children("div.multiPicklistOption").each(function() {
 				if (selectedNames[$.trim($(this).attr("selectedId"))] === true) {
-					$(this).css("display", "").vkfade();
+					$(this).css("display", "").vkfade(true);
 				}
 				else {
 					$(this).css("display", "none");

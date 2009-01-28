@@ -5,8 +5,13 @@
  * Released under the MIT and GPL licenses.
  */
 
-$.fn.vkfade = function() {
-	Fat.fade_element($(this).attr("id"), 20, 750, "#FFFF00");
+$.fn.vkfade = function(doScrollTo) {
+	var $elem = $(this);
+	Fat.fade_element($elem.attr("id"), 20, 750, "#FFFF00");
+	if (doScrollTo) {
+		var offset = $elem.offset();
+		window.scrollTo(offset.left, offset.top);
+	}
     return this;
 };
 

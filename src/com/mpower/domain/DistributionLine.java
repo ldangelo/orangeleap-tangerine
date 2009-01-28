@@ -44,7 +44,7 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
     private BigDecimal amount;
     
     @Column(name = "PERCENTAGE")
-    private Float percentage;
+    private BigDecimal percentage;
 
     @Column(name = "PROJECT_CODE")
     private String projectCode;
@@ -116,11 +116,11 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
         this.amount = amount;
     }
 
-    public Float getPercentage() {
+    public BigDecimal getPercentage() {
         return percentage;
     }
 
-    public void setPercentage(Float percentage) {
+    public void setPercentage(BigDecimal percentage) {
         this.percentage = percentage;
     }
 

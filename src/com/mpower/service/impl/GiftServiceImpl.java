@@ -195,10 +195,10 @@ public class GiftServiceImpl implements GiftService {
     	
     	StringBuilder sb = new StringBuilder();
     	
-    	if ("ACH".equals(gift.getPaymentType())) {
+    	if (PaymentSource.ACH.equals(gift.getPaymentType())) {
     	    sb.append("ACH Number: "+gift.getPaymentSource().getAchAccountNumberDisplay());
     	}
-    	if ("Credit Card".equals(gift.getPaymentType())) {
+    	if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType())) {
     		sb.append("Credit Card Number: "+gift.getPaymentSource().getCreditCardType()+" "+gift.getPaymentSource().getCreditCardNumberDisplay());
     		sb.append(" ");
     		sb.append(gift.getPaymentSource().getCreditCardExpirationMonth());
@@ -207,7 +207,7 @@ public class GiftServiceImpl implements GiftService {
     		sb.append(" ");
     		sb.append(gift.getPaymentSource().getCreditCardHolderName());
     	}
-    	if ("Check".equals(gift.getPaymentType())) {
+    	if (PaymentSource.CHECK.equals(gift.getPaymentType())) {
     		sb.append(" Check Number: ");
     		sb.append(gift.getCheckNumber());
     	}

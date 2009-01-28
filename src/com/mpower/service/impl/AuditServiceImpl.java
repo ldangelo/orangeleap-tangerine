@@ -84,7 +84,8 @@ public class AuditServiceImpl implements AuditService {
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + viewable.getSite().getName() + ": added " + getClassName(viewable) + " " + viewable.getId());
             }
-        } else {
+        } 
+        else {
             if (viewable instanceof Viewable) {
                 Map<String, String> fieldLabels = viewable.getFieldLabelMap();
                 for (String key : fieldLabels.keySet()) {
@@ -93,44 +94,54 @@ public class AuditServiceImpl implements AuditService {
                     }
                     Object originalBeanProperty = viewable.getFieldValueMap().get(key);
                     String fieldName = key;
-                    Object beanProperty = bean.getPropertyValue(fieldName);
-                    if (beanProperty instanceof CustomField) {
-                        fieldName = key + ".value";
-                        beanProperty = bean.getPropertyValue(fieldName);
-                        if (viewable instanceof Person) {
-                        	FieldDefinition fd = ((Person)viewable).getFieldTypeMap().get(key);
-                        	String siteName = viewable.getSite().getName();
-                        	if (fd.isRelationship(siteName)) {
-                        		if (originalBeanProperty != null) originalBeanProperty = dereference(siteName, originalBeanProperty.toString());
-                        		if (beanProperty != null) beanProperty = dereference(siteName, beanProperty.toString());
-                        	}
+                    if (bean.isReadableProperty(fieldName)) {
+                        Object beanProperty = bean.getPropertyValue(fieldName);
+                        if (beanProperty instanceof CustomField) {
+                            fieldName = key + ".value";
+                            beanProperty = bean.getPropertyValue(fieldName);
+                            if (viewable instanceof Person) {
+                            	FieldDefinition fd = ((Person)viewable).getFieldTypeMap().get(key);
+                            	String siteName = viewable.getSite().getName();
+                            	if (fd.isRelationship(siteName)) {
+                            		if (originalBeanProperty != null) {
+                                        originalBeanProperty = dereference(siteName, originalBeanProperty.toString());
+                                    }
+                            		if (beanProperty != null) {
+                                        beanProperty = dereference(siteName, beanProperty.toString());
+                                    }
+                            	}
+                            }
                         }
-                    }
-                    if (beanProperty instanceof String) {
-                        beanProperty = StringUtils.trimToNull((String) beanProperty);
-                    } else if (beanProperty instanceof Person) {
-                        fieldName = key + ".displayValue";
-                        beanProperty = bean.getPropertyValue(fieldName);
-                    }
-                    if (originalBeanProperty == null && beanProperty == null) {
-                        continue;
-                    } else if (originalBeanProperty == null && beanProperty != null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable
-                                .getPerson()));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
+                        if (beanProperty instanceof String) {
+                            beanProperty = StringUtils.trimToNull((String) beanProperty);
+                        } 
+                        else if (beanProperty instanceof Person) {
+                            fieldName = key + ".displayValue";
+                            beanProperty = bean.getPropertyValue(fieldName);
                         }
-                    } else if (originalBeanProperty != null && beanProperty == null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(),
-                                viewable.getPerson()));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
-                        }
-                    } else if (!originalBeanProperty.toString().equals(beanProperty.toString())) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), viewable.getSite(),
-                                getClassName(viewable), viewable.getId(), viewable.getPerson()));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
+                        if (originalBeanProperty == null && beanProperty == null) {
+                            continue;
+                        } 
+                        else if (originalBeanProperty == null && beanProperty != null) {
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(), viewable
+                                    .getPerson()));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
+                            }
+                        } 
+                        else if (originalBeanProperty != null && beanProperty == null) {
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), viewable.getSite(), getClassName(viewable), viewable.getId(),
+                                    viewable.getPerson()));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
+                            }
+                        } 
+                        else if (!originalBeanProperty.toString().equals(beanProperty.toString())) {
+                            audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), viewable.getSite(),
+                                    getClassName(viewable), viewable.getId(), viewable.getPerson()));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
+                            }
                         }
                     }
                 }
@@ -145,7 +156,9 @@ public class AuditServiceImpl implements AuditService {
 		List<Person> persons = personDao.readPersons(siteName, list);
     	List<String> displayValues = new ArrayList<String>();
     	// first name last name, without commas
-    	for (Person person : persons) displayValues.add(person.getFullName()); 
+    	for (Person person : persons) {
+            displayValues.add(person.getFullName());
+        } 
     	return StringUtils.join(displayValues, ", ");
     }
 
@@ -162,7 +175,8 @@ public class AuditServiceImpl implements AuditService {
                 logger.debug("audit Site " + auditable.getSite().getName() + ": added " + getClassName(auditable) + " " + auditable.getId());
             }
             audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(auditable) + " " + auditable.getId(), auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson()));
-        } else {
+        } 
+        else {
             BeanWrapperImpl bean = new BeanWrapperImpl(auditable);
             Field[] fields = auditable.getClass().getDeclaredFields();
             if (fields != null && fields.length > 0) {
@@ -175,18 +189,21 @@ public class AuditServiceImpl implements AuditService {
                         Object oldFieldValue = oldBean.getPropertyValue(fieldName);
                         if (newFieldValue == null && oldFieldValue == null) {
                             continue;
-                        } else if (newFieldValue == null && oldFieldValue != null) {
+                        } 
+                        else if (newFieldValue == null && oldFieldValue != null) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": added " + fieldName + " " + newFieldValue);
                             }
                             audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Add " + fieldName + " " + newFieldValue, auditable.getSite(), getClassName(auditable), auditable.getId(), auditable.getPerson()));
-                        } else if (newFieldValue != null && oldFieldValue == null) {
+                        } 
+                        else if (newFieldValue != null && oldFieldValue == null) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": delete " + fieldName + " " + oldFieldValue);
                             }
                             audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + oldFieldValue, auditable.getSite(), getClassName(auditable), auditable.getId(), auditable
                                     .getPerson()));
-                        } else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
+                        } 
+                        else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("audit site " + auditable.getSite().getName() + ", id " + auditable.getId() + ": change field " + fieldName + " from " + oldFieldValue.toString() + " to " + newFieldValue.toString());
                             }

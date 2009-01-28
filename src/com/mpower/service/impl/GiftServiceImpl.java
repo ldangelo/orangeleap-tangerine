@@ -27,6 +27,7 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
+import com.mpower.domain.PaymentHistory;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
@@ -36,10 +37,12 @@ import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.EmailService;
 import com.mpower.service.GiftService;
+import com.mpower.service.PaymentHistoryService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
 import com.mpower.type.EntityType;
 import com.mpower.type.GiftEntryType;
+import com.mpower.type.PaymentHistoryType;
 
 @Service("giftService")
 public class GiftServiceImpl implements GiftService {
@@ -58,6 +61,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
+
+    @Resource(name = "paymentHistoryService")
+    private PaymentHistoryService paymentHistoryService;
 
     @Resource(name = "commitmentService")
     private CommitmentService commitmentService;
@@ -122,6 +128,9 @@ public class GiftServiceImpl implements GiftService {
         // comment it out to disable jms processing.
         // processMockTrans(gift);
 
+        
+        paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+        
         auditService.auditObject(gift);
 
         return gift;
@@ -131,6 +140,55 @@ public class GiftServiceImpl implements GiftService {
     // // this was a part of our JMS/MOM poc
     // creditGateway.sendGiftTransaction(gift);
     // }
+    
+    private PaymentHistory createPaymentHistoryForGift(Gift gift) {
+    	PaymentHistory paymentHistory = new PaymentHistory();
+    	paymentHistory.setAmount(gift.getAmount());
+    	paymentHistory.setCurrencyCode(gift.getCurrencyCode());
+    	paymentHistory.setGift(gift);
+    	paymentHistory.setPerson(gift.getPerson());
+    	paymentHistory.setPaymentHistoryType(PaymentHistoryType.GIFT);
+    	paymentHistory.setPaymentType(gift.getPaymentType());
+    	paymentHistory.setTransactionDate(gift.getTransactionDate());
+    	paymentHistory.setTransactionId("");
+    	String desc = getGiftDescription(gift);
+    	paymentHistory.setDescription(desc);
+    	return paymentHistory;
+    }
+    
+    private String getGiftDescription(Gift gift) {
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if ("ACH".equals(gift.getPaymentType())) {
+    	   sb.append("ACH Number: "+gift.getPaymentSource().getAchAccountNumberDisplay());
+    	}
+    	if ("Credit Card".equals(gift.getPaymentType())) {
+    		sb.append("Credit Card Number: "+gift.getPaymentSource().getCreditCardNumberDisplay());
+    		sb.append(" ");
+    		sb.append(gift.getPaymentSource().getCreditCardExpirationMonth());
+    		sb.append(" / ");
+    		sb.append(gift.getPaymentSource().getCreditCardExpirationYear());
+    	}
+    	if ("Check".equals(gift.getPaymentType())) {
+    		sb.append("Check Number: ");
+    		sb.append(gift.getCheckNumber());
+    	}
+    	Address address = gift.getAddress();
+    	if (address != null) {
+        	sb.append(" ");
+    		sb.append(address.getAddressLine1() + " " + address.getAddressLine2() + " " + address.getAddressLine3() 
+    				+ " " + address.getCity() + " " + address.getStateProvince() + " " + address.getCountry() + " " + address.getPostalCode());
+    	}
+    	Phone phone = gift.getPhone();
+    	if (phone != null) {
+        	sb.append(" ");
+    		sb.append(phone.getNumber());
+    	}
+    	    	
+    	return sb.toString();
+    	
+    }
 
     @Override
     public Gift readGiftById(Long giftId) {

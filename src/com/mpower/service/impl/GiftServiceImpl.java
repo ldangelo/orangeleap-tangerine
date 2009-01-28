@@ -137,6 +137,40 @@ public class GiftServiceImpl implements GiftService {
         return gift;
     }
 
+    /*
+     * this is needed for JMS
+     */
+    // @Resource(name = "creditGateway")
+    // private MPowerCreditGateway creditGateway;
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Gift editGift(Gift gift) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("editGift: giftId = " + gift.getId());
+        }
+        if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
+            gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
+        }
+        if (gift.getAddress() != null && gift.getAddress().getId() == null) {
+            gift.setAddress(addressService.saveAddress(gift.getAddress()));
+        }
+        if (gift.getPhone() != null && gift.getPhone().getId() == null) {
+            gift.setPhone(phoneService.savePhone(gift.getPhone()));
+        }
+        if (gift.getEmail() != null && gift.getEmail().getId() == null) {
+            gift.setEmail(emailService.saveEmail(gift.getEmail()));
+        }
+        gift = giftDao.maintainGift(gift);
+
+        // this was a part of our JMS/MOM poc
+        // comment it out to disable jms processing.
+        // processMockTrans(gift);
+
+        auditService.auditObject(gift);
+
+        return gift;
+    }
+
     // private void processMockTrans(Gift gift) {
     // // this was a part of our JMS/MOM poc
     // creditGateway.sendGiftTransaction(gift);

@@ -12,7 +12,9 @@ import com.mpower.type.GiftEntryType;
 public interface GiftService {
 
     public Gift maintainGift(Gift gift);
-
+    
+    public Gift editGift(Gift gift);
+    
     public Gift readGiftById(Long giftId);
 
     public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person);

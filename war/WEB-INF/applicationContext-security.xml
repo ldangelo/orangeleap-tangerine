@@ -22,6 +22,8 @@
         <!-- Restrict URLs based on role -->
         <sec:intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/concurrentLogin*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <sec:intercept-url pattern="/images/**" filters="none" />
         <sec:intercept-url pattern="/css/login.css" filters="none" />
         <sec:intercept-url pattern="/images/signInBox.gif" filters="none" />
         <sec:intercept-url pattern="/images/mpowerLogo.gif" filters="none" />
@@ -30,7 +32,6 @@
         <sec:intercept-url pattern="/js/jquery.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <sec:intercept-url pattern="/**" access="ROLE_USER" />
-        <sec:concurrent-session-control expired-url="/login.jsp" max-sessions="1" />
     </sec:http>
 
     <bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
@@ -75,21 +76,22 @@
     </bean>
 
 	<!-- Uncomment this for local ldap, using ApacheDS, and comment the section below
+
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://${ldap.host}:${ldap.port}/dc=mpowerOpen-dev"/>
     	<property name="userDn" value="uid=admin,ou=system"/>
     	<property name="password" value="secret"/>
 	</bean>
-	-->
+    -->
 
 	<!-- Comment this out if you want to connect locally to LDAP and uncomment the section above
-	-->
+    -->
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://${ldap.host}:${ldap.port}/dc=mpowerOpen-dev"/>
     	<property name="userDn" value="cn=admin,dc=mpowerOpen-dev"/>
     	<property name="password" value="secret"/>
 	</bean>
-
+   
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
@@ -125,13 +127,15 @@
     <!-- concurrent session filter -->
         <!--  having only one user at a time -->
     <bean id="concurrentSessionFilter" class="org.springframework.security.concurrent.ConcurrentSessionFilter">
-      <property name="expiredUrl" value="/security/sessionExpire"/>
+      <property name="expiredUrl" value="/concurrentLogin.jsp"/>
       <property name="sessionRegistry" ref="sessionRegistry"/>
+      <sec:custom-filter position="CONCURRENT_SESSION_FILTER"/>
     </bean>
+    
     <bean id="concurrentSessionController" class="org.springframework.security.concurrent.ConcurrentSessionControllerImpl">
            <property name="maximumSessions" value="1"/>
            <property name="sessionRegistry" ref="sessionRegistry"/>
-           <property name="exceptionIfMaximumExceeded" value="true"/>
+           <property name="exceptionIfMaximumExceeded" value="false"/>
     </bean>
     <bean id="sessionRegistry" class="org.springframework.security.concurrent.SessionRegistryImpl"/>
 

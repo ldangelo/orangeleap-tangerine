@@ -131,7 +131,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Override
     public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " personId = " + person == null ? null : person.getId());
+            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " personId = " + (person == null ? null : person.getId()));
         }
         Commitment commitment = null;
         if (commitmentId == null) {
@@ -179,7 +179,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Override
     public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultCommitment: person = " + person == null ? null : person.getId() + " commitmentType = " + commitmentType);
+            logger.debug("createDefaultCommitment: person = " + (person == null ? null : person.getId()) + " commitmentType = " + commitmentType);
         }
         // get initial commitment with built-in defaults
         Commitment commitment = new Commitment(commitmentType);

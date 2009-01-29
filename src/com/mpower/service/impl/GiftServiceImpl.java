@@ -244,7 +244,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " personId = " + person == null ? null : person.getId());
+            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " personId = " + (person == null ? null : person.getId()));
         }
         Gift gift = null;
         if (giftId == null) {
@@ -319,7 +319,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public Gift createDefaultGift(Person person) {
         if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultGift: person = " + person == null ? null : person.getId());
+            logger.debug("createDefaultGift: person = " + (person == null ? null : person.getId()));
         }
         // get initial gift with built-in defaults
         Gift gift = new Gift();

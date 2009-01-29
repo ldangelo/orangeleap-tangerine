@@ -107,6 +107,7 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         Viewable viewable = findViewable(request);
         this.createFieldMaps(request, viewable);
         
@@ -176,7 +177,6 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Override
     protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         super.onBindAndValidate(request, command, errors);
 
         /**

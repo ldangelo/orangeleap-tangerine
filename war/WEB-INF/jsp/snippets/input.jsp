@@ -36,7 +36,7 @@
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
-						references="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone), .gift_editAch, .gift_editCreditCard">
+						references="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone), .<c:out value='${commandObject}'/>_editAch, .<c:out value='${commandObject}'/>_editCreditCard">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
@@ -50,17 +50,17 @@
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 							<c:if test="${opt.type == 'ACH'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
 									address="${opt.address.id}" phone="${opt.phone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumber}'/>" acct="<c:out value='${opt.achAccountNumber}'/>"><c:out value='${opt.profile}'/></option>
 								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
-									<c:set var="selectedRef" value=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
+									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
 								</c:if>
 							</c:if>
 							<c:if test="${opt.type == 'Credit Card'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
 									address="${opt.address.id}" phone="${opt.phone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumber}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
 								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
-									<c:set var="selectedRef" value=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
+									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
 								</c:if>
 							</c:if>
 						</c:forEach>

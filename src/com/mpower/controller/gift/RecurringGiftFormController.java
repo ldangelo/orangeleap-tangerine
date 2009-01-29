@@ -24,7 +24,7 @@ public class RecurringGiftFormController extends GiftFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private CommitmentService commitmentService;
+    protected CommitmentService commitmentService;
 
     public void setCommitmentService(CommitmentService commitmentService) {
         this.commitmentService = commitmentService;
@@ -36,20 +36,8 @@ public class RecurringGiftFormController extends GiftFormController {
 
         super.removeInvalidDistributionLines(commitment.getDistributionLines().iterator());
         
-        // validate required fields
         Commitment current = commitmentService.maintainCommitment(commitment);
-
-        // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
-        // form to post results back to the same page. We need to get the
-        // command from errors and then add our search results to the model.
-        String redirectView = current.getGifts().isEmpty() ? "recurringGift" : "recurringGiftView";
-        setSuccessView(redirectView);
-        ModelAndView mav = new ModelAndView("redirect:/" + redirectView + ".htm", errors.getModel());
-        mav.addObject("commitmentId", current.getId());
-        mav.addObject("saved", true);
-        mav.addObject("id", current.getId());
-        mav.addObject("myErrors", errors);
-        return mav;
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
     }
 
     @SuppressWarnings("unchecked")

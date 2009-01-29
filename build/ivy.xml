@@ -18,6 +18,11 @@
 			<artifact name="mpwidgets" type="jar" />
 		</dependency>
 
+        <!-- Custom JsonView -->
+        <dependency org="com.mpower" name="JsonView" transitive="false" rev="latest.integration">
+			<artifact name="JsonView" type="jar" />
+		</dependency>
+
 		<!-- Ant -->
 		<dependency org="antlr" name="antlr" transitive="false" rev="2.7.6">
 			<artifact name="antlr" type="jar" ext="jar" />

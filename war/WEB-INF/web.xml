@@ -46,6 +46,17 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+    <servlet>
+        <servlet-name>json</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+		    <param-name>contextConfigLocation</param-name>
+		    <param-value>/WEB-INF/applicationContext-json.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+    </servlet>
+
+
 	<servlet-mapping>
 		<servlet-name>mpower</servlet-name>
 		<url-pattern>*.htm</url-pattern>
@@ -54,6 +65,11 @@
     <servlet-mapping>
         <servlet-name>mpower</servlet-name>
         <url-pattern>/dwr/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>json</servlet-name>
+        <url-pattern>*.json</url-pattern>
     </servlet-mapping>
 
 	<filter>

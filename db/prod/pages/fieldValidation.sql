@@ -166,9 +166,11 @@ INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_SECONDARY_
 -- Commitment amountPerGift required
 INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES (125, null, 'recurringGift.info', 'commitment.amountPerGift', null, TRUE);
 
--- Commitment payment source & type required 
+-- Commitment payment source, type, frequency, start date required 
 INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES (126, null, 'recurringGift.info', 'commitment.selectedPaymentSource', null, TRUE);
 INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, REQUIRED) VALUES (140, null, 'recurringGift.info', 'commitment.paymentType', TRUE);
+INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, REQUIRED) VALUES (141, null, 'recurringGift.info', 'commitment.frequency', TRUE);
+INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, REQUIRED) VALUES (142, null, 'recurringGift.info', 'commitment.startDate', TRUE);
 
 -- Commitment credit card info required
 INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, REQUIRED) VALUES (127, null, 'commitment.creditCard', 'commitment.paymentSource.creditCardHolderName', 'paymentSource.creditCardHolderName', TRUE);

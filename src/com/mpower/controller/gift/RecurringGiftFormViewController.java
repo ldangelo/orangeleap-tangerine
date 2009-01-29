@@ -19,7 +19,7 @@ public class RecurringGiftFormViewController extends RecurringGiftFormController
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Commitment commitment = (Commitment)command;
-        Commitment current = commitmentService.maintainCommitment(commitment);
+        Commitment current = commitmentService.editCommitment(commitment);
         return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
     }
 }

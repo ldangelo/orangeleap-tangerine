@@ -121,6 +121,28 @@ public class CommitmentServiceImpl implements CommitmentService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Commitment editCommitment(Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("editCommitment: commitmentId = " + commitment.getId());
+        }
+        // TODO: need to see if they exist if null id
+        if (commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == null) {
+            commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
+        }
+        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
+            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
+        }
+        if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
+            commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
+        }
+        commitment = commitmentDao.maintainCommitment(commitment);
+        commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
+        auditService.auditObject(commitment);
+        return commitment;
+    }
+
+    @Override
     public Commitment readCommitmentById(Long commitmentId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readCommitmentById: commitmentId = " + commitmentId);

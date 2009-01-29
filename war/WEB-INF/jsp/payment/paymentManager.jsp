@@ -3,7 +3,7 @@
 	<tiles:putAttribute name="browserTitle" value="Payment Manager"/>
 	<tiles:putAttribute name="primaryNav" value="People"/>
 	<tiles:putAttribute name="secondaryNav" value="Edit"/>
-	<tiles:putAttribute name="sidebarNav" value="Payment Manager"/>
+	<tiles:putAttribute name="sidebarNav" value="Payment Methods"/>
 	<tiles:putAttribute name="mainContent" type="string">
 
 	<div class="content760 mainForm">

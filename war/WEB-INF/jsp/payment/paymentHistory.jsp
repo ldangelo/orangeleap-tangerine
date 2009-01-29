@@ -3,7 +3,7 @@
 	<tiles:putAttribute name="browserTitle" value="Payment History" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="Payment Manager" />
+	<tiles:putAttribute name="sidebarNav" value="Payment History" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='paymentHistory' />
 		<c:set var="person" value="${person}" scope="request" />

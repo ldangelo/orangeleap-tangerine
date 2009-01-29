@@ -21,8 +21,12 @@
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="${sidebarNav == 'Payment Manager' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentManager"/></a>
-					</div>
+						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
+						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
+							<a class="${sidebarNav == 'Payment Methods' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
+							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?personId=${person.id}"><spring:message code="paymentHistory"/></a>
+						</span>
+					</div>					
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="giftManager"/></a>
 			            <span class="secondary ${sidebarNav=='Gifts'?'active':''}">

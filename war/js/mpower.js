@@ -569,7 +569,7 @@ var MPower = {
 			}
 			var acct = $option.attr("acct");
 			if (acct) {
-				$("div.gift_editAch div#paymentSource_achAccountNumber, div.gift_commitmentAch div#paymentSource_achAccountNumber").text(acct);
+				$("div.gift_editAch div#paymentSource_achAccountNumber, div.commitment_editAch div#paymentSource_achAccountNumber").text(acct);
 			}
 			
 			// Credit Card

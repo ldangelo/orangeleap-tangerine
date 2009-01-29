@@ -140,10 +140,9 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitPayment'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" /></div>
 			</form:form>
 		</div>
-		<script type="text/javascript" src="js/gift/distribution.js"></script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>
 

@@ -89,7 +89,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
-        if ("Credit Card".equals(gift.getPaymentType()) || "ACH".equals(gift.getPaymentType())) {
+        if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType()) || PaymentSource.ACH.equals(gift.getPaymentType())) {
             gift.setAuthCode(RandomStringUtils.randomNumeric(6));
             if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
                 gift.getPaymentSource().setType(gift.getPaymentType());

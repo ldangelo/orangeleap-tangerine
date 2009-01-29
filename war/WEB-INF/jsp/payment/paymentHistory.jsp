@@ -5,7 +5,7 @@
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Payment Manager" />
 	<tiles:putAttribute name="mainContent" type="string">
-		<mp:page pageName='paymentHistoryList' />
+		<mp:page pageName='paymentHistory' />
 		<c:set var="person" value="${person}" scope="request" />
 		<c:if test="${person.id!=null}">
 			<c:set var="viewingPerson" value="true" scope="request" />
@@ -22,7 +22,7 @@
 					<h4 class="searchResults">Payments <strong>1 - ${paymentHistoryListSize}</strong> of <strong>${paymentHistoryListSize}</strong></h4>
 				</div>
 
-				<mp:page pageName='paymentHistoryList' />
+				<mp:page pageName='paymentHistory' />
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<table id="paymentHistoryListTable" class="tablesorter" cellspacing="0" cellpadding="0">
 						<thead>
@@ -36,6 +36,7 @@
 						<tbody>
 							<c:forEach items="${paymentHistoryList}" var="row">
 								<tr>
+								    <td></td>
 									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 								</tr>
 							</c:forEach>

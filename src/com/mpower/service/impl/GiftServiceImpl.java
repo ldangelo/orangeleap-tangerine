@@ -208,12 +208,12 @@ public class GiftServiceImpl implements GiftService {
     		sb.append(gift.getPaymentSource().getCreditCardHolderName());
     	}
     	if (PaymentSource.CHECK.equals(gift.getPaymentType())) {
-    		sb.append(" Check Number: ");
+    		sb.append("\nCheck Number: ");
     		sb.append(gift.getCheckNumber());
     	}
     	Address address = gift.getAddress();
     	if (address != null) {
-        	sb.append(" Address: ");
+        	sb.append("\nAddress: ");
     		sb.append(StringUtils.trimToEmpty(address.getAddressLine1()) 
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine2()) 
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine3()) 
@@ -225,7 +225,7 @@ public class GiftServiceImpl implements GiftService {
     	}
     	Phone phone = gift.getPhone();
     	if (phone != null) {
-        	sb.append(" Phone: ");
+        	sb.append("\nPhone: ");
     		sb.append(StringUtils.trimToEmpty(phone.getNumber()));
     	}
     	    	

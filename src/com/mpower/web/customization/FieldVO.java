@@ -229,6 +229,16 @@ public class FieldVO {
         this.displayValue = displayValue;
     }
 
+    public boolean isMultiLine() {
+    	return ("" + getDisplayValue()).contains("\n");
+    }
+    
+    public String[] getSplitLineValues() {
+    	String s = "" + getDisplayValue();
+        return s.split("\\n");
+    }
+
+    
     public boolean isCascading() {
         return cascading;
     }

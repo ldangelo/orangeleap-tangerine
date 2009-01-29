@@ -10,6 +10,11 @@
 				<c:when test="${fieldVO.fieldType == 'DATE'}">
 					<fmt:formatDate value="${fieldVO.displayValue}" pattern="MM-dd-yy h:mm a" />
 				</c:when>
+				<c:when test="${fieldVO.multiLine}">
+					<c:forEach var="line" items="${fieldVO.splitLineValues}">
+						<c:out value='${line}'/><br/>
+					</c:forEach>
+				</c:when>
 				<c:otherwise><c:out value='${fieldVO.displayValue}'/></c:otherwise>
 			</c:choose>
 		</td>

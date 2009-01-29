@@ -61,6 +61,12 @@
 				<a href="#">New Tasks <span href="#" class="taskCount">(3)</span></a>
 				<a href="#">All Tasks (9)</a>
 			</div>
+            <h3>
+                My Accounts
+            </h3>
+            <div class="myTasks">
+                <a href="#" id="sbAllAccountsLink">All Accounts <span class="taskCount" id="sbAllAccounts"></span></a>
+            </div>
 		</div>
 	</div>
 </div>

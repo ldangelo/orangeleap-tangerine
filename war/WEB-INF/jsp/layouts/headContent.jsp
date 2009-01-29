@@ -7,6 +7,8 @@
 <!--[if lte IE 6]>
 	<link href="css/master_IE6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
+<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="css/ext-styles.css" />
 
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 
@@ -23,9 +25,10 @@
 <script type="text/javascript" src="js/jquery.datePicker.js"></script>
 <script type="text/javascript" src="js/jquery/plugins/jquery.numeric.pack.js"></script>
 <script type="text/javascript" src="js/jquery/plugins/jquery.fade.js"></script>
-
 <script type="text/javascript" src="js/mpower.js"></script>
-
+<script type="text/javascript" src="js/extjs/ext-jquery-adapter.js"></script>
+<script type="text/javascript" src="js/extjs/ext-all.js"></script>
+<script type="text/javascript" src="js/sidebar.js"></script>
 <!--  <script type='text/javascript' 
         src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script> -->
         

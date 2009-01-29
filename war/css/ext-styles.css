@@ -1,0 +1,20 @@
+
+.red-dot {
+    background: transparent url("../images/bullet_ball_glass_red.png") no-repeat center center;
+}
+
+.green-dot {
+    background: transparent url("../images/bullet_ball_glass_green.png") no-repeat center center;
+}
+
+.blue-dot {
+    background: transparent url("../images/bullet_ball_glass_blue.png") no-repeat center center;
+}
+
+.grey-dot {
+    background: transparent url("../images/bullet_ball_glass_grey.png") no-repeat center center;
+}
+
+.yellow-dot {
+    background: transparent url("../images/bullet_ball_glass_yellow.png") no-repeat center center;
+}

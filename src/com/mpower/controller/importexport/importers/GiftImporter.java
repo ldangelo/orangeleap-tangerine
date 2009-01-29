@@ -6,12 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
@@ -22,8 +19,8 @@ public class GiftImporter extends EntityImporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private PersonService personservice;
-    private GiftService giftservice;
+    private final PersonService personservice;
+    private final GiftService giftservice;
 
 	public GiftImporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
@@ -51,14 +48,18 @@ public class GiftImporter extends EntityImporter {
 		} 
 		
 		String paymentType = values.get("paymentType");
-		if (!"Cash".equals(paymentType) && !"Check".equals(paymentType)) {
+		if (!PaymentSource.CASH.equals(paymentType) && !PaymentSource.CHECK.equals(paymentType)) {
 			throw new RuntimeException("Gift payment type must be Cash or Check for import.");
 		}
 		
 		String id = values.get(getIdField());
-		if (id == null) throw new RuntimeException(getIdField() + " field is required.");
+		if (id == null) {
+            throw new RuntimeException(getIdField() + " field is required.");
+        }
 	    Person person = personservice.readPersonById(new Long(id));
-		if (person == null) throw new RuntimeException(getIdField() + " " + id + " not found.");
+		if (person == null) {
+            throw new RuntimeException(getIdField() + " " + id + " not found.");
+        }
 		logger.debug("Importing gift for constituent "+id+"...");
 		
 		Gift gift = giftservice.readGiftByIdCreateIfNull(null, null, person);

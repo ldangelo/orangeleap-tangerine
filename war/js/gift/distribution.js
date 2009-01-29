@@ -1,9 +1,9 @@
 $(document).ready(function() {
-	Distribution.distributionLineBuilder($("#gift_distribution tr"));
-	Distribution.rowCloner("#gift_distribution tr:last");
+	Distribution.distributionLineBuilder($("table.distributionLines tr"));
+	Distribution.rowCloner("table.distributionLines tr:last");
 	
-	$("form#gift input#amount").bind("keyup change", function(event) {
-		var amounts = $("table#gift_distribution input.amount");
+	$("form#gift input#amount, form#commitment input#amountPerGift").bind("keyup change", function(event) {
+		var amounts = $("table.distributionLines input.amount");
 		var amtVal = $(this).val();
 		Distribution.enteredAmt = amtVal;
 		 
@@ -45,7 +45,7 @@ var Distribution = {
 	},
 	
 	recalculatePcts: function() {
-		$("table#gift_distribution input.amount").each(function(){
+		$("table.distributionLines input.amount").each(function(){
 			Distribution.calculatePct($(this));
 		});
 	},

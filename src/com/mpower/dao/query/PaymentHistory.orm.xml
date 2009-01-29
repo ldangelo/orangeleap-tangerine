@@ -8,6 +8,7 @@
 			SELECT paymentHistory
 			FROM com.mpower.domain.PaymentHistory paymentHistory 
 			WHERE paymentHistory.person.site.id = :siteId
+		    ORDER BY paymentHistory.transactionDate desc
 		</query>
 	</named-query>
 	
@@ -16,6 +17,7 @@
 			SELECT paymentHistory
 			FROM com.mpower.domain.PaymentHistory paymentHistory 
 			WHERE paymentHistory.person.id = :personId
+		    ORDER BY paymentHistory.transactionDate desc
 		</query>
 	</named-query>
 

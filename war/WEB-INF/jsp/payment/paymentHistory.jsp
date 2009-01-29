@@ -7,6 +7,9 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='paymentHistory' />
 		<c:set var="person" value="${person}" scope="request" />
+		
+		<c:set var="sortLink" value="paymentHistory.htm?personId=${person.id}" scope="request" />
+		
 		<c:if test="${person.id!=null}">
 			<c:set var="viewingPerson" value="true" scope="request" />
 		</c:if>

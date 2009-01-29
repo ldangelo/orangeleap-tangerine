@@ -455,7 +455,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
             StringBuilder sb = new StringBuilder();
 
             if (ACH.equals(type)) {
-                sb.append("ach"); // TODO: move to message bundle and lookup
+                sb.append(ACH); // TODO: move to message bundle and lookup
                 sb.append("****");
                 sb.append(findLastFourDigits(this.achAccountNumber));
                 this.profile = sb.toString();

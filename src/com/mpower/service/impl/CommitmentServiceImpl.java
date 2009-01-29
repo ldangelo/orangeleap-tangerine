@@ -26,7 +26,6 @@ import com.mpower.dao.SiteDao;
 import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
@@ -77,13 +76,13 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Commitment maintainCommitment(Commitment commitment) {
-        if ("Credit Card".equals(commitment.getPaymentType()) || "ACH".equals(commitment.getPaymentType())) {
+        if (PaymentSource.CREDIT_CARD.equals(commitment.getPaymentType()) || PaymentSource.ACH.equals(commitment.getPaymentType())) {
             commitment.getPaymentSource().setType(commitment.getPaymentType());
             List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(commitment.getPerson().getId());
             if (paymentSources != null) {
                 for (PaymentSource paymentSource : paymentSources) {
                     if (commitment.getPaymentSource().equals(paymentSource)) {
-                        if ("Credit Card".equals(commitment.getPaymentType())) {
+                        if (PaymentSource.CREDIT_CARD.equals(commitment.getPaymentType())) {
                             paymentSource.setCreditCardExpiration(commitment.getPaymentSource().getCreditCardExpiration());
                         }
                         commitment.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
@@ -106,11 +105,11 @@ public class CommitmentServiceImpl implements CommitmentService {
         }
 
         // TODO: need to see if they exist if null id
-        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
-            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
-        }
         if (commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == null) {
             commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
+        }
+        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
+            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
         }
         if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
             commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
@@ -123,14 +122,41 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     @Override
     public Commitment readCommitmentById(Long commitmentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommitmentById: commitmentId = " + commitmentId);
+        }
         return normalize(commitmentDao.readCommitment(commitmentId));
+    }
+    
+    @Override
+    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " personId = " + person == null ? null : person.getId());
+        }
+        Commitment commitment = null;
+        if (commitmentId == null) {
+            if (person != null) {
+                commitment = this.createDefaultCommitment(person, CommitmentType.RECURRING_GIFT);
+                commitment.setPerson(person);
+            }
+        } 
+        else {
+            commitment = this.readCommitmentById(Long.valueOf(commitmentId));
+        }
+        return commitment;
     }
     
     // only needed for commitments not entered by the program and entered via sql.
     private Commitment normalize(Commitment commitment) {
-    	if (commitment.getAddress() == null) commitment.setAddress(new Address(commitment.getPerson()));
-    	if (commitment.getPhone() == null) commitment.setPhone(new Phone(commitment.getPerson()));
-    	if (commitment.getPaymentSource() == null) commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+    	if (commitment.getAddress() == null) {
+            commitment.setAddress(new Address(commitment.getPerson()));
+        }
+    	if (commitment.getPhone() == null) {
+            commitment.setPhone(new Phone(commitment.getPerson()));
+        }
+    	if (commitment.getPaymentSource() == null) {
+            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+        }
     	commitment.getPaymentSource().setPerson(commitment.getPerson());
     	return commitment;
     }
@@ -152,6 +178,9 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     @Override
     public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createDefaultCommitment: person = " + person == null ? null : person.getId() + " commitmentType = " + commitmentType);
+        }
         // get initial commitment with built-in defaults
         Commitment commitment = new Commitment(commitmentType);
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
@@ -160,7 +189,6 @@ public class CommitmentServiceImpl implements CommitmentService {
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
-        
         commitment.addDistributionLine(new DistributionLine(commitment));
 
         return commitment;

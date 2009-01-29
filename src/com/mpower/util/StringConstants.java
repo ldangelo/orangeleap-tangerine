@@ -36,5 +36,6 @@ public final class StringConstants {
     public static final String SELECTED_PAYMENT_SOURCE = "selectedPaymentSource";
 
     public static final String COMMITMENT = "commitment";
+    public static final String COMMITMENTS = "commitments";
     public static final String COMMITMENT_ID = "commitmentId";
 }

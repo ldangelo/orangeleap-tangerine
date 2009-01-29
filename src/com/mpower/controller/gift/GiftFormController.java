@@ -91,20 +91,22 @@ public class GiftFormController extends TangerineFormController {
         return giftService.readGiftByIdCreateIfNull(request.getParameter(StringConstants.GIFT_ID), request.getParameter(StringConstants.COMMITMENT_ID), super.getPerson(request));
     }
     
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Gift gift = (Gift) command;
-
-        // validate required fields
-
-        // TODO: This code is temporary validation to strip out invalid distribution lines.
-        Iterator<DistributionLine> distLineIter = gift.getDistributionLines().iterator();
+    // TODO: This code is temporary validation to strip out invalid distribution lines.
+    protected void removeInvalidDistributionLines(Iterator<DistributionLine> distLineIter) {
         while (distLineIter.hasNext()) {
             DistributionLine line = distLineIter.next();
             if (line == null || line.getAmount() == null) {
                 distLineIter.remove();
             }
         }
+    }
+    
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        Gift gift = (Gift) command;
+        
+        // validate required fields
+        removeInvalidDistributionLines(gift.getDistributionLines().iterator());
 
         Gift current = giftService.maintainGift(gift);
         return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));

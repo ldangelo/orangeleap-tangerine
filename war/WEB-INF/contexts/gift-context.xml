@@ -50,7 +50,7 @@
         <property name="successView" value="redirect:/giftView.htm"/>
     </bean>
 
-    <bean id="recurringGift" class="com.mpower.controller.gift.RecurringGiftFormController">
+    <bean id="recurringGift" class="com.mpower.controller.gift.RecurringGiftFormController" parent="gift">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
         <property name="pageType" value="recurringGift"/>
@@ -67,13 +67,8 @@
 			</list>
         </property>
         <property name="formView" value="gift/recurringGift" />
-        <property name="successView" value="gift/recurringGiftView" />
-        <property name="addressService" ref="addressService" />
+        <property name="successView" value="redirect:/recurringGiftView.htm" />
         <property name="commitmentService" ref="commitmentService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
-        <property name="phoneService" ref="phoneService" />
-        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="recurringGiftSearch" class="com.mpower.controller.gift.RecurringGiftSearchFormController">

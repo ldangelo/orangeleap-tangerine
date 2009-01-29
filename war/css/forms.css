@@ -366,17 +366,17 @@ p.gridActions #subTotal {
 	color:#c00;
 	display:inline;
 }
-#gift_distribution input.amount, input.percentage {
+form table.distributionLines input.amount, input.percentage {
 	text-align:right;
 }
-#gift_distribution thead tr th {
+form table.distributionLines thead tr th {
 	background-color:#E6EEEE;
 	color:#000;
 	font-size:11px;
 	font-weight:bold;
 	padding:2px 0px 2px 5px;
 }
-table#gift_distribution thead th.actionColumn {
+form table.distributionLines thead th.actionColumn {
 	width:19px;
 }
 .codeList {

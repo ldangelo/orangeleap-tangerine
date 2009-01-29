@@ -235,10 +235,17 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public Gift readGiftById(Long giftId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftById: giftId = " + giftId);
+        }
         return normalize(giftDao.readGift(giftId));
     }
 
+    @Override
     public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " personId = " + person == null ? null : person.getId());
+        }
         Gift gift = null;
         if (giftId == null) {
             Commitment commitment = null;
@@ -252,8 +259,10 @@ public class GiftServiceImpl implements GiftService {
                 gift.setPerson(commitment.getPerson());
             }
             if (gift == null) {
-                gift = this.createDefaultGift(person);
-                gift.setPerson(person);
+                if (person != null) {
+                    gift = this.createDefaultGift(person);
+                    gift.setPerson(person);
+                }
             }
         }
         else {
@@ -309,6 +318,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public Gift createDefaultGift(Person person) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createDefaultGift: person = " + person == null ? null : person.getId());
+        }
         // get initial gift with built-in defaults
         Gift gift = new Gift();
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(gift);

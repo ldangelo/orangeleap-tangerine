@@ -396,8 +396,8 @@ var MPower = {
 				isSelected: false, 
 				isParentSelected: function() {
 					var pSel = false;
-					for (var p in this.parents) {
-						if ($(this.parents[p]).data("tree").isSelected) {
+					for (var i = 0, len = this.parents.length; i < len; i++) {
+						if ($(this.parents[i]).data("tree").isSelected) {
 							pSel = true;
 							break;
 						}

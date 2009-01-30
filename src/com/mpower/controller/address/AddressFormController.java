@@ -15,19 +15,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.Address;
 import com.mpower.domain.Viewable;
-import com.mpower.service.AddressService;
 import com.mpower.util.StringConstants;
 
 public class AddressFormController extends TangerineFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    protected AddressService addressService;
-
-    public void setAddressService(AddressService addressService) {
-        this.addressService = addressService;
-    }
 
     @Override
     protected Viewable findViewable(HttpServletRequest request) {
@@ -44,12 +37,13 @@ public class AddressFormController extends TangerineFormController {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
-        List<Address> addresses = addressService.readAddresses(personId);
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = super.referenceData(request);
+        List<Address> addresses = addressService.readAddresses(super.getPersonId(request));
         refData.put("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), false);
+        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getPersonId(request), Calendar.getInstance(), false);
         refData.put("currentAddresses", currentAddresses);
-        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(personId, Calendar.getInstance(), true);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getPersonId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
 
         if (logger.isDebugEnabled()) {
@@ -57,6 +51,7 @@ public class AddressFormController extends TangerineFormController {
                 logger.debug("addRefData: address = " + a.getAddressLine1() + ", " + a.getCity() + ", " + a.getStateProvince() + ", " + a.getPostalCode());
             }
         }
+        return refData;
     }
 
     @Override

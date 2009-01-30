@@ -1,4 +1,4 @@
-package com.mpower.controller.gift;
+package com.mpower.controller.commitment;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.domain.Commitment;
 import com.mpower.util.StringConstants;
 
-public class RecurringGiftFormViewController extends RecurringGiftFormController {
+public class CommitmentViewController extends CommitmentFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

@@ -1,4 +1,4 @@
-package com.mpower.controller.gift;
+package com.mpower.controller.commitment.recurringGift;
 
 import java.util.Enumeration;
 import java.util.HashMap;

@@ -15,18 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.Email;
 import com.mpower.domain.Viewable;
-import com.mpower.service.EmailService;
 
 public class EmailFormController extends TangerineFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    protected EmailService emailService;
-
-    public void setEmailService(EmailService emailService) {
-        this.emailService = emailService;
-    }
 
     @Override
     protected Viewable findViewable(HttpServletRequest request) {
@@ -43,12 +36,13 @@ public class EmailFormController extends TangerineFormController {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
-        List<Email> emails = emailService.readEmails(personId);
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = super.referenceData(request);
+        List<Email> emails = emailService.readEmails(super.getPersonId(request));
         refData.put("emails", emails);
-        List<Email> currentEmails = emailService.readCurrentEmails(personId, Calendar.getInstance(), false);
+        List<Email> currentEmails = emailService.readCurrentEmails(super.getPersonId(request), Calendar.getInstance(), false);
         refData.put("currentEmails", currentEmails);
-        List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(personId, Calendar.getInstance(), true);
+        List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(super.getPersonId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondenceEmails", currentCorrespondenceEmails);
 
         if (logger.isDebugEnabled()) {
@@ -56,6 +50,7 @@ public class EmailFormController extends TangerineFormController {
                 logger.debug("referenceData: email = " + e.getEmailAddress());
             }
         }
+        return refData;
     }
 
     @Override

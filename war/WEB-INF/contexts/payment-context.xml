@@ -8,6 +8,7 @@
 	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController" parent="tangerineFormController">
     	<property name="commandName" value="paymentSource" />
     	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.mpower.controller.validator.PaymentSourceValidator">
@@ -20,9 +21,6 @@
 	            </bean>
 			</list>
         </property>
-     	<property name="phoneService" ref="phoneService" />
-     	<property name="addressService" ref="addressService" />
-    	<property name="paymentSourceService" ref="paymentSourceService" />
     	<property name="formView" value="payment/paymentManager" />
     	<property name="successView" value="redirect:/paymentManager.htm"/>
    		<property name="pageType" value="paymentManager"/>

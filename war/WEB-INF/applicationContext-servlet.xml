@@ -9,24 +9,30 @@
 	<import resource="contexts/address-context.xml"/>
 	<import resource="contexts/audit-context.xml"/>
 	<import resource="contexts/code-context.xml"/>
+	<import resource="contexts/commitment-context.xml"/>
 	<import resource="contexts/constituent-context.xml"/>
 	<import resource="contexts/dwr-context.xml"/>
 	<import resource="contexts/email-context.xml"/>
 	<import resource="contexts/gift-context.xml"/>
+	<import resource="contexts/import-export-context.xml"/>
 	<import resource="contexts/lookup-context.xml"/>
 	<import resource="contexts/membership-context.xml"/>
 	<import resource="contexts/payment-context.xml"/>
+	<import resource="contexts/paymentHistory-context.xml"/>
 	<import resource="contexts/picklist-context.xml"/>
 	<import resource="contexts/phone-context.xml"/>
 	<import resource="contexts/pledge-context.xml"/>
 	<import resource="contexts/quartz-context.xml"/>
-	<import resource="contexts/import-export-context.xml"/>
-	<import resource="contexts/paymentHistory-context.xml"/>
+	<import resource="contexts/recurringGift-context.xml"/>
 
 	<!-- Abstract Controllers for Tangerine -->
 	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true">
     	<property name="personService" ref="personService"/>
     	<property name="siteService" ref="siteService"/>
+        <property name="addressService" ref="addressService" />
+        <property name="paymentSourceService" ref="paymentSourceService" />
+        <property name="phoneService" ref="phoneService" />
+        <property name="emailService" ref="emailService" />
 	</bean>
 
     <bean id="account" class="com.mpower.controller.AccountFormController">

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="recurringGiftFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="commitmentFormController">
+        <property name="pageType" value="recurringGift"/>
+        <property name="commitmentType" value="RECURRING_GIFT"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.CommitmentValidator">
+			        <property name="pageType" value="recurringGift"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="recurringGift"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+			</list>
+        </property>
+        <property name="formView" value="gift/recurringGift" />
+        <property name="successView" value="redirect:/recurringGiftView.htm" />
+    </bean>
+
+    <bean id="recurringGiftViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="recurringGiftFormController">
+        <property name="formView" value="gift/recurringGiftView" />
+        <property name="successView" value="redirect:/recurringGiftView.htm" />
+    </bean>
+
+    <bean id="recurringGiftSearchController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftSearchFormController">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="formView" value="gift/recurringGiftSearch"/>
+        <property name="successView" value="gift/recurringGiftSearch"/>
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+    <bean id="recurringGiftListController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftListController">
+        <property name="commitmentService" ref="commitmentService" />
+        <property name="personService" ref="personService"/>
+        <property name="viewName" value="gift/recurringGiftList"/>
+    </bean>
+    
+    <bean id="recurringGiftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/recurringGift.htm">recurringGiftFormController</prop>
+		    	<prop key="/recurringGiftView.htm">recurringGiftViewController</prop>
+		        <prop key="/recurringGiftSearch.htm">recurringGiftSearchController</prop>
+		        <prop key="/recurringGiftList.htm">recurringGiftListController</prop>
+			</props>
+		</property>
+	</bean>
+       
+</beans>

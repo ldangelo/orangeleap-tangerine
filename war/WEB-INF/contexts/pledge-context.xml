@@ -5,11 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     
-    <bean id="pledge" class="com.mpower.controller.pledge.PledgeFormController">
-        <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+    <bean id="pledgeFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="commitmentFormController">
         <property name="pageType" value="pledge"/>
-		<property name="validators">
+        <property name="commitmentType" value="PLEDGE"/>
+        <property name="bindAddress" value="false"/>
+        <property name="bindPaymentSource" value="false"/>
+        <property name="bindPhone" value="false"/>
+        <property name="bindEmail" value="false"/>
+        <property name="validators">
 			<list>
 	            <bean class="com.mpower.controller.validator.CommitmentValidator">
 			        <property name="pageType" value="pledge"/>
@@ -22,14 +25,15 @@
 			</list>
         </property>
         <property name="formView" value="pledge/pledge" />
-        <property name="successView" value="pledge/pledgeView" />
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
+        <property name="successView" value="redirect:/pledgeView.htm" />
     </bean>
 
-    <bean id="pledgeSearch" class="com.mpower.controller.pledge.PledgeSearchFormController">
+    <bean id="pledgeViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="pledgeFormController">
+        <property name="formView" value="gift/pledgeView" />
+        <property name="successView" value="redirect:/pledgeView.htm" />
+    </bean>
+
+    <bean id="pledgeSearchController" class="com.mpower.controller.commitment.pledge.PledgeSearchFormController">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
         <property name="formView" value="pledge/pledgeSearch"/>
@@ -38,37 +42,19 @@
         <property name="sessionService" ref="sessionService"/>
     </bean>
 
-
-    <bean id="pledgeList" class="com.mpower.controller.pledge.PledgeListController">
+    <bean id="pledgeListController" class="com.mpower.controller.commitment.pledge.PledgeListController">
         <property name="commitmentService" ref="commitmentService" />
         <property name="personService" ref="personService"/>
         <property name="viewName" value="pledge/pledgeList"></property>
     </bean>
 
-    <bean id="pledgeView" class="com.mpower.controller.pledge.PledgeFormController">
-        <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
-		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
-		        <property name="pageType" value="pledgeView"/>
-		        <property name="siteService" ref="siteService" />
-            </bean>
-        </property>
-        <property name="formView" value="pledge/pledgeView" />
-        <property name="successView" value="pledge/pledgeView" />
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
-    </bean>
-
     <bean id="pledgeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-		        <prop key="/pledge.htm">pledge</prop>
-		        <prop key="/pledgeList.htm">pledgeList</prop>
-		        <prop key="/pledgeSearch.htm">pledgeSearch</prop>
-		    	<prop key="/pledgeView.htm">pledgeView</prop>
+		        <prop key="/pledge.htm">pledgeFormController</prop>
+		    	<prop key="/pledgeView.htm">pledgeViewController</prop>
+		        <prop key="/pledgeSearch.htm">pledgeSearchController</prop>
+		        <prop key="/pledgeList.htm">pledgeListController</prop>
 			</props>
 		</property>
 	</bean>

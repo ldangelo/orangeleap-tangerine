@@ -1,4 +1,4 @@
-package com.mpower.controller.gift;
+package com.mpower.controller.commitment;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -13,28 +13,36 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Viewable;
 import com.mpower.service.CommitmentService;
+import com.mpower.type.CommitmentType;
 import com.mpower.util.StringConstants;
 
-public class RecurringGiftFormController extends GiftFormController {
+public class CommitmentFormController extends TangerineFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     protected CommitmentService commitmentService;
+    protected CommitmentType commitmentType;
 
     public void setCommitmentService(CommitmentService commitmentService) {
         this.commitmentService = commitmentService;
+    }
+
+    public void setCommitmentType(CommitmentType commitmentType) {
+        this.commitmentType = commitmentType;
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Commitment commitment = (Commitment) command;
 
-        super.removeInvalidDistributionLines(commitment.getDistributionLines().iterator());
+        // TODO: This code is temporary validation to strip out invalid distribution lines.
+        commitment.removeInvalidDistributionLines();
         
         Commitment current = commitmentService.maintainCommitment(commitment);
         return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
@@ -42,8 +50,8 @@ public class RecurringGiftFormController extends GiftFormController {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
-        super.addRefData(request, personId, refData);
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = super.referenceData(request);
         String commitmentId = request.getParameter(StringConstants.COMMITMENT_ID);
         if (commitmentId != null) {
             Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
@@ -59,10 +67,11 @@ public class RecurringGiftFormController extends GiftFormController {
                 refData.put("giftsReceivedSum", commitmentService.getAmountReceived(commitment.getId()));
             }
         }
+        return refData;
     }
 
     @Override
     protected Viewable findViewable(HttpServletRequest request) {
-        return commitmentService.readCommitmentByIdCreateIfNull(request.getParameter(StringConstants.COMMITMENT_ID), super.getPerson(request));
+        return commitmentService.readCommitmentByIdCreateIfNull(request.getParameter(StringConstants.COMMITMENT_ID), super.getPerson(request), commitmentType);
     }
 }

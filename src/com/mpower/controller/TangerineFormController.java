@@ -3,6 +3,7 @@ package com.mpower.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -19,6 +20,10 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.controller.address.AddressEditor;
+import com.mpower.controller.email.EmailEditor;
+import com.mpower.controller.payment.PaymentSourceEditor;
+import com.mpower.controller.phone.PhoneEditor;
 import com.mpower.domain.Address;
 import com.mpower.domain.AddressAware;
 import com.mpower.domain.Email;
@@ -29,7 +34,11 @@ import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.PhoneAware;
 import com.mpower.domain.Viewable;
+import com.mpower.service.AddressService;
+import com.mpower.service.EmailService;
+import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
+import com.mpower.service.PhoneService;
 import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
@@ -42,7 +51,17 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     protected PersonService personService;
     protected SiteService siteService;
-    protected String pageType;
+    protected PaymentSourceService paymentSourceService;
+    protected AddressService addressService;
+    protected PhoneService phoneService;
+    protected EmailService emailService;
+    
+    protected boolean bindPaymentSource = true;
+    protected boolean bindAddress = true;
+    protected boolean bindPhone = true;
+    protected boolean bindEmail = true;
+    
+    protected String pageType;    
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
@@ -50,6 +69,54 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;
+    }
+    
+    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
+        this.paymentSourceService = paymentSourceService;
+    }
+
+    public void setAddressService(AddressService addressService) {
+        this.addressService = addressService;
+    }
+
+    public void setPhoneService(PhoneService phoneService) {
+        this.phoneService = phoneService;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+    
+    /**
+     * If you do not want to bind to PaymentSources, set to false.  Default is true
+     * @param bindPaymentSource
+     */
+    public void setBindPaymentSource(boolean bindPaymentSource) {
+        this.bindPaymentSource = bindPaymentSource;
+    }
+
+    /**
+     * If you do not want to bind to Addresses, set to false.  Default is true
+     * @param bindAddress
+     */
+    public void setBindAddress(boolean bindAddress) {
+        this.bindAddress = bindAddress;
+    }
+
+    /**
+     * If you do not want to bind to Phones, set to false.  Default is true
+     * @param bindPhone
+     */
+    public void setBindPhone(boolean bindPhone) {
+        this.bindPhone = bindPhone;
+    }
+
+    /**
+     * If you do not want to bind to Emails, set to false.  Default is true
+     * @param bindEmail
+     */
+    public void setBindEmail(boolean bindEmail) {
+        this.bindEmail = bindEmail;
     }
 
     /**
@@ -103,6 +170,18 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); // TODO: custom date format
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        if (bindPaymentSource) {
+            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, personService, this.getPersonIdString(request)));
+        }
+        if (bindAddress) {
+            binder.registerCustomEditor(Address.class, new AddressEditor(addressService, personService, this.getPersonIdString(request)));
+        }
+        if (bindPhone) {
+            binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, personService, this.getPersonIdString(request)));
+        }
+        if (bindEmail) {
+            binder.registerCustomEditor(Email.class, new EmailEditor(emailService, personService, this.getPersonIdString(request)));
+        }
     }
 
     @Override
@@ -118,23 +197,23 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
     
     protected void userCreateNew(HttpServletRequest request, Viewable viewable) {
-        if (viewable instanceof AddressAware) {
+        if (bindAddress && viewable instanceof AddressAware) {
             this.userCreateNewAddress(request, (AddressAware)viewable);
         }
-        if (viewable instanceof PhoneAware) {
+        if (bindPhone && viewable instanceof PhoneAware) {
             this.userCreateNewPhone(request, (PhoneAware)viewable);
         }
-        if (viewable instanceof EmailAware) {
+        if (bindEmail && viewable instanceof EmailAware) {
             this.userCreateNewEmail(request, (EmailAware)viewable);
         }
-        if (viewable instanceof PaymentSourceAware) {
+        if (bindPaymentSource && viewable instanceof PaymentSourceAware) {
             this.userCreateNewPaymentSource(request, (PaymentSourceAware)viewable);
         }
     }
 
     @Override
     protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (command instanceof PaymentSourceAware) {
+        if (bindPaymentSource && command instanceof PaymentSourceAware) {
             PaymentSourceAware obj = (PaymentSourceAware)command;
             PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
             if (selectedPaymentSource != null) {
@@ -149,7 +228,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             }
         }
 
-        if (command instanceof AddressAware) {
+        if (bindAddress && command instanceof AddressAware) {
             AddressAware obj = (AddressAware) command;
             Address selectedAddress = obj.getSelectedAddress();
             if (selectedAddress != null && selectedAddress.getId() != null) {
@@ -157,7 +236,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             }
         }
 
-        if (command instanceof PhoneAware) {
+        if (bindPhone && command instanceof PhoneAware) {
             PhoneAware obj = (PhoneAware) command;
             Phone selectedPhone = obj.getSelectedPhone();
             if (selectedPhone != null && selectedPhone.getId() != null) {
@@ -165,7 +244,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             }
         }
 
-        if (command instanceof EmailAware) {
+        if (bindEmail && command instanceof EmailAware) {
             EmailAware obj = (EmailAware) command;
             Email selectedEmail = obj.getSelectedEmail();
             if (selectedEmail != null && selectedEmail.getId() != null) {
@@ -183,16 +262,16 @@ public abstract class TangerineFormController extends SimpleFormController {
          * If NO address/phone/etc is requested, this must be done AFTER binding and validation
          */
         if (!errors.hasErrors() && isFormSubmission(request)) {
-            if (command instanceof AddressAware) {
+            if (bindAddress && command instanceof AddressAware) {
                 this.setAddressToNone(request, (AddressAware)command);
             }
-            if (command instanceof PhoneAware) {
+            if (bindPhone && command instanceof PhoneAware) {
                 this.setPhoneToNone(request, (PhoneAware)command);
             }
-            if (command instanceof EmailAware) {
+            if (bindEmail && command instanceof EmailAware) {
                 this.setEmailToNone(request, (EmailAware)command);
             }
-            if (command instanceof PaymentSourceAware) {
+            if (bindPaymentSource && command instanceof PaymentSourceAware) {
                 this.setPaymentSourceToNone(request, (PaymentSourceAware)command);
             }
         }        
@@ -203,8 +282,23 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = new HashMap();
         this.addPersonToReferenceData(request, refData);
-        addRefData(request, this.getPersonId(request), refData);
 
+        if (bindPaymentSource) {
+            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(this.getPersonId(request));
+            refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
+        }
+        if (bindAddress) {
+            List<Address> addresses = addressService.filterValidAddresses(this.getPersonId(request));
+            refData.put(StringConstants.ADDRESSES, addresses);
+        }
+        if (bindPhone) {
+            List<Phone> phones = phoneService.filterValidPhones(this.getPersonId(request));
+            refData.put(StringConstants.PHONES, phones);
+        }
+        if (bindEmail) {
+            List<Email> emails = emailService.filterValidEmails(this.getPersonId(request));
+            refData.put(StringConstants.EMAILS, emails);
+        }
         return refData;
     }
 
@@ -279,7 +373,4 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
 
     protected abstract Viewable findViewable(HttpServletRequest request);
-
-    @SuppressWarnings("unchecked")
-    protected abstract void addRefData(HttpServletRequest request, Long personId, Map refData);
 }

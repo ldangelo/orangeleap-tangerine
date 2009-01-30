@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <!-- Gift -->
-	<bean id="gift" class="com.mpower.controller.gift.GiftFormController" parent="tangerineFormController">
+	<bean id="giftFormController" class="com.mpower.controller.gift.GiftFormController" parent="tangerineFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validator">
@@ -16,24 +16,20 @@
         </property>
         <property name="formView" value="gift/gift" />
         <property name="successView" value="redirect:/giftView.htm" />
-        <property name="addressService" ref="addressService" />
         <property name="giftService" ref="giftService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="phoneService" ref="phoneService" />
-        <property name="emailService" ref="emailService" />
     </bean>
 
-    <bean id="giftView" class="com.mpower.controller.gift.GiftViewController" parent="gift">
+    <bean id="giftViewController" class="com.mpower.controller.gift.GiftViewController" parent="giftFormController">
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
     </bean>
 
-    <bean id="giftRefund" class="com.mpower.controller.gift.GiftRefundController">
+    <bean id="giftRefundController" class="com.mpower.controller.gift.GiftRefundController">
         <property name="giftService" ref="giftService" />
         <property name="viewName" value="redirect:/giftView.htm" />
     </bean>
 
-    <bean id="giftSearch" class="com.mpower.controller.gift.GiftSearchFormController">
+    <bean id="giftSearchController" class="com.mpower.controller.gift.GiftSearchFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
         <property name="formView" value="gift/giftSearch"/>
@@ -42,66 +38,20 @@
         <property name="sessionService" ref="sessionService"/>
     </bean>
 
-    <bean id="giftList" class="com.mpower.controller.gift.GiftListController">
+    <bean id="giftListController" class="com.mpower.controller.gift.GiftListController">
         <property name="giftService" ref="giftService"/>
         <property name="personService" ref="personService"/>
         <property name="viewName" value="gift/giftList"/>
-    </bean>
-
-	<!-- Recurring Gift -->
-    <bean id="recurringGift" class="com.mpower.controller.gift.RecurringGiftFormController" parent="gift">
-        <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
-        <property name="pageType" value="recurringGift"/>
-		<property name="validators">
-			<list>
-	            <bean class="com.mpower.controller.validator.CommitmentValidator">
-			        <property name="pageType" value="recurringGift"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="recurringGift"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
-			</list>
-        </property>
-        <property name="formView" value="gift/recurringGift" />
-        <property name="successView" value="redirect:/recurringGiftView.htm" />
-        <property name="commitmentService" ref="commitmentService" />
-    </bean>
-
-    <bean id="recurringGiftView" class="com.mpower.controller.gift.RecurringGiftFormViewController" parent="recurringGift">
-        <property name="formView" value="gift/recurringGiftView" />
-        <property name="successView" value="redirect:/recurringGiftView.htm" />
-    </bean>
-
-    <bean id="recurringGiftSearch" class="com.mpower.controller.gift.RecurringGiftSearchFormController">
-        <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
-        <property name="formView" value="gift/recurringGiftSearch"/>
-        <property name="successView" value="gift/recurringGiftSearch"/>
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="sessionService" ref="sessionService"/>
-    </bean>
-
-    <bean id="recurringGiftList" class="com.mpower.controller.gift.RecurringGiftListController">
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="personService" ref="personService"/>
-        <property name="viewName" value="gift/recurringGiftList"/>
     </bean>
     
     <bean id="giftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-		        <prop key="/gift.htm">gift</prop>
-		        <prop key="/giftList.htm">giftList</prop>
-		        <prop key="/giftRefund.htm">giftRefund</prop>
-		        <prop key="/giftSearch.htm">giftSearch</prop>
-		    	<prop key="/giftView.htm">giftView</prop>
-		        <prop key="/recurringGift.htm">recurringGift</prop>
-		        <prop key="/recurringGiftList.htm">recurringGiftList</prop>
-		        <prop key="/recurringGiftSearch.htm">recurringGiftSearch</prop>
-		    	<prop key="/recurringGiftView.htm">recurringGiftView</prop>
+		        <prop key="/gift.htm">giftFormController</prop>
+		    	<prop key="/giftView.htm">giftViewController</prop>
+		        <prop key="/giftRefund.htm">giftRefundController</prop>
+		        <prop key="/giftSearch.htm">giftSearchController</prop>
+		        <prop key="/giftList.htm">giftListController</prop>
 			</props>
 		</property>
 	</bean>

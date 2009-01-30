@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -348,6 +349,16 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     public void addDistributionLine(DistributionLine distributionLine) {
         getDistributionLines().add(distributionLine);
+    }
+
+    public void removeInvalidDistributionLines() {
+        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line == null || line.getAmount() == null) {
+                distLineIter.remove();
+            }
+        }
     }
 
     @Override

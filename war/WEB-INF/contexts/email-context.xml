@@ -8,6 +8,10 @@
 	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineFormController">
     	<property name="commandName" value="email" />
     	<property name="commandClass" value="com.mpower.domain.Email" />
+        <property name="bindAddress" value="false"/>
+        <property name="bindPaymentSource" value="false"/>
+        <property name="bindPhone" value="false"/>
+        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.mpower.controller.validator.EmailValidator">
@@ -20,7 +24,6 @@
 	            </bean>
 			</list>
         </property>
-    	<property name="emailService" ref="emailService" />
     	<property name="formView" value="email/emailManager"/>
     	<property name="successView" value="redirect:/emailManager.htm"/>
     </bean>

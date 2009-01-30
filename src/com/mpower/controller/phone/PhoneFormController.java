@@ -15,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Viewable;
-import com.mpower.service.PhoneService;
 import com.mpower.util.StringConstants;
 
 public class PhoneFormController extends TangerineFormController {
@@ -23,20 +22,15 @@ public class PhoneFormController extends TangerineFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    protected PhoneService phoneService;
-
-    public void setPhoneService(PhoneService phoneService) {
-        this.phoneService = phoneService;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    protected void addRefData(HttpServletRequest request, Long personId, Map refData) {
-        List<Phone> phones = phoneService.readPhones(personId);
+    protected Map referenceData(HttpServletRequest request) throws Exception {
+        Map refData = super.referenceData(request);
+        List<Phone> phones = phoneService.readPhones(super.getPersonId(request));
         refData.put("phones", phones);
-        List<Phone> currentPhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), false);
+        List<Phone> currentPhones = phoneService.readCurrentPhones(super.getPersonId(request), Calendar.getInstance(), false);
         refData.put("currentPhones", currentPhones);
-        List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(personId, Calendar.getInstance(), true);
+        List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(super.getPersonId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondencePhones", currentCorrespondencePhones);
 
         if (logger.isDebugEnabled()) {
@@ -44,6 +38,7 @@ public class PhoneFormController extends TangerineFormController {
                 logger.debug("addRefData: phone = " + p.getNumber());
             }
         }
+        return refData;
     }
 
     @Override

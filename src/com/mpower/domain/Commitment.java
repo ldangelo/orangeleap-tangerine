@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -275,6 +276,16 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         getDistributionLines().add(distributionLine);
     }
 
+    public void removeInvalidDistributionLines() {
+        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line == null || line.getAmount() == null) {
+                distLineIter.remove();
+            }
+        }
+    }
+    
     public String getComments() {
         return comments;
     }

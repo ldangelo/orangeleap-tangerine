@@ -151,14 +151,14 @@ public class CommitmentServiceImpl implements CommitmentService {
     }
     
     @Override
-    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person) {
+    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person, CommitmentType commitmentType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " personId = " + (person == null ? null : person.getId()));
+            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " commitmentType = " + commitmentType + " personId = " + (person == null ? null : person.getId()));
         }
         Commitment commitment = null;
         if (commitmentId == null) {
             if (person != null) {
-                commitment = this.createDefaultCommitment(person, CommitmentType.RECURRING_GIFT);
+                commitment = this.createDefaultCommitment(person, commitmentType);
                 commitment.setPerson(person);
             }
         } 

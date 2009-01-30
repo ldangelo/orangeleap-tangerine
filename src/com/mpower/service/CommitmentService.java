@@ -18,7 +18,7 @@ public interface CommitmentService {
 
     public Commitment readCommitmentById(Long commitmentId);
     
-    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person);
+    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person, CommitmentType commitmentType);
 
     public List<Commitment> readCommitments(Person person, CommitmentType commitmentType);
 

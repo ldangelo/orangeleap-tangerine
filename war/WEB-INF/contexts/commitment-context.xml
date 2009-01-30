@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="commitmentFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="tangerineFormController" abstract="true">
+        <property name="commandName" value="commitment"/>
+        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commitmentService" ref="commitmentService" />
+    </bean>
+
+    <bean id="commitmentViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="commitmentFormController" abstract="true">
+    </bean>
+</beans>

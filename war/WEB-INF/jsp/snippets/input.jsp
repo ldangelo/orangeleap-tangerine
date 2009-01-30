@@ -146,7 +146,7 @@
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
+						<c:forEach var="code" varStatus="status" items="${fieldVO.augmentedCodes}">
 							<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
 							<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if> value="<c:out value='${code}'/>" 
 								<c:if test="${fieldVO.fieldValue eq code}">selected="selected"</c:if>>

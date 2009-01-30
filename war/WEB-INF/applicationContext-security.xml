@@ -86,13 +86,13 @@
     -->
 
 	<!-- Comment this out if you want to connect locally to LDAP and uncomment the section above
-	--
+	-->
 	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
     	<constructor-arg value="ldap://${ldap.host}:${ldap.port}/dc=mpowerOpen-dev"/>
     	<property name="userDn" value="cn=admin,dc=mpowerOpen-dev"/>
     	<property name="password" value="secret"/>
 	</bean>
-    -->
+
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>

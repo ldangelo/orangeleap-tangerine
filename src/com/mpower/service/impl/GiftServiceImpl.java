@@ -214,11 +214,12 @@ public class GiftServiceImpl implements GiftService {
     	Address address = gift.getAddress();
     	if (address != null) {
         	sb.append("\nAddress: ");
+        	String state = StringUtils.trimToEmpty(address.getStateProvince());
     		sb.append(StringUtils.trimToEmpty(address.getAddressLine1()) 
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine2()) 
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine3()) 
     				+ " " + StringUtils.trimToEmpty(address.getCity()) 
-    				+ (address != null ? (", " + StringUtils.trimToEmpty(address.getStateProvince())) : "" )
+    				+ (state.length() == 0  ? "" : (", " + state))
     				+ " " + StringUtils.trimToEmpty(address.getCountry()) 
     				+ " " + StringUtils.trimToEmpty(address.getPostalCode())
     				);

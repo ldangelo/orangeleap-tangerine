@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.controller.NoneStringTrimmerEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
@@ -71,7 +71,7 @@ public class MembershipFormController extends SimpleFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
         binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, personService, request.getParameter("personId")));
     }
 

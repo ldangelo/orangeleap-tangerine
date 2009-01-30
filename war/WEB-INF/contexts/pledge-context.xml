@@ -26,6 +26,7 @@
         </property>
         <property name="formView" value="pledge/pledge" />
         <property name="successView" value="redirect:/pledgeView.htm" />
+        <property name="formUrl" value="redirect:/pledge.htm" />
     </bean>
 
     <bean id="pledgeViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="pledgeFormController">

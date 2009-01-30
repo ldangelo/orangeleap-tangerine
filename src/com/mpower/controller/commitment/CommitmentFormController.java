@@ -28,6 +28,7 @@ public class CommitmentFormController extends TangerineFormController {
 
     protected CommitmentService commitmentService;
     protected CommitmentType commitmentType;
+    protected String formUrl;
 
     public void setCommitmentService(CommitmentService commitmentService) {
         this.commitmentService = commitmentService;
@@ -35,6 +36,10 @@ public class CommitmentFormController extends TangerineFormController {
 
     public void setCommitmentType(CommitmentType commitmentType) {
         this.commitmentType = commitmentType;
+    }
+    
+    public void setFormUrl(String formUrl) {
+        this.formUrl = formUrl;
     }
 
     @Override
@@ -45,7 +50,9 @@ public class CommitmentFormController extends TangerineFormController {
         commitment.removeInvalidDistributionLines();
         
         Commitment current = commitmentService.maintainCommitment(commitment);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
+        
+        String url = current.getGifts().isEmpty() ? formUrl : getSuccessView();
+        return new ModelAndView(url + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request) + "&saved=true");
     }
 
     @SuppressWarnings("unchecked")

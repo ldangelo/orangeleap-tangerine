@@ -12,5 +12,6 @@ public enum EntityType {
     code,
     commitment,
     paymentSource,
-    paymentHistory
+    paymentHistory,
+    communicationHistory
 }

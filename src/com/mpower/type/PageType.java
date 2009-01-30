@@ -39,7 +39,8 @@ public enum PageType {
     phoneManagerEdit("/phoneManagerEdit.htm"),
     phone("/phone.htm"),
     importexport("/importexport.htm"),
-    paymentHistory("/paymentHistory.htm");
+    paymentHistory("/paymentHistory.htm"),
+    communicationHistory("/communicationHistory.htm");
 
     private String pageName;
 

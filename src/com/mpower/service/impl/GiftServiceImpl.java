@@ -218,7 +218,7 @@ public class GiftServiceImpl implements GiftService {
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine2()) 
     				+ " " + StringUtils.trimToEmpty(address.getAddressLine3()) 
     				+ " " + StringUtils.trimToEmpty(address.getCity()) 
-    				+ ", " + StringUtils.trimToEmpty(address.getStateProvince()) 
+    				+ (address != null ? (", " + StringUtils.trimToEmpty(address.getStateProvince())) : "" )
     				+ " " + StringUtils.trimToEmpty(address.getCountry()) 
     				+ " " + StringUtils.trimToEmpty(address.getPostalCode())
     				);

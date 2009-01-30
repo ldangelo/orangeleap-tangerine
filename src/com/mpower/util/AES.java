@@ -3,8 +3,10 @@ package com.mpower.util;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.PropertyResourceBundle;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,17 +51,26 @@ public class AES {
     }
 
     /**
-     * Encrypt the bytes using a key in the <code>KEY_FILE_PATH</code>
-     * @param clearBytes the clear text to encrypt
+     * Encrypt the bytes using a key in the <code>KEY_FILE_PATH</code>,
+     * which is loaded from the CLASSPATH. If it can not find the key file
+     * on the classpath, it will attempt to load it from the machine's
+     * root directory.
+     * @param clearString the clear text to encrypt
      * @return the encrypted hex string
      * @throws AESException
      */
     public static String encrypt(String clearString) throws AESException {
-        FileInputStream keyInputStream = null;
+        InputStream keyInputStream = null;
         try {
-            keyInputStream = new FileInputStream(KEY_FILE_PATH);
-            PropertyResourceBundle bundle = new PropertyResourceBundle(keyInputStream);
-            String key = bundle.getString(SECRET_KEY_KEY);
+            keyInputStream = AES.class.getResourceAsStream(KEY_FILE_PATH);
+            if(keyInputStream == null) {
+                // fallback to trying to load from the old location (root "/" directory)
+                keyInputStream = new FileInputStream(KEY_FILE_PATH);
+            }
+
+            Properties prop = new Properties();
+            prop.load(keyInputStream);
+            String key = prop.getProperty(SECRET_KEY_KEY);
             return new String(Base64.encodeBase64(encrypt(clearString.getBytes(), new BigInteger(key, 16).toByteArray())));
         } catch (FileNotFoundException e) {
             throw new AESException("No key file found at " + KEY_FILE_PATH, e);

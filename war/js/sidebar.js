@@ -11,7 +11,9 @@ Ext.onReady(function() {
             {name: 'first', type: 'string'},
             {name: 'last', type: 'string'},
             {name: 'majorDonor', type: 'boolean'},
-            {name: 'lapsedDonor', type: 'boolean'}
+            {name: 'lapsedDonor', type: 'boolean'},
+            {name: 'gifts', type: 'int'},
+            {name: 'amount', type: 'float'}
         ],
         sortInfo:{field: 'last', direction: 'ASC'},
         url: 'myAccounts.json',
@@ -28,10 +30,12 @@ Ext.onReady(function() {
         header: false,
         store: MPower.accountStore,
         columns:[
-            {id: 'nameColumn', header: 'First', width: 100, sortable: true, dataIndex: 'first'},
-            {header: 'Last', width: 100, sortable: true, dataIndex: 'last'},
-            {header: 'Major', width: 70, sortable: true, dataIndex: 'majorDonor', renderer: MPower.majorDonorRenderer},
-            {header: 'Lapsed', width: 70, sortable: true, dataIndex: 'lapsedDonor', renderer: MPower.lapsedDonorRenderer}
+            {id: 'nameColumn', header: 'First', width: 100, sortable: true, dataIndex: 'first', align: 'left'},
+            {header: 'Last', width: 100, sortable: true, dataIndex: 'last', align: 'left'},
+            {header: 'Gifts', width: 55, sortable: true, dataIndex: 'gifts', align: 'right'},
+            {header: 'Total', width: 80, sortable: true, dataIndex: 'amount', align: 'right', renderer: Ext.util.Format.usMoney},
+            {header: 'Major', width: 65, sortable: true, dataIndex: 'majorDonor', renderer: MPower.majorDonorRenderer},
+            {header: 'Lapsed', width: 65, sortable: true, dataIndex: 'lapsedDonor', renderer: MPower.lapsedDonorRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         autoExpandColumn: "nameColumn",
@@ -51,7 +55,7 @@ Ext.onReady(function() {
     MPower.win = new Ext.Window({
         title: 'My Accounts',
         layout: 'fit',
-        width: 350,
+        width: 500,
         height: 400,
         buttons: [{text: 'Close', handler: function() {MPower.win.hide();}}],
         buttonAlign: 'center',

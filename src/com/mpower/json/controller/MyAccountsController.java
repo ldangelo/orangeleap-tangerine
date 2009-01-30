@@ -8,12 +8,15 @@ import javax.servlet.http.HttpSession;
 import javax.annotation.Resource;
 
 import com.mpower.service.PersonService;
+import com.mpower.service.GiftService;
 import com.mpower.domain.Person;
+import com.mpower.domain.Gift;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.math.BigDecimal;
 
 /**
  * Controller used by the sidebar to get the accounts for
@@ -25,6 +28,9 @@ public class MyAccountsController {
 
     @Resource(name="personService")
     private PersonService personService;
+
+    @Resource(name="giftService")
+    private GiftService giftService;
 
     @RequestMapping("/myAccounts.json")
     public ModelMap getAllAccounts(HttpSession session) {
@@ -43,7 +49,16 @@ public class MyAccountsController {
 
                 Long acctId = Long.parseLong(account);
                 Person client = personService.readPersonById(acctId);
-                response.add(fromPerson(client));
+
+                BigDecimal totalGiving = new BigDecimal(0);
+
+                List<Gift> giftList = giftService.readGifts(client.getId());
+                for (Gift gft : giftList) {
+                    totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
+                }
+
+
+                response.add(fromPerson(client, totalGiving, giftList.size()));
             }
         }
 
@@ -52,7 +67,7 @@ public class MyAccountsController {
         return model;
     }
 
-    private Map fromPerson(Person person) {
+    private Map fromPerson(Person person, BigDecimal amount, int gifts) {
 
         Map<String,Object> ret = new HashMap<String,Object>();
         ret.put("id", person.getId());
@@ -60,6 +75,8 @@ public class MyAccountsController {
         ret.put("last", person.getLastName());
         ret.put("majorDonor", person.isMajorDonor());
         ret.put("lapsedDonor", person.isLapsedDonor());
+        ret.put("amount", amount);
+        ret.put("gifts", gifts);
         return ret;
     }
 

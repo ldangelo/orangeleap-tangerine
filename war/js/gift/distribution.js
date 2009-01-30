@@ -2,7 +2,7 @@ $(document).ready(function() {
 	Distribution.distributionLineBuilder($("table.distributionLines tr"));
 	Distribution.rowCloner("table.distributionLines tr:last");
 	
-	$("form#gift input#amount, form#commitment input#amountPerGift").bind("keyup change", function(event) {
+	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountPerGift, form#commitment input#amountTotal").bind("keyup change", function(event) {
 		var amounts = $("table.distributionLines input.amount");
 		var amtVal = $(this).val();
 		Distribution.enteredAmt = amtVal;
@@ -14,6 +14,15 @@ $(document).ready(function() {
 			Distribution.recalculatePcts();
 		}
 		Distribution.updateFields(amounts);
+	});
+	
+	$("form#commitment div#pledge_info select#recurring").bind("change", function() {
+		if ($(this).val() == "true") {
+			$("form#commitment input#amountPerGift").change();
+		}
+		else {
+			$("form#commitment input#amountTotal").change();
+		}
 	});
 });
 

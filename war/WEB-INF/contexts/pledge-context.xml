@@ -29,7 +29,7 @@
     </bean>
 
     <bean id="pledgeViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="pledgeFormController">
-        <property name="formView" value="gift/pledgeView" />
+        <property name="formView" value="pledge/pledgeView" />
         <property name="successView" value="redirect:/pledgeView.htm" />
     </bean>
 

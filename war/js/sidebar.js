@@ -74,7 +74,7 @@ MPower.majorDonorRenderer = function(val, meta, record) {
         meta.attr = 'ext:qtip="Major Donor"';
     } else {
         meta.css = 'grey-dot';
-        meta.attr = 'ext:qtip="Inactive Account"';
+        meta.attr = 'ext:qtip="Normal Donor"';
     }
 };
 

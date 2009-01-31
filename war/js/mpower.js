@@ -387,7 +387,13 @@ var MPower = {
 			var parentTree = MPower.getTree($parentNode);
 			var otherParents = childTree.getOtherParents(parentId);
 			if (otherParents.length == 0) {
-				childTree.isSelected = optionSelected; 
+				if (childTree.parentIds[parentId]) {
+					// If the parent of this child points to the child more than once, use an OR condition
+					childTree.isSelected = childTree.isSelected | optionSelected;
+				}
+				else {
+					childTree.isSelected = optionSelected;
+				} 
 			}
 			else {
 				/* Try to determine if THIS parentNode is also a child of the childNode's OTHER parentNodes; 
@@ -529,19 +535,20 @@ var MPower = {
 	
 	togglePicklist: function() {
 		var $elem = $(this);
-		var isMultiPicklist = MPower.isMultiPicklist($elem);
-		var $options = MPower.findOptions($elem);
 
 		var $children = null;
-		var $parentElem = $elem.parents("li.side"); // get this picklist's parent element
-		var tree = MPower.getTree($parentElem);
+		var $containerElem = $elem.parents("li.side"); // get this picklist's container element
+		var tree = MPower.getTree($containerElem);
 		tree.isSelected = true;
 		
 		var cascaders = MPower.getCascaders();
 		cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem;
 		
 		var prevSelectorIds = {};
-		
+	
+		var isMultiPicklist = MPower.isMultiPicklist($elem);
+		var $options = MPower.findOptions($elem);
+	
 		$options.each(function() {
 			var $optElem = $(this);
 			var optionSelected = false;
@@ -565,7 +572,7 @@ var MPower = {
 				});
 			}
 		});	
-		cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);
+   		cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);
 		MPower.hideShowCascaders(cascaders);					
 	},
 	

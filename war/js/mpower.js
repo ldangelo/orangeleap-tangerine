@@ -313,34 +313,33 @@ var MPower = {
 		$picklists.each(function() {
 			var $myPicklist = $(this);
 			
-			var $options = MPower.findOptions($myPicklist);
+			var selectors = $myPicklist.attr("references");
 			
-			if ($options) {
-				var isMultiPicklist = MPower.isMultiPicklist($myPicklist);
-				
-				$options.each(function() {
-					var $optElem = $(this);
-					var selector = $optElem.attr('reference');
-					if (selector != null && selector.length) {
-						var optionSelected = false;
-						if ((isMultiPicklist === true && $optElem.is(":visible")) || 
-							(isMultiPicklist === false && $optElem.attr("selected"))) {
-							 optionSelected = true;
-						}
-						var $targets = $(selector);
-						$targets.each(function() {
-							var $myTarget = $(this);
-							var parentChildSet = false;
-							parentChildSet |= MPower.setChildForParent($parentNode, $myTarget);
-							parentChildSet |= MPower.setParentForChild($myTarget, $parentNode, optionSelected);
-							if (parentChildSet) {
-								// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
-								$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
-							}
-						});
-					}
-				});		
+			var refs = new Array();
+			var selectedRefs = new Array();
+			if (selectors) {
+				refs = selectors.split(",");
 			}
+			selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().split(",");
+
+			for (var x = 0, len = refs.length; x < len; x++) {
+				var optionSelected = false;
+				var thisRef = jQuery.trim(refs[x]);
+				if (jQuery.inArray(thisRef, selectedRefs) > -1) {
+					optionSelected = true;
+				}
+				var $targets = $(thisRef);
+				$targets.each(function() {
+					var $myTarget = $(this);
+					var parentChildSet = false;
+					parentChildSet |= MPower.setChildForParent($parentNode, $myTarget);
+					parentChildSet |= MPower.setParentForChild($myTarget, $parentNode, optionSelected);
+					if (parentChildSet) {
+						// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
+						$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
+					}
+				});
+			}		
 		});	
 		if (tree.isRoot) {
 			var thisId = $parentNode.attr("id");
@@ -351,18 +350,30 @@ var MPower = {
 			$recursiveTargets.each(MPower.buildPicklistTree);
 		}
 	},
+	
+	setChildForParent: function($parentNode, $childNode) {
+		var parentTree = MPower.getTree($parentNode);
+		var childId = $childNode.attr("id");
+
+		var parentChildSet = false;
+		if (!parentTree.childIds[childId]) {
+			parentTree.children.push($childNode);
+			parentTree.childIds[childId] = true;
+			parentChildSet = true;
+		}
+		return parentChildSet;
+	},
 		
 	setParentForChild: function($childNode, $parentNode, optionSelected) {
-		var tree = MPower.getTree($childNode);
+		var childTree = MPower.getTree($childNode);
 		var parentId = $parentNode.attr("id");
 		
-		tree.isSelected = tree.isSelected | optionSelected; // this is an OR operation regardless of whether or not the parent has been already set
-		
+		MPower.setIsSelected(childTree, optionSelected, $parentNode, parentId);
 		var parentChildSet = false;
-		if (!tree.parentIds[parentId]) {
-			tree.parents.push($parentNode);
-			tree.parentIds[parentId] = true;
-			tree.isRoot = false;
+		if (!childTree.parentIds[parentId]) {
+			childTree.parents.push($parentNode);
+			childTree.parentIds[parentId] = true;
+			childTree.isRoot = false;
 			
 			var thisId = $childNode.attr("id");
 			delete MPower.rootTrees[thisId];
@@ -371,17 +382,48 @@ var MPower = {
 		return parentChildSet;
 	},
 	
-	setChildForParent: function($parentNode, $childNode) {
-		var tree = MPower.getTree($parentNode);
-		var childId = $childNode.attr("id");
-
-		var parentChildSet = false;
-		if (!tree.childIds[childId]) {
-			tree.children.push($childNode);
-			tree.childIds[childId] = true;
-			parentChildSet = true;
+	setIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
+		if (childTree.isSelected != optionSelected) {
+			var parentTree = MPower.getTree($parentNode);
+			var otherParents = childTree.getOtherParents(parentId);
+			if (otherParents.length == 0) {
+				childTree.isSelected = optionSelected; 
+			}
+			else {
+				/* Try to determine if THIS parentNode is also a child of the childNode's OTHER parentNodes; 
+				 * if it is a child and THIS parentNode is selected, override the previous 'optionSelected' value with the one from THIS parentNode;
+				 * otherwise, if THIS parentNode is not a child of the childNode's OTHER parentNodes, use an OR condition
+				 */
+				var isChild = MPower.isChild(otherParents, parentId);
+				if (isChild) {
+					if (parentTree.isSelected) {
+						childTree.isSelected = optionSelected; 
+					}
+				}
+				else {
+					childTree.isSelected = childTree.isSelected | optionSelected;
+				}
+			}
 		}
-		return parentChildSet;
+	},
+	
+	isChild: function(parents, parentId) {
+		var isChild = false;
+		var parentsParents = new Array();
+		for (var i = 0, len = parents.length; i < len; i++) {
+			var parentTree = MPower.getTree($(parents[i]));
+			if (parentTree.isChild(parentId)) {
+				isChild = true;
+				break;
+			}
+			else {
+				parentsParents.push(parentTree.parents);
+			}
+		}
+		if (isChild == false && parentsParents.length > 0) {
+			isChild = MPower.isChild(parentsParents);
+		}
+		return isChild;
 	},
 	
 	getTree: function($elem) {
@@ -394,7 +436,7 @@ var MPower = {
 				childIds: new Object(), 
 				isRoot: false, 
 				isSelected: false, 
-				isParentSelected: function() {
+				isAParentSelected: function() {
 					var pSel = false;
 					for (var i = 0, len = this.parents.length; i < len; i++) {
 						if ($(this.parents[i]).data("tree").isSelected) {
@@ -403,6 +445,21 @@ var MPower = {
 						}
 					}
 					return pSel;
+				},
+				getOtherParents: function(excludedParentId) {
+					var otherParents = new Array();
+					for (var i = 0, len = this.parents.length; i < len; i++) {
+						if ($(this.parents[i]).attr("id") != excludedParentId) {
+							otherParents.push(this.parents[i]);
+						}
+					}
+					return otherParents;
+				},
+				isExistingParent: function(aParentId) {
+					return this.parentIds[aParentId];
+				},
+				isChild: function(id) {
+					return this.childIds[id];
 				}
 			};
 			$elem.data("tree", tree);
@@ -457,7 +514,7 @@ var MPower = {
 			$children.each(function() {
 				var $child = $(this);
 				var tree = MPower.getTree($child); 
-				if (tree.isSelected && tree.isParentSelected()) { // if the child node is selected, check the parent(s) to make sure at least one is selected
+				if (tree.isSelected && tree.isAParentSelected()) { // if the child node is selected, check the parent(s) to make sure at least one is selected
 					cascaders.shown = cascaders.shown ? cascaders.shown.add($child) : $child;
 				}
 				else {

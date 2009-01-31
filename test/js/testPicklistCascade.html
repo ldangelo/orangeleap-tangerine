@@ -52,7 +52,7 @@
 				test("MPower.SelectedPaymentSource", function() {
 					var tree = $("li#li-gift_info-selectedPaymentSource").data("tree"); 
 					ok(tree.parents.length == 0, "0 parents for SelectedPaymentSource was expected");
-					ok(5 === tree.children.length, "5 child fields for SelectedPaymentSource was expected"); 
+					ok(5 === tree.children.length, "5 child fields for SelectedPaymentSource was expected, instead = " + tree.children.length); 
 					
 					for (var id in tree.childIds) {
 						ok(id === "li-gift_info-paymentType" || 
@@ -70,25 +70,30 @@
 					for (var id in tree.parentIds) {
 						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
 					}
-					ok(5 === tree.children.length, "5 child fields for paymentType was expected"); 
+					ok(3 === tree.children.length, "3 child fields for paymentType was expected"); 
+					for (var id in tree.childIds) {
+						ok(id === "gift_check" ||
+							id === "gift_ach" ||
+							id === "gift_creditCard", id + " was expected as a child"); //.gift_ach,.gift_cash,.gift_check,.gift_creditCard
+					}
 					ok(tree.isSelected == false, "paymentType was expected to have isSelected='false', instead = " + tree.isSelected); 
 				});
 				test("MPower.SelectedAddress", function() {
 					var tree = $("li:has(#selectedAddress)").data("tree"); 
-					ok(tree.parents.length === 2, "2 parents for selectedAddress was expected");
+					ok(tree.parents.length === 1, "1 parent for selectedAddress was expected");
 					
 					for (var id in tree.parentIds) {
-						ok(id === "li-gift_info-selectedPaymentSource" || id === "li-gift_info-paymentType", id + " was expected as a parent");
+						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
 					}
 					ok($(":input[name^='address']").length === tree.children.length, $(":input[name^='address']").length + " child fields for selectedAddress was expected"); 
 					ok(tree.isSelected, "selectedAddress was expected to have isSelected='true'"); 
 				});
 				test("MPower.SelectedPhone", function() {
 					var tree = $("li:has(#selectedPhone)").data("tree"); 
-					ok(tree.parents.length === 2, "2 parents for selectedPhone was expected");
+					ok(tree.parents.length === 1, "1 parent for selectedPhone was expected");
 					
 					for (var id in tree.parentIds) {
-						ok(id === "li-gift_info-selectedPaymentSource" || id === "li-gift_info-paymentType", id + " was expected as a parent");
+						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
 					}
 					ok($(":input[name^='phone']").length === tree.children.length, $(":input[name^='phone']").length + " child fields for selectedPhone was expected"); 
 					ok(tree.isSelected, "selectedPhone was expected to have isSelected='true'"); 
@@ -495,7 +500,8 @@
 		</li><li class="side" id="li-gift_info-selectedPaymentSource">
 	<label for="selectedPaymentSource" class="desc">
 		<span class="required">*</span>&nbsp;Payment Source</label>
-	<select name="selectedPaymentSource" id="selectedPaymentSource" class="picklist paymentSourcePicklist ">
+			<select name="selectedPaymentSource" id="selectedPaymentSource" class="picklist paymentSourcePicklist " 
+						references="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone),.gift_editAch,.gift_editCreditCard">
 				<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" >+ Create New</option>
 				<optgroup label="-- Or Choose From Below ---------">
 
@@ -505,32 +511,36 @@
 							address="1" phone="1" cardholder="Adam Smith" cardType="Discover" number="6011008400223068" exp="03 / 2009">discover</option>
 					</optgroup>
 				</select>
+				<div style="display:none" id="selectedRef-selectedPaymentSource">.gift_editAch,li:has(#selectedAddress),li:has(#selectedPhone)</div>
+				
 		</li><li class="side" id="li-gift_info-paymentType">
 	<label for="paymentType" class="desc">
 		<span class="required">*</span>&nbsp;Payment Method</label>
 
-	<select name="paymentType" class="picklist " id="paymentType">
-				<option reference=".gift_creditCard, li:has(#selectedAddress), li:has(#selectedPhone)" value="Credit Card" >
+	<select name="paymentType" class="picklist " id="paymentType" references=".gift_ach,.gift_cash,.gift_check,.gift_creditCard">
+				<option reference=".gift_creditCard" value="Credit Card" >
 						Credit Card</option>
-				<option reference=".gift_ach, li:has(#selectedAddress), li:has(#selectedPhone)" value="ACH">
+				<option reference=".gift_ach" value="ACH">
 						ACH</option>
-				<option reference=".gift_check, li:has(#selectedAddress), li:has(#selectedPhone)" value="Check" >
+				<option reference=".gift_check" value="Check" >
 						Check</option>
 
-				<option reference=".gift_cash, li:has(#selectedAddress), li:has(#selectedPhone)" value="Cash" >
+				<option reference=".gift_cash" value="Cash" >
 						Cash</option>
 				</select>
+				<div style="display:none" id="selectedRef-paymentType"></div>
 		</li><li class="side" id="li-gift_info-selectedAddress">
 	<label for="selectedAddress" class="desc">
 		Billing Address</label>
-	<select name="selectedAddress" id="selectedAddress" class="picklist ">
-				<option value="">None</option>
-
-				<option value="new" reference="li:has(:input[name^='address'])" >+ Create New</option>
-				<optgroup label="-- Or Choose From Below ---------">
-				<option value="1" >8070 FIRST ... 75478</option>
-				</optgroup>
+	<select name="selectedAddress" id="selectedAddress" class="picklist" references="li:has(:input[name^='address'])">
+					<option value="">None</option>
+	
+					<option value="new" reference="li:has(:input[name^='address'])" >+ Create New</option>
+					<optgroup label="-- Or Choose From Below ---------">
+					<option value="1" >8070 FIRST ... 75478</option>
+					</optgroup>
 				</select>
+				<div style="display:none" id="selectedRef-selectedAddress"></div>
 		</li><li class="side" id="li-gift_info-address_addressLine1">
 	<label for="address.addressLine1" class="desc">
 		<span class="required">*</span>&nbsp;Address Line 1</label>
@@ -562,7 +572,7 @@
 	<label for="address.country" class="desc">
 		<span class="required">*</span>&nbsp;Country</label>
 
-	<select name="address.country" class="" id="address.country">
+	<select name="address.country" class="" id="address.country" references="">
 				<option value="AF" selected>
 						Afghanistan</option>
 				<option value="AX" >
@@ -1128,11 +1138,12 @@
 				<option value="ZW" >
 						Zimbabwe</option>
 				</select>
+				<div style="display:none" id="selectedRef-address_country"></div>				
 		</li><li class="side" id="li-gift_info-selectedPhone">
 
 	<label for="selectedPhone" class="desc">
 		Billing Phone</label>
-	<select name="selectedPhone" id="selectedPhone" class="picklist ">
+	<select name="selectedPhone" id="selectedPhone" class="picklist" references="li:has(:input[name^='phone'])">
 				<option value="">None</option>
 				<option value="new" reference="li:has(:input[name^='phone'])" >+ Create New</option>
 				<optgroup label="-- Or Choose From Below ---------">
@@ -1141,6 +1152,7 @@
 				<option value="43" >972-935-4387</option>
 				</optgroup>
 				</select>
+				<div style="display:none" id="selectedRef-selectedPhone"></div>
 		</li><li class="side" id="li-gift_info-phone_number">
 	<label for="phone.number" class="desc">
 		<span class="required">*</span>&nbsp;Phone Number</label>
@@ -1149,7 +1161,7 @@
 		</li><li class="side" id="li-gift_info-selectedEmail">
 	<label for="selectedEmail" class="desc">
 		Receive EMail</label>
-	<select name="selectedEmail" id="selectedEmail" class="picklist ">
+	<select name="selectedEmail" id="selectedEmail" class="picklist " references="li:has(:input[name^='email'])">
 				<option value="">None</option>
 				<option value="new" reference="li:has(:input[name^='email'])" >+ Create New</option>
 				<optgroup label="-- Or Choose From Below ---------">
@@ -1158,6 +1170,7 @@
 				<option value="543" >jow@gmail.com</option>
 				</optgroup>
 				</select>
+				<div style="display:none" id="selectedRef-selectedEmail"></div>
 		</li><li class="side" id="li-gift_info-email_emailAddress">
 	<label for="email.emailAddress" class="desc">
 		<span class="required">*</span>&nbsp;Email Address</label>
@@ -1177,7 +1190,7 @@
 		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardType">
 	<label for="paymentSource.creditCardType" class="desc">
 		<span class="required">*</span>&nbsp;Credit Card</label>
-	<select name="paymentSource.creditCardType" class="" id="paymentSource.creditCardType">
+	<select name="paymentSource.creditCardType" class="" id="paymentSource.creditCardType" references="">
 
 				<option value="Visa" >
 						Visa</option>
@@ -1189,6 +1202,7 @@
 
 						Discover</option>
 				</select>
+				<div style="display:none" id="selectedRef-paymentSource_creditCardType"></div>
 		</li><li class="side" id="li-gift_creditCard-paymentSource_creditCardNumber">
 	<label for="paymentSource.creditCardNumber" class="desc">
 		<span class="required">*</span>&nbsp;Number</label>
@@ -1325,19 +1339,21 @@
 		<li class="side" id="li-person_contactInfo-constituentType">
 	<label for="constituentType" class="desc">
 		<span class="required">*</span>&nbsp;Constituent Type</label>
-	<select name="constituentType" class="picklist " id="constituentType">
+	<select name="constituentType" class="picklist " id="constituentType"
+							references="li:has(.ea-individual),li:has(.ea-organization)">
 				<option reference="li:has(.ea-individual)"value="individual" selected="selected"
 						Individual</option>
 
 				<option reference="li:has(.ea-organization)"value="organization" >
 						Organization</option>
 				</select>
+				<div style="display:none" id="selectedRef-constituentType">li:has(.ea-individual)</div>
 		</li><li class="side" id="li-person_contactInfo-constituentIndividualRoles">
 	<label for="constituentIndividualRoles" class="desc">
 		Constituent Roles</label>
 	<div class="lookupWrapper">
-			    <div class="multiPicklist multiLookupField ea-individual" id="constituentIndividualRoles">
-
+			    <div class="multiPicklist multiLookupField ea-individual" id="constituentIndividualRoles"
+					    	references="li:has(.ea-affiliate),li:has(.ea-alumni),li:has(.ea-contact),li:has(.ea-donor),li:has(.ea-headOfHousehold),li:has(.ea-member),li:has(.ea-prospect),li:has(.ea-sponsor),li:has(.ea-volunteer)">
 					<div class='multiPicklistOption' style='display:none' 
 							id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
 							Donor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove this option" title="Remove this option"/></a>
@@ -1385,11 +1401,13 @@
 
 			    <input type="hidden" name="constituentIndividualRoles" id="constituentIndividualRoles" value="alumni,headOfHousehold" />
 			</div>
+			<div style="display:none" id="selectedRef-constituentIndividualRoles">li:has(.ea-alumni),li:has(.ea-headOfHousehold)</div>
 		</li><li class="side" id="li-person_contactInfo-constituentOrganizationRoles">
 	<label for="constituentOrganizationRoles" class="desc">
 		Constituent Roles</label>
 	<div class="lookupWrapper">
-			    <div class="multiPicklist multiLookupField ea-organization" id="constituentOrganizationRoles">
+			    <div class="multiPicklist multiLookupField ea-organization" id="constituentOrganizationRoles"
+					    	references="li:has(.ea-affiliate),li:has(.ea-donor),li:has(.ea-foundation),li:has(.ea-member),li:has(.ea-prospect),li:has(.ea-sponsor),li:has(.ea-trust),li:has(.ea-vendor),li:has(.ea-volunteer)">					
 					<div class='multiPicklistOption' style='display:none' 
 							id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
 
@@ -1438,6 +1456,7 @@
 
 			    <input type="hidden" name="constituentOrganizationRoles" id="constituentOrganizationRoles" value="" />
 			</div>
+			<div style="display:none" id="selectedRef-constituentOrganizationRoles"></div>			
 		</li>
 		<li class="side" id="li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value">
 	<label for="customFieldMap[headOfHousehold.householdMembers].value" class="desc">

@@ -1,0 +1,451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>QUnit Test Picklist Spouse</title>
+		<link rel="shortcut icon" type="image/ico" href="../../war/images/favicon.ico" />
+		
+		<script type="text/javascript" src="../../war/js/jquery.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.tablesorter.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.bgiframe.js"></script>
+		
+		<script type="text/javascript" src="../../war/js/jquery.hoverIntent.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.cluetip.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.selectboxes.js"></script>
+		<script type="text/javascript" src="../../war/js/jqModal.js"></script>
+		<script type="text/javascript" src="../../war/js/jqDnR.js"></script>
+		<script type="text/javascript" src="../../war/js/date.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery.datePicker.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery/plugins/jquery.numeric.pack.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery/plugins/jquery.fade.js"></script>
+		
+		<script type='text/javascript' src='js/jquery/plugins/jquery.ajaxQueue.js'></script>
+		<script type='text/javascript' src='js/jquery/plugins/jquery.autocomplete.js'></script>
+		
+		<script type="text/javascript" src="../../war/js/mpower.js"></script>
+<!--  <script type='text/javascript' 
+        src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script> -->
+
+		<!-- TEST resources below -->
+		<script type="text/javascript" src="http://jqueryjs.googlecode.com/svn/trunk/qunit/testrunner.js"></script>
+		<link rel="stylesheet" href="http://dev.jquery.com/view/trunk/qunit/testsuite.css" type="text/css" media="screen" />
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				module("test spouse tree structure");
+				test("MPower.Spouse", function() {
+					var tree = $("li#li-person_demographics-customFieldMap-individual_spouse-_value").data("tree"); 
+					ok(tree.parents.length == 2, "2 parents for Spouse were expected");
+					ok(0 === tree.children.length, "0 child fields for Spouse was expected"); 
+					ok(tree.isSelected == false, "Spouse was expected to have isSelected='false'"); 
+				});
+				module("test cascade for load");
+				test("elements shown or hidden", function() {
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+				});
+				
+			});
+		</script>
+	</head>
+	<body>
+	 	<!-- START OF Standard QUnit HTML elements -->
+		<h1>Test Picklist Cascading</h1>
+		<h2 id="banner"></h2>
+		<h2 id="userAgent"></h2>
+		<ol id="tests"></ol>
+		<div id="main"></div>
+	 	<!-- END OF Standard QUnit HTML elements -->
+		 
+		 
+		 
+		<!-- START OF test -->
+	
+		<div class="bodyContent">
+			<div id="banner">
+
+	<ol>
+		<li>
+			<span id="greeting">Logged into&nbsp;<strong>company1</strong> as&nbsp;<strong>nolan</strong></span>
+		</li>
+		<li>
+			<a href="account.htm">My Account</a>
+
+		</li>
+		<li>
+			<a href="#">Help</a>
+		</li>
+		<li>
+			<a href="/mpower/logout">Logout</a>
+		</li>
+	</ol>
+
+</div>
+
+<div id="navmain">
+	<div class="navLeftCap"></div>
+	<div class="container">
+		<ul class="primaryNav">
+			<li>
+				<a href="welcome.htm" class=""><div class="homeIcon">&nbsp;</div></a>
+			</li>
+			<li>
+
+				<a href="#">My Work</a>
+			</li>
+			<li>
+				<a href="#">History</a>
+			</li>
+			<li>
+				<a href="#">Bookmarks</a>
+
+			</li>
+			<li>
+				<a href="#">Create New...</a>
+				<ul>
+					<li>
+						<a href="person.htm">Constituent</a>
+					</li>
+					<li class="sectionTitle">For Adam&nbsp;Smith ...</li>
+
+						<li>
+							<a href="gift.htm?personId=1">Gift</a>
+						</li>
+						<li>
+							<a href="addressManager.htm?personId=1">Address</a>
+						</li>
+						<li>
+							<a href="recurringGift.htm?personId=1&type=recurringGift">Recurring Gift</a>
+
+						</li>
+						<li>
+							<a href="pledge.htm?personId=1&type=pledge">Pledge</a>
+						</li>
+						</ul>
+			</li>
+			<li>
+				<a href="#">Go To...</a>
+
+				<ul>
+					<li>
+						<a href="codes.htm">Manage Codes</a>
+					</li>
+			  		<li>
+						<a href="picklistItems.htm">Manage Picklist Items</a>
+					</li> 
+					<li>
+
+						<a href="../jasperserver/login.html" target="_blank">Reporting</a>
+					</li>
+					<li>
+						<a href="siteAudit.htm">Site Audit</a>
+					</li>
+					<li>
+			            <a href="importexport.htm">Import/Export</a>
+
+						</li>
+				</ul>
+			</li>
+		</ul>
+		<div class="clearBoth"></div>
+	</div>
+	<div class="navRightCap"></div>
+	<div class="searchBar">
+		<form method="post" action="personSearch.htm" id="searchForm">
+
+			<input size="30" name="lastName" type="text" />
+			<select name="type" id="typeSearch">
+				<option value="people">Constituents</option>
+				<option value="gifts">Gifts</option>
+			</select>
+			<input type="submit" value="Search" class="saveButton" />
+		</form>
+	</div>
+
+</div><div class="clearBoth"></div>
+			<div class="sideBar">
+	<div class="wrapper">
+		<div class="innerContent" style="height:600px;">
+			<h3>
+					Smith, Adam Jay:
+				</h3>
+				
+				<div class="accountOptions">
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
+
+						<span class="secondary active">
+							<a class="active" href="person.htm?personId=1">Contact Information</a>
+							<a class="" href="addressManager.htm?personId=1">Addresses</a>
+							<a class="" href="emailManager.htm?personId=1">Emails</a>
+							<a class="" href="phoneManager.htm?personId=1">Phone Numbers</a>
+						</span>
+					</div>
+
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Payment Manager</a>
+						<span class="secondary ">
+							<a class="" href="paymentManager.htm?personId=1">Payment Methods</a>
+							<a class="" href="paymentHistory.htm?personId=1">Payment History</a>
+						</span>
+					</div>					
+					<div class="navGroup">
+
+						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gift Manager</a>
+			            <span class="secondary ">
+				            <a class="" href="gift.htm?personId=1">New Gift</a>
+							<a class="" href="giftList.htm?personId=1">Gifts</a>
+							<a class="" href="recurringGift.htm?personId=1&type=recurringGift">New Recurring Gift</a>
+				            <a class="" href="recurringGiftList.htm?personId=1&type=recurringGift">Recurring Gifts</a>
+
+				            <a class="" href="pledge.htm?personId=1&type=pledge">New Pledge</a>
+				            <a class="" href="pledgeList.htm?personId=1&type=pledge">Pledges</a>
+				            </span>
+		            </div>
+					<a class="" href="audit.htm?object=person&id=1">Audit</a>
+				</div>
+			<h3>
+
+				My Tasks
+			</h3>
+			<div class="myTasks">
+				<a href="#">Due Today <span href="#" class="taskCount">(1)</span></a>
+				<a href="#">New Tasks <span href="#" class="taskCount">(3)</span></a>
+				<a href="#">All Tasks (9)</a>
+			</div>
+
+            <h3>
+                My Accounts
+            </h3>
+            <div class="myTasks">
+                <a href="#" id="sbAllAccountsLink">All Accounts <span class="taskCount" id="sbAllAccounts"></span></a>
+            </div>
+		</div>
+	</div>
+</div><div class="content760 mainForm">
+
+			<form id="person" action="/mpower/person.htm?personId=1" method="post"><div class="columns iconHeader">
+	<div class="column"><img src="images/dude2.gif" /></div>
+	<div class="column">
+		<h2 class="personEdit cluetip" rel="personView.htm?personId=1" id="personTitle">
+					Smith, Adam</h2>
+			<h3 id="currentFunctionTitle" class="personEdit">
+			Profile</h3>
+	</div>
+
+	<div class="columnRight" style="padding:19px 19px 0 0;">
+			<input type="submit" value="Save Changes" class="saveButton" />
+		</div>
+	<div class="clearColumns"></div>
+</div><h4 class="formSectionHeader">Personal Details</h4>
+					<div class="columns">
+			<div class="column">
+	<li class="side" id="li-person_contactInfo-constituentType">
+			<label for="constituentType" class="desc">
+				<span class="required">*</span>&nbsp;Constituent Type</label>
+
+			<select name="constituentType" class="picklist " id="constituentType"
+						references="li:has(.ea-individual),li:has(.ea-organization)">
+						<option reference="li:has(.ea-individual)" value="individual" 
+								selected="selected">
+								Individual</option>
+							<option reference="li:has(.ea-organization)" value="organization" 
+								>
+								Organization</option>
+							</select>
+					<div style="display:none" id="selectedRef-constituentType">li:has(.ea-individual)</div>
+
+				</li>
+	<li class="side" id="li-person_contactInfo-constituentIndividualRoles">
+			<label for="constituentIndividualRoles" class="desc">
+				Constituent Roles</label>
+			<div class="lookupWrapper">
+					    <div class="multiPicklist multiLookupField ea-individual" id="constituentIndividualRoles"
+					    	references="li:has(.ea-affiliate),li:has(.ea-alumni),li:has(.ea-contact),li:has(.ea-donor),li:has(.ea-headOfHousehold),li:has(.ea-member),li:has(.ea-prospect),li:has(.ea-sponsor),li:has(.ea-volunteer)">
+							<div class='multiPicklistOption' style='display:none' 
+									id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
+									Donor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-sponsor" selectedId="sponsor" reference="li:has(.ea-sponsor)">
+									Sponsor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-affiliate" selectedId="affiliate" reference="li:has(.ea-affiliate)">
+									Affiliate<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-volunteer" selectedId="volunteer" reference="li:has(.ea-volunteer)">
+
+									Volunteer<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-member" selectedId="member" reference="li:has(.ea-member)">
+									Member<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-prospect" selectedId="prospect" reference="li:has(.ea-prospect)">
+									Prospect<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+
+								</div>
+								<div class='multiPicklistOption' style='' 
+									id="option-alumni" selectedId="alumni" reference="li:has(.ea-alumni)">
+									Alumni<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='' 
+									id="option-headOfHousehold" selectedId="headOfHousehold" reference="li:has(.ea-headOfHousehold)">
+									Head of Household<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-contact" selectedId="contact" reference="li:has(.ea-contact)">
+
+									Contact<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								
+					        &nbsp;
+					    	<input type='hidden' name='labelText' id='constituentIndividualRoles-labelText' value="Constituent Roles"/>
+					        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText" alt="Lookup" title="Lookup">Lookup</a>
+					    </div>
+					    <input type="hidden" name="constituentIndividualRoles" id="constituentIndividualRoles" value="headOfHousehold,alumni" />
+					</div>
+
+					<div style="display:none" id="selectedRef-constituentIndividualRoles">li:has(.ea-alumni),li:has(.ea-headOfHousehold)</div>
+				</li>
+	<li class="side" id="li-person_contactInfo-constituentOrganizationRoles">
+			<label for="constituentOrganizationRoles" class="desc">
+				Constituent Roles</label>
+			<div class="lookupWrapper">
+					    <div class="multiPicklist multiLookupField ea-organization" id="constituentOrganizationRoles"
+					    	references="li:has(.ea-affiliate),li:has(.ea-donor),li:has(.ea-foundation),li:has(.ea-member),li:has(.ea-prospect),li:has(.ea-sponsor),li:has(.ea-trust),li:has(.ea-vendor),li:has(.ea-volunteer)">
+							<div class='multiPicklistOption' style='display:none' 
+									id="option-donor" selectedId="donor" reference="li:has(.ea-donor)">
+
+									Donor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-sponsor" selectedId="sponsor" reference="li:has(.ea-sponsor)">
+									Sponsor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-affiliate" selectedId="affiliate" reference="li:has(.ea-affiliate)">
+									Affiliate<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-volunteer" selectedId="volunteer" reference="li:has(.ea-volunteer)">
+									Volunteer<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-member" selectedId="member" reference="li:has(.ea-member)">
+									Member<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-prospect" selectedId="prospect" reference="li:has(.ea-prospect)">
+
+									Prospect<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-trust" selectedId="trust" reference="li:has(.ea-trust)">
+									Trust<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-foundation" selectedId="foundation" reference="li:has(.ea-foundation)">
+									Foundation<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+
+								</div>
+								<div class='multiPicklistOption' style='display:none' 
+									id="option-vendor" selectedId="vendor" reference="li:has(.ea-vendor)">
+									Vendor<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+								</div>
+								
+					        &nbsp;
+					    	<input type='hidden' name='labelText' id='constituentOrganizationRoles-labelText' value="Constituent Roles"/>
+					        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="hideText" alt="Lookup" title="Lookup">Lookup</a>
+					    </div>
+
+					    <input type="hidden" name="constituentOrganizationRoles" id="constituentOrganizationRoles" value="" />
+					</div>
+					<div style="display:none" id="selectedRef-constituentOrganizationRoles"></div>
+				</li>
+
+	<li class="clear"></li>
+				</ul>
+			</div>
+			<div class="clearColumns"></div>
+		</div>
+	<h4 class="formSectionHeader">Demographic Information</h4>
+					<div class="columns">
+
+			<div class="column">
+				<ul class="formFields width375">
+					<li class="side" id="li-person_demographics-maritalStatus">
+			<label for="maritalStatus" class="desc">
+				Marital Status</label>
+			<select name="maritalStatus" class="picklist ea-individual" id="maritalStatus"
+						references="li:has(#customFieldMap-individual_spouse-_value)">
+						<option value="none">None</option>
+						<option reference="li:has(#customFieldMap-individual_spouse-_value)" value="Unknown" 
+								>
+
+								Unknown</option>
+							<option  value="Single" 
+								selected="selected">
+								Single</option>
+							<option reference="li:has(#customFieldMap-individual_spouse-_value)" value="Married" 
+								>
+								Married</option>
+							<option reference="li:has(#customFieldMap-individual_spouse-_value)" value="Divorced" 
+								>
+								Divorced</option>
+
+							<option reference="li:has(#customFieldMap-individual_spouse-_value)" value="Widowed" 
+								>
+								Widowed</option>
+							<option reference="li:has(#customFieldMap-individual_spouse-_value)" value="Engaged" 
+								>
+								Engaged</option>
+							</select>
+					<div style="display:none" id="selectedRef-maritalStatus"></div>
+				</li>
+	<li class="side" id="li-person_demographics-customFieldMap-individual_spouse-_value">
+
+			<label for="customFieldMap[individual.spouse].value" class="desc">
+				Spouse</label>
+			<div class="lookupWrapper">
+					    <div class="lookupField ea-individual">
+							
+					        &nbsp;
+					        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="person.customFieldMap[individual.spouse]" class="hideText" alt="Lookup" title="Lookup">Lookup</a>
+					    </div>
+						<input type="hidden" name="customFieldMap[individual.spouse].value" value="" id="customFieldMap-individual_spouse-_value" />
+
+						<div class="queryLookupOption noDisplay clone">
+							<a href="" target="_blank"></a>
+							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption noDisplay"><img src="images/icons/deleteRow.png" alt="Remove This Option" title="Remove This Option"/></a>
+						</div>
+					</div>
+				</li>
+
+	<li class="clear"></li>
+				</ul>
+			</div>
+			<div class="clearColumns"></div>
+		</div>
+	<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="Save Changes" class="saveButton" />
+					<a class="newAccountButton" href="person.htm">Add New Constituent È </a>
+
+				</div>
+			</form></div>
+	<div class="clearBoth"></div>
+			<div id="footer">
+</div></div>
+		<div class="jqmWindow" id="dialog">
+</div></body>
+
+</html>

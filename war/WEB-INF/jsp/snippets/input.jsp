@@ -36,31 +36,31 @@
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
-						references="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone), .<c:out value='${commandObject}'/>_editAch, .<c:out value='${commandObject}'/>_editCreditCard">
+						references="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone),.<c:out value='${commandObject}'/>_editAch,.<c:out value='${commandObject}'/>_editCreditCard">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+						<option value="new" reference="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
 						<c:if test='${fieldVO.model.paymentSource.userCreated}'>
-							<c:set var="selectedRef" value="li:has(#paymentType)" scope="page"/>
+							<c:set var="selectedRef" value="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone)" scope="page"/>
 						</c:if>
 						<c:if test="${not empty paymentSources}">
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 							<c:if test="${opt.type == 'ACH'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch,li:has(#selectedAddress),li:has(#selectedPhone)" 
 									address="${opt.address.id}" phone="${opt.phone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumber}'/>" acct="<c:out value='${opt.achAccountNumber}'/>"><c:out value='${opt.profile}'/></option>
 								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
-									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
+									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editAch,li:has(#selectedAddress),li:has(#selectedPhone)" scope="page"/>
 								</c:if>
 							</c:if>
 							<c:if test="${opt.type == 'Credit Card'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard,li:has(#selectedAddress),li:has(#selectedPhone)" 
 									address="${opt.address.id}" phone="${opt.phone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumber}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
 								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
-									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" scope="page"/>
+									<c:set var="selectedRef" value=".<c:out value='${commandObject}'/>_editCreditCard,li:has(#selectedAddress),li:has(#selectedPhone)" scope="page"/>
 								</c:if>
 							</c:if>
 						</c:forEach>
@@ -68,6 +68,10 @@
 							</optgroup>
 						</c:if>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone)" scope="page"/>
+					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
@@ -91,6 +95,10 @@
 							</optgroup>
 						</c:if>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="li:has(:input[name^='address'])" scope="page"/>
+					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
@@ -114,6 +122,10 @@
 							</optgroup>
 						</c:if>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="li:has(:input[name^='phone'])" scope="page"/>
+					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
@@ -137,6 +149,10 @@
 							</optgroup>
 						</c:if>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="li:has(:input[name^='email'])" scope="page"/>
+					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PICKLIST'}">
@@ -157,10 +173,16 @@
 							</c:if>
 						</c:forEach>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fieldVO.referenceValues[0] : ''}" scope="page"/>
+					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>">
+					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
+						references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
+						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
@@ -179,6 +201,11 @@
 							</option>
 						</c:forEach>
 					</select>
+					<c:if test="${fieldVO.required && selectedRef eq ''}">
+						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
+						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fieldVO.referenceValues[0] : ''}" scope="page"/>
+					</c:if>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
 					<%-- TODO: move to tag library --%>
@@ -377,15 +404,28 @@
 					&nbsp;
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">
-				    <div class="readOnlyField multiPicklist <c:out value='${fieldVO.entityAttributes}'/>">
+				    <div class="readOnlyField multiPicklist <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
+				    	references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
+						<c:set var="selectedRef" value="" scope="page"/>
 						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 							<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
 							<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
 								id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
 								<c:out value='${fieldVO.displayValues[status.index]}'/></a>
 							</div>
+							<c:if test="${fieldVO.hasField == true}">
+								<c:choose>
+									<c:when test="${selectedRef == ''}">
+										<c:set var="selectedRef" value="${fieldVO.referenceValues[status.index]}" scope="page"/>
+									</c:when>
+									<c:otherwise>
+										<c:set var="selectedRef" value="${selectedRef},${fieldVO.referenceValues[status.index]}" scope="page"/>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
 						</c:forEach>
 				    </div>
+					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:otherwise>
 					<c:out value="Field type ${fieldVO.fieldType} not yet implemented." />

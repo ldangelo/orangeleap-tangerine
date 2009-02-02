@@ -629,11 +629,11 @@ var MPower = {
 			}
 			var routing = $option.attr("routing");
 			if (routing) {
-				$("div.gift_editAch div#paymentSource_achRoutingNumber, div.commitment_editAch div#paymentSource_achRoutingNumber").text(routing);
+				$("div.gift_editAch div#paymentSource_achRoutingNumberDisplay, div.commitment_editAch div#paymentSource_achRoutingNumberDisplay").text(routing);
 			}
 			var acct = $option.attr("acct");
 			if (acct) {
-				$("div.gift_editAch div#paymentSource_achAccountNumber, div.commitment_editAch div#paymentSource_achAccountNumber").text(acct);
+				$("div.gift_editAch div#paymentSource_achAccountNumberDisplay, div.commitment_editAch div#paymentSource_achAccountNumberDisplay").text(acct);
 			}
 			
 			// Credit Card
@@ -647,7 +647,7 @@ var MPower = {
 			}
 			var number = $option.attr("number");
 			if (number) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardNumber, div.commitment_editCreditCard div#paymentSource_creditCardNumber").text(number);
+				$("div.gift_editCreditCard div#paymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#paymentSource_creditCardNumberDisplay").text(number);
 			}
 			var exp = $option.attr("exp");
 			if (exp) {

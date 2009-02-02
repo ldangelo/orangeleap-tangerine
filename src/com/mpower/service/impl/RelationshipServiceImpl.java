@@ -276,11 +276,11 @@ public class RelationshipServiceImpl implements RelationshipService {
 		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
 		if (fieldAttributes == null) return;
 		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other person. 
-		// Otherwise we don't know which one to set so it would have to be set manually.
-		if (!otherFieldDefinition.getEntityAttributes().contains(",")) {
-	        otherPerson.addConstituentRole(fieldAttributes);
+		// For multiple attributes, take the first as the default.
+		if (fieldAttributes.contains(",")) {
+			fieldAttributes = fieldAttributes.substring(0,fieldAttributes.indexOf(","));
 		}
-
+	    otherPerson.addConstituentRole(fieldAttributes);
 	}
 
 	// Field must be a detail (child list) custom field.

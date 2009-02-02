@@ -12,7 +12,10 @@ import javax.persistence.Column;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.PropertyAccessorUtils;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.Viewable;
+import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.AuditService;
 import com.mpower.service.relationship.RelationshipUtil;
@@ -74,7 +78,7 @@ public class AuditServiceImpl implements AuditService {
     private List<Audit> auditViewable(Viewable viewable) {
         List<Audit> audits = new ArrayList<Audit>();
         Date date = new Date();
-        BeanWrapperImpl bean = new BeanWrapperImpl(viewable);
+        BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(viewable);
         if (viewable.getFieldValueMap() == null || viewable.getFieldValueMap().get("id") == null) {
             String name = null;
             if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -94,7 +98,7 @@ public class AuditServiceImpl implements AuditService {
                     }
                     Object originalBeanProperty = viewable.getFieldValueMap().get(key);
                     String fieldName = key;
-                    if (bean.isReadableProperty(fieldName)) {
+                    if (bean.isReadableProperty(fieldName) && this.isAuditable(bean, fieldName)) {
                         Object beanProperty = bean.getPropertyValue(fieldName);
                         if (beanProperty instanceof CustomField) {
                             fieldName = key + ".value";
@@ -148,6 +152,35 @@ public class AuditServiceImpl implements AuditService {
             }
         }
         return audits;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected boolean isAuditable(BeanWrapper bean, String fieldName) {
+        boolean auditable = true;
+        try {
+            Class clazz = bean.getWrappedClass(); 
+            if (PropertyAccessorUtils.isNestedOrIndexedProperty(fieldName)) {
+                int lastNestedClassIndex = PropertyAccessorUtils.getLastNestedPropertySeparatorIndex(fieldName);
+                if (lastNestedClassIndex > -1) {
+                    String nestedPath = fieldName.substring(0, lastNestedClassIndex);
+                    if (bean.isReadableProperty(nestedPath)) {
+                        clazz = bean.getPropertyValue(nestedPath).getClass();
+                        fieldName = fieldName.substring(lastNestedClassIndex + 1);
+                    }
+                }
+            }
+            
+            Field field = clazz.getDeclaredField(fieldName);
+            if (field.isAnnotationPresent(NotAuditable.class)) {
+                auditable = field.getAnnotation(NotAuditable.class).auditValue();
+            }
+        }
+        catch (Exception ex) {
+            if (logger.isInfoEnabled()) {
+                logger.info("isAuditable: Not able to determine if fieldName = " + fieldName + " is auditable, assuming it is");
+            }
+        }
+        return auditable;
     }
     
     // Get Person name from id list.

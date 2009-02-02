@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.util.AES;
 import com.mpower.util.Utilities;
 
@@ -70,6 +71,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     private String creditCardType;
 
     @Column(name = "CREDIT_CARD_NUMBER")
+    @NotAuditable
     private String creditCardNumberEncrypted;
 
     @Column(name = "CREDIT_CARD_EXPIRATION")
@@ -79,9 +81,11 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     private String achHolderName;
 
     @Column(name = "ACH_ROUTING_NUMBER")
+    @NotAuditable
     private String achRoutingNumber;
 
     @Column(name = "ACH_ACCOUNT_NUMBER")
+    @NotAuditable
     private String achAccountNumberEncrypted;
 
     @Column(name = "INACTIVE")
@@ -97,13 +101,16 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     private Integer creditCardExpirationYear;
 
     @Transient
+    @NotAuditable
     private String creditCardNumber;
 
     // absolutely don't store this in the db - see VISA merchant rules only used for processing
     @Transient
+    @NotAuditable
     private String creditCardSecurityCode;
 
     @Transient
+    @NotAuditable
     private String achAccountNumber;
 
     @Transient
@@ -120,11 +127,12 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     @Transient
     private boolean userCreated = false;
-
+  
     public PaymentSource() {
     }
 
     public PaymentSource(Person person) {
+        this();
         this.person = person;
     }
 
@@ -233,14 +241,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     }
 
     public String getCreditCardNumberDisplay() {
-        String clear = null;
-        if (creditCardNumberEncrypted != null) {
-            clear = AES.decrypt(creditCardNumberEncrypted);
-            if (clear != null && clear.length() >= 4) {
-                return "***-" + clear.substring(clear.length() - 4);
-            }
-        }
-        return clear;
+        return decryptAndMask(creditCardNumberEncrypted);
     }
 
     public void setCreditCardNumberDisplay(String str) {
@@ -261,6 +262,14 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     public void setAchRoutingNumber(String achRoutingNumber) {
         this.achRoutingNumber = achRoutingNumber;
+    }
+    
+    public String getAchRoutingNumberDisplay() {
+        return mask(achRoutingNumber);
+    }
+
+    public void setAchRoutingNumberDisplay(String str) {
+        // no-op
     }
 
     public String getAchAccountNumberEncrypted() {
@@ -288,14 +297,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
     }
 
     public String getAchAccountNumberDisplay() {
-        String clear = null;
-        if (achAccountNumberEncrypted != null) {
-            clear = AES.decrypt(achAccountNumberEncrypted);
-            if (clear != null && clear.length() >= 4) {
-                return "***-" + clear.substring(clear.length() - 4);
-            }
-        }
-        return clear;
+        return decryptAndMask(achAccountNumberEncrypted);
     }
 
     public void setAchAccountNumberDisplay(String str) {
@@ -473,6 +475,22 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     private String findLastFourDigits(String number) {
         return number == null ? "" : (number.length() > 4 ? number.substring(number.length() - 4, number.length()) : number);
+    }
+    
+    private String decryptAndMask(String encryptedString) {
+        String clear = null;
+        if (encryptedString != null) {
+            clear = AES.decrypt(encryptedString);
+            clear = mask(clear);
+        }
+        return clear;
+    }
+    
+    private String mask(String clear) {
+        if (clear != null && clear.length() >= 4) {
+            return "****" + clear.substring(clear.length() - 4);
+        }
+        return clear;
     }
 
     /**

@@ -84,6 +84,7 @@
     <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
+    	<constructor-arg ref="personService"/>
         <sec:custom-authentication-provider/>
     </bean>
 

@@ -14,6 +14,8 @@ public interface PersonService {
 
     public Person readPersonById(Long id);
 
+    public Person readPersonByLoginId(String id);
+
 	public List<Person> readPersons(String siteName, Map<String, Object> params);
 
     public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds);

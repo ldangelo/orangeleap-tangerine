@@ -34,4 +34,13 @@
 		</query>
 	</named-query>
 
+
+	<named-query name="READ_PERSON_BY_LOGIN_ID">
+		<query>
+			SELECT person
+			FROM com.mpower.domain.Person person
+			WHERE person.loginId = :loginId
+		</query>
+	</named-query>
+
 </entity-mappings>

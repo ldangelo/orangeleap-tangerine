@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.logging.Log;
@@ -17,6 +20,7 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator;
 import org.springframework.util.Assert;
 
+import com.mpower.domain.Person;
 import com.mpower.type.RoleType;
 
 public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
@@ -234,4 +238,19 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
 
         return (GrantedAuthority[]) roles.toArray(new GrantedAuthority[roles.size()]);
     }
+    
+    public void populatePersonAttributesFromLdap(DirContextOperations user, String username, String site, Person person) throws NamingException {
+    	Object attribute = user.getObjectAttribute("cn");
+    	if (attribute != null) {
+    		String cn = ("" + attribute).trim();
+    		int i = cn.indexOf(" ");
+    		if (i == -1) {
+            	person.setLastName(cn);
+    		} else {
+            	person.setFirstName(cn.substring(0,i));
+            	person.setLastName(cn.substring(i+1));
+    		}
+    	}
+    }
+    
 }

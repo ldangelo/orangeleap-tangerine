@@ -120,6 +120,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     @Column(name = "CONSTITUENT_ORGANIZATION_ROLES")
     private String constituentOrganizationRoles = "";
 
+    @Column(name = "LOGIN_ID")
+    private String loginId;
+
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @AutoPopulate
@@ -525,6 +528,14 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
 	public String getLegalName() {
 		return legalName;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+	public String getLoginId() {
+		return loginId;
 	}
 
 

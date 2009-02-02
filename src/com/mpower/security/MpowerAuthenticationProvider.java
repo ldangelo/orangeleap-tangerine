@@ -11,6 +11,7 @@ import org.springframework.security.AuthenticationServiceException;
 import org.springframework.security.BadCredentialsException;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.SpringSecurityMessageSource;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.ldap.LdapAuthoritiesPopulator;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,10 @@ import org.springframework.security.userdetails.ldap.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.mpower.domain.Person;
+import com.mpower.service.PersonService;
+import com.mpower.service.exception.PersonValidationException;
+
 
 public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
@@ -32,10 +37,12 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private LdapAuthoritiesPopulator authoritiesPopulator;
     private UserDetailsContextMapper userDetailsContextMapper = new LdapUserDetailsMapper();
     private boolean useAuthenticationRequestCredentials = true;
-
-    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator) {
+    private PersonService personService;
+    
+    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, PersonService personService) {
         this.setAuthenticator(authenticator);
         this.setAuthoritiesPopulator(authoritiesPopulator);
+        this.setPersonService(personService);
     }
 
     public MpowerAuthenticationProvider(LdapAuthenticator authenticator) {
@@ -108,12 +115,36 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
 
             UserDetails user = userDetailsContextMapper.mapUserFromContext(userData, username, extraAuthorities);
 
-            return createSuccessfulAuthentication(userToken, user);
+            Authentication authenticationToken = createSuccessfulAuthentication(userToken, user);
+            
+            if (authenticationToken.isAuthenticated()) {
+            	Person person = getPersonService().readPersonByLoginId(username);
+            	if (person == null) {
+            	    person = createPerson(userData, username, site);
+            	} 
+            	((MpowerAuthenticationToken)authenticationToken).setPersonId(person.getId());
+            } 
+            
+            return authenticationToken;
+            
         } catch (NamingException ldapAccessFailure) {
             throw new AuthenticationServiceException(ldapAccessFailure.getMessage(), ldapAccessFailure);
+        } catch (PersonValidationException personValidationException) {
+            throw new AuthenticationServiceException(personValidationException.getMessage(), personValidationException);
+        } catch (javax.naming.NamingException namingException) {
+            throw new AuthenticationServiceException(namingException.getMessage(), namingException);
         }
     }
-
+    
+    // Create a Person object row corresponding to the login user.
+    private Person createPerson(DirContextOperations user, String username, String site)  throws PersonValidationException, javax.naming.NamingException {
+        Person person = getPersonService().createDefaultPerson(site);
+        ((MpowerLdapAuthoritiesPopulator)getAuthoritiesPopulator()).populatePersonAttributesFromLdap(user, username, site, person);
+        person.setConstituentIndividualRoles("user");
+        person.setLoginId(username);
+        return getPersonService().maintainPerson(person);
+    }
+    
     protected GrantedAuthority[] loadUserAuthorities(DirContextOperations userData, String username, String password, String site) {
         return ((MpowerLdapAuthoritiesPopulator)getAuthoritiesPopulator()).getGrantedAuthorities(userData, username, site);
     }
@@ -130,7 +161,15 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
         return (MpowerAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
-    private static class NullAuthoritiesPopulator implements LdapAuthoritiesPopulator {
+    public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+
+	public PersonService getPersonService() {
+		return personService;
+	}
+
+	private static class NullAuthoritiesPopulator implements LdapAuthoritiesPopulator {
         public GrantedAuthority[] getGrantedAuthorities(DirContextOperations userDetails, String username) {
             return new GrantedAuthority[0];
         }

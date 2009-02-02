@@ -1,22 +1,24 @@
 package com.mpower.json.controller;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
-import javax.annotation.Resource;
-
-import com.mpower.service.PersonService;
-import com.mpower.service.GiftService;
-import com.mpower.domain.Person;
 import com.mpower.domain.Gift;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.math.BigDecimal;
+import com.mpower.domain.Person;
+import com.mpower.security.MpowerAuthenticationToken;
+import com.mpower.service.GiftService;
+import com.mpower.service.PersonService;
 
 /**
  * Controller used by the sidebar to get the accounts for
@@ -37,9 +39,10 @@ public class MyAccountsController {
 
         List<Map> response = new ArrayList<Map>();
 
-        //normally would retreive the ID from the DB, but for demo, assume
-        //we're adam smith
-        Person person = personService.readPersonById(1L);
+        MpowerAuthenticationToken mPowerAuthenticationToken = (MpowerAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
+        Person person = personService.readPersonById(mPowerAuthenticationToken.getPersonId());
+        if (person == null) return new ModelMap();
+        
         String acctString = person.getCustomFieldValue("individual.accountManagerFor");
 
         if (acctString != null) {

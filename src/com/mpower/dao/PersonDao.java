@@ -13,6 +13,8 @@ public interface PersonDao {
 
     public Person readPerson(Long id);
     
+    public Person readPersonByLoginId(String id);
+    
     public List<Person> readPersons(String siteName, List<Long> ids);
 
     public List<Person> readPersons(String siteName, Map<String, Object> params);

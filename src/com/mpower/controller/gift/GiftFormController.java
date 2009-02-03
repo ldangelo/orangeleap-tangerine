@@ -38,6 +38,15 @@ public class GiftFormController extends TangerineFormController {
         Gift gift = (Gift) command;
         gift.removeInvalidDistributionLines();
     }
+   
+    @Override
+    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        super.onBindAndValidate(request, command, errors);
+        if (errors.hasErrors()) {
+            Gift gift = (Gift) command;
+            gift.defaultCreateDistributionLine();
+        }
+    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {

@@ -10,11 +10,11 @@
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validators">
 			<list>
-	            <ref bean="distributionLinesValidator"/>	            
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="gift"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
+	            <ref bean="distributionLinesValidator"/>	            
 	        </list>
         </property>
         <property name="formView" value="gift/gift" />

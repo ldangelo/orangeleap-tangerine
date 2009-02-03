@@ -44,7 +44,7 @@ public class DistributionLinesValidator implements Validator {
                 amount = commitment.getAmountTotal();
             }
         }
-        if (total.compareTo(amount) != 0) {
+        if (total == null || amount == null || total.compareTo(amount) != 0) {
             errors.reject("distributionLineAmounts");
         }
     }

@@ -11,11 +11,11 @@
 		<property name="validators">
 			<list>
 	            <ref bean="commitmentValidator"/>
-	            <ref bean="distributionLinesValidator"/>	            
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="recurringGift"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
+	            <ref bean="distributionLinesValidator"/>	            
 			</list>
         </property>
         <property name="formView" value="gift/recurringGift" />

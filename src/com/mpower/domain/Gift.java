@@ -361,6 +361,24 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         }
     }
 
+    /**
+     * Check for at least 1 valid DistributionLine; create one if not found
+     */
+    public void defaultCreateDistributionLine() {
+        boolean hasValid = false;
+        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
+        while (distLineIter.hasNext()) {
+            DistributionLine line = distLineIter.next();
+            if (line != null) {
+                hasValid = true;
+                break;
+            }
+        }
+        if (!hasValid) {
+            getDistributionLines().get(0); // Default create one Distribution Line object if necessary
+        }
+    }
+
     @Override
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;

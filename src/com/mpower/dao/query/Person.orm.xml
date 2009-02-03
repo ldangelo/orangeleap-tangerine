@@ -39,7 +39,7 @@
 		<query>
 			SELECT person
 			FROM com.mpower.domain.Person person
-			WHERE person.loginId = :loginId
+			WHERE person.loginId = :loginId AND site.id = :siteId
 		</query>
 	</named-query>
 

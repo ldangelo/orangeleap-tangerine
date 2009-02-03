@@ -56,9 +56,10 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Person readPersonByLoginId(String loginId) {
+    public Person readPersonByLoginId(String loginId, String siteName) {
         Query query = em.createNamedQuery("READ_PERSON_BY_LOGIN_ID");
         query.setParameter("loginId", loginId);
+        query.setParameter("siteId", siteName);
         List<Person> persons = query.getResultList();
         if (persons.size() == 0) return null;
         return persons.get(0);

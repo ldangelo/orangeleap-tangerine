@@ -118,7 +118,8 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
             Authentication authenticationToken = createSuccessfulAuthentication(userToken, user);
             
             if (authenticationToken.isAuthenticated()) {
-            	Person person = getPersonService().readPersonByLoginId(username);
+            	String siteName = ((MpowerAuthenticationToken)authenticationToken).getSite();
+            	Person person = getPersonService().readPersonByLoginId(username, siteName);
             	if (person == null) {
             	    person = createPerson(userData, username, site);
             	} 

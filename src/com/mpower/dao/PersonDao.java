@@ -13,7 +13,7 @@ public interface PersonDao {
 
     public Person readPerson(Long id);
     
-    public Person readPersonByLoginId(String id);
+    public Person readPersonByLoginId(String id, String siteName);
     
     public List<Person> readPersons(String siteName, List<Long> ids);
 

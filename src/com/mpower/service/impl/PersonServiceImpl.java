@@ -69,8 +69,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person readPersonByLoginId(String id) {
-        return personDao.readPersonByLoginId(id);
+    public Person readPersonByLoginId(String id, String siteName) {
+        return personDao.readPersonByLoginId(id, siteName);
     }
 
     @Override

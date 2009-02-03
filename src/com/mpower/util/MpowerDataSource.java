@@ -32,7 +32,9 @@ public class MpowerDataSource implements DataSource {
 		
 		String siteName = SessionServiceImpl.lookupUserSiteName();
 		boolean hasSite = siteName != null && siteName.trim().length() > 0;
-		//if (hasSite) logger.debug("getConnection() called.");
+		if (hasSite) {
+			//logger.debug("getConnection() called.");
+		}
 
 		if (!splitDatabases) {
 			

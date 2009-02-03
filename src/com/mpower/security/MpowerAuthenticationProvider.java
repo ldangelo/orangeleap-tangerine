@@ -1,5 +1,7 @@
 package com.mpower.security;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -22,12 +24,8 @@ import org.springframework.security.userdetails.ldap.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
 import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
-import com.mpower.service.exception.PersonValidationException;
-import com.mpower.service.impl.SessionServiceImpl;
 
 
 public class MpowerAuthenticationProvider implements AuthenticationProvider {
@@ -122,33 +120,22 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
             Authentication authenticationToken = createSuccessfulAuthentication(userToken, user);
             
             if (authenticationToken.isAuthenticated()) {
-            	String siteName = ((MpowerAuthenticationToken)authenticationToken).getSite();
-            	siteService.createSiteIfNotExist(siteName);
-            	Person person = getPersonService().readPersonByLoginId(username, siteName);
-            	if (person == null) {
-            	    person = createPerson(userData, username, site);
-            	} 
-            	((MpowerAuthenticationToken)authenticationToken).setPersonId(person.getId());
-            } 
+	            // IMPORTANT: Can't write to the database until this authentication token is set in the session, 
+	            // otherwise the MpowerDataSource will not have access to the siteName to change databases.
+	            try {
+        			Map<String, String> map = ((MpowerLdapAuthoritiesPopulator)authoritiesPopulator).populateUserAttributesMapFromLdap(userData, username, site);
+	            	((MpowerAuthenticationToken)authenticationToken).setUserAttributes(map);
+				} catch (javax.naming.NamingException e) {
+					e.printStackTrace();
+					throw new RuntimeException("Unable to read user attributes.", e);
+				}
+            }
             
             return authenticationToken;
             
         } catch (NamingException ldapAccessFailure) {
             throw new AuthenticationServiceException(ldapAccessFailure.getMessage(), ldapAccessFailure);
-        } catch (PersonValidationException personValidationException) {
-            throw new AuthenticationServiceException(personValidationException.getMessage(), personValidationException);
-        } catch (javax.naming.NamingException namingException) {
-            throw new AuthenticationServiceException(namingException.getMessage(), namingException);
         }
-    }
-    
-    // Create a Person object row corresponding to the login user.
-    private Person createPerson(DirContextOperations user, String username, String site)  throws PersonValidationException, javax.naming.NamingException {
-        Person person = getPersonService().createDefaultPerson(site);
-        ((MpowerLdapAuthoritiesPopulator)getAuthoritiesPopulator()).populatePersonAttributesFromLdap(user, username, site, person);
-        person.setConstituentIndividualRoles("user");
-        person.setLoginId(username);
-        return getPersonService().maintainPerson(person);
     }
     
     protected GrantedAuthority[] loadUserAuthorities(DirContextOperations userData, String username, String password, String site) {

@@ -19,6 +19,7 @@ import com.mpower.domain.Person;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
+import com.mpower.service.SiteService;
 
 /**
  * Controller used by the sidebar to get the accounts for
@@ -28,18 +29,23 @@ import com.mpower.service.PersonService;
 @Controller
 public class MyAccountsController {
 
+    @Resource(name="siteService")
+    private SiteService siteService;
+
     @Resource(name="personService")
     private PersonService personService;
 
     @Resource(name="giftService")
     private GiftService giftService;
 
-    @RequestMapping("/myAccounts.json")
+    @SuppressWarnings("unchecked")
+	@RequestMapping("/myAccounts.json")
     public ModelMap getAllAccounts(HttpSession session) {
 
         List<Map> response = new ArrayList<Map>();
 
         MpowerAuthenticationToken mPowerAuthenticationToken = (MpowerAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
+        siteService.createSiteAndUserIfNotExist(mPowerAuthenticationToken.getSite());
         Person person = personService.readPersonById(mPowerAuthenticationToken.getPersonId());
         if (person == null) return new ModelMap();
         

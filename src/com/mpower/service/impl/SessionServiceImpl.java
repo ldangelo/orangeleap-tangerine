@@ -12,10 +12,10 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import com.mpower.dao.SiteDao;
 import com.mpower.domain.Site;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.SessionService;
+import com.mpower.service.SiteService;
 import com.mpower.type.RoleType;
 
 @Component("sessionService")
@@ -24,14 +24,11 @@ public class SessionServiceImpl implements SessionService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "siteDao")
-    private SiteDao siteDao;
+    @Resource(name = "siteService")
+    private SiteService siteService;
 
     public Site lookupSite() {
-    	String siteName = lookupUserSiteName();
-        Site site = siteDao.readSite(siteName);
-        if (site == null) site = siteDao.createSite(siteName, "", null);
-        return site;
+    	return siteService.createSiteAndUserIfNotExist(lookupUserSiteName());
     }
 
     public static String lookupUserSiteName() {
@@ -68,6 +65,14 @@ public class SessionServiceImpl implements SessionService {
         }
         return roles;
     }
+
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
+
+	public SiteService getSiteService() {
+		return siteService;
+	}
 
     // private static void storeUser(ServletRequest request, User user) {
     // storeValue((HttpServletRequest) request, SessionValue.USER, user);

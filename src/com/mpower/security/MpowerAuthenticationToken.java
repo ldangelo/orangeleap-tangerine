@@ -21,6 +21,8 @@ public class MpowerAuthenticationToken extends UsernamePasswordAuthenticationTok
     private Map<String, AccessType> pageAccess;
     
     private Long personId;
+    
+    private Map<String, String> userAttributes;
 
     public MpowerAuthenticationToken(Object principal, Object credentials, String site) {
         super(principal, credentials);
@@ -50,5 +52,13 @@ public class MpowerAuthenticationToken extends UsernamePasswordAuthenticationTok
 
 	public Long getPersonId() {
 		return personId;
+	}
+
+	public void setUserAttributes(Map<String, String> userAttributes) {
+		this.userAttributes = userAttributes;
+	}
+
+	public Map<String, String> getUserAttributes() {
+		return userAttributes;
 	}
 }

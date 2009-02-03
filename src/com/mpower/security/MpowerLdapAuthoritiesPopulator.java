@@ -1,12 +1,12 @@
 package com.mpower.security;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.logging.Log;
@@ -20,7 +20,6 @@ import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.populator.DefaultLdapAuthoritiesPopulator;
 import org.springframework.util.Assert;
 
-import com.mpower.domain.Person;
 import com.mpower.type.RoleType;
 
 public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
@@ -239,23 +238,28 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
         return (GrantedAuthority[]) roles.toArray(new GrantedAuthority[roles.size()]);
     }
     
-    public void populatePersonAttributesFromLdap(DirContextOperations user, String username, String site, Person person) throws NamingException {
+    public static String FIRST_NAME = "firstName";
+    public static String LAST_NAME = "lastName";
+    
+    public Map<String, String> populateUserAttributesMapFromLdap(DirContextOperations user, String username, String site) throws NamingException {
+    	Map<String, String> map = new HashMap<String, String>();
     	Object attribute = user.getObjectAttribute("cn");
     	if (attribute != null) {
     		String cn = ("" + attribute).trim();
     		int i = cn.indexOf(" ");
     		if (i == -1) {
-            	person.setLastName(cn);
+            	map.put(LAST_NAME, cn);
     		} else {
-            	person.setFirstName(cn.substring(0,i));
-            	person.setLastName(cn.substring(i+1));
+    			map.put(FIRST_NAME, cn.substring(0,i));
+            	map.put(LAST_NAME, cn.substring(i+1));
     		}
     	}
     	attribute = user.getObjectAttribute("sn");
     	if (attribute != null) {
     		String sn = ("" + attribute).trim();
-            person.setLastName(sn);
+    		map.put(LAST_NAME, sn);
     	}
+    	return map;
     }
     
 }

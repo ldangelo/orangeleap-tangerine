@@ -71,7 +71,12 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<bean id="dataSource" class="com.mpower.util.MpowerDataSource" destroy-method="close">
+		<property name="dataSource" ref="dataSource-pooled" />
+		<property name="splitDatabases" value="false" />
+	</bean>
+
+	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName">
 			<value>com.mysql.jdbc.Driver</value>
 	    </property>

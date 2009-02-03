@@ -15,28 +15,40 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.SiteDao;
 import com.mpower.domain.CustomField;
+import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.security.MpowerAuthenticationToken;
+import com.mpower.security.MpowerLdapAuthoritiesPopulator;
+import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
 import com.mpower.service.customization.PageCustomizationService;
+import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.MessageResourceType;
 import com.mpower.type.PageType;
 
 @Service("siteService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class SiteServiceImpl implements SiteService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name = "personService")
+    private PersonService personService;
 
     @Resource(name = "fieldService")
     private FieldService fieldService;
@@ -51,12 +63,41 @@ public class SiteServiceImpl implements SiteService {
     private SiteDao siteDao;
 
     @Override
-    public Site createSiteIfNotExist(String siteName) {
+    public synchronized Site createSiteAndUserIfNotExist(String siteName) {
+    	
         Site site = siteDao.readSite(siteName);
         if (site == null) site = siteDao.createSite(siteName, "", null);
+
+        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+  	    Long personId = authentication.getPersonId();
+  	    if (personId == null) {
+  	    	
+          	Person person = getPersonService().readPersonByLoginId(authentication.getName(), siteName);
+          	if (person == null) {
+          	    try {
+					person = createPerson(authentication, siteName);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException("Unable to create new user record.");
+				}
+          	} 
+          	authentication.setPersonId(person.getId());
+          	
+  	    }
+  	  
         return site;
     }
     
+    // Create a Person object row corresponding to the login user.
+    private Person createPerson(MpowerAuthenticationToken authentication, String siteName)  throws PersonValidationException, javax.naming.NamingException {
+        Person person = getPersonService().createDefaultPerson(siteName);
+        person.setFirstName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.FIRST_NAME));
+        person.setLastName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.LAST_NAME));
+        person.setConstituentIndividualRoles("user");
+        person.setLoginId(authentication.getName());
+        return getPersonService().maintainPerson(person);
+    }
+     
     @Override
     public List<Site> readSites() {
         return siteDao.readSites();
@@ -184,5 +225,13 @@ public class SiteServiceImpl implements SiteService {
         }
         return returnMap;
     }
+
+	public void setPersonService(PersonService personService) {
+		this.personService = personService;
+	}
+
+	public PersonService getPersonService() {
+		return personService;
+	}
 
 }

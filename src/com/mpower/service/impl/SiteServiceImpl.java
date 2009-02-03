@@ -51,6 +51,13 @@ public class SiteServiceImpl implements SiteService {
     private SiteDao siteDao;
 
     @Override
+    public Site createSiteIfNotExist(String siteName) {
+        Site site = siteDao.readSite(siteName);
+        if (site == null) site = siteDao.createSite(siteName, "", null);
+        return site;
+    }
+    
+    @Override
     public List<Site> readSites() {
         return siteDao.readSites();
     }

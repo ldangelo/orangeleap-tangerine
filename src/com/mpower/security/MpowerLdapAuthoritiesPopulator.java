@@ -251,6 +251,11 @@ public class MpowerLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator 
             	person.setLastName(cn.substring(i+1));
     		}
     	}
+    	attribute = user.getObjectAttribute("sn");
+    	if (attribute != null) {
+    		String sn = ("" + attribute).trim();
+            person.setLastName(sn);
+    	}
     }
     
 }

@@ -85,6 +85,7 @@
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
     	<constructor-arg ref="personService"/>
+    	<constructor-arg ref="siteService"/>
         <sec:custom-authentication-provider/>
     </bean>
 

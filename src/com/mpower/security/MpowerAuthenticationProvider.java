@@ -11,7 +11,6 @@ import org.springframework.security.AuthenticationServiceException;
 import org.springframework.security.BadCredentialsException;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.SpringSecurityMessageSource;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.ldap.LdapAuthoritiesPopulator;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
@@ -24,8 +23,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.mpower.domain.Person;
+import com.mpower.domain.Site;
 import com.mpower.service.PersonService;
+import com.mpower.service.SiteService;
 import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.impl.SessionServiceImpl;
 
 
 public class MpowerAuthenticationProvider implements AuthenticationProvider {
@@ -37,12 +39,14 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private LdapAuthoritiesPopulator authoritiesPopulator;
     private UserDetailsContextMapper userDetailsContextMapper = new LdapUserDetailsMapper();
     private boolean useAuthenticationRequestCredentials = true;
+    private SiteService siteService;
     private PersonService personService;
     
-    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, PersonService personService) {
+    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, PersonService personService, SiteService siteService) {
         this.setAuthenticator(authenticator);
         this.setAuthoritiesPopulator(authoritiesPopulator);
         this.setPersonService(personService);
+        this.setSiteService(siteService);
     }
 
     public MpowerAuthenticationProvider(LdapAuthenticator authenticator) {
@@ -119,6 +123,7 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
             
             if (authenticationToken.isAuthenticated()) {
             	String siteName = ((MpowerAuthenticationToken)authenticationToken).getSite();
+            	siteService.createSiteIfNotExist(siteName);
             	Person person = getPersonService().readPersonByLoginId(username, siteName);
             	if (person == null) {
             	    person = createPerson(userData, username, site);
@@ -168,6 +173,14 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
 
 	public PersonService getPersonService() {
 		return personService;
+	}
+
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
+
+	public SiteService getSiteService() {
+		return siteService;
 	}
 
 	private static class NullAuthoritiesPopulator implements LdapAuthoritiesPopulator {

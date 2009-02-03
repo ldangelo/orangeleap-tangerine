@@ -14,6 +14,8 @@ public interface SiteService {
 
     public List<Site> readSites();
 
+    public Site createSiteIfNotExist(String siteName);
+    
     /**
      * Return field required
      * @param siteName the site name to search

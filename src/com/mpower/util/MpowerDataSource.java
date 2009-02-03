@@ -39,7 +39,7 @@ public class MpowerDataSource implements DataSource {
 			return conn; 
 		}
 		
-		logger.debug("splitDatabases = "+splitDatabases);
+		//logger.debug("splitDatabases = "+splitDatabases);
 		if (!splitDatabases) {
 			
 			// We have split databases turned off - use default schema.

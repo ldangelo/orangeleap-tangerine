@@ -28,6 +28,7 @@ import com.mpower.type.RelationshipDirection;
 import com.mpower.type.RelationshipType;
 
 @Service("relationshipService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class RelationshipServiceImpl implements RelationshipService {
 	
 	public static final int MAX_TREE_DEPTH = 200;

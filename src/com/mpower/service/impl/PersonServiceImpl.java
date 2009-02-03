@@ -28,6 +28,7 @@ import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.EntityType;
 
 @Service("personService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class PersonServiceImpl implements PersonService {
 
     /** Logger for this class and subclasses */

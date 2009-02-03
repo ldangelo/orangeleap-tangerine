@@ -23,6 +23,7 @@ import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
 
 @Service("paymentSourceService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class PaymentSourceServiceImpl implements PaymentSourceService, InactivateService {
 
     /** Logger for this class and subclasses */

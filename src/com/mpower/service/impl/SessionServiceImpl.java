@@ -11,6 +11,8 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.domain.Site;
 import com.mpower.security.MpowerAuthenticationToken;
@@ -19,6 +21,7 @@ import com.mpower.service.SiteService;
 import com.mpower.type.RoleType;
 
 @Component("sessionService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class SessionServiceImpl implements SessionService {
 
     /** Logger for this class and subclasses */

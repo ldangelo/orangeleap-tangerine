@@ -18,6 +18,8 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyAccessorUtils;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.AuditDao;
 import com.mpower.dao.PersonDao;
@@ -35,6 +37,7 @@ import com.mpower.service.relationship.RelationshipUtil;
 import com.mpower.type.AuditType;
 
 @Service("auditService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class AuditServiceImpl implements AuditService {
 
     /** Logger for this class and subclasses */

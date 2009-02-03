@@ -19,6 +19,7 @@ import com.mpower.service.AuditService;
 import com.mpower.service.CodeService;
 
 @Service("codeService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class CodeServiceImpl implements CodeService {
 
     /** Logger for this class and subclasses */

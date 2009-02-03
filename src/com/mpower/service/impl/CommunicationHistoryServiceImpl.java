@@ -7,12 +7,15 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.CommunicationHistoryDao;
 import com.mpower.domain.CommunicationHistory;
 import com.mpower.service.CommunicationHistoryService;
 
 @Service("communicationHistoryService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class CommunicationHistoryServiceImpl implements CommunicationHistoryService {
 
     /** Logger for this class and subclasses */

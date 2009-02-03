@@ -27,6 +27,7 @@ import com.mpower.service.SiteService;
  */
 
 @Service("picklistItemService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class PicklistItemServiceImpl implements PicklistItemService {
 
     /** Logger for this class and subclasses */

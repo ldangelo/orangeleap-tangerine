@@ -46,6 +46,7 @@ import com.mpower.type.GiftEntryType;
 import com.mpower.type.PaymentHistoryType;
 
 @Service("giftService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class GiftServiceImpl implements GiftService {
 
     /** Logger for this class and subclasses */

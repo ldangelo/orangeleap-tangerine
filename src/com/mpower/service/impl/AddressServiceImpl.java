@@ -22,6 +22,7 @@ import com.mpower.service.CloneService;
 import com.mpower.service.InactivateService;
 
 @Service("addressService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class AddressServiceImpl implements AddressService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */

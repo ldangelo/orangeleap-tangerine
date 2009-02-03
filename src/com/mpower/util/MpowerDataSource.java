@@ -30,24 +30,28 @@ public class MpowerDataSource implements DataSource {
 		
 		Connection conn = dataSource.getConnection();
 		
-		// This must exist, and should have no tables in it.
-		changeSchema(conn, MPOWER_DEFAULT_SCHEMA);  
-		
 		String siteName = SessionServiceImpl.lookupUserSiteName();
-		if (siteName == null || siteName.trim().length() == 0) {
-			// This path is used by container when initializing a pool connection outside of a site context.
-			return conn; 
-		}
-		
-		//logger.debug("splitDatabases = "+splitDatabases);
+		boolean hasSite = siteName != null && siteName.trim().length() > 0;
+		//if (hasSite) logger.debug("getConnection() called.");
+
 		if (!splitDatabases) {
 			
 			// We have split databases turned off - use default schema.
 			return conn;
-			
+
 		} else {
+
+			// We have split databases turned on - use site schema if one applies.
+
+			// This default schema must exist, and should have no tables in it.
+			// Want to remain here if error occurs setting schema to site schema.
+			changeSchema(conn, MPOWER_DEFAULT_SCHEMA);  
+			
+			if (!hasSite) {
+				// This path is used by container when initializing a pool connection outside of a site context.
+				return conn; 
+			}
 		
-			// We have split databases turned in - use site schema.
 			logger.debug("Setting schema for site = "+siteName + "...");
 			changeSchema(conn, siteName);
 			logger.debug("Set schema for site = "+siteName + ".");

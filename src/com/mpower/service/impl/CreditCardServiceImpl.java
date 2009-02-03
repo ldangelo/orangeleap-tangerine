@@ -3,11 +3,14 @@ package com.mpower.service.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.domain.Gift;
 import com.mpower.service.CreditCardService;
 
 @Service("creditCardService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class CreditCardServiceImpl implements CreditCardService {
 
     /** Logger for this class and subclasses */

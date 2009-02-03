@@ -19,6 +19,7 @@ import com.mpower.service.exception.EffectiveDateValidationException;
 import com.mpower.service.relationship.DateRangedValue;
 
 @Service("effectiveDateService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class EffectiveDateServiceImpl implements EffectiveDateService {
 	
     /** Logger for this class and subclasses */

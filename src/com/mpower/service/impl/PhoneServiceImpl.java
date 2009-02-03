@@ -22,6 +22,7 @@ import com.mpower.service.InactivateService;
 import com.mpower.service.PhoneService;
 
 @Service("phoneService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class PhoneServiceImpl implements PhoneService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */

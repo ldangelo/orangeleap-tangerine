@@ -23,6 +23,7 @@ import com.mpower.service.RecurringGiftService;
 import com.mpower.type.GiftEntryType;
 
 @Service("recurringGiftService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class RecurringGiftServiceImpl implements RecurringGiftService {
 
     /** Logger for this class and subclasses */

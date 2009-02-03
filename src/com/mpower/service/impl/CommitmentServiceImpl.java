@@ -41,6 +41,7 @@ import com.mpower.type.CommitmentType;
 import com.mpower.type.EntityType;
 
 @Service("commitmentService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class CommitmentServiceImpl implements CommitmentService {
 
     /** Logger for this class and subclasses */

@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.QueryLookupDao;
 import com.mpower.domain.QueryLookup;
@@ -16,6 +18,7 @@ import com.mpower.domain.QueryLookupParam;
 import com.mpower.service.QueryLookupService;
 
 @Service("queryLookupService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class QueryLookupServiceImpl implements QueryLookupService {
 
     /** Logger for this class and subclasses */

@@ -22,6 +22,7 @@ import com.mpower.service.EmailService;
 import com.mpower.service.InactivateService;
 
 @Service("emailService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class EmailServiceImpl implements EmailService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */

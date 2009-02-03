@@ -7,12 +7,15 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.PaymentHistoryDao;
 import com.mpower.domain.PaymentHistory;
 import com.mpower.service.PaymentHistoryService;
 
 @Service("paymentHistoryService")
+@Transactional(propagation = Propagation.REQUIRED)
 public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
     /** Logger for this class and subclasses */

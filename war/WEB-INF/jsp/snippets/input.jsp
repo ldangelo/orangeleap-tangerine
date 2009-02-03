@@ -169,13 +169,13 @@
 								<c:out value='${fieldVO.displayValues[status.index]}'/>
 							</option>
 							<c:if test="${fieldVO.fieldValue eq code}">
-								<c:set var="selectedRef" value="${fieldVO.referenceValues[status.index]}" scope="page"/>
+								<c:set var="selectedRef" value="${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 							</c:if>
 						</c:forEach>
 					</select>
 					<c:if test="${fieldVO.required && selectedRef eq ''}">
 						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
-						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fieldVO.referenceValues[0] : ''}" scope="page"/>
+						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fn:trim(fieldVO.referenceValues[0]) : ''}" scope="page"/>
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
@@ -191,9 +191,11 @@
 							<c:choose>
 								<c:when test="${fieldVO.fieldValue eq code}">
 									<c:set var="selected" value="selected" scope="page" />
+									<c:set var="selectedRef" value="${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 								</c:when>
 								<c:otherwise>
 									<c:set var="selected" value="" scope="page"/>
+									<c:set var="selectedRef" value="" scope="page"/>
 								</c:otherwise>
 							</c:choose>
 							<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
@@ -203,7 +205,7 @@
 					</select>
 					<c:if test="${fieldVO.required && selectedRef eq ''}">
 						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
-						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fieldVO.referenceValues[0] : ''}" scope="page"/>
+						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fn:trim(fieldVO.referenceValues[0]) : ''}" scope="page"/>
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
@@ -223,10 +225,10 @@
 								<c:if test="${fieldVO.hasField == true}">
 									<c:choose>
 										<c:when test="${selectedRef == ''}">
-											<c:set var="selectedRef" value="${fieldVO.referenceValues[status.index]}" scope="page"/>
+											<c:set var="selectedRef" value="${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 										</c:when>
 										<c:otherwise>
-											<c:set var="selectedRef" value="${selectedRef},${fieldVO.referenceValues[status.index]}" scope="page"/>
+											<c:set var="selectedRef" value="${selectedRef},${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 										</c:otherwise>
 									</c:choose>
 								</c:if>
@@ -416,10 +418,10 @@
 							<c:if test="${fieldVO.hasField == true}">
 								<c:choose>
 									<c:when test="${selectedRef == ''}">
-										<c:set var="selectedRef" value="${fieldVO.referenceValues[status.index]}" scope="page"/>
+										<c:set var="selectedRef" value="${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 									</c:when>
 									<c:otherwise>
-										<c:set var="selectedRef" value="${selectedRef},${fieldVO.referenceValues[status.index]}" scope="page"/>
+										<c:set var="selectedRef" value="${selectedRef},${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
 									</c:otherwise>
 								</c:choose>
 							</c:if>

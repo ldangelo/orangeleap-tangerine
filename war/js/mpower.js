@@ -1,14 +1,14 @@
 $(document).ready(function() {
 	(function() {
 //		console.time("buildTree");
-		$("li.side:has(.picklist), li.side:has(.multiPicklist)").each(MPower.buildPicklistTree);
+		$("li.side:has(.picklist), li.side:has(.multiPicklist)").each(Picklist.buildPicklistTree);
 //		console.timeEnd("buildTree");
 //		console.time("cascade");
-		MPower.cascadeElementsRoot();
+		Picklist.cascadeElementsRoot();
 //		console.timeEnd("cascade");
 	})();
-	$(".picklist:not(.paymentSourcePicklist)").bind("change", MPower.togglePicklist);
-	$(".paymentSourcePicklist").bind("change", MPower.populatePaymentSourceAttributes);	
+	$(".picklist:not(.paymentSourcePicklist)").bind("change", Picklist.togglePicklist);
+	$(".paymentSourcePicklist").bind("change", Picklist.populatePaymentSourceAttributes);	
 	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -80,21 +80,6 @@ $(document).ready(function() {
 		});
 
 	$("input.number, input.percentage").numeric();
-/*
-	$("form#gift input#amount").bind("keyup change",function(){
-		var amounts=$("table#gift_distribution input.amount");
-		if(amounts.length == 1) {
-			amounts.val($(this).val());
-		}
-		updateTotals();
-	});
-
-	distributionLineBuilder($("#gift_distribution tr"));
-	rowCloner("#gift_distribution tr:last");
-	$("#gift_distribution tr:last .deleteButton").hide();
-*/	
-	
-	
 
 	$('#dialog').jqm({overlay: 50, onShow: MPower.centerDialog}).jqDrag('.dragHandle');
 
@@ -149,77 +134,6 @@ $(document).ready(function() {
 	});
 });
 
-/* END DOCUMENT READY CODE */
-/*
-function updateTotals() {
-		var subTotal = 0;
-		$("table#gift_distribution input.amount").each(function(){
-			var rowVal=parseFloat($(this).val());
-			if(!isNaN(rowVal)) subTotal += rowVal;
-		});
-		$("#subTotal span.value").html(subTotal.toString());
-		if (subTotal==parseFloat($("input#amount").val())) {
-			$("#subTotal").removeClass("warning");
-		} else {
-			$("#subTotal").addClass("warning");
-		}
-}
-function rowCloner(selector) {
-	$(selector).one("keyup",function(event){
-		if(event.keyCode != 9) { // ignore tab
-			addNewRow(distributionLineBuilder);
-		}
-		rowCloner(selector); // Re-attach to the (new) last table row
-	});
-}
-function distributionLineBuilder(newRow) {
-	newRow.find(".deleteButton").click(function(){
-		deleteRow($(this).parent().parent());
-	}).hide();
-	newRow.find("input").focus(function() {
-		$(this).parent().parent().addClass("focused");
-	}).blur(function() {
-		$(this).parent().parent().removeClass("focused");
-	}).removeClass("textError");
-	newRow.find("input.amount").bind("keyup change", updateTotals);
-
-	newRow.find("input.code").each(function(){
-		var codeType=$(this).attr("codeType");
-		$(this).autocomplete("codeHelper.htm?type="+codeType,
-			{
-				delay:10,
-				minChars:0,
-				maxItemsToShow:20,
-				formatItem:formatItem,
-				loadingClass:""
-			});
-	});
-	newRow.removeClass("focused");
-}
-function addNewRow(builder) {
-	var newRow = $(".tablesorter tr:last").clone(false);
-	builder(newRow);
-	var i = newRow.attr("rowindex");
-	var j = parseInt(i) + 1;
-	newRow.attr("rowindex",j);
-	var findExp = new RegExp("\\["+i+"\\]","gi");
-	newRow.find("input").each(function(){
-			var field = $(this);
-			var nameString = field.attr('name').replace(findExp, "["+j+"]");
-			field.attr('name',nameString);
-			field.val("");
-		});
-	$(".tablesorter tr:last .deleteButton").show();
-	$(".tablesorter").append(newRow);
-}
-function deleteRow(row) {
-	if($(".tablesorter tbody tr").length > 1) {
-		row.fadeOut("slow",function(){$(this).remove();updateTotals();})
-	} else {
-		alert("Sorry, you cannot delete that row since it's the only remaining row.")
-	};
-}
-*/
 function formatItem(row) {
 	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
 }
@@ -284,23 +198,13 @@ function getPage(elem) {
 		return false;
 }
 
-var MPower = {
+var Picklist = {	
 	rootTrees: {},
-	
-	gotoUrl: function(url) {
-		window.location.href = url;
-	},
-	
-	confirmGoToUrl: function(url, msg) {
-		if (confirm(msg)) {
-			this.gotoUrl(url);
-		}
-	},
 	
 	/** When the document is ready, build the tree(s) of items that cascade each other */
 	buildPicklistTree: function() {
 		var $parentNode = $(this); // this may be an li, or div
-		var tree = MPower.getTree($parentNode);
+		var tree = Picklist.getTree($parentNode);
 		
 		if (tree.parents.length == 0) {
 			tree.isRoot = true; // assume this is the root, will be reset in 'setParentForChild' if not
@@ -320,7 +224,7 @@ var MPower = {
 			if (selectors) {
 				refs = selectors.split(",");
 			}
-			selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().split(",");
+			selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().replace(new RegExp(" ","g"), '').split(",");
 
 			for (var x = 0, len = refs.length; x < len; x++) {
 				var optionSelected = false;
@@ -332,8 +236,8 @@ var MPower = {
 				$targets.each(function() {
 					var $myTarget = $(this);
 					var parentChildSet = false;
-					parentChildSet |= MPower.setChildForParent($parentNode, $myTarget);
-					parentChildSet |= MPower.setParentForChild($myTarget, $parentNode, optionSelected);
+					parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
+					parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
 					if (parentChildSet) {
 						// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
 						$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
@@ -344,19 +248,19 @@ var MPower = {
 		if (tree.isRoot) {
 			var thisId = $parentNode.attr("id");
 			tree.isSelected = true;
-			MPower.rootTrees[thisId] = tree;				
+			Picklist.rootTrees[thisId] = tree;				
 		}				
 		if ($recursiveTargets) {
-			$recursiveTargets.each(MPower.buildPicklistTree);
+			$recursiveTargets.each(Picklist.buildPicklistTree);
 		}
 	},
 	
 	setChildForParent: function($parentNode, $childNode) {
-		var parentTree = MPower.getTree($parentNode);
+		var parentTree = Picklist.getTree($parentNode);
 		var childId = $childNode.attr("id");
 
 		var parentChildSet = false;
-		if (!parentTree.childIds[childId]) {
+		if (!parentTree.isExistingChild(childId)) {
 			parentTree.children.push($childNode);
 			parentTree.childIds[childId] = true;
 			parentChildSet = true;
@@ -365,18 +269,18 @@ var MPower = {
 	},
 		
 	setParentForChild: function($childNode, $parentNode, optionSelected) {
-		var childTree = MPower.getTree($childNode);
+		var childTree = Picklist.getTree($childNode);
 		var parentId = $parentNode.attr("id");
 		
-		MPower.setIsSelected(childTree, optionSelected, $parentNode, parentId);
+		Picklist.setIsSelected(childTree, optionSelected, $parentNode, parentId);
 		var parentChildSet = false;
-		if (!childTree.parentIds[parentId]) {
+		if (!childTree.isExistingParent(parentId)) {
 			childTree.parents.push($parentNode);
 			childTree.parentIds[parentId] = true;
 			childTree.isRoot = false;
 			
 			var thisId = $childNode.attr("id");
-			delete MPower.rootTrees[thisId];
+			delete Picklist.rootTrees[thisId];
 			parentChildSet = true;
 		}
 		return parentChildSet;
@@ -384,7 +288,7 @@ var MPower = {
 	
 	setIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
 		if (childTree.isSelected != optionSelected) {
-			var parentTree = MPower.getTree($parentNode);
+			var parentTree = Picklist.getTree($parentNode);
 			var otherParents = childTree.getOtherParents(parentId);
 			if (otherParents.length == 0) {
 				if (childTree.parentIds[parentId]) {
@@ -400,7 +304,7 @@ var MPower = {
 				 * if it is a child and THIS parentNode is selected, override the previous 'optionSelected' value with the one from THIS parentNode;
 				 * otherwise, if THIS parentNode is not a child of the childNode's OTHER parentNodes, use an OR condition
 				 */
-				var isChild = MPower.isChild(otherParents, parentId);
+				var isChild = Picklist.isChildOf(otherParents, parentId);
 				if (isChild) {
 					if (parentTree.isSelected) {
 						childTree.isSelected = optionSelected; 
@@ -413,12 +317,12 @@ var MPower = {
 		}
 	},
 	
-	isChild: function(parents, parentId) {
+	isChildOf: function(parents, parentId) {
 		var isChild = false;
 		var parentsParents = new Array();
 		for (var i = 0, len = parents.length; i < len; i++) {
-			var parentTree = MPower.getTree($(parents[i]));
-			if (parentTree.isChild(parentId)) {
+			var parentTree = Picklist.getTree($(parents[i]));
+			if (parentTree.isExistingChild(parentId)) {
 				isChild = true;
 				break;
 			}
@@ -427,9 +331,28 @@ var MPower = {
 			}
 		}
 		if (isChild == false && parentsParents.length > 0) {
-			isChild = MPower.isChild(parentsParents);
+			isChild = Picklist.isChildOf(parentsParents);
 		}
 		return isChild;
+	},
+	
+	isParentOf: function(children, childId) {
+		var isParent = false;
+		var childrensChildren = new Array();
+		for (var i = 0, len = children.length; i < len; i++) {
+			var childTree = Picklist.getTree($(children[i]));
+			if (childTree.isExistingParent(childId)) {
+				isParent = true;
+				break;
+			}
+			else {
+				childrensChildren.push(childTree.children);
+			}
+		}
+		if (isParent == false && childrensChildren.length > 0) {
+			isParent = Picklist.isParentOf(childrensChildren);
+		}
+		return isParent;
 	},
 	
 	getTree: function($elem) {
@@ -464,7 +387,7 @@ var MPower = {
 				isExistingParent: function(aParentId) {
 					return this.parentIds[aParentId];
 				},
-				isChild: function(id) {
+				isExistingChild: function(id) {
 					return this.childIds[id];
 				}
 			};
@@ -479,7 +402,7 @@ var MPower = {
 	
 	findOptions: function($elem) {
 		var $options = null;
-		var isMultiPicklist = MPower.isMultiPicklist($elem);
+		var isMultiPicklist = Picklist.isMultiPicklist($elem);
 		if (isMultiPicklist) {
 			$options = $elem.children("div.multiPicklistOption");
 		}
@@ -503,15 +426,15 @@ var MPower = {
 	},
 		
 	cascadeElementsRoot: function () {
-		var cascaders = MPower.getCascaders();
-		for (var treeId in MPower.rootTrees) {
-			var tree = MPower.rootTrees[treeId];
+		var cascaders = Picklist.getCascaders();
+		for (var treeId in Picklist.rootTrees) {
+			var tree = Picklist.rootTrees[treeId];
 			var $elem = tree.node;
 
 			cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem; // all root elements are expected to be visible
-			cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);												
+			cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);												
 		}
-		MPower.hideShowCascaders(cascaders);		
+		Picklist.hideShowCascaders(cascaders);		
 	},
 	
 	cascadeElementsChildren: function($children, cascaders) {
@@ -519,7 +442,7 @@ var MPower = {
 		if ($children) {
 			$children.each(function() {
 				var $child = $(this);
-				var tree = MPower.getTree($child); 
+				var tree = Picklist.getTree($child); 
 				if (tree.isSelected && tree.isAParentSelected()) { // if the child node is selected, check the parent(s) to make sure at least one is selected
 					cascaders.shown = cascaders.shown ? cascaders.shown.add($child) : $child;
 				}
@@ -528,7 +451,7 @@ var MPower = {
 				}
 				$nextLevelChildren = $nextLevelChildren ? $nextLevelChildren.add($(tree.children)): $(tree.children);
 			});
-			cascaders = MPower.cascadeElementsChildren($nextLevelChildren, cascaders);
+			cascaders = Picklist.cascadeElementsChildren($nextLevelChildren, cascaders);
 		}
 		return cascaders;
 	},
@@ -536,64 +459,99 @@ var MPower = {
 	togglePicklist: function() {
 		var $elem = $(this);
 
-		var $children = null;
 		var $containerElem = $elem.parents("li.side"); // get this picklist's container element
-		var tree = MPower.getTree($containerElem);
+		var tree = Picklist.getTree($containerElem);
 		tree.isSelected = true;
 		
-		var cascaders = MPower.getCascaders();
+		var cascaders = Picklist.getCascaders();
 		cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem;
 		
-		var prevSelectorIds = {};
+		var isMultiPicklist = Picklist.isMultiPicklist($elem);
+		var $options = Picklist.findOptions($elem);
 	
-		var isMultiPicklist = MPower.isMultiPicklist($elem);
-		var $options = MPower.findOptions($elem);
-	
+		var pickedSelector = "";
 		$options.each(function() {
 			var $optElem = $(this);
-			var optionSelected = false;
 			if ((isMultiPicklist === true && $optElem.is(":visible")) || 
 				(isMultiPicklist === false && $optElem.attr("selected"))) {
-				 optionSelected = true;
+				var myRef = $optElem.attr('reference');
+				pickedSelector += myRef + ",";
 			}
-			var selector = $optElem.attr('reference');
-			if (selector != null && selector.length) {
-				$(selector).each(function() {
-					var $elem = $(this);
-					var tree = MPower.getTree($elem);
-					var id = $elem.attr("id");
-					if (prevSelectorIds[id]) {
-						tree.isSelected |= optionSelected;
-					}
-					else {
-						prevSelectorIds[id] = true;
-						tree.isSelected = optionSelected;
-					}
-				});
+		});
+		if (pickedSelector.length > 0) {
+			pickedSelector = pickedSelector.substring(0, pickedSelector.length - 1);
+		}
+		var prevSelectorIds = {};
+		var $childrenChildren = null;
+		for (var y = 0, len = tree.children.length; y < len; y++) {
+			var $child = $(tree.children[y]);
+			var isPicked =  $child.is(pickedSelector);
+			var childTree = Picklist.getTree($child);
+			var id = $child.attr("id");
+			if (prevSelectorIds[id]) {
+				childTree.isSelected |= isPicked;
 			}
-		});	
-   		cascaders = MPower.cascadeElementsChildren($(tree.children), cascaders);
-		MPower.hideShowCascaders(cascaders);					
+			else {
+				prevSelectorIds[id] = true;
+				childTree.isSelected = isPicked;
+			}
+			$childrenChildren = $childrenChildren ? $childrenChildren.add($(childTree.children)) : $(childTree.children); 
+		}
+//		Picklist.toggleChildren($childrenChildren);
+   		cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);
+		Picklist.hideShowCascaders(cascaders);					
 	},
 	
-	centerDialog: function($hash) {
-		var $dialog = $hash.w;
-		var x = "-" + ($dialog.width() / 2) + "px";
-		var y = "-" + ($dialog.height() / 2) + "px";
-		$dialog.css("margin-left", x);
-		$dialog.css("margin-top", y);
-		$dialog.show();
+	toggleChildren: function($children) {
+		if ($children) {
+			$children.each(function() {
+				var $this = $(this);
+				var tree = Picklist.getTree($this);
+				
+			});
+		}
+	},
+	
+	toggleIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
+		if (childTree.isSelected != optionSelected) {
+			var parentTree = Picklist.getTree($parentNode);
+			var otherParents = childTree.getOtherParents(parentId);
+			if (otherParents.length == 0) {
+				if (childTree.parentIds[parentId]) {
+					// If the parent of this child points to the child more than once, use an OR condition
+					childTree.isSelected = childTree.isSelected | optionSelected;
+				}
+				else {
+					childTree.isSelected = optionSelected;
+				} 
+			}
+			else {
+				/* Try to determine if THIS parentNode is also a child of the childNode's OTHER parentNodes; 
+				 * if it is a child and THIS parentNode is selected, override the previous 'optionSelected' value with the one from THIS parentNode;
+				 * otherwise, if THIS parentNode is not a child of the childNode's OTHER parentNodes, use an OR condition
+				 */
+				var isChild = Picklist.isChildOf(otherParents, parentId);
+				if (isChild) {
+					if (parentTree.isSelected) {
+						childTree.isSelected = optionSelected; 
+					}
+				}
+				else {
+					childTree.isSelected = childTree.isSelected | optionSelected;
+				}
+			}
+		}
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {
-		var tree = MPower.getTree($select.parents("li.side"));
+		var tree = Picklist.getTree($select.parents("li.side"));
 		
 		// If no numeric ID selected, use "none"
 		if (isNaN(parseInt(value, 10)) || $select.containsOption(value) == false) {
 			value = "none";
 		}
 
-		var $options = MPower.findOptions($select);
+		var $options = Picklist.findOptions($select);
 		
 		$options.each(function() {
 			var $optElem = $(this);
@@ -607,7 +565,7 @@ var MPower = {
 				var $targets = $(selector);
 				$targets.each(function() {
 					var $myTarget = $(this);
-					MPower.getTree($myTarget).isSelected = optionSelected;
+					Picklist.getTree($myTarget).isSelected = optionSelected;
 				});
 			}
 		});		
@@ -619,8 +577,8 @@ var MPower = {
 			var addressId = $option.attr("address");
 			var phoneId = $option.attr("phone");
 			
-			MPower.setSelectedAddressPhoneByValue($("select#selectedAddress"), addressId);
-			MPower.setSelectedAddressPhoneByValue($("select#selectedPhone"), phoneId);
+			Picklist.setSelectedAddressPhoneByValue($("select#selectedAddress"), addressId);
+			Picklist.setSelectedAddressPhoneByValue($("select#selectedPhone"), phoneId);
 			
 			// ACH
 			var achholder = $option.attr("achholder");
@@ -654,7 +612,27 @@ var MPower = {
 				$("div.gift_editCreditCard div#paymentSource_creditCardExpiration, div.commitment_editCreditCard div#paymentSource_creditCardExpiration").text(exp);
 			}
 		}
-		$(this).each(MPower.togglePicklist);
+		$(this).each(Picklist.togglePicklist);
+	}
+}
+var MPower = {
+	gotoUrl: function(url) {
+		window.location.href = url;
+	},
+	
+	confirmGoToUrl: function(url, msg) {
+		if (confirm(msg)) {
+			this.gotoUrl(url);
+		}
+	},
+	
+	centerDialog: function($hash) {
+		var $dialog = $hash.w;
+		var x = "-" + ($dialog.width() / 2) + "px";
+		var y = "-" + ($dialog.height() / 2) + "px";
+		$dialog.css("margin-left", x);
+		$dialog.css("margin-top", y);
+		$dialog.show();
 	}	
 }
 

@@ -32,5 +32,5 @@ INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_O
 
 INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME) VALUES ('activationStatus', 'activationStatus');
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('activationStatus', 'permanent', 'Permanent', 'li:has(#effectiveDate)', 1);
-INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('activationStatus', 'seasonal', 'Seasonal', 'li:has(#seasonalStartDate), li:has(#seasonalEndDate)', 2);
-INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('activationStatus', 'temporary', 'Temporary', 'li:has(#temporaryStartDate), li:has(#temporaryEndDate)', 3);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('activationStatus', 'seasonal', 'Seasonal', 'li:has(#seasonalStartDate),li:has(#seasonalEndDate)', 2);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES ('activationStatus', 'temporary', 'Temporary', 'li:has(#temporaryStartDate),li:has(#temporaryEndDate)', 3);

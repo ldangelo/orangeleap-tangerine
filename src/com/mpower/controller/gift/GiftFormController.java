@@ -32,13 +32,16 @@ public class GiftFormController extends TangerineFormController {
     }
 
     @Override
+    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        super.onBind(request, command, errors);
+
+        Gift gift = (Gift) command;
+        gift.removeInvalidDistributionLines();
+    }
+
+    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Gift gift = (Gift) command;
-        
-        // validate required fields
-        // TODO: This code is temporary validation to strip out invalid distribution lines.
-        gift.removeInvalidDistributionLines();
-
         Gift current = giftService.maintainGift(gift);
         return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
     }

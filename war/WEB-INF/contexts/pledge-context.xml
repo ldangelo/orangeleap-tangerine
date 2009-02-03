@@ -14,10 +14,8 @@
         <property name="bindEmail" value="false"/>
         <property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.CommitmentValidator">
-			        <property name="pageType" value="pledge"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
+	            <ref bean="commitmentValidator"/>
+	            <ref bean="distributionLinesValidator"/>	            
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="pledge"/>
 			        <property name="siteService" ref="siteService" />

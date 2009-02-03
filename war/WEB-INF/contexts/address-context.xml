@@ -12,12 +12,10 @@
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>
         <property name="bindEmail" value="false"/>
+        
 		<property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.AddressValidator">
-			        <property name="pageType" value="address"/>
-			        <property name="siteService" ref="siteService"/>
-	            </bean>
+	            <ref bean="addressValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="address"/>
 			        <property name="siteService" ref="siteService"/>

@@ -43,12 +43,15 @@ public class CommitmentFormController extends TangerineFormController {
     }
 
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        super.onBind(request, command, errors);
         Commitment commitment = (Commitment) command;
-
-        // TODO: This code is temporary validation to strip out invalid distribution lines.
         commitment.removeInvalidDistributionLines();
-        
+    }
+
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        Commitment commitment = (Commitment) command;        
         Commitment current = commitmentService.maintainCommitment(commitment);
         
         String url = current.getGifts().isEmpty() ? formUrl : getSuccessView();

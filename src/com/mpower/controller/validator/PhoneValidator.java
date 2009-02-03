@@ -8,27 +8,11 @@ import org.springframework.validation.Validator;
 
 import com.mpower.domain.Phone;
 import com.mpower.domain.PhoneAware;
-import com.mpower.service.SiteService;
-import com.mpower.type.PageType;
 
 public class PhoneValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    @SuppressWarnings("unused")
-    private SiteService siteService;
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
-
-    @SuppressWarnings("unused")
-    private PageType pageType;
-
-    public void setPageType(PageType pageType) {
-        this.pageType = pageType;
-    }
 
     @SuppressWarnings("unchecked")
     @Override

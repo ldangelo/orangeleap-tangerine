@@ -8,11 +8,14 @@
 	<bean id="giftFormController" class="com.mpower.controller.gift.GiftFormController" parent="tangerineFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
-		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
-		        <property name="pageType" value="gift"/>
-		        <property name="siteService" ref="siteService" />
-            </bean>
+		<property name="validators">
+			<list>
+	            <ref bean="distributionLinesValidator"/>	            
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="gift"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	        </list>
         </property>
         <property name="formView" value="gift/gift" />
         <property name="successView" value="redirect:/giftView.htm" />

@@ -1,8 +1,12 @@
 $(document).ready(function() {
+	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountTotal").each(function() {
+		Distribution.reInitializeOnReady(this);
+	});
 	Distribution.distributionLineBuilder($("table.distributionLines tr"));
 	Distribution.rowCloner("table.distributionLines tr:last");
+	$(".tablesorter tr:last .deleteButton").hide();
 	
-	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountPerGift, form#commitment input#amountTotal").bind("keyup change", function(event) {
+	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountTotal").bind("keyup change", function(event) {
 		var amounts = $("table.distributionLines input.amount");
 		var amtVal = $(this).val();
 		Distribution.enteredAmt = amtVal;
@@ -24,6 +28,7 @@ $(document).ready(function() {
 			$("form#commitment input#amountTotal").change();
 		}
 	});
+
 });
 
 	
@@ -31,6 +36,35 @@ var Distribution = {
 	oldPct: "",
 	enteredAmt: 0,
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
+	
+	reInitializeOnReady: function(aElem) {
+		var $elem = $(aElem);
+		if ($elem.is(":visible")) {
+			/* Done on load for previously entered distributionLines */
+			var val = $elem.val();
+			if (isNaN(parseFloat(val)) == false) {
+				Distribution.enteredAmt = Distribution.truncateFloat(parseFloat(val));
+				Distribution.addNewRow();
+				
+				$("table.distributionLines input.amount").each(function() {
+					var $amtElem = $(this);
+					var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
+					var rowId = $amtElem.attr('id').replace('-amount', '');
+					
+					var amtVal = parseFloat($amtElem.val());
+					var thisAmt = isNaN(amtVal) ? 0 : Distribution.truncateFloat(amtVal);
+					
+					var pctVal = parseFloat($pctElem.val());
+					var thisPct = isNaN(pctVal) ? 0 : Distribution.truncateFloat(pctVal);
+					
+					var map = Distribution.getMap(rowId);
+					map.amount = thisAmt;
+					map.percent = thisPct;	
+				});
+				Distribution.updateTotals();
+			}
+		}
+	},
 	
 	isFloat: function(value){
 	   if (isNaN(value) || value.toString().indexOf(".") < 0){
@@ -153,34 +187,36 @@ var Distribution = {
 	rowCloner: function(selector) {
 		$(selector).one("keyup",function(event){
 			if (event.keyCode != 9) { // ignore tab
-				Distribution.addNewRow(Distribution.distributionLineBuilder);
+				Distribution.addNewRow();
 			}
 			Distribution.rowCloner(selector); // Re-attach to the (new) last table row
 		});
 	},
 
-	distributionLineBuilder: function(newRow) {
-		newRow.find(".deleteButton").click(function(){
-			Distribution.deleteRow($(this).parent().parent());
-		}).hide();
-		newRow.find("input.number, input.percentage").numeric();
-		newRow.find("input.amount, input.percentage").bind("keyup change", function(event) {
-			Distribution.updateFields($(event.target));
-		});		
-		
-		newRow.find("input.code").each(function(){
-			Lookup.codeAutoComplete($(this));
+	distributionLineBuilder: function($newRow) {
+		$newRow.each(function() {
+			var $row = $(this);
+			$row.find(".deleteButton").click(function(){
+				Distribution.deleteRow($(this).parent().parent());
+			}).show();
+			$row.find("input.number, input.percentage").numeric();
+			$row.find("input.amount, input.percentage").bind("keyup change", function(event) {
+				Distribution.updateFields($(event.target));
+			});		
+			
+			$row.find("input.code").each(function(){
+//				Lookup.codeAutoComplete($(this)); // TODO: add back
+			});
+			$row.removeClass("focused");
 		});
-		newRow.removeClass("focused");
 	},
 	
-	addNewRow: function(builder) {
-		var newRow = $(".tablesorter tr:last").clone(false);
-		builder(newRow);
-		var i = newRow.attr("rowindex");
+	addNewRow: function() {
+		var $newRow = $(".tablesorter tr:last").clone(false);
+		var i = $newRow.attr("rowindex");
 		var j = parseInt(i, 10) + 1;
-		newRow.attr("rowindex", j);
-		newRow.find("input").each(function() {
+		$newRow.attr("rowindex", j);
+		$newRow.find("input").each(function() {
 				var $field = $(this);
 				$field.attr('name', $field.attr('name').replace(new RegExp("\\[" + i + "\\]","gi"), "[" + j + "]"));
 				$field.attr('id', $field.attr('id').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
@@ -189,8 +225,10 @@ var Distribution = {
 				}
 				$field.val("");
 			});
-		$(".tablesorter tr:last .deleteButton").show();
-		$(".tablesorter").append(newRow);
+		$(".tablesorter tr:last .deleteButton").show(); // show the previous last row's delete button
+		Distribution.distributionLineBuilder($newRow);
+		$newRow.find(".deleteButton").hide();
+		$(".tablesorter").append($newRow);
 	},
 	
 	deleteRow: function(row) {

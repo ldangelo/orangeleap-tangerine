@@ -13,7 +13,6 @@ import org.springframework.validation.Validator;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.PaymentSourceAware;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.type.PageType;
 import com.mpower.util.CalendarUtils;
 
 public class PaymentSourceValidator implements Validator {
@@ -25,13 +24,6 @@ public class PaymentSourceValidator implements Validator {
 
     public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
         this.paymentSourceService = paymentSourceService;
-    }
-
-    @SuppressWarnings("unused")
-    private PageType pageType;
-
-    public void setPageType(PageType pageType) {
-        this.pageType = pageType;
     }
 
     @SuppressWarnings("unchecked")

@@ -223,7 +223,8 @@ INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DE
 INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, FIELD_REQUIRED_ID, VALIDATION_ID) VALUES ('commitment.recurring', 'false', 147, null);
 
 
-
+-- Distribution Lines
+INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'distributionLineAmounts', 'FIELD_VALIDATION', 'Individual distribution line amounts must add up to the total gift amount');
 
 -- add messages for Payment Source Profile
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE) values ('en_US', 'blankPaymentProfile', 'FIELD_VALIDATION', 'The Payment Profile must be composed of alphanumeric characters');

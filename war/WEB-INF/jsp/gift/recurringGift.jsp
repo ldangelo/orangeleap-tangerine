@@ -14,6 +14,7 @@
 			
 			<form:form method="post" commandName="commitment">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
+				<input type="hidden" name="recurring" id="recurring" value="true"/>
 
 				<spring:message code='enterRecurringGift' var="titleText" />
 				<spring:message code='submitRecurringGift' var="submitText" />

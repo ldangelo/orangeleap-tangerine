@@ -11,10 +11,7 @@
         <property name="pageType" value="membership"/>
 		<property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.CommitmentValidator">
-			        <property name="pageType" value="membership"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
+	            <ref bean="commitmentValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="membership"/>
 			        <property name="siteService" ref="siteService" />

@@ -14,10 +14,7 @@
         <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.PhoneValidator">
-			        <property name="pageType" value="phone"/>
-			        <property name="siteService" ref="siteService" />
-	            </bean>
+	            <ref bean="phoneValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="phone"/>
 			        <property name="siteService" ref="siteService" />

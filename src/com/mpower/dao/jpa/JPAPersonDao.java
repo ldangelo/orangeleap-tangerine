@@ -227,4 +227,12 @@ public class JPAPersonDao implements PersonDao {
         query.setParameter("site", site);
         return query.getResultList();
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Person> readAllPeopleBySiteName(String siteName) {
+        Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE_ID");
+        query.setParameter("siteId", siteName);
+        return query.getResultList();
+	}
 }

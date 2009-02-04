@@ -28,4 +28,6 @@ public interface PersonDao {
     public void setLapsedDonor(Long personId);
 
     public List<Person> readAllPeopleBySite(Site site);
+
+	public List<Person> readAllPeopleBySiteName(String siteName);
 }

@@ -31,4 +31,6 @@ public interface PersonService {
     public List<Person> readAllPeopleBySite(Site site);
 
     public void setAuditService(AuditService auditService);
+
+	public List<Person> readAllPeopleBySiteName(String siteName);
 }

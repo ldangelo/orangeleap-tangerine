@@ -40,4 +40,6 @@ public interface GiftService {
     public Gift createGift(Commitment commitment, GiftEntryType giftEntryType);
 
     public List<Gift> readGiftsByCommitment(Commitment commitment);
+
+	public List<Gift> readAllGiftsBySiteName(String siteName);
 }

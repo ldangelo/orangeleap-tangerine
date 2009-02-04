@@ -182,4 +182,13 @@ public class JPAGiftDao implements GiftDao {
         query.setParameter("commitmentId", commitmentId);
         return (BigDecimal) query.getSingleResult();
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Gift> readAllGiftsBySiteName(String siteName) {
+        Query query = em.createNamedQuery("READ_ALL_GIFTS_BY_SITE_ID");
+        query.setParameter("siteId", siteName);
+        List<Gift> lg = query.getResultList();
+        return lg;
+	}
 }

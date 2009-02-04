@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.service.PersonService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 
 
@@ -24,7 +25,7 @@ public class PersonExporter extends EntityExporter {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List readAll() {
-		return personservice.readAllPeople();
+		return personservice.readAllPeopleBySiteName(SessionServiceImpl.lookupUserSiteName());
 	}
 
 	@Override

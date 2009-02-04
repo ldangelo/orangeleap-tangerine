@@ -26,4 +26,6 @@ public interface GiftDao {
     public List<Gift> readGiftsByCommitmentId(Long commitmentId);
 
     public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId);
+
+	public List<Gift> readAllGiftsBySiteName(String siteName);
 }

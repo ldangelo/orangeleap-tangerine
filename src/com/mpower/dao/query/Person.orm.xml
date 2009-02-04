@@ -34,6 +34,14 @@
 		</query>
 	</named-query>
 
+	<named-query name="READ_ALL_PEOPLE_BY_SITE_ID">
+		<query>
+			SELECT person
+			FROM com.mpower.domain.Person person
+			WHERE site.id = :siteId
+		</query>
+	</named-query>
+
 
 	<named-query name="READ_PERSON_BY_LOGIN_ID">
 		<query>

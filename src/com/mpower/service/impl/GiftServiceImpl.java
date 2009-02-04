@@ -417,4 +417,9 @@ public class GiftServiceImpl implements GiftService {
     public List<Gift> readGiftsByCommitment(Commitment commitment) {
         return giftDao.readGiftsByCommitmentId(commitment.getId());
     }
+
+	@Override
+	public List<Gift> readAllGiftsBySiteName(String siteName) {
+        return giftDao.readAllGiftsBySiteName(siteName);
+	}
 }

@@ -126,4 +126,9 @@ public class PersonServiceImpl implements PersonService {
     public void setAuditService(AuditService auditService) {
         this.auditService = auditService;
     }
+
+	@Override
+	public List<Person> readAllPeopleBySiteName(String siteName) {
+        return personDao.readAllPeopleBySiteName(siteName);
+	}
 }

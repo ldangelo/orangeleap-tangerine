@@ -6,9 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Gift;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.GiftService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
 import com.mpower.type.PageType;
@@ -28,7 +28,7 @@ public class GiftExporter extends EntityExporter {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List readAll() {
-		return giftservice.readAllGifts();
+		return giftservice.readAllGiftsBySiteName(SessionServiceImpl.lookupUserSiteName());
 	}
 
 	@Override

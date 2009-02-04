@@ -23,6 +23,7 @@ import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.EntityUtility;
 
 @Repository("personDao")
@@ -51,7 +52,10 @@ public class JPAPersonDao implements PersonDao {
 
     @Override
     public Person readPerson(Long id) {
-        return em.find(Person.class, id);
+        Person person = em.find(Person.class, id);
+        // Sanity check
+        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        return person;
     }
 
     @SuppressWarnings("unchecked")

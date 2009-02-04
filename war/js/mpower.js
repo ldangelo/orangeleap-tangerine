@@ -881,7 +881,7 @@ var Lookup = {
 			$cloned.attr("selectedId", selectedVal);
 			$cloned.attr("id", "lookup-" + selectedVal);
 			var $popLink = $cloned.find("a[target='_blank']");
-			$popLink.attr("href", $elem.siblings("a[target='_blank'])").attr("href"));
+			$popLink.attr("href", $elem.siblings("a[target='_blank']").attr("href"));
 			$popLink.text(displayVal);
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);

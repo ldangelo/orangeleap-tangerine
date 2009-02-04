@@ -82,6 +82,38 @@
 					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
 					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 				});
+				test("toggle constituent type picklist from married individual to organization to individual", function() {
+					$("#maritalStatus").selectOptions("Married");
+					$("#maritalStatus").change();
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					
+					$("#constituentType").selectOptions("organization");
+					$("#constituentType").change();
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden"), "li-person_contactInfo-constituentIndividualRoles is expected to be hidden");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":visible"), "li-person_contactInfo-constituentOrganizationRoles is expected to be visible");
+					ok($("#li-person_demographics-maritalStatus").is(":hidden"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+
+					$("#constituentType").selectOptions("individual");
+					$("#constituentType").change();
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+				});
+				
 				test("toggle li-test number elements", function() {
 					$("#test1").selectOptions("UseTest2");
 					$("#test1").change();

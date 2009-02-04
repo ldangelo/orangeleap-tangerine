@@ -1,8 +1,10 @@
 $(document).ready(function() {
 	(function() {
+//		console.profile("buildTree");
 //		console.time("buildTree");
 		$("li.side:has(.picklist), li.side:has(.multiPicklist)").each(Picklist.buildPicklistTree);
 //		console.timeEnd("buildTree");
+//		console.profileEnd();
 //		console.time("cascade");
 		Picklist.cascadeElementsRoot();
 //		console.timeEnd("cascade");
@@ -206,52 +208,54 @@ var Picklist = {
 		var $parentNode = $(this); // this may be an li, or div
 		var tree = Picklist.getTree($parentNode);
 		
-		if (tree.parents.length == 0) {
-			tree.isRoot = true; // assume this is the root, will be reset in 'setParentForChild' if not
-		}
-		var $recursiveTargets = null;
-
-		var $picklists = $parentNode.filter(".picklist, .multiPicklist"); // either THIS is a picklist
-		var $nested = $parentNode.find(".picklist, .multiPicklist"); // or it COULD have immediate descendent picklists
-		$picklists = $picklists.add($nested); // these are all the children of this node
-		$picklists.each(function() {
-			var $myPicklist = $(this);
-			
-			var selectors = $myPicklist.attr("references");
-			
-			var refs = new Array();
-			var selectedRefs = new Array();
-			if (selectors) {
-				refs = selectors.split(",");
+		if (tree.children.length == 0) {
+			if (tree.parents.length == 0) {
+				tree.isRoot = true; // assume this is the root, will be reset in 'setParentForChild' if not
 			}
-			selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().replace(new RegExp(" ","g"), '').split(",");
-
-			for (var x = 0, len = refs.length; x < len; x++) {
-				var optionSelected = false;
-				var thisRef = jQuery.trim(refs[x]);
-				if (jQuery.inArray(thisRef, selectedRefs) > -1) {
-					optionSelected = true;
+			var $recursiveTargets = null;
+	
+			var $picklists = $parentNode.filter(".picklist, .multiPicklist"); // either THIS is a picklist
+			var $nested = $parentNode.find(".picklist, .multiPicklist"); // or it COULD have immediate descendent picklists
+			$picklists = $picklists.add($nested); // these are all the children of this node
+			$picklists.each(function() {
+				var $myPicklist = $(this);
+				
+				var selectors = $myPicklist.attr("references");
+				
+				var refs = new Array();
+				var selectedRefs = new Array();
+				if (selectors) {
+					refs = selectors.split(",");
 				}
-				var $targets = $(thisRef);
-				$targets.each(function() {
-					var $myTarget = $(this);
-					var parentChildSet = false;
-					parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
-					parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
-					if (parentChildSet) {
-						// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
-						$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
+				selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().replace(new RegExp(" ","g"), '').split(",");
+	
+				for (var x = 0, len = refs.length; x < len; x++) {
+					var optionSelected = false;
+					var thisRef = jQuery.trim(refs[x]);
+					if (jQuery.inArray(thisRef, selectedRefs) > -1) {
+						optionSelected = true;
 					}
-				});
-			}		
-		});	
-		if (tree.isRoot) {
-			var thisId = $parentNode.attr("id");
-			tree.isSelected = true;
-			Picklist.rootTrees[thisId] = tree;				
-		}				
-		if ($recursiveTargets) {
-			$recursiveTargets.each(Picklist.buildPicklistTree);
+					var $targets = $(thisRef);
+					$targets.each(function() {
+						var $myTarget = $(this);
+						var parentChildSet = false;
+						parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
+						parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
+						if (parentChildSet) {
+							// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
+							$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
+						}
+					});
+				}		
+			});	
+			if (tree.isRoot) {
+				var thisId = $parentNode.attr("id");
+				tree.isSelected = true;
+				Picklist.rootTrees[thisId] = tree;				
+			}				
+			if ($recursiveTargets) {
+				$recursiveTargets.each(Picklist.buildPicklistTree);
+			}
 		}
 	},
 	
@@ -289,8 +293,7 @@ var Picklist = {
 	setIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
 		if (childTree.isSelected != optionSelected) {
 			var parentTree = Picklist.getTree($parentNode);
-			var otherParents = childTree.getOtherParents(parentId);
-			if (otherParents.length == 0) {
+			if (childTree.parents.length == 1) {
 				if (childTree.parentIds[parentId]) {
 					// If the parent of this child points to the child more than once, use an OR condition
 					childTree.isSelected = childTree.isSelected | optionSelected;
@@ -304,7 +307,7 @@ var Picklist = {
 				 * if it is a child and THIS parentNode is selected, override the previous 'optionSelected' value with the one from THIS parentNode;
 				 * otherwise, if THIS parentNode is not a child of the childNode's OTHER parentNodes, use an OR condition
 				 */
-				var isChild = Picklist.isChildOf(otherParents, parentId);
+				var isChild = Picklist.isChildOf(childTree.parents, parentId);
 				if (isChild) {
 					if (parentTree.isSelected) {
 						childTree.isSelected = optionSelected; 
@@ -339,25 +342,6 @@ var Picklist = {
 		return theParentTree;
 	},
 	
-	isParentOf: function(children, childId) {
-		var isParent = false;
-		var childrensChildren = new Array();
-		for (var i = 0, len = children.length; i < len; i++) {
-			var childTree = Picklist.getTree($(children[i]));
-			if (childTree.isExistingParent(childId)) {
-				isParent = true;
-				break;
-			}
-			else {
-				childrensChildren.push(childTree.children);
-			}
-		}
-		if (isParent == false && childrensChildren.length > 0) {
-			isParent = Picklist.isParentOf(childrensChildren);
-		}
-		return isParent;
-	},
-	
 	getTree: function($elem) {
 		var tree = $elem.data("tree");
 		if (!tree) {
@@ -377,15 +361,6 @@ var Picklist = {
 						}
 					}
 					return pSel;
-				},
-				getOtherParents: function(excludedParentId) {
-					var otherParents = new Array();
-					for (var i = 0, len = this.parents.length; i < len; i++) {
-						if ($(this.parents[i]).attr("id") != excludedParentId) {
-							otherParents.push(this.parents[i]);
-						}
-					}
-					return otherParents;
 				},
 				isExistingParent: function(aParentId) {
 					return this.parentIds[aParentId];
@@ -460,7 +435,6 @@ var Picklist = {
 	},
 	
 	togglePicklist: function() {
-		console.time("togglePicklist");
 		var $elem = $(this);
 
 		var $containerElem = $elem.parents("li.side"); // get this picklist's container element
@@ -470,20 +444,26 @@ var Picklist = {
 		var cascaders = Picklist.getCascaders();
 		cascaders.shown = cascaders.shown ? cascaders.shown.add($elem) : $elem;
 		
-		var isMultiPicklist = Picklist.isMultiPicklist($elem);
-		var $options = Picklist.findOptions($elem);
-	
 		var pickedSelector = "";
-		$options.each(function() {
-			var $optElem = $(this);
-			if ((isMultiPicklist === true && $optElem.is(":visible")) || 
-				(isMultiPicklist === false && $optElem.attr("selected"))) {
-				var myRef = $optElem.attr('reference');
-				pickedSelector += myRef + ",";
+		var isMultiPicklist = Picklist.isMultiPicklist($elem);
+		if (isMultiPicklist) {
+			var $options = Picklist.findOptions($elem);
+			$options.each(function() {
+				var $optElem = $(this);
+				if ($optElem.is(":visible")) {
+					var myRef = $optElem.attr('reference');
+					pickedSelector += myRef + ",";
+				}
+			});
+			if (pickedSelector && pickedSelector.length > 0) {
+				pickedSelector = pickedSelector.substring(0, pickedSelector.length - 1);
 			}
-		});
-		if (pickedSelector.length > 0) {
-			pickedSelector = pickedSelector.substring(0, pickedSelector.length - 1);
+		}
+		else {
+			pickedSelector = $(this.options[this.selectedIndex]).attr("reference");
+			if (!pickedSelector) {
+				pickedSelector = "";
+			}
 		}
 		for (var y = 0, len = tree.children.length; y < len; y++) {
 			var $child = $(tree.children[y]);
@@ -494,19 +474,26 @@ var Picklist = {
 			if (isPicked != childTree.isSelected) {
 				var theParentTree = Picklist.isChildOf(tree.children, id);
 				if (theParentTree && theParentTree.isSelected) {
-					var $innerPicklist = $(theParentTree.node.find(".picklist"));
+					var innerSelect = theParentTree.node.find(".picklist");
+					var $innerPicklist = $(innerSelect);
 					var isInnerMultiPicklist = Picklist.isMultiPicklist($innerPicklist);
 					var $innerPicklistOptions = Picklist.findOptions($innerPicklist);
 					
 					var innerPicked = false;					
-					$innerPicklistOptions.each(function() {
-						var $innerOptElem = $(this);
-						if ((isMultiPicklist === true && $innerOptElem.is(":visible")) || 
-							(isMultiPicklist === false && $innerOptElem.attr("selected"))) {
-							var innerRef = $innerOptElem.attr('reference');
-							innerPicked |= $child.is(innerRef);
-						}
-					});
+					if (isInnerMultiPicklist) {
+						$innerPicklistOptions.each(function() {
+							var $innerOptElem = $(this);
+							if ($innerOptElem.is(":visible")) {
+								var innerRef = $innerOptElem.attr('reference');
+								innerPicked |= $child.is(innerRef);
+							}
+						});
+					}
+					else {
+						var select = innerSelect.get(0);
+						var innerRef = $(select.options[select.selectedIndex]).attr("reference");
+						innerPicked |= $child.is(innerRef);
+					}
 					childTree.isSelected = innerPicked;
 				}
 				else {
@@ -516,7 +503,6 @@ var Picklist = {
 		}
    		cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);
 		Picklist.hideShowCascaders(cascaders);					
-		console.timeEnd("togglePicklist");
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {

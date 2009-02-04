@@ -171,16 +171,18 @@ public class CommitmentServiceImpl implements CommitmentService {
     
     // only needed for commitments not entered by the program and entered via sql.
     private Commitment normalize(Commitment commitment) {
-    	if (commitment.getAddress() == null) {
-            commitment.setAddress(new Address(commitment.getPerson()));
-        }
-    	if (commitment.getPhone() == null) {
-            commitment.setPhone(new Phone(commitment.getPerson()));
-        }
-    	if (commitment.getPaymentSource() == null) {
-            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
-        }
-    	commitment.getPaymentSource().setPerson(commitment.getPerson());
+    	if (commitment.getCommitmentType() == CommitmentType.RECURRING_GIFT) {
+	    	if (commitment.getAddress() == null) {
+	            commitment.setAddress(new Address(commitment.getPerson()));
+	        }
+	    	if (commitment.getPhone() == null) {
+	            commitment.setPhone(new Phone(commitment.getPerson()));
+	        }
+	    	if (commitment.getPaymentSource() == null) {
+	            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+	        }
+	    	commitment.getPaymentSource().setPerson(commitment.getPerson());
+    	}
     	return commitment;
     }
 

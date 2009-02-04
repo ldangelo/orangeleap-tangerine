@@ -47,8 +47,92 @@
 					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
 					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
 					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+
+					ok($("#li-test1").is(":visible"), "li-test1 is expected to be visible");
+					ok($("#li-test2").is(":hidden"), "li-test2 is expected to be hidden");
+					ok($("#li-test3").is(":hidden"), "li-test3 is expected to be hidden");
+
+					ok($("#li-testA").is(":visible"), "li-testA is expected to be visible");
+					ok($("#li-testB").is(":visible"), "li-testB is expected to be visible");
+					ok($("#li-testC").is(":visible"), "li-testC is expected to be visible");
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
 				});
-				
+				module("test toggle");
+				test("toggle constituent type picklist to organization", function() {
+					$("#constituentType").selectOptions("organization");
+					$("#constituentType").change();
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden"), "li-person_contactInfo-constituentIndividualRoles is expected to be hidden");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":visible"), "li-person_contactInfo-constituentOrganizationRoles is expected to be visible");
+					ok($("#li-person_demographics-maritalStatus").is(":hidden"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+				});
+				test("toggle constituent type picklist to individual", function() {
+					$("#constituentType").selectOptions("individual");
+					$("#constituentType").change();
+					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
+					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+				});
+				test("toggle li-test number elements", function() {
+					$("#test1").selectOptions("UseTest2");
+					$("#test1").change();
+					ok($("#li-test2").is(":visible"), "li-test2 is expected to be visible");
+					ok($("#li-test3").is(":hidden"), "li-test3 is expected to be hidden");
+
+					$("#test2").selectOptions("UseTest3");
+					$("#test2").change();
+					ok($("#li-test3").is(":visible"), "li-test3 is expected to be visible");
+
+					$("#test1").selectOptions("none");
+					$("#test1").change();
+					ok($("#li-test2").is(":hidden"), "li-test2 is expected to be hidden");
+					ok($("#li-test3").is(":hidden"), "li-test3 is expected to be hidden");
+
+					$("#test1").selectOptions("UseTest2");
+					$("#test1").change();
+					ok($("#li-test2").is(":visible"), "li-test2 is expected to be visible");
+					ok($("#li-test3").is(":visible"), "li-test3 is expected to be visible");
+				});
+				test("toggle li-test alphabetical elements", function() {
+					$("#testA").selectOptions("none");
+					$("#testA").change();
+					ok($("#li-testB").is(":hidden"), "li-testB is expected to be hidden");
+					ok($("#li-testC").is(":hidden"), "li-testC is expected to be hidden");
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
+
+					$("#testA").selectOptions("UseTestB");
+					$("#testA").change();
+					ok($("#li-testB").is(":visible"), "li-testB is expected to be visible");
+					ok($("#li-testC").is(":visible"), "li-testC is expected to be visible");
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
+
+					$("#testB").selectOptions("UseTestC");
+					$("#testB").change();
+					ok($("#li-testC").is(":visible"), "li-testC is expected to be visible");
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
+
+					$("#testB").selectOptions("none");
+					$("#testB").change();
+					ok($("#li-testC").is(":hidden"), "li-testC is expected to be hidden");
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
+
+					$("#testC").selectOptions("none");
+					$("#testC").change();
+					ok($("#li-testD").is(":hidden"), "li-testD is expected to be hidden");
+
+					$("#testC").selectOptions("UseTestD");
+					$("#testC").change();
+					ok($("#li-testD").is(":visible"), "li-testD is expected to be visible");
+				});
 			});
 		</script>
 	</head>
@@ -430,7 +514,77 @@
 						</div>
 					</div>
 				</li>
+<li id="li-person_contactInfo-customFieldMap-communicationPreferences-_value" class="side">
+<label class="desc" for="customFieldMap[communicationPreferences].value"> Communication Preferences</label>
+<select id="customFieldMap-communicationPreferences-_value" class="ea-individual ea-organization" references="" name="customFieldMap[communicationPreferences].value">
+<option value="none">None</option>
+<option value="Opt Out-All"> Opt Out-All</option>
+<option value="Email"> Email</option>
+<option value="Mail"> Mail</option>
+<option value="SMS"> SMS</option>
+</select>
+<div id="selectedRef-customFieldMap-communicationPreferences-_value" style="display: none;"/>
+</li>
+<li id="li-person_contactInfo-customFieldMap-emailFormat-_value" class="side">
+<label class="desc" for="customFieldMap[emailFormat].value"> Email Format</label>
+<select id="customFieldMap-emailFormat-_value" class="ea-individual ea-organization" references="" name="customFieldMap[emailFormat].value">
+<option value="none">None</option>
+<option value="HTML"> HTML</option>
+<option value="Text"> Text</option>
+<option value="Both"> Both</option>
+</select>
+<div id="selectedRef-customFieldMap-emailFormat-_value" style="display: none;"/>
+</li>
 
+	<li id="li-test1" class="side">
+		<label class="desc" for="test1">Test 1</label>
+		<select id="test1" class="picklist" references="li:has(#test2)" name="test1">
+			<option value="none">None</option>
+			<option value="UseTest2" reference="li:has(#test2)">Use Test 2</option>
+		</select>
+		<div id="selectedRef-test1" style="display: none;"/>
+	</li>
+	<li id="li-test2" class="side">
+		<label class="desc" for="test2">Test 2</label>
+		<select id="test2" class="picklist" references="li:has(#test3)" name="test2">
+			<option value="none">None</option>
+			<option value="UseTest3" reference="li:has(#test3)">Use Test 3</option>
+		</select>
+		<div id="selectedRef-test2" style="display: none;"/>
+	</li>
+	<li id="li-test3" class="side">
+		<label class="desc" for="test3">Test 3</label>
+		<input type="text" name="test3" id="test3" value="momma"/>
+	</li>
+
+	<li id="li-testA" class="side">
+		<label class="desc" for="test1">Test A</label>
+		<select id="testA" class="picklist" references="li:has(#testB)" name="testA">
+			<option value="none">None</option>
+			<option value="UseTestB" selected="selected" reference="li:has(#testB)">Use Test B</option>
+		</select>
+		<div id="selectedRef-testA" style="display: none;">li:has(#testB)</div>
+	</li>
+	<li id="li-testB" class="side">
+		<label class="desc" for="testB">Test B</label>
+		<select id="testB" class="picklist" references="li:has(#testC)" name="testB">
+			<option value="none">None</option>
+			<option value="UseTestC" selected="selected" reference="li:has(#testC)">Use Test C</option>
+		</select>
+		<div id="selectedRef-testB" style="display: none;">li:has(#testC)</div>
+	</li>
+	<li id="li-testC" class="side">
+		<label class="desc" for="testC">Test C</label>
+		<select id="testC" class="picklist" references="li:has(#testD)" name="testC">
+			<option value="none" selected="selected">None</option>
+			<option value="UseTestD" reference="li:has(#testD)">Use Test D</option>
+		</select>
+		<div id="selectedRef-testC" style="display: none;"/>
+	</li>
+	<li id="li-testD" class="side">
+		<label class="desc" for="testD">Test D</label>
+		<input type="text" name="testD" id="testD" value="poppa"/>
+	</li>
 	<li class="clear"></li>
 				</ul>
 			</div>

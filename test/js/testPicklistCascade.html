@@ -39,13 +39,13 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				module("test tree structure");
-				test("MPower.RootTree", function() {
-					ok(MPower.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
-					ok(MPower.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
-					ok(MPower.rootTrees["li-person_contactInfo-constituentType"], "constituentType exists as a root");
+				test("Picklist.RootTree", function() {
+					ok(Picklist.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
+					ok(Picklist.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
+					ok(Picklist.rootTrees["li-person_contactInfo-constituentType"], "constituentType exists as a root");
 					
 					var len = 0;
-					for (var obj in MPower.rootTrees) { len++; }
+					for (var obj in Picklist.rootTrees) { len++; }
 					ok(len === 3, len + " items in rootTrees, expected 3");
 				});
 				module("test picklist");

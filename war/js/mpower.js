@@ -318,22 +318,25 @@ var Picklist = {
 	},
 	
 	isChildOf: function(parents, parentId) {
-		var isChild = false;
+		var theParentTree = null;
 		var parentsParents = new Array();
 		for (var i = 0, len = parents.length; i < len; i++) {
-			var parentTree = Picklist.getTree($(parents[i]));
-			if (parentTree.isExistingChild(parentId)) {
-				isChild = true;
-				break;
-			}
-			else {
-				parentsParents.push(parentTree.parents);
+			var $myParent = $(parents[i]);
+			if ($myParent.attr("id") != parentId) {
+				var parentTree = Picklist.getTree($myParent);
+				if (parentTree.isExistingChild(parentId)) {
+					theParentTree = parentTree;
+					break;
+				}
+				else {
+					parentsParents.push(parentTree.parents);
+				}
 			}
 		}
-		if (isChild == false && parentsParents.length > 0) {
-			isChild = Picklist.isChildOf(parentsParents);
+		if (theParentTree == null && parentsParents.length > 0) {
+			theParentTree = Picklist.isChildOf(parentsParents);
 		}
-		return isChild;
+		return theParentTree;
 	},
 	
 	isParentOf: function(children, childId) {
@@ -481,66 +484,37 @@ var Picklist = {
 		if (pickedSelector.length > 0) {
 			pickedSelector = pickedSelector.substring(0, pickedSelector.length - 1);
 		}
-		var prevSelectorIds = {};
-		var $childrenChildren = null;
 		for (var y = 0, len = tree.children.length; y < len; y++) {
 			var $child = $(tree.children[y]);
 			var isPicked =  $child.is(pickedSelector);
 			var childTree = Picklist.getTree($child);
 			var id = $child.attr("id");
-			if (prevSelectorIds[id]) {
-				childTree.isSelected |= isPicked;
+			
+			if (isPicked != childTree.isSelected) {
+				var theParentTree = Picklist.isChildOf(tree.children, id);
+				if (theParentTree && theParentTree.isSelected) {
+					var $innerPicklist = $(theParentTree.node.find(".picklist"));
+					var isInnerMultiPicklist = Picklist.isMultiPicklist($innerPicklist);
+					var $innerPicklistOptions = Picklist.findOptions($innerPicklist);
+					
+					var innerPicked = false;					
+					$innerPicklistOptions.each(function() {
+						var $innerOptElem = $(this);
+						if ((isMultiPicklist === true && $innerOptElem.is(":visible")) || 
+							(isMultiPicklist === false && $innerOptElem.attr("selected"))) {
+							var innerRef = $innerOptElem.attr('reference');
+							innerPicked |= $child.is(innerRef);
+						}
+					});
+					childTree.isSelected = innerPicked;
+				}
+				else {
+					childTree.isSelected = isPicked;
+				}
 			}
-			else {
-				prevSelectorIds[id] = true;
-				childTree.isSelected = isPicked;
-			}
-			$childrenChildren = $childrenChildren ? $childrenChildren.add($(childTree.children)) : $(childTree.children); 
 		}
-//		Picklist.toggleChildren($childrenChildren);
    		cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);
 		Picklist.hideShowCascaders(cascaders);					
-	},
-	
-	toggleChildren: function($children) {
-		if ($children) {
-			$children.each(function() {
-				var $this = $(this);
-				var tree = Picklist.getTree($this);
-				
-			});
-		}
-	},
-	
-	toggleIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
-		if (childTree.isSelected != optionSelected) {
-			var parentTree = Picklist.getTree($parentNode);
-			var otherParents = childTree.getOtherParents(parentId);
-			if (otherParents.length == 0) {
-				if (childTree.parentIds[parentId]) {
-					// If the parent of this child points to the child more than once, use an OR condition
-					childTree.isSelected = childTree.isSelected | optionSelected;
-				}
-				else {
-					childTree.isSelected = optionSelected;
-				} 
-			}
-			else {
-				/* Try to determine if THIS parentNode is also a child of the childNode's OTHER parentNodes; 
-				 * if it is a child and THIS parentNode is selected, override the previous 'optionSelected' value with the one from THIS parentNode;
-				 * otherwise, if THIS parentNode is not a child of the childNode's OTHER parentNodes, use an OR condition
-				 */
-				var isChild = Picklist.isChildOf(otherParents, parentId);
-				if (isChild) {
-					if (parentTree.isSelected) {
-						childTree.isSelected = optionSelected; 
-					}
-				}
-				else {
-					childTree.isSelected = childTree.isSelected | optionSelected;
-				}
-			}
-		}
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {

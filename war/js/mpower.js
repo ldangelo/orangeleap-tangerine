@@ -460,6 +460,7 @@ var Picklist = {
 	},
 	
 	togglePicklist: function() {
+		console.time("togglePicklist");
 		var $elem = $(this);
 
 		var $containerElem = $elem.parents("li.side"); // get this picklist's container element
@@ -515,6 +516,7 @@ var Picklist = {
 		}
    		cascaders = Picklist.cascadeElementsChildren($(tree.children), cascaders);
 		Picklist.hideShowCascaders(cascaders);					
+		console.timeEnd("togglePicklist");
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {
@@ -1019,7 +1021,7 @@ var Lookup = {
 					$(this).css("display", "none");
 				}
 			});
-			$(Lookup.lookupCaller).each(MPower.togglePicklist);
+			$(Lookup.lookupCaller).each(Picklist.togglePicklist);
 			$("#dialog").jqmHide();	
 		});			
 	},
@@ -1085,7 +1087,7 @@ var Lookup = {
 			else {
 				// For multi-picklists, don't remove, just hide
 				$(this).css("display", "none");
-				$parent.parent("div.multiPicklist").each(MPower.togglePicklist);
+				$parent.parent("div.multiPicklist").each(Picklist.togglePicklist);
 			}
 		});
 	}

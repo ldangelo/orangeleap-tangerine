@@ -363,7 +363,7 @@
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldId}'/>" />
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
-						<a style="margin:0;position:absolute;top:3px;right:-7px" class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup(this)" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+						<a class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup(this)" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					</div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">

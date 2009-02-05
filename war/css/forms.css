@@ -145,41 +145,35 @@ h4.gridSectionHeader {
 	margin:8px 0 0 0;
 	background: #F6F7FB;
 }
+
+a.lookupLink, .lookupField a.hideText, .multiLookupField a.hideText {
+	background: transparent url(../images/icons/view.png) no-repeat center center;
+	display: block;
+	height: 16px;
+	width: 16px;
+	margin: 0;
+	padding:3px;
+    position: absolute;
+	text-indent: -2000px;
+}
+a.lookupLink:hover, .lookupField a.hideText:hover, .multiLookupField a.hideText:hover, a.lookupLink:focus, .lookupField a.hideText:focus, .multiLookupField a.hideText:focus {
+	background-color: #DFF1FF;
+}
 a.lookupLink {
-	background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;
-	display:block;
 	float:left;
-	height:16px;
-	/*margin:5px 3px 0pt;*/
 	overflow:hidden;
-	padding:0pt;
-	text-indent:-2000px;
-	width:16px;
+	right: -8px;
+	top: 1px;
 }
 
-a.lookupLink2 {
-	/*background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;*/
-	display:block;
-	position:absolute;
-	top:0;
-	left:0;
-	margin:0;
-	height:16px;
-	/*overflow:hidden;*/
-	padding:0;
-	/*text-indent:-2000px;*/
-	width:16px;
+table.distributionLines tbody tr td a.lookupLink {
+	top: 1px; right: -4px; padding: 1px;
 }
-a.tableLookupLink {
-	background:transparent url(../images/icons/view.gif) no-repeat 0% 0%;
-	display:block;
-	height:16px;
-	margin:0;
-	overflow:hidden;
-	padding:0;
-	text-indent:-2000px;
-	width:16px;
+.lookupField a.hideText, .multiLookupField a.hideText {
+    top: 0;
+    right: 0;
 }
+
 .lookupTable {
 	background:#fff;
 	padding:2px;
@@ -369,6 +363,9 @@ p.gridActions #subTotal {
 	color:#c00;
 	display:inline;
 }
+form input[type=text], form input.text {
+	height: 16px;
+}
 form table.distributionLines input.amount, input.percentage {
 	text-align:right;
 }
@@ -427,22 +424,10 @@ ul.formFields div.lookupWrapper input.code {
 }
 .lookupField, .multiLookupField {
 	border:1px solid #7F9DB9;
-	/*padding:2px 8px 2px 0;*/
-	padding:1px 8px 2px 0;
+	padding:2px 8px 2px 0;
 	float:left;
 	width:100%;
     position: relative;
-}
-.lookupField a.hideText, .multiLookupField a.hideText {
-	background: transparent url(../images/icons/view.gif) no-repeat top left;
-	display: block;
-	height: 16px;
-	width: 16px;
-	margin: 2px;
-	padding: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
 }
 a.hideText {
 	font-size: 0;

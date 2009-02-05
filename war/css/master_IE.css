@@ -6,3 +6,8 @@ div.jqmWindow .buttonsDiv, div.modalSearch  { zoom: 1; }
 .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }
 ul.formFields li.side label.desc { padding-top: 2px; }
 .saveButton,.searchButton { height: 23px; }
+table.distributionLines tbody tr td a.lookupLink { top: 2px; }
+a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active { background-color: #DFF1FF; }
+a.dp-choose-date:active { background-color: #DFF1FF; }
+
+

@@ -25,7 +25,7 @@
 								id="hidden-<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>"
 								type="hidden"
 								name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" />
-							<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#"
+							<a class="lookupLink" href="#"
 								<c:choose>
 									<c:when test="${fieldVO.fieldType == 'CODE_OTHER'}">
 										onclick="Lookup.loadCodePopup(this, true)" 

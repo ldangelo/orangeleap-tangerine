@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.CommunicationHistoryDao;
 import com.mpower.domain.CommunicationHistory;
+import com.mpower.domain.Person;
+import com.mpower.service.impl.SessionServiceImpl;
 
 @Repository("communicationHistoryDao")
 public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
@@ -25,6 +27,7 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 
 	@Override
 	public CommunicationHistory addCommunicationHistory(CommunicationHistory communicationHistory) {
+         if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
 		 em.persist(communicationHistory);
 		 return communicationHistory;
 	}
@@ -33,6 +36,7 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 	@Override
 	public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId) {
         Query q =  em.createNamedQuery("PAYMENT_HISTORY_BY_CLIENT");
+        q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         q.setParameter("personId", personId);
         List<CommunicationHistory> payments = q.getResultList();
         return payments;
@@ -42,8 +46,17 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 	@Override
 	public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId) {
         Query q =  em.createNamedQuery("PAYMENT_HISTORY_BY_REPRESENTATIVE");
+        q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         q.setParameter("personId", personId);
         List<CommunicationHistory> payments = q.getResultList();
         return payments;
+	}
+
+	@Override
+	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
+		CommunicationHistory communicationHistory = em.find(CommunicationHistory.class, communicationHistoryId);
+        // Sanity check
+        if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        return communicationHistory;
 	}
 }

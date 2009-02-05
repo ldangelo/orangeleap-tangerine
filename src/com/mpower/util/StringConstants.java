@@ -30,6 +30,11 @@ public final class StringConstants {
     public static final String GIFT_ID = "giftId";
     public static final String SELECTED_GIFT = "selectedGift";
 
+    public static final String COMMUNICATION_HISTORY = "communicationHistory";
+    public static final String COMMUNICATION_HISTORYS = "communicationHistorys";
+    public static final String COMMUNICATION_HISTORY_ID = "communicationHistoryId";
+    public static final String SELECTED_COMMUNICATION_HISTORY = "selectedcommunicationHistory";
+
     public static final String PAYMENT_SOURCE = "paymentSource";
     public static final String PAYMENT_SOURCES = "paymentSources";
     public static final String PAYMENT_SOURCE_ID = "paymentSourceId";

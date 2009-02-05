@@ -11,5 +11,7 @@ public interface CommunicationHistoryDao {
 	public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId);
 	
 	public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId);
+
+	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId);
 	
 }

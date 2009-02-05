@@ -32,7 +32,7 @@ import com.mpower.util.CommunicationHistoryCustomFieldMap;
 
 @Entity
 @Table(name = "COMMUNICATION_HISTORY")
-public class CommunicationHistory implements SiteAware, Customizable, Serializable {
+public class CommunicationHistory implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -111,6 +111,12 @@ public class CommunicationHistory implements SiteAware, Customizable, Serializab
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
+
+    @Transient
+    private Map<String, String> fieldLabelMap = null;
+
+    @Transient
+    private Map<String, Object> fieldValueMap = null;
 
 
 
@@ -327,6 +333,25 @@ public class CommunicationHistory implements SiteAware, Customizable, Serializab
         return customFieldMap;
     }
 
+    @Override
+    public Map<String, String> getFieldLabelMap() {
+        return fieldLabelMap;
+    }
+
+    @Override
+    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
+        this.fieldLabelMap = fieldLabelMap;
+    }
+
+    @Override
+    public Map<String, Object> getFieldValueMap() {
+        return fieldValueMap;
+    }
+
+    @Override
+    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
+        this.fieldValueMap = fieldValueMap;
+    }
 
 
 

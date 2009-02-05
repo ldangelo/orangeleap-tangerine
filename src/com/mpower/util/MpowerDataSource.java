@@ -54,9 +54,9 @@ public class MpowerDataSource implements DataSource {
 				return conn; 
 			}
 		
-			logger.debug("Setting schema for site = "+siteName + "...");
+			//logger.debug("Setting schema for site = "+siteName + "...");
 			changeSchema(conn, siteName);
-			logger.debug("Set schema for site = "+siteName + ".");
+			//logger.debug("Set schema for site = "+siteName + ".");
 			
 			return conn;
 			

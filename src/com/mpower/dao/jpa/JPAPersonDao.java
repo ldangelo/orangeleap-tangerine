@@ -37,6 +37,9 @@ public class JPAPersonDao implements PersonDao {
 
     @Override
     public Person savePerson(Person person) {
+        // Sanity check
+        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+
         for (Iterator<Phone> iter = person.getPhones().iterator(); iter.hasNext();) {
             Phone phone = iter.next();
             if (phone == null || StringUtils.stripToNull(phone.getNumber()) == null) {

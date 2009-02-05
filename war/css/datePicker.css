@@ -47,18 +47,19 @@ table.jCalendar td.disabled, table.jCalendar td.disabled:hover {
 
 /* NOTE - you will probably want to style a.dp-choose-date - see how I did it in demo.css */
 a.dp-choose-date {
-	background:transparent url(../images/icons/calendar.png) no-repeat 0% 0%;
+	background:transparent url(../images/icons/calendar.png) no-repeat top left;
 	display:block;
 	float:left;
 	height:16px;
-	margin:3px 3px 0pt;
+	margin:3px;
 	overflow:hidden;
-	padding:0pt;
+	padding:3px;
 	text-indent:-2000px;
 	width:16px;
 }
+a.dp-choose-date:hover, a.dp-choose-date:focus { background-color: #DFF1FF; }
 a.dp-choose-date.dp-disabled {
-	background-position:0pt -20px;
+	background-position: bottom left;
 	cursor:default;
 }
 div.dp-popup {

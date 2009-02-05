@@ -398,7 +398,8 @@ table div.lookupWrapper {
 }
 div.lookupWrapper a.dp-choose-date {
 	position:absolute;
-	right:-10px;
+	right:-12px;
+	top: -2px;
 }
 ul.formFields div.lookupWrapper input {
 	width:100%;

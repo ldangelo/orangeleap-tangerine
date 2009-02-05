@@ -38,14 +38,17 @@
 		    		<td>&nbsp;</td>
 		    		<td class="loginButton"><input class="loginButton" name="submit" id="submit" type="submit" value="Sign In" /></td>
 	            </tr>
+	            <%--
 	            <tr>
 		    		<td>&nbsp;</td>
 		    		<td><a href="#">Forgot your password?</a></td>
 	            </tr>
+	            --%>
     		</table>
     	</form>
 	</div>
 </div>
+<%-->
 <br />
 <br />
 <h5>Cheat Sheet</h5>
@@ -59,6 +62,7 @@ scott/wombat/company1/<b>ROLE_USER</b><br/></br>
 jack/jack/company2/<b>ROLE_ADMIN</b>, ROLE_USER, ROLE_MANAGER<br/>
 locke/locke/company2/<b>ROLE_USER</b>, ROLE_MANAGER<br/>
 hurley/hurley/company2/<b>ROLE_USER</b>
+--%>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var savedOrgName = $.cookie('siteCookie');

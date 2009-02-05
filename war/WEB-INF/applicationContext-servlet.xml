@@ -10,6 +10,7 @@
 	<import resource="contexts/audit-context.xml"/>
 	<import resource="contexts/code-context.xml"/>
 	<import resource="contexts/commitment-context.xml"/>
+	<import resource="contexts/communicationHistory-context.xml"/>
 	<import resource="contexts/constituent-context.xml"/>
 	<import resource="contexts/dwr-context.xml"/>
 	<import resource="contexts/email-context.xml"/>

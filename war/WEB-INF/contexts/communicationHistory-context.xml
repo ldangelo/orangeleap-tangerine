@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    <!-- CommunicationHistory -->
+	<bean id="communicationHistoryFormController" class="com.mpower.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineFormController">
+        <property name="commandName" value="communicationHistory"/>
+        <property name="commandClass" value="com.mpower.domain.CommunicationHistory"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="communicationHistory"/>
+			        <property name="siteService" ref="siteService" />
+	            </bean>
+	        </list>
+        </property>
+        <property name="formView" value="communicationHistory/communicationHistory" />
+        <property name="successView" value="redirect:/communicationHistoryView.htm" />
+        <property name="communicationHistoryService" ref="communicationHistoryService" />
+    </bean>
+
+    <bean id="communicationHistoryViewController" class="com.mpower.controller.communicationHistory.CommunicationHistoryViewController" parent="communicationHistoryFormController">
+        <property name="formView" value="communicationHistory/communicationHistoryView"/>
+        <property name="successView" value="redirect:/communicationHistoryView.htm"/>
+    </bean>
+
+    <bean id="communicationHistorySearchController" class="com.mpower.controller.communicationHistory.CommunicationHistorySearchFormController">
+        <property name="commandName" value="communicationHistory"/>
+        <property name="commandClass" value="com.mpower.domain.CommunicationHistory"/>
+        <property name="formView" value="communicationHistory/communicationHistorySearch"/>
+        <property name="successView" value="communicationHistory/communicationHistorySearch"/>
+        <property name="communicationHistoryService" ref="communicationHistoryService"/>
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+    <bean id="communicationHistoryListController" class="com.mpower.controller.communicationHistory.CommunicationHistoryListController">
+        <property name="communicationHistoryService" ref="communicationHistoryService"/>
+        <property name="personService" ref="personService"/>
+        <property name="viewName" value="communicationHistory/communicationHistoryList"/>
+    </bean>
+    
+    <bean id="communicationHistoryUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/communicationHistory.htm">communicationHistoryFormController</prop>
+		    	<prop key="/communicationHistoryView.htm">communicationHistoryViewController</prop>
+		        <prop key="/communicationHistorySearch.htm">communicationHistorySearchController</prop>
+		        <prop key="/communicationHistoryList.htm">communicationHistoryListController</prop>
+			</props>
+		</property>
+	</bean>
+       
+</beans>

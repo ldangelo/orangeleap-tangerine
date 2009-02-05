@@ -47,7 +47,7 @@
 			</c:when>
 			<c:when test="${communicationHistoryList ne null}">
 				<p style="margin:8px 0 6px 0;">No communication history entries have been created for this person.</p>
-				<p>Would you like to <a href="communicationHistory.htm?personId=${person.id}">create a new communication history entry?</a>?</p>
+				<p>Would you like to <a href="communicationHistory.htm?personId=${person.id}">create a new communication history entry</a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

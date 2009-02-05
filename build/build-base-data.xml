@@ -24,6 +24,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentHistory.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/communicationHistory.sql"/>
 	     	
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
@@ -63,6 +64,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/phone.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/phoneManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentHistory.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/communicationHistory.sql"/>
 	     	
 
 	     	<!-- Query Lookups -->

@@ -65,7 +65,10 @@
 	     	<transaction src="${basedir}/db/prod/pages/phoneManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/paymentHistory.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/communicationHistory.sql"/>
-	     	
+	     	<transaction src="${basedir}/db/prod/pages/communicationHistoryList.sql"/>
+		    <transaction src="${basedir}/db/prod/pages/communicationHistorySearch.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/communicationHistorySearchResults.sql"/>
+		    <transaction src="${basedir}/db/prod/pages/communicationHistoryView.sql"/>
 
 	     	<!-- Query Lookups -->
 	     	<transaction src="${basedir}/db/prod/domain/queryLookup.sql"/>

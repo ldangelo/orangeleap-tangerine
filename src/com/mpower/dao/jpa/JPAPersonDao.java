@@ -57,7 +57,7 @@ public class JPAPersonDao implements PersonDao {
     public Person readPerson(Long id) {
         Person person = em.find(Person.class, id);
         // Sanity check
-        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
         return person;
     }
 

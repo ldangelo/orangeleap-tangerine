@@ -3,7 +3,7 @@
 	<tiles:putAttribute name="browserTitle" value="Communication History Entries" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="CommunicationHistoryEntries" />
+	<tiles:putAttribute name="sidebarNav" value="communicationHistoryList" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='communicationHistoryList' />
 		<c:set var="person" value="${person}" scope="request" />

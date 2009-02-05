@@ -3,6 +3,7 @@ package com.mpower.dao.customization;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -31,6 +32,7 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
         query.setParameter("siteName", siteName);
         query.setParameter("pageType", pageType);
         query.setParameter("roles", roles);
+        query.setFlushMode(FlushModeType.COMMIT);
         return query.getResultList();
     }
 
@@ -39,6 +41,7 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
         Query query = em.createNamedQuery("READ_OUT_OF_BOX_SECTION_FIELDS");
         query.setParameter("pageType", pageType);
         query.setParameter("sectionName", sectionName);
+        query.setFlushMode(FlushModeType.COMMIT);
         return query.getResultList();
     }
 
@@ -47,6 +50,7 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
         Query query = em.createNamedQuery("READ_CUSTOMIZED_SECTION_FIELDS");
         query.setParameter("siteName", siteName);
         query.setParameter("sectionDefinitionId", sectionDefinitionId);
+        query.setFlushMode(FlushModeType.COMMIT);
         return query.getResultList();
     }
 
@@ -56,6 +60,7 @@ public class JPAPageCustomizationDao implements PageCustomizationDAO {
         Query query = em.createNamedQuery("READ_PAGE_ACCESS");
         query.setParameter("siteName", siteName);
         query.setParameter("roles", roles);
+        query.setFlushMode(FlushModeType.COMMIT);
         return query.getResultList();
     }
 }

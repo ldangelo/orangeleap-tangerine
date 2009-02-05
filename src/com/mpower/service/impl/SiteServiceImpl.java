@@ -41,7 +41,6 @@ import com.mpower.type.MessageResourceType;
 import com.mpower.type.PageType;
 
 @Service("siteService")
-@Transactional(propagation = Propagation.REQUIRED)
 public class SiteServiceImpl implements SiteService {
 
     /** Logger for this class and subclasses */
@@ -63,6 +62,7 @@ public class SiteServiceImpl implements SiteService {
     private SiteDao siteDao;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public synchronized Site createSiteAndUserIfNotExist(String siteName) {
     	
         Site site = siteDao.readSite(siteName);

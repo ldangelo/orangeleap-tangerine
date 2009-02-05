@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -31,6 +32,7 @@ public class JPAMessageDao implements MessageDao {
         query.setParameter("messageResourceType", messageResourceType);
         query.setParameter("messageKey", messageKey);
         query.setParameter("language", language.toString());
+        query.setFlushMode(FlushModeType.COMMIT);
 
         List<MessageResource> results = query.getResultList();
         if (!results.isEmpty()) {

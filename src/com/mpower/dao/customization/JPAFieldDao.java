@@ -3,6 +3,7 @@ package com.mpower.dao.customization;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -62,6 +63,7 @@ public class JPAFieldDao implements FieldDao {
 	public List<Picklist> listPicklists(String siteName) {
 		Query query = em.createNamedQuery("READ_SITE_PICKLISTS");
 		query.setParameter("siteName", siteName);
+        query.setFlushMode(FlushModeType.COMMIT);
         List<Picklist> picklists = query.getResultList();
 		return picklists;
 	}
@@ -73,6 +75,7 @@ public class JPAFieldDao implements FieldDao {
         query.setParameter("siteName", siteName);
         query.setParameter("fieldName", fieldName);
         query.setParameter("entityType", entityType);
+        query.setFlushMode(FlushModeType.COMMIT);
         List<Picklist> picklists = query.getResultList();
         return picklists.size() > 0 ? picklists.get(0) : null;
     }
@@ -93,6 +96,7 @@ public class JPAFieldDao implements FieldDao {
             query.setParameter("fieldDefinitionId", fieldDefinitionId);
             query.setParameter("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
         }
+        query.setFlushMode(FlushModeType.COMMIT);
         List<FieldRequired> fields = query.getResultList();
         if (fields.size() > 0) {
             if (fields.size() == 1) {
@@ -124,6 +128,7 @@ public class JPAFieldDao implements FieldDao {
             query.setParameter("fieldDefinitionId", fieldDefinitionId);
             query.setParameter("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
         }
+        query.setFlushMode(FlushModeType.COMMIT);
         List<FieldValidation> fields = query.getResultList();
         if (fields.size() > 0) {
             if (fields.size() == 1) {

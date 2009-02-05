@@ -2,15 +2,15 @@ $(document).ready(function() {
 	(function() {
 //		console.profile("buildTree");
 //		console.time("buildTree");
-		$("li.side:has(.picklist), li.side:has(.multiPicklist)").each(Picklist.buildPicklistTree);
+		$("li.side:has(.picklist), li.side:has(.multiPicklist)", "ul").each(Picklist.buildPicklistTree);
 //		console.timeEnd("buildTree");
 //		console.profileEnd();
 //		console.time("cascade");
 		Picklist.cascadeElementsRoot();
 //		console.timeEnd("cascade");
 	})();
-	$(".picklist:not(.paymentSourcePicklist)").bind("change", Picklist.togglePicklist);
-	$(".paymentSourcePicklist").bind("change", Picklist.populatePaymentSourceAttributes);	
+	$(".picklist:not(.paymentSourcePicklist)", "form").bind("change", Picklist.togglePicklist);
+	$(".paymentSourcePicklist", "form").bind("change", Picklist.populatePaymentSourceAttributes);	
 	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -205,10 +205,10 @@ var Picklist = {
 	
 	/** When the document is ready, build the tree(s) of items that cascade each other */
 	buildPicklistTree: function() {
-		var $parentNode = $(this); // this may be an li, or div
+		var $parentNode = $(this);
 		var tree = Picklist.getTree($parentNode);
 		
-		if (tree.children.length == 0) {
+		if (tree.children.length == 0) { // assume no children will be discovered each time we traverse all the picklists
 			if (tree.parents.length == 0) {
 				tree.isRoot = true; // assume this is the root, will be reset in 'setParentForChild' if not
 			}
@@ -219,25 +219,13 @@ var Picklist = {
 			$picklists = $picklists.add($nested); // these are all the children of this node
 			$picklists.each(function() {
 				var $myPicklist = $(this);
-				
 				var selectors = $myPicklist.attr("references");
-				
-				var refs = new Array();
-				var selectedRefs = new Array();
+				var selectedRefs = jQuery.trim($("div#selectedRef-" + $myPicklist.attr("id")).text());
 				if (selectors) {
-					refs = selectors.split(",");
-				}
-				selectedRefs = $("div#selectedRef-" + $myPicklist.attr("id")).text().replace(new RegExp(" ","g"), '').split(",");
-	
-				for (var x = 0, len = refs.length; x < len; x++) {
-					var optionSelected = false;
-					var thisRef = jQuery.trim(refs[x]);
-					if (jQuery.inArray(thisRef, selectedRefs) > -1) {
-						optionSelected = true;
-					}
-					var $targets = $(thisRef);
+					var $targets = $(selectors, "form");
 					$targets.each(function() {
 						var $myTarget = $(this);
+						var optionSelected = $myTarget.is(selectedRefs);
 						var parentChildSet = false;
 						parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
 						parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
@@ -246,7 +234,7 @@ var Picklist = {
 							$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
 						}
 					});
-				}		
+				}
 			});	
 			if (tree.isRoot) {
 				var thisId = $parentNode.attr("id");
@@ -460,7 +448,8 @@ var Picklist = {
 			}
 		}
 		else {
-			pickedSelector = $(this.options[this.selectedIndex]).attr("reference");
+			var aIndex = this.selectedIndex ? this.selectedIndex : 0;
+			pickedSelector = $(this.options[aIndex]).attr("reference");
 			if (!pickedSelector) {
 				pickedSelector = "";
 			}
@@ -491,6 +480,7 @@ var Picklist = {
 					}
 					else {
 						var select = innerSelect.get(0);
+						var index = select.selectedIndex ? select.selectedIndex : 0;
 						var innerRef = $(select.options[select.selectedIndex]).attr("reference");
 						innerPicked |= $child.is(innerRef);
 					}
@@ -506,7 +496,8 @@ var Picklist = {
 	},
 	
 	setSelectedAddressPhoneByValue: function($select, value) {
-		var tree = Picklist.getTree($select.parents("li.side"));
+		var $liElem = $select.parents("li.side");
+		var tree = Picklist.getTree($liElem);
 		
 		// If no numeric ID selected, use "none"
 		if (isNaN(parseInt(value, 10)) || $select.containsOption(value) == false) {
@@ -515,22 +506,24 @@ var Picklist = {
 
 		var $options = Picklist.findOptions($select);
 		
-		$options.each(function() {
+		$options.each(function(index) {
 			var $optElem = $(this);
 			var optionSelected = false;
 			if (value == $optElem.val()) {
 				optionSelected = true;
 				$optElem.attr("selected", "true");
+				$select.get(0).selectedIndex = index;
 			}
 			var selector = $optElem.attr('reference');
 			if (selector != null && selector.length) {
-				var $targets = $(selector);
+				var $targets = $(selector, "form");
 				$targets.each(function() {
 					var $myTarget = $(this);
 					Picklist.getTree($myTarget).isSelected = optionSelected;
 				});
 			}
-		});		
+		});	
+		return $select;
 	},
 	
 	populatePaymentSourceAttributes: function() {
@@ -539,42 +532,48 @@ var Picklist = {
 			var addressId = $option.attr("address");
 			var phoneId = $option.attr("phone");
 			
-			Picklist.setSelectedAddressPhoneByValue($("select#selectedAddress"), addressId);
-			Picklist.setSelectedAddressPhoneByValue($("select#selectedPhone"), phoneId);
+			var $selectAddress = Picklist.setSelectedAddressPhoneByValue($("select#selectedAddress", "form"), addressId);
+			var $selectPhone = Picklist.setSelectedAddressPhoneByValue($("select#selectedPhone", "form"), phoneId);
 			
 			// ACH
 			var achholder = $option.attr("achholder");
 			if (achholder) {
-				$("div.gift_editAch div#paymentSource_achHolderName, div.commitment_editAch div#paymentSource_achHolderName").text(achholder);
+				$("div.gift_editAch div#paymentSource_achHolderName, div.commitment_editAch div#paymentSource_achHolderName", "form").text(achholder);
 			}
 			var routing = $option.attr("routing");
 			if (routing) {
-				$("div.gift_editAch div#paymentSource_achRoutingNumberDisplay, div.commitment_editAch div#paymentSource_achRoutingNumberDisplay").text(routing);
+				$("div.gift_editAch div#paymentSource_achRoutingNumberDisplay, div.commitment_editAch div#paymentSource_achRoutingNumberDisplay", "form").text(routing);
 			}
 			var acct = $option.attr("acct");
 			if (acct) {
-				$("div.gift_editAch div#paymentSource_achAccountNumberDisplay, div.commitment_editAch div#paymentSource_achAccountNumberDisplay").text(acct);
+				$("div.gift_editAch div#paymentSource_achAccountNumberDisplay, div.commitment_editAch div#paymentSource_achAccountNumberDisplay", "form").text(acct);
 			}
 			
 			// Credit Card
 			var cardholder = $option.attr("cardholder");
 			if (cardholder) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardHolderName, div.commitment_editCreditCard div#paymentSource_creditCardHolderName").text(cardholder);
+				$("div.gift_editCreditCard div#paymentSource_creditCardHolderName, div.commitment_editCreditCard div#paymentSource_creditCardHolderName", "form").text(cardholder);
 			}
 			var cardType = $option.attr("cardType");
 			if (cardType) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardType, div.commitment_editCreditCard div#paymentSource_creditCardType").text(cardType);
+				$("div.gift_editCreditCard div#paymentSource_creditCardType, div.commitment_editCreditCard div#paymentSource_creditCardType", "form").text(cardType);
 			}
 			var number = $option.attr("number");
 			if (number) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#paymentSource_creditCardNumberDisplay").text(number);
+				$("div.gift_editCreditCard div#paymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#paymentSource_creditCardNumberDisplay", "form").text(number);
 			}
 			var exp = $option.attr("exp");
 			if (exp) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardExpiration, div.commitment_editCreditCard div#paymentSource_creditCardExpiration").text(exp);
+				$("div.gift_editCreditCard div#paymentSource_creditCardExpiration, div.commitment_editCreditCard div#paymentSource_creditCardExpiration", "form").text(exp);
 			}
 		}
 		$(this).each(Picklist.togglePicklist);
+		if ($selectAddress) {
+			$selectAddress.each(Picklist.togglePicklist);
+		}
+		if ($selectPhone) {
+			$selectPhone.each(Picklist.togglePicklist);
+		}
 	}
 }
 var MPower = {
@@ -632,7 +631,11 @@ var Lookup = {
 		});
 		*/ 
 	},
-	
+		
+	formatItem: function(row) {
+		return row[0] + (row[1] ? "<span> - " + row[1].toString().replace("&nbsp;", "") + "</span>" : "");
+	},
+		
 	codeAutoCompleteCallback: function(itemSelected, $input) {
 		$("#" + $input.attr("otherFieldId")).val("");
 		$input.siblings("input:hidden").val(itemSelected.selectValue);

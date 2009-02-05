@@ -43,21 +43,21 @@
 					ok(Picklist.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
 					ok(Picklist.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
 					ok(Picklist.rootTrees["li-person_contactInfo-constituentType"], "constituentType exists as a root");
+					ok(Picklist.rootTrees["li-gift_info-selectedAddress"], "selectedAddress exists as a root");
+					ok(Picklist.rootTrees["li-gift_info-selectedPhone"], "selectedPhone exists as a root");
 					
 					var len = 0;
 					for (var obj in Picklist.rootTrees) { len++; }
-					ok(len === 3, len + " items in rootTrees, expected 3");
+					ok(len === 5, len + " items in rootTrees, expected 5");
 				});
 				module("test picklist");
 				test("MPower.SelectedPaymentSource", function() {
 					var tree = $("li#li-gift_info-selectedPaymentSource").data("tree"); 
 					ok(tree.parents.length == 0, "0 parents for SelectedPaymentSource was expected");
-					ok(5 === tree.children.length, "5 child fields for SelectedPaymentSource was expected, instead = " + tree.children.length); 
+					ok(3 === tree.children.length, "3 child fields for SelectedPaymentSource was expected, instead = " + tree.children.length); 
 					
 					for (var id in tree.childIds) {
 						ok(id === "li-gift_info-paymentType" || 
-							id === "li-gift_info-selectedAddress" ||
-							id === "li-gift_info-selectedPhone" ||
 							id === "gift_editAch" ||
 							id === "gift_editCreditCard", id + " was expected as a child");
 					}
@@ -80,21 +80,13 @@
 				});
 				test("MPower.SelectedAddress", function() {
 					var tree = $("li:has(#selectedAddress)").data("tree"); 
-					ok(tree.parents.length === 1, "1 parent for selectedAddress was expected");
-					
-					for (var id in tree.parentIds) {
-						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
-					}
+					ok(tree.parents.length === 0, "0 parents for selectedAddress was expected");					
 					ok($(":input[name^='address']").length === tree.children.length, $(":input[name^='address']").length + " child fields for selectedAddress was expected"); 
 					ok(tree.isSelected, "selectedAddress was expected to have isSelected='true'"); 
 				});
 				test("MPower.SelectedPhone", function() {
 					var tree = $("li:has(#selectedPhone)").data("tree"); 
-					ok(tree.parents.length === 1, "1 parent for selectedPhone was expected");
-					
-					for (var id in tree.parentIds) {
-						ok(id === "li-gift_info-selectedPaymentSource", id + " was expected as a parent");
-					}
+					ok(tree.parents.length === 0, "0 parents for selectedPhone was expected");
 					ok($(":input[name^='phone']").length === tree.children.length, $(":input[name^='phone']").length + " child fields for selectedPhone was expected"); 
 					ok(tree.isSelected, "selectedPhone was expected to have isSelected='true'"); 
 				});
@@ -255,10 +247,27 @@
 					ok($("#gift_editCreditCard").is(":hidden"), "gift_editCreditCard is expected to be hidden");
 					ok($("#gift_editAch").is(":visible"), "gift_editAch is expected to be visible");
 					ok("" == $("#selectedAddress").val(), "selectedAddress expected to reset to 'None'");
+					$("li:has(:input[name^='address'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 					ok("" == $("#selectedPhone").val(), "selectedPhone expected to reset to 'None'");
+					$("li:has(:input[name^='phone'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 				});
 
 				test("toggle payment source picklist to discover (value = '1')", function() {
+					$("#selectedAddress").selectOptions("new");
+					$("#selectedAddress").change();
+					$("li:has(:input[name^='address'])").each(function() {
+						ok($(this).is(":visible"), this.id + " is expected to be visible");
+					});
+
+					$("#selectedPhone").selectOptions("");
+					$("#selectedPhone").change();
+					$("li:has(:input[name^='phone'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 					$("#selectedPaymentSource").selectOptions("1");
 					$("#selectedPaymentSource").change();
 					ok($("#li-gift_info-paymentType").is(":hidden"), "li-gift_info-paymentType is expected to be hidden");
@@ -270,7 +279,13 @@
 					ok($("#gift_editCreditCard").is(":visible"), "gift_editCreditCard is expected to be visible");
 					ok($("#gift_editAch").is(":hidden"), "gift_editAch is expected to be hidden");
 					ok("1" == $("#selectedAddress").val(), "selectedAddress expected to set to value='1'");
+					$("li:has(:input[name^='address'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 					ok("1" == $("#selectedPhone").val(), "selectedPhone expected to set to value='1'");
+					$("li:has(:input[name^='phone'])").each(function() {
+						ok($(this).is(":hidden"), this.id + " is expected to be hidden");
+					});
 
 					$("#selectedAddress").selectOptions("new");
 					$("#selectedAddress").change();
@@ -501,17 +516,17 @@
 	<label for="selectedPaymentSource" class="desc">
 		<span class="required">*</span>&nbsp;Payment Source</label>
 			<select name="selectedPaymentSource" id="selectedPaymentSource" class="picklist paymentSourcePicklist " 
-						references="li:has(#paymentType),li:has(#selectedAddress),li:has(#selectedPhone),.gift_editAch,.gift_editCreditCard">
-				<option value="new" reference="li:has(#paymentType), li:has(#selectedAddress), li:has(#selectedPhone)" >+ Create New</option>
+						references="li:has(#paymentType),.gift_editAch,.gift_editCreditCard">
+				<option value="new" reference="li:has(#paymentType)" >+ Create New</option>
 				<optgroup label="-- Or Choose From Below ---------">
 
-				<option value="2" selected="selected" reference=".gift_editAch, li:has(#selectedAddress), li:has(#selectedPhone)" 
+				<option value="2" selected="selected" reference=".gift_editAch" 
 							address="542" phone="42" achholder="Adam Smith" routing="111" acct="000">adam&#039;s ach</option>
-					<option value="1"  reference=".gift_editCreditCard, li:has(#selectedAddress), li:has(#selectedPhone)" 
+					<option value="1"  reference=".gift_editCreditCard" 
 							address="1" phone="1" cardholder="Adam Smith" cardType="Discover" number="6011008400223068" exp="03 / 2009">discover</option>
 					</optgroup>
 				</select>
-				<div style="display:none" id="selectedRef-selectedPaymentSource">.gift_editAch,li:has(#selectedAddress),li:has(#selectedPhone)</div>
+				<div style="display:none" id="selectedRef-selectedPaymentSource">.gift_editAch</div>
 				
 		</li><li class="side" id="li-gift_info-paymentType">
 	<label for="paymentType" class="desc">
@@ -1336,6 +1351,7 @@
 		
 		<!-- MULTIPICKLISTS -->
 	<div class="column constituentInfo" id="constituentInfo" style="padding-right:8px;">
+			<ul class="formFields width375">
 		<li class="side" id="li-person_contactInfo-constituentType">
 	<label for="constituentType" class="desc">
 		<span class="required">*</span>&nbsp;Constituent Type</label>
@@ -1476,6 +1492,7 @@
 				</div>		
 			</div>
 		</li>
+		</ul>
 	</div>
 	<div class="clearColumns"></div>
 					</div>

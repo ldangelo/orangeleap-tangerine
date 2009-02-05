@@ -37,6 +37,15 @@
 
 		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
 		<sleep seconds="90" />
+
+		
+		
+		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
+		<sleep seconds="30" />
+		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
+		<sleep seconds="90" />
+
+		
 		
 		<!-- for a clean base new instance -->
 		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->

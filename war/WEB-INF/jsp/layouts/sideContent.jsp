@@ -21,13 +21,6 @@
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
-						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
-							<a class="${sidebarNav == 'Payment Methods' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
-							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?personId=${person.id}"><spring:message code="paymentHistory"/></a>
-						</span>
-					</div>					
-					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="giftManager"/></a>
 			            <span class="secondary ${sidebarNav=='Gifts'?'active':''}">
 				            <a class="${sidebarNav=='New Gift'?'active':''}" href="gift.htm?personId=${person.id}"><spring:message code="newGift"/></a>
@@ -50,6 +43,13 @@
 				            --%>
 			            </span>
 		            </div>
+					<div class="navGroup">
+						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="paymentManager"/></a>
+						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
+							<a class="${sidebarNav == 'Payment Methods' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
+							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?personId=${person.id}"><spring:message code="paymentHistory"/></a>
+						</span>
+					</div>					
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}">Audit</a>
 				</div>
 			</c:if>

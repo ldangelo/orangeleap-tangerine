@@ -50,22 +50,20 @@
 							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?personId=${person.id}"><spring:message code="paymentHistory"/></a>
 						</span>
 					</div>					
-					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}">Audit</a>
+					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>
 				</div>
 			</c:if>
-			<h3>
-				My Tasks
-			</h3>
+			<%--
+			<h3><spring:message code="myTasks"/></h3>
 			<div class="myTasks">
-				<a href="#">Due Today <span href="#" class="taskCount">(1)</span></a>
-				<a href="#">New Tasks <span href="#" class="taskCount">(3)</span></a>
-				<a href="#">All Tasks (9)</a>
+				<a href="#"><spring:message code="dueToday"/><span href="#" class="taskCount">&nbsp;(1)</span></a>
+				<a href="#"><spring:message code="newTasks"/><span href="#" class="taskCount">&nbsp;(3)</span></a>
+				<a href="#"><spring:message code="allTasks"/>&nbsp;(9)</a>
 			</div>
-            <h3>
-                My Accounts
-            </h3>
+			--%>
+            <h3><spring:message code="myAccounts"/></h3>
             <div class="myTasks">
-                <a href="#" id="sbAllAccountsLink">All Accounts <span class="taskCount" id="sbAllAccounts"></span></a>
+                <a href="#" id="sbAllAccountsLink"><spring:message code="allAccounts"/>&nbsp;<span class="taskCount" id="sbAllAccounts"></span></a>
             </div>
 		</div>
 	</div>

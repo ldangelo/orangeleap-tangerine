@@ -40,7 +40,7 @@
 				</table>
 			</div>
 			<div class="codeList simplebox">
-				<jsp:include page="/codeHelper.htm?type=${currentCodeType}&q=&view=table" />
+				<jsp:include page="/codeHelper.htm?type=${currentCodeType}&inactive=all&description=&q=&view=table" />
 			</div>
 			<div class="justAdded simplebox">
 			<h4>Recently Added</h4>

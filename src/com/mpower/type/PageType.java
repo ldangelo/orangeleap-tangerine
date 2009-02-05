@@ -40,7 +40,12 @@ public enum PageType {
     phone("/phone.htm"),
     importexport("/importexport.htm"),
     paymentHistory("/paymentHistory.htm"),
-    communicationHistory("/communicationHistory.htm");
+    communicationHistory("/communicationHistory.htm"),
+    communicationHistoryList("/communicationHistoryList.htm"),
+    communicationHistorySearch("/communicationHistorySearch.htm"),
+    communicationHistorySearchResults("/communicationHistorySearchResults.htm"),
+    communicationHistoryView("/communicationHistoryView.htm")
+    ;
 
     private String pageName;
 

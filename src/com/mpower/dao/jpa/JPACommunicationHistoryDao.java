@@ -35,7 +35,7 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId) {
-        Query q =  em.createNamedQuery("PAYMENT_HISTORY_BY_CLIENT");
+        Query q =  em.createNamedQuery("COMMUNICATION_HISTORY_BY_CLIENT");
         q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         q.setParameter("personId", personId);
         List<CommunicationHistory> payments = q.getResultList();
@@ -45,7 +45,7 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId) {
-        Query q =  em.createNamedQuery("PAYMENT_HISTORY_BY_REPRESENTATIVE");
+        Query q =  em.createNamedQuery("COMMUNICATION_HISTORY_BY_REPRESENTATIVE");
         q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         q.setParameter("personId", personId);
         List<CommunicationHistory> payments = q.getResultList();

@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,6 +23,8 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.CommunicationHistoryType;
 import com.mpower.type.CommunicationMode;
 import com.mpower.util.CommunicationHistoryCustomFieldMap;
@@ -31,6 +34,7 @@ import com.mpower.util.CommunicationHistoryCustomFieldMap;
  */
 
 @Entity
+@EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMUNICATION_HISTORY")
 public class CommunicationHistory implements SiteAware, Customizable, Viewable, Serializable {
 
@@ -105,6 +109,16 @@ public class CommunicationHistory implements SiteAware, Customizable, Viewable, 
     @Column(name = "COMMENTS", length = 8000, updatable = false)
     private String comments = "";
     
+    @Column(name = "CREATE_DATE", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @AutoPopulate
+    private Date createDate;
+
+    @Column(name = "UPDATE_DATE", updatable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @AutoPopulate
+    private Date updateDate;
+
     
     @OneToMany(mappedBy = "communicationHistory", cascade = CascadeType.ALL)
     private List<CommunicationHistoryCustomField> communicationHistoryCustomFields;
@@ -352,6 +366,26 @@ public class CommunicationHistory implements SiteAware, Customizable, Viewable, 
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
     }
+
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
 
 
 

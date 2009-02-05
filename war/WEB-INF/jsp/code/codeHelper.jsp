@@ -41,11 +41,3 @@
 	<div class='modalSideRight'>&nbsp;</div>
 </div>
 <div class="modalBottomLeft">&nbsp;<div class="modalBottomRight">&nbsp;</div></div>
-<script type="text/javascript">
-/*
-	$(".popupFilters :input").bind("keyup",function(){
-		var queryString = $(".popupFilters :input").serialize();
-		$(".filterReplace").load("codeHelper.htm?view=results&"+queryString);
-	});
-	*/
-</script>

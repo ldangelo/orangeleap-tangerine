@@ -57,7 +57,7 @@ table.multiSelect tbody ul, table.multiSelect tbody ul ol { padding-left: 0; mar
 div.modalContent ul.queryUl, table.multiSelect tbody ul { max-height: 15em; overflow: auto; overflow-x: hidden; overflow-y: auto; } 
 table.multiSelect tbody ul { height: 15em; margin: 0; }
 table.multiSelect tbody ul li input[type=checkbox] { cursor: pointer; }
-table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em; border-bottom:1px solid #FFF; color: #000; line-height: 25px; border-bottom: 1px solid #EEE; white-space: nowrap; padding-right: 35px; vertical-align: middle; }
+table.multiSelect tbody ul li, div.modalContent ul.queryUl li { font-size: 1.1em; border-bottom:1px solid #FFF; color: #000; line-height: 25px; border-bottom: 1px solid #EEE; white-space: normal; padding-right: 35px; vertical-align: middle; }
 
 table.multiSelect tbody ul li:nth-child(2n+1), div.modalContent ul.queryUl li:nth-child(2n+1) { background-color: #EEE; border-bottom: #FFF; }
 table.multiSelect tbody ul li:nth-child(2n), div.modalContent ul.queryUl li:nth-child(2n) { background-color: #FFF; border-bottom: #FFF; }

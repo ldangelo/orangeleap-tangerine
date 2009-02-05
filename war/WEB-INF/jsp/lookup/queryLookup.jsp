@@ -12,7 +12,7 @@
 </div>
 <div class="modalContentWrapper">
 	<div class="modalContent">
-		<form method="POST" action="queryLookup.htm" id="queryLookup">
+		<form method="POST" action="queryLookup.htm" id="queryLookupForm">
 			<mp:page pageName='queryLookup' />
 			<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 				<c:if test="${sectionDefinition.sectionName eq queryLookup.sectionName}">

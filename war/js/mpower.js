@@ -1,4 +1,5 @@
 $(document).ready(function() {
+//	console.profile("docReady");
 	(function() {
 //		console.profile("buildTree");
 //		console.time("buildTree");
@@ -134,6 +135,8 @@ $(document).ready(function() {
 		}
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
+//	console.profileEnd();
+	
 });
 
 function formatItem(row) {
@@ -672,14 +675,14 @@ var Lookup = {
 	},
 	
 	codeLookupBindings: function() {
-		$("div.modalContent input#doneButton").bind("click", function() {
+		$("#codeHelperLookup #doneButton").bind("click", function() {
 			Lookup.useCode();
 			$("#dialog").jqmHide();	
 		});
-		$(".modalSearch input[type=text]").bind("keyup", function(){
+		$("#codeHelperLookup #searchText").bind("keyup", function(){
 			Lookup.doQuery(Lookup.getCodeData);
 		});
-		$(".modalSearch input#findButton").bind("click", function(){
+		$("#codeHelperLookup #findButton").bind("click", function(){
 			Lookup.doQuery(Lookup.getCodeData);
 		});		
 	},
@@ -737,42 +740,42 @@ var Lookup = {
 	},
 	
 	singleCommonBindings: function() {
-		$("div.modalContent input#cancelButton").bind("click", function() {
+		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
 			$("#dialog").jqmHide();					
 		});
-		$("div.modalContent form").bind("submit", function() {
+		$("div.modalContent form", $("#dialog")).bind("submit", function() {
 			return false;
 		});
-		$("input.defaultText").bind("focus", function() {
+		$("input.defaultText", $("#dialog")).bind("focus", function() {
 			var $elem = $(this);
 			if ($elem.val() == $elem.attr("defaultValue")) {
 				$elem.removeClass("defaultText");
 				$elem.val("");
 			}
 		});
-		$("input.defaultText").bind("blur", function() {
+		$("input.defaultText", $("#dialog")).bind("blur", function() {
 			var $elem = $(this);
 			if ($elem.val() == "") {
 				$elem.addClass("defaultText");
 				$elem.val($elem.attr("defaultValue"));
 			}
 		});
-		$("input.defaultText").bind("keyup", function(event) {
+		$("input.defaultText", $("#dialog")).bind("keyup", function(event) {
 			if (event.keyCode == 13) { // return key
-				$("div.modalContent input#doneButton").click();
+				$("div.modalContent input#doneButton", $("#dialog")).click();
 			}
 		});
 	},
 	
 	queryLookupBindings: function() {
-		$("div.modalContent input#doneButton").bind("click", function() {
+		$("#queryLookupForm #doneButton").bind("click", function() {
 			Lookup.useQueryLookup();
 			$("#dialog").jqmHide();	
 		});
-		$(".modalSearch input[type=text]").bind("keyup", function(){
+		$("#queryLookupForm #searchText").bind("keyup", function(){
 			Lookup.doQuery(Lookup.getQueryData);
 		});
-		$(".modalSearch input#findButton").bind("click", function(){
+		$("#queryLookupForm #findButton").bind("click", function(){
 			Lookup.doQuery(Lookup.getQueryData);
 		});		
 	},
@@ -825,12 +828,12 @@ var Lookup = {
 		});
 	},
 	
-	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedId,selectedId2,... */
+	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedName|selectedId^selectedName|selectedId2^... */
 	serializeMultiQueryLookup: function(options) {
 		var queryString = "selectedIds=";
 		$(options).each(function() {
 			var $elem = $(this);
-			queryString += escape($elem.attr("selectedId")) + ",";
+			queryString += escape($elem.attr("id").replace("lookup-", "")) + "|" + escape($elem.attr("selectedId")) + "^";
 		});
 		return queryString;
 	},
@@ -932,31 +935,30 @@ var Lookup = {
 		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
 		var selectedIdsStr = "";
 		$("ul#selectedOptions li :checkbox").each(function() {
-			selectedIdsStr += $(this).attr("id") + ",";
+			selectedIdsStr += escape($(this).attr("displayvalue")) + "|" + $(this).attr("id") + "^";
 		});
 		if (selectedIdsStr.length > 0) {
-			selectedIdsStr = selectedIdsStr.substring(0, selectedIdsStr.length - 1); // remove the last ','
+			selectedIdsStr = selectedIdsStr.substring(0, selectedIdsStr.length - 1); // remove the last '^'
 		}
-		
 		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() });
 	},
 	
 	multiQueryLookupBindings: function() {
-		$(".modalSearch :input").bind("keyup", function(){
+		$("#multiQueryLookupForm #searchText").bind("keyup", function(){
 			Lookup.doMultiQuery();
 		});
-		$(".modalSearch input#findButton").bind("click", function(){
+		$("#multiQueryLookupForm #findButton").bind("click", function(){
 			Lookup.doMultiQuery();
 		});		
-		$("div.modalContent form").bind("submit", function() {
+		$("#multiQueryLookupForm").bind("submit", function() {
 			return false;
 		});
-		$("div.modalContent input#doneButton").bind("click", function() {
+		$("#multiQueryLookupForm #doneButton").bind("click", function() {
 			var idsStr = "";
 			var names = new Array();
 			var ids = new Array();
 			var hrefs = new Array();
-			$("ul#selectedOptions :checkbox").each(function() {
+			$("ul#selectedOptions :checkbox", $("#dialog")).each(function() {
 				var $chkboxElem = $(this);
 				var thisId = $chkboxElem.attr("id");
 				idsStr += thisId + ",";
@@ -989,10 +991,10 @@ var Lookup = {
 	},
 	
 	multiPicklistBindings: function() {
-		$("div.modalContent input#doneButton").bind("click", function() {
+		$("#multiPicklistForm #doneButton").bind("click", function() {
 			var idsStr = "";
 			var selectedNames = new Object();
-			$("ul#selectedOptions li").each(function() {
+			$("ul#selectedOptions li", $("#dialog")).each(function() {
 				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
 				var thisId = $chkBox.attr("id");
 				idsStr += thisId + ",";
@@ -1016,7 +1018,7 @@ var Lookup = {
 	},
 	
 	multiCommonBindings: function() {
-		$("table.multiSelect thead input[type=checkbox]").bind("click", function() {
+		$("table.multiSelect thead input[type=checkbox]", $("#dialog")).bind("click", function() {
 			var isChecked = $(this).attr("checked");
 			var tdOrder = $(this).attr("selection") === "available" ? "first" : "last";
 			var isFirst = true;
@@ -1031,7 +1033,7 @@ var Lookup = {
 				}
 			});
 		});
-		$("table.multiSelect tbody").bind("click", function(event) {
+		$("table.multiSelect tbody", $("#dialog")).bind("click", function(event) {
 			var $target = $(event.target);
 			if ($target.is("input[type=checkbox]") && $target.attr("checked")) { 
 				$target = $target.parent("li");
@@ -1041,7 +1043,7 @@ var Lookup = {
 				ulElem.scrollTop = ulElem.scrollHeight - $clone.height();
 			}
 		});
-		$("div.modalContent input#cancelButton").bind("click", function() {
+		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
 			$("#dialog").jqmHide();					
 		});
 	},

@@ -12,7 +12,7 @@
 </div>
 <div class="modalContentWrapper">
 	<div class="modalContent">
-		<form method="POST" action="multiPicklist.htm">
+		<form method="POST" action="multiPicklist.htm" id="multiPicklistForm">
 			<table cellspacing="0" class="multiSelect">
 				<thead>
 			    	<tr>

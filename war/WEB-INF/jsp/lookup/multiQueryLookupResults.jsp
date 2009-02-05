@@ -4,7 +4,7 @@
 <c:choose>
 	<c:when test="${empty results}">
 		<script type="text/javascript">
-			$("div.modalContent div#noResultsDiv").removeClass("noDisplay");
+			$("#multiQueryLookupNoResultsDiv").removeClass("noDisplay");
 		</script>
 	</c:when>
 	<c:otherwise>
@@ -13,7 +13,7 @@
 				<c:set var="counter" value="0"/>
 				<c:forEach items="${results}" var="row">
 					<c:set target="${requestScope.selectedIds}" property="idToCheck" value="${row.id}"/>
-					<c:if test="${requestScope.selectedIds.checkSelectedId == requestScope.showSelectedIds}">
+					<c:if test="${!requestScope.selectedIds.checkSelectedId}">
 						<c:choose>
 							<c:when test="${!empty row.id && !empty row.entityName}">
 								<c:url value="/${row.entityName}.htm" var="entityLink" scope="page">
@@ -34,7 +34,8 @@
 					</c:if>
 				</c:forEach>
 				<script type="text/javascript">
-					$("div.modalContent div#noResultsDiv").addClass("noDisplay");
+					$("#multiQueryLookupNoResultsDiv").addClass("noDisplay");
+					$("#multiQueryLookupResultsTable").removeClass("noDisplay");
 				</script>
 			</c:if>
 		</c:forEach>

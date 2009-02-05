@@ -20,9 +20,8 @@ public class MultiQueryLookupController extends QueryLookupController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
-        performQuery(request, response);
-        request.setAttribute("fieldDef", findFieldDef(request));
-        final ModelAndView mav = new ModelAndView(super.getFormView());
+        final ModelAndView mav = super.showForm(request, response, errors, controlModel);
+        mav.addObject("init", "true");
         findPreviouslySelected(request, mav);
         return mav;
     }
@@ -31,7 +30,6 @@ public class MultiQueryLookupController extends QueryLookupController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         final ModelAndView mav = super.onSubmit(request, response, command, errors);
         findPreviouslySelected(request, mav);
-        request.setAttribute("showSelectedIds", Boolean.FALSE);
         return mav;
     }
 

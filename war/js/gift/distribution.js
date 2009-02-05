@@ -1,13 +1,13 @@
 $(document).ready(function() {
-	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountTotal").each(function() {
+	$("#amount, #amountPerGift, #amountTotal").each(function() {
 		Distribution.reInitializeOnReady(this);
 	});
-	Distribution.distributionLineBuilder($("table.distributionLines tr"));
+	Distribution.distributionLineBuilder($("table.distributionLines tr", "form"));
 	Distribution.rowCloner("table.distributionLines tr:last");
-	$(".tablesorter tr:last .deleteButton").hide();
+	$(".tablesorter tr:last .deleteButton", "form").hide();
 	
-	$("form#gift input#amount, form#commitment input#amountPerGift, form#commitment input#amountTotal").bind("keyup change", function(event) {
-		var amounts = $("table.distributionLines input.amount");
+	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
+		var amounts = $("table.distributionLines input.amount", "form");
 		var amtVal = $(this).val();
 		Distribution.enteredAmt = amtVal;
 		 
@@ -20,15 +20,14 @@ $(document).ready(function() {
 		Distribution.updateFields(amounts);
 	});
 	
-	$("form#commitment div#pledge_info select#recurring").bind("change", function() {
+	$("#recurring").bind("change", function() {
 		if ($(this).val() == "true") {
-			$("form#commitment input#amountPerGift").change();
+			$("#amountPerGift").change();
 		}
 		else {
-			$("form#commitment input#amountTotal").change();
+			$("#amountTotal").change();
 		}
 	});
-
 });
 
 	
@@ -39,14 +38,14 @@ var Distribution = {
 	
 	reInitializeOnReady: function(aElem) {
 		var $elem = $(aElem);
-		if ($elem.is(":visible")) {
+		if ($elem.parent().is(":visible")) {
 			/* Done on load for previously entered distributionLines */
 			var val = $elem.val();
 			if (isNaN(parseFloat(val)) == false) {
 				Distribution.enteredAmt = Distribution.truncateFloat(parseFloat(val));
 				Distribution.addNewRow();
 				
-				$("table.distributionLines input.amount").each(function() {
+				$("table.distributionLines input.amount", "form").each(function() {
 					var $amtElem = $(this);
 					var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
 					var rowId = $amtElem.attr('id').replace('-amount', '');
@@ -88,7 +87,7 @@ var Distribution = {
 	},
 	
 	recalculatePcts: function() {
-		$("table.distributionLines input.amount").each(function(){
+		$("table.distributionLines input.amount", "form").each(function(){
 			Distribution.calculatePct($(this));
 		});
 	},
@@ -185,7 +184,7 @@ var Distribution = {
 	},
 
 	rowCloner: function(selector) {
-		$(selector).one("keyup",function(event){
+		$(selector, "form").one("keyup",function(event){
 			if (event.keyCode != 9) { // ignore tab
 				Distribution.addNewRow();
 			}
@@ -212,7 +211,7 @@ var Distribution = {
 	},
 	
 	addNewRow: function() {
-		var $newRow = $(".tablesorter tr:last").clone(false);
+		var $newRow = $(".tablesorter tr:last", "form").clone(false);
 		var i = $newRow.attr("rowindex");
 		var j = parseInt(i, 10) + 1;
 		$newRow.attr("rowindex", j);
@@ -225,14 +224,14 @@ var Distribution = {
 				}
 				$field.val("");
 			});
-		$(".tablesorter tr:last .deleteButton").show(); // show the previous last row's delete button
+		$(".tablesorter tr:last .deleteButton", "form").show(); // show the previous last row's delete button
 		Distribution.distributionLineBuilder($newRow);
 		$newRow.find(".deleteButton").hide();
-		$(".tablesorter").append($newRow);
+		$(".tablesorter", "form").append($newRow);
 	},
 	
 	deleteRow: function(row) {
-		if($(".tablesorter tbody tr").length > 1) {
+		if ($(".tablesorter tbody tr", "form").length > 1) {
 			row.fadeOut("slow", function() {
 				var $elem = $(this);
 				var rowId = $elem.find("input.amount").attr('id').replace('-amount', '');

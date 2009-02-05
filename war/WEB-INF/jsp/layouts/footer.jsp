@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <div id="footer">
 	<div class="container">
-		<p style="margin-bottom:0" class="legal">
+		<p class="legal">
 			<spring:message code="lastLogin"/> <fmt:formatDate value="${lastLoginDate}" pattern="h:mm a z, EEEE, MMMM d, yyyy"/>
 		</p>
 		<c:set var="copyrightStart" value="2008" />

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.PaymentHistoryDao;
 import com.mpower.domain.PaymentHistory;
+import com.mpower.service.impl.SessionServiceImpl;
 
 @Repository("paymentHistoryDao")
 public class JPAPaymentHistoryDao implements PaymentHistoryDao {
@@ -34,6 +35,7 @@ public class JPAPaymentHistoryDao implements PaymentHistoryDao {
 	public List<PaymentHistory> readPaymentHistory(Long personId) {
         Query q =  em.createNamedQuery("PAYMENT_HISTORY_FOR_PERSON");
         q.setParameter("personId", personId);
+        q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         List<PaymentHistory> payments = q.getResultList();
         return payments;
 	}

@@ -16,6 +16,7 @@
 		<param-value>
 			/WEB-INF/applicationContext.xml,
 			/WEB-INF/applicationContext-security.xml
+			/WEB-INF/applicationContext-integration.xml
 		</param-value>
 	</context-param>
 

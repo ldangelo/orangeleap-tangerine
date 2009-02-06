@@ -26,7 +26,7 @@
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 				
-				<h3 class="info"><spring:message code='thisCommunicationHistoryEntered'/> <fmt:formatDate value="${communicationHistory.transactionDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${communicationHistory.transactionDate}" type="time" />.</h3>
+				<h3 class="info"><spring:message code='thisCommunicationHistoryEntered'/> <fmt:formatDate value="${communicationHistory.updateDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${communicationHistory.updateDate}" type="time" />.</h3>
 
 				
 				<c:forEach var="sectionDefinition" items="${columnSections}">

@@ -4,7 +4,9 @@
 	<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model='${row}' />
 	<c:choose>
 		<c:when test="${fieldVO.fieldType == 'HIDDEN'}">
-			<input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValue}'/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>" />
+			<td class="noDisplay">
+				<input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValue}'/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>" />
+			</td>
 		</c:when>
 		<c:otherwise>
 			<td>

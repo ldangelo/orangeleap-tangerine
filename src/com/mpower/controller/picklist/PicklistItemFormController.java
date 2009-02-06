@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.PicklistItem;
 import com.mpower.service.PicklistItemService;
-import com.mpower.service.impl.PicklistItemServiceImpl;
 import com.mpower.service.impl.SessionServiceImpl;
 
 public class PicklistItemFormController extends SimpleFormController {

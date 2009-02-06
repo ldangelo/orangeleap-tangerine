@@ -8,7 +8,7 @@ import com.mpower.domain.Person;
 
 public interface CommunicationHistoryService {
 
-    public CommunicationHistory addCommunicationHistory(CommunicationHistory communicationHistory);
+    public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);
 
     public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId);
 

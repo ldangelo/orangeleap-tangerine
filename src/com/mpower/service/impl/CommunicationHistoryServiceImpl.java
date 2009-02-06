@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.CommunicationHistoryDao;
 import com.mpower.domain.CommunicationHistory;
 import com.mpower.domain.Person;
+import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.CommunicationHistoryService;
+import com.mpower.service.PersonService;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -25,10 +28,15 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 	@Resource(name = "communicationHistoryDao")
 	private CommunicationHistoryDao communicationHistoryDao;
 
+	@Resource(name = "personService")
+	private PersonService personService;
 
 	@Override
-	public CommunicationHistory addCommunicationHistory(CommunicationHistory communicationHistory) {
+	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
 		if (communicationHistory.getPerson() == null) return null;
+        MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Person person = personService.readPersonById(authentication.getPersonId());
+        communicationHistory.setRecordedBy(person);
 		return communicationHistoryDao.addCommunicationHistory(communicationHistory);
 	}
 
@@ -54,6 +62,7 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 		CommunicationHistory communicationHistory = null;
 		if (communicationHistoryId == null) {
 			communicationHistory = this.createCommunicationHistory(person);
+			communicationHistory.setRecordDate(new java.util.Date()); // default to today
 		}
 		else {
 			communicationHistory = this.readCommunicationHistoryById(Long.valueOf(communicationHistoryId));

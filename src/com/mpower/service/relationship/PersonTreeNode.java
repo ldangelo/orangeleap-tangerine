@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mpower.domain.Person;
-import com.mpower.service.exception.PersonValidationException;
 
 public class PersonTreeNode {
 	

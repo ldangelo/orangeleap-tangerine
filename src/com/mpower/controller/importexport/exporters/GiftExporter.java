@@ -39,11 +39,13 @@ public class GiftExporter extends EntityExporter {
 	@Override
 	protected boolean exclude(String name, FieldDefinition fd) {
 		return super.exclude(name, fd) 
-		|| fd.getFieldName().startsWith("selected") 
-		|| fd.getFieldName().contains("creditCardNumber")
-		|| fd.getFieldName().contains("creditCardSecurityCode")
-		|| fd.getFieldName().contains("achRoutingNumber")
-		|| fd.getFieldName().contains("achAccountNumber")
+		|| fd.getId().startsWith("selected") 
+		|| fd.getCustomFieldName().equals("reference")
+		|| fd.getCustomFieldName().equals("other_reference")
+		|| fd.getId().toLowerCase().contains("creditCardNumber".toLowerCase())
+		|| fd.getId().toLowerCase().contains("creditCardSecurityCode".toLowerCase())
+		|| fd.getId().toLowerCase().contains("achRoutingNumber".toLowerCase())
+		|| fd.getId().toLowerCase().contains("achAccountNumber".toLowerCase())
 		;
 	}
 	

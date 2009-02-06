@@ -59,9 +59,14 @@ public class CsvExportController extends SimpleFormController {
 
 		EntityExporter ex = new EntityExporterFactory().getEntityExporter(entity, applicationContext);
 		
-		List<String[]> data = ex.exportAll();
+		List<List<String>> data = ex.exportAll();
+		List<String[]> csvdata = new ArrayList<String[]>();
+		for (List<String> line:data) {
+			String[] aline = (String[])line.toArray(new String[line.size()]);
+			csvdata.add(aline);
+		}
 
-		writer.writeAll(data);
+		writer.writeAll(csvdata);
 
 		return sw.toString();
 	}

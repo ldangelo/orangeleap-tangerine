@@ -38,34 +38,47 @@ public abstract class EntityExporter {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<String[]> exportAll() {
+	public List<List<String>> exportAll() {
 		
-		List result = new ArrayList<String[]>();
+		List<List<String>> result = new ArrayList<List<String>>();
 
 		List<FieldDescriptor> fields = getExportFieldDescriptors();
-		String[] header = new String[fields.size() + 1];
-		header[0] = "action";
+		List<String> header = new ArrayList<String>();
+		header.add("action");
 		for (int i = 0; i < fields.size();i++) {
 			FieldDescriptor fd = fields.get(i);
-			header[i+1] = fd.getExportFieldNameForInternalName();
+			header.add(fd.getExportFieldNameForInternalName());
 		}
 		result.add(header);
 		
 		List list = readAll();
 		for (Object o: list) {
-			String[] line = new String[fields.size() + 1];
+			List<String> line = new ArrayList<String>();
 			result.add(line);
-			line[0] = "change";
+			line.add("change");
 			for (int i = 0; i < fields.size(); i++) {
 				FieldDescriptor fd = fields.get(i);
 				String value = getFieldValue(o, fd);
 				//logger.debug("name="+fd.getName()+", value="+value);
-				line[i+1] = value;
+				line.add(value);
 			}
 		}
 		
+		removeInvalidFields(fields, result);
+		
 		return result;
 		
+	}
+	
+	private void removeInvalidFields(List<FieldDescriptor> fields, List<List<String>> list) {
+		for (int i = fields.size() - 1; i >= 0; i--) {
+			FieldDescriptor fd  = fields.get(i);
+			if (fd.isDisabled()) {
+				for (List<String> line : list) {
+					line.remove(i+1);
+				}
+			}
+		}
 	}
 	
 	public List<FieldDescriptor> getExportFieldDescriptors() {
@@ -139,7 +152,8 @@ public abstract class EntityExporter {
 				return BeanUtils.getProperty(o, name);
 			}
 		} catch (Exception e) {
-			logger.debug(""+e);
+			// Some screen fields are not entity properties
+			fd.setDisabled(true);
 			return "";
 		}
 	}

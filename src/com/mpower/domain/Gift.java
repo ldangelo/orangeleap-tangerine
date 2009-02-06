@@ -170,6 +170,20 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
         this.amount = commitment.getAmountPerGift();
     }
 
+    public String getCustomFieldValue(String fieldName) {
+    	CustomField customField = getCustomFieldMap().get(fieldName);
+    	if (customField == null || customField.getValue() == null) return null;
+        return customField.getValue();
+    }
+
+    public void setCustomFieldValue(String fieldName, String value) {
+    	CustomField customField = getCustomFieldMap().get(fieldName);
+    	if (customField == null) throw new RuntimeException("Invalid custom field name "+fieldName);
+    	customField.setValue(value);
+    }
+
+
+    
     public Long getId() {
         return id;
     }

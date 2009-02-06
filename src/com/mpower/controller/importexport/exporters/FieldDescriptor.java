@@ -17,6 +17,7 @@ public class FieldDescriptor {
 	private String name;
     private int type;
     private FieldDefinition fieldDefinition;
+    private boolean disabled = false; 
     
 	public static String toInitialUpperCase(String s) {
 		return s.substring(0,1).toUpperCase()+s.substring(1);
@@ -140,6 +141,14 @@ public class FieldDescriptor {
 	private String getExportFieldNameForMap(String name) {
 		if (!isMap(name)) return name;
 		return toInitialLowerCase(getMapType(name)) + "[" + getKey(name) + "]" + getSubField(name);
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public boolean isDisabled() {
+		return disabled;
 	}
 		
 	

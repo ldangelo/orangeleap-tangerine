@@ -130,32 +130,40 @@ public abstract class EntityExporter {
 				;
 	}
 
+	private static final String MIDNITE = " 00:00:00.0";
+	
 	@SuppressWarnings("unchecked")
 	private String getFieldValue(Object o, FieldDescriptor fd) {
+		String result = "";
 		try {
 			String name = fd.getName();
 			if (fd.getType() == FieldDescriptor.CUSTOM) {
 				Method m = o.getClass().getMethod("getCustomFieldValue", new Class[]{String.class});
-				return (String)m.invoke(o, name);
+				result = (String)m.invoke(o, name);
 			} else if (fd.isMap()) {
 				Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
 				Map map = (Map)m.invoke(o);
 				Object so = map.get(fd.getKey());
-				return BeanUtils.getProperty(so, fd.getSubField());
+				result = BeanUtils.getProperty(so, fd.getSubField());
 			} else if (fd.isDependentField()) {
 				String depobject = fd.getDependentObject();
 				Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 				Object so = m.invoke(o);
 				if (so == null) return "";
-				return BeanUtils.getProperty(so, fd.getDependentField());
+				result = BeanUtils.getProperty(so, fd.getDependentField());
 			} else {
-				return BeanUtils.getProperty(o, name);
+				result = BeanUtils.getProperty(o, name);
 			}
 		} catch (Exception e) {
 			// Some screen fields are not entity properties
 			fd.setDisabled(true);
-			return "";
 		}
+		if (result == null) result = "";
+		
+		if (fd.getFieldDefinition().getFieldType() == FieldType.DATE && result.endsWith(MIDNITE)) {
+			result = result.substring(0,result.length()-MIDNITE.length());
+		}
+		return result;
 	}
 	
 

@@ -10,9 +10,7 @@ public interface CommunicationHistoryService {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);
 
-    public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId);
-
-    public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId);
+    public List<CommunicationHistory> readCommunicationHistoryByPerson(Long personId);
 
     public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Person person);
 

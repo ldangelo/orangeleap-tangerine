@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
 	
-	<named-query name="COMMUNICATION_HISTORY_BY_CLIENT" >
+	<named-query name="COMMUNICATION_HISTORY_BY_PERSON" >
 		<query>
 			SELECT communicationHistory
 			FROM com.mpower.domain.CommunicationHistory communicationHistory 
@@ -13,14 +13,5 @@
 		</query>
 	</named-query>
 	
-	<named-query name="COMMUNICATION_HISTORY_BY_REPRESENTATIVE">
-		<query>
-			SELECT communicationHistory
-			FROM com.mpower.domain.CommunicationHistory communicationHistory 
-			WHERE communicationHistory.representative.id = :personId
-			AND communicationHistory.person.site.id = :siteId
-		    ORDER BY communicationHistory.recordDate desc
-		</query>
-	</named-query>
 
 </entity-mappings>

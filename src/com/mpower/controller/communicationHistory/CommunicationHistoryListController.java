@@ -37,7 +37,7 @@ public class CommunicationHistoryListController extends ParameterizableViewContr
         logger.info("**** in handleRequestInternal()");
         String personId = request.getParameter("personId");
 
-        List<CommunicationHistory> communicationHistoryList = communicationHistoryService.readCommunicationHistoryByClient(Long.valueOf(personId));
+        List<CommunicationHistory> communicationHistoryList = communicationHistoryService.readCommunicationHistoryByPerson(Long.valueOf(personId));
         Person person = personService.readPersonById(Long.valueOf(personId));
 
         ModelAndView mav = new ModelAndView(super.getViewName());

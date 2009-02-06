@@ -37,7 +37,7 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Person person = personService.readPersonById(authentication.getPersonId());
         communicationHistory.setRecordedBy(person);
-		return communicationHistoryDao.addCommunicationHistory(communicationHistory);
+		return communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
 	}
 
 	@Override
@@ -45,13 +45,8 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 		return communicationHistoryDao.readCommunicationHistoryById(communicationHistoryId);
 	}
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId) {
-		return communicationHistoryDao.readCommunicationHistoryByClient(personId);
-	}
-
-	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId) {
-		return communicationHistoryDao.readCommunicationHistoryByRepresentative(personId);
+	public List<CommunicationHistory> readCommunicationHistoryByPerson(Long personId) {
+		return communicationHistoryDao.readCommunicationHistoryByPerson(personId);
 	}
 
 	@Override

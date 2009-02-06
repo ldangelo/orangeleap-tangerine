@@ -26,7 +26,7 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 
 
 	@Override
-	public CommunicationHistory addCommunicationHistory(CommunicationHistory communicationHistory) {
+	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
          if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
 		 em.persist(communicationHistory);
 		 return communicationHistory;
@@ -34,23 +34,14 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByClient(Long personId) {
-        Query q =  em.createNamedQuery("COMMUNICATION_HISTORY_BY_CLIENT");
+	public List<CommunicationHistory> readCommunicationHistoryByPerson(Long personId) {
+        Query q =  em.createNamedQuery("COMMUNICATION_HISTORY_BY_PERSON");
         q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
         q.setParameter("personId", personId);
         List<CommunicationHistory> payments = q.getResultList();
         return payments;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByRepresentative(Long personId) {
-        Query q =  em.createNamedQuery("COMMUNICATION_HISTORY_BY_REPRESENTATIVE");
-        q.setParameter("siteId", SessionServiceImpl.lookupUserSiteName());
-        q.setParameter("personId", personId);
-        List<CommunicationHistory> payments = q.getResultList();
-        return payments;
-	}
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {

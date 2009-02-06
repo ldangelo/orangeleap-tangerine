@@ -1,6 +1,3 @@
-dn: dc=mpowerOpen-dev
-objectClass: domain
-dc: mpowerOpen-dev
 
 dn: o=company1,dc=mpowerOpen-dev
 objectClass: organization

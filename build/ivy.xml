@@ -236,6 +236,26 @@
 			<artifact name="spring-security-taglibs" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency> 
 		
+		<dependency org="org.springframework.integration" name="spring-integration-core" transitive="false" rev="1.0.1.RELEASE">
+			<artifact name="spring-integration-core" type="jar"/>
+			<artifact name="spring-integration-core" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+
+		<dependency org="org.springframework.integration" name="spring-integration-jms" transitive="false" rev="1.0.1.RELEASE">
+			<artifact name="spring-integration-jms" type="jar"/>
+			<artifact name="spring-integration-jms" type="source" ext="jar" classifier="sources" conf="sources"/>			
+		</dependency>
+
+		<dependency org="org.springframework.integration" name="spring-integration-stream" transitive="false" rev="1.0.1.RELEASE">
+			<artifact name="spring-integration-stream" type="jar"/>
+			<artifact name="spring-integration-stream" type="source" ext="jar" classifier="sources" conf="sources"/>			
+		</dependency>
+
+		<dependency org="org.springframework.integration" name="spring-integration-adapter" transitive="false" rev="1.0.1.RELEASE">
+			<artifact name="spring-integration-adapter" type="jar"/>
+			<artifact name="spring-integration-adapter" type="source" ext="jar" classifier="sources" conf="sources"/>			
+		</dependency>
+			
 		<!-- Mvel -->
     	<dependency org="org.mvel" name="mvel" transitive="false" rev="1.3.1-java1.4">
 			<artifact name="mvel" type="jar" />
@@ -262,6 +282,14 @@
 
 		<dependency org="org.hamcrest" name="hamcrest-library" rev="1.1" conf="test->default">
 			<artifact name="hamcrest-library" type="jar" ext="jar"/>
+		</dependency>
+		
+		<dependency org="com.paymentech.orbital.sdk" name="paymentechsdk" rev="6.2.0">
+			<artifact name="paymentechsdk" type="jar" ext="jar"/>
+		</dependency>
+		
+		<dependency org="org.apache.regexp" name="regexp" rev="1.0">
+			<artifact name="regexp" type="jar" ext="jar"/>
 		</dependency>
 	</dependencies>
 </ivy-module>

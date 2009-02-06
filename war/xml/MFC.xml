@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Request>
+	<MarkForCapture>
+		<OrderID>[% OrderID %]</OrderID>
+		<Amount>[% Amount= %]</Amount>
+		<TaxInd>[% TaxInd= %]</TaxInd>
+		<Tax>[% Tax=0 %]</Tax>
+		<BIN>[% BIN %]</BIN>
+		<MerchantID>[% MerchantID %]</MerchantID>
+		<TerminalID>[% TerminalID=001 %]</TerminalID>
+		<TxRefNum>[% TxRefNum %]</TxRefNum>
+		<PCOrderNum>[% PCOrderNum= %]</PCOrderNum>
+		<PCDestZip>[% PCDestZip= %]</PCDestZip>
+		<PCDestName>[% PCDestName= %]</PCDestName>
+		<PCDestAddress1>[% PCDestAddress1= %]</PCDestAddress1>
+		<PCDestAddress2>[% PCDestAddress2= %]</PCDestAddress2>
+		<PCDestCity>[% PCDestCity= %]</PCDestCity>
+		<PCDestState>[% PCDestState= %]</PCDestState>
+		<AMEXTranAdvAddn1>[% AMEXTranAdvAddn1= %]</AMEXTranAdvAddn1>
+		<AMEXTranAdvAddn2>[% AMEXTranAdvAddn2= %]</AMEXTranAdvAddn2>
+		<AMEXTranAdvAddn3>[% AMEXTranAdvAddn3= %]</AMEXTranAdvAddn3>
+		<AMEXTranAdvAddn4>[% AMEXTranAdvAddn4= %]</AMEXTranAdvAddn4>
+		[# PC3Core #]
+	</MarkForCapture>
+</Request>

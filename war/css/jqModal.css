@@ -46,7 +46,8 @@
 
 .jqmOverlay { background-color: #000; }
 
-
+input#searchText { padding-right:20px; height:20px; }
+input.showWait { background-image:url(../images/indicator.gif); background-position: right center; background-repeat: no-repeat; }
 input#otherOptionText { width: 307px; }
 table.multiSelect { text-align: left; margin: auto; padding: 0 20px; }
 table.multiSelect thead th { text-align: left; background: #DCDCDC url(../images/glossyGray.png) repeat-x scroll left top; padding-left: 2px; border-color: #DCDCDC; border-style: solid; border-width: 1px; line-height: 25px; }
@@ -67,9 +68,10 @@ table.multiSelect thead th strong { margin-left: 5px; vertical-align: middle; }
 table.multiSelect thead th input[type=checkbox] { margin: 4px 2px; }
 div.jqmWindow .buttonsDiv { margin: 6px auto; padding-top: 6px; text-align: center; }
 
-div.modalSearch, div.otherOptionDiv { margin-bottom: 15px; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+div.modalSearch, div.otherOptionDiv { margin-bottom: 15px; padding-left: 10px; padding-right: 10px; white-space: nowrap; line-height: 26px; }
+div.modalSearch *, div.otherOptionDiv * { vertical-align: middle; }
 div.modalSearch select { margin-right: 3px; }
-div.modalSearch label, div.otherOptionDiv label { font-weight: bold; margin-right: 3px; width: 70px; }
+div.modalSearch label, div.otherOptionDiv label { font-weight: bold; font-size: 1.1em; margin-right: 3px; width: 70px; }
 div.modalSearch label { margin-left: 20px; text-align: right; }
 
 div.otherOptionDiv { margin-bottom: 30px; }

@@ -16,6 +16,7 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.HtmlUtils;
 
 import com.mpower.domain.QueryLookup;
 import com.mpower.service.QueryLookupService;
@@ -33,7 +34,7 @@ public class QueryLookupController extends SimpleFormController {
     }
     
     protected String findFieldDef(HttpServletRequest request) {
-        return StringUtils.trimToNull(request.getParameter("fieldDef"));
+        return getParameter(request, "fieldDef");
     }
     
     protected List<Object> executeQueryLookup(HttpServletRequest request, String fieldDef) {
@@ -91,7 +92,7 @@ public class QueryLookupController extends SimpleFormController {
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
             String param = enu.nextElement();
-            String paramValue = StringUtils.trimToNull(request.getParameter(param));
+            String paramValue = getParameter(request, param);
             queryParams.put(param, paramValue);
         }
         return queryParams;
@@ -104,7 +105,7 @@ public class QueryLookupController extends SimpleFormController {
      * @param queryLookup
      */
     protected void sortPaginate(HttpServletRequest request, List<Object> objects, QueryLookup queryLookup) {
-        String searchOption = StringUtils.trimToNull(request.getParameter("searchOption"));
+        String searchOption = getParameter(request, "searchOption");
         if (searchOption == null) {
             searchOption = queryLookup.getQueryLookupParams().get(0).getName();
         }
@@ -115,5 +116,9 @@ public class QueryLookupController extends SimpleFormController {
         pagedListHolder.resort();
 
         request.setAttribute("results", pagedListHolder.getSource());
+    }
+    
+    protected String getParameter(HttpServletRequest request, String parameterName) {
+        return StringUtils.trimToNull(HtmlUtils.htmlUnescape(request.getParameter(parameterName)));
     }
 }

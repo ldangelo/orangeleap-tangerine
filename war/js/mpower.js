@@ -803,9 +803,13 @@ var Lookup = {
 	},
 	
 	doQuery: function(dataFunction) {
-		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
+		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
 		var url = $("div.modalContent form").attr("action");
-		$("#queryResultsDiv").load(url + "?" + queryString, dataFunction(), Lookup.radioClickEventHandler);
+		Lookup.showWaitIndicator();
+		$("#queryResultsDiv").load(url + "?" + queryString, dataFunction(), function() {
+			Lookup.hideWaitIndicator();
+			Lookup.radioClickEventHandler();
+		});
 	},
 	
 	loadMultiQueryLookup: function(elem) {
@@ -932,18 +936,19 @@ var Lookup = {
 	},
 	
 	doMultiQuery: function() {
-		var queryString = $("#searchOption").val() + "=" + $("#searchText").val();
+		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
 		var selectedIdsStr = "";
 		$("ul#selectedOptions li :checkbox").each(function() {
-			selectedIdsStr += escape($(this).attr("displayvalue")) + "|" + $(this).attr("id") + "^";
+			selectedIdsStr += $(this).attr("displayvalue") + "|" + $(this).attr("id") + "^";
 		});
 		if (selectedIdsStr.length > 0) {
 			selectedIdsStr = selectedIdsStr.substring(0, selectedIdsStr.length - 1); // remove the last '^'
 		}
-		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() });
+		Lookup.showWaitIndicator();
+		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() }, Lookup.hideWaitIndicator);
 	},
 	
-	multiQueryLookupBindings: function() {
+	multiQueryLookupBindings: function() {		
 		$("#multiQueryLookupForm #searchText").bind("keyup", function(){
 			Lookup.doMultiQuery();
 		});
@@ -1081,6 +1086,14 @@ var Lookup = {
 				$parent.parent("div.multiPicklist").each(Picklist.togglePicklist);
 			}
 		});
+	},
+	
+	showWaitIndicator: function() {
+		$("#searchText", "form").addClass("showWait");
+	},
+	
+	hideWaitIndicator: function() {
+		$("#searchText", "form").removeClass("showWait");
 	}
 }
 

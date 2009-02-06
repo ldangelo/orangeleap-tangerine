@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 public class MultiQueryLookupController extends QueryLookupController {
 
@@ -34,7 +35,7 @@ public class MultiQueryLookupController extends QueryLookupController {
     }
 
     private void findPreviouslySelected(final HttpServletRequest request, final ModelAndView mav) {
-        SelectedIds selectedIdsObj = new SelectedIds(request.getParameter(SELECTED_IDS));
+        SelectedIds selectedIdsObj = new SelectedIds(HtmlUtils.htmlUnescape(request.getParameter(SELECTED_IDS)));
         mav.addObject(SELECTED_IDS, selectedIdsObj);
         mav.addObject(SELECTED_IDS_STRING, selectedIdsObj.toString());
     }

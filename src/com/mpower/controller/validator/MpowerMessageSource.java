@@ -34,7 +34,10 @@ public class MpowerMessageSource extends AbstractMessageSource implements Resour
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
         String message = null;
-
+        
+        if (locale != null && locale.getLanguage().equals(Locale.ENGLISH.getLanguage()) && "".equals(locale.getCountry())) {
+            locale = Locale.US;  // assume US if no country is specified and 'en' is used 
+        }
         try {
             message = staticMessageSource.getMessage(code, null, locale); // check the message bundle first for the key
         }

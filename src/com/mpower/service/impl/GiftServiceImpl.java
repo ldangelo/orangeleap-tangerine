@@ -36,7 +36,6 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
-import com.mpower.event.NewGiftEvent;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
@@ -45,7 +44,6 @@ import com.mpower.service.GiftService;
 import com.mpower.service.PaymentHistoryService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
-import com.mpower.service.jms.MPowerCreditGateway;
 import com.mpower.type.EntityType;
 import com.mpower.type.GiftEntryType;
 import com.mpower.type.PaymentHistoryType;
@@ -89,13 +87,9 @@ public class GiftServiceImpl implements GiftService {
     @Resource(name = "siteDao")
     private SiteDao siteDao;
 
-    /*
-     * this is needed for JMS
-     */
-    @Resource(name = "creditGateway")
-    private MPowerCreditGateway creditGateway;
 
     private ApplicationContext context;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {

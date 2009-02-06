@@ -4,7 +4,7 @@ $(document).ready(function() {
 	});
 	Distribution.distributionLineBuilder($("table.distributionLines tr", "form"));
 	Distribution.rowCloner("table.distributionLines tr:last");
-	$(".tablesorter tr:last .deleteButton", "form").hide();
+	$("table.distributionLines tr:last .deleteButton", "form").hide();
 	
 	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
 		var amounts = $("table.distributionLines input.amount", "form");
@@ -211,27 +211,28 @@ var Distribution = {
 	},
 	
 	addNewRow: function() {
-		var $newRow = $(".tablesorter tr:last", "form").clone(false);
+		var $newRow = $("table.distributionLines tr:last", "form").clone(false);
 		var i = $newRow.attr("rowindex");
 		var j = parseInt(i, 10) + 1;
 		$newRow.attr("rowindex", j);
 		$newRow.find("input").each(function() {
 				var $field = $(this);
-				$field.attr('name', $field.attr('name').replace(new RegExp("\\[" + i + "\\]","gi"), "[" + j + "]"));
-				$field.attr('id', $field.attr('id').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
+				$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
+				$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
 				if ($field.attr('otherFieldId')) {
-					$field.attr('otherFieldId', $field.attr('otherFieldId').replace(new RegExp("\\-" + i + "\\-","gi"), "-" + j + "-"));
+					$field.attr('otherFieldId', $field.attr('otherFieldId').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
 				}
 				$field.val("");
+				$field.removeClass("focused");
 			});
-		$(".tablesorter tr:last .deleteButton", "form").show(); // show the previous last row's delete button
+		$("table.distributionLines tr:last .deleteButton", "form").show(); // show the previous last row's delete button
 		Distribution.distributionLineBuilder($newRow);
 		$newRow.find(".deleteButton").hide();
-		$(".tablesorter", "form").append($newRow);
+		$("table.distributionLines", "form").append($newRow);
 	},
 	
 	deleteRow: function(row) {
-		if ($(".tablesorter tbody tr", "form").length > 1) {
+		if ($("table.distributionLines tbody tr", "form").length > 1) {
 			row.fadeOut("slow", function() {
 				var $elem = $(this);
 				var rowId = $elem.find("input.amount").attr('id').replace('-amount', '');

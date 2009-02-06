@@ -10,5 +10,6 @@ table.distributionLines tbody tr td a.lookupLink { top: 2px; }
 a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active { background-color: #DFF1FF; }
 a.dp-choose-date:active { background-color: #DFF1FF; }
 input#searchText { font-size: 1.1em; }
+table.distributionLines div.lookupWrapper { vertical-align: middle; }
 
 

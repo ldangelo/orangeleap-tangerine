@@ -9,7 +9,7 @@
 			FROM com.mpower.domain.CommunicationHistory communicationHistory 
 			WHERE communicationHistory.person.id = :personId
 			AND communicationHistory.person.site.id = :siteId
-		    ORDER BY communicationHistory.transactionDate desc
+		    ORDER BY communicationHistory.recordDate desc
 		</query>
 	</named-query>
 	
@@ -19,7 +19,7 @@
 			FROM com.mpower.domain.CommunicationHistory communicationHistory 
 			WHERE communicationHistory.representative.id = :personId
 			AND communicationHistory.person.site.id = :siteId
-		    ORDER BY communicationHistory.transactionDate desc
+		    ORDER BY communicationHistory.recordDate desc
 		</query>
 	</named-query>
 

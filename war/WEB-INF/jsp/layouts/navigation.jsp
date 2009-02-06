@@ -42,7 +42,7 @@
 						<a href="person.htm"><spring:message code="constituent"/></a>
 					</li>
 					<c:if test="${viewingPerson}">
-						<li class="sectionTitle">For <c:out value="${person.firstName}"/>&nbsp;<c:out value="${person.lastName}"/> ...</li>
+						<li class="sectionTitle">For <c:out value="${person.firstLast}"/>...</li>
 						<li>
 							<a href="gift.htm?personId=${person.id}"><spring:message code="gift"/></a>
 						</li>

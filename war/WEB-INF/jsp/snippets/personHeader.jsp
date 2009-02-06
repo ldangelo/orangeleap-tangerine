@@ -5,7 +5,7 @@
 		<c:choose>
 			<c:when test="${viewingPerson}">
 				<h2 class="personEdit cluetip" rel="personView.htm?personId=<c:out value='${person.id}'/>" id="personTitle">
-					<c:out value='${person.lastName}'/><c:if test="${!empty person.lastName && !empty person.firstName}">, </c:if><c:out value='${person.firstName}'/><c:if test="${person.majorDonor}"><span class="majorDonor"><spring:message code='majorDonor'/></span></c:if>
+					<c:out value='${person.firstLast}'/><c:if test="${person.majorDonor}"><span class="majorDonor"><spring:message code='majorDonor'/></span></c:if>
 				</h2>
 			</c:when>
 			<c:otherwise>

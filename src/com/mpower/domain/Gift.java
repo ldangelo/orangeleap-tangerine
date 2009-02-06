@@ -91,7 +91,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     private Integer checkNumber;
 
     @Column(name = "AUTH_CODE")
-    private String authCode;
+    private String authCode = "";
 
     @Column(name = "ORIGINAL_GIFT_ID")
     private Long originalGiftId;
@@ -138,6 +138,15 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Column(name = "ENTRY_TYPE")
     @Enumerated(EnumType.STRING)
     private GiftEntryType entryType = GiftEntryType.MANUAL;
+
+    @Column(name = "PAYMENT_TXREFNUM")
+    private String txRefNum;
+    
+    @Column(name = "PAYMENT_STATUS")
+    private String paymentStatus;
+    
+    @Column(name="PAYMENT_MESSAGE")
+    private String paymentMessage;
 
     @Transient
     private Map<String, CustomField> customFieldMap = null;
@@ -513,4 +522,47 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
             deductibleAmount = amount;
         }
     }
+
+
+	public void setTxRefNum(String txRefNum) {
+		this.txRefNum = txRefNum;
+	}
+
+	public String getTxRefNum() {
+		return txRefNum;
+	}
+	
+	public void setPaymentStatus(String status) {
+		this.paymentStatus = status;
+		
+	}
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+	
+	public void setPaymentMessage(String message) {
+		this.paymentMessage = message;
+	}
+
+	public String getPaymentMessage() {
+		return paymentMessage;
+	}
+	
+	public Boolean getIsAuthorized() {
+		return authCode.compareTo("") != 0;
+	}
+	
+	public Boolean getIsCaptured() {
+		return txRefNum.compareTo("") != 0;
+	}
+	
+	public Boolean getIsProcessed() {
+		return txRefNum.compareTo("") != 0;
+	}
+	
+	public Boolean getIsDeclined() {
+		return paymentStatus.compareTo("") == 0;
+	}
+	
 }

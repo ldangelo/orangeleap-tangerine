@@ -26,14 +26,14 @@ import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.event.NewGiftEvent;
+import com.mpower.event.PaymentEvent;
 
-public abstract class RulesInterceptor implements ApplicationContextAware, ApplicationListener {
+public class PaymentRulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	private Class  eventClass;
 	
 	public static Properties getDroolsProperties() {
 		String host = System.getProperty("drools.host");
@@ -102,10 +102,6 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-	
-	public ApplicationContext getApplicationContext() {
-			return this.applicationContext;
-	}
 
 	public String getRuleFlowName() {
 		return ruleFlowName;
@@ -115,12 +111,12 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		this.ruleFlowName = ruleFlowName;
 	}
 
-	/*@Override
+	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event.getClass() == eventClass) {
+		if (event instanceof PaymentEvent) {
 			NewGiftEvent nge = (NewGiftEvent) event;
 			doApplyRules(nge.getGift());
 		}
 		
-	}*/
+	}
 }

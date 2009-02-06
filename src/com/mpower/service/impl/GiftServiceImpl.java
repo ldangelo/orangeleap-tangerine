@@ -16,6 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,7 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
+import com.mpower.event.NewGiftEvent;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
@@ -41,13 +45,16 @@ import com.mpower.service.GiftService;
 import com.mpower.service.PaymentHistoryService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
+import com.mpower.service.jms.MPowerCreditGateway;
 import com.mpower.type.EntityType;
 import com.mpower.type.GiftEntryType;
 import com.mpower.type.PaymentHistoryType;
+import com.mpower.integration.NewGift;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class GiftServiceImpl implements GiftService {
+
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -85,13 +92,15 @@ public class GiftServiceImpl implements GiftService {
     /*
      * this is needed for JMS
      */
-    // @Resource(name = "creditGateway")
-    // private MPowerCreditGateway creditGateway;
+    @Resource(name = "creditGateway")
+    private MPowerCreditGateway creditGateway;
+
+    private ApplicationContext context;
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
         if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType()) || PaymentSource.ACH.equals(gift.getPaymentType())) {
-            gift.setAuthCode(RandomStringUtils.randomNumeric(6));
+//            gift.setAuthCode(RandomStringUtils.randomNumeric(6));
             if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
                 gift.getPaymentSource().setType(gift.getPaymentType());
                 List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(gift.getPerson().getId());
@@ -129,7 +138,16 @@ public class GiftServiceImpl implements GiftService {
         // this was a part of our JMS/MOM poc
         // comment it out to disable jms processing.
         // processMockTrans(gift);
+        
+//        context.publishEvent(new NewGiftEvent(this,gift));
 
+        try {
+        	NewGift newGift = (NewGift) context.getBean("newGift");
+        	newGift.routeGift(gift);
+        } catch (Exception ex) {
+        	logger.error(ex.getMessage());
+        	logger.error(ex.getStackTrace());
+        }
         
         paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
         
@@ -165,17 +183,17 @@ public class GiftServiceImpl implements GiftService {
 
         // this was a part of our JMS/MOM poc
         // comment it out to disable jms processing.
-        // processMockTrans(gift);
+        processMockTrans(gift);
 
         auditService.auditObject(gift);
 
         return gift;
     }
 
-    // private void processMockTrans(Gift gift) {
-    // // this was a part of our JMS/MOM poc
-    // creditGateway.sendGiftTransaction(gift);
-    // }
+    private void processMockTrans(Gift gift) {
+     // this was a part of our JMS/MOM poc
+     // creditGateway.sendGiftTransaction(gift);
+    }
     
     private PaymentHistory createPaymentHistoryForGift(Gift gift) {
     	PaymentHistory paymentHistory = new PaymentHistory();
@@ -418,8 +436,18 @@ public class GiftServiceImpl implements GiftService {
         return giftDao.readGiftsByCommitmentId(commitment.getId());
     }
 
+
+
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		context = applicationContext;
+		
+	}
+
+
 	@Override
 	public List<Gift> readAllGiftsBySiteName(String siteName) {
         return giftDao.readAllGiftsBySiteName(siteName);
 	}
+
 }

@@ -19,3 +19,13 @@
 [condition][]who has donated in {x} out of the last {y} months=$gifts : ArrayList(size >= {x}) from collect(Gift(person.id == $personId)) eval(analyzeMonthlyDonor($gifts, {x}, {y}))
 [condition][]who donated at least {number} gifts=$totalGifts : ArrayList(size>={number}) from collect ($gift : Gift(value > 0, person.id == $personId))
 [condition][com.mpower.domain.Person]- who is not a lapsed donor=lapsedDonor == false
+[condition][com.mpower.domain.Gift]that has not been authorized=isAuthorized == false
+[condition][com.mpower.domain.Gift]that has been authorized=isAuthorized == true
+[condition][com.mpower.domain.Gift]that has been processed=isProcessed == true
+[condition][com.mpower.domain.Gift]that has not been processed=isProcessed == false
+[condition][com.mpower.domain.Gift]that has been captured=isCaptured == true
+[condition][com.mpower.domain.Gift]that has not been captured=isCaptured == false
+[condition][com.mpower.domain.Gift]where payment is denied=isDeclined == true
+[consequence][com.mpower.domain.Gift]authorize payment=PaymentGateway gateway = (PaymentGateway) applicationContext.getBean("paymentGateway"); gateway.Authorize($gift);
+[consequence][com.mpower.domain.Gift]capture payment=PaymentGateway gateway = (PaymentGateway) applicationContext.getBean("paymentGateway"); gateway.Capture($gift);
+[consequence][com.mpower.domain.Gift]authorize and capture payment=PaymentGateway gateway = (PaymentGateway) applicationContext.getBean("paymentGateway"); gateway.AuthorizeAndCapture($gift);

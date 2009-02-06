@@ -25,29 +25,15 @@ import com.mpower.domain.SiteAware;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.event.GiftEvent;
 import com.mpower.event.NewGiftEvent;
 
-public abstract class RulesInterceptor implements ApplicationContextAware, ApplicationListener {
+public class GiftRulesInterceptor extends RulesInterceptor {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
-	private String ruleFlowName;
-	private Class  eventClass;
 	
-	public static Properties getDroolsProperties() {
-		String host = System.getProperty("drools.host");
-		String port = System.getProperty("drools.port");
-		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
-		logger.debug("Setting Drools URL to "+url);
-		Properties props = new Properties();
-		props.put("url", url);
-		props.put("newInstance", "true");
-		props.put("name","testagent");
-		return props;
-	}
-
-
 	public void doApplyRules(Gift gift) {
 
 		Properties props = getDroolsProperties();
@@ -89,7 +75,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 			workingMemory.setGlobal("applicationContext", applicationContext);
 			logger.info("*** firing all rules");
 
-			String ruleflow = "com.mpower." + site + "_" + ruleFlowName;
+			String ruleflow = "com.mpower." + site + "_" + getRuleFlowName();
 			workingMemory.startProcess(ruleflow);
 			workingMemory.fireAllRules();
 		} catch (Exception e) {
@@ -102,25 +88,14 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
-	
-	public ApplicationContext getApplicationContext() {
-			return this.applicationContext;
-	}
 
-	public String getRuleFlowName() {
-		return ruleFlowName;
-	}
 
-	public void setRuleFlowName(String ruleFlowName) {
-		this.ruleFlowName = ruleFlowName;
-	}
-
-	/*@Override
+	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event.getClass() == eventClass) {
+		if (event instanceof GiftEvent) {
 			NewGiftEvent nge = (NewGiftEvent) event;
 			doApplyRules(nge.getGift());
 		}
 		
-	}*/
+	}
 }

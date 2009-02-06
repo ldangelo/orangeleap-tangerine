@@ -3,9 +3,9 @@
     <entry>
       <long>2</long>
       <org.drools.ruleflow.core.impl.RuleSetNodeImpl id="3">
-        <ruleFlowGroup>company1_GiftDonated</ruleFlowGroup>
+        <ruleFlowGroup>company1_processpayment</ruleFlowGroup>
         <id>2</id>
-        <name>Donation</name>
+        <name>Process Payment</name>
         <incomingConnections id="4">
           <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
             <type>1</type>
@@ -46,9 +46,9 @@
     </entry>
   </nodes>
   <variables id="14"/>
-  <lastNodeId>4</lastNodeId>
-  <id>com.mpower.company1_GiftDonatedRuleflow</id>
-  <name>company1_GiftDonatedRuleflow</name>
+  <lastNodeId>3</lastNodeId>
+  <id>com.mpower.company1_processpayment</id>
+  <name>company1_processpayment</name>
   <version>1.0</version>
   <type>RuleFlow</type>
   <packageName>com.mpower</packageName>

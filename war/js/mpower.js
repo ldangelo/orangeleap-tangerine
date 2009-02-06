@@ -786,18 +786,20 @@ var Lookup = {
 	
 	radioClickEventHandler: function() {
 		var $prevElem = null;
-		$("div.modalContent ul.queryUl :radio").bind("click", function() {
-			if ($prevElem) {
-				$prevElem.parent("li").removeClass("selected");
-			} 
-			var $elem = $(this);
-			if ($elem.get(0).checked) {
-				$elem.parent("li").addClass("selected"); 
+		$("div.modalContent ul.queryUl", $("div.modalContentWrapper")).bind("click", function(event) {
+			var $target = $(event.target);
+			if ($target.is(":radio")) { 				
+				if ($prevElem) {
+					$prevElem.parent("li").removeClass("selected");
+				} 
+				if ($target.get(0).checked) {
+					$target.parent("li").addClass("selected"); 
+				}
+				else {
+					$target.parent("li").removeClass("selected"); 
+				}
+				$prevElem = $target;
 			}
-			else {
-				$elem.parent("li").removeClass("selected"); 
-			}
-			$prevElem = $elem;
 		});		
 		$("#queryResultsDiv").removeClass("noDisplay");
 	},

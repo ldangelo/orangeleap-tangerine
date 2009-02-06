@@ -18,6 +18,7 @@
 							<a class="${sidebarNav == 'Address Manager' ? 'active' : ''}" href="addressManager.htm?personId=${person.id}"><spring:message code="addresses"/></a>
 							<a class="${sidebarNav == 'Email Manager' ? 'active' : ''}" href="emailManager.htm?personId=${person.id}"><spring:message code="emails"/></a>
 							<a class="${sidebarNav == 'Phone Manager' ? 'active' : ''}" href="phoneManager.htm?personId=${person.id}"><spring:message code="phoneNumbers"/></a>
+			            	<a class="${sidebarNav=='communicationHistoryView'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewCommunicationHistoryList"/></a>
 						</span>
 					</div>
 					<div class="navGroup">
@@ -48,10 +49,9 @@
 						<span class="secondary ${sidebarNav == 'Payment Manager' ? 'active' : ''}">
 							<a class="${sidebarNav == 'Payment Methods' ? 'active' : ''}" href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethods"/></a>
 							<a class="${sidebarNav == 'Payment History' ? 'active' : ''}" href="paymentHistory.htm?personId=${person.id}"><spring:message code="paymentHistory"/></a>
-				            <a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistory.htm?personId=${person.id}"><spring:message code="enterNewCommunicationHistory"/></a>
-			            	<a class="${sidebarNav=='communicationHistoryView'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewCommunicationHistoryList"/></a>
 						</span>
 					</div>					
+				    <a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistory.htm?personId=${person.id}"><spring:message code="enterNewCommunicationHistory"/></a>
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>
 				</div>
 			</c:if>

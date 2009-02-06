@@ -10,7 +10,7 @@ $.fn.vkfade = function(doScrollTo) {
 	Fat.fade_element($elem.attr("id"), 20, 750, "#FFFF00");
 	if (doScrollTo) {
 		var offset = $elem.offset();
-		window.scrollTo(offset.left, offset.top);
+		window.scrollTo((offset.left > 100 ? offset.left - 100 : offset.left), (offset.top > 30 ? offset.top - 30 : offset.top));
 	}
     return this;
 };
@@ -72,12 +72,12 @@ var Fat = {
 			b = Math.floor(bf * ((frames-frame)/frames) + bt * (frame/frames));
 			h = this.make_hex(r,g,b);
 
-			setTimeout("Fat.set_bgcolor('"+id.replace("\'", "\\'")+"','"+h+"')", delay);
+			setTimeout("Fat.set_bgcolor('"+id.replace(new RegExp("\'", "g"), "\\'") +"','"+h+"')", delay);
 
 			frame++;
 			delay = interval * frame; 
 		}
-		setTimeout("Fat.set_bgcolor('"+id.replace("\'", "\\'")+"','"+to+"')", delay);
+		setTimeout("Fat.set_bgcolor('"+id.replace(new RegExp("\'", "g"), "\\'") +"','"+to+"')", delay);
 	},
 	set_bgcolor : function (id, c)
 	{

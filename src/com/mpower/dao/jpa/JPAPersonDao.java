@@ -120,6 +120,12 @@ public class JPAPersonDao implements PersonDao {
             for (Map.Entry<String, Object> pair : params.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
+
+                // HACK: will implement a permanent fix at web layer for final
+                if(key.equals("addressMap[home].stateProvince") && ((String)value).equalsIgnoreCase("none")) {
+                    continue;
+                }
+
                 boolean isString = true;
                 if (value instanceof String) {
                     if (GenericValidator.isBlankOrNull((String) value)) {

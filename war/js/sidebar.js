@@ -10,6 +10,7 @@ Ext.onReady(function() {
             {name: 'id', type: 'int'},
             {name: 'first', type: 'string'},
             {name: 'last', type: 'string'},
+            {name: 'orgName', type: 'string'},
             {name: 'majorDonor', type: 'boolean'},
             {name: 'lapsedDonor', type: 'boolean'},
             {name: 'gifts', type: 'int'},
@@ -32,6 +33,7 @@ Ext.onReady(function() {
         columns:[
             {id: 'nameColumn', header: 'First', width: 100, sortable: true, dataIndex: 'first', align: 'left'},
             {header: 'Last', width: 100, sortable: true, dataIndex: 'last', align: 'left'},
+            {header: 'Organization', width: 100, sortable: true, dataIndex: 'orgName', align: 'left'},
             {header: 'Gifts', width: 55, sortable: true, dataIndex: 'gifts', align: 'right'},
             {header: 'Total', width: 80, sortable: true, dataIndex: 'amount', align: 'right', renderer: Ext.util.Format.usMoney},
             {header: 'Major', width: 65, sortable: true, dataIndex: 'majorDonor', renderer: MPower.majorDonorRenderer}            
@@ -54,7 +56,7 @@ Ext.onReady(function() {
     MPower.win = new Ext.Window({
         title: 'My Accounts',
         layout: 'fit',
-        width: 440,
+        width: 540,
         height: 400,
         buttons: [{text: 'Close', handler: function() {MPower.win.hide();}}],
         buttonAlign: 'center',

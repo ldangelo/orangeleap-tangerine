@@ -82,6 +82,7 @@ public class MyAccountsController {
         ret.put("id", person.getId());
         ret.put("first", person.getFirstName());
         ret.put("last", person.getLastName());
+        ret.put("orgName", person.getOrganizationName());
         ret.put("majorDonor", person.isMajorDonor());
         ret.put("lapsedDonor", person.isLapsedDonor());
         ret.put("amount", amount);

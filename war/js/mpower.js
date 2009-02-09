@@ -267,7 +267,6 @@ var Picklist = {
 		var childTree = Picklist.getTree($childNode);
 		var parentId = $parentNode.attr("id");
 		
-		Picklist.setIsSelected(childTree, optionSelected, $parentNode, parentId);
 		var parentChildSet = false;
 		if (!childTree.isExistingParent(parentId)) {
 			childTree.parents.push($parentNode);
@@ -278,12 +277,12 @@ var Picklist = {
 			delete Picklist.rootTrees[thisId];
 			parentChildSet = true;
 		}
+		Picklist.setIsSelected(childTree, optionSelected, $parentNode, parentId);
 		return parentChildSet;
 	},
 	
 	setIsSelected: function(childTree, optionSelected, $parentNode, parentId) {
 		if (childTree.isSelected != optionSelected) {
-			var parentTree = Picklist.getTree($parentNode);
 			if (childTree.parents.length == 1) {
 				if (childTree.parentIds[parentId]) {
 					// If the parent of this child points to the child more than once, use an OR condition
@@ -300,6 +299,7 @@ var Picklist = {
 				 */
 				var isChild = Picklist.isChildOf(childTree.parents, parentId);
 				if (isChild) {
+					var parentTree = Picklist.getTree($parentNode);
 					if (parentTree.isSelected) {
 						childTree.isSelected = optionSelected; 
 					}

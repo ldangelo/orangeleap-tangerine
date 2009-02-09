@@ -679,8 +679,10 @@ var Lookup = {
 			Lookup.useCode();
 			$("#dialog").jqmHide();	
 		});
-		$("#codeHelperLookup #searchText").bind("keyup", function(){
-			Lookup.doQuery(Lookup.getCodeData);
+		$("#codeHelperLookup #searchText").bind("keyup", function(event){
+			if (event.keyCode == 13) { // return key
+				Lookup.doQuery(Lookup.getCodeData);
+			}
 		});
 		$("#codeHelperLookup #findButton").bind("click", function(){
 			Lookup.doQuery(Lookup.getCodeData);
@@ -772,10 +774,12 @@ var Lookup = {
 			Lookup.useQueryLookup();
 			$("#dialog").jqmHide();	
 		});
-		$("#queryLookupForm #searchText").bind("keyup", function(){
-			Lookup.doQuery(Lookup.getQueryData);
+		$("#queryLookupForm #searchText").bind("keyup", function(event) {
+			if (event.keyCode == 13) { // return key
+				Lookup.doQuery(Lookup.getQueryData);
+			}
 		});
-		$("#queryLookupForm #findButton").bind("click", function(){
+		$("#queryLookupForm #findButton").bind("click", function() {
 			Lookup.doQuery(Lookup.getQueryData);
 		});		
 	},
@@ -951,10 +955,12 @@ var Lookup = {
 	},
 	
 	multiQueryLookupBindings: function() {		
-		$("#multiQueryLookupForm #searchText").bind("keyup", function(){
-			Lookup.doMultiQuery();
+		$("#multiQueryLookupForm #searchText").bind("keyup", function(event) {
+			if (event.keyCode == 13) { // return key
+				Lookup.doMultiQuery();
+			}
 		});
-		$("#multiQueryLookupForm #findButton").bind("click", function(){
+		$("#multiQueryLookupForm #findButton").bind("click", function() {
 			Lookup.doMultiQuery();
 		});		
 		$("#multiQueryLookupForm").bind("submit", function() {

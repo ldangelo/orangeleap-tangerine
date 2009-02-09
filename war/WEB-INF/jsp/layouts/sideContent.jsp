@@ -14,7 +14,7 @@
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="profile"/></a>
 						<span class="secondary ${sidebarNav == 'Profile' ? 'active' : ''}">
-							<a class="${sidebarNav == 'Profile' ? 'active' : ''}" href="person.htm?personId=${person.id}"><spring:message code="personalDetails"/></a>
+							<a class="${sidebarNav == 'Profile' ? 'active' : ''}" href="person.htm?personId=${person.id}"><spring:message code="summary"/></a>
 							<a class="${sidebarNav == 'Address Manager' ? 'active' : ''}" href="addressManager.htm?personId=${person.id}"><spring:message code="addresses"/></a>
 							<a class="${sidebarNav == 'Email Manager' ? 'active' : ''}" href="emailManager.htm?personId=${person.id}"><spring:message code="emails"/></a>
 							<a class="${sidebarNav == 'Phone Manager' ? 'active' : ''}" href="phoneManager.htm?personId=${person.id}"><spring:message code="phoneNumbers"/></a>

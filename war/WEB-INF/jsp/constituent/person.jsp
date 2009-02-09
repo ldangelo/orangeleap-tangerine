@@ -17,10 +17,12 @@
 				<c:if test="${id != null}">
 					<input type="hidden" name="id" value="<c:out value='${id}'/>" />
 				</c:if>
-			
+
+				<spring:message code='profileSummary' var="titleText" />
+				<spring:message code='saveChanges' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
-					<jsp:param name="currentFunctionTitleText" value="Profile" />
-					<jsp:param name="submitButtonText" value="Save Changes" />
+					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
+					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>

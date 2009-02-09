@@ -76,7 +76,28 @@
 		<property name="splitDatabases" value="false" />
 	</bean>
 	
-    <bean id="dataSource-pooled" class="org.springframework.jndi.JndiObjectFactoryBean">
+	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+	    </property>
+        <property name="url">
+		<value>jdbc:mysql://${mysql.host}:${mysql.port}/mpoweropen?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8</value>
+		</property>
+		<property name="username">
+		<value>${mysql.user}</value>
+		</property>
+		<property name="password">
+		<value>${mysql.password}</value>
+		</property>
+		<property name="maxActive"><value>100</value></property>
+		<property name="maxIdle"><value>30</value></property>
+		<property name="maxWait"><value>10000</value></property>
+<!--		<property name="testOnBorrow"><value>true</value></property>-->
+<!--		<property name="validationQuery"><value>select * from DUAL</value></property>-->
+<!--		<property name="testWhileIdle"><value>true</value></property>-->
+	</bean> 
+	
+    <bean id="dataSource-pooled-jndi" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName">
 			<value>java:/comp/env/jdbc/MPowerOpen</value>
 		</property>

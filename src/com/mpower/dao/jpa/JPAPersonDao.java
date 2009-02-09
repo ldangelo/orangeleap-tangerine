@@ -38,7 +38,9 @@ public class JPAPersonDao implements PersonDao {
     @Override
     public Person savePerson(Person person) {
         // Sanity check
-        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
 
         for (Iterator<Phone> iter = person.getPhones().iterator(); iter.hasNext();) {
             Phone phone = iter.next();
@@ -57,7 +59,9 @@ public class JPAPersonDao implements PersonDao {
     public Person readPerson(Long id) {
         Person person = em.find(Person.class, id);
         // Sanity check
-        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
         return person;
     }
 
@@ -68,7 +72,9 @@ public class JPAPersonDao implements PersonDao {
         query.setParameter("loginId", loginId);
         query.setParameter("siteId", siteName);
         List<Person> persons = query.getResultList();
-        if (persons.size() == 0) return null;
+        if (persons.size() == 0) {
+            return null;
+        }
         return persons.get(0);
     }
 
@@ -120,11 +126,6 @@ public class JPAPersonDao implements PersonDao {
             for (Map.Entry<String, Object> pair : params.entrySet()) {
                 String key = pair.getKey();
                 Object value = pair.getValue();
-
-                // HACK: will implement a permanent fix at web layer for final
-                if(key.equals("addressMap[home].stateProvince") && ((String)value).equalsIgnoreCase("none")) {
-                    continue;
-                }
 
                 boolean isString = true;
                 if (value instanceof String) {

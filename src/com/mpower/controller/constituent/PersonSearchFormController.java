@@ -17,9 +17,11 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.mpower.controller.NoneStringTrimmerEditor;
 import com.mpower.domain.Person;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionService;
@@ -40,6 +42,11 @@ public class PersonSearchFormController extends SimpleFormController {
 
     public void setSessionService(SessionService sessionService) {
         this.sessionService = sessionService;
+    }
+
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
     }
 
     @Override

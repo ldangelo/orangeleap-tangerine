@@ -38,13 +38,13 @@
 								<c:choose>
 									<c:when test="${empty row.gifts}">
 										<tr>
-											<td><a href="recurringGift.htm?commitmentId=${row.id}&personId=${row.person.id}">View</a></td>
+											<td><a href="recurringGift.htm?commitmentId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 											<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 										</tr>
 									</c:when>
 									<c:otherwise>
 										<tr>
-											<td><a href="recurringGiftView.htm?commitmentId=${row.id}&personId=${row.person.id}">View</a></td>
+											<td><a href="recurringGiftView.htm?commitmentId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 											<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 										</tr>
 									</c:otherwise>
@@ -53,11 +53,11 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="recurringGift.htm?personId=${person.id}">Enter a New Recurring Gift » </a></p>
+				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/> » </a></p>
 			</c:when>
 			<c:when test="${commitmentList ne null}">
-				<p style="margin:8px 0 6px 0;">No recurring gift have been entered for this person.</p>
-				<p>Would you like to <a href="recurringGift.htm?personId=${person.id}">create a new recurring gift</a>?</p>
+				<p style="margin:8px 0 6px 0;"><spring:message code='noRecurringGiftsEntered'/></p>
+				<p><spring:message code='wouldYouLikeTo'/> <a href="recurringGift.htm?personId=${person.id}"><spring:message code='createNewRecurringGift'/></a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

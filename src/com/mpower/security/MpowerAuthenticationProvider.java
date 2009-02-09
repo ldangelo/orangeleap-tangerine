@@ -134,7 +134,15 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
             return authenticationToken;
             
         } catch (NamingException ldapAccessFailure) {
-            throw new AuthenticationServiceException(ldapAccessFailure.getMessage(), ldapAccessFailure);
+            /* "error code 32" means the Organization (Company) name is invalid,
+             * so by catching this explicitly here, we can pitch the correct exception
+             * rather than allow the ugly LDAP error to propogate to the login screen
+             */
+            if(ldapAccessFailure.getMessage().contains("error code 32")) {
+                throw new BadCredentialsException("Invalid Organization Name");
+            } else {
+                throw new AuthenticationServiceException(ldapAccessFailure.getMessage(), ldapAccessFailure);
+            }
         }
     }
     

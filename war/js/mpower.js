@@ -715,19 +715,16 @@ var Lookup = {
 		}
 	},
 	
-	loadQueryLookupCommon: function(elem) {
-		this.lookupCaller = $(elem).parent();		
-		return $(elem).eq(0).attr("fieldDef");
-	},
-	
 	loadQueryLookup: function(elem, showOtherField) {
 		if (!showOtherField) {
 			showOtherField = false;
 		}
+		this.lookupCaller = $(elem).parent();		
+		var fieldDef = $(elem).attr("fieldDef");
 		$.ajax({
 			type: "GET",
 			url: "queryLookup.htm",
-			data: "fieldDef=" + Lookup.loadQueryLookupCommon(elem) + "&showOtherField=" + showOtherField,
+			data: "fieldDef=" + fieldDef + "&showOtherField=" + showOtherField,
 			success: function(html){
 				$("#dialog").html(html);
 				Lookup.singleCommonBindings();
@@ -819,7 +816,9 @@ var Lookup = {
 	},
 	
 	loadMultiQueryLookup: function(elem) {
-		var fieldDef = this.loadQueryLookupCommon(elem);		
+		var $elem = $(elem);
+		this.lookupCaller = $elem.siblings(".lookupScrollContainer").children(".multiLookupField");		
+		var fieldDef = $elem.attr("fieldDef");
 		var queryString = this.serializeMultiQueryLookup(this.lookupCaller.children("div.multiQueryLookupOption"));
 		$.ajax({
 			type: "GET",
@@ -849,7 +848,7 @@ var Lookup = {
 	},
 	
 	loadMultiPicklist: function(elem) {
-		this.lookupCaller = $(elem).parent();
+		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");//parent();
 		var queryString = this.serializeMultiPicklist(this.lookupCaller.children());
 		$.ajax({
 			type: "POST",

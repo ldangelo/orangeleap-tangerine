@@ -6,10 +6,22 @@ div.jqmWindow .buttonsDiv, div.modalSearch  { zoom: 1; }
 .jqmWindow .modalBottomLeft, .jqmWindow .modalBottomRight { top: -2px; }
 ul.formFields li.side label.desc { padding-top: 2px; }
 .saveButton,.searchButton { height: 23px; }
+a.lookupLink { top: 2px; right: -2px; }
 table.distributionLines tbody tr td a.lookupLink { top: 2px; }
 a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active { background-color: #DFF1FF; }
+div.lookupWrapper a.dp-choose-date { top: -1px; right: -5px; }
 a.dp-choose-date:active { background-color: #DFF1FF; }
 input#searchText { font-size: 1.1em; }
 table.distributionLines div.lookupWrapper { vertical-align: middle; }
+.ac_results { width: 250px;}
+
+li.queryLookupLi { padding-bottom: 8px; }
+li.multiOptionLi { margin-bottom: -18px; }
+li.multiOptionLi label { margin-top: 2px; }
+div.singleColumn h4.formSectionHeader { width: 380px; }
+div.lookupScrollTop { top:-15px; left:0;} 
+div.lookupScrollContainer { top: -16px; }
+div.lookupScrollBottom { top: -17px; }
+
 
 

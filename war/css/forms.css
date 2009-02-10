@@ -13,9 +13,9 @@ li.fieldGroup {
 
 ul.formFields li.side label.desc {
 	float:left;
-	width:30%;
+	width:117px;
 	text-align:right;
-	padding-right:1%;
+	padding-right:4px;
 	color: #173D5F;
 	font-family:Arial, sans-serif;
 	padding-top: 4px;
@@ -33,11 +33,9 @@ ul.formFields li select {
 	padding:2px;
 }
 ul.formFields li.side input {
-	float:left;
-	width:66%;
+	width:63.8%;
 }
 ul.formFields li.side input.checkbox {
-	float:left;
 	width:auto;
 	border:0;
 }
@@ -45,25 +43,22 @@ input[type=checkbox], input.checkbox {
 	margin: 3px 3px 3px 4px;
 }
 ul.formFields li.side select {
-	float:left;
-	width:68.6%;
+	width:66.6%;
 }
 ul.formFields li.side select.expMonth {
-	width:23.8%;
+	width:20%;
 }
 ul.formFields li.side select.expYear {
 	width:43.8%;
 	margin-left:1%;
 }
 ul.formFields li.side textarea {
-	width:66%;
+	width:63.8%;
 }
-/*ul.formFields li.side input.date,*/
-ul.formFields li.side input.lookup {
-	width:60%;
-}
+ul.formFields li.side input.date { width: 97.1%; }
+ul.formFields li.side input.lookup { width: 60%; }
 li.side {
-	padding:4px 0;
+	padding:4px 10px 4px 0;
 	clear: left;
 }
 form .req {
@@ -101,7 +96,8 @@ ul.width600 {
 	width:600px;
 }
 ul.width375 {
-	width:375px;
+	width:385px;
+	padding-right:5px;
 }
 span.required {
 	font-size: 1.6em; color:#f00; vertical-align: text-top;
@@ -129,6 +125,7 @@ h4.formSectionHeader {
 	color:#777;
 	border-bottom:1px solid #aaa;
 }
+div.singleColumn h4.formSectionHeader { width: 98%; }
 h4.gridSectionHeader {
 	font-weight:bold;
 	font-family:Arial, sans-serif;
@@ -146,7 +143,7 @@ h4.gridSectionHeader {
 	background: #F6F7FB;
 }
 
-a.lookupLink, .lookupField a.hideText, .multiLookupField a.hideText {
+a.lookupLink, a.multiLookupLink, .lookupField a.hideText, .multiLookupField a.hideText {
 	background: transparent url(../images/icons/view.png) no-repeat center center;
 	display: block;
 	height: 16px;
@@ -156,14 +153,19 @@ a.lookupLink, .lookupField a.hideText, .multiLookupField a.hideText {
     position: absolute;
 	text-indent: -2000px;
 }
-a.lookupLink:hover, .lookupField a.hideText:hover, .multiLookupField a.hideText:hover, a.lookupLink:focus, .lookupField a.hideText:focus, .multiLookupField a.hideText:focus {
+a.lookupLink:hover, .lookupField a.hideText:hover, .multiLookupField a.hideText:hover, a.lookupLink:focus, .lookupField a.hideText:focus, .multiLookupField a.hideText:focus, a.multiLookupLink:hover {
 	background-color: #DFF1FF;
 }
-a.lookupLink {
-	float:left;
+a.lookupLink, a.multiLookupLink {
 	overflow:hidden;
-	right: -8px;
+}
+a.lookupLink {
+	right: -1px;
 	top: 1px;
+}
+a.multiLookupLink {
+	right: 16px;
+	top: 5px;
 }
 
 table.distributionLines tbody tr td a.lookupLink {
@@ -381,7 +383,7 @@ form table.distributionLines thead th.actionColumn {
 }
 .codeList {
 	height:300px;
-	overflow-y:scroll;
+	overflow-y:auto;
 	border:1px solid #bbb;
 }
 .codeList table input {
@@ -390,7 +392,7 @@ form table.distributionLines thead th.actionColumn {
 div.lookupWrapper {
 	position:relative;
 	float:left;
-	width:66%;
+	width:247px;
 }
 table div.lookupWrapper {
 	position:relative;
@@ -398,14 +400,14 @@ table div.lookupWrapper {
 }
 div.lookupWrapper a.dp-choose-date {
 	position:absolute;
-	right:-12px;
+	right:-4px;
 	top: -2px;
 }
 ul.formFields div.lookupWrapper input {
 	width:100%;
 }
 ul.formFields div.lookupWrapper input.code {
-	width:90%;
+	width:87.3%;
 	padding-right:28px;
 }
 
@@ -420,13 +422,13 @@ ul.formFields div.lookupWrapper input.code {
 	border:1px solid #7F9DB9;
 	padding:1px 4px;
 	float:left;
-	width:66%;
+	width:63.8%;
 	background:#eee;
 }
-.lookupField, .multiLookupField {
+.lookupField {
 	border:1px solid #7F9DB9;
-	padding:2px 8px 2px 0;
-	float:left;
+	padding:2px 0;
+	min-height: 18px;
 	width:100%;
     position: relative;
 }
@@ -437,9 +439,22 @@ a.hideText {
     color: transparent;
 }
 
+li.multiOptionLi { padding-right: 0; position: relative; }
+div.lookupScrollTop, div.lookupScrollBottom, div.lookupScrollLeft, div.lookupScrollRight { position: relative; background-color: #7F9DB9; }
+div.lookupScrollTop, div.lookupScrollBottom { height:1px; left:121px; width:249px; z-index:1; } 
+div.lookupScrollBottom { top:-1px; }
+div.lookupScrollTop { top:1px; } 
+div.lookupScrollBottom { height: 1px; left:121px; top:-1px; width:249px; z-index:1; }
+div.lookupScrollContainer { max-height:95px; overflow-x:hidden; overflow-y:auto; position:relative; width:263px; }
+div.multiLookupField { padding:2px 0; width: 247px; position: relative; min-height: 20px; }
+div.lookupScrollLeft, div.lookupScrollRight { height: 100%; position: absolute; top: 0; width: 1px; z-index: 1; }
+div.lookupScrollLeft { left:0; }
+div.lookupScrollRight { left:248px; }
 
-div.lookupWrapper div.multiPicklistOption, div.lookupWrapper div.queryLookupOption, div.lookupWrapper div.multiQueryLookupOption { float: left; clear: left; width: 94%; padding-left: 4px; background-color: #FFF; }
-div.lookupWrapper div.multiPicklistOption:hover, div.lookupWrapper div.multiQueryLookupOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
+div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div.multiQueryLookupOption, div.lookupWrapper div.queryLookupOption { background-color: #FFF; }
+div.lookupWrapper div.queryLookupOption { width: 98%; padding-left: 4px; }
+div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div.multiQueryLookupOption { padding: 1px 22px 1px 5px; width: 90%; }
+div.lookupScrollContainer div.multiPicklistOption:hover, div.lookupScrollContainer div.multiQueryLookupOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
 a.deleteOption { vertical-align: bottom; margin-left: 3px; }
 a.deleteOption img { vertical-align: top; }
 

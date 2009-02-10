@@ -57,6 +57,9 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
     @Column(name = "NUMBER")
     private String number;
 
+    @Column(name = "PROVIDER")
+    private String provider;
+
     @Column(name = "SMS")
     private String sms;
 
@@ -162,6 +165,14 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
 
     public String getSms() {

@@ -42,7 +42,7 @@ import com.mpower.util.Utilities;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMITMENT")
-public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, Customizable, Viewable, Serializable {
+public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -161,8 +161,19 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @JoinColumn(name = "PHONE_ID")
     private Phone phone = new Phone(person);
 
+    @ManyToOne
+    @JoinColumn(name = "EMAIL_ID")
+    private Email email = new Email(person);
+
     @Column(name = "FREQUENCY")
     private String frequency;
+
+    @Column(name = "SEND_ACKNOWLEDGMENT")
+    private Boolean sendAcknowledgment = false;
+    
+    @Column(name = "ACKNOWLEDGMENT_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date acknowledgmentDate;
 
     @OneToOne(mappedBy = "commitment", cascade = { CascadeType.ALL })
     private RecurringGift recurringGift;
@@ -195,6 +206,9 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @Transient
     private Phone selectedPhone = new Phone(person);
+
+    @Transient
+    private Email selectedEmail = new Email(person);
 
     public Commitment() {
     }
@@ -264,6 +278,22 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     public void setCheckNumber(Integer checkNumber) {
         this.checkNumber = checkNumber;
+    }
+
+    public Boolean getSendAcknowledgment() {
+        return sendAcknowledgment;
+    }
+
+    public void setSendAcknowledgment(Boolean sendAcknowledgment) {
+        this.sendAcknowledgment = sendAcknowledgment;
+    }
+
+    public Date getAcknowledgmentDate() {
+        return acknowledgmentDate;
+    }
+
+    public void setAcknowledgmentDate(Date acknowledgmentDate) {
+        this.acknowledgmentDate = acknowledgmentDate;
     }
 
     public List<CommitmentCustomField> getCustomFields() {
@@ -437,6 +467,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         this.phone = phone;
     }
 
+    public Email getEmail() {
+        Utilities.populateIfNullPerson(email, person);
+        return email;
+    }
+
+    public void setEmail(Email email) {
+        this.email = email;
+    }
+
     public String getFrequency() {
         return frequency;
     }
@@ -541,6 +580,15 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     public void setSelectedPhone(Phone selectedPhone) {
         this.selectedPhone = selectedPhone;
+    }
+
+    public Email getSelectedEmail() {
+        Utilities.populateIfNullPerson(selectedEmail, person);
+        return selectedEmail;
+    }
+
+    public void setSelectedEmail(Email selectedEmail) {
+        this.selectedEmail = selectedEmail;
     }
 
 	public void setPledgeStatus(String pledgeStatus) {

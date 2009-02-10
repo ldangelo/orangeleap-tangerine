@@ -26,6 +26,7 @@ import com.mpower.dao.SiteDao;
 import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
+import com.mpower.domain.Email;
 import com.mpower.domain.Gift;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
@@ -34,6 +35,7 @@ import com.mpower.domain.customization.EntityDefault;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
+import com.mpower.service.EmailService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
 import com.mpower.service.RecurringGiftService;
@@ -55,6 +57,9 @@ public class CommitmentServiceImpl implements CommitmentService {
 
     @Resource(name = "phoneService")
     private PhoneService phoneService;
+
+    @Resource(name = "emailService")
+    private EmailService emailService;
 
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
@@ -134,6 +139,9 @@ public class CommitmentServiceImpl implements CommitmentService {
         if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
             commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
         }
+        if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
+            commitment.setEmail(emailService.saveEmail(commitment.getEmail()));
+        }
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -155,6 +163,9 @@ public class CommitmentServiceImpl implements CommitmentService {
         }
         if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
             commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
+        }
+        if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
+            commitment.setEmail(emailService.saveEmail(commitment.getEmail()));
         }
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
@@ -197,7 +208,10 @@ public class CommitmentServiceImpl implements CommitmentService {
 	    	if (commitment.getPhone() == null) {
 	            commitment.setPhone(new Phone(commitment.getPerson()));
 	        }
-	    	if (commitment.getPaymentSource() == null) {
+	        if (commitment.getEmail() == null) {
+	            commitment.setEmail(new Email(commitment.getPerson()));
+	        }
+	        if (commitment.getPaymentSource() == null) {
 	            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
 	        }
 	    	commitment.getPaymentSource().setPerson(commitment.getPerson());

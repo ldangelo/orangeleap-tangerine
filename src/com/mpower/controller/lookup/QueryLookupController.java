@@ -74,7 +74,7 @@ public class QueryLookupController extends SimpleFormController {
         String fieldDef = findFieldDef(request);
         QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
-            logger.debug("onSubmit: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getJpaQuery());
+            logger.debug("showForm: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getJpaQuery());
         }
         request.setAttribute("fieldDef", fieldDef);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));

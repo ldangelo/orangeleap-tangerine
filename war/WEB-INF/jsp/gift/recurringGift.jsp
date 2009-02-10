@@ -29,9 +29,74 @@
 				<c:set var="gridCollection" value="${commitment.distributionLines}" />
 				<c:set var="paymentSource" value="${commitment.paymentSource}" />
 
+				<c:forEach var="sectionDefinition" items="${columnSections}">
+					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
+					<mp:section sectionDefinition="${sectionDefinition}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}"/>
+					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
+						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+						<div class="columns">
+							<div class="column">
+								<ul class="formFields width375">
+									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+							<div class="column">
+								<ul class="formFields width375">
+									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+							<div class="clearColumns"></div>
+						</div>
+					</c:if>
+				</c:forEach>
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
-						<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp"%>
+						<mp:section sectionDefinition="${sectionDefinition}"/>
+						<c:if test="${sectionDefinition.sectionHtmlName != 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
+								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
+								<c:if test="${!empty sectionDefinition.defaultLabel}">
+									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+								</c:if>
+								<ul class="formFields width375">
+									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+						</c:if>
+					</c:forEach>
+					<div class="clearColumns"></div>
+				</div>
+				<div class="columns">
+					<c:forEach var="sectionDefinition" items="${columnSections}">
+						<mp:section sectionDefinition="${sectionDefinition}"/>
+						<c:if test="${sectionDefinition.sectionHtmlName == 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
+								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
+								<c:if test="${!empty sectionDefinition.defaultLabel}">
+									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+								</c:if>
+								<ul class="formFields width375">
+									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+						</c:if>
 					</c:forEach>
 					<div class="clearColumns"></div>
 				</div>

@@ -20,23 +20,23 @@
     		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/></p>
     	</c:if>
 
-    	<form name="f" action="<c:url value="/loginProcess" />" method="post">
+    	<form id="f" name="f" action="<c:url value="/loginProcess" />" method="post">
 			<table class="loginInfo">
 				<tr>
-					<td style="text-align:right"><label for="j_username">Username:</label></td>
-					<td><input size="30" class="loginField" type="text" name="j_username" id="j_username" <c:if test="${not empty param.login_error}">value="${sessionScope["SPRING_SECURITY_LAST_USERNAME"]}"</c:if> /></td>
+					<td style="text-align:right"><label for="j_fullname">Username:</label></td>
+					<td><input size="30" class="loginField" type="text" name="j_fullname" id="j_fullname"  <c:if test="${not empty param.login_error}">value="${sessionScope['SPRING_SECURITY_LAST_USERNAME']}"</c:if> /></td>
 	    		</tr>
 				<tr>
 					<td style="text-align:right"><label for="j_password">Password:</label></td>
 					<td><input size="30" class="loginField" type="password" name="j_password" id="j_password" /></td>
 	    		</tr>
-				<tr>
-					<td style="text-align:right"><label for="j_username">Organization:</label></td>
-					<td><input size="30" class="loginField" type="text" name="sitename" id="sitename" /></td>
-	    		</tr>
 	    		<tr>
 		    		<td>&nbsp;</td>
-		    		<td class="loginButton"><input class="loginButton" name="submit" id="submit" type="submit" value="Sign In" /></td>
+		    		<td class="loginButton">
+		    		<input class="loginField" type="hidden" name="sitename" id="sitename" />
+		    		<input class="loginField" type="hidden" name="j_username" id="j_username" />
+		    		<input class="loginButton" name="submit" id="submit" type="submit" onclick="return splitLoginName();" value="Sign In" />
+		    		</td>
 	            </tr>
 	            <%--
 	            <tr>
@@ -48,6 +48,26 @@
     	</form>
 	</div>
 </div>
+<script>
+function splitLoginName() {
+
+	var fullname = $('#j_fullname').val();
+
+	var i = fullname.indexOf('@');
+	if (i == -1 || i == fullname.length - 1) {
+		alert('Please enter user name in the form "name@organization".');
+		return false;
+	}
+
+	var sitename = fullname.substring(i+1);
+	var username = fullname.substring(0,i);
+
+	$('#j_username').val(username);
+	$('#sitename').val(sitename);
+	
+	return true;
+}
+</script>
 <%-->
 <br />
 <br />
@@ -63,14 +83,5 @@ jack/jack/company2/<b>ROLE_ADMIN</b>, ROLE_USER, ROLE_MANAGER<br/>
 locke/locke/company2/<b>ROLE_USER</b>, ROLE_MANAGER<br/>
 hurley/hurley/company2/<b>ROLE_USER</b>
 --%>
-<script type="text/javascript">
-	$(document).ready(function() {
-		var savedOrgName = $.cookie('siteCookie');
-		if (savedOrgName != null && savedOrgName != "") {
-			$("#sitename").attr("value",savedOrgName);
-		}
-		$("input#j_username").focus();
-	});
-</script>
 </body>
 </html>

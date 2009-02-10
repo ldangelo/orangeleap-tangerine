@@ -33,6 +33,11 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
     public static final String SITE_KEY = "sitename";
 
     private String siteParameter = SITE_KEY;
+   
+    public static final String FULLNAME_KEY = "j_fullname";
+
+    private String fullNameParameter = FULLNAME_KEY;
+    
 
     private PageCustomizationService pageCustomizationService;
 
@@ -48,6 +53,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         String username = obtainUsername(request);
         String password = obtainPassword(request);
         String site = obtainSite(request);
+        String fullName = obtainFullName(request);
 
         if (username == null) {
             username = "";
@@ -65,7 +71,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
         HttpSession session = request.getSession(false);
 
         if (session != null || getAllowSessionCreation()) {
-            request.getSession().setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, TextUtils.escapeEntities(username));
+            request.getSession().setAttribute(SPRING_SECURITY_LAST_USERNAME_KEY, TextUtils.escapeEntities(fullName));
         }
 
         // Allow subclasses to set the "details" property
@@ -101,6 +107,10 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
 
     protected String obtainSite(HttpServletRequest request) {
         return request.getParameter(siteParameter);
+    }
+
+    protected String obtainFullName(HttpServletRequest request) {
+        return request.getParameter(fullNameParameter);
     }
 
     protected void setDetails(HttpServletRequest request, MpowerAuthenticationToken authRequest) {

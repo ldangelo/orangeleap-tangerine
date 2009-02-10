@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.annotation.Resource;
 import javax.persistence.Column;
@@ -39,6 +41,8 @@ import com.mpower.type.AuditType;
 @Service("auditService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class AuditServiceImpl implements AuditService {
+
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -143,7 +147,23 @@ public class AuditServiceImpl implements AuditService {
                                 logger.debug("audit site " + viewable.getSite().getName() + ", id " + viewable.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
                             }
                         } 
-                        else if (!originalBeanProperty.toString().equals(beanProperty.toString())) {
+                        else if ( !(beanProperty instanceof Viewable) && !originalBeanProperty.toString().equals(beanProperty.toString())) {
+
+                            // if the properties are dates, run them through the formatter and compare the
+                            // output first, which will stop some dumb audit events
+                            if(beanProperty instanceof java.util.Date) {
+                                String newDate = null;
+                                String oldDate = null;
+                                synchronized(dateFormat) {
+                                    newDate = dateFormat.format( (Date) beanProperty);
+                                    oldDate = dateFormat.format( (Date) originalBeanProperty);
+                                }
+
+                                if(newDate.equals(oldDate)) {
+                                    continue;
+                                }
+                            }
+
                             audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + viewable.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), viewable.getSite(),
                                     getClassName(viewable), viewable.getId(), viewable.getPerson()));
                             if (logger.isDebugEnabled()) {

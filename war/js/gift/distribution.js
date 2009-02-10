@@ -173,8 +173,11 @@ var Distribution = {
 	},
 	
 	displayError: function(subTotal, pctTotal) {
-		var v = $("#amountPerGift").val();
-        if(subTotal === parseFloat(v) && pctTotal === 100) {
+		var v = $("#amountPerGift");
+        if(v.length === 0) {
+            v = $("#amount");
+        }
+        if(subTotal === parseFloat(v.val()) && pctTotal === 100) {
             $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
         } else {

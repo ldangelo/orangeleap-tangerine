@@ -173,14 +173,14 @@ var Distribution = {
 	},
 	
 	displayError: function(subTotal, pctTotal) {
-		if (subTotal == parseFloat($("input#amount").val())) {
-			$("#totalText").removeClass("warning");
+		var v = $("#amountPerGift").val();
+        if(subTotal === parseFloat(v) && pctTotal === 100) {
+            $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
-		} 
-		else {
-			$("#totalText").addClass("warning");
+        } else {
+            $("#totalText").addClass("warning");
 			$("#amountsErrorSpan").show();
-		}
+        }
 	},
 
 	rowCloner: function(selector) {

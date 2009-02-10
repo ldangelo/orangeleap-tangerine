@@ -74,7 +74,32 @@ public class Picklist implements Serializable {
    			result = result.substring(i+1);
    			result = result.substring(0, result.length()-1);
    		}
+   		result = toSeparateWords(result);
+   		result = toInitialUpperCase(result);
         return result;
+    }
+    
+    private String toSeparateWords(String s) {
+    	StringBuilder sb = new StringBuilder();
+    	for (int i = 0; i < s.length(); i++) {
+    		char c = s.charAt(i);
+    		if (c == Character.toUpperCase(c)) sb.append(" ");
+    		sb.append(c);
+    	}
+    	return sb.toString();
+    }
+    
+    private String toInitialUpperCase(String s) {
+   		s = s.replace(".", " ");
+    	StringBuilder sb = new StringBuilder();
+    	boolean initial = true;
+    	for (int i = 0; i < s.length(); i++) {
+    		char c = s.charAt(i);
+    		if (initial) c = Character.toUpperCase(c);
+    		initial = (c == ' ');
+    		sb.append(c);
+    	}
+    	return sb.toString();
     }
     
     public boolean isPersisted() {

@@ -12,7 +12,10 @@
 		</td><td>
 		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
 		</td>
-		<td><input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 
+		<td>
+        <input type="hidden" name="_inactive" value="visible" />
+		<input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/>
+		</td> 
 </c:when>
 <c:when test="${param.view=='newInPlace'}">
 		<td class="action"><a href="#" class="saveInPlace" onclick="return newInPlace(this,'picklistItem.htm');">Save</a>

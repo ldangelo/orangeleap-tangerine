@@ -3,7 +3,7 @@
 <c:choose>
 	<c:when test="${!empty paymentSources}">
 		<div class="searchResultsHeader">
-			<h4 class="searchResults"><spring:message code='paymentSources'/></h4>
+			<h4 class="searchResults"><spring:message code='paymentMethods'/></h4>
 		</div>
 		<mp:page pageName='paymentSource' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -24,14 +24,14 @@
 					</c:if>
 				</c:forEach>
 				<a href="paymentManagerEdit.htm?paymentSourceId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
-				<a onclick="return(confirm('<spring:message code='confirmRemovePaymentSource'/>'));" href="paymentSourceDelete.htm?paymentSourceId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
+				<a onclick="return(confirm('<spring:message code='confirmRemovePaymentMethod'/>'));" href="paymentSourceDelete.htm?paymentSourceId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 
 			</c:forEach>
 		</c:forEach>
 	</c:when>
 	<c:when test="${paymentSources ne null}">
-		<p style="margin:8px 0 6px 0;"><spring:message code='noPaymentSources'/></p>
+		<p style="margin:8px 0 6px 0;"><spring:message code='noPaymentMethods'/></p>
 	</c:when>
 	<c:otherwise>
 	</c:otherwise>

@@ -51,6 +51,10 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     public static final String STATUS_EXPIRED = "expired";
     public static final String STATUS_FULFILLED = "fulfilled";
 
+    public static final String PLEDGE_STATUS_PENDING = "pending";
+    public static final String PLEDGE_STATUS_IN_PROGRESS= "inProgress";
+    public static final String PLEDGE_STATUS_FULFILLED = "fulfilled";
+
     public static final String FREQUENCY_ONE_TIME = "one time";
     public static final String FREQUENCY_WEEKLY = "weekly";
     public static final String FREQUENCY_TWICE_MONTHLY = "twice monthly";
@@ -88,6 +92,9 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @Column(name = "AMOUNT_TOTAL")
     private BigDecimal amountTotal = null;
+    
+    @Column(name = "CURRENCY_CODE")
+    private String currencyCode = "USD";
 
     @Column(name = "PAYMENT_TYPE")
     private String paymentType;
@@ -109,8 +116,22 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
+    @Column(name = "PLEDGE_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date pledgeDate;
+
+    @Column(name = "PLEDGE_CANCEL_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date pledgeCancelDate;
+
+    @Column(name = "PLEDGE_CANCEL_REASON")
+    private String pledgeCancelReason;
+
     @Column(name = "STATUS")
     private String status = STATUS_ACTIVE;
+
+    @Column(name = "PLEDGE_STATUS")
+    private String pledgeStatus = PLEDGE_STATUS_PENDING;
 
     @Column(name = "CREATE_DATE", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -522,6 +543,47 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
         this.selectedPhone = selectedPhone;
     }
 
+	public void setPledgeStatus(String pledgeStatus) {
+		this.pledgeStatus = pledgeStatus;
+	}
+
+	public String getPledgeStatus() {
+		return pledgeStatus;
+	}
+
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setPledgeDate(Date pledgeDate) {
+		this.pledgeDate = pledgeDate;
+	}
+
+	public Date getPledgeDate() {
+		return pledgeDate;
+	}
+
+	public void setPledgeCancelDate(Date pledgeCancelDate) {
+		this.pledgeCancelDate = pledgeCancelDate;
+	}
+
+	public Date getPledgeCancelDate() {
+		return pledgeCancelDate;
+	}
+
+	public void setPledgeCancelReason(String pledgeCancelReason) {
+		this.pledgeCancelReason = pledgeCancelReason;
+	}
+
+	public String getPledgeCancelReason() {
+		return pledgeCancelReason;
+	}
+	
     @PrePersist
     @PreUpdate
     public void normalize() {
@@ -550,4 +612,5 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
             setAutoPay(false);
         }
     }
+
 }

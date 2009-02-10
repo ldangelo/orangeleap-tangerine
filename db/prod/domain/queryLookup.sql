@@ -25,6 +25,11 @@ INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('organizati
 INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (8, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''organization'' ', 'person.customFieldMap[organization.subsidiaryList]', 'person.organization.subsidiaryList', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('organizationName', 8);
 
+// Sibling relationship
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (10, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'person.customFieldMap[individual.siblings]', 'person.siblings', null);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 10);
+INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 10);
+
 // Friend relationship
 INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, JPA_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (11, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''individual'' ', 'person.customFieldMap[individual.friends]', 'person.friends', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 11);

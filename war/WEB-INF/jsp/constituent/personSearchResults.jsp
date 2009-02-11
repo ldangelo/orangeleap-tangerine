@@ -19,7 +19,7 @@
 				<tbody> 
 					<c:forEach items="${pagedListHolder.pageList}" var="row">
 						<tr>
-							<td><a href="person.htm?personId=${row.id}">Edit</a></td>
+							<td><a href="person.htm?personId=${row.id}"><spring:message code="view"/></a></td>
 							<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 						</tr>
 					</c:forEach>

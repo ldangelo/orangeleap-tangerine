@@ -118,7 +118,7 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @Column(name = "PLEDGE_DATE")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date pledgeDate;
+    private Date pledgeDate = Calendar.getInstance().getTime();
 
     @Column(name = "PLEDGE_CANCEL_DATE")
     @Temporal(TemporalType.TIMESTAMP)

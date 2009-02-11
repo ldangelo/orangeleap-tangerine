@@ -525,7 +525,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         eb.append(getType(), ps.getType());
         if (ACH.equals(getType())) {
             eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
-        } else if (CREDIT_CARD.equals(getType())) {
+        } 
+        else if (CREDIT_CARD.equals(getType())) {
             eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
         }
         return eb.isEquals();
@@ -537,7 +538,8 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         hcb.append(getType());
         if (ACH.equals(getType())) {
             hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
-        } else if (CREDIT_CARD.equals(getType())) {
+        } 
+        else if (CREDIT_CARD.equals(getType())) {
             hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
         }
         return hcb.hashCode();

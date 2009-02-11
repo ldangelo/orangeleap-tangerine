@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +17,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +34,7 @@ import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.customization.EntityDefault;
+import com.mpower.integration.NewGift;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
@@ -47,7 +46,6 @@ import com.mpower.service.PhoneService;
 import com.mpower.type.EntityType;
 import com.mpower.type.GiftEntryType;
 import com.mpower.type.PaymentHistoryType;
-import com.mpower.integration.NewGift;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)

@@ -43,6 +43,9 @@ public class PicklistItem implements Serializable, Auditable {
     @Column(name = "REFERENCE_VALUE")
     private String referenceValue;
 
+    @Column(name = "SUPPRESS_REFERENCE_VALUE")
+    private String suppressReferenceValue;
+
     @Column(name = "ITEM_ORDER")
     private Integer itemOrder;
 
@@ -130,5 +133,13 @@ public class PicklistItem implements Serializable, Auditable {
 
 	public boolean isInactive() {
 		return inactive;
+	}
+
+	public void setSuppressReferenceValue(String suppressReferenceValue) {
+		this.suppressReferenceValue = suppressReferenceValue;
+	}
+
+	public String getSuppressReferenceValue() {
+		return suppressReferenceValue;
 	}
 }

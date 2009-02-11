@@ -499,11 +499,13 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
      */
     public boolean isValid() {
         if (ACH.equals(type)) {
-            return org.springframework.util.StringUtils.hasText(achAccountNumber) &&
+            return org.springframework.util.StringUtils.hasText(achHolderName) &&
+            org.springframework.util.StringUtils.hasText(achAccountNumber) &&
             org.springframework.util.StringUtils.hasText(achRoutingNumber);
         }
         else if (CREDIT_CARD.equals(type)) {
-            return org.springframework.util.StringUtils.hasText(creditCardType) &&
+            return org.springframework.util.StringUtils.hasText(creditCardHolderName) &&
+            org.springframework.util.StringUtils.hasText(creditCardType) &&
             org.springframework.util.StringUtils.hasText(creditCardNumber);
 
         }
@@ -522,9 +524,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         EqualsBuilder eb = new EqualsBuilder();
         eb.append(getType(), ps.getType());
         if (ACH.equals(getType())) {
-            eb.append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
+            eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
         } else if (CREDIT_CARD.equals(getType())) {
-            eb.append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
+            eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
         }
         return eb.isEquals();
     }
@@ -534,9 +536,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb.append(getType());
         if (ACH.equals(getType())) {
-            hcb.append(achAccountNumber).append(achRoutingNumber);
+            hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
         } else if (CREDIT_CARD.equals(getType())) {
-            hcb.append(creditCardType).append(creditCardNumber);
+            hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
         }
         return hcb.hashCode();
     }

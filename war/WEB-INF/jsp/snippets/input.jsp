@@ -337,6 +337,10 @@
 					<select name="<c:out value='${fieldVO.fieldName}'/>Month" id="<c:out value='${fieldVO.fieldId}'/>Month" class="expMonth <c:out value='${fieldVO.entityAttributes}'/>">
 						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
 							<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
+							<c:if test="${empty expirationMonth}">
+								<c:set var="now" value="<%=new java.util.Date()%>"/>
+								<fmt:formatDate var="expirationMonth" scope="request" value="${now}" pattern="MM" />
+							</c:if>
 							<c:choose>
 								<c:when test="${opt == expirationMonth}">
 									<option value="<c:out value='${opt}'/>" selected="selected"><c:out value='${opt}'/></option>
@@ -350,6 +354,10 @@
 					<select name="<c:out value='${fieldVO.fieldName}'/>Year" id="<c:out value='${fieldVO.fieldId}'/>Year" class="expYear <c:out value='${fieldVO.entityAttributes}'/>">
 						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
 							<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear}" />
+							<c:if test="${empty expirationYear}">
+								<c:set var="now" value="<%=new java.util.Date()%>"/>
+								<fmt:formatDate var="expirationYear" scope="request" value="${now}" pattern="yyyy" />
+							</c:if>
 							<c:choose>
 								<c:when test="${opt == expirationYear}">
 									<option value="<c:out value='${opt}'/>" selected="selected"><c:out value='${opt}'/></option>

@@ -455,7 +455,9 @@ div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div
 div.lookupWrapper div.queryLookupOption { width: 98%; padding-left: 4px; }
 div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div.multiQueryLookupOption { padding: 1px 22px 1px 5px; width: 90%; }
 div.lookupScrollContainer div.multiPicklistOption:hover, div.lookupScrollContainer div.multiQueryLookupOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
-a.deleteOption { vertical-align: bottom; margin-left: 3px; }
+a.deleteOption { vertical-align: bottom; margin-left: 3px; visibility: hidden; }
+div.multiPicklistOption:hover a.deleteOption, div.queryLookupOption:hover a.deleteOption, div.multiQueryLookupOption:hover a.deleteOption, 
+	div.multiPicklistOption:focus a.deleteOption, div.queryLookupOption:focus a.deleteOption, div.multiQueryLookupOption:focus a.deleteOption { visibility: visible; } 
 a.deleteOption img { vertical-align: top; }
 
 table.alignLeft td,

@@ -105,15 +105,6 @@ $(document).ready(function() {
 
 	Date.format = 'mm/dd/yyyy';
 	$('input.date').datePicker({startDate:'01/01/1900'});
-
-	$("div.multiPicklistOption, div.queryLookupOption, div.multiQueryLookupOption").hover(
-		function() {
-			$(this).find("a.deleteOption").removeClass("noDisplay");		
-		},
-		function() {
-			$(this).find("a.deleteOption").addClass("noDisplay");		
-		}
-	);
 	
 	$(":input, select, textbox").bind("focus", function(event) {
 		if ($.browser.msie) {

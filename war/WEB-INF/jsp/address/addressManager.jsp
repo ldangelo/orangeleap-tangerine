@@ -37,7 +37,7 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
-		<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='save'/>" class="saveButton" /></div>
+		<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submit'/>" class="saveButton" /></div>
 		<c:if test="${address.id != null}">
 			<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="MPower.gotoUrl('addressManager.htm?personId=${person.id}')"/>
 		</c:if>

@@ -310,10 +310,14 @@ public abstract class TangerineFormController extends SimpleFormController {
             viewable.setFieldValueMap(valueMap);
         }
     }
+    
+    protected String appendSaved(String url) {
+        return new StringBuilder(url).append("&").append(StringConstants.SAVED_EQUALS_TRUE).toString();
+    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        return new ModelAndView(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(getPersonId(request)).toString());
+        return new ModelAndView(appendSaved(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(getPersonId(request)).toString()));
     }
 
     protected void userCreateNewAddress(HttpServletRequest request, AddressAware addressAware) {

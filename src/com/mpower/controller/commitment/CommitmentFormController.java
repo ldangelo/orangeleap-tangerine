@@ -64,7 +64,7 @@ public class CommitmentFormController extends TangerineFormController {
         Commitment current = commitmentService.maintainCommitment(commitment);
         
         String url = current.getGifts().isEmpty() ? formUrl : getSuccessView();
-        return new ModelAndView(url + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request) + "&saved=true");
+        return new ModelAndView(super.appendSaved(url + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request)));
     }
 
     @SuppressWarnings("unchecked")

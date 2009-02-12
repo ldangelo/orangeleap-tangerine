@@ -1,0 +1,4 @@
+dn: dc=mpowerOpen-dev
+dc: mpowerOpen-dev 
+objectClass: domain
+

@@ -14,7 +14,7 @@
 			<a href="#"><spring:message code="help"/></a>
 		</li>
 		<li>
-			<a href="<c:url value='/logout'/>"><spring:message code="logout"/></a>
+			<a href="logout"><spring:message code="logout"/></a>
 		</li>
 	</ol>
 </div>

@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>MPower Login</title>
-	<link href="<c:url value='/css/login.css' />" rel="stylesheet" type="text/css" />
+	<link href="<c:url value='css/login.css' />" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
@@ -20,7 +20,7 @@
     		<p style="color:red;padding:0;margin:0;"><c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/></p>
     	</c:if>
 
-    	<form id="f" name="f" action="<c:url value="/loginProcess" />" method="post">
+    	<form id="f" name="f" action="<c:url value="loginProcess" />" method="post">
 			<table class="loginInfo">
 				<tr>
 					<td style="text-align:right"><label for="j_fullname">Username:</label></td>

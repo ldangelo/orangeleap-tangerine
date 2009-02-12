@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <c:choose>
 <c:when test="${!empty giftList}">
-	<c:set var="basePaginationUrl" value="/giftSearch.htm" />
+	<c:set var="basePaginationUrl" value="giftSearch.htm" />
 	<jsp:include page="../snippets/pagination.jsp"/>
 
 	<mp:page pageName='giftSearchResults' />

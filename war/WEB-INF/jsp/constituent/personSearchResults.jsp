@@ -2,7 +2,7 @@
 <c:choose>
 	<c:when test="${!empty personList}">
 	
-		<c:set var="basePaginationUrl" value="/personSearch.htm" />
+		<c:set var="basePaginationUrl" value="personSearch.htm" />
 		<jsp:include page="../snippets/pagination.jsp"/>
 	
 		<mp:page pageName='personSearchResults' />

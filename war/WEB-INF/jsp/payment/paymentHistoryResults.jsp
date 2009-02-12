@@ -2,7 +2,7 @@
 <c:choose>
 	<c:when test="${!empty paymentHistoryList}">
 	
-		<c:set var="basePaginationUrl" value="/paymentHistory.htm?personId=${person.id}" />
+		<c:set var="basePaginationUrl" value="paymentHistory.htm?personId=${person.id}" />
 		<jsp:include page="../snippets/pagination.jsp"/>
 	
 		<mp:page pageName='paymentHistory' />

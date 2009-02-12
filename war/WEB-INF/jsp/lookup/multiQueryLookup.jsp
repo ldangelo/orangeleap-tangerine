@@ -51,7 +51,7 @@
 										<c:forEach items="${requestScope.selectedIds.ids}" var="myId" varStatus="status">
 											<c:choose>
 												<c:when test="${!empty myId && !empty requestScope.selectedIds.names[status.index]}">
-													<c:url value="/person.htm" var="entityLink" scope="page"> <%--  TODO: fix hard coding of person.htm --%>
+													<c:url value="person.htm" var="entityLink" scope="page"> <%--  TODO: fix hard coding of person.htm --%>
 														<c:param name="id" value="${myId}" />
 													</c:url>
 												</c:when>

@@ -16,7 +16,7 @@
 					<c:if test="${!requestScope.selectedIds.checkSelectedId}">
 						<c:choose>
 							<c:when test="${!empty row.id && !empty row.entityName}">
-								<c:url value="/${row.entityName}.htm" var="entityLink" scope="page">
+								<c:url value="${row.entityName}.htm" var="entityLink" scope="page">
 									<c:param name="id" value="${row.id}" />
 								</c:url>
 							</c:when>

@@ -249,7 +249,7 @@
 					<div class="lookupWrapper">
 					    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
 							<c:if test="${!empty fieldVO.id}">
-								<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
+								<c:url value="person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
 									<c:param name="personId" value="${fieldVO.id}" />
 								</c:url>
 								<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
@@ -275,7 +275,7 @@
 							<div id="lookup-<c:out value='${fieldVO.fieldId}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
 								<c:choose>
 									<c:when test="${not empty fieldVO.id}">
-										<c:url value="/person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
+										<c:url value="person.htm" var="entityLink" scope="page">  <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
 											<c:param name="personId" value="${fieldVO.id}" />
 										</c:url>
 										<span><a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a></span>
@@ -307,7 +307,7 @@
 							<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
 								<c:choose>
 									<c:when test="${not empty fieldVO.ids[status.index]}">
-										<c:url value="/person.htm" var="entityLink" scope="page"> <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
+										<c:url value="person.htm" var="entityLink" scope="page"> <%-- ${fieldVO.entityName} hard-coded to person; TODO: change --%>
 											<c:param name="personId" value="${fieldVO.ids[status.index]}" />
 										</c:url>
 									</c:when>

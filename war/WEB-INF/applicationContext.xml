@@ -76,7 +76,7 @@
 		<property name="splitDatabases" value="false" />
 	</bean>
 	
-	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource">
+	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName">
 			<value>com.mysql.jdbc.Driver</value>
 	    </property>

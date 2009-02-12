@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -138,27 +138,7 @@ public class EntityValidator implements Validator {
             for (String key : requiredFieldMap.keySet()) {
                 FieldRequired fr = requiredFieldMap.get(key);
                 List<FieldCondition> conditions = fr.getFieldConditions();
-                boolean conditionsMet = true;
-                if (conditions != null) {
-                    for (FieldCondition fc : conditions) {
-                        logger.debug("key: " + key + ", condition: dependent=" + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary=" + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
-                                + ", dependent value=" + fc.getValue());
-                        String dependentKey = fc.getDependentFieldDefinition().getFieldName();
-                        if (fc.getDependentSecondaryFieldDefinition() != null) {
-                            dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
-                        }
-                        Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
-                        if (fc.getValue() == null) {
-                            if (dependentProperty != null) {
-                                conditionsMet = false;
-                            }
-                        } else {
-                            if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
-                                conditionsMet = false;
-                            }
-                        }
-                    }
-                }
+                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, viewable, fieldValueMap);
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(key + " validation doesn't apply:  conditions not met");
@@ -181,6 +161,31 @@ public class EntityValidator implements Validator {
             }
         }
     }
+    
+    private boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, Viewable viewable, Map<String, Object> fieldValueMap) {
+        boolean conditionsMet = true;
+        if (conditions != null) {
+            for (FieldCondition fc : conditions) {
+                logger.debug("areFieldConditionsMet: key = " + key + ", condition - dependent = " + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary = " + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
+                        + ", dependent value = " + fc.getValue());
+                String dependentKey = fc.getDependentFieldDefinition().getFieldName();
+                if (fc.getDependentSecondaryFieldDefinition() != null) {
+                    dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
+                }
+                Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
+                if (fc.getValue() == null) {
+                    if (dependentProperty != null) {
+                        conditionsMet = false;
+                    }
+                } else {
+                    if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
+                        conditionsMet = false;
+                    }
+                }
+            }
+        }
+        return conditionsMet;
+    }
 
     private void validateRegex(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldValidation> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
@@ -188,27 +193,7 @@ public class EntityValidator implements Validator {
             for (String key : validationMap.keySet()) {
                 FieldValidation fv = validationMap.get(key);
                 List<FieldCondition> conditions = fv.getFieldConditions();
-                boolean conditionsMet = true;
-                if (conditions != null) {
-                    for (FieldCondition fc : conditions) {
-                        logger.debug("key: " + key + ", condition: dependent=" + fc.getDependentFieldDefinition().getFieldName() + ", dependent secondary=" + (fc.getDependentSecondaryFieldDefinition() == null ? "null" : fc.getDependentSecondaryFieldDefinition().getFieldName())
-                                + ", dependent value=" + fc.getValue());
-                        String dependentKey = fc.getDependentFieldDefinition().getFieldName();
-                        if (fc.getDependentSecondaryFieldDefinition() != null) {
-                            dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
-                        }
-                        Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
-                        if (fc.getValue() == null) {
-                            if (dependentProperty != null) {
-                                conditionsMet = false;
-                            }
-                        } else {
-                            if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
-                                conditionsMet = false;
-                            }
-                        }
-                    }
-                }
+                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, viewable, fieldValueMap);
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(key + " validation doesn't apply:  conditions not met");
@@ -237,9 +222,7 @@ public class EntityValidator implements Validator {
                     valid = propertyString.matches(regex);
                 }
                 if (!valid && !errorSet.contains(key)) {
-                    // String defaultMessage = messageService.lookupMessage(SessionServiceImpl., MessageResourceType.FIELD_VALIDATION, "fieldValidationFailure", null);
                     errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
-                    // errors.reject("fieldValidationFailure", new String[] { key, propertyString }, "no message provided for the validation error: fieldValidationFailure");
                 }
             }
         }
@@ -248,11 +231,8 @@ public class EntityValidator implements Validator {
     private Object getProperty(String key, Viewable viewable, Map<String, Object> fieldValueMap) {
         Object property = fieldValueMap.get(key);
         if (property == null) {
-            BeanWrapper beanWrapper = new BeanWrapperImpl(viewable);
+            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(viewable);
             property = beanWrapper.getPropertyValue(key);
-            // if ((property instanceof String) && beanWrapper.isReadableProperty((String) property)) {
-            // property = beanWrapper.getPropertyValue((String) property);
-            // }
             if (property instanceof CustomField) {
                 property = ((CustomField) property).getValue();
             }

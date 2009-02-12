@@ -1,5 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <tiles:insertDefinition name="base">
+    <tiles:putAttribute name="customHeaderContent" type="string">
+        <script type="text/javascript" src="js/contactinfo.js"></script>
+    </tiles:putAttribute>
+    
 	<tiles:putAttribute name="browserTitle" value="Constituent Profile" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
@@ -26,8 +30,7 @@
 				</jsp:include>
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
-			
-				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
+			   	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 					<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 				</c:forEach>

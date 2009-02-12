@@ -8,6 +8,7 @@
 	<link href="css/master_IE6.css" rel="stylesheet" type="text/css" />
 <![endif]-->
 <link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/xtheme-gray.css" />
 <link rel="stylesheet" type="text/css" href="css/ext-styles.css" />
 
 <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />

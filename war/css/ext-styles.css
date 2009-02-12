@@ -1,20 +1,63 @@
 
+/* Various sprites used in the ExtJS grids and headers */
 .red-dot {
-    background: transparent url("../images/bullet_ball_glass_red.png") no-repeat center center;
+    background: transparent url("../images/bullet_ball_glass_red.png") no-repeat center center !important;
 }
 
 .green-dot {
-    background: transparent url("../images/bullet_ball_glass_green.png") no-repeat center center;
+    background: transparent url("../images/bullet_ball_glass_green.png") no-repeat center center !important;
 }
 
 .blue-dot {
-    background: transparent url("../images/bullet_ball_glass_blue.png") no-repeat center center;
+    background: transparent url("../images/bullet_ball_glass_blue.png") no-repeat center center !important;
 }
 
 .grey-dot {
-    background: transparent url("../images/bullet_ball_glass_grey.png") no-repeat center center;
+    background: transparent url("../images/bullet_ball_glass_grey.png") no-repeat center center !important;
 }
 
 .yellow-dot {
-    background: transparent url("../images/bullet_ball_glass_yellow.png") no-repeat center center;
+    background: transparent url("../images/bullet_ball_glass_yellow.png") no-repeat center center !important;
+}
+
+.address-book {
+    background: transparent url("../images/house.png") no-repeat center center !important;
+}
+
+.email {
+    background: transparent url("../images/address_book.png") no-repeat center center !important;
+}
+
+.telephone {
+    background: transparent url("../images/receiver.png") no-repeat center center !important;
+}
+
+.yellow-star {
+    background: transparent url("../images/star_yellow.png") no-repeat center center !important;
+}
+
+/* idents a paragraph. used in the Contact Info accordion panel */
+p.x-indented {
+    padding-left: 5px;
+}
+
+/* makes the text in the bbar subdued */
+.ytb-text {
+    color: #555;
+}
+
+#contactInfoPanel .x-panel-header {
+    text-align: left;
+}
+
+#contactInfoPanel x-window-header-text {
+    text-align: left;
+}
+
+strong {
+    font-weight: bold;
+}
+
+p.left {
+    text-align: left;
 }

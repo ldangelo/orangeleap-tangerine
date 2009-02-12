@@ -6,12 +6,10 @@
 	<head>
 		<title>MPower Open - <tiles:getAsString name="browserTitle"/></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<tiles:insertAttribute name="headContent" />
+        <tiles:insertAttribute name="headContent"/>
+        <tiles:insertAttribute name="customHeaderContent" ignore="true"/>
 	</head>
-
-
 	<body>
-	
 		<div class="bodyContent">
 			<tiles:useAttribute name="primaryNav" />
 			<tiles:useAttribute name="secondaryNav" />

@@ -133,6 +133,7 @@
 		</copy>
 
 		<replace file="${stage.dir}/war/login.jsp" token="$${build.version}" value="${build.TODAY}"/>
+		<replace file="${stage.dir}/war/login.jsp" token="$${build.time}" value="${build.DSTAMP} ${build.TSTAMP}"/>
 
 	</target>
 

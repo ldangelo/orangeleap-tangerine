@@ -46,7 +46,7 @@
 	            --%>
     		</table>
     	</form>
-    	Release: ${build.version}
+    	Release: ${build.version} <!-- ${build.time}  -->
 	</div>
 </div>
 <script>

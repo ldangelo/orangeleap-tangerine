@@ -3,6 +3,8 @@
 
 	<property file="${basedir}/build/build.properties" />
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
+	<tstamp prefix="build" />
+
 
 	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 
@@ -129,6 +131,9 @@
 				<pathelement path="${war.lib}"/> <!-- war.lib from ivyBuild.xml -->
 		    </path>
 		</copy>
+
+		<replace file="${stage.dir}/war/login.jsp" token="$${build.version}" value="${build.TODAY}"/>
+
 	</target>
 
 	<target name="build-integrated-war" depends="setup-war">

@@ -46,6 +46,7 @@
 	            --%>
     		</table>
     	</form>
+    	Release: ${build.version}
 	</div>
 </div>
 <script>

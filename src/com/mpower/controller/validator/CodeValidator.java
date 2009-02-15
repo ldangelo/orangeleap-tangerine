@@ -1,5 +1,6 @@
 package com.mpower.controller.validator;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -9,6 +10,7 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import com.mpower.domain.DistributionLine;
 import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
@@ -45,6 +47,7 @@ public class CodeValidator implements Validator {
         return supports;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
         if (logger.isDebugEnabled()) {
@@ -59,18 +62,22 @@ public class CodeValidator implements Validator {
                     FieldDefinition fd = e.getValue();
                     if (FieldType.CODE == fd.getFieldType() || FieldType.CODE_OTHER == fd.getFieldType()) {
                         BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(viewable);
-                        if (beanWrapper.isReadableProperty(key)) {
-                            Object propertyValue = beanWrapper.getPropertyValue(key);
-                            boolean isValid = this.isValidCode(key, viewable, fd, propertyValue);
-                            
-                            if (!isValid && FieldType.CODE_OTHER == fd.getFieldType()) {
-                                if (this.hasOtherCode(key, viewable, fd, beanWrapper)) {
-                                    isValid = true;
+                        
+                        if (PROJECT_CODE.equals(key) || MOTIVATION_CODE.equals(key)) {
+                            if (beanWrapper.isReadableProperty(DISTRIBUTION_LINES)) {
+                                List<DistributionLine> lines = (List<DistributionLine>)beanWrapper.getPropertyValue(DISTRIBUTION_LINES);
+                                if (lines != null) {
+                                    for (DistributionLine aLine : lines) {
+                                        if (aLine != null) {
+                                            BeanWrapper lineBw = PropertyAccessorFactory.forBeanPropertyAccess(aLine);
+                                            validateCode(lineBw, key, aLine, fd, errors, (viewable.getSite() == null ? null : viewable.getSite().getName()));                                                
+                                        }
+                                    }
                                 }
                             }
-                            if (!isValid) {
-                                errors.rejectValue(key, "invalidCode", new String[] { (String)propertyValue, fd.getDefaultLabel() }, "'" + propertyValue + "' is an invalid " + fd.getDefaultLabel());
-                            }
+                        }
+                        else {
+                            validateCode(beanWrapper, key, viewable, fd, errors, (viewable.getSite() == null ? null : viewable.getSite().getName()));
                         }
                     }
                 }
@@ -78,15 +85,34 @@ public class CodeValidator implements Validator {
         }
     }
     
-    private boolean isValidCode(String key, Viewable viewable, FieldDefinition fieldDefinition, Object propertyValue) {
+    private void validateCode(BeanWrapper beanWrapper, String key, Viewable viewable, FieldDefinition fd, Errors errors, String siteName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("isValidCode: key = " + key + " site = " + (viewable.getSite() != null ? viewable.getSite().getName() : null) + " fieldName = " + fieldDefinition.getFieldName());
+            logger.debug("validateCode: key = " + key + " siteName = " + siteName);
+        }
+        if (beanWrapper.isReadableProperty(key)) {
+            Object propertyValue = beanWrapper.getPropertyValue(key);
+            boolean isValid = this.isValidCode(key, propertyValue, siteName);
+            
+            if (!isValid && FieldType.CODE_OTHER == fd.getFieldType()) {
+                if (this.hasOtherCode(key, beanWrapper)) {
+                    isValid = true;
+                }
+            }
+            if (!isValid) {
+                errors.reject("invalidCode", new String[] { (String)propertyValue, fd.getDefaultLabel() }, "'" + propertyValue + "' is an invalid " + fd.getDefaultLabel());
+            }
+        }
+    }
+    
+    private boolean isValidCode(String key, Object propertyValue, String siteName) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("isValidCode: key = " + key + " site = " + siteName);
         }
         boolean isValid = false;
         
         if (propertyValue != null) {
             String codeValue = (String)propertyValue;
-            Code code = codeService.readCodeBySiteTypeValue((viewable.getSite() != null ? viewable.getSite().getName() : null), fieldDefinition.getFieldName(), codeValue);
+            Code code = codeService.readCodeBySiteTypeValue(siteName, key, codeValue);
             if (code != null && codeValue.equals(code.getValue())) {
                 isValid = true;
             }
@@ -98,7 +124,7 @@ public class CodeValidator implements Validator {
         return isValid;
     }
     
-    public boolean hasOtherCode(String key, Viewable viewable, FieldDefinition fieldDefinition, BeanWrapper beanWrapper) {
+    public boolean hasOtherCode(String key, BeanWrapper beanWrapper) {
         boolean hasOtherCode = false;
         String keyOther = FieldVO.getOtherFieldName(key);
         if (logger.isDebugEnabled()) {

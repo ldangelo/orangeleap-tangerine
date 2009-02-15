@@ -1,8 +1,12 @@
 package com.mpower.test.controller.validator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.FactoryUtils;
+import org.apache.commons.collections.list.LazyList;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.springframework.validation.BindException;
@@ -32,6 +36,7 @@ public class CodeValidatorTest extends BaseTest {
     private Site site;
     private Person person;
 
+    @SuppressWarnings("unchecked")
     @BeforeMethod
     public void setupMocks() {
         projCode = new Code();
@@ -44,6 +49,9 @@ public class CodeValidatorTest extends BaseTest {
         validator.setCodeService(service);
 
         mockery.checking(new Expectations() {{
+            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(projCode));
+            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "foo"); will(returnValue(null));
+            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", " "); will(returnValue(null));
             allowing (service).readCodeBySiteTypeValue("company1", "projectCode", "001000"); will(returnValue(projCode));
             allowing (service).readCodeBySiteTypeValue("company1", "projectCode", "foo"); will(returnValue(null));
             allowing (service).readCodeBySiteTypeValue("company1", "projectCode", " "); will(returnValue(null));
@@ -52,6 +60,7 @@ public class CodeValidatorTest extends BaseTest {
             allowing (service).readCodeBySiteTypeValue("company1", "motivationCode", " "); will(returnValue(null));
         }});
 
+        gift = new Gift();
         distributionLine = new DistributionLine();
         Map<String, FieldDefinition> map = new HashMap<String, FieldDefinition>();
         FieldDefinition fieldDef = new FieldDefinition();
@@ -65,101 +74,123 @@ public class CodeValidatorTest extends BaseTest {
         fieldDef.setFieldType(FieldType.CODE_OTHER);
         fieldDef.setDefaultLabel("Motivation Code");
         map.put("motivationCode", fieldDef);
-        distributionLine.setFieldTypeMap(map);
+        gift.setFieldTypeMap(map);
         
         site = new Site();
         site.setName("company1");
         person = new Person();
         person.setSite(site);
-        gift = new Gift();
         
         gift.setPerson(person);
         distributionLine.setGift(gift);
+        List<DistributionLine> lines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
+        lines.add(distributionLine);
+        gift.setDistributionLines(lines);
     }
 
     @Test(groups = { "validateCode" })
     public void testValidCode() throws Exception {
         assert validator.supports(Gift.class);
-        errors = new BindException(distributionLine, "distributionLine");       
-        distributionLine.setProjectCode("001000");
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");       
+        gift.setCurrencyCode("USD");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
 
-        errors = new BindException(distributionLine, "distributionLine");       
-        distributionLine.setProjectCode(null);
-        validator.validate(distributionLine, errors);
+        assert validator.supports(Gift.class);
+        errors = new BindException(gift, "gift");       
+        gift.setCurrencyCode(null);
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
-}
+
+        assert validator.supports(Gift.class);
+        errors = new BindException(gift, "gift");       
+        gift.getDistributionLines().get(0).setProjectCode("001000");
+        validator.validate(gift, errors);
+        mockery.assertIsSatisfied();
+        assert errors.hasErrors() == false;
+
+        errors = new BindException(gift, "gift");       
+        gift.getDistributionLines().get(0).setProjectCode(null);
+        validator.validate(gift, errors);
+        mockery.assertIsSatisfied();
+        assert errors.hasErrors() == false;
+    }
 
     @Test(groups = { "validateCode" })
     public void testInvalidCode() throws Exception {
-        errors = new BindException(distributionLine, "distributionLine");        
-        distributionLine.setProjectCode("foo");
-        validator.validate(distributionLine, errors);
+        assert validator.supports(Gift.class);
+        errors = new BindException(gift, "gift");       
+        gift.setCurrencyCode("foo");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
-        assert errors.hasErrors();
-        assert "invalidCode".equals(errors.getFieldError("projectCode").getCode());
-        assert "'foo' is an invalid Project Code".equals(errors.getFieldError("projectCode").getDefaultMessage());
+        assert errors.hasErrors() == false;
 
-        errors = new BindException(distributionLine, "distributionLine"); 
-        distributionLine.setProjectCode(" ");
-        validator.validate(distributionLine, errors);
+        assert validator.supports(Gift.class);
+        errors = new BindException(gift, "gift");       
+        gift.setCurrencyCode(" ");
+        validator.validate(gift, errors);
+        mockery.assertIsSatisfied();
+        assert errors.hasErrors() == false;
+
+        errors = new BindException(gift, "gift");        
+        gift.getDistributionLines().get(0).setProjectCode("foo");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        assert "invalidCode".equals(errors.getFieldError("projectCode").getCode());
-        assert "' ' is an invalid Project Code".equals(errors.getFieldError("projectCode").getDefaultMessage());
+
+        errors = new BindException(gift, "gift"); 
+        gift.getDistributionLines().get(0).setProjectCode(" ");
+        validator.validate(gift, errors);
+        mockery.assertIsSatisfied();
+        assert errors.hasErrors();
     }
 
     @Test(groups = { "validateCodeOther" })
     public void testValidCodeOther() throws Exception {
-        errors = new BindException(distributionLine, "distributionLine");
-        distributionLine.setMotivationCode("XYZ");
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");
+        gift.getDistributionLines().get(0).setMotivationCode("XYZ");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
 
-        errors = new BindException(distributionLine, "distributionLine");
-        distributionLine.setMotivationCode(null);
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");
+        gift.getDistributionLines().get(0).setMotivationCode(null);
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
 
-        errors = new BindException(distributionLine, "distributionLine");
-        distributionLine.setMotivationCode("foo");
-        distributionLine.setOther_motivationCode("blarg");
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");
+        gift.getDistributionLines().get(0).setMotivationCode("foo");
+        gift.getDistributionLines().get(0).setOther_motivationCode("blarg");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
 
-        errors = new BindException(distributionLine, "distributionLine");
-        distributionLine.setMotivationCode("foo");
-        distributionLine.setOther_motivationCode(" ");
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");
+        gift.getDistributionLines().get(0).setMotivationCode("foo");
+        gift.getDistributionLines().get(0).setOther_motivationCode(" ");
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
     }
 
     @Test(groups = { "validateCodeOther" })
     public void testInvalidCodeOther() throws Exception {
-        errors = new BindException(distributionLine, "distributionLine");        
-        distributionLine.setMotivationCode("foo");
-        distributionLine.setOther_motivationCode(null);
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");        
+        gift.getDistributionLines().get(0).setMotivationCode("foo");
+        gift.getDistributionLines().get(0).setOther_motivationCode(null);
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        assert "invalidCode".equals(errors.getFieldError("motivationCode").getCode());
-        assert "'foo' is an invalid Motivation Code".equals(errors.getFieldError("motivationCode").getDefaultMessage());
 
-        errors = new BindException(distributionLine, "distributionLine");        
-        distributionLine.setMotivationCode(" ");
-        distributionLine.setOther_motivationCode(null);
-        validator.validate(distributionLine, errors);
+        errors = new BindException(gift, "gift");        
+        gift.getDistributionLines().get(0).setMotivationCode(" ");
+        gift.getDistributionLines().get(0).setOther_motivationCode(null);
+        validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors();
-        assert "invalidCode".equals(errors.getFieldError("motivationCode").getCode());
-        assert "' ' is an invalid Motivation Code".equals(errors.getFieldError("motivationCode").getDefaultMessage());
    }
 
 }

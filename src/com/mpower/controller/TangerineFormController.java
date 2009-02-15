@@ -96,7 +96,7 @@ public abstract class TangerineFormController extends SimpleFormController {
             Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles(), viewable);
             viewable.setFieldValueMap(valueMap);
 
-            Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(getCommandName()), SessionServiceImpl.lookupUserRoles());
+            Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles());
             viewable.setFieldTypeMap(typeMap);
         }
     }

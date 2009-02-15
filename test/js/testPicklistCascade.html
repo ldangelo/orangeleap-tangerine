@@ -3,21 +3,25 @@
 <html>
 	<head>
 		<title>QUnit Test Picklist Cascade</title>
-		<script type="text/javascript" src="../../war/js/jquery.js"></script>
-		
+		<script type="text/javascript" src="../../war/js/jquery/jquery-1.3.1.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.tablesorter.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.bgiframe.js"></script>
+		
 		<script type="text/javascript" src="../../war/js/jquery.hoverIntent.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.cluetip.js"></script>
-		<script type="text/javascript" src="../../war/js/jquery.autocomplete.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.selectboxes.js"></script>
 		<script type="text/javascript" src="../../war/js/jqModal.js"></script>
-		
 		<script type="text/javascript" src="../../war/js/jqDnR.js"></script>
 		<script type="text/javascript" src="../../war/js/date.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery.datePicker.js"></script>
 		<script type="text/javascript" src="../../war/js/jquery/plugins/jquery.numeric.pack.js"></script>
+		<script type="text/javascript" src="../../war/js/jquery/plugins/jquery.fade.js"></script>
+		
+		<script type='text/javascript' src='../../war/js/jquery/plugins/jquery.ajaxQueue.js'></script>
+		<script type="text/javascript" src="../../war/js/jquery/plugins/jquery.autocomplete.js"></script>
+		
 		<script type="text/javascript" src="../../war/js/mpower.js"></script>
+
 		<link rel="shortcut icon" type="image/ico" href="../../war/images/favicon.ico" />
 <!--	
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="../../war/css/screen.css" />
@@ -1518,7 +1522,7 @@
 	</td>
 <td><div class="lookupWrapper">
 
-			<input value="" class="text projectCode code" lookup="projectCode" 
+			<input value="" class="text projectCode" lookup="projectCode" 
 				codeType="projectCode" name="distributionLines[0].projectCode" />
 			<a tabindex="-1" style="margin:0;position:absolute;top:1px;right:-3px" class="lookupLink" href="#" onclick="Lookup.loadCodePopup($(this).prev('input'))">Lookup</a>
 		</div>

@@ -13,7 +13,10 @@
 			</c:otherwise>
 		</c:choose>
 		<h3 id="currentFunctionTitle" class="personEdit">
-			<c:out value='${param.currentFunctionTitleText}'/><c:if test="${saved || param.saved}"><span id="savedMarker"><spring:message code='saved'/></span></c:if>
+			<c:out value='${param.currentFunctionTitleText}'/>
+			<c:set var="hasErrors" value="false" scope="page"/>
+			<c:if test="${commandObject != null}"><spring:hasBindErrors name="${commandObject}"><c:set var="hasErrors" value="true" scope="page"/></spring:hasBindErrors></c:if>
+			<c:if test="${!hasErrors && (saved || param.saved)}"><span id="savedMarker"><spring:message code='saved'/></span></c:if>
 		</h3>
 	</div>
 	<c:if test="${param.submitButtonText!=null}">

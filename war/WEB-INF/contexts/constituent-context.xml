@@ -18,7 +18,7 @@
         <property name="sessionService" ref="sessionService"/>
     </bean>
 
-    <bean id="person" class="com.mpower.controller.constituent.PersonFormController">
+    <bean id="person" class="com.mpower.controller.constituent.PersonFormController" parent="tangerineFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.mpower.domain.Person"/>
         <property name="validator">
@@ -28,9 +28,7 @@
             </bean>
         </property>
         <property name="formView" value="constituent/person" />
-        <property name="successView" value="constituent/person" />
-        <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
+        <property name="successView" value="redirect:/person.htm" />
     </bean>
 
     <bean id="personView" class="com.mpower.controller.constituent.PersonViewController">

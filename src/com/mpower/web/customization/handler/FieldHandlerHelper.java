@@ -39,7 +39,6 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.CODE, genericFieldHandler); 
         fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.CHECKBOX, genericFieldHandler);
@@ -70,7 +69,12 @@ public class FieldHandlerHelper {
 
         LookupOtherFieldHandler lookupOtherFieldHandler = new LookupOtherFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, lookupOtherFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, lookupOtherFieldHandler);
+
+        CodeFieldHandler codeFieldHandler = new CodeFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.CODE, codeFieldHandler); 
+
+        CodeOtherFieldHandler codeOtherFieldHandler = new CodeOtherFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, codeOtherFieldHandler);
 
         fieldTypeToHandlerMap.put(FieldType.SPACER, new SpacerFieldHandler());
         initialized = true;

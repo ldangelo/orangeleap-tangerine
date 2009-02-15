@@ -368,9 +368,15 @@ p.gridActions #subTotal {
 form input[type=text], form input.text {
 	height: 16px;
 }
-form table.distributionLines input.amount, input.percentage {
-	text-align:right;
+form table.distributionLines input.amount, form table.distributionLines input.percentage {
+	text-align:right; 
 }
+table.distributionLines { table-layout: fixed; }
+table.distributionLines col.number { width: 12%; }
+table.distributionLines col.code { width: 35%; }
+table.distributionLines col.button { width: 3%; }
+table.distributionLines td input.code { width:93.5%; }
+
 form table.distributionLines thead tr th {
 	background-color:#E6EEEE;
 	color:#000;

@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="phoneManager" class="com.mpower.controller.phone.PhoneFormController" parent="tangerineFormController">
+	<bean id="phoneManager" class="com.mpower.controller.phone.PhoneFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="phone" />
     	<property name="commandClass" value="com.mpower.domain.Phone" />
         <property name="bindAddress" value="false"/>

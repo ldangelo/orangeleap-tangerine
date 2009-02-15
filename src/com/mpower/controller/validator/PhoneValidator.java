@@ -37,26 +37,24 @@ public class PhoneValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");
-        if (!errors.hasErrors()) {
-            if ("seasonal".equals(phone.getActivationStatus())) {
-                if (phone.getSeasonalStartDate() == null) {
-                    errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
+        if ("seasonal".equals(phone.getActivationStatus())) {
+            if (phone.getSeasonalStartDate() == null) {
+                errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
+            }
+            if (phone.getSeasonalEndDate() == null) {
+                errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
+            }
+            if (phone.getSeasonalStartDate() != null && phone.getSeasonalEndDate() != null) {
+                if (!phone.getSeasonalEndDate().after(phone.getSeasonalStartDate())) {
+                    errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
                 }
-                if (phone.getSeasonalEndDate() == null) {
-                    errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
-                }
-                if (phone.getSeasonalStartDate() != null && phone.getSeasonalEndDate() != null) {
-                    if (!phone.getSeasonalEndDate().after(phone.getSeasonalStartDate())) {
-                        errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
-                    }
-                }
-            } else if ("temporary".equals(phone.getActivationStatus())) {
-                if (phone.getTemporaryStartDate() == null) {
-                    errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
-                }
-                if (phone.getTemporaryEndDate() == null) {
-                    errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
-                }
+            }
+        } else if ("temporary".equals(phone.getActivationStatus())) {
+            if (phone.getTemporaryStartDate() == null) {
+                errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
+            }
+            if (phone.getTemporaryEndDate() == null) {
+                errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
             }
         }
         errors.setNestedPath(inPath);

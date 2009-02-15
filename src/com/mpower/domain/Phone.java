@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.PhoneCustomFieldMap;
 
@@ -122,6 +123,9 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     @Transient
     private boolean userCreated = false;
@@ -135,6 +139,7 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
         this.activationStatus = "permanent";
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -143,10 +148,12 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
         this.id = id;
     }
 
+    @Override
     public Person getPerson() {
         return person;
     }
 
+    @Override
     public void setPerson(Person person) {
         this.person = person;
     }
@@ -247,10 +254,12 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
         this.seasonalEndDate = seasonalEndDate;
     }
 
+    @Override
     public boolean isInactive() {
         return inactive;
     }
 
+    @Override
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }
@@ -271,6 +280,7 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
             customFieldMap = PhoneCustomFieldMap.buildCustomFieldMap(getPhoneCustomFields(), this);
@@ -286,24 +296,39 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
         this.effectiveDate = effectiveDate;
     }
 
+    @Override
     public Site getSite() {
         return person.getSite();
     }
 
+    @Override
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;
     }
 
+    @Override
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
         this.fieldLabelMap = fieldLabelMap;
     }
 
+    @Override
     public Map<String, Object> getFieldValueMap() {
         return fieldValueMap;
     }
 
+    @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     public boolean isUserCreated() {
@@ -318,6 +343,7 @@ public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactiva
      * Check if this is a dummy object; This is not a dummy object all required fields (number) are populated
      * @return true if this Address has all required fields populated
      */
+    @Override
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
     }

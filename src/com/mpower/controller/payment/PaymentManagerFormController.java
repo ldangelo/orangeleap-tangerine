@@ -8,11 +8,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mpower.controller.TangerineFormController;
+import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Viewable;
 
-public class PaymentManagerFormController extends TangerineFormController {
+public class PaymentManagerFormController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

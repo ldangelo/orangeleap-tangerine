@@ -67,7 +67,9 @@ public class FieldVO {
 
     public List<String> getAugmentedCodes() {
     	Object o = getFieldValue();
-    	if (o == null) o = ""; 
+    	if (o == null) {
+            o = "";
+        } 
     	String value = StringUtils.trimToEmpty(o.toString());
     	if (!codes.contains(value) && value.length() > 0) {
     		// This picklist item's previously saved value has been deleted from the list of available picklist values.  
@@ -101,7 +103,10 @@ public class FieldVO {
      * @return
      */
     public String getOtherFieldName() {
-        String aFieldName = fieldName;
+        return getOtherFieldName(fieldName);
+    }
+    
+    public static String getOtherFieldName(String aFieldName) {
         String otherFieldName = null;
         
         boolean endsInValue = false;
@@ -126,7 +131,7 @@ public class FieldVO {
         if (endsInValue) {
             otherFieldName = otherFieldName.concat(DOT_VALUE);
         }
-        return otherFieldName;
+        return otherFieldName;      
     }
     
     public FieldType getFieldType() {

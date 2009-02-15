@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <!-- Gift -->
-	<bean id="giftFormController" class="com.mpower.controller.gift.GiftFormController" parent="tangerineFormController">
+	<bean id="giftFormController" class="com.mpower.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.mpower.domain.Gift"/>
 		<property name="validators">
@@ -14,6 +14,7 @@
 			        <property name="pageType" value="gift"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
+	            <ref bean="codeValidator"/>	            
 	            <ref bean="distributionLinesValidator"/>	            
 	        </list>
         </property>

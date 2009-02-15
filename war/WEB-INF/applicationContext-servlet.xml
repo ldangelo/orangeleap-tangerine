@@ -31,6 +31,9 @@
 	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true">
     	<property name="personService" ref="personService"/>
     	<property name="siteService" ref="siteService"/>
+	</bean>
+
+	<bean id="tangerineConstituentAttributesFormController" class="com.mpower.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController">
         <property name="addressService" ref="addressService" />
         <property name="paymentSourceService" ref="paymentSourceService" />
         <property name="phoneService" ref="phoneService" />

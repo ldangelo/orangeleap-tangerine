@@ -34,11 +34,9 @@ public class CommitmentValidator implements Validator {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "amountPerGift", "invalidAmountPerGift", "Amount per gift is required");
         }
         
-        if (!errors.hasErrors()) {
-            if (commitment.getEndDate() != null) {
-                if (commitment.getEndDate().before(commitment.getStartDate())) {
-                    errors.rejectValue("endDate", "invalidEndDate", "Commitment start date must be before end date");
-                }
+        if (commitment.getEndDate() != null) {
+            if (commitment.getEndDate().before(commitment.getStartDate())) {
+                errors.rejectValue("endDate", "invalidEndDate", "Commitment start date must be before end date");
             }
         }
     }

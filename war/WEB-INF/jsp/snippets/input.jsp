@@ -371,9 +371,9 @@
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CODE'}">
 					<div class="lookupWrapper">
-						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
+						<input value="<c:out value='${fieldVO.displayValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldId}'/>" />
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="hidden-<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
 						<a class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup(this)" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					</div>
 				</c:when>
@@ -390,10 +390,10 @@
 					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'TEXT'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
-					<textarea rows="2" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>"><c:out value='${fieldVO.displayValue}'/></textarea>
+					<textarea rows="2" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>"><c:out value='${fieldVO.displayValue}'/></textarea>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LOOKUP'}">
 					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text lookup <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/><a class="lookupLink jqModal" href="javascript:void(0)"><spring:message code='lookup'/></a>
@@ -402,16 +402,16 @@
 					<input value="<c:out value='${fieldVO.fieldValue}'/>" size="16" class="text <c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'ADDRESS'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PHONE'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'NUMBER'}">
-				    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text number <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
+				    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="text number <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PERCENTAGE'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value='${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
+					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text percentage <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'SPACER'}">
 					&nbsp;

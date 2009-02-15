@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.customization.FieldRequired;
@@ -55,6 +56,13 @@ public class GenericFieldHandler implements FieldHandler {
         return sectionField.getFieldType();
     }
 
+    protected Object getPropertyValue(Object model, FieldVO fieldVO) {
+        BeanWrapper modelBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(model);
+        String fieldProperty = fieldVO.getFieldName();
+        Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
+        return propertyValue;
+    }
+    
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = new FieldVO();
 
@@ -95,9 +103,7 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName));
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
-            String fieldProperty = fieldVO.getFieldName();
-            BeanWrapper modelBeanWrapper = new BeanWrapperImpl(model);
-            Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
+            Object propertyValue = getPropertyValue(model, fieldVO);
             fieldVO.setFieldValue(propertyValue);
             if (propertyValue != null) {
                 BeanWrapper propBeanWrappermodel = new BeanWrapperImpl(propertyValue);

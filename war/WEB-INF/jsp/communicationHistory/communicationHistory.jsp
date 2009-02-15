@@ -105,7 +105,7 @@
 						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 					</c:if>
 					
-					<table class="tablesorter distributionLines" style="table-layout:fixed;" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0"> 
+					<table class="tablesorter" style="table-layout:fixed;" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0"> 
 						<thead> 
 							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 								<tr>

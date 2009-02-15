@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.NotAuditable;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.util.AES;
 import com.mpower.util.Utilities;
 
@@ -118,6 +119,9 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     @Transient
     private Address selectedAddress = new Address(person);
@@ -136,6 +140,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.person = person;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -144,28 +149,34 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.id = id;
     }
 
+    @Override
     public Person getPerson() {
         return person;
     }
 
+    @Override
     public void setPerson(Person person) {
         this.person = person;
     }
 
+    @Override
     public Address getAddress() {
         Utilities.populateIfNullPerson(address, person);
         return address;
     }
 
+    @Override
     public void setAddress(Address address) {
         this.address = address;
     }
 
+    @Override
     public Phone getPhone() {
         Utilities.populateIfNullPerson(phone, person);
         return phone;
     }
 
+    @Override
     public void setPhone(Phone phone) {
         this.phone = phone;
     }
@@ -304,10 +315,12 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         // no-op
     }
 
+    @Override
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }
 
+    @Override
     public boolean isInactive() {
         return inactive;
     }
@@ -382,6 +395,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.creditCardSecurityCode = creditCardSecurityCode;
     }
 
+    @Override
     public Site getSite() {
         return person != null ? person.getSite() : null;
     }
@@ -407,6 +421,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         return yearList;
     }
 
+    @Override
     public Address getSelectedAddress() {
         Utilities.populateIfNullPerson(selectedAddress, person);
         return selectedAddress;
@@ -416,6 +431,7 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.selectedAddress = selectedAddress;
     }
 
+    @Override
     public Phone getSelectedPhone() {
         Utilities.populateIfNullPerson(selectedPhone, person);
         return selectedPhone;
@@ -425,20 +441,34 @@ public class PaymentSource implements SiteAware, AddressAware, PhoneAware, Const
         this.selectedPhone = selectedPhone;
     }
 
+    @Override
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;
     }
 
+    @Override
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
         this.fieldLabelMap = fieldLabelMap;
     }
 
+    @Override
     public Map<String, Object> getFieldValueMap() {
         return fieldValueMap;
     }
 
+    @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     public boolean isUserCreated() {

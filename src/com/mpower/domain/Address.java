@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.util.AddressCustomFieldMap;
 
@@ -135,6 +136,9 @@ public class Address implements SiteAware, Customizable, ConstituentInfo, Inacti
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     @Transient
     private boolean userCreated = false;
@@ -331,24 +335,39 @@ public class Address implements SiteAware, Customizable, ConstituentInfo, Inacti
         this.effectiveDate = effectiveDate;
     }
 
+    @Override
     public Site getSite() {
         return person.getSite();
     }
 
+    @Override
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;
     }
 
+    @Override
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
         this.fieldLabelMap = fieldLabelMap;
     }
 
+    @Override
     public Map<String, Object> getFieldValueMap() {
         return fieldValueMap;
     }
 
+    @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     public boolean isUserCreated() {

@@ -10,12 +10,12 @@ import org.springframework.context.ApplicationContext;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.web.customization.FieldVO;
 
-public class LookupOtherFieldHandler extends LookupFieldHandler {
+public class CodeOtherFieldHandler extends CodeFieldHandler {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    public LookupOtherFieldHandler(ApplicationContext appContext) {
+    public CodeOtherFieldHandler(ApplicationContext appContext) {
         super(appContext);
     }
 

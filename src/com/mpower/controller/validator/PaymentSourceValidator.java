@@ -59,12 +59,10 @@ public class PaymentSourceValidator implements Validator {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardType", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardNumber", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardExpiration", "invalidCreditCardExpiration");
-            if (!errors.hasErrors()) {
-                Date expirationDate = source.getCreditCardExpiration();
-                Calendar today = CalendarUtils.getToday(false);
-                if (expirationDate == null || today.getTime().after(expirationDate)) {
-                    errors.rejectValue("creditCardExpiration", "invalidCreditCardExpiration");
-                }
+            Date expirationDate = source.getCreditCardExpiration();
+            Calendar today = CalendarUtils.getToday(false);
+            if (expirationDate == null || today.getTime().after(expirationDate)) {
+                errors.rejectValue("creditCardExpiration", "invalidCreditCardExpiration");
             }
         }
         errors.setNestedPath(inPath);

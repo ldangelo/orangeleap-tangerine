@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.CommitmentType;
 import com.mpower.util.CommitmentCustomFieldMap;
@@ -197,6 +198,9 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     @Transient
     private PaymentSource selectedPaymentSource = new PaymentSource(person);
@@ -377,6 +381,16 @@ public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, 
     @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     @Override

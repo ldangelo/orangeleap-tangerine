@@ -14,7 +14,9 @@ public interface CodeService {
 	public List<Code> readCodes(String siteName, String codeType, String startsWith);
 	
 	public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription, Boolean inactive);
-	
+
+	public Code readCodeBySiteTypeValue(String siteName, String codeType, String codeValue);
+
 	public Code maintainCode(Code code);
 	
     public Code readCodeById(Long id);

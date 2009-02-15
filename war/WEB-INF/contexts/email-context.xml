@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineFormController">
+	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="email" />
     	<property name="commandClass" value="com.mpower.domain.Email" />
         <property name="bindAddress" value="false"/>

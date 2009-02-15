@@ -31,6 +31,7 @@ import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.GiftEntryType;
 import com.mpower.util.GiftCustomFieldMap;
@@ -156,6 +157,9 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     @Transient
     private PaymentSource selectedPaymentSource = new PaymentSource(person);
@@ -181,13 +185,17 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 
     public String getCustomFieldValue(String fieldName) {
     	CustomField customField = getCustomFieldMap().get(fieldName);
-    	if (customField == null || customField.getValue() == null) return null;
+    	if (customField == null || customField.getValue() == null) {
+            return null;
+        }
         return customField.getValue();
     }
 
     public void setCustomFieldValue(String fieldName, String value) {
     	CustomField customField = getCustomFieldMap().get(fieldName);
-    	if (customField == null) throw new RuntimeException("Invalid custom field name "+fieldName);
+    	if (customField == null) {
+            throw new RuntimeException("Invalid custom field name "+fieldName);
+        }
     	customField.setValue(value);
     }
 
@@ -420,6 +428,16 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
     @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
+    }
+
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
     }
 
     @Override

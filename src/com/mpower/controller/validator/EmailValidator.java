@@ -38,28 +38,26 @@ public class EmailValidator implements Validator {
     	}
 
     	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
-    	if (!errors.hasErrors()) {
-    		if ("seasonal".equals(email.getActivationStatus())) {
-    			if (email.getSeasonalStartDate() == null) {
-    				errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
-    			}
-    			if (email.getSeasonalEndDate() == null) {
-    				errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
-    			}
-    			if (email.getSeasonalStartDate() != null && email.getSeasonalEndDate() != null) {
-    				if (!email.getSeasonalEndDate().after(email.getSeasonalStartDate())) {
-    					errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
-    				}
-    			}
-    		} else if ("temporary".equals(email.getActivationStatus())) {
-    			if (email.getTemporaryStartDate() == null) {
-    				errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
-    			}
-    			if (email.getTemporaryEndDate() == null) {
-    				errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
-    			}
-    		}
-    	}
+		if ("seasonal".equals(email.getActivationStatus())) {
+			if (email.getSeasonalStartDate() == null) {
+				errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
+			}
+			if (email.getSeasonalEndDate() == null) {
+				errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
+			}
+			if (email.getSeasonalStartDate() != null && email.getSeasonalEndDate() != null) {
+				if (!email.getSeasonalEndDate().after(email.getSeasonalStartDate())) {
+					errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
+				}
+			}
+		} else if ("temporary".equals(email.getActivationStatus())) {
+			if (email.getTemporaryStartDate() == null) {
+				errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
+			}
+			if (email.getTemporaryEndDate() == null) {
+				errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
+			}
+		}
     	errors.setNestedPath(inPath);
     }
 }

@@ -81,4 +81,12 @@ public class CodeServiceImpl implements CodeService {
 	public CodeType readCodeType(String codeType, String siteName) {
 		return codeDao.readCodeType(codeType, siteName);
 	}
+
+	@Override
+    public Code readCodeBySiteTypeValue(String siteName, String codeType, String codeValue) {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("readCodeBySiteTypeValue: siteName = " + siteName + " codeType = " + codeType + " codeValue = " + codeValue);
+	    }
+	    return codeDao.readCodeBySiteTypeValue(siteName, codeType, codeValue);
+	}
 }

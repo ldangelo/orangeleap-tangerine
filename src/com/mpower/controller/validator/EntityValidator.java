@@ -36,6 +36,7 @@ import com.mpower.service.SiteService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
+import com.mpower.util.StringConstants;
 
 public class EntityValidator implements Validator {
 
@@ -151,8 +152,7 @@ public class EntityValidator implements Validator {
                     }
                     continue;
                 }
-                Object property = getProperty(key, viewable, fieldValueMap);
-                String propertyString = property == null ? "" : property.toString();
+                String propertyString = getPropertyString(key, viewable, fieldValueMap);
                 boolean required = fr.isRequired();
                 if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
                     errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
@@ -206,8 +206,7 @@ public class EntityValidator implements Validator {
                     }
                     continue;
                 }
-                Object property = getProperty(key, viewable, fieldValueMap);
-                String propertyString = property == null ? "" : property.toString();
+                String propertyString = getPropertyString(key, viewable, fieldValueMap);
                 String regex = validationMap.get(key).getRegex();
                 boolean valid;
                 String validator = "extensions:";
@@ -215,10 +214,12 @@ public class EntityValidator implements Validator {
                     if (propertyString.length() == 0) {
                         // 'required' is validated in validateRequiredFields()
                         valid = true;
-                    } else {
+                    } 
+                    else {
                         valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
                     }
-                } else {
+                } 
+                else {
                     valid = propertyString.matches(regex);
                 }
                 if (!valid && !errorSet.contains(key)) {
@@ -239,5 +240,10 @@ public class EntityValidator implements Validator {
             fieldValueMap.put(key, property);
         }
         return property;
+    }
+    
+    private String getPropertyString(String key, Viewable viewable, Map<String, Object> fieldValueMap) {
+        Object property = getProperty(key, viewable, fieldValueMap);
+        return property == null ? StringConstants.EMPTY : property.toString();
     }
 }

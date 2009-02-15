@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mpower.controller.TangerineFormController;
+import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Viewable;
@@ -21,7 +21,7 @@ import com.mpower.service.CommitmentService;
 import com.mpower.type.CommitmentType;
 import com.mpower.util.StringConstants;
 
-public class CommitmentFormController extends TangerineFormController {
+public class CommitmentFormController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

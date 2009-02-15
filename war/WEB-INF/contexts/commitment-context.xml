@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="commitmentFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="tangerineFormController" abstract="true">
+    <bean id="commitmentFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="tangerineConstituentAttributesFormController" abstract="true">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.Commitment"/>
         <property name="commitmentService" ref="commitmentService" />

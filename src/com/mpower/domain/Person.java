@@ -157,19 +157,24 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     public Person() {
     }
     
+    @Override
     public String toString() {
     	return getDisplayValue();
     }
     
     public String getCustomFieldValue(String fieldName) {
     	CustomField customField = getCustomFieldMap().get(fieldName);
-    	if (customField == null || customField.getValue() == null) return null;
+    	if (customField == null || customField.getValue() == null) {
+            return null;
+        }
         return customField.getValue();
     }
 
     public void setCustomFieldValue(String fieldName, String value) {
     	CustomField customField = getCustomFieldMap().get(fieldName);
-    	if (customField == null) throw new RuntimeException("Invlid custom field name "+fieldName);
+    	if (customField == null) {
+            throw new RuntimeException("Invlid custom field name "+fieldName);
+        }
     	customField.setValue(value);
     }
 
@@ -210,11 +215,19 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
     
     public String createName(boolean lastFirst) {
     	StringBuilder sb = new StringBuilder();
-    	if (lastFirst) sb.append(lastName == null ? "" : lastName).append(", ");
+    	if (lastFirst) {
+            sb.append(lastName == null ? "" : lastName).append(", ");
+        }
 	    sb.append(firstName == null ? "" : firstName);
-	    if (middleName != null && middleName.length() > 0) sb.append(" ").append(middleName);
-    	if (!lastFirst) sb.append(" ").append(lastName == null ? "" : lastName);
-	    if (suffix != null && suffix.length() > 0) sb.append(", ").append(suffix);
+	    if (middleName != null && middleName.length() > 0) {
+            sb.append(" ").append(middleName);
+        }
+    	if (!lastFirst) {
+            sb.append(" ").append(lastName == null ? "" : lastName);
+        }
+	    if (suffix != null && suffix.length() > 0) {
+            sb.append(", ").append(suffix);
+        }
 	    return sb.toString();
     }
 
@@ -439,10 +452,12 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
         return this;
     }
 
+    @Override
 	public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
 		this.fieldTypeMap = fieldTypeMap;
 	}
 
+    @Override
 	public Map<String, FieldDefinition> getFieldTypeMap() {
 		return fieldTypeMap;
 	}
@@ -468,7 +483,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 	}
 
 	public String getConstituentType() {
-		if (constituentType == null) return INDIVIDUAL; 
+		if (constituentType == null) {
+            return INDIVIDUAL;
+        } 
 		return constituentType;
 	}
 
@@ -489,7 +506,9 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 	}
 	
 	public void addConstituentRole(String constituentRole) {
-		if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) return;
+		if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) {
+            return;
+        }
 		if (isOrganization()) {
 			setConstituentOrganizationRoles(addToList(getConstituentOrganizationRoles(), constituentRole));
 		} else {
@@ -498,9 +517,13 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 	}
 	
 	private String addToList(String list, String s) {
-		if (list == null) list = "";
+		if (list == null) {
+            list = "";
+        }
 		if (!list.contains(s)) {
-			if (list.length() > 0) list += ",";
+			if (list.length() > 0) {
+                list += ",";
+            }
 			list += s;
 		}
 		return list;
@@ -514,10 +537,14 @@ public class Person implements SiteAware, Customizable, Viewable, Serializable {
 		String constituentAttributes;
 		if (isOrganization()) {
       		constituentAttributes = ORGANIZATION;
-      		if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
+      		if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
+                constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
+            }
 		} else {
 			constituentAttributes = INDIVIDUAL;
-      		if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
+      		if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
+                constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
+            }
 		}
 		return constituentAttributes;
 	}

@@ -15,6 +15,10 @@
 
 	<bean id="distributionLinesValidator" class="com.mpower.controller.validator.DistributionLinesValidator" />
 
+	<bean id="codeValidator" class="com.mpower.controller.validator.CodeValidator">
+        <property name="codeService" ref="codeService" />
+	</bean>
+
 	<bean id="paymentSourceValidator" class="com.mpower.controller.validator.PaymentSourceValidator">
         <property name="paymentSourceService" ref="paymentSourceService" />
 	</bean>

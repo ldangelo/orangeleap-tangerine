@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.listener.TemporalTimestampListener;
 import com.mpower.type.CommunicationHistoryType;
 import com.mpower.util.CommunicationHistoryCustomFieldMap;
@@ -104,9 +105,9 @@ public class CommunicationHistory implements SiteAware, Customizable, Viewable, 
 
     @Transient
     private Map<String, Object> fieldValueMap = null;
-
-
-
+    
+    @Transient
+    private Map<String, FieldDefinition> fieldTypeMap = null;
     
 	@Override
 	public Site getSite() {
@@ -229,6 +230,15 @@ public class CommunicationHistory implements SiteAware, Customizable, Viewable, 
         this.fieldValueMap = fieldValueMap;
     }
 
+    @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
+
+    @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
+    }
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;

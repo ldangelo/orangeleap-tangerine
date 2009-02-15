@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <!-- CommunicationHistory -->
-	<bean id="communicationHistoryFormController" class="com.mpower.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineFormController">
+	<bean id="communicationHistoryFormController" class="com.mpower.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="communicationHistory"/>
         <property name="commandClass" value="com.mpower.domain.CommunicationHistory"/>
 		<property name="validators">

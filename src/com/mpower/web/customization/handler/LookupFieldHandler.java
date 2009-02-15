@@ -6,8 +6,6 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.Person;
@@ -28,9 +26,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
         boolean isCustom = currentField.getFieldDefinition().isCustom();
-        BeanWrapper modelBeanWrapper = new BeanWrapperImpl(model);
-        String fieldProperty = fieldVO.getFieldName();
-        Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
+        Object propertyValue = super.getPropertyValue(model, fieldVO);
 
         if (propertyValue != null && isCustom) {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();

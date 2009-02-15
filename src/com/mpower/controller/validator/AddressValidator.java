@@ -41,26 +41,24 @@ public class AddressValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required");
         //        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required"); // TODO: country
-        if (!errors.hasErrors()) {
-            if ("seasonal".equals(address.getActivationStatus())) {
-                if (address.getSeasonalStartDate() == null) {
-                    errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
+        if ("seasonal".equals(address.getActivationStatus())) {
+            if (address.getSeasonalStartDate() == null) {
+                errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
+            }
+            if (address.getSeasonalEndDate() == null) {
+                errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
+            }
+            if (address.getSeasonalStartDate() != null && address.getSeasonalEndDate() != null) {
+                if (!address.getSeasonalEndDate().after(address.getSeasonalStartDate())) {
+                    errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
                 }
-                if (address.getSeasonalEndDate() == null) {
-                    errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
-                }
-                if (address.getSeasonalStartDate() != null && address.getSeasonalEndDate() != null) {
-                    if (!address.getSeasonalEndDate().after(address.getSeasonalStartDate())) {
-                        errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
-                    }
-                }
-            } else if ("temporary".equals(address.getActivationStatus())) {
-                if (address.getTemporaryStartDate() == null) {
-                    errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
-                }
-                if (address.getTemporaryEndDate() == null) {
-                    errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
-                }
+            }
+        } else if ("temporary".equals(address.getActivationStatus())) {
+            if (address.getTemporaryStartDate() == null) {
+                errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
+            }
+            if (address.getTemporaryEndDate() == null) {
+                errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
             }
         }
         errors.setNestedPath(inPath);

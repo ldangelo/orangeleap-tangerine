@@ -87,6 +87,10 @@ public class Code implements SiteAware, Auditable, Inactivatible, Serializable {
         this.value = value;
     }
 
+    public String getDisplayValue() {
+        return (this.value != null && this.description != null ? (new StringBuilder().append(this.value).append(" - ").append(this.description).toString()) : this.id.toString());
+    }
+    
     public String getDescription() {
         return description;
     }

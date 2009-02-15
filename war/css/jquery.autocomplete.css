@@ -3,6 +3,7 @@
 	border: 1px solid #ccc;
 	background-color: #fff;
 	overflow: hidden;
+	max-width: 250px;
 }
 
 .ac_results ul {
@@ -10,7 +11,7 @@
 	list-style-position: outside;
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	margin: 0 25px 0 0;
 }
 
 .ac_results iframe {
@@ -32,9 +33,10 @@
 	display: block;
 	width: 100%;
 	font: menu;
-	font-size: 12px;
+	font-size: .9em;
 	overflow: hidden;
 	text-align: left;
+	white-space: nowrap;
 }
 
 .ac_loading {

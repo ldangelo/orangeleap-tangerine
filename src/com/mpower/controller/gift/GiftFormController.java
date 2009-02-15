@@ -8,13 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mpower.controller.TangerineFormController;
+import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.Gift;
 import com.mpower.domain.Viewable;
 import com.mpower.service.GiftService;
 import com.mpower.util.StringConstants;
 
-public class GiftFormController extends TangerineFormController {
+public class GiftFormController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

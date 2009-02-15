@@ -18,6 +18,7 @@
 			        <property name="pageType" value="pledge"/>
 			        <property name="siteService" ref="siteService" />
 	            </bean>
+	            <ref bean="codeValidator"/>	            
 	            <ref bean="distributionLinesValidator"/>	            
 			</list>
         </property>

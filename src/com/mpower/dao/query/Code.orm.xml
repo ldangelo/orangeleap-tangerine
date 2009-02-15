@@ -17,6 +17,16 @@
 			AND codeType.site.name = :siteName
 		</query>
 	</named-query>
+	
+	<named-query name="READ_SINGLE_ACTIVE_CODE_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE">
+		<query>
+			SELECT code FROM com.mpower.domain.customization.Code code
+			WHERE code.type.site.name = :siteName
+			AND code.type.name = :codeType
+			AND code.value = :value
+			AND code.inactive != TRUE
+		</query>
+	</named-query>
 
 	<named-query name="READ_CODES_BY_SITE_AND_CODE_TYPE">
 		<query>

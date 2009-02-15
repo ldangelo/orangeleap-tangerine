@@ -32,6 +32,24 @@ public class JPACodeDao implements CodeDao {
 		return query.getResultList();
 	}
 	
+    @SuppressWarnings("unchecked")
+    @Override
+    public Code readCodeBySiteTypeValue(String siteName, String codeType, String codeValue) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCodeBySiteTypeValue: siteName = " + siteName + " codeType = " + codeType + " codeValue = " + codeValue);
+        }
+        Query query = em.createNamedQuery("READ_SINGLE_ACTIVE_CODE_BY_SITE_AND_CODE_TYPE_AND_CODE_VALUE");
+        query.setParameter("siteName", siteName);
+        query.setParameter("codeType", codeType);
+        query.setParameter("value", codeValue);
+        List<Code> l = query.getResultList();
+        Code code = null;
+        if (l != null && l.size() > 0) {
+            code = l.get(0);
+        }
+        return code;
+    }
+		
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> listCodeTypes(String siteName) {

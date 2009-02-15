@@ -604,26 +604,29 @@ var Lookup = {
 	},
 	
 	codeAutoComplete: function($elem) {
-		/* Temporarily disable auto-completion for BETA */
+		/* Temporarily disable auto-completion for BETA 
 		$elem.bind("focus", function() {
 			this.blur(); 
 		});
-		
+		*/
 		/*
 		var oldVal = $elem.val();
+		*/ 
 		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
-			//delay:10,
+			delay:10,
 			minChars:0,
 			max:20,
-			width: 185,
-//			formatItem:formatItem,
-//			loadingClass:"",
-			mustMatch: true//,
+//			width: 185,
+			formatItem: Lookup.formatItem,
+			showValueAndDesc: true,
+			displayValuePrefix: { hidden: "hidden-", display: "display-" },
+			hideDescription: true,
+			loadingClass:""//,
+//			mustMatch: true//,
 //			onItemSelect: function(itemSelected) {
 //				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
 //			}
 		});
-		*/ 
 	},
 		
 	formatItem: function(row) {
@@ -687,11 +690,12 @@ var Lookup = {
 	useCode: function() {
 		var $elem = $('#codeResultsUl input[name=option]:checked');
 		var selectedVal = $elem.val();
+		var description = $elem.attr("displayvalue");
 		
 		if (selectedVal) {
 			$("#" + Lookup.lookupCaller.attr("otherFieldId")).val("");
 			Lookup.lookupCaller.siblings("input:hidden").val(selectedVal);
-			Lookup.lookupCaller.val(selectedVal);
+			Lookup.lookupCaller.val(selectedVal + " - " + description);
 			Lookup.lookupCaller.vkfade(true);
 		}
 		else {

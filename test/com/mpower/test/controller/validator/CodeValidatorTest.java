@@ -33,6 +33,7 @@ public class CodeValidatorTest extends BaseTest {
     private Mockery mockery;
     private Code projCode;
     private Code motivationCode;
+    private Code currencyCode;
     private Site site;
     private Person person;
 
@@ -43,13 +44,15 @@ public class CodeValidatorTest extends BaseTest {
         projCode.setValue("001000");
         motivationCode = new Code();
         motivationCode.setValue("XYZ");
+        currencyCode = new Code();
+        currencyCode.setValue("USD");
         validator = new CodeValidator();
         mockery = new Mockery();
         final CodeService service = mockery.mock(CodeService.class);
         validator.setCodeService(service);
 
         mockery.checking(new Expectations() {{
-            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(projCode));
+            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(currencyCode));
             allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "foo"); will(returnValue(null));
             allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", " "); will(returnValue(null));
             allowing (service).readCodeBySiteTypeValue("company1", "projectCode", "001000"); will(returnValue(projCode));
@@ -74,6 +77,12 @@ public class CodeValidatorTest extends BaseTest {
         fieldDef.setFieldType(FieldType.CODE_OTHER);
         fieldDef.setDefaultLabel("Motivation Code");
         map.put("motivationCode", fieldDef);
+
+        fieldDef = new FieldDefinition();
+        fieldDef.setFieldName("currencyCode");
+        fieldDef.setFieldType(FieldType.CODE);
+        fieldDef.setDefaultLabel("Currency Code");
+        map.put("currencyCode", fieldDef);
         gift.setFieldTypeMap(map);
         
         site = new Site();
@@ -125,14 +134,14 @@ public class CodeValidatorTest extends BaseTest {
         gift.setCurrencyCode("foo");
         validator.validate(gift, errors);
         mockery.assertIsSatisfied();
-        assert errors.hasErrors() == false;
+        assert errors.hasErrors();
 
         assert validator.supports(Gift.class);
         errors = new BindException(gift, "gift");       
         gift.setCurrencyCode(" ");
         validator.validate(gift, errors);
         mockery.assertIsSatisfied();
-        assert errors.hasErrors() == false;
+        assert errors.hasErrors();
 
         errors = new BindException(gift, "gift");        
         gift.getDistributionLines().get(0).setProjectCode("foo");

@@ -76,10 +76,12 @@ public class PaymentSourceServiceImplTest extends BaseTest {
         em.persist(person);
         personIds.add(person.getId());
         ps.setPerson(person);
-        paymentSourceService.readPaymentSources(person.getId()).size();
+        List <PaymentSource> old = paymentSourceService.readPaymentSources(person.getId());
+        assert old != null;
         ps = paymentSourceService.maintainPaymentSource(ps);
         paymentSourceIds.add(ps.getId());
-        paymentSourceService.readPaymentSources(person.getId()).size();
+        List<PaymentSource> s = paymentSourceService.readPaymentSources(person.getId());
+        assert s != null;
         em.getTransaction().commit();
     }
 

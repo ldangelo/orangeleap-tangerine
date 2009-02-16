@@ -68,7 +68,7 @@ $.Autocompleter = function(input, options) {
 	// Create $ object for input element
 	var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
 	var $realValueInput = null;
-	if (options.displayValuePrefix != 'undefined') {
+	if (options.displayValuePrefix && options.displayValuePrefix != 'undefined') {
 		$realValueInput = $("#" + $input.attr("id").replace(options.displayValuePrefix.display, options.displayValuePrefix.hidden));
 	}
 	
@@ -179,9 +179,9 @@ $.Autocompleter = function(input, options) {
 		if (!config.mouseDownOnSelect) {
 			hideResults();
 		}
-//		if (options.hideDescription && codeDescription) {
-//			$input.val(codeDescription);
-//		}
+		if (options.displayValuePrefix && options.displayValuePrefix != 'undefined' && $input.val() === "") {
+			$realValueInput.val("");
+		}
 	}).click(function() {
 		// show select when clicking in a focused field
 		if ( hasFocus++ > 1 && !select.visible() ) {

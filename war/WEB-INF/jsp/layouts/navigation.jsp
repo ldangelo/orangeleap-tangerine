@@ -66,7 +66,12 @@
 						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 					</li> 
 					<li>
-						<a href="../jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
+					<%
+					String contextPrefix = System.getProperty("contextPrefix");
+					if (contextPrefix == null) contextPrefix = "";
+					pageContext.setAttribute("contextPrefix",contextPrefix);
+					%>
+						<a href="../${contextPrefix}jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
 						<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>

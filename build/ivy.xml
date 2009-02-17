@@ -166,6 +166,15 @@
 			<artifact name="jta" type="jar" />
 		</dependency>
 		
+		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" transitive="false" rev="2.3.4.726"> 
+			<artifact name="ibatis-sqlmap" type="jar" />
+			<artifact name="ibatis-sqlmap" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+		
+		<dependency org="org.apache.ibatis" name="ibator" transitive="false" rev="1.2.1-681" conf="compile->default"> 
+			<artifact name="ibator" type="jar" />
+		</dependency>
+		
 		<!-- Quartz -->
 		<dependency org="opensymphony" name="quartz" transitive="false" rev="1.6.1"/>
 		

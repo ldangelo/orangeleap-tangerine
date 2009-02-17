@@ -9,6 +9,17 @@ public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    public Site() {
+        super();
+    }
+
+    public Site(String name, String merchantNumber, Site parentSite) {
+        this();
+        this.name = name;
+        this.merchantNumber = merchantNumber;
+        this.parentSite = parentSite;
+    }
+
     private String name;
 
     private String merchantNumber;

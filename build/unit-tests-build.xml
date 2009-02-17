@@ -14,6 +14,28 @@
 		<taskdef resource="testngtasks">
 			<classpath path="${test.lib}"/>
 		</taskdef>
+		<antcall target="create-schema"/>
+	</target>
+	
+	<target name="create-schema">
+	     <sql driver="${mysql.db.driver}"
+	          url="${test.mysql.db.url}"
+	          userid="${mysql.db.user}"
+	          password="${mysql.db.pw}"
+	          encoding="UTF-8"
+	          classpath="${mysql.db.classpath}">
+
+	     	<transaction src="${basedir}/db/test/clearTestSchema.sql"/>
+	     </sql>
+	     <sql driver="${mysql.db.driver}"
+	          url="${test.mysql.db.schema}"
+	          userid="${mysql.db.user}"
+	          password="${mysql.db.pw}"
+	          encoding="UTF-8"
+	          classpath="${mysql.db.classpath}">
+
+	     	<transaction src="${basedir}/db/prod/tangerine.ddl"/>
+	     </sql>
 	</target>
 	
 	<target name="buildall" depends="init">

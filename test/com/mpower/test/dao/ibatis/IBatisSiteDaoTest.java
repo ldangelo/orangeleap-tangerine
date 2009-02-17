@@ -1,5 +1,6 @@
 package com.mpower.test.dao.ibatis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -9,6 +10,8 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.SiteDao;
 import com.mpower.domain.model.Site;
+import com.mpower.domain.model.customization.EntityDefault;
+import com.mpower.type.EntityType;
 
 public class IBatisSiteDaoTest extends AbstractIBatisTest {
     
@@ -63,4 +66,33 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
             assert "company1A".equals(site.getName()) || "company999".equals(site.getName());
         }
     }
+
+    @Test(groups = { "testCreateEntityDefault" })
+    public void testCreateEntityDefault() throws Exception {
+        EntityDefault entityDefault = new EntityDefault("check", "paymentType", EntityType.gift.toString(), "company999");
+        entityDefault = siteDao.createEntityDefault(entityDefault);
+        assert entityDefault != null;
+        assert "check".equals(entityDefault.getDefaultValue());
+        assert "paymentType".equals(entityDefault.getEntityFieldName());
+        assert EntityType.gift.toString().equals(entityDefault.getEntityType());
+        assert "company999".equals(entityDefault.getSiteName());
+        assert entityDefault.getId() != null;
+    } 
+
+    @Test(groups = { "testReadEntityDefaults" })
+    public void testReadEntityDefaults() throws Exception {
+        List<EntityType> types = new ArrayList<EntityType>(1);
+        types.add(EntityType.gift);
+        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults("company999", types);
+ 
+        assert entityDefaultList != null;
+        assert entityDefaultList.size() == 1;
+        EntityDefault entityDefault = entityDefaultList.get(0);
+        assert entityDefault != null;
+        assert "check".equals(entityDefault.getDefaultValue());
+        assert "paymentType".equals(entityDefault.getEntityFieldName());
+        assert EntityType.gift.toString().equals(entityDefault.getEntityType());
+        assert "company999".equals(entityDefault.getSiteName());
+        assert entityDefault.getId() != null;
+    } 
 }

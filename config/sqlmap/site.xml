@@ -30,13 +30,7 @@
 		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
 		from SITE
 	</select>
-<!-- 
-	<select id="READ_ENTITY_DEFAULTS_BY_SITE_AND_ENTITY_FIELD_NAME">
-		select entityDefault FROM com.mpower.domain.customization.EntityDefault entityDefault
-		WHERE entityDefault.siteName = :siteName
-		AND entityDefault.entityType IN (:entityTypes)
-	</select>
- -->		
+
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.mpower.domain.model.Site">
 		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME)
@@ -47,7 +41,7 @@
 
 
 
-	<insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Site">
+	<insert id="site-ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Site">
 		insert into SITE
 		<dynamic prepend="(">
 			<isNotNull prepend="," property="name">
@@ -88,7 +82,7 @@
 		</dynamic>
 	</insert>
 	
-	<update id="ibatorgenerated_updateByPrimaryKeySelective"
+	<update id="site-ibatorgenerated_updateByPrimaryKeySelective"
 		parameterClass="com.mpower.domain.model.Site">
 		update SITE
 		<dynamic prepend="set">
@@ -105,7 +99,7 @@
 		where SITE_NAME = #name:VARCHAR#
 	</update>
 	
-	<update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Site">
+	<update id="site-ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Site">
 		update SITE
 		set MERCHANT_NUMBER = #merchantNumber:VARCHAR#,
 		UPDATE_DATE = #updateDate:TIMESTAMP#,

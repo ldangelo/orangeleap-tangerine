@@ -6,6 +6,18 @@ public class EntityDefault implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public EntityDefault() {
+        super();
+    }
+
+    public EntityDefault(String defaultValue, String entityFieldName, String entityType, String siteName) {
+        this();
+        this.defaultValue = defaultValue;
+        this.entityFieldName = entityFieldName;
+        this.entityType = entityType;
+        this.siteName = siteName;
+    }
+
     private Long id;
 
     private String defaultValue;

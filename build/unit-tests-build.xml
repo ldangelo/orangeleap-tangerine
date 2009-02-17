@@ -60,7 +60,6 @@
 
     <target name="runall" depends="buildall">
     	<path id="test-lib-path">
-			<fileset file="${stage.dir}/jmockit.jar"/>
 			<pathelement path="${compile.lib}"/>
 			<pathelement path="${test.lib}"/>
 			<pathelement path="${war.lib}"/>

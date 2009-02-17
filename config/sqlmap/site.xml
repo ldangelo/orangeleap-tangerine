@@ -15,24 +15,28 @@
 		<result property="name" column="PARENT_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<!-- Selects -->		
+	<!-- Selects -->
+	<sql id="SELECT_SITE_FRAGMENT">
+		FROM SITE
+		WHERE SITE_NAME = #siteName#
+	</sql>
+			
 	<select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String">
 		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
-		from SITE
-		where SITE_NAME = #siteName#
+		<include refid="SELECT_SITE_FRAGMENT"/>
 	</select>
 	
 	<select id="SELECT_ALL_SITES" resultMap="SITE_RESULT">
 		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
 		from SITE
 	</select>
-	
+<!-- 
 	<select id="READ_ENTITY_DEFAULTS_BY_SITE_AND_ENTITY_FIELD_NAME">
 		select entityDefault FROM com.mpower.domain.customization.EntityDefault entityDefault
 		WHERE entityDefault.siteName = :siteName
 		AND entityDefault.entityType IN (:entityTypes)
 	</select>
-	
+ -->		
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.mpower.domain.model.Site">
 		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME)

@@ -77,6 +77,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
         assert "company999".equals(entityDefault.getSiteName());
         assert entityDefault.getId() != null;
+        assert entityDefault.getId() > 0;
     } 
 
     @Test(groups = { "testReadEntityDefaults" })
@@ -94,5 +95,6 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
         assert "company999".equals(entityDefault.getSiteName());
         assert entityDefault.getId() != null;
+        assert entityDefault.getId() > 0;
     } 
 }

@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.deprecated;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -9,6 +9,7 @@ import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.service.customization.FieldService;
+import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.FieldRequiredDataProvider;
 
 public class FieldTest extends BaseTest {

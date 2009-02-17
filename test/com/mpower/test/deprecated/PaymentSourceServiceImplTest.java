@@ -1,4 +1,4 @@
-package com.mpower.test.service.impl;
+package com.mpower.test.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;

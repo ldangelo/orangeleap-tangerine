@@ -52,7 +52,12 @@
 	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+	<!-- 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/mpoweropen" />
+		<property name="username" value="mpower"/>
+		<property name="password" value="mpower"/> -->
+ 		<property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
 		<property name="url" value="jdbc:hsqldb:mem:MPowerOpen" />
 		<property name="username" value="sa"/>
 		<property name="password" value=""/>

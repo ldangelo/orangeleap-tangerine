@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.deprecated;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.mpower.dao.PersonDao;
+import com.mpower.test.BaseTest;
 
 public class SQLInjectTest extends BaseTest {
 

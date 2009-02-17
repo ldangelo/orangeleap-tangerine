@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.deprecated;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -8,6 +8,7 @@ import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.service.AuditService;
 import com.mpower.service.GiftService;
+import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.GiftDataProvider;
 
 public class GiftTest extends BaseTest {

@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.deprecated;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.service.PersonService;
+import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonTest extends BaseTest {

@@ -1,4 +1,4 @@
-package com.mpower.test;
+package com.mpower.test.deprecated;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +14,7 @@ import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
+import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.AddressDataProvider;
 import com.mpower.util.CalendarUtils;
 

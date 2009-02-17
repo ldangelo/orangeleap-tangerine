@@ -2,9 +2,11 @@
 <suite name="MPower Open Test Suite" verbose="2" parallel="false">
 	<test name="mpower-tests">
         <packages>
-        	<package name="com.mpower.test"></package>
+        	<package name="com.mpower.test.controller.validator"></package>
+        	<package name="com.mpower.test.dao.ibatis"></package>
         	<package name="com.mpower.test.service.impl"></package>
-        	<package name="com.mpower.test.web.customization.handler"></package>
+        	<package name="com.mpower.test.util"></package>
+        	<package name="com.mpower.test.web.customization"></package>
         </packages>
     </test>
 </suite>

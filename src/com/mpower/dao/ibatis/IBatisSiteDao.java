@@ -31,11 +31,10 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
     }
 
     @Override
-    public Site createSite(String siteName, String merchantNumber, Site parentSite) {
+    public Site createSite(Site site) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readSite: siteName = " + siteName);
+            logger.debug("readSite: siteName = " + site.getName());
         }
-        Site site = new Site(siteName, merchantNumber, parentSite);
         getSqlMapClientTemplate().insert("INSERT_SITE", site);
         return site;
     }
@@ -80,5 +79,13 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
         params.put("siteName", siteName);
         params.put("entityTypes", entityTypes);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
+    }
+    
+    @Override
+    public int updateEntityDefault(EntityDefault entityDefault) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("updateEntityDefault: entityDefault = " + entityDefault);
+        }
+        return getSqlMapClientTemplate().update("UPDATE_ENTITY_DEFAULT", entityDefault);
     }
 }

@@ -9,12 +9,14 @@ import com.mpower.type.EntityType;
 public interface SiteDao {
 
 	public Site readSite(String siteName);
-
-	public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
 	
 	public List<Site> readSites();
 
-	public Site createSite(String siteName, String merchantNumber, Site parentSite);
+	public Site createSite(Site site);
 	
     public EntityDefault createEntityDefault(EntityDefault entityDefault);
+
+    public int updateEntityDefault(EntityDefault entityDefault);
+
+    public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
 }

@@ -27,13 +27,15 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testCreateSite" })
     public void testCreateSite() throws Exception {
-        Site site1 = siteDao.createSite("company999", "12345", null);
+        Site site = new Site("company999", "12345", null);
+        Site site1 = siteDao.createSite(site);
         assert site1 != null;
         assert "company999".equals(site1.getName());
         assert "12345".equals(site1.getMerchantNumber());
         assert site1.getParentSite() == null;
         
-        Site site1A = siteDao.createSite("company1A", "foo", site1);
+        site = new Site("company1A", "foo", site1);
+        Site site1A = siteDao.createSite(site);
         assert site1A != null;
         assert "company1A".equals(site1A.getName());
         assert "foo".equals(site1A.getMerchantNumber());
@@ -80,7 +82,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert entityDefault.getId() > 0;
     } 
 
-    @Test(groups = { "testReadEntityDefaults" })
+    @Test(groups = { "testReadEntityDefaults" }, dependsOnGroups = { "testCreateEntityDefault" })
     public void testReadEntityDefaults() throws Exception {
         List<EntityType> types = new ArrayList<EntityType>(1);
         types.add(EntityType.gift);
@@ -91,6 +93,31 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         EntityDefault entityDefault = entityDefaultList.get(0);
         assert entityDefault != null;
         assert "check".equals(entityDefault.getDefaultValue());
+        assert "paymentType".equals(entityDefault.getEntityFieldName());
+        assert EntityType.gift.toString().equals(entityDefault.getEntityType());
+        assert "company999".equals(entityDefault.getSiteName());
+        assert entityDefault.getId() != null;
+        assert entityDefault.getId() > 0;
+    } 
+
+    @Test(groups = { "testUpdateEntityDefault" }, dependsOnGroups = { "testReadEntityDefaults" })
+    public void testUpdateEntityDefault() throws Exception {
+        List<EntityType> types = new ArrayList<EntityType>(1);
+        types.add(EntityType.gift);
+        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults("company999", types);
+ 
+        assert entityDefaultList != null;
+        assert entityDefaultList.size() == 1;
+        EntityDefault entityDefault = entityDefaultList.get(0);
+        assert entityDefault != null;
+        entityDefault.setDefaultValue("cash");
+        siteDao.updateEntityDefault(entityDefault);
+        
+        entityDefaultList = siteDao.readEntityDefaults("company999", types);
+        assert entityDefaultList != null;
+        assert entityDefaultList.size() == 1;
+        entityDefault = entityDefaultList.get(0);
+        assert "cash".equals(entityDefault.getDefaultValue());
         assert "paymentType".equals(entityDefault.getEntityFieldName());
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
         assert "company999".equals(entityDefault.getSiteName());

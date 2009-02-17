@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="SITE">
+
+	<resultMap id="SITE_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<resultMap id="CHILD_SITE_RESULT" class="com.mpower.domain.model.Site" extends="SITE.SITE_RESULT">
+		<result resultMap="SITE.PARENT_SITE_RESULT" property="parentSite" />
+	</resultMap>
+
+	<resultMap id="PARENT_SITE_RESULT" class="com.mpower.domain.model.Site" extends="SITE.SITE_RESULT">
+		<result column="PARENT_SITE_NAME" property="name" jdbcType="VARCHAR" />
+	</resultMap>
+		
+	<select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String" >
+		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
+		from SITE
+		where SITE_NAME = #siteName#
+	</select>
+	
+	<insert id="INSERT_SITE" parameterClass="com.mpower.domain.model.Site">
+		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME)
+		values (#name#, #createDate#, #merchantNumber#,	#updateDate#, #parentSite#)
+	</insert>
+
+
+
+
+	
+	<delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.Site">
+		delete from SITE
+		where SITE_NAME = #name:VARCHAR#
+	</delete>
+	
+	<insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Site">
+		insert into SITE
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="name">
+				SITE_NAME
+			</isNotNull>
+			<isNotNull prepend="," property="createDate">
+				CREATE_DATE
+			</isNotNull>
+			<isNotNull prepend="," property="merchantNumber">
+				MERCHANT_NUMBER
+			</isNotNull>
+			<isNotNull prepend="," property="updateDate">
+				UPDATE_DATE
+			</isNotNull>
+			<isNotNull prepend="," property="parentSite">
+				PARENT_SITE_NAME
+		   	</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="name">
+				#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="createDate">
+				#createDate:TIMESTAMP#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantNumber">
+				#merchantNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="updateDate">
+				#updateDate:TIMESTAMP#
+			</isNotNull>
+			<isNotNull prepend="," property="parentSite">
+				#parentSite:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<update id="ibatorgenerated_updateByPrimaryKeySelective"
+		parameterClass="com.mpower.domain.model.Site">
+		update SITE
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="merchantNumber">
+				MERCHANT_NUMBER = #merchantNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="updateDate">
+				UPDATE_DATE = #updateDate:TIMESTAMP#
+			</isNotNull>
+			<isNotNull prepend="," property="parentSite">
+				PARENT_SITE_NAME = #parentSite:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where SITE_NAME = #name:VARCHAR#
+	</update>
+	
+	<update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Site">
+		update SITE
+		set MERCHANT_NUMBER = #merchantNumber:VARCHAR#,
+		UPDATE_DATE = #updateDate:TIMESTAMP#,
+		PARENT_SITE_NAME = #parentSite:VARCHAR#
+		where SITE_NAME = #name:VARCHAR#
+	</update>
+	
+</sqlMap>

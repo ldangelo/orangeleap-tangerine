@@ -33,15 +33,17 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert site1 != null;
         assert "company999".equals(site1.getName());
         assert "12345".equals(site1.getMerchantNumber());
+        assert site1.getMerchantBin() == null;
         assert site1.getParentSite() == null;
         assert site1.getCreateDate() == null;
         assert site1.getUpdateDate() == null;
         
-        site = new Site("company1A", "foo", site1);
+        site = new Site("company1A", "foo", "sss", site1);
         Site site1A = siteDao.createSite(site);
         assert site1A != null;
         assert "company1A".equals(site1A.getName());
         assert "foo".equals(site1A.getMerchantNumber());
+        assert "sss".equals(site1A.getMerchantBin());
         assert site1A.getParentSite() != null;
         assert "company999".equals(site1A.getParentSite().getName());
         assert site1A.getCreateDate() == null;
@@ -54,6 +56,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert site1 != null;
         assert "company999".equals(site1.getName());
         assert "12345".equals(site1.getMerchantNumber());
+        assert site1.getMerchantBin() == null;
         assert site1.getParentSite() == null;
         assert site1.getCreateDate() != null;
         assert site1.getUpdateDate() != null;
@@ -62,6 +65,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert site1A != null;
         assert "company1A".equals(site1A.getName());
         assert "foo".equals(site1A.getMerchantNumber());
+        assert "sss".equals(site1A.getMerchantBin());
         assert site1A.getParentSite() != null;
         assert "company999".equals(site1A.getParentSite().getName());
         assert site1A.getCreateDate() != null;

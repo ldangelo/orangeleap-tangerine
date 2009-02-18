@@ -57,6 +57,8 @@
 			srcdir="${test.src.dir}"
 			debug="true"
         />
+
+		<replace file="${test.src.dir}/config/linehandler.properties" token="TESTCONFIGDIR" value="${test.src.dir}/config"/>
 		
 		<copy todir="${stage.dir}/test-folder">
 			<fileset dir="${test.src.dir}">
@@ -92,6 +94,7 @@
 
     	<testng classpathref="test-lib-path"
     		outputdir="${stage.dir}/test-output" dumpcommand="yes" failureProperty="test.failed">
+    		<sysproperty key="testConfigDir" value="${test.src.dir}/config/"/>
     		<xmlfileset dir="${stage.dir}" includes="**/testng.xml"/>
     	</testng>
 
@@ -103,6 +106,8 @@
         		<exclude name="**/testng-failed.xml"/>
         	</fileset>
 		</junitreport>
+
+		<replace file="${test.src.dir}/config/linehandler.properties" token="${test.src.dir}/config" value="TESTCONFIGDIR"/>
 
         <fail message="Tests failed: check test reports." if="test.failed" />
 

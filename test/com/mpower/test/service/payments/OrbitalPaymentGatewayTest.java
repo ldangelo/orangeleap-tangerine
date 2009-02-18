@@ -17,10 +17,11 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 
 	 private OrbitalPaymentGateway paymentGateway;
 	 
-	 @BeforeClass
+	 @Override
+    @BeforeClass
 	 public void setup() {
 		 paymentGateway = new OrbitalPaymentGateway();
-		 paymentGateway.setConfigFile("/usr/local/paymentech/config/linehandler.properties");
+		 paymentGateway.setConfigFile(System.getProperty("testConfigDir") + "linehandler.properties");
 	 }
 	 
 	 @Test(groups = { "authorizeTest" }, dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)

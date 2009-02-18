@@ -7,6 +7,7 @@
 		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR" />
+		<result property="merchantBin" column="MERCHANT_BIN" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="parentSite" resultMap="SITE.PARENT_SITE_RESULT" />
 	</resultMap>
@@ -22,25 +23,26 @@
 	</sql>
 			
 	<select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String">
-		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
+		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
 		<include refid="SELECT_SITE_FRAGMENT"/>
 	</select>
 	
 	<select id="SELECT_ALL_SITES" resultMap="SITE_RESULT">
-		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME
+		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
 		from SITE
 	</select>
 
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.mpower.domain.model.Site">
-		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME)
-		values (#name#, now(), #merchantNumber#, now(), #parentSite.name#)
+		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME)
+		values (#name#, now(), #merchantNumber#, #merchantBin#, now(), #parentSite.name#)
 	</insert>
 	
 	<update id="UPDATE_SITE" parameterClass="com.mpower.domain.model.Site">
 		update SITE
 		set UPDATE_DATE = now(),
 		MERCHANT_NUMBER = #merchantNumber#,
+		MERCHANT_BIN = #merchantBin#,
 		PARENT_SITE_NAME = #parentSite.name#
 		where SITE_NAME = #name:VARCHAR#
 	</update>

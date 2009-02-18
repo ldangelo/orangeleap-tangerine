@@ -16,14 +16,20 @@ public class Site implements Serializable {
         this.name = name;
     }
 
-    public Site(String name, String merchantNumber, Site parentSite) {
+    public Site(String name, String merchantNumber, String merchantBin) {
         this(name);
         this.merchantNumber = merchantNumber;
+        this.merchantBin = merchantBin;
+    }
+
+    public Site(String name, String merchantNumber, String merchantBin, Site parentSite) {
+        this(name, merchantNumber, merchantBin);
         this.parentSite = parentSite;
     }
 
     private String name;
     private String merchantNumber;
+    private String merchantBin;
     private Site parentSite;
     private Date createDate;
     private Date updateDate;
@@ -42,6 +48,14 @@ public class Site implements Serializable {
 
     public void setMerchantNumber(String merchantNumber) {
         this.merchantNumber = merchantNumber;
+    }
+
+    public String getMerchantBin() {
+        return merchantBin;
+    }
+
+    public void setMerchantBin(String merchantBin) {
+        this.merchantBin = merchantBin;
     }
 
     public Site getParentSite() {

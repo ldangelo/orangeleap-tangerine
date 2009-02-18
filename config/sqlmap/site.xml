@@ -39,13 +39,9 @@
 	
 	<update id="UPDATE_SITE" parameterClass="com.mpower.domain.model.Site">
 		update SITE
-		set UPDATE_DATE = now()
-		<isNotNull prepend="," property="merchantNumber">
-			MERCHANT_NUMBER = #merchantNumber:VARCHAR#
-		</isNotNull>
-		<isNotNull prepend="," property="parentSite">
-			PARENT_SITE_NAME = #parentSite:VARCHAR#
-		</isNotNull>
+		set UPDATE_DATE = now(),
+		MERCHANT_NUMBER = #merchantNumber#,
+		PARENT_SITE_NAME = #parentSite.name#
 		where SITE_NAME = #name:VARCHAR#
 	</update>
 

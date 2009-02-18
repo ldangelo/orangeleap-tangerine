@@ -30,20 +30,22 @@
 		    <transaction src="${basedir}/prod/tangerine.ddl"/>
 	    </sql>
 
+		
+		<!-- Load base data only -->
+		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
+
+		<!-- Load sample data -->
+		<ant antfile="${dev.build.file}" target="9. Load Data" />
+		
+
+		
 		<delete dir="${target.tomcat.dir}/work" />
 		<delete dir="${target.tomcat.dir}/temp" />
 		<delete dir="${target.tomcat.dir}/webapps/mpower" />
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 
 		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
-		<sleep seconds="90" />
 		
-		
-		<!-- for a base data only instance -->
-		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
-
-		<!-- for a sample data instance -->
-		<ant antfile="${dev.build.file}" target="9. Load Data" />
 		
     </target> 
 	

@@ -38,7 +38,7 @@
       MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME, PREFERRED_PHONE_TYPE,
       RECOGNITION_NAME, SUFFIX, TITLE, UPDATE_DATE, SITE_NAME
     from PERSON
-    where PERSON_ID = #personId:BIGINT#
+    where PERSON_ID = #personId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.Person" >
     <!--
@@ -46,7 +46,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from PERSON
-    where PERSON_ID = #personId:BIGINT#
+    where PERSON_ID = #personId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.Person" >
     <!--
@@ -57,13 +57,13 @@
       CONSTITUENT_TYPE, CREATE_DATE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME, LOGIN_ID,
       MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME, PREFERRED_PHONE_TYPE,
       RECOGNITION_NAME, SUFFIX, TITLE, UPDATE_DATE, SITE_NAME)
-    values (#personId:BIGINT#, #constituentIndividualRoles:VARCHAR#,
-      #constituentOrganizationRoles:VARCHAR#, #constituentType:VARCHAR#, #createDate:TIMESTAMP#,
-      #firstName:VARCHAR#, #lapsedDonor:BIT#, #lastName:VARCHAR#, #legalName:VARCHAR#,
-      #loginId:VARCHAR#, #majorDonor:BIT#, #maritalStatus:VARCHAR#, #middleName:VARCHAR#,
-      #ncaisCode:VARCHAR#, #organizationName:VARCHAR#, #preferredPhoneType:VARCHAR#,
-      #recognitionName:VARCHAR#, #suffix:VARCHAR#, #title:VARCHAR#, #updateDate:TIMESTAMP#,
-      #siteName:VARCHAR#)
+    values (#personId#, #constituentIndividualRoles#,
+      #constituentOrganizationRoles#, #constituentType#, #createDate#,
+      #firstName#, #lapsedDonor#, #lastName#, #legalName#,
+      #loginId#, #majorDonor#, #maritalStatus#, #middleName#,
+      #ncaisCode#, #organizationName#, #preferredPhoneType#,
+      #recognitionName#, #suffix#, #title#, #updateDate#,
+      #siteName#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Person" >
     <!--
@@ -140,67 +140,67 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       <isNotNull prepend="," property="constituentIndividualRoles" >
-        #constituentIndividualRoles:VARCHAR#
+        #constituentIndividualRoles#
       </isNotNull>
       <isNotNull prepend="," property="constituentOrganizationRoles" >
-        #constituentOrganizationRoles:VARCHAR#
+        #constituentOrganizationRoles#
       </isNotNull>
       <isNotNull prepend="," property="constituentType" >
-        #constituentType:VARCHAR#
+        #constituentType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        #createDate:TIMESTAMP#
+        #createDate#
       </isNotNull>
       <isNotNull prepend="," property="firstName" >
-        #firstName:VARCHAR#
+        #firstName#
       </isNotNull>
       <isNotNull prepend="," property="lapsedDonor" >
-        #lapsedDonor:BIT#
+        #lapsedDonor#
       </isNotNull>
       <isNotNull prepend="," property="lastName" >
-        #lastName:VARCHAR#
+        #lastName#
       </isNotNull>
       <isNotNull prepend="," property="legalName" >
-        #legalName:VARCHAR#
+        #legalName#
       </isNotNull>
       <isNotNull prepend="," property="loginId" >
-        #loginId:VARCHAR#
+        #loginId#
       </isNotNull>
       <isNotNull prepend="," property="majorDonor" >
-        #majorDonor:BIT#
+        #majorDonor#
       </isNotNull>
       <isNotNull prepend="," property="maritalStatus" >
-        #maritalStatus:VARCHAR#
+        #maritalStatus#
       </isNotNull>
       <isNotNull prepend="," property="middleName" >
-        #middleName:VARCHAR#
+        #middleName#
       </isNotNull>
       <isNotNull prepend="," property="ncaisCode" >
-        #ncaisCode:VARCHAR#
+        #ncaisCode#
       </isNotNull>
       <isNotNull prepend="," property="organizationName" >
-        #organizationName:VARCHAR#
+        #organizationName#
       </isNotNull>
       <isNotNull prepend="," property="preferredPhoneType" >
-        #preferredPhoneType:VARCHAR#
+        #preferredPhoneType#
       </isNotNull>
       <isNotNull prepend="," property="recognitionName" >
-        #recognitionName:VARCHAR#
+        #recognitionName#
       </isNotNull>
       <isNotNull prepend="," property="suffix" >
-        #suffix:VARCHAR#
+        #suffix#
       </isNotNull>
       <isNotNull prepend="," property="title" >
-        #title:VARCHAR#
+        #title#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        #updateDate:TIMESTAMP#
+        #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        #siteName:VARCHAR#
+        #siteName#
       </isNotNull>
       )
     </dynamic>
@@ -213,67 +213,67 @@
     update PERSON
     <dynamic prepend="set" >
       <isNotNull prepend="," property="constituentIndividualRoles" >
-        CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles:VARCHAR#
+        CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#
       </isNotNull>
       <isNotNull prepend="," property="constituentOrganizationRoles" >
-        CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles:VARCHAR#
+        CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#
       </isNotNull>
       <isNotNull prepend="," property="constituentType" >
-        CONSTITUENT_TYPE = #constituentType:VARCHAR#
+        CONSTITUENT_TYPE = #constituentType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        CREATE_DATE = #createDate:TIMESTAMP#
+        CREATE_DATE = #createDate#
       </isNotNull>
       <isNotNull prepend="," property="firstName" >
-        FIRST_NAME = #firstName:VARCHAR#
+        FIRST_NAME = #firstName#
       </isNotNull>
       <isNotNull prepend="," property="lapsedDonor" >
-        LAPSED_DONOR = #lapsedDonor:BIT#
+        LAPSED_DONOR = #lapsedDonor#
       </isNotNull>
       <isNotNull prepend="," property="lastName" >
-        LAST_NAME = #lastName:VARCHAR#
+        LAST_NAME = #lastName#
       </isNotNull>
       <isNotNull prepend="," property="legalName" >
-        LEGAL_NAME = #legalName:VARCHAR#
+        LEGAL_NAME = #legalName#
       </isNotNull>
       <isNotNull prepend="," property="loginId" >
-        LOGIN_ID = #loginId:VARCHAR#
+        LOGIN_ID = #loginId#
       </isNotNull>
       <isNotNull prepend="," property="majorDonor" >
-        MAJOR_DONOR = #majorDonor:BIT#
+        MAJOR_DONOR = #majorDonor#
       </isNotNull>
       <isNotNull prepend="," property="maritalStatus" >
-        MARITAL_STATUS = #maritalStatus:VARCHAR#
+        MARITAL_STATUS = #maritalStatus#
       </isNotNull>
       <isNotNull prepend="," property="middleName" >
-        MIDDLE_NAME = #middleName:VARCHAR#
+        MIDDLE_NAME = #middleName#
       </isNotNull>
       <isNotNull prepend="," property="ncaisCode" >
-        NCAIS_CODE = #ncaisCode:VARCHAR#
+        NCAIS_CODE = #ncaisCode#
       </isNotNull>
       <isNotNull prepend="," property="organizationName" >
-        ORGANIZATION_NAME = #organizationName:VARCHAR#
+        ORGANIZATION_NAME = #organizationName#
       </isNotNull>
       <isNotNull prepend="," property="preferredPhoneType" >
-        PREFERRED_PHONE_TYPE = #preferredPhoneType:VARCHAR#
+        PREFERRED_PHONE_TYPE = #preferredPhoneType#
       </isNotNull>
       <isNotNull prepend="," property="recognitionName" >
-        RECOGNITION_NAME = #recognitionName:VARCHAR#
+        RECOGNITION_NAME = #recognitionName#
       </isNotNull>
       <isNotNull prepend="," property="suffix" >
-        SUFFIX = #suffix:VARCHAR#
+        SUFFIX = #suffix#
       </isNotNull>
       <isNotNull prepend="," property="title" >
-        TITLE = #title:VARCHAR#
+        TITLE = #title#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        UPDATE_DATE = #updateDate:TIMESTAMP#
+        UPDATE_DATE = #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        SITE_NAME = #siteName:VARCHAR#
+        SITE_NAME = #siteName#
       </isNotNull>
     </dynamic>
-    where PERSON_ID = #personId:BIGINT#
+    where PERSON_ID = #personId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Person" >
     <!--
@@ -281,26 +281,26 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update PERSON
-    set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles:VARCHAR#,
-      CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles:VARCHAR#,
-      CONSTITUENT_TYPE = #constituentType:VARCHAR#,
-      CREATE_DATE = #createDate:TIMESTAMP#,
-      FIRST_NAME = #firstName:VARCHAR#,
-      LAPSED_DONOR = #lapsedDonor:BIT#,
-      LAST_NAME = #lastName:VARCHAR#,
-      LEGAL_NAME = #legalName:VARCHAR#,
-      LOGIN_ID = #loginId:VARCHAR#,
-      MAJOR_DONOR = #majorDonor:BIT#,
-      MARITAL_STATUS = #maritalStatus:VARCHAR#,
-      MIDDLE_NAME = #middleName:VARCHAR#,
-      NCAIS_CODE = #ncaisCode:VARCHAR#,
-      ORGANIZATION_NAME = #organizationName:VARCHAR#,
-      PREFERRED_PHONE_TYPE = #preferredPhoneType:VARCHAR#,
-      RECOGNITION_NAME = #recognitionName:VARCHAR#,
-      SUFFIX = #suffix:VARCHAR#,
-      TITLE = #title:VARCHAR#,
-      UPDATE_DATE = #updateDate:TIMESTAMP#,
-      SITE_NAME = #siteName:VARCHAR#
-    where PERSON_ID = #personId:BIGINT#
+    set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#,
+      CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,
+      CONSTITUENT_TYPE = #constituentType#,
+      CREATE_DATE = #createDate#,
+      FIRST_NAME = #firstName#,
+      LAPSED_DONOR = #lapsedDonor#,
+      LAST_NAME = #lastName#,
+      LEGAL_NAME = #legalName#,
+      LOGIN_ID = #loginId#,
+      MAJOR_DONOR = #majorDonor#,
+      MARITAL_STATUS = #maritalStatus#,
+      MIDDLE_NAME = #middleName#,
+      NCAIS_CODE = #ncaisCode#,
+      ORGANIZATION_NAME = #organizationName#,
+      PREFERRED_PHONE_TYPE = #preferredPhoneType#,
+      RECOGNITION_NAME = #recognitionName#,
+      SUFFIX = #suffix#,
+      TITLE = #title#,
+      UPDATE_DATE = #updateDate#,
+      SITE_NAME = #siteName#
+    where PERSON_ID = #personId#
   </update>
 </sqlMap>

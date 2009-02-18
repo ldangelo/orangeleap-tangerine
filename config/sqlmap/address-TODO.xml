@@ -38,7 +38,7 @@
       RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
       TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID
     from ADDRESS
-    where ADDRESS_ID = #addressId:BIGINT#
+    where ADDRESS_ID = #addressId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.Address" >
     <!--
@@ -46,7 +46,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from ADDRESS
-    where ADDRESS_ID = #addressId:BIGINT#
+    where ADDRESS_ID = #addressId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.Address" >
     <!--
@@ -57,13 +57,13 @@
       ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
       POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
       TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-    values (#addressId:BIGINT#, #activationStatus:VARCHAR#, #addressLine1:VARCHAR#,
-      #addressLine2:VARCHAR#, #addressLine3:VARCHAR#, #addressType:VARCHAR#, #city:VARCHAR#,
-      #comment:VARCHAR#, #country:VARCHAR#, #createDate:TIMESTAMP#, #effectiveDate:TIMESTAMP#,
-      #inactive:BIT#, #postalCode:VARCHAR#, #receiveCorrespondence:BIT#,
-      #seasonalEndDate:TIMESTAMP#, #seasonalStartDate:TIMESTAMP#, #stateProvince:VARCHAR#,
-      #temporaryEndDate:TIMESTAMP#, #temporaryStartDate:TIMESTAMP#, #updateDate:TIMESTAMP#,
-      #personId:BIGINT#)
+    values (#addressId#, #activationStatus#, #addressLine1#,
+      #addressLine2#, #addressLine3#, #addressType#, #city#,
+      #comment#, #country#, #createDate#, #effectiveDate#,
+      #inactive#, #postalCode#, #receiveCorrespondence#,
+      #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
+      #temporaryEndDate#, #temporaryStartDate#, #updateDate#,
+      #personId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Address" >
     <!--
@@ -140,67 +140,67 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="addressId" >
-        #addressId:BIGINT#
+        #addressId#
       </isNotNull>
       <isNotNull prepend="," property="activationStatus" >
-        #activationStatus:VARCHAR#
+        #activationStatus#
       </isNotNull>
       <isNotNull prepend="," property="addressLine1" >
-        #addressLine1:VARCHAR#
+        #addressLine1#
       </isNotNull>
       <isNotNull prepend="," property="addressLine2" >
-        #addressLine2:VARCHAR#
+        #addressLine2#
       </isNotNull>
       <isNotNull prepend="," property="addressLine3" >
-        #addressLine3:VARCHAR#
+        #addressLine3#
       </isNotNull>
       <isNotNull prepend="," property="addressType" >
-        #addressType:VARCHAR#
+        #addressType#
       </isNotNull>
       <isNotNull prepend="," property="city" >
-        #city:VARCHAR#
+        #city#
       </isNotNull>
       <isNotNull prepend="," property="comment" >
-        #comment:VARCHAR#
+        #comment#
       </isNotNull>
       <isNotNull prepend="," property="country" >
-        #country:VARCHAR#
+        #country#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        #createDate:TIMESTAMP#
+        #createDate#
       </isNotNull>
       <isNotNull prepend="," property="effectiveDate" >
-        #effectiveDate:TIMESTAMP#
+        #effectiveDate#
       </isNotNull>
       <isNotNull prepend="," property="inactive" >
-        #inactive:BIT#
+        #inactive#
       </isNotNull>
       <isNotNull prepend="," property="postalCode" >
-        #postalCode:VARCHAR#
+        #postalCode#
       </isNotNull>
       <isNotNull prepend="," property="receiveCorrespondence" >
-        #receiveCorrespondence:BIT#
+        #receiveCorrespondence#
       </isNotNull>
       <isNotNull prepend="," property="seasonalEndDate" >
-        #seasonalEndDate:TIMESTAMP#
+        #seasonalEndDate#
       </isNotNull>
       <isNotNull prepend="," property="seasonalStartDate" >
-        #seasonalStartDate:TIMESTAMP#
+        #seasonalStartDate#
       </isNotNull>
       <isNotNull prepend="," property="stateProvince" >
-        #stateProvince:VARCHAR#
+        #stateProvince#
       </isNotNull>
       <isNotNull prepend="," property="temporaryEndDate" >
-        #temporaryEndDate:TIMESTAMP#
+        #temporaryEndDate#
       </isNotNull>
       <isNotNull prepend="," property="temporaryStartDate" >
-        #temporaryStartDate:TIMESTAMP#
+        #temporaryStartDate#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        #updateDate:TIMESTAMP#
+        #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       )
     </dynamic>
@@ -213,67 +213,67 @@
     update ADDRESS
     <dynamic prepend="set" >
       <isNotNull prepend="," property="activationStatus" >
-        ACTIVATION_STATUS = #activationStatus:VARCHAR#
+        ACTIVATION_STATUS = #activationStatus#
       </isNotNull>
       <isNotNull prepend="," property="addressLine1" >
-        ADDRESS_LINE_1 = #addressLine1:VARCHAR#
+        ADDRESS_LINE_1 = #addressLine1#
       </isNotNull>
       <isNotNull prepend="," property="addressLine2" >
-        ADDRESS_LINE_2 = #addressLine2:VARCHAR#
+        ADDRESS_LINE_2 = #addressLine2#
       </isNotNull>
       <isNotNull prepend="," property="addressLine3" >
-        ADDRESS_LINE_3 = #addressLine3:VARCHAR#
+        ADDRESS_LINE_3 = #addressLine3#
       </isNotNull>
       <isNotNull prepend="," property="addressType" >
-        ADDRESS_TYPE = #addressType:VARCHAR#
+        ADDRESS_TYPE = #addressType#
       </isNotNull>
       <isNotNull prepend="," property="city" >
-        CITY = #city:VARCHAR#
+        CITY = #city#
       </isNotNull>
       <isNotNull prepend="," property="comment" >
-        COMMENT = #comment:VARCHAR#
+        COMMENT = #comment#
       </isNotNull>
       <isNotNull prepend="," property="country" >
-        COUNTRY = #country:VARCHAR#
+        COUNTRY = #country#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        CREATE_DATE = #createDate:TIMESTAMP#
+        CREATE_DATE = #createDate#
       </isNotNull>
       <isNotNull prepend="," property="effectiveDate" >
-        EFFECTIVE_DATE = #effectiveDate:TIMESTAMP#
+        EFFECTIVE_DATE = #effectiveDate#
       </isNotNull>
       <isNotNull prepend="," property="inactive" >
-        INACTIVE = #inactive:BIT#
+        INACTIVE = #inactive#
       </isNotNull>
       <isNotNull prepend="," property="postalCode" >
-        POSTAL_CODE = #postalCode:VARCHAR#
+        POSTAL_CODE = #postalCode#
       </isNotNull>
       <isNotNull prepend="," property="receiveCorrespondence" >
-        RECEIVE_CORRESPONDENCE = #receiveCorrespondence:BIT#
+        RECEIVE_CORRESPONDENCE = #receiveCorrespondence#
       </isNotNull>
       <isNotNull prepend="," property="seasonalEndDate" >
-        SEASONAL_END_DATE = #seasonalEndDate:TIMESTAMP#
+        SEASONAL_END_DATE = #seasonalEndDate#
       </isNotNull>
       <isNotNull prepend="," property="seasonalStartDate" >
-        SEASONAL_START_DATE = #seasonalStartDate:TIMESTAMP#
+        SEASONAL_START_DATE = #seasonalStartDate#
       </isNotNull>
       <isNotNull prepend="," property="stateProvince" >
-        STATE_PROVINCE = #stateProvince:VARCHAR#
+        STATE_PROVINCE = #stateProvince#
       </isNotNull>
       <isNotNull prepend="," property="temporaryEndDate" >
-        TEMPORARY_END_DATE = #temporaryEndDate:TIMESTAMP#
+        TEMPORARY_END_DATE = #temporaryEndDate#
       </isNotNull>
       <isNotNull prepend="," property="temporaryStartDate" >
-        TEMPORARY_START_DATE = #temporaryStartDate:TIMESTAMP#
+        TEMPORARY_START_DATE = #temporaryStartDate#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        UPDATE_DATE = #updateDate:TIMESTAMP#
+        UPDATE_DATE = #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
     </dynamic>
-    where ADDRESS_ID = #addressId:BIGINT#
+    where ADDRESS_ID = #addressId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Address" >
     <!--
@@ -281,26 +281,26 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update ADDRESS
-    set ACTIVATION_STATUS = #activationStatus:VARCHAR#,
-      ADDRESS_LINE_1 = #addressLine1:VARCHAR#,
-      ADDRESS_LINE_2 = #addressLine2:VARCHAR#,
-      ADDRESS_LINE_3 = #addressLine3:VARCHAR#,
-      ADDRESS_TYPE = #addressType:VARCHAR#,
-      CITY = #city:VARCHAR#,
-      COMMENT = #comment:VARCHAR#,
-      COUNTRY = #country:VARCHAR#,
-      CREATE_DATE = #createDate:TIMESTAMP#,
-      EFFECTIVE_DATE = #effectiveDate:TIMESTAMP#,
-      INACTIVE = #inactive:BIT#,
-      POSTAL_CODE = #postalCode:VARCHAR#,
-      RECEIVE_CORRESPONDENCE = #receiveCorrespondence:BIT#,
-      SEASONAL_END_DATE = #seasonalEndDate:TIMESTAMP#,
-      SEASONAL_START_DATE = #seasonalStartDate:TIMESTAMP#,
-      STATE_PROVINCE = #stateProvince:VARCHAR#,
-      TEMPORARY_END_DATE = #temporaryEndDate:TIMESTAMP#,
-      TEMPORARY_START_DATE = #temporaryStartDate:TIMESTAMP#,
-      UPDATE_DATE = #updateDate:TIMESTAMP#,
-      PERSON_ID = #personId:BIGINT#
-    where ADDRESS_ID = #addressId:BIGINT#
+    set ACTIVATION_STATUS = #activationStatus#,
+      ADDRESS_LINE_1 = #addressLine1#,
+      ADDRESS_LINE_2 = #addressLine2#,
+      ADDRESS_LINE_3 = #addressLine3#,
+      ADDRESS_TYPE = #addressType#,
+      CITY = #city#,
+      COMMENT = #comment#,
+      COUNTRY = #country#,
+      CREATE_DATE = #createDate#,
+      EFFECTIVE_DATE = #effectiveDate#,
+      INACTIVE = #inactive#,
+      POSTAL_CODE = #postalCode#,
+      RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
+      SEASONAL_END_DATE = #seasonalEndDate#,
+      SEASONAL_START_DATE = #seasonalStartDate#,
+      STATE_PROVINCE = #stateProvince#,
+      TEMPORARY_END_DATE = #temporaryEndDate#,
+      TEMPORARY_START_DATE = #temporaryStartDate#,
+      UPDATE_DATE = #updateDate#,
+      PERSON_ID = #personId#
+    where ADDRESS_ID = #addressId#
   </update>
 </sqlMap>

@@ -21,7 +21,7 @@
     select FIELD_REQUIRED_ID, REQUIRED, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID,
       SECONDARY_FIELD_DEFINITION_ID
     from FIELD_REQUIRED
-    where FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#
+    where FIELD_REQUIRED_ID = #fieldRequiredId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.FieldRequired" >
     <!--
@@ -29,7 +29,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from FIELD_REQUIRED
-    where FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#
+    where FIELD_REQUIRED_ID = #fieldRequiredId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.FieldRequired" >
     <!--
@@ -38,8 +38,8 @@
     -->
     insert into FIELD_REQUIRED (FIELD_REQUIRED_ID, REQUIRED, SECTION_NAME, SITE_NAME,
       FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
-    values (#fieldRequiredId:BIGINT#, #required:BIT#, #sectionName:VARCHAR#, #siteName:VARCHAR#,
-      #fieldDefinitionId:VARCHAR#, #secondaryFieldDefinitionId:VARCHAR#)
+    values (#fieldRequiredId#, #required#, #sectionName#, #siteName#,
+      #fieldDefinitionId#, #secondaryFieldDefinitionId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.FieldRequired" >
     <!--
@@ -71,22 +71,22 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="fieldRequiredId" >
-        #fieldRequiredId:BIGINT#
+        #fieldRequiredId#
       </isNotNull>
       <isNotNull prepend="," property="required" >
-        #required:BIT#
+        #required#
       </isNotNull>
       <isNotNull prepend="," property="sectionName" >
-        #sectionName:VARCHAR#
+        #sectionName#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        #siteName:VARCHAR#
+        #siteName#
       </isNotNull>
       <isNotNull prepend="," property="fieldDefinitionId" >
-        #fieldDefinitionId:VARCHAR#
+        #fieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="secondaryFieldDefinitionId" >
-        #secondaryFieldDefinitionId:VARCHAR#
+        #secondaryFieldDefinitionId#
       </isNotNull>
       )
     </dynamic>
@@ -99,22 +99,22 @@
     update FIELD_REQUIRED
     <dynamic prepend="set" >
       <isNotNull prepend="," property="required" >
-        REQUIRED = #required:BIT#
+        REQUIRED = #required#
       </isNotNull>
       <isNotNull prepend="," property="sectionName" >
-        SECTION_NAME = #sectionName:VARCHAR#
+        SECTION_NAME = #sectionName#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        SITE_NAME = #siteName:VARCHAR#
+        SITE_NAME = #siteName#
       </isNotNull>
       <isNotNull prepend="," property="fieldDefinitionId" >
-        FIELD_DEFINITION_ID = #fieldDefinitionId:VARCHAR#
+        FIELD_DEFINITION_ID = #fieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="secondaryFieldDefinitionId" >
-        SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId:VARCHAR#
+        SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId#
       </isNotNull>
     </dynamic>
-    where FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#
+    where FIELD_REQUIRED_ID = #fieldRequiredId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.FieldRequired" >
     <!--
@@ -122,11 +122,11 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update FIELD_REQUIRED
-    set REQUIRED = #required:BIT#,
-      SECTION_NAME = #sectionName:VARCHAR#,
-      SITE_NAME = #siteName:VARCHAR#,
-      FIELD_DEFINITION_ID = #fieldDefinitionId:VARCHAR#,
-      SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId:VARCHAR#
-    where FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#
+    set REQUIRED = #required#,
+      SECTION_NAME = #sectionName#,
+      SITE_NAME = #siteName#,
+      FIELD_DEFINITION_ID = #fieldDefinitionId#,
+      SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId#
+    where FIELD_REQUIRED_ID = #fieldRequiredId#
   </update>
 </sqlMap>

@@ -17,7 +17,7 @@
     -->
     select QUERY_LOOKUP_PARAM_ID, PARAM_NAME, QUERY_LOOKUP_ID
     from QUERY_LOOKUP_PARAM
-    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId:BIGINT#
+    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.QueryLookupParam" >
     <!--
@@ -25,7 +25,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from QUERY_LOOKUP_PARAM
-    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId:BIGINT#
+    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.QueryLookupParam" >
     <!--
@@ -33,7 +33,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     insert into QUERY_LOOKUP_PARAM (QUERY_LOOKUP_PARAM_ID, PARAM_NAME, QUERY_LOOKUP_ID)
-    values (#queryLookupParamId:BIGINT#, #paramName:VARCHAR#, #queryLookupId:BIGINT#)
+    values (#queryLookupParamId#, #paramName#, #queryLookupId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.QueryLookupParam" >
     <!--
@@ -56,13 +56,13 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="queryLookupParamId" >
-        #queryLookupParamId:BIGINT#
+        #queryLookupParamId#
       </isNotNull>
       <isNotNull prepend="," property="paramName" >
-        #paramName:VARCHAR#
+        #paramName#
       </isNotNull>
       <isNotNull prepend="," property="queryLookupId" >
-        #queryLookupId:BIGINT#
+        #queryLookupId#
       </isNotNull>
       )
     </dynamic>
@@ -75,13 +75,13 @@
     update QUERY_LOOKUP_PARAM
     <dynamic prepend="set" >
       <isNotNull prepend="," property="paramName" >
-        PARAM_NAME = #paramName:VARCHAR#
+        PARAM_NAME = #paramName#
       </isNotNull>
       <isNotNull prepend="," property="queryLookupId" >
-        QUERY_LOOKUP_ID = #queryLookupId:BIGINT#
+        QUERY_LOOKUP_ID = #queryLookupId#
       </isNotNull>
     </dynamic>
-    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId:BIGINT#
+    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.QueryLookupParam" >
     <!--
@@ -89,8 +89,8 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update QUERY_LOOKUP_PARAM
-    set PARAM_NAME = #paramName:VARCHAR#,
-      QUERY_LOOKUP_ID = #queryLookupId:BIGINT#
-    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId:BIGINT#
+    set PARAM_NAME = #paramName#,
+      QUERY_LOOKUP_ID = #queryLookupId#
+    where QUERY_LOOKUP_PARAM_ID = #queryLookupParamId#
   </update>
 </sqlMap>

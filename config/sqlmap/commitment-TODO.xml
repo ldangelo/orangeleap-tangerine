@@ -48,7 +48,7 @@
       PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT, START_DATE, STATUS,
       UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID
     from COMMITMENT
-    where COMMITMENT_ID = #commitmentId:BIGINT#
+    where COMMITMENT_ID = #commitmentId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.Commitment" >
     <!--
@@ -56,7 +56,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from COMMITMENT
-    where COMMITMENT_ID = #commitmentId:BIGINT#
+    where COMMITMENT_ID = #commitmentId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.Commitment" >
     <!--
@@ -68,14 +68,14 @@
       FREQUENCY, LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE, PLEDGE_CANCEL_REASON,
       PLEDGE_DATE, PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT, START_DATE,
       STATUS, UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
-    values (#commitmentId:BIGINT#, #acknowledgmentDate:TIMESTAMP#, #amountPerGift:DECIMAL#,
-      #amountTotal:DECIMAL#, #autoPay:BIT#, #checkNumber:INTEGER#, #comments:VARCHAR#,
-      #commitmentType:VARCHAR#, #createDate:TIMESTAMP#, #currencyCode:VARCHAR#, #endDate:TIMESTAMP#,
-      #frequency:VARCHAR#, #lastEntryDate:TIMESTAMP#, #notes:VARCHAR#, #paymentType:VARCHAR#,
-      #pledgeCancelDate:TIMESTAMP#, #pledgeCancelReason:VARCHAR#, #pledgeDate:TIMESTAMP#,
-      #pledgeStatus:VARCHAR#, #projectedDate:TIMESTAMP#, #recurring:BIT#, #sendAcknowledgment:BIT#,
-      #startDate:TIMESTAMP#, #status:VARCHAR#, #updateDate:TIMESTAMP#, #addressId:BIGINT#,
-      #emailId:BIGINT#, #paymentSourceId:BIGINT#, #personId:BIGINT#, #phoneId:BIGINT#)
+    values (#commitmentId#, #acknowledgmentDate#, #amountPerGift#,
+      #amountTotal#, #autoPay#, #checkNumber#, #comments#,
+      #commitmentType#, #createDate#, #currencyCode#, #endDate#,
+      #frequency#, #lastEntryDate#, #notes#, #paymentType#,
+      #pledgeCancelDate#, #pledgeCancelReason#, #pledgeDate#,
+      #pledgeStatus#, #projectedDate#, #recurring#, #sendAcknowledgment#,
+      #startDate#, #status#, #updateDate#, #addressId#,
+      #emailId#, #paymentSourceId#, #personId#, #phoneId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Commitment" >
     <!--
@@ -179,94 +179,94 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="commitmentId" >
-        #commitmentId:BIGINT#
+        #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="acknowledgmentDate" >
-        #acknowledgmentDate:TIMESTAMP#
+        #acknowledgmentDate#
       </isNotNull>
       <isNotNull prepend="," property="amountPerGift" >
-        #amountPerGift:DECIMAL#
+        #amountPerGift#
       </isNotNull>
       <isNotNull prepend="," property="amountTotal" >
-        #amountTotal:DECIMAL#
+        #amountTotal#
       </isNotNull>
       <isNotNull prepend="," property="autoPay" >
-        #autoPay:BIT#
+        #autoPay#
       </isNotNull>
       <isNotNull prepend="," property="checkNumber" >
-        #checkNumber:INTEGER#
+        #checkNumber#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        #comments:VARCHAR#
+        #comments#
       </isNotNull>
       <isNotNull prepend="," property="commitmentType" >
-        #commitmentType:VARCHAR#
+        #commitmentType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        #createDate:TIMESTAMP#
+        #createDate#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        #currencyCode:VARCHAR#
+        #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="endDate" >
-        #endDate:TIMESTAMP#
+        #endDate#
       </isNotNull>
       <isNotNull prepend="," property="frequency" >
-        #frequency:VARCHAR#
+        #frequency#
       </isNotNull>
       <isNotNull prepend="," property="lastEntryDate" >
-        #lastEntryDate:TIMESTAMP#
+        #lastEntryDate#
       </isNotNull>
       <isNotNull prepend="," property="notes" >
-        #notes:VARCHAR#
+        #notes#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        #paymentType:VARCHAR#
+        #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="pledgeCancelDate" >
-        #pledgeCancelDate:TIMESTAMP#
+        #pledgeCancelDate#
       </isNotNull>
       <isNotNull prepend="," property="pledgeCancelReason" >
-        #pledgeCancelReason:VARCHAR#
+        #pledgeCancelReason#
       </isNotNull>
       <isNotNull prepend="," property="pledgeDate" >
-        #pledgeDate:TIMESTAMP#
+        #pledgeDate#
       </isNotNull>
       <isNotNull prepend="," property="pledgeStatus" >
-        #pledgeStatus:VARCHAR#
+        #pledgeStatus#
       </isNotNull>
       <isNotNull prepend="," property="projectedDate" >
-        #projectedDate:TIMESTAMP#
+        #projectedDate#
       </isNotNull>
       <isNotNull prepend="," property="recurring" >
-        #recurring:BIT#
+        #recurring#
       </isNotNull>
       <isNotNull prepend="," property="sendAcknowledgment" >
-        #sendAcknowledgment:BIT#
+        #sendAcknowledgment#
       </isNotNull>
       <isNotNull prepend="," property="startDate" >
-        #startDate:TIMESTAMP#
+        #startDate#
       </isNotNull>
       <isNotNull prepend="," property="status" >
-        #status:VARCHAR#
+        #status#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        #updateDate:TIMESTAMP#
+        #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        #addressId:BIGINT#
+        #addressId#
       </isNotNull>
       <isNotNull prepend="," property="emailId" >
-        #emailId:BIGINT#
+        #emailId#
       </isNotNull>
       <isNotNull prepend="," property="paymentSourceId" >
-        #paymentSourceId:BIGINT#
+        #paymentSourceId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        #phoneId:BIGINT#
+        #phoneId#
       </isNotNull>
       )
     </dynamic>
@@ -279,94 +279,94 @@
     update COMMITMENT
     <dynamic prepend="set" >
       <isNotNull prepend="," property="acknowledgmentDate" >
-        ACKNOWLEDGMENT_DATE = #acknowledgmentDate:TIMESTAMP#
+        ACKNOWLEDGMENT_DATE = #acknowledgmentDate#
       </isNotNull>
       <isNotNull prepend="," property="amountPerGift" >
-        AMOUNT_PER_GIFT = #amountPerGift:DECIMAL#
+        AMOUNT_PER_GIFT = #amountPerGift#
       </isNotNull>
       <isNotNull prepend="," property="amountTotal" >
-        AMOUNT_TOTAL = #amountTotal:DECIMAL#
+        AMOUNT_TOTAL = #amountTotal#
       </isNotNull>
       <isNotNull prepend="," property="autoPay" >
-        AUTO_PAY = #autoPay:BIT#
+        AUTO_PAY = #autoPay#
       </isNotNull>
       <isNotNull prepend="," property="checkNumber" >
-        CHECK_NUMBER = #checkNumber:INTEGER#
+        CHECK_NUMBER = #checkNumber#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        COMMENTS = #comments:VARCHAR#
+        COMMENTS = #comments#
       </isNotNull>
       <isNotNull prepend="," property="commitmentType" >
-        COMMITMENT_TYPE = #commitmentType:VARCHAR#
+        COMMITMENT_TYPE = #commitmentType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        CREATE_DATE = #createDate:TIMESTAMP#
+        CREATE_DATE = #createDate#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        CURRENCY_CODE = #currencyCode:VARCHAR#
+        CURRENCY_CODE = #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="endDate" >
-        END_DATE = #endDate:TIMESTAMP#
+        END_DATE = #endDate#
       </isNotNull>
       <isNotNull prepend="," property="frequency" >
-        FREQUENCY = #frequency:VARCHAR#
+        FREQUENCY = #frequency#
       </isNotNull>
       <isNotNull prepend="," property="lastEntryDate" >
-        LAST_ENTRY_DATE = #lastEntryDate:TIMESTAMP#
+        LAST_ENTRY_DATE = #lastEntryDate#
       </isNotNull>
       <isNotNull prepend="," property="notes" >
-        NOTES = #notes:VARCHAR#
+        NOTES = #notes#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        PAYMENT_TYPE = #paymentType:VARCHAR#
+        PAYMENT_TYPE = #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="pledgeCancelDate" >
-        PLEDGE_CANCEL_DATE = #pledgeCancelDate:TIMESTAMP#
+        PLEDGE_CANCEL_DATE = #pledgeCancelDate#
       </isNotNull>
       <isNotNull prepend="," property="pledgeCancelReason" >
-        PLEDGE_CANCEL_REASON = #pledgeCancelReason:VARCHAR#
+        PLEDGE_CANCEL_REASON = #pledgeCancelReason#
       </isNotNull>
       <isNotNull prepend="," property="pledgeDate" >
-        PLEDGE_DATE = #pledgeDate:TIMESTAMP#
+        PLEDGE_DATE = #pledgeDate#
       </isNotNull>
       <isNotNull prepend="," property="pledgeStatus" >
-        PLEDGE_STATUS = #pledgeStatus:VARCHAR#
+        PLEDGE_STATUS = #pledgeStatus#
       </isNotNull>
       <isNotNull prepend="," property="projectedDate" >
-        PROJECTED_DATE = #projectedDate:TIMESTAMP#
+        PROJECTED_DATE = #projectedDate#
       </isNotNull>
       <isNotNull prepend="," property="recurring" >
-        RECURRING = #recurring:BIT#
+        RECURRING = #recurring#
       </isNotNull>
       <isNotNull prepend="," property="sendAcknowledgment" >
-        SEND_ACKNOWLEDGMENT = #sendAcknowledgment:BIT#
+        SEND_ACKNOWLEDGMENT = #sendAcknowledgment#
       </isNotNull>
       <isNotNull prepend="," property="startDate" >
-        START_DATE = #startDate:TIMESTAMP#
+        START_DATE = #startDate#
       </isNotNull>
       <isNotNull prepend="," property="status" >
-        STATUS = #status:VARCHAR#
+        STATUS = #status#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        UPDATE_DATE = #updateDate:TIMESTAMP#
+        UPDATE_DATE = #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        ADDRESS_ID = #addressId:BIGINT#
+        ADDRESS_ID = #addressId#
       </isNotNull>
       <isNotNull prepend="," property="emailId" >
-        EMAIL_ID = #emailId:BIGINT#
+        EMAIL_ID = #emailId#
       </isNotNull>
       <isNotNull prepend="," property="paymentSourceId" >
-        PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+        PAYMENT_SOURCE_ID = #paymentSourceId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        PHONE_ID = #phoneId:BIGINT#
+        PHONE_ID = #phoneId#
       </isNotNull>
     </dynamic>
-    where COMMITMENT_ID = #commitmentId:BIGINT#
+    where COMMITMENT_ID = #commitmentId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Commitment" >
     <!--
@@ -374,35 +374,35 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update COMMITMENT
-    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate:TIMESTAMP#,
-      AMOUNT_PER_GIFT = #amountPerGift:DECIMAL#,
-      AMOUNT_TOTAL = #amountTotal:DECIMAL#,
-      AUTO_PAY = #autoPay:BIT#,
-      CHECK_NUMBER = #checkNumber:INTEGER#,
-      COMMENTS = #comments:VARCHAR#,
-      COMMITMENT_TYPE = #commitmentType:VARCHAR#,
-      CREATE_DATE = #createDate:TIMESTAMP#,
-      CURRENCY_CODE = #currencyCode:VARCHAR#,
-      END_DATE = #endDate:TIMESTAMP#,
-      FREQUENCY = #frequency:VARCHAR#,
-      LAST_ENTRY_DATE = #lastEntryDate:TIMESTAMP#,
-      NOTES = #notes:VARCHAR#,
-      PAYMENT_TYPE = #paymentType:VARCHAR#,
-      PLEDGE_CANCEL_DATE = #pledgeCancelDate:TIMESTAMP#,
-      PLEDGE_CANCEL_REASON = #pledgeCancelReason:VARCHAR#,
-      PLEDGE_DATE = #pledgeDate:TIMESTAMP#,
-      PLEDGE_STATUS = #pledgeStatus:VARCHAR#,
-      PROJECTED_DATE = #projectedDate:TIMESTAMP#,
-      RECURRING = #recurring:BIT#,
-      SEND_ACKNOWLEDGMENT = #sendAcknowledgment:BIT#,
-      START_DATE = #startDate:TIMESTAMP#,
-      STATUS = #status:VARCHAR#,
-      UPDATE_DATE = #updateDate:TIMESTAMP#,
-      ADDRESS_ID = #addressId:BIGINT#,
-      EMAIL_ID = #emailId:BIGINT#,
-      PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#,
-      PHONE_ID = #phoneId:BIGINT#
-    where COMMITMENT_ID = #commitmentId:BIGINT#
+    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+      AMOUNT_PER_GIFT = #amountPerGift#,
+      AMOUNT_TOTAL = #amountTotal#,
+      AUTO_PAY = #autoPay#,
+      CHECK_NUMBER = #checkNumber#,
+      COMMENTS = #comments#,
+      COMMITMENT_TYPE = #commitmentType#,
+      CREATE_DATE = #createDate#,
+      CURRENCY_CODE = #currencyCode#,
+      END_DATE = #endDate#,
+      FREQUENCY = #frequency#,
+      LAST_ENTRY_DATE = #lastEntryDate#,
+      NOTES = #notes#,
+      PAYMENT_TYPE = #paymentType#,
+      PLEDGE_CANCEL_DATE = #pledgeCancelDate#,
+      PLEDGE_CANCEL_REASON = #pledgeCancelReason#,
+      PLEDGE_DATE = #pledgeDate#,
+      PLEDGE_STATUS = #pledgeStatus#,
+      PROJECTED_DATE = #projectedDate#,
+      RECURRING = #recurring#,
+      SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+      START_DATE = #startDate#,
+      STATUS = #status#,
+      UPDATE_DATE = #updateDate#,
+      ADDRESS_ID = #addressId#,
+      EMAIL_ID = #emailId#,
+      PAYMENT_SOURCE_ID = #paymentSourceId#,
+      PERSON_ID = #personId#,
+      PHONE_ID = #phoneId#
+    where COMMITMENT_ID = #commitmentId#
   </update>
 </sqlMap>

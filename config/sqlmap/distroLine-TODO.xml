@@ -23,7 +23,7 @@
     select DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE,
       COMMITMENT_ID, GIFT_ID
     from DISTRO_LINE
-    where DISTRO_LINE_ID = #distroLineId:BIGINT#
+    where DISTRO_LINE_ID = #distroLineId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.DistroLine" >
     <!--
@@ -31,7 +31,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from DISTRO_LINE
-    where DISTRO_LINE_ID = #distroLineId:BIGINT#
+    where DISTRO_LINE_ID = #distroLineId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.DistroLine" >
     <!--
@@ -40,9 +40,9 @@
     -->
     insert into DISTRO_LINE (DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE,
       PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
-    values (#distroLineId:BIGINT#, #amount:DECIMAL#, #motivationCode:VARCHAR#,
-      #otherMotivation:VARCHAR#, #percentage:DECIMAL#, #projectCode:VARCHAR#, #commitmentId:BIGINT#,
-      #giftId:BIGINT#)
+    values (#distroLineId#, #amount#, #motivationCode#,
+      #otherMotivation#, #percentage#, #projectCode#, #commitmentId#,
+      #giftId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.DistroLine" >
     <!--
@@ -80,28 +80,28 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="distroLineId" >
-        #distroLineId:BIGINT#
+        #distroLineId#
       </isNotNull>
       <isNotNull prepend="," property="amount" >
-        #amount:DECIMAL#
+        #amount#
       </isNotNull>
       <isNotNull prepend="," property="motivationCode" >
-        #motivationCode:VARCHAR#
+        #motivationCode#
       </isNotNull>
       <isNotNull prepend="," property="otherMotivation" >
-        #otherMotivation:VARCHAR#
+        #otherMotivation#
       </isNotNull>
       <isNotNull prepend="," property="percentage" >
-        #percentage:DECIMAL#
+        #percentage#
       </isNotNull>
       <isNotNull prepend="," property="projectCode" >
-        #projectCode:VARCHAR#
+        #projectCode#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        #commitmentId:BIGINT#
+        #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        #giftId:BIGINT#
+        #giftId#
       </isNotNull>
       )
     </dynamic>
@@ -114,28 +114,28 @@
     update DISTRO_LINE
     <dynamic prepend="set" >
       <isNotNull prepend="," property="amount" >
-        AMOUNT = #amount:DECIMAL#
+        AMOUNT = #amount#
       </isNotNull>
       <isNotNull prepend="," property="motivationCode" >
-        MOTIVATION_CODE = #motivationCode:VARCHAR#
+        MOTIVATION_CODE = #motivationCode#
       </isNotNull>
       <isNotNull prepend="," property="otherMotivation" >
-        OTHER_MOTIVATION = #otherMotivation:VARCHAR#
+        OTHER_MOTIVATION = #otherMotivation#
       </isNotNull>
       <isNotNull prepend="," property="percentage" >
-        PERCENTAGE = #percentage:DECIMAL#
+        PERCENTAGE = #percentage#
       </isNotNull>
       <isNotNull prepend="," property="projectCode" >
-        PROJECT_CODE = #projectCode:VARCHAR#
+        PROJECT_CODE = #projectCode#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        COMMITMENT_ID = #commitmentId:BIGINT#
+        COMMITMENT_ID = #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        GIFT_ID = #giftId:BIGINT#
+        GIFT_ID = #giftId#
       </isNotNull>
     </dynamic>
-    where DISTRO_LINE_ID = #distroLineId:BIGINT#
+    where DISTRO_LINE_ID = #distroLineId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.DistroLine" >
     <!--
@@ -143,13 +143,13 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update DISTRO_LINE
-    set AMOUNT = #amount:DECIMAL#,
-      MOTIVATION_CODE = #motivationCode:VARCHAR#,
-      OTHER_MOTIVATION = #otherMotivation:VARCHAR#,
-      PERCENTAGE = #percentage:DECIMAL#,
-      PROJECT_CODE = #projectCode:VARCHAR#,
-      COMMITMENT_ID = #commitmentId:BIGINT#,
-      GIFT_ID = #giftId:BIGINT#
-    where DISTRO_LINE_ID = #distroLineId:BIGINT#
+    set AMOUNT = #amount#,
+      MOTIVATION_CODE = #motivationCode#,
+      OTHER_MOTIVATION = #otherMotivation#,
+      PERCENTAGE = #percentage#,
+      PROJECT_CODE = #projectCode#,
+      COMMITMENT_ID = #commitmentId#,
+      GIFT_ID = #giftId#
+    where DISTRO_LINE_ID = #distroLineId#
   </update>
 </sqlMap>

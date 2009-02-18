@@ -25,7 +25,7 @@
     select PAYMENT_HISTORY_ID, AMOUNT, CURRENCY_CODE, PAYMENT_DESC, PAYMENT_HISTORY_TYPE,
       PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, PERSON_ID
     from PAYMENT_HISTORY
-    where PAYMENT_HISTORY_ID = #paymentHistoryId:BIGINT#
+    where PAYMENT_HISTORY_ID = #paymentHistoryId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.PaymentHistory" >
     <!--
@@ -33,7 +33,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from PAYMENT_HISTORY
-    where PAYMENT_HISTORY_ID = #paymentHistoryId:BIGINT#
+    where PAYMENT_HISTORY_ID = #paymentHistoryId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.PaymentHistory" >
     <!--
@@ -42,9 +42,9 @@
     -->
     insert into PAYMENT_HISTORY (PAYMENT_HISTORY_ID, AMOUNT, CURRENCY_CODE, PAYMENT_DESC,
       PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, PERSON_ID)
-    values (#paymentHistoryId:BIGINT#, #amount:DECIMAL#, #currencyCode:VARCHAR#,
-      #paymentDesc:VARCHAR#, #paymentHistoryType:INTEGER#, #paymentType:VARCHAR#,
-      #transactionDate:TIMESTAMP#, #transactionId:VARCHAR#, #giftId:BIGINT#, #personId:BIGINT#)
+    values (#paymentHistoryId#, #amount#, #currencyCode#,
+      #paymentDesc#, #paymentHistoryType#, #paymentType#,
+      #transactionDate#, #transactionId#, #giftId#, #personId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.PaymentHistory" >
     <!--
@@ -88,34 +88,34 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="paymentHistoryId" >
-        #paymentHistoryId:BIGINT#
+        #paymentHistoryId#
       </isNotNull>
       <isNotNull prepend="," property="amount" >
-        #amount:DECIMAL#
+        #amount#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        #currencyCode:VARCHAR#
+        #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="paymentDesc" >
-        #paymentDesc:VARCHAR#
+        #paymentDesc#
       </isNotNull>
       <isNotNull prepend="," property="paymentHistoryType" >
-        #paymentHistoryType:INTEGER#
+        #paymentHistoryType#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        #paymentType:VARCHAR#
+        #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="transactionDate" >
-        #transactionDate:TIMESTAMP#
+        #transactionDate#
       </isNotNull>
       <isNotNull prepend="," property="transactionId" >
-        #transactionId:VARCHAR#
+        #transactionId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        #giftId:BIGINT#
+        #giftId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       )
     </dynamic>
@@ -128,34 +128,34 @@
     update PAYMENT_HISTORY
     <dynamic prepend="set" >
       <isNotNull prepend="," property="amount" >
-        AMOUNT = #amount:DECIMAL#
+        AMOUNT = #amount#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        CURRENCY_CODE = #currencyCode:VARCHAR#
+        CURRENCY_CODE = #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="paymentDesc" >
-        PAYMENT_DESC = #paymentDesc:VARCHAR#
+        PAYMENT_DESC = #paymentDesc#
       </isNotNull>
       <isNotNull prepend="," property="paymentHistoryType" >
-        PAYMENT_HISTORY_TYPE = #paymentHistoryType:INTEGER#
+        PAYMENT_HISTORY_TYPE = #paymentHistoryType#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        PAYMENT_TYPE = #paymentType:VARCHAR#
+        PAYMENT_TYPE = #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="transactionDate" >
-        TRANSACTION_DATE = #transactionDate:TIMESTAMP#
+        TRANSACTION_DATE = #transactionDate#
       </isNotNull>
       <isNotNull prepend="," property="transactionId" >
-        TRANSACTION_ID = #transactionId:VARCHAR#
+        TRANSACTION_ID = #transactionId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        GIFT_ID = #giftId:BIGINT#
+        GIFT_ID = #giftId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
     </dynamic>
-    where PAYMENT_HISTORY_ID = #paymentHistoryId:BIGINT#
+    where PAYMENT_HISTORY_ID = #paymentHistoryId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.PaymentHistory" >
     <!--
@@ -163,15 +163,15 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update PAYMENT_HISTORY
-    set AMOUNT = #amount:DECIMAL#,
-      CURRENCY_CODE = #currencyCode:VARCHAR#,
-      PAYMENT_DESC = #paymentDesc:VARCHAR#,
-      PAYMENT_HISTORY_TYPE = #paymentHistoryType:INTEGER#,
-      PAYMENT_TYPE = #paymentType:VARCHAR#,
-      TRANSACTION_DATE = #transactionDate:TIMESTAMP#,
-      TRANSACTION_ID = #transactionId:VARCHAR#,
-      GIFT_ID = #giftId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#
-    where PAYMENT_HISTORY_ID = #paymentHistoryId:BIGINT#
+    set AMOUNT = #amount#,
+      CURRENCY_CODE = #currencyCode#,
+      PAYMENT_DESC = #paymentDesc#,
+      PAYMENT_HISTORY_TYPE = #paymentHistoryType#,
+      PAYMENT_TYPE = #paymentType#,
+      TRANSACTION_DATE = #transactionDate#,
+      TRANSACTION_ID = #transactionId#,
+      GIFT_ID = #giftId#,
+      PERSON_ID = #personId#
+    where PAYMENT_HISTORY_ID = #paymentHistoryId#
   </update>
 </sqlMap>

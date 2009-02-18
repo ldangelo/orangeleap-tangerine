@@ -33,7 +33,7 @@
     select COMMUNICATION_HISTORY_ID, COMMUNICATION_TYPE, CREATE_DATE, RECORD_DATE, SYSTEM_GENERATED,
       UPDATE_DATE, ASSIGNED_TO, COMMITMENT_ID, GIFT_ID, PERSON_ID, RECORDED_BY, COMMENTS
     from COMMUNICATION_HISTORY
-    where COMMUNICATION_HISTORY_ID = #communicationHistoryId:BIGINT#
+    where COMMUNICATION_HISTORY_ID = #communicationHistoryId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     <!--
@@ -41,7 +41,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from COMMUNICATION_HISTORY
-    where COMMUNICATION_HISTORY_ID = #communicationHistoryId:BIGINT#
+    where COMMUNICATION_HISTORY_ID = #communicationHistoryId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     <!--
@@ -51,10 +51,10 @@
     insert into COMMUNICATION_HISTORY (COMMUNICATION_HISTORY_ID, COMMUNICATION_TYPE, CREATE_DATE,
       RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, ASSIGNED_TO, COMMITMENT_ID, GIFT_ID, PERSON_ID,
       RECORDED_BY, COMMENTS)
-    values (#communicationHistoryId:BIGINT#, #communicationType:INTEGER#, #createDate:TIMESTAMP#,
-      #recordDate:TIMESTAMP#, #systemGenerated:BIT#, #updateDate:TIMESTAMP#, #assignedTo:BIGINT#,
-      #commitmentId:BIGINT#, #giftId:BIGINT#, #personId:BIGINT#, #recordedBy:BIGINT#,
-      #comments:LONGVARCHAR#)
+    values (#communicationHistoryId#, #communicationType#, #createDate#,
+      #recordDate#, #systemGenerated#, #updateDate#, #assignedTo#,
+      #commitmentId#, #giftId#, #personId#, #recordedBy#,
+      #comments#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     <!--
@@ -104,40 +104,40 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="communicationHistoryId" >
-        #communicationHistoryId:BIGINT#
+        #communicationHistoryId#
       </isNotNull>
       <isNotNull prepend="," property="communicationType" >
-        #communicationType:INTEGER#
+        #communicationType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        #createDate:TIMESTAMP#
+        #createDate#
       </isNotNull>
       <isNotNull prepend="," property="recordDate" >
-        #recordDate:TIMESTAMP#
+        #recordDate#
       </isNotNull>
       <isNotNull prepend="," property="systemGenerated" >
-        #systemGenerated:BIT#
+        #systemGenerated#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        #updateDate:TIMESTAMP#
+        #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="assignedTo" >
-        #assignedTo:BIGINT#
+        #assignedTo#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        #commitmentId:BIGINT#
+        #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        #giftId:BIGINT#
+        #giftId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       <isNotNull prepend="," property="recordedBy" >
-        #recordedBy:BIGINT#
+        #recordedBy#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        #comments:LONGVARCHAR#
+        #comments#
       </isNotNull>
       )
     </dynamic>
@@ -150,40 +150,40 @@
     update COMMUNICATION_HISTORY
     <dynamic prepend="set" >
       <isNotNull prepend="," property="communicationType" >
-        COMMUNICATION_TYPE = #communicationType:INTEGER#
+        COMMUNICATION_TYPE = #communicationType#
       </isNotNull>
       <isNotNull prepend="," property="createDate" >
-        CREATE_DATE = #createDate:TIMESTAMP#
+        CREATE_DATE = #createDate#
       </isNotNull>
       <isNotNull prepend="," property="recordDate" >
-        RECORD_DATE = #recordDate:TIMESTAMP#
+        RECORD_DATE = #recordDate#
       </isNotNull>
       <isNotNull prepend="," property="systemGenerated" >
-        SYSTEM_GENERATED = #systemGenerated:BIT#
+        SYSTEM_GENERATED = #systemGenerated#
       </isNotNull>
       <isNotNull prepend="," property="updateDate" >
-        UPDATE_DATE = #updateDate:TIMESTAMP#
+        UPDATE_DATE = #updateDate#
       </isNotNull>
       <isNotNull prepend="," property="assignedTo" >
-        ASSIGNED_TO = #assignedTo:BIGINT#
+        ASSIGNED_TO = #assignedTo#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        COMMITMENT_ID = #commitmentId:BIGINT#
+        COMMITMENT_ID = #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="giftId" >
-        GIFT_ID = #giftId:BIGINT#
+        GIFT_ID = #giftId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
       <isNotNull prepend="," property="recordedBy" >
-        RECORDED_BY = #recordedBy:BIGINT#
+        RECORDED_BY = #recordedBy#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        COMMENTS = #comments:LONGVARCHAR#
+        COMMENTS = #comments#
       </isNotNull>
     </dynamic>
-    where COMMUNICATION_HISTORY_ID = #communicationHistoryId:BIGINT#
+    where COMMUNICATION_HISTORY_ID = #communicationHistoryId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKeyWithBLOBs" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     <!--
@@ -191,18 +191,18 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update COMMUNICATION_HISTORY
-    set COMMUNICATION_TYPE = #communicationType:INTEGER#,
-      CREATE_DATE = #createDate:TIMESTAMP#,
-      RECORD_DATE = #recordDate:TIMESTAMP#,
-      SYSTEM_GENERATED = #systemGenerated:BIT#,
-      UPDATE_DATE = #updateDate:TIMESTAMP#,
-      ASSIGNED_TO = #assignedTo:BIGINT#,
-      COMMITMENT_ID = #commitmentId:BIGINT#,
-      GIFT_ID = #giftId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#,
-      RECORDED_BY = #recordedBy:BIGINT#,
-      COMMENTS = #comments:LONGVARCHAR#
-    where COMMUNICATION_HISTORY_ID = #communicationHistoryId:BIGINT#
+    set COMMUNICATION_TYPE = #communicationType#,
+      CREATE_DATE = #createDate#,
+      RECORD_DATE = #recordDate#,
+      SYSTEM_GENERATED = #systemGenerated#,
+      UPDATE_DATE = #updateDate#,
+      ASSIGNED_TO = #assignedTo#,
+      COMMITMENT_ID = #commitmentId#,
+      GIFT_ID = #giftId#,
+      PERSON_ID = #personId#,
+      RECORDED_BY = #recordedBy#,
+      COMMENTS = #comments#
+    where COMMUNICATION_HISTORY_ID = #communicationHistoryId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     <!--
@@ -210,16 +210,16 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update COMMUNICATION_HISTORY
-    set COMMUNICATION_TYPE = #communicationType:INTEGER#,
-      CREATE_DATE = #createDate:TIMESTAMP#,
-      RECORD_DATE = #recordDate:TIMESTAMP#,
-      SYSTEM_GENERATED = #systemGenerated:BIT#,
-      UPDATE_DATE = #updateDate:TIMESTAMP#,
-      ASSIGNED_TO = #assignedTo:BIGINT#,
-      COMMITMENT_ID = #commitmentId:BIGINT#,
-      GIFT_ID = #giftId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#,
-      RECORDED_BY = #recordedBy:BIGINT#
-    where COMMUNICATION_HISTORY_ID = #communicationHistoryId:BIGINT#
+    set COMMUNICATION_TYPE = #communicationType#,
+      CREATE_DATE = #createDate#,
+      RECORD_DATE = #recordDate#,
+      SYSTEM_GENERATED = #systemGenerated#,
+      UPDATE_DATE = #updateDate#,
+      ASSIGNED_TO = #assignedTo#,
+      COMMITMENT_ID = #commitmentId#,
+      GIFT_ID = #giftId#,
+      PERSON_ID = #personId#,
+      RECORDED_BY = #recordedBy#
+    where COMMUNICATION_HISTORY_ID = #communicationHistoryId#
   </update>
 </sqlMap>

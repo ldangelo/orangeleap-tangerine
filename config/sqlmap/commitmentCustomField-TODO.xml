@@ -17,7 +17,7 @@
     -->
     select COMMITMENT_CUSTOM_FIELD_ID, COMMITMENT_ID, CUSTOM_FIELD_ID
     from COMMITMENT_CUSTOM_FIELD
-    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId:BIGINT#
+    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.CommitmentCustomField" >
     <!--
@@ -25,7 +25,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from COMMITMENT_CUSTOM_FIELD
-    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId:BIGINT#
+    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.CommitmentCustomField" >
     <!--
@@ -33,7 +33,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     insert into COMMITMENT_CUSTOM_FIELD (COMMITMENT_CUSTOM_FIELD_ID, COMMITMENT_ID, CUSTOM_FIELD_ID)
-    values (#commitmentCustomFieldId:BIGINT#, #commitmentId:BIGINT#, #customFieldId:BIGINT#)
+    values (#commitmentCustomFieldId#, #commitmentId#, #customFieldId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.CommitmentCustomField" >
     <!--
@@ -56,13 +56,13 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="commitmentCustomFieldId" >
-        #commitmentCustomFieldId:BIGINT#
+        #commitmentCustomFieldId#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        #commitmentId:BIGINT#
+        #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="customFieldId" >
-        #customFieldId:BIGINT#
+        #customFieldId#
       </isNotNull>
       )
     </dynamic>
@@ -75,13 +75,13 @@
     update COMMITMENT_CUSTOM_FIELD
     <dynamic prepend="set" >
       <isNotNull prepend="," property="commitmentId" >
-        COMMITMENT_ID = #commitmentId:BIGINT#
+        COMMITMENT_ID = #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="customFieldId" >
-        CUSTOM_FIELD_ID = #customFieldId:BIGINT#
+        CUSTOM_FIELD_ID = #customFieldId#
       </isNotNull>
     </dynamic>
-    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId:BIGINT#
+    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.CommitmentCustomField" >
     <!--
@@ -89,8 +89,8 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update COMMITMENT_CUSTOM_FIELD
-    set COMMITMENT_ID = #commitmentId:BIGINT#,
-      CUSTOM_FIELD_ID = #customFieldId:BIGINT#
-    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId:BIGINT#
+    set COMMITMENT_ID = #commitmentId#,
+      CUSTOM_FIELD_ID = #customFieldId#
+    where COMMITMENT_CUSTOM_FIELD_ID = #commitmentCustomFieldId#
   </update>
 </sqlMap>

@@ -21,7 +21,7 @@
     select CONDITION_ID, DEPENDENT_VALUE, DEPENDENT_FIELD_DEFINITION_ID,
       DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID, VALIDATION_ID
     from FIELD_CONDITION
-    where CONDITION_ID = #conditionId:BIGINT#
+    where CONDITION_ID = #conditionId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.FieldCondition" >
     <!--
@@ -29,7 +29,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from FIELD_CONDITION
-    where CONDITION_ID = #conditionId:BIGINT#
+    where CONDITION_ID = #conditionId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.FieldCondition" >
     <!--
@@ -38,9 +38,9 @@
     -->
     insert into FIELD_CONDITION (CONDITION_ID, DEPENDENT_VALUE, DEPENDENT_FIELD_DEFINITION_ID,
       DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID, VALIDATION_ID)
-    values (#conditionId:BIGINT#, #dependentValue:VARCHAR#, #dependentFieldDefinitionId:VARCHAR#,
-      #dependentSecondaryFieldDefinitionId:VARCHAR#, #fieldRequiredId:BIGINT#,
-      #validationId:BIGINT#)
+    values (#conditionId#, #dependentValue#, #dependentFieldDefinitionId#,
+      #dependentSecondaryFieldDefinitionId#, #fieldRequiredId#,
+      #validationId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.FieldCondition" >
     <!--
@@ -72,22 +72,22 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="conditionId" >
-        #conditionId:BIGINT#
+        #conditionId#
       </isNotNull>
       <isNotNull prepend="," property="dependentValue" >
-        #dependentValue:VARCHAR#
+        #dependentValue#
       </isNotNull>
       <isNotNull prepend="," property="dependentFieldDefinitionId" >
-        #dependentFieldDefinitionId:VARCHAR#
+        #dependentFieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="dependentSecondaryFieldDefinitionId" >
-        #dependentSecondaryFieldDefinitionId:VARCHAR#
+        #dependentSecondaryFieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="fieldRequiredId" >
-        #fieldRequiredId:BIGINT#
+        #fieldRequiredId#
       </isNotNull>
       <isNotNull prepend="," property="validationId" >
-        #validationId:BIGINT#
+        #validationId#
       </isNotNull>
       )
     </dynamic>
@@ -100,22 +100,22 @@
     update FIELD_CONDITION
     <dynamic prepend="set" >
       <isNotNull prepend="," property="dependentValue" >
-        DEPENDENT_VALUE = #dependentValue:VARCHAR#
+        DEPENDENT_VALUE = #dependentValue#
       </isNotNull>
       <isNotNull prepend="," property="dependentFieldDefinitionId" >
-        DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinitionId:VARCHAR#
+        DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="dependentSecondaryFieldDefinitionId" >
-        DEPENDENT_SECONDARY_FIELD_DEFINITION_ID = #dependentSecondaryFieldDefinitionId:VARCHAR#
+        DEPENDENT_SECONDARY_FIELD_DEFINITION_ID = #dependentSecondaryFieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="fieldRequiredId" >
-        FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#
+        FIELD_REQUIRED_ID = #fieldRequiredId#
       </isNotNull>
       <isNotNull prepend="," property="validationId" >
-        VALIDATION_ID = #validationId:BIGINT#
+        VALIDATION_ID = #validationId#
       </isNotNull>
     </dynamic>
-    where CONDITION_ID = #conditionId:BIGINT#
+    where CONDITION_ID = #conditionId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.FieldCondition" >
     <!--
@@ -123,11 +123,11 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update FIELD_CONDITION
-    set DEPENDENT_VALUE = #dependentValue:VARCHAR#,
-      DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinitionId:VARCHAR#,
-      DEPENDENT_SECONDARY_FIELD_DEFINITION_ID = #dependentSecondaryFieldDefinitionId:VARCHAR#,
-      FIELD_REQUIRED_ID = #fieldRequiredId:BIGINT#,
-      VALIDATION_ID = #validationId:BIGINT#
-    where CONDITION_ID = #conditionId:BIGINT#
+    set DEPENDENT_VALUE = #dependentValue#,
+      DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinitionId#,
+      DEPENDENT_SECONDARY_FIELD_DEFINITION_ID = #dependentSecondaryFieldDefinitionId#,
+      FIELD_REQUIRED_ID = #fieldRequiredId#,
+      VALIDATION_ID = #validationId#
+    where CONDITION_ID = #conditionId#
   </update>
 </sqlMap>

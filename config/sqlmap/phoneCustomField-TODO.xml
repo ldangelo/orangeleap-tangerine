@@ -17,7 +17,7 @@
     -->
     select PHONE_CUSTOM_FIELD_ID, CUSTOM_FIELD_ID, PHONE_ID
     from PHONE_CUSTOM_FIELD
-    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId:BIGINT#
+    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.PhoneCustomField" >
     <!--
@@ -25,7 +25,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from PHONE_CUSTOM_FIELD
-    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId:BIGINT#
+    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.PhoneCustomField" >
     <!--
@@ -33,7 +33,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     insert into PHONE_CUSTOM_FIELD (PHONE_CUSTOM_FIELD_ID, CUSTOM_FIELD_ID, PHONE_ID)
-    values (#phoneCustomFieldId:BIGINT#, #customFieldId:BIGINT#, #phoneId:BIGINT#)
+    values (#phoneCustomFieldId#, #customFieldId#, #phoneId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.PhoneCustomField" >
     <!--
@@ -56,13 +56,13 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="phoneCustomFieldId" >
-        #phoneCustomFieldId:BIGINT#
+        #phoneCustomFieldId#
       </isNotNull>
       <isNotNull prepend="," property="customFieldId" >
-        #customFieldId:BIGINT#
+        #customFieldId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        #phoneId:BIGINT#
+        #phoneId#
       </isNotNull>
       )
     </dynamic>
@@ -75,13 +75,13 @@
     update PHONE_CUSTOM_FIELD
     <dynamic prepend="set" >
       <isNotNull prepend="," property="customFieldId" >
-        CUSTOM_FIELD_ID = #customFieldId:BIGINT#
+        CUSTOM_FIELD_ID = #customFieldId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        PHONE_ID = #phoneId:BIGINT#
+        PHONE_ID = #phoneId#
       </isNotNull>
     </dynamic>
-    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId:BIGINT#
+    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.PhoneCustomField" >
     <!--
@@ -89,8 +89,8 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update PHONE_CUSTOM_FIELD
-    set CUSTOM_FIELD_ID = #customFieldId:BIGINT#,
-      PHONE_ID = #phoneId:BIGINT#
-    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId:BIGINT#
+    set CUSTOM_FIELD_ID = #customFieldId#,
+      PHONE_ID = #phoneId#
+    where PHONE_CUSTOM_FIELD_ID = #phoneCustomFieldId#
   </update>
 </sqlMap>

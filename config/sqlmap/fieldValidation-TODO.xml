@@ -21,7 +21,7 @@
     select VALIDATION_ID, VALIDATION_REGEX, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID,
       SECONDARY_FIELD_DEFINITION_ID
     from FIELD_VALIDATION
-    where VALIDATION_ID = #validationId:BIGINT#
+    where VALIDATION_ID = #validationId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.FieldValidation" >
     <!--
@@ -29,7 +29,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from FIELD_VALIDATION
-    where VALIDATION_ID = #validationId:BIGINT#
+    where VALIDATION_ID = #validationId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.FieldValidation" >
     <!--
@@ -38,8 +38,8 @@
     -->
     insert into FIELD_VALIDATION (VALIDATION_ID, VALIDATION_REGEX, SECTION_NAME, SITE_NAME,
       FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
-    values (#validationId:BIGINT#, #validationRegex:VARCHAR#, #sectionName:VARCHAR#,
-      #siteName:VARCHAR#, #fieldDefinitionId:VARCHAR#, #secondaryFieldDefinitionId:VARCHAR#)
+    values (#validationId#, #validationRegex#, #sectionName#,
+      #siteName#, #fieldDefinitionId#, #secondaryFieldDefinitionId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.FieldValidation" >
     <!--
@@ -71,22 +71,22 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="validationId" >
-        #validationId:BIGINT#
+        #validationId#
       </isNotNull>
       <isNotNull prepend="," property="validationRegex" >
-        #validationRegex:VARCHAR#
+        #validationRegex#
       </isNotNull>
       <isNotNull prepend="," property="sectionName" >
-        #sectionName:VARCHAR#
+        #sectionName#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        #siteName:VARCHAR#
+        #siteName#
       </isNotNull>
       <isNotNull prepend="," property="fieldDefinitionId" >
-        #fieldDefinitionId:VARCHAR#
+        #fieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="secondaryFieldDefinitionId" >
-        #secondaryFieldDefinitionId:VARCHAR#
+        #secondaryFieldDefinitionId#
       </isNotNull>
       )
     </dynamic>
@@ -99,22 +99,22 @@
     update FIELD_VALIDATION
     <dynamic prepend="set" >
       <isNotNull prepend="," property="validationRegex" >
-        VALIDATION_REGEX = #validationRegex:VARCHAR#
+        VALIDATION_REGEX = #validationRegex#
       </isNotNull>
       <isNotNull prepend="," property="sectionName" >
-        SECTION_NAME = #sectionName:VARCHAR#
+        SECTION_NAME = #sectionName#
       </isNotNull>
       <isNotNull prepend="," property="siteName" >
-        SITE_NAME = #siteName:VARCHAR#
+        SITE_NAME = #siteName#
       </isNotNull>
       <isNotNull prepend="," property="fieldDefinitionId" >
-        FIELD_DEFINITION_ID = #fieldDefinitionId:VARCHAR#
+        FIELD_DEFINITION_ID = #fieldDefinitionId#
       </isNotNull>
       <isNotNull prepend="," property="secondaryFieldDefinitionId" >
-        SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId:VARCHAR#
+        SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId#
       </isNotNull>
     </dynamic>
-    where VALIDATION_ID = #validationId:BIGINT#
+    where VALIDATION_ID = #validationId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.FieldValidation" >
     <!--
@@ -122,11 +122,11 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update FIELD_VALIDATION
-    set VALIDATION_REGEX = #validationRegex:VARCHAR#,
-      SECTION_NAME = #sectionName:VARCHAR#,
-      SITE_NAME = #siteName:VARCHAR#,
-      FIELD_DEFINITION_ID = #fieldDefinitionId:VARCHAR#,
-      SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId:VARCHAR#
-    where VALIDATION_ID = #validationId:BIGINT#
+    set VALIDATION_REGEX = #validationRegex#,
+      SECTION_NAME = #sectionName#,
+      SITE_NAME = #siteName#,
+      FIELD_DEFINITION_ID = #fieldDefinitionId#,
+      SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId#
+    where VALIDATION_ID = #validationId#
   </update>
 </sqlMap>

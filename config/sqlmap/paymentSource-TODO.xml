@@ -30,7 +30,7 @@
       CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER, CREDIT_CARD_TYPE,
       INACTIVE, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID, PERSON_ID, PHONE_ID
     from PAYMENT_SOURCE
-    where PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+    where PAYMENT_SOURCE_ID = #paymentSourceId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.PaymentSource" >
     <!--
@@ -38,7 +38,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from PAYMENT_SOURCE
-    where PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+    where PAYMENT_SOURCE_ID = #paymentSourceId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.PaymentSource" >
     <!--
@@ -48,11 +48,11 @@
     insert into PAYMENT_SOURCE (PAYMENT_SOURCE_ID, ACH_ACCOUNT_NUMBER, ACH_HOLDER_NAME,
       ACH_ROUTING_NUMBER, CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER,
       CREDIT_CARD_TYPE, INACTIVE, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID, PERSON_ID, PHONE_ID)
-    values (#paymentSourceId:BIGINT#, #achAccountNumber:VARCHAR#, #achHolderName:VARCHAR#,
-      #achRoutingNumber:VARCHAR#, #creditCardExpiration:TIMESTAMP#, #creditCardHolderName:VARCHAR#,
-      #creditCardNumber:VARCHAR#, #creditCardType:VARCHAR#, #inactive:BIT#,
-      #paymentProfile:VARCHAR#, #paymentType:VARCHAR#, #addressId:BIGINT#, #personId:BIGINT#,
-      #phoneId:BIGINT#)
+    values (#paymentSourceId#, #achAccountNumber#, #achHolderName#,
+      #achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
+      #creditCardNumber#, #creditCardType#, #inactive#,
+      #paymentProfile#, #paymentType#, #addressId#, #personId#,
+      #phoneId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.PaymentSource" >
     <!--
@@ -108,46 +108,46 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="paymentSourceId" >
-        #paymentSourceId:BIGINT#
+        #paymentSourceId#
       </isNotNull>
       <isNotNull prepend="," property="achAccountNumber" >
-        #achAccountNumber:VARCHAR#
+        #achAccountNumber#
       </isNotNull>
       <isNotNull prepend="," property="achHolderName" >
-        #achHolderName:VARCHAR#
+        #achHolderName#
       </isNotNull>
       <isNotNull prepend="," property="achRoutingNumber" >
-        #achRoutingNumber:VARCHAR#
+        #achRoutingNumber#
       </isNotNull>
       <isNotNull prepend="," property="creditCardExpiration" >
-        #creditCardExpiration:TIMESTAMP#
+        #creditCardExpiration#
       </isNotNull>
       <isNotNull prepend="," property="creditCardHolderName" >
-        #creditCardHolderName:VARCHAR#
+        #creditCardHolderName#
       </isNotNull>
       <isNotNull prepend="," property="creditCardNumber" >
-        #creditCardNumber:VARCHAR#
+        #creditCardNumber#
       </isNotNull>
       <isNotNull prepend="," property="creditCardType" >
-        #creditCardType:VARCHAR#
+        #creditCardType#
       </isNotNull>
       <isNotNull prepend="," property="inactive" >
-        #inactive:BIT#
+        #inactive#
       </isNotNull>
       <isNotNull prepend="," property="paymentProfile" >
-        #paymentProfile:VARCHAR#
+        #paymentProfile#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        #paymentType:VARCHAR#
+        #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        #addressId:BIGINT#
+        #addressId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        #phoneId:BIGINT#
+        #phoneId#
       </isNotNull>
       )
     </dynamic>
@@ -160,46 +160,46 @@
     update PAYMENT_SOURCE
     <dynamic prepend="set" >
       <isNotNull prepend="," property="achAccountNumber" >
-        ACH_ACCOUNT_NUMBER = #achAccountNumber:VARCHAR#
+        ACH_ACCOUNT_NUMBER = #achAccountNumber#
       </isNotNull>
       <isNotNull prepend="," property="achHolderName" >
-        ACH_HOLDER_NAME = #achHolderName:VARCHAR#
+        ACH_HOLDER_NAME = #achHolderName#
       </isNotNull>
       <isNotNull prepend="," property="achRoutingNumber" >
-        ACH_ROUTING_NUMBER = #achRoutingNumber:VARCHAR#
+        ACH_ROUTING_NUMBER = #achRoutingNumber#
       </isNotNull>
       <isNotNull prepend="," property="creditCardExpiration" >
-        CREDIT_CARD_EXPIRATION = #creditCardExpiration:TIMESTAMP#
+        CREDIT_CARD_EXPIRATION = #creditCardExpiration#
       </isNotNull>
       <isNotNull prepend="," property="creditCardHolderName" >
-        CREDIT_CARD_HOLDER_NAME = #creditCardHolderName:VARCHAR#
+        CREDIT_CARD_HOLDER_NAME = #creditCardHolderName#
       </isNotNull>
       <isNotNull prepend="," property="creditCardNumber" >
-        CREDIT_CARD_NUMBER = #creditCardNumber:VARCHAR#
+        CREDIT_CARD_NUMBER = #creditCardNumber#
       </isNotNull>
       <isNotNull prepend="," property="creditCardType" >
-        CREDIT_CARD_TYPE = #creditCardType:VARCHAR#
+        CREDIT_CARD_TYPE = #creditCardType#
       </isNotNull>
       <isNotNull prepend="," property="inactive" >
-        INACTIVE = #inactive:BIT#
+        INACTIVE = #inactive#
       </isNotNull>
       <isNotNull prepend="," property="paymentProfile" >
-        PAYMENT_PROFILE = #paymentProfile:VARCHAR#
+        PAYMENT_PROFILE = #paymentProfile#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        PAYMENT_TYPE = #paymentType:VARCHAR#
+        PAYMENT_TYPE = #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        ADDRESS_ID = #addressId:BIGINT#
+        ADDRESS_ID = #addressId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        PHONE_ID = #phoneId:BIGINT#
+        PHONE_ID = #phoneId#
       </isNotNull>
     </dynamic>
-    where PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+    where PAYMENT_SOURCE_ID = #paymentSourceId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.PaymentSource" >
     <!--
@@ -207,19 +207,19 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update PAYMENT_SOURCE
-    set ACH_ACCOUNT_NUMBER = #achAccountNumber:VARCHAR#,
-      ACH_HOLDER_NAME = #achHolderName:VARCHAR#,
-      ACH_ROUTING_NUMBER = #achRoutingNumber:VARCHAR#,
-      CREDIT_CARD_EXPIRATION = #creditCardExpiration:TIMESTAMP#,
-      CREDIT_CARD_HOLDER_NAME = #creditCardHolderName:VARCHAR#,
-      CREDIT_CARD_NUMBER = #creditCardNumber:VARCHAR#,
-      CREDIT_CARD_TYPE = #creditCardType:VARCHAR#,
-      INACTIVE = #inactive:BIT#,
-      PAYMENT_PROFILE = #paymentProfile:VARCHAR#,
-      PAYMENT_TYPE = #paymentType:VARCHAR#,
-      ADDRESS_ID = #addressId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#,
-      PHONE_ID = #phoneId:BIGINT#
-    where PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+    set ACH_ACCOUNT_NUMBER = #achAccountNumber#,
+      ACH_HOLDER_NAME = #achHolderName#,
+      ACH_ROUTING_NUMBER = #achRoutingNumber#,
+      CREDIT_CARD_EXPIRATION = #creditCardExpiration#,
+      CREDIT_CARD_HOLDER_NAME = #creditCardHolderName#,
+      CREDIT_CARD_NUMBER = #creditCardNumber#,
+      CREDIT_CARD_TYPE = #creditCardType#,
+      INACTIVE = #inactive#,
+      PAYMENT_PROFILE = #paymentProfile#,
+      PAYMENT_TYPE = #paymentType#,
+      ADDRESS_ID = #addressId#,
+      PERSON_ID = #personId#,
+      PHONE_ID = #phoneId#
+    where PAYMENT_SOURCE_ID = #paymentSourceId#
   </update>
 </sqlMap>

@@ -45,7 +45,7 @@
       SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM, ADDRESS_ID, COMMITMENT_ID, EMAIL_ID,
       PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID
     from GIFT
-    where GIFT_ID = #giftId:BIGINT#
+    where GIFT_ID = #giftId#
   </select>
   <delete id="ibatorgenerated_deleteByPrimaryKey" parameterClass="com.mpower.domain.model.Gift" >
     <!--
@@ -53,7 +53,7 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     delete from GIFT
-    where GIFT_ID = #giftId:BIGINT#
+    where GIFT_ID = #giftId#
   </delete>
   <insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.Gift" >
     <!--
@@ -65,14 +65,14 @@
       PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
       REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM,
       ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
-    values (#giftId:BIGINT#, #acknowledgmentDate:TIMESTAMP#, #amount:DECIMAL#, #authCode:VARCHAR#,
-      #checkNumber:INTEGER#, #comments:VARCHAR#, #currencyCode:VARCHAR#, #deductible:BIT#,
-      #deductibleAmount:DECIMAL#, #donationDate:TIMESTAMP#, #entryType:VARCHAR#,
-      #originalGiftId:BIGINT#, #paymentMessage:VARCHAR#, #paymentStatus:VARCHAR#,
-      #paymentType:VARCHAR#, #postmarkDate:TIMESTAMP#, #refundGiftId:BIGINT#,
-      #refundGiftTransactionDate:TIMESTAMP#, #sendAcknowledgment:BIT#, #transactionDate:TIMESTAMP#,
-      #paymentTxrefnum:VARCHAR#, #addressId:BIGINT#, #commitmentId:BIGINT#, #emailId:BIGINT#,
-      #paymentSourceId:BIGINT#, #personId:BIGINT#, #phoneId:BIGINT#)
+    values (#giftId#, #acknowledgmentDate#, #amount#, #authCode#,
+      #checkNumber#, #comments#, #currencyCode#, #deductible#,
+      #deductibleAmount#, #donationDate#, #entryType#,
+      #originalGiftId#, #paymentMessage#, #paymentStatus#,
+      #paymentType#, #postmarkDate#, #refundGiftId#,
+      #refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
+      #paymentTxrefnum#, #addressId#, #commitmentId#, #emailId#,
+      #paymentSourceId#, #personId#, #phoneId#)
   </insert>
   <insert id="ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Gift" >
     <!--
@@ -167,85 +167,85 @@
     values
     <dynamic prepend="(" >
       <isNotNull prepend="," property="giftId" >
-        #giftId:BIGINT#
+        #giftId#
       </isNotNull>
       <isNotNull prepend="," property="acknowledgmentDate" >
-        #acknowledgmentDate:TIMESTAMP#
+        #acknowledgmentDate#
       </isNotNull>
       <isNotNull prepend="," property="amount" >
-        #amount:DECIMAL#
+        #amount#
       </isNotNull>
       <isNotNull prepend="," property="authCode" >
-        #authCode:VARCHAR#
+        #authCode#
       </isNotNull>
       <isNotNull prepend="," property="checkNumber" >
-        #checkNumber:INTEGER#
+        #checkNumber#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        #comments:VARCHAR#
+        #comments#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        #currencyCode:VARCHAR#
+        #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="deductible" >
-        #deductible:BIT#
+        #deductible#
       </isNotNull>
       <isNotNull prepend="," property="deductibleAmount" >
-        #deductibleAmount:DECIMAL#
+        #deductibleAmount#
       </isNotNull>
       <isNotNull prepend="," property="donationDate" >
-        #donationDate:TIMESTAMP#
+        #donationDate#
       </isNotNull>
       <isNotNull prepend="," property="entryType" >
-        #entryType:VARCHAR#
+        #entryType#
       </isNotNull>
       <isNotNull prepend="," property="originalGiftId" >
-        #originalGiftId:BIGINT#
+        #originalGiftId#
       </isNotNull>
       <isNotNull prepend="," property="paymentMessage" >
-        #paymentMessage:VARCHAR#
+        #paymentMessage#
       </isNotNull>
       <isNotNull prepend="," property="paymentStatus" >
-        #paymentStatus:VARCHAR#
+        #paymentStatus#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        #paymentType:VARCHAR#
+        #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="postmarkDate" >
-        #postmarkDate:TIMESTAMP#
+        #postmarkDate#
       </isNotNull>
       <isNotNull prepend="," property="refundGiftId" >
-        #refundGiftId:BIGINT#
+        #refundGiftId#
       </isNotNull>
       <isNotNull prepend="," property="refundGiftTransactionDate" >
-        #refundGiftTransactionDate:TIMESTAMP#
+        #refundGiftTransactionDate#
       </isNotNull>
       <isNotNull prepend="," property="sendAcknowledgment" >
-        #sendAcknowledgment:BIT#
+        #sendAcknowledgment#
       </isNotNull>
       <isNotNull prepend="," property="transactionDate" >
-        #transactionDate:TIMESTAMP#
+        #transactionDate#
       </isNotNull>
       <isNotNull prepend="," property="paymentTxrefnum" >
-        #paymentTxrefnum:VARCHAR#
+        #paymentTxrefnum#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        #addressId:BIGINT#
+        #addressId#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        #commitmentId:BIGINT#
+        #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="emailId" >
-        #emailId:BIGINT#
+        #emailId#
       </isNotNull>
       <isNotNull prepend="," property="paymentSourceId" >
-        #paymentSourceId:BIGINT#
+        #paymentSourceId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        #personId:BIGINT#
+        #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        #phoneId:BIGINT#
+        #phoneId#
       </isNotNull>
       )
     </dynamic>
@@ -258,85 +258,85 @@
     update GIFT
     <dynamic prepend="set" >
       <isNotNull prepend="," property="acknowledgmentDate" >
-        ACKNOWLEDGMENT_DATE = #acknowledgmentDate:TIMESTAMP#
+        ACKNOWLEDGMENT_DATE = #acknowledgmentDate#
       </isNotNull>
       <isNotNull prepend="," property="amount" >
-        AMOUNT = #amount:DECIMAL#
+        AMOUNT = #amount#
       </isNotNull>
       <isNotNull prepend="," property="authCode" >
-        AUTH_CODE = #authCode:VARCHAR#
+        AUTH_CODE = #authCode#
       </isNotNull>
       <isNotNull prepend="," property="checkNumber" >
-        CHECK_NUMBER = #checkNumber:INTEGER#
+        CHECK_NUMBER = #checkNumber#
       </isNotNull>
       <isNotNull prepend="," property="comments" >
-        COMMENTS = #comments:VARCHAR#
+        COMMENTS = #comments#
       </isNotNull>
       <isNotNull prepend="," property="currencyCode" >
-        CURRENCY_CODE = #currencyCode:VARCHAR#
+        CURRENCY_CODE = #currencyCode#
       </isNotNull>
       <isNotNull prepend="," property="deductible" >
-        DEDUCTIBLE = #deductible:BIT#
+        DEDUCTIBLE = #deductible#
       </isNotNull>
       <isNotNull prepend="," property="deductibleAmount" >
-        DEDUCTIBLE_AMOUNT = #deductibleAmount:DECIMAL#
+        DEDUCTIBLE_AMOUNT = #deductibleAmount#
       </isNotNull>
       <isNotNull prepend="," property="donationDate" >
-        DONATION_DATE = #donationDate:TIMESTAMP#
+        DONATION_DATE = #donationDate#
       </isNotNull>
       <isNotNull prepend="," property="entryType" >
-        ENTRY_TYPE = #entryType:VARCHAR#
+        ENTRY_TYPE = #entryType#
       </isNotNull>
       <isNotNull prepend="," property="originalGiftId" >
-        ORIGINAL_GIFT_ID = #originalGiftId:BIGINT#
+        ORIGINAL_GIFT_ID = #originalGiftId#
       </isNotNull>
       <isNotNull prepend="," property="paymentMessage" >
-        PAYMENT_MESSAGE = #paymentMessage:VARCHAR#
+        PAYMENT_MESSAGE = #paymentMessage#
       </isNotNull>
       <isNotNull prepend="," property="paymentStatus" >
-        PAYMENT_STATUS = #paymentStatus:VARCHAR#
+        PAYMENT_STATUS = #paymentStatus#
       </isNotNull>
       <isNotNull prepend="," property="paymentType" >
-        PAYMENT_TYPE = #paymentType:VARCHAR#
+        PAYMENT_TYPE = #paymentType#
       </isNotNull>
       <isNotNull prepend="," property="postmarkDate" >
-        POSTMARK_DATE = #postmarkDate:TIMESTAMP#
+        POSTMARK_DATE = #postmarkDate#
       </isNotNull>
       <isNotNull prepend="," property="refundGiftId" >
-        REFUND_GIFT_ID = #refundGiftId:BIGINT#
+        REFUND_GIFT_ID = #refundGiftId#
       </isNotNull>
       <isNotNull prepend="," property="refundGiftTransactionDate" >
-        REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate:TIMESTAMP#
+        REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#
       </isNotNull>
       <isNotNull prepend="," property="sendAcknowledgment" >
-        SEND_ACKNOWLEDGMENT = #sendAcknowledgment:BIT#
+        SEND_ACKNOWLEDGMENT = #sendAcknowledgment#
       </isNotNull>
       <isNotNull prepend="," property="transactionDate" >
-        TRANSACTION_DATE = #transactionDate:TIMESTAMP#
+        TRANSACTION_DATE = #transactionDate#
       </isNotNull>
       <isNotNull prepend="," property="paymentTxrefnum" >
-        PAYMENT_TXREFNUM = #paymentTxrefnum:VARCHAR#
+        PAYMENT_TXREFNUM = #paymentTxrefnum#
       </isNotNull>
       <isNotNull prepend="," property="addressId" >
-        ADDRESS_ID = #addressId:BIGINT#
+        ADDRESS_ID = #addressId#
       </isNotNull>
       <isNotNull prepend="," property="commitmentId" >
-        COMMITMENT_ID = #commitmentId:BIGINT#
+        COMMITMENT_ID = #commitmentId#
       </isNotNull>
       <isNotNull prepend="," property="emailId" >
-        EMAIL_ID = #emailId:BIGINT#
+        EMAIL_ID = #emailId#
       </isNotNull>
       <isNotNull prepend="," property="paymentSourceId" >
-        PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#
+        PAYMENT_SOURCE_ID = #paymentSourceId#
       </isNotNull>
       <isNotNull prepend="," property="personId" >
-        PERSON_ID = #personId:BIGINT#
+        PERSON_ID = #personId#
       </isNotNull>
       <isNotNull prepend="," property="phoneId" >
-        PHONE_ID = #phoneId:BIGINT#
+        PHONE_ID = #phoneId#
       </isNotNull>
     </dynamic>
-    where GIFT_ID = #giftId:BIGINT#
+    where GIFT_ID = #giftId#
   </update>
   <update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Gift" >
     <!--
@@ -344,32 +344,32 @@
       This element was generated on Mon Feb 16 12:53:27 CST 2009.
     -->
     update GIFT
-    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate:TIMESTAMP#,
-      AMOUNT = #amount:DECIMAL#,
-      AUTH_CODE = #authCode:VARCHAR#,
-      CHECK_NUMBER = #checkNumber:INTEGER#,
-      COMMENTS = #comments:VARCHAR#,
-      CURRENCY_CODE = #currencyCode:VARCHAR#,
-      DEDUCTIBLE = #deductible:BIT#,
-      DEDUCTIBLE_AMOUNT = #deductibleAmount:DECIMAL#,
-      DONATION_DATE = #donationDate:TIMESTAMP#,
-      ENTRY_TYPE = #entryType:VARCHAR#,
-      ORIGINAL_GIFT_ID = #originalGiftId:BIGINT#,
-      PAYMENT_MESSAGE = #paymentMessage:VARCHAR#,
-      PAYMENT_STATUS = #paymentStatus:VARCHAR#,
-      PAYMENT_TYPE = #paymentType:VARCHAR#,
-      POSTMARK_DATE = #postmarkDate:TIMESTAMP#,
-      REFUND_GIFT_ID = #refundGiftId:BIGINT#,
-      REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate:TIMESTAMP#,
-      SEND_ACKNOWLEDGMENT = #sendAcknowledgment:BIT#,
-      TRANSACTION_DATE = #transactionDate:TIMESTAMP#,
-      PAYMENT_TXREFNUM = #paymentTxrefnum:VARCHAR#,
-      ADDRESS_ID = #addressId:BIGINT#,
-      COMMITMENT_ID = #commitmentId:BIGINT#,
-      EMAIL_ID = #emailId:BIGINT#,
-      PAYMENT_SOURCE_ID = #paymentSourceId:BIGINT#,
-      PERSON_ID = #personId:BIGINT#,
-      PHONE_ID = #phoneId:BIGINT#
-    where GIFT_ID = #giftId:BIGINT#
+    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+      AMOUNT = #amount#,
+      AUTH_CODE = #authCode#,
+      CHECK_NUMBER = #checkNumber#,
+      COMMENTS = #comments#,
+      CURRENCY_CODE = #currencyCode#,
+      DEDUCTIBLE = #deductible#,
+      DEDUCTIBLE_AMOUNT = #deductibleAmount#,
+      DONATION_DATE = #donationDate#,
+      ENTRY_TYPE = #entryType#,
+      ORIGINAL_GIFT_ID = #originalGiftId#,
+      PAYMENT_MESSAGE = #paymentMessage#,
+      PAYMENT_STATUS = #paymentStatus#,
+      PAYMENT_TYPE = #paymentType#,
+      POSTMARK_DATE = #postmarkDate#,
+      REFUND_GIFT_ID = #refundGiftId#,
+      REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
+      SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+      TRANSACTION_DATE = #transactionDate#,
+      PAYMENT_TXREFNUM = #paymentTxrefnum#,
+      ADDRESS_ID = #addressId#,
+      COMMITMENT_ID = #commitmentId#,
+      EMAIL_ID = #emailId#,
+      PAYMENT_SOURCE_ID = #paymentSourceId#,
+      PERSON_ID = #personId#,
+      PHONE_ID = #phoneId#
+    where GIFT_ID = #giftId#
   </update>
 </sqlMap>

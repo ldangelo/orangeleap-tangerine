@@ -3,8 +3,6 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.mpower.domain.annotation.AutoPopulate;
-
 public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,17 +19,10 @@ public class Site implements Serializable {
     }
 
     private String name;
-
     private String merchantNumber;
-
     private Site parentSite;
-
-    @AutoPopulate
     private Date createDate;
-
-    @AutoPopulate
     private Date updateDate;
-
 
     public String getName() {
         return name;

@@ -34,77 +34,19 @@
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.mpower.domain.model.Site">
 		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, UPDATE_DATE, PARENT_SITE_NAME)
-		values (#name#, #createDate#, #merchantNumber#,	#updateDate#, #parentSite.name#)
-	</insert>
-
-
-
-
-
-	<insert id="site-ibatorgenerated_insertSelective" parameterClass="com.mpower.domain.model.Site">
-		insert into SITE
-		<dynamic prepend="(">
-			<isNotNull prepend="," property="name">
-				SITE_NAME
-			</isNotNull>
-			<isNotNull prepend="," property="createDate">
-				CREATE_DATE
-			</isNotNull>
-			<isNotNull prepend="," property="merchantNumber">
-				MERCHANT_NUMBER
-			</isNotNull>
-			<isNotNull prepend="," property="updateDate">
-				UPDATE_DATE
-			</isNotNull>
-			<isNotNull prepend="," property="parentSite">
-				PARENT_SITE_NAME
-		   	</isNotNull>
-			)
-		</dynamic>
-		values
-		<dynamic prepend="(">
-			<isNotNull prepend="," property="name">
-				#name:VARCHAR#
-			</isNotNull>
-			<isNotNull prepend="," property="createDate">
-				#createDate:TIMESTAMP#
-			</isNotNull>
-			<isNotNull prepend="," property="merchantNumber">
-				#merchantNumber:VARCHAR#
-			</isNotNull>
-			<isNotNull prepend="," property="updateDate">
-				#updateDate:TIMESTAMP#
-			</isNotNull>
-			<isNotNull prepend="," property="parentSite">
-				#parentSite:VARCHAR#
-			</isNotNull>
-			)
-		</dynamic>
+		values (#name#, now(), #merchantNumber#, now(), #parentSite.name#)
 	</insert>
 	
-	<update id="site-ibatorgenerated_updateByPrimaryKeySelective"
-		parameterClass="com.mpower.domain.model.Site">
+	<update id="UPDATE_SITE" parameterClass="com.mpower.domain.model.Site">
 		update SITE
-		<dynamic prepend="set">
-			<isNotNull prepend="," property="merchantNumber">
-				MERCHANT_NUMBER = #merchantNumber:VARCHAR#
-			</isNotNull>
-			<isNotNull prepend="," property="updateDate">
-				UPDATE_DATE = #updateDate:TIMESTAMP#
-			</isNotNull>
-			<isNotNull prepend="," property="parentSite">
-				PARENT_SITE_NAME = #parentSite:VARCHAR#
-			</isNotNull>
-		</dynamic>
+		set UPDATE_DATE = now()
+		<isNotNull prepend="," property="merchantNumber">
+			MERCHANT_NUMBER = #merchantNumber:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="parentSite">
+			PARENT_SITE_NAME = #parentSite:VARCHAR#
+		</isNotNull>
 		where SITE_NAME = #name:VARCHAR#
 	</update>
-	
-	<update id="site-ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.Site">
-		update SITE
-		set MERCHANT_NUMBER = #merchantNumber:VARCHAR#,
-		UPDATE_DATE = #updateDate:TIMESTAMP#,
-		PARENT_SITE_NAME = #parentSite:VARCHAR#
-		where SITE_NAME = #name:VARCHAR#
-	</update>
-	
+
 </sqlMap>

@@ -14,6 +14,8 @@
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
 		<property name="mysql.db.classpath" value="${target.tomcat.dir}/lib/mysql-connector-java-5.0.8-bin.jar" />
 
+		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
+		<sleep seconds="30" />
 
 		<!-- Reset schema -->
 	     <sql driver="${mysql.db.driver}"
@@ -21,36 +23,26 @@
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}">
+		          classpath="${mysql.db.classpath}"
+ 	              delimiter=";"
+	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
+		    <transaction src="${basedir}/prod/tangerine.ddl"/>
 	    </sql>
 
-		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
-		<sleep seconds="30" />
 		<delete dir="${target.tomcat.dir}/work" />
 		<delete dir="${target.tomcat.dir}/temp" />
 		<delete dir="${target.tomcat.dir}/webapps/mpower" />
-
-		
-		<!-- JPA recreates the tables when loading the new .war if they don't exist -->
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 
 		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
 		<sleep seconds="90" />
-
 		
 		
-		<exec executable="${target.tomcat.dir}/bin/shutdown.sh" spawn="true" />
-		<sleep seconds="30" />
-		<exec executable="${target.tomcat.dir}/bin/startup.sh" spawn="true" />
-		<sleep seconds="90" />
-
-		
-		
-		<!-- for a clean base new instance -->
+		<!-- for a base data only instance -->
 		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
 
-		<!-- for a dev data new instance -->
+		<!-- for a sample data instance -->
 		<ant antfile="${dev.build.file}" target="9. Load Data" />
 		
     </target> 

@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
+import com.mpower.domain.model.Site;
 import com.mpower.type.PageType;
 
 public interface SiteService {

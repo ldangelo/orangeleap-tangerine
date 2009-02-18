@@ -1,12 +1,12 @@
 package com.mpower.service.impl;
 
 import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import javax.annotation.Resource;
 import javax.persistence.Column;
@@ -54,7 +54,7 @@ public class AuditServiceImpl implements AuditService {
     private AuditDao auditDao;
 
     @Resource(name = "siteDao")
-    private SiteDao siteDao;
+    private SiteDao siteDao; // TODO: replace with IBatis siteDAO
 
     public List<Audit> auditObject(Object object) {
         List<Audit> audits = null;

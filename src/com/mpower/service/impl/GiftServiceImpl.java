@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.PaymentSourceDao;
-import com.mpower.dao.SiteDao;
+import com.mpower.dao.interfaces.SiteDao;
 import com.mpower.domain.Address;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.DistributionLine;
@@ -33,7 +33,7 @@ import com.mpower.domain.PaymentHistory;
 import com.mpower.domain.PaymentSource;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
-import com.mpower.domain.customization.EntityDefault;
+import com.mpower.domain.model.customization.EntityDefault;
 import com.mpower.integration.NewGift;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -82,7 +82,7 @@ public class GiftServiceImpl implements GiftService {
     @Resource(name = "paymentSourceDao")
     private PaymentSourceDao paymentSourceDao;
 
-    @Resource(name = "siteDao")
+    @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
 

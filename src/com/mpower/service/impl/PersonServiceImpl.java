@@ -43,7 +43,7 @@ public class PersonServiceImpl implements PersonService {
     private PersonDao personDao;
 
     @Resource(name = "siteDao")
-    private SiteDao siteDao;
+    private SiteDao siteDao; // TODO: replace with IBatis siteDAO
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)

@@ -45,4 +45,6 @@ public final class StringConstants {
     public static final String COMMITMENT = "commitment";
     public static final String COMMITMENTS = "commitments";
     public static final String COMMITMENT_ID = "commitmentId";
+    
+    public static final String CUSTOM_FIELD_MAP = "customFieldMap[";
 }

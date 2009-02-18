@@ -44,11 +44,15 @@ public class PicklistItemServiceImpl implements PicklistItemService {
     
 	// The unique key for PICKLIST is just id, not site + id, so id's have to be kept unique
 	public static String addSiteToId(String siteName, String picklistId) {
-		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		if (picklistId.contains("-")) {
+            throw new RuntimeException("Invalid picklistId character.");
+        }
 		return siteName + "-" + picklistId;
 	}
 	public static String removeSiteFromId(String picklistId) {
-		if (!picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		if (!picklistId.contains("-")) {
+            throw new RuntimeException("Invalid picklistId character.");
+        }
 		return picklistId.substring(picklistId.indexOf("-") + 1);
 	}
 	
@@ -68,13 +72,17 @@ public class PicklistItemServiceImpl implements PicklistItemService {
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklist(String siteName, String picklistId) {
 		
-		if (picklistId == null || picklistId.length() == 0) return null;
+		if (picklistId == null || picklistId.length() == 0) {
+            return null;
+        }
 		
 		Picklist picklist = picklistItemDao.readPicklistById(picklistId);
 		if (picklist == null) {
 			picklist = picklistItemDao.readPicklistById(removeSiteFromId(picklistId));
 		}
-		if (picklist == null) return null;
+		if (picklist == null) {
+            return null;
+        }
 		
 		if (picklist.getSite() == null) {
 			return createCopy(picklist, siteName);
@@ -94,7 +102,9 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 		List<Picklist> list = picklistItemDao.listPicklists(siteName);
 		Iterator<Picklist> it = list.iterator();
 		while (it.hasNext()) {
-			if (exclude(it.next())) it.remove();
+			if (exclude(it.next())) {
+                it.remove();
+            }
 		}
 		
 		// Overridden, site-specific picklists
@@ -109,7 +119,11 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 		for (Picklist picklist : list) {
 			if (picklist.getSite() == null) {
 				boolean found = false;
-				for (Picklist apicklist : result) if (apicklist.getPicklistName().equals(picklist.getPicklistName())) found = true;
+				for (Picklist apicklist : result) {
+                    if (apicklist.getPicklistName().equals(picklist.getPicklistName())) {
+                        found = true;
+                    }
+                }
 				if (!found) {
 					result.add(createCopy(picklist, siteName));
 				}
@@ -145,16 +159,22 @@ public class PicklistItemServiceImpl implements PicklistItemService {
 	}
 	
 	private Site getSite(String siteName) {
-		List<Site> sites = siteService.readSites();
-	    for (Site site: sites) if (site.getName().equals(siteName)) return site;
-	    throw new RuntimeException("Invalid site name: " + siteName);
+	    Site site = new Site();
+	    site.setName(siteName);
+	    return site;
+// TODO: remove above and refactor below for IBatis	    
+//		List<Site> sites = siteService.readSites();
+//	    for (Site site: sites) if (site.getName().equals(siteName)) return site;
+//	    throw new RuntimeException("Invalid site name: " + siteName);
 	}
 	
 	private void removeBlankItems(Picklist picklist) {
     	Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
     	while (it.hasNext()) {
     		PicklistItem item = it.next();
-    		if (item.getItemName() == null || item.getItemName().length() == 0) it.remove();
+    		if (item.getItemName() == null || item.getItemName().length() == 0) {
+                it.remove();
+            }
     	}
 	}
 
@@ -186,9 +206,13 @@ public class PicklistItemServiceImpl implements PicklistItemService {
     		// If picklist not found it's copied from global picklist to a new site-specific picklist.
     		boolean found = false;
         	for (PicklistItem apicklistItem : picklist.getPicklistItems()) {
-        	    if (apicklistItem.getItemName().equals(picklistItem.getItemName())) found = true;
+        	    if (apicklistItem.getItemName().equals(picklistItem.getItemName())) {
+                    found = true;
+                }
         	}
-        	if (!found) picklist.getPicklistItems().add(picklistItem);
+        	if (!found) {
+                picklist.getPicklistItems().add(picklistItem);
+            }
 
         	// Set order and reset item ids.
         	for (int i = 0; i < picklist.getPicklistItems().size(); i++) {

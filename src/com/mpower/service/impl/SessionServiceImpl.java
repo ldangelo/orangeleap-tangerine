@@ -31,7 +31,20 @@ public class SessionServiceImpl implements SessionService {
     private SiteService siteService;
 
     public Site lookupSite() {
-    	return siteService.createSiteAndUserIfNotExist(lookupUserSiteName());
+        
+        // TODO: remove cloning logic for IBatis
+    	com.mpower.domain.model.Site site = siteService.createSiteAndUserIfNotExist(lookupUserSiteName());
+    	Site siteClone = new Site();
+    	siteClone.setName(site.getName());
+    	siteClone.setMerchantNumber(site.getMerchantNumber());
+    	siteClone.setCreateDate(site.getCreateDate());
+    	siteClone.setUpdateDate(site.getUpdateDate());
+    	if (site.getParentSite() != null) {
+        	Site parentSite = new Site();
+        	parentSite.setName(site.getParentSite().getName());
+        	siteClone.setParentSite(parentSite);
+    	}
+    	return siteClone;
     }
 
     public static String lookupUserSiteName() {

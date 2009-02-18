@@ -1,5 +1,6 @@
 package com.mpower.service.rule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,7 +16,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Site;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
@@ -66,7 +67,7 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 
 				WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-				List<Person> peopleList = ps.readAllPeopleBySite(site);
+				List<Person> peopleList = new ArrayList<Person>(); //ps.readAllPeopleBySite(site); // TODO: fix for IBatis
 
 				for (Person p : peopleList) {
 

@@ -20,15 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.SiteDao;
+import com.mpower.dao.interfaces.SiteDao;
 import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
-import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.FieldValidation;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.Site;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.security.MpowerLdapAuthoritiesPopulator;
 import com.mpower.service.PersonService;
@@ -58,25 +58,29 @@ public class SiteServiceImpl implements SiteService {
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
 
-    @Resource(name = "siteDao")
+    @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public synchronized Site createSiteAndUserIfNotExist(String siteName) {
-    	
+    	if (logger.isDebugEnabled()) {
+    	    logger.debug("createSiteAndUserIfNotExist: siteName = " + siteName);
+    	}
         Site site = siteDao.readSite(siteName);
-        if (site == null) site = siteDao.createSite(siteName, "", null);
+        if (site == null) {
+            site = siteDao.createSite(new Site(siteName, "", null));
+        }
 
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
   	    Long personId = authentication.getPersonId();
   	    if (personId == null) {
-  	    	
           	Person person = getPersonService().readPersonByLoginId(authentication.getName(), siteName);
           	if (person == null) {
           	    try {
 					person = createPerson(authentication, siteName);
-				} catch (Exception e) {
+				} 
+          	    catch (Exception e) {
 					e.printStackTrace();
 					throw new RuntimeException("Unable to create new user record.");
 				}
@@ -84,7 +88,6 @@ public class SiteServiceImpl implements SiteService {
           	authentication.setPersonId(person.getId());
           	
   	    }
-  	  
         return site;
     }
     

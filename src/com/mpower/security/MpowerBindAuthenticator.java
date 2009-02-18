@@ -7,6 +7,7 @@ import javax.naming.directory.DirContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.DistinguishedName;
@@ -96,11 +97,17 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
         }
 
         public DirContext getReadOnlyContext() throws DataAccessException {
-            return ctxFactory.getReadWriteContext(userDn.toString(), password);
+            return getReadOnlyContext();
         }
 
         public DirContext getReadWriteContext() throws DataAccessException {
-            return getReadOnlyContext();
+            return ctxFactory.getReadWriteContext(userDn.toString(), password);
         }
+
+		@Override
+		public DirContext getContext(String principal, String credentials)
+				throws NamingException {
+            return getReadWriteContext();
+		}
     }
 }

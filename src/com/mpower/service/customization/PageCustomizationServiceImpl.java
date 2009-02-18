@@ -15,9 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.customization.PageCustomizationDAO;
-import com.mpower.domain.customization.PageAccess;
+import com.mpower.dao.interfaces.PageAccessDao;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.PageAccess;
 import com.mpower.type.AccessType;
 import com.mpower.type.PageType;
 import com.mpower.type.RoleType;
@@ -32,6 +33,9 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     @Resource(name = "pageCustomizationDao")
     private PageCustomizationDAO pageCustomizationDao;
+
+    @Resource(name = "pageAccessDAO")
+    private PageAccessDao pageAccessDao;
 
     /*
      * (non-Javadoc)
@@ -116,7 +120,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Transactional
     public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
         Map<String, PageAccess> pageAccessMap = new HashMap<String, PageAccess>(); // pageType, PageAccess
-        List<PageAccess> pages = pageCustomizationDao.readPageAccess(siteName, roles);
+        List<PageAccess> pages = pageAccessDao.readPageAccess(siteName, roles);
         if (pages != null) {
             for (PageAccess pageAccess : pages) {
                 PageAccess pd = pageAccessMap.get(pageAccess.getPageType().name());

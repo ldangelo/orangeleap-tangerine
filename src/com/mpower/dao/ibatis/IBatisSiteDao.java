@@ -55,6 +55,14 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_SITES");
     }
+    
+    @Override
+    public int updateSite(Site site) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("updateSite: site = " + site);
+        }
+        return getSqlMapClientTemplate().update("UPDATE_SITE", site);
+    }
 
     @Override
     public EntityDefault createEntityDefault(EntityDefault entityDefault) {

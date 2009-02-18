@@ -11,9 +11,13 @@ public class Site implements Serializable {
         super();
     }
 
-    public Site(String name, String merchantNumber, Site parentSite) {
-        this();
+    public Site(String name) {
+        super();
         this.name = name;
+    }
+
+    public Site(String name, String merchantNumber, Site parentSite) {
+        this(name);
         this.merchantNumber = merchantNumber;
         this.parentSite = parentSite;
     }

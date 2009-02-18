@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.dao.DataAccessException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -33,6 +34,8 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert "company999".equals(site1.getName());
         assert "12345".equals(site1.getMerchantNumber());
         assert site1.getParentSite() == null;
+        assert site1.getCreateDate() == null;
+        assert site1.getUpdateDate() == null;
         
         site = new Site("company1A", "foo", site1);
         Site site1A = siteDao.createSite(site);
@@ -41,6 +44,8 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert "foo".equals(site1A.getMerchantNumber());
         assert site1A.getParentSite() != null;
         assert "company999".equals(site1A.getParentSite().getName());
+        assert site1A.getCreateDate() == null;
+        assert site1A.getUpdateDate() == null;
     } 
 
     @Test(groups = { "testReadSite" }, dependsOnGroups = { "testCreateSite" })
@@ -50,6 +55,8 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert "company999".equals(site1.getName());
         assert "12345".equals(site1.getMerchantNumber());
         assert site1.getParentSite() == null;
+        assert site1.getCreateDate() != null;
+        assert site1.getUpdateDate() != null;
 
         Site site1A = siteDao.readSite("company1A");
         assert site1A != null;
@@ -57,6 +64,8 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert "foo".equals(site1A.getMerchantNumber());
         assert site1A.getParentSite() != null;
         assert "company999".equals(site1A.getParentSite().getName());
+        assert site1A.getCreateDate() != null;
+        assert site1A.getUpdateDate() != null;
     } 
     
     @Test(groups = { "testReadSite" }, dependsOnGroups = { "testCreateSite" })
@@ -67,6 +76,35 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         for (Site site : sites) {
             assert "company1A".equals(site.getName()) || "company999".equals(site.getName());
         }
+    }
+    
+    @Test(groups = { "testUpdateSite" }, dependsOnGroups = { "testReadSite" })
+    public void testUpdateSite() throws Exception {
+        Site site999 = siteDao.readSite("company999");
+        assert site999 != null;
+        assert "company999".equals(site999.getName());
+        assert "12345".equals(site999.getMerchantNumber());
+        assert site999.getParentSite() == null;
+        
+        site999.setMerchantNumber("bar");
+        site999.setParentSite(new Site("company1A"));
+        siteDao.updateSite(site999);
+        
+        site999 = siteDao.readSite("company999");
+        assert site999 != null;
+        assert "company999".equals(site999.getName());
+        assert "bar".equals(site999.getMerchantNumber());
+        assert site999.getParentSite() != null;
+        assert "company1A".equals(site999.getParentSite().getName());
+
+        site999.setMerchantNumber(null);
+        site999.setParentSite(null);
+        siteDao.updateSite(site999);
+        
+        site999 = siteDao.readSite("company999");
+        assert "company999".equals(site999.getName());
+        assert site999.getMerchantNumber() == null;
+        assert site999.getParentSite() == null;
     }
 
     @Test(groups = { "testCreateEntityDefault" })
@@ -124,4 +162,19 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert entityDefault.getId() != null;
         assert entityDefault.getId() > 0;
     } 
+    
+    @Test(groups = { "testInsertException" }, dependsOnGroups = { "testCreateSite" }, expectedExceptions = org.springframework.dao.DataAccessException.class )
+    public void testInsertException() throws DataAccessException {
+        Site site = new Site("company999", "12345", null);
+        siteDao.createSite(site);
+    }
+    
+    @Test(groups = { "testNoInsertForUpdate" }, dependsOnGroups = { "testCreateSite" } )
+    public void testNoInsertForUpdate() throws Exception {
+        Site site = new Site("companyNotExistingYet", "12345", null);
+        siteDao.updateSite(site);
+        
+        site = siteDao.readSite("companyNotExistingYet");
+        assert site == null;
+   }
 }

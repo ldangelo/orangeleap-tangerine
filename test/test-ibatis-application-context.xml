@@ -19,7 +19,7 @@
 	</context:component-scan>
 
 	<aop:config>
-		<aop:advisor pointcut="execution(* *..*SiteDao.*(..))" advice-ref="txAdvice" />
+		<aop:advisor pointcut="execution(* *..*SiteDao.*(..))" advice-ref="txAdvice" />		
 	</aop:config>
 
 	<tx:advice id="txAdvice">

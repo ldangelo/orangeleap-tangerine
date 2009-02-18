@@ -8,15 +8,17 @@ import com.mpower.type.EntityType;
 
 public interface SiteDao {
 
-	public Site readSite(String siteName);
+    public Site createSite(Site site);
+
+    public Site readSite(String siteName);
 	
 	public List<Site> readSites();
 
-	public Site createSite(Site site);
+	public int updateSite(Site site);
 	
     public EntityDefault createEntityDefault(EntityDefault entityDefault);
 
-    public int updateEntityDefault(EntityDefault entityDefault);
-
     public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
+    
+    public int updateEntityDefault(EntityDefault entityDefault);
 }

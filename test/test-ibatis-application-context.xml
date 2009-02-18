@@ -14,9 +14,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:component-scan base-package="com.mpower">
-        <context:include-filter type="assignable" expression="com.mpower.dao.ibatis.AbstractIBatisDao"/>
-	</context:component-scan>
+	<context:component-scan base-package="com.mpower.dao.ibatis"/>
 
 	<aop:config>
 		<aop:advisor pointcut="execution(* *..*IBatis*Dao.*(..))" advice-ref="txAdvice" />		
@@ -27,18 +25,6 @@
 			<tx:method name="*" />
 		</tx:attributes>
 	</tx:advice>
-
- 
- <!--  temporarily restored; TODO: remove when we remove JPA 
--->	
-	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="MPowerUnitTestPu" />
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-		</property>
-	</bean>
-
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource">

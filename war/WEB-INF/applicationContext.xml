@@ -71,6 +71,11 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
 	<bean id="dataSource" class="com.mpower.util.MpowerDataSource">
 		<property name="dataSource" ref="dataSource-pooled" />
 		<property name="splitDatabases" value="false" />

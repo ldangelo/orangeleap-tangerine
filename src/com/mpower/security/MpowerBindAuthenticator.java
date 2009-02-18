@@ -97,7 +97,7 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
         }
 
         public DirContext getReadOnlyContext() throws DataAccessException {
-            return getReadOnlyContext();
+            return ctxFactory.getReadWriteContext(userDn.toString(), password);
         }
 
         public DirContext getReadWriteContext() throws DataAccessException {
@@ -107,7 +107,7 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
 		@Override
 		public DirContext getContext(String principal, String credentials)
 				throws NamingException {
-            return getReadWriteContext();
+            return ctxFactory.getReadWriteContext(userDn.toString(), password);
 		}
     }
 }

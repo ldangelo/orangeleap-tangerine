@@ -3,8 +3,11 @@
 <sqlMap namespace="SITE">
 
 	<!-- ResultMaps -->
-	<resultMap id="SITE_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
 		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="SITE_RESULT" class="com.mpower.domain.model.Site" extends="SITE_NAME_RESULT">
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR" />
 		<result property="merchantBin" column="MERCHANT_BIN" jdbcType="VARCHAR" />

@@ -76,9 +76,9 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
     public void testReadSites() throws Exception {
         List<Site> sites = siteDao.readSites();
         assert sites != null;
-        assert sites.size() == 2;
+        assert sites.size() == 4;
         for (Site site : sites) {
-            assert "company1A".equals(site.getName()) || "company999".equals(site.getName());
+            assert "company1A".equals(site.getName()) || "company999".equals(site.getName()) || "company1".equals(site.getName()) || "company2".equals(site.getName());
         }
     }
     

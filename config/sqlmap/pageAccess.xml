@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PAGE_ACCESS">
+	
+	<resultMap id="PAGE_ACCESS_RESULT" class="com.mpower.domain.model.customization.PageAccess">
+		<result property="id" column="PAGE_ACCESS_ID" jdbcType="BIGINT" />
+		<result property="accessType" column="ACCESS_TYPE" jdbcType="VARCHAR" />
+		<result property="pageType" column="PAGE_TYPE" jdbcType="VARCHAR" />
+		<result property="role" column="ROLE" jdbcType="VARCHAR" />
+		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+	</resultMap>
+	
+	<select id="SELECT_PAGE_ACCESS_BY_SITE_ROLES" resultMap="PAGE_ACCESS_RESULT" parameterClass="map">
+		select PAGE_ACCESS_ID, ACCESS_TYPE, PAGE_TYPE, ROLE, SITE_NAME
+		from PAGE_ACCESS 
+		where ((SITE_NAME is NULL or SITE_NAME = #siteName#) 
+		and (ROLE in 
+		<iterate property="roleNames" conjunction="," open="(" close=")">
+			#roleNames[]#
+		</iterate>
+		))
+	</select>
+</sqlMap>

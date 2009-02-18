@@ -3,4 +3,5 @@
 <sqlMapConfig>
 	<sqlMap resource="sqlmap/site.xml"/>
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
+	<sqlMap resource="sqlmap/pageAccess.xml"/>
 </sqlMapConfig>

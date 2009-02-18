@@ -35,6 +35,8 @@
 	          classpath="${mysql.db.classpath}">
 
 	     	<transaction src="${basedir}/db/prod/tangerine.ddl"/>
+	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+	     	<transaction src="${basedir}/db/dev/pageAccess.sql"/>
 	     </sql>
 	</target>
 	

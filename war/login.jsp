@@ -9,27 +9,6 @@
 	<link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
 	<script type="text/javascript" src="js/jquery/jquery-1.3.1.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-		<script type='text/javascript'>
-		$(document).ready(function() {
-			if (jQuery.browser.mozilla) {
-				$("#j_fullname").val("nolan@company1");
-				$("#j_password").val("ryan");
-			}
-			else if (jQuery.browser.safari) {
-				$("#j_fullname").val("randy@company1");
-				$("#j_password").val("johnson");
-			}
-			else if (jQuery.browser.msie) {
-				$("#j_fullname").val("rod@company1");
-				$("#j_password").val("koala");
-			}
-			else if (jQuery.browser.opera) {
-				$("#j_fullname").val("dianne@company1");
-				$("#j_password").val("emu");
-			}
-			$("#submit").click();
-		});
-	</script>
 </head>
 <body>
 <div class="loginPane">

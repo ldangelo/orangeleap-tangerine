@@ -27,7 +27,7 @@
  	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
-		    <transaction src="${basedir}/prod/tangerine.ddl"/>
+		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 	    </sql>
 
 		

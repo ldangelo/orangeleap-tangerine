@@ -24,7 +24,7 @@
 			<div class="clearColumns"></div>
 			
 			<div class="column googleWidget">
-				<h5>From The MPower Blog</h5>
+				<h5>From The Orange Leap Blog</h5>
 				<div id="feed"></div>
 			</div>
 			<div class="column googleWidget">

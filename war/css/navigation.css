@@ -6,9 +6,9 @@
 	font-weight:bold;
 }
 #banner {
-	height:120px;
+	height:66px;
 	width:100%;
-	background:url('../images/orangeleap-logo.jpg') center left no-repeat;
+	background: transparent url('../images/orangeleap-logo.jpg') no-repeat scroll 10px 10px;
 }
 #footer {
 	font-size: 11px;

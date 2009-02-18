@@ -1,1 +1,0 @@
-<PriorAuthID>[% PriorAuthID= %]</PriorAuthID>

@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="mpower">
+  <test verbose="2" name="com.mpower.test.service.payments.OrbitalPaymentGatewayTest" annotations="JDK">
+    <classes>
+      <class name="com.mpower.test.service.payments.OrbitalPaymentGatewayTest"/>
+    </classes>
+  </test>
+</suite>

@@ -17,7 +17,7 @@
   <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
     <beans:property name="targetConnectionFactory">
       <beans:bean class="org.apache.activemq.ActiveMQConnectionFactory">
-	<beans:property name="brokerURL" value="vm://localhost"/>		
+	<beans:property name="brokerURL" value="tcp://localhost:61616"/>		
       </beans:bean>
     </beans:property>
     <beans:property name="sessionCacheSize" value="10"/>
@@ -63,5 +63,9 @@
   </beans:bean>
 
   <jms:outbound-gateway id="GiftJms" request-channel="gift_jms_channel" request-destination="GiftDestination" />
+
+	<poller id="poller" default="true">
+		<interval-trigger interval="1000"/>
+	</poller>
 
 </beans:beans>

@@ -38,6 +38,9 @@ public class Site implements Serializable {
     @Column(name = "MERCHANT_NUMBER")
     private String merchantNumber;
 
+    @Column(name = "MERCHANT_BIN")
+    private String merchantBin;
+    
     @ManyToOne
     @JoinColumn(name = "PARENT_SITE_NAME", referencedColumnName = "SITE_NAME")
     private Site parentSite;
@@ -64,6 +67,15 @@ public class Site implements Serializable {
 		this.merchantNumber = merchantNumber;
 	}
 
+	public String getMerchantBin() {
+		return merchantBin;
+	}
+	
+	public void setMerchantBin(String bin)
+	{
+		merchantBin = bin;
+	}
+	
 	public void setName(String name) {
         this.name = name;
     }

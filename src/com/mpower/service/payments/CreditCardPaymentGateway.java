@@ -2,7 +2,7 @@ package com.mpower.service.payments;
 
 import com.mpower.domain.Gift;
 
-public interface PaymentGateway {
+public interface CreditCardPaymentGateway {
 	void Authorize(Gift gift);
 	void AuthorizeAndCapture(Gift gift);
 	void Capture(Gift gift);

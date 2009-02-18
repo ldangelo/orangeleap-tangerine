@@ -17,6 +17,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ import com.mpower.type.PaymentHistoryType;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class GiftServiceImpl implements GiftService {
+public class GiftServiceImpl implements GiftService, ApplicationContextAware {
 
 
     /** Logger for this class and subclasses */
@@ -125,13 +126,7 @@ public class GiftServiceImpl implements GiftService {
         if (gift.getEmail() != null && gift.getEmail().getId() == null) {
             gift.setEmail(emailService.saveEmail(gift.getEmail()));
         }
-        gift = giftDao.maintainGift(gift);
 
-        // this was a part of our JMS/MOM poc
-        // comment it out to disable jms processing.
-        // processMockTrans(gift);
-        
-//        context.publishEvent(new NewGiftEvent(this,gift));
 
         try {
         	NewGift newGift = (NewGift) context.getBean("newGift");
@@ -140,6 +135,8 @@ public class GiftServiceImpl implements GiftService {
         	logger.error(ex.getMessage());
         	logger.error(ex.getStackTrace());
         }
+
+        gift = giftDao.maintainGift(gift);
         
         paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
         
@@ -173,10 +170,13 @@ public class GiftServiceImpl implements GiftService {
         }
         gift = giftDao.maintainGift(gift);
 
-        // this was a part of our JMS/MOM poc
-        // comment it out to disable jms processing.
-        processMockTrans(gift);
-
+        try {
+        	NewGift newGift = (NewGift) context.getBean("newGift");
+        	newGift.routeGift(gift);
+        } catch (Exception ex) {
+        	logger.error(ex.getMessage());
+        }
+        
         auditService.auditObject(gift);
 
         return gift;

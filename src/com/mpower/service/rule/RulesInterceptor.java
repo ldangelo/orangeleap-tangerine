@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -57,6 +59,8 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
+		workingMemory.addEventListener (new DebugAgendaEventListener());
+		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 		@SuppressWarnings("unused")
 		PersonService ps = (PersonService) applicationContext.getBean("personService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");

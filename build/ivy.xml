@@ -215,7 +215,7 @@
 		</dependency>
 
 		<!-- Spring -->
-    	<dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.3.0.RELEASE" classifier="all">
+    	<dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.2.1">
 			<artifact name="spring-ldap" type="jar" />
 			<artifact name="spring-ldap" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
@@ -299,6 +299,10 @@
 		
 		<dependency org="org.apache.regexp" name="regexp" rev="1.0">
 			<artifact name="regexp" type="jar" ext="jar"/>
+		</dependency>
+		
+		<dependency org="com.sun.rsajca" name="sunrasign" rev="1.0">
+			<artifact name="sunrasign" type="jar" ext="jar"/>
 		</dependency>
 	</dependencies>
 </ivy-module>

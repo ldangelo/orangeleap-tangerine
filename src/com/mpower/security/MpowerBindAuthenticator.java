@@ -104,7 +104,6 @@ public class MpowerBindAuthenticator extends AbstractLdapAuthenticator {
             return ctxFactory.getReadWriteContext(userDn.toString(), password);
         }
 
-		@Override
 		public DirContext getContext(String principal, String credentials)
 				throws NamingException {
             return ctxFactory.getReadWriteContext(userDn.toString(), password);

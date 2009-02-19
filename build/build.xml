@@ -114,6 +114,20 @@
 		 <ant antfile="${load.base.data.file}" target="load.base.data" />
 	</target>
 
+	<target name="9.3 Load Schema">
+		     <sql driver="${mysql.db.driver}"
+			          url="${mysql.db.url}"
+			          userid="${mysql.db.user}"
+			          password="${mysql.db.pw}"
+			          encoding="UTF-8"
+			          classpath="${mysql.db.classpath}"
+	 	              delimiter=";"
+		     	>
+			    <transaction src="${basedir}/db/clearSchema.sql"/>
+			    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
+		    </sql>
+	</target>
+
 	<target name="app.synch" description="Syncs the XHTML, JSP, JS, CSS, and Images of the project with a running application.">
 		<ant antfile="${internal.build.file}" target="app.synch" />
 	</target>

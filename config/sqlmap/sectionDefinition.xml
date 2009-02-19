@@ -2,20 +2,29 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="SECTION_DEFINITION">
 
+	<resultMap id="SEC_DEF_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="SEC_DEF_SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
 	<resultMap id="SECTION_DEFINITION_RESULT" class="com.mpower.domain.model.customization.SectionDefinition">
 		<result property="id" column="SECTION_DEFINITION_ID" jdbcType="BIGINT" />
-		<result property="defaultLabel" column="DEFAULT_LABEL" jdbcType="VARCHAR" />
-		<result property="layoutType" column="LAYOUT_TYPE" jdbcType="VARCHAR" />
-		<result property="pageType" column="PAGE_TYPE" jdbcType="VARCHAR" />
-		<result property="role" column="ROLE" jdbcType="VARCHAR" />
-		<result property="sectionName" column="SECTION_NAME" jdbcType="VARCHAR" />
-		<result property="sectionOrder" column="SECTION_ORDER" jdbcType="INTEGER" />
-		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+		<result property="defaultLabel" column="SEC_DEF_DEFAULT_LABEL" jdbcType="VARCHAR" />
+		<result property="layoutType" column="SEC_DEF_LAYOUT_TYPE" jdbcType="VARCHAR" />
+		<result property="pageType" column="SEC_DEF_PAGE_TYPE" jdbcType="VARCHAR" />
+		<result property="role" column="SEC_DEF_ROLE" jdbcType="VARCHAR" />
+		<result property="sectionName" column="SEC_DEF_SECTION_NAME" jdbcType="VARCHAR" />
+		<result property="sectionOrder" column="SEC_DEF_SECTION_ORDER" jdbcType="INTEGER" />
+		<result property="site" resultMap="SECTION_DEFINITION.SEC_DEF_SITE_NAME_RESULT" />
 	</resultMap>
 	
 	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map">
-		select sd.SECTION_DEFINITION_ID, sd.DEFAULT_LABEL, sd.LAYOUT_TYPE, sd.PAGE_TYPE, sd.ROLE, sd.SECTION_NAME, sd.SECTION_ORDER, sd.SITE_NAME
+		select sd.SECTION_DEFINITION_ID, sd.DEFAULT_LABEL as SEC_DEF_DEFAULT_LABEL, 
+		sd.LAYOUT_TYPE as SEC_DEF_LAYOUT_TYPE, sd.PAGE_TYPE as SEC_DEF_PAGE_TYPE, 
+		sd.ROLE as SEC_DEF_ROLE, sd.SECTION_NAME as SEC_DEF_SECTION_NAME, 
+		sd.SECTION_ORDER as SEC_DEF_SECTION_ORDER, sd.SITE_NAME as SEC_DEF_SITE_NAME
+		
 		from SECTION_DEFINITION sd
+		
 		where sd.PAGE_TYPE = #pageType#
 	    and (sd.SITE_NAME is NULL or sd.SITE_NAME = #siteName#)
 		and (sd.ROLE is NULL or sd.ROLE in 

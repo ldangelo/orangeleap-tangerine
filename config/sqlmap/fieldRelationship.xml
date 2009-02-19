@@ -2,42 +2,88 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_RELATIONSHIP">
 	
+	<resultMap id="DETAIL_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="DETAIL_SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="DETAIL_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.FieldDefinition">
+		<result property="id" column="DETAIL_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="defaultLabel" column="DETAIL_DEFAULT_LABEL" jdbcType="VARCHAR" />
+		<result property="entityAttributes" column="DETAIL_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
+		<result property="entityType" column="DETAIL_ENTITY_TYPE" jdbcType="VARCHAR" />
+		<result property="fieldInfo" column="DETAIL_FIELD_INFO" jdbcType="VARCHAR" />
+		<result property="fieldName" column="DETAIL_FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="fieldType" column="DETAIL_FIELD_TYPE" jdbcType="VARCHAR" />
+		<result property="referenceType" column="DETAIL_REFERENCE_TYPE" jdbcType="VARCHAR" />
+		<result property="site" resultMap="FIELD_RELATIONSHIP.DETAIL_SITE_NAME_RESULT" />
+	</resultMap>
+	
+	<resultMap id="MASTER_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="MASTER_SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="MASTER_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.FieldDefinition">
+		<result property="id" column="MASTER_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="defaultLabel" column="MASTER_DEFAULT_LABEL" jdbcType="VARCHAR" />
+		<result property="entityAttributes" column="MASTER_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
+		<result property="entityType" column="MASTER_ENTITY_TYPE" jdbcType="VARCHAR" />
+		<result property="fieldInfo" column="MASTER_FIELD_INFO" jdbcType="VARCHAR" />
+		<result property="fieldName" column="MASTER_FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="fieldType" column="MASTER_FIELD_TYPE" jdbcType="VARCHAR" />
+		<result property="referenceType" column="MASTER_REFERENCE_TYPE" jdbcType="VARCHAR" />
+		<result property="site" resultMap="FIELD_RELATIONSHIP.MASTER_SITE_NAME_RESULT" />
+	</resultMap>
+	
 	<resultMap id="FIELD_RELATIONSHIP_RESULT" class="com.mpower.domain.model.FieldRelationship">
 		<result property="id" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
 		<result property="checkRecursion" column="CHECK_RECURSION" jdbcType="BIT" />
 		<result property="relationshipType" column="RELATIONSHIP_TYPE" jdbcType="VARCHAR" />
-		<result property="detailFieldDefinitionId" column="DETAIL_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
-		<result property="masterFieldDefinitionId" column="MASTER_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
-		<result property="site" resultMap="SITE.PARENT_SITE_RESULT" />
+		<result property="detailFieldDefinitionId" resultMap="FIELD_RELATIONSHIP.DETAIL_FIELD_DEFINITION_RESULT" />
+		<result property="masterFieldDefinitionId" resultMap="FIELD_RELATIONSHIP.MASTER_FIELD_DEFINITION_RESULT" />
+		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
 	</resultMap>
 	
-	<select id="SELECT_FIELD_RELATIONSHIP" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="long">
-		select FIELD_RELATIONSHIP_ID, CHECK_RECURSION, RELATIONSHIP_TYPE, DETAIL_FIELD_DEFINITION_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME
-		from FIELD_RELATIONSHIP
-		where FIELD_RELATIONSHIP_ID = #value#
+
+	<sql id="SELECT_FIELD_REF_FRAGMENT">
+		select fr.FIELD_RELATIONSHIP_ID, fr.CHECK_RECURSION, fr.RELATIONSHIP_TYPE, fr.DETAIL_FIELD_DEFINITION_ID, fr.MASTER_FIELD_DEFINITION_ID, fr.SITE_NAME,
+		master.DEFAULT_LABEL as MASTER_DEFAULT_LABEL, master.ENTITY_ATTRIBUTES as MASTER_ENTITY_ATTRIBUTES, master.ENTITY_TYPE as MASTER_ENTITY_TYPE, 
+		master.FIELD_INFO as MASTER_FIELD_INFO, master.FIELD_NAME as MASTER_FIELD_NAME, master.FIELD_TYPE as MASTER_FIELD_TYPE, 
+		master.REFERENCE_TYPE as MASTER_REFERENCE_TYPE, master.SITE_NAME as MASTER_SITE_NAME,
+		detail.DEFAULT_LABEL as DETAIL_DEFAULT_LABEL, detail.ENTITY_ATTRIBUTES as DETAIL_ENTITY_ATTRIBUTES, detail.ENTITY_TYPE as DETAIL_ENTITY_TYPE, 
+		detail.FIELD_INFO as DETAIL_FIELD_INFO, detail.FIELD_NAME as DETAIL_FIELD_NAME, detail.FIELD_TYPE as DETAIL_FIELD_TYPE, 
+		detail.REFERENCE_TYPE as DETAIL_REFERENCE_TYPE, detail.SITE_NAME as DETAIL_SITE_NAME
+		from FIELD_RELATIONSHIP fr
+		LEFT OUTER JOIN FIELD_DEFINITION master ON fr.MASTER_FIELD_DEFINITION_ID = master.FIELD_DEFINITION_ID
+		LEFT OUTER JOIN FIELD_DEFINITION detail ON fr.DETAIL_FIELD_DEFINITION_ID = detail.FIELD_DEFINITION_ID
+	</sql>
+	
+	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="long">
+		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
+		where fr.MASTER_FIELD_DEFINITION_ID = #value#		
 	</select>
 	
-	<insert id="ibatorgenerated_insert" parameterClass="com.mpower.domain.model.FieldRelationship">
-		insert into FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID,
-		CHECK_RECURSION, RELATIONSHIP_TYPE,
+	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="long">
+		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
+		where fr.DETAIL_FIELD_DEFINITION_ID = #value#		
+	</select>
+	
+	
+	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.FieldRelationship">
+		insert into FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, CHECK_RECURSION, RELATIONSHIP_TYPE,
 		DETAIL_FIELD_DEFINITION_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME)
-		values (#fieldRelationshipId#, #checkRecursion#,
-		#relationshipType#,
-		#detailFieldDefinitionId#, #masterFieldDefinitionId#, #site.name#)
+		values (#id#, #checkRecursion#,	#relationshipType#, #detailFieldDefinitionId#, #masterFieldDefinitionId#, #site.name#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
 	</insert>
 
-	<update id="ibatorgenerated_updateByPrimaryKey" parameterClass="com.mpower.domain.model.FieldRelationship">
-		<!--
-			WARNING - This element is automatically generated by Apache iBATIS
-			ibator, do not modify. This element was generated on Mon Feb 16
-			12:53:27 CST 2009.
-		-->
+	<update id="UPDATE_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.FieldRelationship">
 		update FIELD_RELATIONSHIP
 		set CHECK_RECURSION = #checkRecursion#,
 		RELATIONSHIP_TYPE = #relationshipType#,
 		DETAIL_FIELD_DEFINITION_ID = #detailFieldDefinitionId#,
 		MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#,
 		SITE_NAME = #site.name#
-		where FIELD_RELATIONSHIP_ID = #fieldRelationshipId#
+		where FIELD_RELATIONSHIP_ID = #id#
 	</update>
 </sqlMap>

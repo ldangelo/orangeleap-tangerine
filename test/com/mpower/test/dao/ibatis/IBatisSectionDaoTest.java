@@ -9,7 +9,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.SectionDao;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
+import com.mpower.type.EntityType;
+import com.mpower.type.FieldType;
 import com.mpower.type.LayoutType;
 import com.mpower.type.PageType;
 
@@ -74,4 +78,72 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
             assert secDef.getSite() != null && "company1".equals(secDef.getSite().getName());
         }
     } 
+    
+    @Test(groups = { "testReadSectionFields" })
+    public void testReadCustomizedSectionFieldsNoSecondary() throws Exception {
+        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields("company1", 100L);
+        assert sectionFields != null && sectionFields.isEmpty() == false;
+        assert sectionFields.size() == 1;
+        assert 6000 == sectionFields.get(0).getFieldOrder();
+        FieldDefinition fieldDef = sectionFields.get(0).getFieldDefinition();
+        assert fieldDef != null;
+        assert "person.recognitionName".equals(fieldDef.getId());
+        assert EntityType.person.equals(fieldDef.getEntityType());
+        assert "recognitionName".equals(fieldDef.getFieldName());
+        assert "Recognition Name".equals(fieldDef.getDefaultLabel());
+        assert FieldType.TEXT.equals(fieldDef.getFieldType());
+        assert "individual".equals(fieldDef.getEntityAttributes());
+        assert "company1".equals(fieldDef.getSite().getName());
+        
+        assert sectionFields.get(0).getSecondaryFieldDefinition() == null;
+        
+        SectionDefinition sectionDef = sectionFields.get(0).getSectionDefinition();
+        assert sectionDef != null;
+        assert 100L == sectionDef.getId();
+        assert PageType.person.equals(sectionDef.getPageType());
+        assert "person.contactInfo".equals(sectionDef.getSectionName());
+        assert "Contact Details".equals(sectionDef.getDefaultLabel());
+        assert 1 == sectionDef.getSectionOrder();
+        assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
+        assert "ROLE_SUPER_MANAGER".equals(sectionDef.getRole());
+        assert sectionDef.getSite() == null;
+    }
+    
+    @Test(groups = { "testReadSectionFields" })
+    public void testReadCustomizedSectionFieldsHasSecondary() throws Exception {
+        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields("company2", 100L);
+        assert sectionFields != null && sectionFields.isEmpty() == false;
+        assert sectionFields.size() == 1;
+        assert 7000 == sectionFields.get(0).getFieldOrder();
+        FieldDefinition fieldDef = sectionFields.get(0).getFieldDefinition();
+        assert fieldDef != null;
+        assert "person.emailMap[home]".equals(fieldDef.getId());
+        assert EntityType.person.equals(fieldDef.getEntityType());
+        assert "emailMap[home]".equals(fieldDef.getFieldName());
+        assert "Email".equals(fieldDef.getDefaultLabel());
+        assert FieldType.TEXT.equals(fieldDef.getFieldType());
+        assert fieldDef.getEntityAttributes() == null;
+        assert "company2".equals(fieldDef.getSite().getName());
+        
+        FieldDefinition secFieldDef = sectionFields.get(0).getSecondaryFieldDefinition();
+        assert secFieldDef != null;
+        assert "email.emailAddress".equals(secFieldDef.getId());
+        assert EntityType.email.equals(secFieldDef.getEntityType());
+        assert "emailAddress".equals(secFieldDef.getFieldName());
+        assert "Email Address".equals(secFieldDef.getDefaultLabel());
+        assert FieldType.TEXT.equals(secFieldDef.getFieldType());
+        assert secFieldDef.getEntityAttributes() == null;
+        assert secFieldDef.getSite() == null;
+        
+        SectionDefinition sectionDef = sectionFields.get(0).getSectionDefinition();
+        assert sectionDef != null;
+        assert 100L == sectionDef.getId();
+        assert PageType.person.equals(sectionDef.getPageType());
+        assert "person.contactInfo".equals(sectionDef.getSectionName());
+        assert "Contact Details".equals(sectionDef.getDefaultLabel());
+        assert 1 == sectionDef.getSectionOrder();
+        assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
+        assert "ROLE_SUPER_MANAGER".equals(sectionDef.getRole());
+        assert sectionDef.getSite() == null;
+    }
 }

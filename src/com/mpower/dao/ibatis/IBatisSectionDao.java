@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.SectionDao;
 import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.type.PageType;
 
 /** 
@@ -40,5 +41,29 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
         params.put("pageType", pageType);
         params.put("roles", roles);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE_ROLES", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SectionField> readCustomizedSectionFields(String siteName, Long sectionDefinitionId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCustomizedSectionFields: siteName = " + siteName + " sectionDefinitionId = " + sectionDefinitionId);
+        }
+        Map<String, Object> params = new HashMap<String, Object>(2);
+        params.put("siteName", siteName);
+        params.put("sectionDefinitionId", sectionDefinitionId);
+        return getSqlMapClientTemplate().queryForList("SELECT_CUSTOMIZED_SEC_FLDS", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readOutOfBoxSectionFields: sectionName = " + sectionName + " pageType = " + pageType);
+        }
+        Map<String, Object> params = new HashMap<String, Object>(2);
+        params.put("sectionName", sectionName);
+        params.put("pageType", pageType);
+        return getSqlMapClientTemplate().queryForList("SELECT_OUT_OF_BOX_SEC_FLDS", params);
     }
 }

@@ -37,11 +37,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistById: picklistId = " + picklistId);
         }
-        Picklist ret =  (Picklist)getSqlMapClientTemplate().queryForObject("SELECT_BY_PICKLIST_ID", picklistId);
-
-        //List<PicklistItem> items = getSqlMapClientTemplate().queryForList("SELECT_PICKLISTITEM_BY_PICKLISTID", picklistId);
-        //ret.setPicklistItems(items);
-        return ret;
+        return (Picklist)getSqlMapClientTemplate().queryForObject("SELECT_BY_PICKLIST_ID", picklistId);
     }
 
     @Override
@@ -68,15 +64,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
             logger.debug("listPicklists: siteName = " + siteName);
         }
 
-        List<Picklist> ret = getSqlMapClientTemplate().queryForList("SELECT_BY_SITENAME", siteName);
-
-        // for each of the picklists to be returned, add the picklistitems list to it
-        //for(Picklist list : ret) {
-        //    List<PicklistItem> items = getSqlMapClientTemplate().queryForList("SELECT_PICKLISTITEM_BY_PICKLISTID", list.getId());
-        //    list.setPicklistItems(items);
-        //}
-
-        return ret;
+        return getSqlMapClientTemplate().queryForList("SELECT_BY_SITENAME", siteName);
     }
 
     @SuppressWarnings("unchecked")
@@ -90,10 +78,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         params.put("siteName", siteName);
         params.put("fieldName", fieldName);
         params.put("entityType", entityType);
-        Picklist ret = (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_BY_SITE_AND_FIELD_NAME", params);
-        //List<PicklistItem> items = getSqlMapClientTemplate().queryForList("SELECT_PICKLISTITEM_BY_PICKLISTID", ret.getId());
-        //ret.setPicklistItems(items);
-        return ret;
+        return (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_BY_SITE_AND_FIELD_NAME", params);
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import com.mpower.type.EntityType;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Site;
 
 public class Picklist implements Serializable {
 

@@ -10,7 +10,7 @@
 <body>
 <div class="loginPane">
 	<div class="loginContent">
-	    <img src="images/orangeleap-logo-tag.jpg" />
+	    <img src="images/orangeleap-logo-tag.png" />
 	    <br /><br />
 	    <h1 class="loginHeader">You have successfully logged out.</h1>
 	    <p style="padding:8px;">

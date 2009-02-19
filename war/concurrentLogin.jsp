@@ -10,7 +10,7 @@
 <body>
 <div class="loginPane">
 	<div class="loginContent">
-	    <img src="images/orangeleap-logo-tag.jpg" />
+	    <img src="images/orangeleap-logo-tag.png" />
 	    <br /><br />
 	    <h1 class="loginHeader">Session Logged Out</h1>
         <p>Your account has been logged in from another computer or browser window</p>

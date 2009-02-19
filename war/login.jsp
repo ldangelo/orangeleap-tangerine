@@ -13,7 +13,7 @@
 <body>
 <div class="loginPane">
 	<div class="loginContent">
-	    <img src="images/orangeleap-logo-tag.jpg" />
+	    <img src="images/orangeleap-logo-tag.png" />
 	    <h1 class="loginHeader">Please sign in.</h1>
 
     	<c:if test="${not empty param.login_error}">

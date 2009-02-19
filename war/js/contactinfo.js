@@ -57,9 +57,9 @@ Ext.onReady(function() {
 	
 	
 	    Contacts.addressTemplate = new Ext.XTemplate(
-	            '<p class="left"><strong  ext:qtitle="Comment" ext:qwidth="150" ext:qtip="{comment}">{street1}</strong></p>',
-	            '<tpl if="street2 != null"><p class="left">{street2}</p></tpl>',
-	            '<p class="left">{city},{state} {zip}</p>');
+	            '<p><strong  ext:qtitle="Comment" ext:qwidth="150" ext:qtip="{comment}">{street1}</strong></p>',
+	            '<tpl if="street2 != null"><p>{street2}</p></tpl>',
+	            '<p>{city},{state} {zip}</p>');
 	    Contacts.addressTemplate.compile();
 	
 	
@@ -189,8 +189,8 @@ Ext.onReady(function() {
 	        height: 400,
 	        title: 'Contact Information',
 	        closeAction: 'hide',
-	        items: [Contacts.accordionPanel]
-	
+	        items: [Contacts.accordionPanel],
+            cls: 'ext-widget'
 	    });
 	
 	    Ext.get('personTitle').on('dblclick',function() {Contacts.win.show();});

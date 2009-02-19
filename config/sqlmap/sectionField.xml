@@ -72,25 +72,6 @@
 		and sd.PAGE_TYPE = #pageType#
 		and sd.SECTION_NAME = #sectionName#
 	</select>
-  <!-- 
-  	<named-query name="READ_OUT_OF_BOX_SECTION_FIELDS" >
-		<query>
-		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionDefinition.sectionName = :sectionName
-		    AND sectionField.sectionDefinition.pageType = :pageType
-		    AND sectionField.sectionDefinition.site is null
-		    AND sectionField.site is null
-		</query>
-	</named-query>
-
-	<named-query name="READ_CUSTOMIZED_SECTION_FIELDS" >
-		<query>
-		    SELECT sectionField FROM com.mpower.domain.customization.SectionField sectionField
-		    WHERE sectionField.sectionDefinition.id = :sectionDefinitionId
-		    AND sectionField.site.name is :siteName
-		</query>
-	</named-query>
-   -->
 
 	<insert id="INSERT_SECTION_FIELD" parameterClass="com.mpower.domain.model.customization.SectionField">
 		insert into SECTION_FIELD (SECTION_FIELD_ID, FIELD_ORDER, FIELD_DEFINITION_ID,

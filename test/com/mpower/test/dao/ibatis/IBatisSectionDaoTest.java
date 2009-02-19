@@ -146,4 +146,41 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         assert "ROLE_SUPER_MANAGER".equals(sectionDef.getRole());
         assert sectionDef.getSite() == null;
     }
+    
+    @Test(groups = { "testReadSectionFields" })
+    public void testReadOutOfBoxSectionFields() throws Exception {
+        List<SectionField> sectionFields = sectionDao.readOutOfBoxSectionFields(PageType.person, "person.contactInfo");
+        assert sectionFields != null && sectionFields.isEmpty() == false;
+        assert sectionFields.size() == 5;
+        
+        for (SectionField secFld : sectionFields) {
+            assert secFld.getFieldOrder() >= 1000 && secFld.getFieldOrder() <= 5000;
+            FieldDefinition fieldDef = secFld.getFieldDefinition();
+            assert fieldDef != null;
+            assert "person.title".equals(fieldDef.getId()) || "person.firstName".equals(fieldDef.getId()) || "person.middleName".equals(fieldDef.getId()) || 
+                "person.lastName".equals(fieldDef.getId()) || "person.suffix".equals(fieldDef.getId());
+            assert EntityType.person.equals(fieldDef.getEntityType());
+            if ("person.title".equals(fieldDef.getId()) || "person.suffix".equals(fieldDef.getId())) {
+                assert FieldType.PICKLIST.equals(fieldDef.getFieldType());
+            }
+            else {
+                assert FieldType.TEXT.equals(fieldDef.getFieldType());
+            }
+            assert "individual".equals(fieldDef.getEntityAttributes());
+            assert fieldDef.getSite() == null;
+            
+            assert secFld.getSecondaryFieldDefinition() == null;
+            
+            SectionDefinition sectionDef = secFld.getSectionDefinition();
+            assert sectionDef != null;
+            assert 100L == sectionDef.getId();
+            assert PageType.person.equals(sectionDef.getPageType());
+            assert "person.contactInfo".equals(sectionDef.getSectionName());
+            assert "Contact Details".equals(sectionDef.getDefaultLabel());
+            assert 1 == sectionDef.getSectionOrder();
+            assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
+            assert "ROLE_SUPER_MANAGER".equals(sectionDef.getRole());
+            assert sectionDef.getSite() == null;
+        }
+    }
 }

@@ -2,15 +2,16 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="PICKLIST">
 
-    <resultMap id="PICKLIST_RESULT" class="com.mpower.domain.model.Picklist">
+    <resultMap id="PICKLIST_RESULT" class="com.mpower.domain.model.customization.Picklist">
         <result property="picklistId" column="PICKLIST_ID" jdbcType="VARCHAR"/>
         <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR"/>
         <result property="multiselect" column="MULTISELECT" jdbcType="BIT"/>
         <result property="picklistName" column="PICKLIST_NAME" jdbcType="VARCHAR"/>
         <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR"/>
+        <result property="picklistItems" column="PICKLIST_ID" select="SELECT_PICKLISTITEM_BY_PICKLISTID" />
     </resultMap>
 
-    <resultMap id="PICKLISTITEM_RESULT" class="com.mpower.domain.model.PicklistItem">
+    <resultMap id="PICKLISTITEM_RESULT" class="com.mpower.domain.model.customization.PicklistItem">
         <result property="picklistItemId" column="PICKLIST_ITEM_ID" jdbcType="BIGINT"/>
         <result property="defaultDisplayValue" column="DEFAULT_DISPLAY_VALUE" jdbcType="VARCHAR"/>
         <result property="inactive" column="INACTIVE" jdbcType="BIT"/>
@@ -43,7 +44,7 @@
         select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER,
         REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
         from PICKLIST_ITEM
-        where PICKLIST_ID = #picklistId#
+        where PICKLIST_ID = #value#
     </select>
 
     <select id="SELECT_PICKLISTITEM_BY_ID" resultMap="PICKLISTITEM_RESULT" parameterClass="long">
@@ -60,10 +61,9 @@
         where PICKLIST_ID = #picklistId#
     </select>
 
-
     <update id="UPDATE_PICKLIST" parameterClass="com.mpower.domain.model.Picklist">
-        update PICKLIST
-        <dynamic prepend="set">
+        update PICKLIST SET SITE_NAME = #siteName#
+        <dynamic>
             <isNotNull prepend="," property="entityType">
                 ENTITY_TYPE = #entityType#
             </isNotNull>
@@ -72,9 +72,6 @@
             </isNotNull>
             <isNotNull prepend="," property="picklistName">
                 PICKLIST_NAME = #picklistName#
-            </isNotNull>
-            <isNotNull prepend="," property="siteName">
-                SITE_NAME = #siteName#
             </isNotNull>
         </dynamic>
         where PICKLIST_ID = #picklistId#

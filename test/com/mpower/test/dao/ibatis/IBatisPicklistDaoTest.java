@@ -1,9 +1,9 @@
 package com.mpower.test.dao.ibatis;
 
-import com.mpower.dao.interfaces.PicklistDao;
-import com.mpower.domain.customization.Picklist;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mpower.dao.interfaces.PicklistDao;
 
 /**
  * @version 1.0
@@ -20,7 +20,7 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
     @Test
     public void testReadPicklist() throws Exception {
 
-        Picklist picklist = picklistDao.readPicklistById("maritalStatus");
+//        Picklist picklist = picklistDao.readPicklistById("maritalStatus");
         
 
     }

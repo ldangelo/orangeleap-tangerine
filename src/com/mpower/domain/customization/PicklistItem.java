@@ -2,16 +2,6 @@ package com.mpower.domain.customization;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,47 +9,29 @@ import com.mpower.domain.Auditable;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 
-@Entity
-@Table(name = "PICKLIST_ITEM")
 public class PicklistItem implements Serializable, Auditable {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Id
-    @GeneratedValue
-    @Column(name = "PICKLIST_ITEM_ID")
     private Long id;
 
-    @Column(name = "ITEM_NAME", nullable = false)
     private String itemName;
 
-    @Column(name = "DEFAULT_DISPLAY_VALUE")
     private String defaultDisplayValue;
 
-    @Column(name = "REFERENCE_VALUE")
     private String referenceValue;
 
-    @Column(name = "SUPPRESS_REFERENCE_VALUE")
     private String suppressReferenceValue;
 
-    @Column(name = "ITEM_ORDER")
     private Integer itemOrder;
 
-    @Column(name = "INACTIVE")
     private boolean inactive = false;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "PICKLIST_ID")
     private Picklist picklist;
     
-    @Transient
     private Auditable originalObject;
-
-
 
     public Long getId() {
         return id;

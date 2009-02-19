@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PICKLIST">
+
+    <resultMap id="PICKLIST_RESULT" class="com.mpower.domain.model.Picklist">
+        <result property="picklistId" column="PICKLIST_ID" jdbcType="VARCHAR"/>
+        <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR"/>
+        <result property="multiselect" column="MULTISELECT" jdbcType="BIT"/>
+        <result property="picklistName" column="PICKLIST_NAME" jdbcType="VARCHAR"/>
+        <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="PICKLISTITEM_RESULT" class="com.mpower.domain.model.PicklistItem">
+        <result property="picklistItemId" column="PICKLIST_ITEM_ID" jdbcType="BIGINT"/>
+        <result property="defaultDisplayValue" column="DEFAULT_DISPLAY_VALUE" jdbcType="VARCHAR"/>
+        <result property="inactive" column="INACTIVE" jdbcType="BIT"/>
+        <result property="itemName" column="ITEM_NAME" jdbcType="VARCHAR"/>
+        <result property="itemOrder" column="ITEM_ORDER" jdbcType="INTEGER"/>
+        <result property="referenceValue" column="REFERENCE_VALUE" jdbcType="VARCHAR"/>
+        <result property="suppressReferenceValue" column="SUPPRESS_REFERENCE_VALUE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="SELECT_BY_PICKLIST_ID" resultMap="PICKLIST_RESULT" parameterClass="java.lang.String">
+        select PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME
+        from PICKLIST
+        where PICKLIST_ID = #picklistId#
+    </select>
+
+    <select id="SELECT_BY_SITENAME" resultMap="PICKLIST_RESULT" parameterClass="java.lang.String">
+        select PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME
+        from PICKLIST
+        where SITE_NAME = #siteName#
+    </select>
+
+    <select id="SELECT_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map">
+        select PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME
+        from PICKLIST
+        where SITE_NAME = #siteName# AND ENTITY_TYPE = #entityType# AND PICKLIST_NAME = #fieldName#
+    </select>
+
+    <select id="SELECT_PICKLISTITEM_BY_PICKLISTID" resultMap="PICKLISTITEM_RESULT" parameterClass="string">
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER,
+        REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
+        from PICKLIST_ITEM
+        where PICKLIST_ID = #picklistId#
+    </select>
+
+    <select id="SELECT_PICKLISTITEM_BY_ID" resultMap="PICKLISTITEM_RESULT" parameterClass="long">
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER,
+        REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
+        from PICKLIST_ITEM
+        where PICKLIST_ITEM_ID = #picklistItemId#
+    </select>
+
+    <select id="SELECT_PICKLISTITEM_BY_PICKLISTID" resultMap="PICKLISTITEM_RESULT" parameterClass="string">
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER,
+        REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
+        from PICKLIST_ITEM
+        where PICKLIST_ID = #picklistId#
+    </select>
+
+
+    <update id="UPDATE_PICKLIST" parameterClass="com.mpower.domain.model.Picklist">
+        update PICKLIST
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="entityType">
+                ENTITY_TYPE = #entityType#
+            </isNotNull>
+            <isNotNull prepend="," property="multiselect">
+                MULTISELECT = #multiselect#
+            </isNotNull>
+            <isNotNull prepend="," property="picklistName">
+                PICKLIST_NAME = #picklistName#
+            </isNotNull>
+            <isNotNull prepend="," property="siteName">
+                SITE_NAME = #siteName#
+            </isNotNull>
+        </dynamic>
+        where PICKLIST_ID = #picklistId#
+    </update>
+
+    <update id="UPDATE_PICKLISTITEM" parameterClass="com.mpower.domain.model.PicklistItem">
+        update PICKLIST_ITEM
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="defaultDisplayValue">
+                DEFAULT_DISPLAY_VALUE = #defaultDisplayValue#
+            </isNotNull>
+            <isNotNull prepend="," property="inactive">
+                INACTIVE = #inactive#
+            </isNotNull>
+            <isNotNull prepend="," property="itemName">
+                ITEM_NAME = #itemName#
+            </isNotNull>
+            <isNotNull prepend="," property="itemOrder">
+                ITEM_ORDER = #itemOrder#
+            </isNotNull>
+            <isNotNull prepend="," property="referenceValue">
+                REFERENCE_VALUE = #referenceValue#
+            </isNotNull>
+            <isNotNull prepend="," property="suppressReferenceValue">
+                SUPPRESS_REFERENCE_VALUE = #suppressReferenceValue#
+            </isNotNull>
+            <isNotNull prepend="," property="picklistId">
+                PICKLIST_ID = #picklist.id#
+            </isNotNull>
+        </dynamic>
+        where PICKLIST_ITEM_ID = #picklistItemId#
+    </update>
+
+</sqlMap>

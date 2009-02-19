@@ -3,59 +3,28 @@ package com.mpower.domain.customization;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.Site;
 import com.mpower.type.EntityType;
 
-@Entity
-@Table(name = "PICKLIST", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "PICKLIST_NAME", "ENTITY_TYPE" }))
 public class Picklist implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
     private final Log logger = LogFactory.getLog(getClass());
 
-    @Id
-    @Column(name = "PICKLIST_ID")
     private String id;
 
-    @Column(name = "PICKLIST_NAME")
     private String picklistName;
 
-    @Column(name="ENTITY_TYPE")
-    @Enumerated(EnumType.STRING)
     private EntityType entityType;
 
-    @ManyToOne
-    @JoinColumn(name = "SITE_NAME")
     private Site site;
 
-    @Column(name = "MULTISELECT")
     private Boolean multiselect;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "PICKLIST_ID")
-    @OrderBy("itemOrder")
     private List<PicklistItem> picklistItems;
 
     public String getId() {

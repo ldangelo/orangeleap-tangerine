@@ -3,12 +3,14 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 import java.util.List;
 
+import com.mpower.domain.model.Site;
+
 public class FieldValidation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String siteName;
+    private Site site;
     private String sectionName;
     private FieldDefinition fieldDefinition;
     private FieldDefinition secondaryFieldDefinition;
@@ -23,12 +25,12 @@ public class FieldValidation implements Serializable {
         this.id = id;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public Site getSite() {
+        return site;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setSite(Site site) {
+        this.site = site;
     }
 
     public String getSectionName() {

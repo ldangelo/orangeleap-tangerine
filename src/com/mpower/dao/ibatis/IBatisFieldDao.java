@@ -13,6 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.domain.model.customization.FieldRelationship;
 import com.mpower.domain.model.customization.FieldRequired;
+import com.mpower.domain.model.customization.FieldValidation;
 
 /** 
  * Corresponds to the FIELD tables
@@ -29,17 +30,32 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         super.setSqlMapClient(sqlMapClient);
     }
     
-    @Override
-    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    private Map<String, Object> setupParams(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readFieldRequired: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+            logger.debug("setupParams: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
         Map<String, Object> params = new HashMap<String, Object>(4);
         params.put("siteName", siteName);
         params.put("sectionName", sectionName);
         params.put("fieldDefinitionId", fieldDefinitionId);
         params.put("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
-        return (FieldRequired)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", params);
+        return params;
+    }
+    
+    @Override
+    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readFieldRequired: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        }
+        return (FieldRequired)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", setupParams(siteName, sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
+    }
+    
+    @Override
+    public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readFieldValidation: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        }
+        return (FieldValidation)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_VALIDATION_BY_SITE_SECTION_FIELD_DEF_ID", setupParams(siteName, sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
     }
 
     @SuppressWarnings("unchecked")

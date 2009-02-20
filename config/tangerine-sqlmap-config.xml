@@ -4,6 +4,7 @@
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
 	<sqlMap resource="sqlmap/fieldDefinition.xml"/>
 	<sqlMap resource="sqlmap/fieldRequired.xml"/>
+	<sqlMap resource="sqlmap/fieldValidation.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
 	<sqlMap resource="sqlmap/sectionDefinition.xml"/>
 	<sqlMap resource="sqlmap/sectionField.xml"/>

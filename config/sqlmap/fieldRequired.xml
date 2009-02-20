@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="FIELD_REQUIRED">
+
+	<resultMap id="FLD_REQ_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="FLD_REQ_SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="FIELD_REQUIRED_RESULT" class="com.mpower.domain.model.customization.FieldRequired">
+		<result property="id" column="FIELD_REQUIRED_ID" jdbcType="BIGINT" />
+		<result property="required" column="FLD_REQ_REQUIRED" jdbcType="BIT" />
+		<result property="sectionName" column="FLD_REQ_SECTION_NAME" jdbcType="VARCHAR" />
+		<result property="site" resultMap="FIELD_REQUIRED.FLD_REQ_SITE_NAME_RESULT" />
+		<result property="fieldDefinition" resultMap="FIELD_DEFINITION.FIELD_DEFINITION_RESULT" />
+		<result property="secondaryFieldDefinition" resultMap="FIELD_DEFINITION.SECONDARY_FIELD_DEFINITION_RESULT" />
+	</resultMap>
+
+	<select id="SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID" resultMap="FIELD_REQUIRED_RESULT" parameterClass="map">
+	    select fr.FIELD_REQUIRED_ID, fr.REQUIRED as FLD_REQ_REQUIRED, fr.SECTION_NAME as FLD_REQ_SECTION_NAME, fr.SITE_NAME as FLD_REQ_SITE_NAME, 
+
+		fd.FIELD_DEFINITION_ID, fd.DEFAULT_LABEL as FLD_DEF_DEFAULT_LABEL, fd.ENTITY_ATTRIBUTES as FLD_DEF_ENTITY_ATTRIBUTES, 
+		fd.ENTITY_TYPE as FLD_DEF_ENTITY_TYPE, fd.FIELD_INFO as FLD_DEF_FIELD_INFO, fd.FIELD_NAME as FLD_DEF_FIELD_NAME, 
+		fd.FIELD_TYPE as FLD_DEF_FIELD_TYPE, fd.REFERENCE_TYPE as FLD_DEF_REFERENCE_TYPE, fd.SITE_NAME as FLD_DEF_SITE_NAME,
+		
+		
+		sfd.FIELD_DEFINITION_ID as SECONDARY_FIELD_DEFINITION_ID, sfd.DEFAULT_LABEL as SECONDARY_DEFAULT_LABEL, sfd.ENTITY_ATTRIBUTES as SECONDARY_ENTITY_ATTRIBUTES, 
+		sfd.ENTITY_TYPE as SECONDARY_ENTITY_TYPE, sfd.FIELD_INFO as SECONDARY_FIELD_INFO, sfd.FIELD_NAME as SECONDARY_FIELD_NAME, 
+		sfd.FIELD_TYPE as SECONDARY_FIELD_TYPE, sfd.REFERENCE_TYPE as SECONDARY_REFERENCE_TYPE, sfd.SITE_NAME as SECONDARY_SITE_NAME
+
+
+	    from FIELD_REQUIRED fr 
+		inner join FIELD_DEFINITION fd on fr.FIELD_DEFINITION_ID = fd.FIELD_DEFINITION_ID 
+		left outer join FIELD_DEFINITION sfd on fr.SECONDARY_FIELD_DEFINITION_ID = sfd.FIELD_DEFINITION_ID
+		
+		
+	    where ((fr.SITE_NAME = #siteName#) or (fr.SITE_NAME is NULL)) 
+	    and fr.SECTION_NAME = #sectionName#
+	    and fr.FIELD_DEFINITION_ID = #fieldDefinitionId#
+	    <isNotNull property="secondaryFieldDefinitionId">
+	    	and fr.SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinitionId#
+	    </isNotNull>
+	    <isNull property="secondaryFieldDefinitionId">
+	    	and fr.SECONDARY_FIELD_DEFINITION_ID is NULL
+	    </isNull>
+	</select>
+	
+	<insert id="INSERT_FIELD_REQUIRED" parameterClass="com.mpower.domain.model.customization.FieldRequired">
+	    insert into FIELD_REQUIRED (FIELD_REQUIRED_ID, REQUIRED, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
+	    values (#id#, #required#, #sectionName#, #site.name#, #fieldDefinition.id#, #secondaryFieldDefinition.id#)
+	</insert>
+	
+	<update id="UPDATE_FIELD_REQUIRED" parameterClass="com.mpower.domain.model.customization.FieldRequired">
+		update FIELD_REQUIRED
+		set REQUIRED = #required#,
+		SECTION_NAME = #sectionName#,
+		SITE_NAME = #site.name#,
+		FIELD_DEFINITION_ID = #fieldDefinition.id#,
+		SECONDARY_FIELD_DEFINITION_ID = #secondaryFieldDefinition.id#
+		where FIELD_REQUIRED_ID = #id#
+	</update>
+</sqlMap>

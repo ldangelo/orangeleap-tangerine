@@ -6,27 +6,11 @@
 		<result property="name" column="SEC_FLD_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="SECONDARY_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
-		<result property="name" column="SECONDARY_SITE_NAME" jdbcType="VARCHAR" />
-	</resultMap>
-
-	<resultMap id="SECONDARY_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
-		<result property="id" column="SECONDARY_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
-		<result property="defaultLabel" column="SECONDARY_DEFAULT_LABEL" jdbcType="VARCHAR" />
-		<result property="entityAttributes" column="SECONDARY_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
-		<result property="entityType" column="SECONDARY_ENTITY_TYPE" jdbcType="VARCHAR" />
-		<result property="fieldInfo" column="SECONDARY_FIELD_INFO" jdbcType="VARCHAR" />
-		<result property="fieldName" column="SECONDARY_FIELD_NAME" jdbcType="VARCHAR" />
-		<result property="fieldType" column="SECONDARY_FIELD_TYPE" jdbcType="VARCHAR" />
-		<result property="referenceType" column="SECONDARY_REFERENCE_TYPE" jdbcType="VARCHAR" />
-		<result property="site" resultMap="SECTION_FIELD.SECONDARY_SITE_NAME_RESULT" />
-	</resultMap>	
-
 	<resultMap id="SECTION_FIELD_RESULT" class="com.mpower.domain.model.customization.SectionField">
 		<result property="id" column="SECTION_FIELD_ID" jdbcType="BIGINT" />
 		<result property="fieldOrder" column="SEC_FLD_FIELD_ORDER" jdbcType="INTEGER" />
 		<result property="fieldDefinition" resultMap="FIELD_DEFINITION.FIELD_DEFINITION_RESULT" />
-		<result property="secondaryFieldDefinition" resultMap="SECTION_FIELD.SECONDARY_FIELD_DEFINITION_RESULT" />
+		<result property="secondaryFieldDefinition" resultMap="FIELD_DEFINITION.SECONDARY_FIELD_DEFINITION_RESULT" />
 		<result property="sectionDefinition" resultMap="SECTION_DEFINITION.SECTION_DEFINITION_RESULT" />
 		<result property="site" resultMap="SECTION_FIELD.SEC_FLD_SITE_NAME_RESULT" />
 	</resultMap>

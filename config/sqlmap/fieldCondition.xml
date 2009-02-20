@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="FIELD_CONDITION">
+	<resultMap id="FIELD_CONDITION_RESULT" class="com.mpower.domain.model.customization.FieldCondition">
+		<result property="id" column="CONDITION_ID" jdbcType="BIGINT" />
+		<result property="dependentValue" column="DEPENDENT_VALUE" jdbcType="VARCHAR" />
+		<result property="dependentFieldDefinitionId" column="DEPENDENT_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="dependentSecondaryFieldDefinitionId" column="DEPENDENT_SECONDARY_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="fieldRequiredId" column="FIELD_REQUIRED_ID" jdbcType="BIGINT" />
+    	<result property="validationId" column="VALIDATION_ID" jdbcType="BIGINT" />
+    </resultMap>
+	
+	<select id="SELECT_FIELD_CONDITION" resultMap="FIELD_CONDITION_RESULT" parameterClass="com.mpower.domain.model.customization.FieldCondition">
+		select CONDITION_ID, DEPENDENT_VALUE, DEPENDENT_FIELD_DEFINITION_ID,
+		DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID,	VALIDATION_ID
+		from FIELD_CONDITION
+		where CONDITION_ID = #id#
+	</select>
+
+	<insert id="INSERT_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">
+		insert into FIELD_CONDITION (CONDITION_ID, DEPENDENT_VALUE,
+		DEPENDENT_FIELD_DEFINITION_ID,
+		DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID,
+		VALIDATION_ID)
+		values (#id#, #dependentValue#, #dependentFieldDefinitionId#,
+		#dependentSecondaryFieldDefinitionId#, #fieldRequiredId#,
+		#validationId#)
+	</insert>
+
+	<update id="UPDATE_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">
+		update FIELD_CONDITION
+		set DEPENDENT_VALUE = #dependentValue#,
+		DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinitionId#,
+		DEPENDENT_SECONDARY_FIELD_DEFINITION_ID =
+		#dependentSecondaryFieldDefinitionId#,
+		FIELD_REQUIRED_ID = #fieldRequiredId#,
+		VALIDATION_ID = #validationId#
+		where CONDITION_ID = #id#
+	</update>
+</sqlMap>

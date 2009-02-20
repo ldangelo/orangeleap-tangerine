@@ -18,6 +18,22 @@
 		<result property="site" resultMap="FIELD_DEFINITION.FLD_DEF_SITE_NAME_RESULT" />
 	</resultMap>	
 	
+	<resultMap id="SECONDARY_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="SECONDARY_SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="SECONDARY_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
+		<result property="id" column="SECONDARY_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="defaultLabel" column="SECONDARY_DEFAULT_LABEL" jdbcType="VARCHAR" />
+		<result property="entityAttributes" column="SECONDARY_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
+		<result property="entityType" column="SECONDARY_ENTITY_TYPE" jdbcType="VARCHAR" />
+		<result property="fieldInfo" column="SECONDARY_FIELD_INFO" jdbcType="VARCHAR" />
+		<result property="fieldName" column="SECONDARY_FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="fieldType" column="SECONDARY_FIELD_TYPE" jdbcType="VARCHAR" />
+		<result property="referenceType" column="SECONDARY_REFERENCE_TYPE" jdbcType="VARCHAR" />
+		<result property="site" resultMap="FIELD_DEFINITION.SECONDARY_SITE_NAME_RESULT" />
+	</resultMap>	
+	
 	<select id="SELECT_BY_FIELD_DEF_ID" resultMap="FIELD_DEFINITION_RESULT" parameterClass="string">
 		select FIELD_DEFINITION_ID, DEFAULT_LABEL as FLD_DEF_DEFAULT_LABEL, ENTITY_ATTRIBUTES as FLD_DEF_ENTITY_ATTRIBUTES, ENTITY_TYPE as FLD_DEF_ENTITY_TYPE, FIELD_INFO as FLD_DEF_FIELD_INFO,
 		FIELD_NAME as FLD_DEF_FIELD_NAME, FIELD_TYPE as FLD_DEF_FIELD_TYPE, REFERENCE_TYPE as FLD_DEF_REFERENCE_TYPE, SITE_NAME as FLD_DEF_SITE_NAME

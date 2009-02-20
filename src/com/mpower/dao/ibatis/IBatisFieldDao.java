@@ -1,6 +1,8 @@
 package com.mpower.dao.ibatis;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.domain.model.customization.FieldRelationship;
+import com.mpower.domain.model.customization.FieldRequired;
 
 /** 
  * Corresponds to the FIELD tables
@@ -24,6 +27,19 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     public IBatisFieldDao(SqlMapClient sqlMapClient) {
         super();
         super.setSqlMapClient(sqlMapClient);
+    }
+    
+    @Override
+    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readFieldRequired: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        }
+        Map<String, Object> params = new HashMap<String, Object>(4);
+        params.put("siteName", siteName);
+        params.put("sectionName", sectionName);
+        params.put("fieldDefinitionId", fieldDefinitionId);
+        params.put("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
+        return (FieldRequired)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", params);
     }
 
     @SuppressWarnings("unchecked")

@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.FieldDao;
+import com.mpower.domain.model.customization.FieldCondition;
 import com.mpower.domain.model.customization.FieldRequired;
 import com.mpower.domain.model.customization.FieldValidation;
 import com.mpower.type.EntityType;
@@ -73,6 +74,57 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert fieldReq.getSecondaryFieldDefinition().getEntityAttributes() == null;
         assert fieldReq.getSecondaryFieldDefinition().getSite() == null;
     } 
+    
+    @Test(groups = { "testFieldCondition" })
+    public void testReadFieldRequiredNoCondition() throws Exception {
+        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.title", null);
+        assert fieldReq == null;
+    }
+    
+    @Test(groups = { "testFieldCondition" })
+    public void testReadFieldRequiredConditions() throws Exception {
+        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.lastName", null);
+        assert fieldReq != null;
+        assert fieldReq.getSite() == null;
+        assert fieldReq.getFieldDefinition() != null;
+        assert fieldReq.getSecondaryFieldDefinition() == null;
+        assert fieldReq.isRequired();
+        assert fieldReq.getFieldConditions() != null && fieldReq.getFieldConditions().isEmpty() == false;
+        assert fieldReq.getFieldConditions().size() == 4;
+        for (FieldCondition fieldCond : fieldReq.getFieldConditions()) {
+            assert fieldCond.getDependentFieldDefinition() != null;
+            assert "person.firstName".equals(fieldCond.getDependentFieldDefinition().getId());
+            assert "Tom".equals(fieldCond.getValue()) || "Jerry".equals(fieldCond.getValue()) || "Wilma".equals(fieldCond.getValue()) || "Betty".equals(fieldCond.getValue());
+            assert "firstName".equals(fieldCond.getDependentFieldDefinition().getFieldName());
+        }
+    }
+    
+    @Test(groups = { "testFieldCondition" })
+    public void testReadFieldValidationNoCondition() throws Exception {
+        FieldValidation fieldVal = fieldDao.readFieldValidation("company1", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        assert fieldVal == null;
+    }
+    
+    @Test(groups = { "testFieldCondition" })
+    public void testReadFieldValidationConditions() throws Exception {
+        FieldValidation fieldVal = fieldDao.readFieldValidation("company2", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        assert fieldVal != null;
+        assert fieldVal.getSite() != null && "company2".equals(fieldVal.getSite().getName());
+        assert fieldVal.getFieldDefinition() != null;
+        assert fieldVal.getSecondaryFieldDefinition() != null;
+        assert "person.contactInfo".equals(fieldVal.getSectionName());
+        assert "extensions:isEmail".equals(fieldVal.getRegex());
+        assert fieldVal.getFieldConditions() != null && fieldVal.getFieldConditions().isEmpty() == false;
+        assert fieldVal.getFieldConditions().size() == 1;
+        for (FieldCondition fieldCond : fieldVal.getFieldConditions()) {
+            assert fieldCond.getDependentFieldDefinition() != null;
+            assert "person.emailMap[home]".equals(fieldCond.getDependentFieldDefinition().getId());
+            assert fieldCond.getDependentSecondaryFieldDefinition() != null;
+            assert "email.userCreated".equals(fieldCond.getDependentSecondaryFieldDefinition().getId());
+            assert "userCreated".equals(fieldCond.getDependentSecondaryFieldDefinition().getFieldName());
+            assert "true".equals(fieldCond.getValue());
+        }
+    }
 
     @Test(groups = { "testFieldValidation" })
     public void testReadFieldNoValidation() throws Exception {

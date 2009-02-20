@@ -11,5 +11,5 @@ public interface FieldDao {
     public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
     public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId);
     public List<FieldRelationship> readMasterFieldRelationships(String masterFieldDefId);
-    public List<FieldRelationship> readDetailFieldRelationships(String masterFieldDefId);
+    public List<FieldRelationship> readDetailFieldRelationships(String detailFieldDefId);
 }

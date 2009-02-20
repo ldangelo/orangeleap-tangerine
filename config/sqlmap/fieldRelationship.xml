@@ -29,12 +29,12 @@
 		LEFT OUTER JOIN FIELD_DEFINITION detail ON fr.DETAIL_FIELD_DEFINITION_ID = detail.FIELD_DEFINITION_ID
 	</sql>
 	
-	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="long">
+	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="string">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
 		where fr.MASTER_FIELD_DEFINITION_ID = #value#		
 	</select>
 	
-	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="long">
+	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="string">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
 		where fr.DETAIL_FIELD_DEFINITION_ID = #value#		
 	</select>

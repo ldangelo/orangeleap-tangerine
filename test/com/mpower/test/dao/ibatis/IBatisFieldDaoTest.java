@@ -1,5 +1,7 @@
 package com.mpower.test.dao.ibatis;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeMethod;
@@ -7,10 +9,13 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.domain.model.customization.FieldCondition;
+import com.mpower.domain.model.customization.FieldRelationship;
 import com.mpower.domain.model.customization.FieldRequired;
 import com.mpower.domain.model.customization.FieldValidation;
 import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
+import com.mpower.type.ReferenceType;
+import com.mpower.type.RelationshipType;
 
 public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
@@ -158,4 +163,74 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert fieldVal.getSecondaryFieldDefinition().getEntityAttributes() == null;
         assert fieldVal.getSecondaryFieldDefinition().getSite() == null;
     } 
+
+    @Test(groups = { "testFieldRelationships" })
+    public void testReadMasterFieldRelationships() throws Exception {
+        List<FieldRelationship> relationships = fieldDao.readMasterFieldRelationships("person.customFieldMap[individual.spouse]");
+        assert relationships != null && relationships.isEmpty() == false && relationships.size() == 2;
+        for (FieldRelationship relationship : relationships) {
+            assert relationship.getSite() == null;
+            assert RelationshipType.MANY_TO_MANY.equals(relationship.getRelationshipType()) || RelationshipType.ONE_TO_ONE.equals(relationship.getRelationshipType());
+            assert relationship.isRecursive() == false;
+            assert "person.customFieldMap[individual.spouse]".equals(relationship.getMasterRecordField().getId());
+            assert EntityType.person.equals(relationship.getMasterRecordField().getEntityType());
+            assert ReferenceType.person.equals(relationship.getMasterRecordField().getReferenceType());
+            assert "customFieldMap[individual.spouse]".equals(relationship.getMasterRecordField().getFieldName());
+            assert "Spouse".equals(relationship.getMasterRecordField().getDefaultLabel());
+            assert FieldType.QUERY_LOOKUP.equals(relationship.getMasterRecordField().getFieldType());
+            assert "individual".equals(relationship.getMasterRecordField().getEntityAttributes());
+            
+            assert "person.customFieldMap[individual.spouse]".equals(relationship.getDetailRecordField().getId()) || "person.customFieldMap[individual.siblings]".equals(relationship.getDetailRecordField().getId());
+            if ("person.customFieldMap[individual.spouse]".equals(relationship.getDetailRecordField().getId())) {
+                assert EntityType.person.equals(relationship.getDetailRecordField().getEntityType());
+                assert ReferenceType.person.equals(relationship.getDetailRecordField().getReferenceType());
+                assert "customFieldMap[individual.spouse]".equals(relationship.getDetailRecordField().getFieldName());
+                assert "Spouse".equals(relationship.getDetailRecordField().getDefaultLabel());
+                assert FieldType.QUERY_LOOKUP.equals(relationship.getDetailRecordField().getFieldType());
+                assert "individual".equals(relationship.getDetailRecordField().getEntityAttributes());
+            }
+            else {
+                assert EntityType.person.equals(relationship.getDetailRecordField().getEntityType());
+                assert ReferenceType.person.equals(relationship.getDetailRecordField().getReferenceType());
+                assert "customFieldMap[individual.siblings]".equals(relationship.getDetailRecordField().getFieldName());
+                assert "Siblings".equals(relationship.getDetailRecordField().getDefaultLabel());
+                assert FieldType.MULTI_QUERY_LOOKUP.equals(relationship.getDetailRecordField().getFieldType());
+                assert "individual".equals(relationship.getDetailRecordField().getEntityAttributes());
+            }
+        }
+        
+        /* Test for 1 result */
+        relationships = fieldDao.readMasterFieldRelationships("person.customFieldMap[headOfHousehold.householdMembers]");
+        assert relationships != null && relationships.isEmpty() == false && relationships.size() == 1;
+    }
+    
+    @Test(groups = { "testFieldRelationships" })
+    public void testReadDetailFieldRelationships() throws Exception {
+        List<FieldRelationship> relationships = fieldDao.readDetailFieldRelationships("person.customFieldMap[individual.spouse]");
+        assert relationships != null && relationships.isEmpty() == false && relationships.size() == 1;
+        for (FieldRelationship relationship : relationships) {
+            assert relationship.getSite() == null;
+            assert RelationshipType.ONE_TO_ONE.equals(relationship.getRelationshipType());
+            assert relationship.isRecursive() == false;
+            assert "person.customFieldMap[individual.spouse]".equals(relationship.getDetailRecordField().getId());
+            assert EntityType.person.equals(relationship.getDetailRecordField().getEntityType());
+            assert ReferenceType.person.equals(relationship.getDetailRecordField().getReferenceType());
+            assert "customFieldMap[individual.spouse]".equals(relationship.getDetailRecordField().getFieldName());
+            assert "Spouse".equals(relationship.getDetailRecordField().getDefaultLabel());
+            assert FieldType.QUERY_LOOKUP.equals(relationship.getDetailRecordField().getFieldType());
+            assert "individual".equals(relationship.getDetailRecordField().getEntityAttributes());
+
+            assert "person.customFieldMap[individual.spouse]".equals(relationship.getMasterRecordField().getId());
+            assert EntityType.person.equals(relationship.getMasterRecordField().getEntityType());
+            assert ReferenceType.person.equals(relationship.getMasterRecordField().getReferenceType());
+            assert "customFieldMap[individual.spouse]".equals(relationship.getMasterRecordField().getFieldName());
+            assert "Spouse".equals(relationship.getMasterRecordField().getDefaultLabel());
+            assert FieldType.QUERY_LOOKUP.equals(relationship.getMasterRecordField().getFieldType());
+            assert "individual".equals(relationship.getMasterRecordField().getEntityAttributes());
+        }
+        
+        /* Test for multiple results */
+        relationships = fieldDao.readDetailFieldRelationships("person.customFieldMap[individual.siblings]");
+        assert relationships != null && relationships.isEmpty() == false && relationships.size() == 2;
+    }
 }

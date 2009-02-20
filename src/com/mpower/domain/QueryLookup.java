@@ -45,8 +45,8 @@ public class QueryLookup implements Serializable {
     @Column(name = "SECTION_NAME")
     private String sectionName;
 
-    @Column(name = "JPA_QUERY")
-    private String jpaQuery;
+    @Column(name = "SQL_QUERY")
+    private String sqlQuery;
 
     @OneToMany(mappedBy = "queryLookup", cascade = CascadeType.ALL)
     private List<QueryLookupParam> queryLookupParams;
@@ -75,12 +75,12 @@ public class QueryLookup implements Serializable {
         this.fieldDefinition = fieldDefinition;
     }
 
-    public String getJpaQuery() {
-        return jpaQuery;
+    public String getSqlQuery() {
+        return sqlQuery;
     }
 
-    public void setJpaQuery(String jpaQuery) {
-        this.jpaQuery = jpaQuery;
+    public void setSqlQuery(String sqlQuery) {
+        this.sqlQuery = sqlQuery;
     }
 
     public List<QueryLookupParam> getQueryLookupParams() {

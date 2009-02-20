@@ -38,7 +38,7 @@ public class QueryLookupServiceImpl implements QueryLookupService {
         QueryLookup ql = readQueryLookup(siteName, fieldDefinitionId);
         List<Object> objects = null;
         if (ql != null) {
-            StringBuilder query = new StringBuilder(ql.getJpaQuery());
+            StringBuilder query = new StringBuilder(ql.getSqlQuery());
             LinkedHashMap<String, String> paramsMap = new LinkedHashMap<String, String>();
             paramsMap.put("siteName", siteName);
             List<QueryLookupParam> lookupParams = ql.getQueryLookupParams();

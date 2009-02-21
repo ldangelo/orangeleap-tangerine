@@ -29,7 +29,7 @@ public class LdapServiceImpl implements LdapService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static SimpleDateFormat getFormat() { return new SimpleDateFormat("yyyyMMddHHmmss"); }
 
     private static final String LDAP_USER_PASSWORD = "userPassword";
 
@@ -70,7 +70,7 @@ public class LdapServiceImpl implements LdapService {
         ModificationItem newPassword = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPasswordAttribute);
         modificationItemArray[0] = newPassword;
 
-        Attribute userPasswordChangedAttribute = new BasicAttribute(LDAP_PASSWORD_CHANGE_DATE, format.format(convertToUtc(null).getTime()) + "Z");
+        Attribute userPasswordChangedAttribute = new BasicAttribute(LDAP_PASSWORD_CHANGE_DATE, getFormat().format(convertToUtc(null).getTime()) + "Z");
         ModificationItem newPasswordChanged = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPasswordChangedAttribute);
         modificationItemArray[1] = newPasswordChanged;
         ldapTemplate.modifyAttributes(getDN(), modificationItemArray);
@@ -95,7 +95,7 @@ public class LdapServiceImpl implements LdapService {
         Object lastLogin = dco.getObjectAttribute(LDAP_PASSWORD_CHANGE_DATE);
         Calendar last = null;
         try {
-            Date lastPwChangeDate = format.parse((String) lastLogin);
+            Date lastPwChangeDate = getFormat().parse((String) lastLogin);
             last = new GregorianCalendar();
             last.setTimeInMillis(lastPwChangeDate.getTime());
             last = convertFromUtc(last);
@@ -111,7 +111,7 @@ public class LdapServiceImpl implements LdapService {
         Object lastLogin = dco.getObjectAttribute(LDAP_LAST_LOGIN);
         Calendar last = null;
         try {
-            Date lastLoginDate = format.parse((String) lastLogin);
+            Date lastLoginDate = getFormat().parse((String) lastLogin);
             last = new GregorianCalendar();
             last.setTimeInMillis(lastLoginDate.getTime());
             last = convertFromUtc(last);
@@ -125,7 +125,7 @@ public class LdapServiceImpl implements LdapService {
     public void setLastLogin() {
         ModificationItem[] modificationItemArray = new ModificationItem[1];
         Calendar utc = convertToUtc(null);
-        String ldaputc = format.format(utc.getTime()) + "Z";
+        String ldaputc = getFormat().format(utc.getTime()) + "Z";
         logger.debug("setLastLogin() = " + ldaputc);
         Attribute userPasswordChangedAttribute = new BasicAttribute(LDAP_LAST_LOGIN, ldaputc);
         ModificationItem newPasswordChanged = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPasswordChangedAttribute);

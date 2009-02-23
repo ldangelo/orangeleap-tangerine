@@ -37,7 +37,7 @@
     and SITE_NAME = #siteName#
   </select>
   
-  <insert id="AUDIT_INSERT" parameterClass="com.mpower.domain.model.Audit" >
+  <insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit" >
     insert into AUDIT (AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER,
       PERSON_ID, SITE_NAME)
     values (#auditId#, #auditType#, #date#, #description#,

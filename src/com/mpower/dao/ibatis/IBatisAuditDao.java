@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.AuditDao;
 import com.mpower.domain.model.Audit;
-import com.mpower.service.impl.SessionServiceImpl;
 
 /** 
  * Corresponds to the AUDIT table
@@ -27,12 +25,6 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
     public IBatisAuditDao(SqlMapClient sqlMapClient) {
         super();
         super.setSqlMapClient(sqlMapClient);
-    }
-    
-    private Map<String, Object> setupParams() {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("siteName", SessionServiceImpl.lookupUserSiteName());
-        return params;
     }
     
     @SuppressWarnings("unchecked")

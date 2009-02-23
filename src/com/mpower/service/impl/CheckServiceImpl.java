@@ -22,6 +22,8 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
+ * Implemenation of the CheckService for sending to Paperpless Payments
+ * via the antiquated web service.
  * @version 1.0
  */
 @Service("checkService")

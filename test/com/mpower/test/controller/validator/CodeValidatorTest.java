@@ -19,7 +19,7 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.Code;
-import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.CodeService;
 import com.mpower.service.SessionService;
 import com.mpower.test.BaseTest;

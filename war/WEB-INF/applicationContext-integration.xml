@@ -49,7 +49,7 @@
       <beans:list>
 		<beans:ref bean="gift_drools_channel"/>
 		<beans:ref bean="payment_drools_channel"/>
-		<beans:ref bean="gift_jms_channel"/>
+<!-- 		<beans:ref bean="gift_jms_channel"/> -->
       </beans:list>
     </beans:property>
   </beans:bean>

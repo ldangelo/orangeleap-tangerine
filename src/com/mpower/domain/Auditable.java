@@ -12,7 +12,5 @@ public interface Auditable {
 
     public Long getId();
 
-    public Site getSite();
-
     public Person getPerson();
 }

@@ -15,6 +15,7 @@ import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.CodeService;
+import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.FieldType;
 import com.mpower.web.customization.FieldVO;
 
@@ -54,6 +55,7 @@ public class CodeValidator implements Validator {
             logger.debug("validate:");
         }
         if (target instanceof Viewable) {
+        	String sitename = SessionServiceImpl.lookupUserSiteName();
             Viewable viewable = (Viewable)target;
             Map<String, FieldDefinition> map = viewable.getFieldTypeMap();
             if (map != null) {
@@ -70,14 +72,14 @@ public class CodeValidator implements Validator {
                                     for (DistributionLine aLine : lines) {
                                         if (aLine != null) {
                                             BeanWrapper lineBw = PropertyAccessorFactory.forBeanPropertyAccess(aLine);
-                                            validateCode(lineBw, key, aLine, fd, errors, (viewable.getSite() == null ? null : viewable.getSite().getName()));                                                
+                                            validateCode(lineBw, key, aLine, fd, errors, sitename);                                                
                                         }
                                     }
                                 }
                             }
                         }
                         else {
-                            validateCode(beanWrapper, key, viewable, fd, errors, (viewable.getSite() == null ? null : viewable.getSite().getName()));
+                            validateCode(beanWrapper, key, viewable, fd, errors, sitename);
                         }
                     }
                 }

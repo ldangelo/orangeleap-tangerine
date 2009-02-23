@@ -11,11 +11,10 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.mpower.domain.Audit;
 import com.mpower.domain.Person;
+import com.mpower.domain.model.Audit;
 import com.mpower.service.AuditService;
 import com.mpower.service.PersonService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.EntityType;
 
 public class AuditViewController extends ParameterizableViewController {
@@ -42,14 +41,14 @@ public class AuditViewController extends ParameterizableViewController {
         List<Audit> audits = null;
         ModelAndView mav = new ModelAndView(super.getViewName());
         if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
-            audits = auditService.allAuditHistoryForSite(SessionServiceImpl.lookupUserSiteName());
+            audits = auditService.allAuditHistoryForSite();
         } else {
             if (EntityType.valueOf(entityType) == EntityType.person) {
                 Person person = personService.readPersonById(Long.valueOf(objectId));
                 mav.addObject("person", person);
                 audits = auditService.auditHistoryForPerson(person.getId());
             } else {
-                audits = auditService.auditHistoryForEntity(SessionServiceImpl.lookupUserSiteName(), EntityType.valueOf(entityType).name(), Long.valueOf(objectId));
+                audits = auditService.auditHistoryForEntity(EntityType.valueOf(entityType).name(), Long.valueOf(objectId));
             }
         }
 

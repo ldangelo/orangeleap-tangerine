@@ -213,7 +213,6 @@ public class DistributionLine implements Customizable, Viewable, Serializable {
         return fieldTypeMap;
     }
 
-    @Override
     public Site getSite() {
         return gift != null ? gift.getSite() : null;
     }

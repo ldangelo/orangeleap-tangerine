@@ -23,7 +23,7 @@ public class AuditDAOImpl extends SqlMapClientDaoSupport implements AuditDAO {
      */
     public int deleteByPrimaryKey(Long auditId) {
         Audit key = new Audit();
-        key.setAuditId(auditId);
+        key.setId(auditId);
         int rows = getSqlMapClientTemplate().delete("AUDIT.ibatorgenerated_deleteByPrimaryKey", key);
         return rows;
     }
@@ -56,7 +56,7 @@ public class AuditDAOImpl extends SqlMapClientDaoSupport implements AuditDAO {
      */
     public Audit selectByPrimaryKey(Long auditId) {
         Audit key = new Audit();
-        key.setAuditId(auditId);
+        key.setId(auditId);
         Audit record = (Audit) getSqlMapClientTemplate().queryForObject("AUDIT.ibatorgenerated_selectByPrimaryKey", key);
         return record;
     }

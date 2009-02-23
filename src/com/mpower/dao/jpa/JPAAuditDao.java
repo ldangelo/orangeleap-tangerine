@@ -11,8 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.AuditDao;
-import com.mpower.domain.Audit;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Audit;
 
 @Repository("auditDao")
 public class JPAAuditDao implements AuditDao {
@@ -34,18 +33,18 @@ public class JPAAuditDao implements AuditDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Audit> allAuditHistoryForSite(Site site) {
+    public List<Audit> allAuditHistoryForSite() {
         Query q =  em.createNamedQuery("AUDIT_HISTORY_FOR_SITE");
-        q.setParameter("site", site);
+        q.setParameter("site", null);
         List<Audit> audits = q.getResultList();
         return audits;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Audit> auditHistoryForEntity(Site site, String entityTypeDisplay, Long objectId) {
+    public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
         Query q =  em.createNamedQuery("AUDIT_HISTORY_FOR_ENTITY");
-        q.setParameter("site", site);
+        q.setParameter("site", null);
         q.setParameter("entityType", entityTypeDisplay);
         q.setParameter("objectId", objectId);
         List<Audit> audits = q.getResultList();

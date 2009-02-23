@@ -1,5 +1,5 @@
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SITE_NAME) VALUES (2, 'SELECT commitment FROM com.mpower.domain.Commitment commitment WHERE commitment.person.site.id = :siteName', 'commitment.person.lastName', null);
-INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 2);
+--INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SITE_NAME) VALUES (2, 'SELECT commitment FROM com.mpower.domain.Commitment commitment WHERE commitment.person.site.id = :siteName', 'commitment.person.lastName', null);
+--INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 2);
 
 // Organization employee relationship
 INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (3, 'SELECT person FROM com.mpower.domain.Person person WHERE person.site.id = :siteName AND person.constituentType = ''organization'' ', 'person.customFieldMap[individual.organizations]', 'person.organizations', null);

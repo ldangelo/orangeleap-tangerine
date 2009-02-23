@@ -94,7 +94,6 @@ public class PicklistItem implements Serializable, Auditable {
 		return null;
 	}
 
-	@Override
 	public Site getSite() {
 		return picklist.getSite();
 	}

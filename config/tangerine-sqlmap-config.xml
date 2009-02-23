@@ -8,6 +8,8 @@
 	<sqlMap resource="sqlmap/fieldRequired.xml"/>
 	<sqlMap resource="sqlmap/fieldValidation.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
+	<sqlMap resource="sqlmap/queryLookup.xml"/>
+	<sqlMap resource="sqlmap/queryLookupParam.xml"/>
 	<sqlMap resource="sqlmap/sectionDefinition.xml"/>
 	<sqlMap resource="sqlmap/sectionField.xml"/>
 	<sqlMap resource="sqlmap/site.xml"/>

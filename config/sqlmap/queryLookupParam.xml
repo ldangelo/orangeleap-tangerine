@@ -4,25 +4,22 @@
 
 	<resultMap id="QUERY_LOOKUP_PARAM_RESULT" class="com.mpower.domain.model.QueryLookupParam">
 		<result property="id" column="QUERY_LOOKUP_PARAM_ID" jdbcType="BIGINT" />
-		<result property="paramName" column="PARAM_NAME" jdbcType="VARCHAR" />
-		<result property="queryLookup" column="QUERY_LOOKUP_ID" jdbcType="BIGINT" />
+		<result property="name" column="PARAM_NAME" jdbcType="VARCHAR" />
+		<result property="queryLookupId" column="QUERY_LOOKUP_ID" jdbcType="BIGINT" />
 	</resultMap>
-
-	<select id="SELECT_QUERY_LOOKUP_PARAM" resultMap="QUERY_LOOKUP_PARAM_RESULT" parameterClass="com.mpower.domain.model.QueryLookupParam">
-		select QUERY_LOOKUP_PARAM_ID, PARAM_NAME, QUERY_LOOKUP_ID
-		from QUERY_LOOKUP_PARAM
-		where QUERY_LOOKUP_PARAM_ID = #id#
-	</select>
 
 	<insert id="INSERT_QUERY_LOOKUP_PARAM" parameterClass="com.mpower.domain.model.QueryLookupParam">
 		insert into QUERY_LOOKUP_PARAM (QUERY_LOOKUP_PARAM_ID, PARAM_NAME, QUERY_LOOKUP_ID)
-		values (#id#, #paramName#, #queryLookup.id#)
+		values (#id#, #name#, #queryLookupId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
 	</insert>
 	
 	<update id="UPDATE_QUERY_LOOKUP_PARAM" parameterClass="com.mpower.domain.model.QueryLookupParam">
 		update QUERY_LOOKUP_PARAM
-		set PARAM_NAME = #paramName#,
-		QUERY_LOOKUP_ID = #queryLookup.id#
+		set PARAM_NAME = #name#,
+		QUERY_LOOKUP_ID = #queryLookupId#
 		where QUERY_LOOKUP_PARAM_ID = #id#
 	</update>
 </sqlMap>

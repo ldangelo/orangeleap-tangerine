@@ -24,6 +24,9 @@
 	<insert id="INSERT_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">
 		insert into FIELD_CONDITION (CONDITION_ID, DEPENDENT_VALUE,	DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID,	VALIDATION_ID)
 		values (#id#, #value#, #dependentFieldDefinition.id#, #dependentSecondaryFieldDefinition.id#, #fieldRequiredId#, #validationId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
 	</insert>
 
 	<update id="UPDATE_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">

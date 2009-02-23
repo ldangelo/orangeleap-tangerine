@@ -4,6 +4,7 @@
         <packages>
         	<package name="com.mpower.test.controller.validator"></package>
         	<package name="com.mpower.test.dao.ibatis"></package>
+        	<package name="com.mpower.test.dao.jdbc"></package>
         	<package name="com.mpower.test.service.impl"></package>
         	<package name="com.mpower.test.service.payments"></package>
         	<package name="com.mpower.test.web.customization.handler"></package>

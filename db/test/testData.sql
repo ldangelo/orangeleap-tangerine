@@ -70,7 +70,12 @@ INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('MANY_TO_MANY', FALSE, 'person.customFieldMap[individual.siblings]', 'person.customFieldMap[individual.siblings]', null);
 
 -- Query Lookup & Parameters
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (100, 'SELECT * FROM person WHERE person.site_name = ? AND person.constituent_type = ''individual''', 'person.customFieldMap[organization.employees]', 'person.contactInfo', 'company1');
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (100, 'SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM person WHERE site_name = :siteName AND constituent_type = ''individual'' AND title = ''Rev.''', 'person.customFieldMap[organization.employees]', 'person.contactInfo', 'company1');
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 100);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 100);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middleName', 100);
+
+-- Constituent
+INSERT INTO PERSON (CONSTITUENT_TYPE, TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, MARITAL_STATUS, ORGANIZATION_NAME, SITE_NAME, MAJOR_DONOR, LAPSED_DONOR, CREATE_DATE, UPDATE_DATE) VALUES ('individual', 'Rev.', 'Billy', null, 'Graham', null, 'Married', 'Billy Graham Ministries', 'company2', false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO PERSON (CONSTITUENT_TYPE, TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, SUFFIX, MARITAL_STATUS, ORGANIZATION_NAME, SITE_NAME, MAJOR_DONOR, LAPSED_DONOR, CREATE_DATE, UPDATE_DATE) VALUES ('individual', 'Mr.', 'Pablo', null, 'Picasso', null, 'Single', 'Painters, Inc.', 'company1', false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+

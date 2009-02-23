@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.AuditDao;
 import com.mpower.dao.PersonDao;
-import com.mpower.dao.SiteDao;
 import com.mpower.domain.Auditable;
 import com.mpower.domain.Commitment;
 import com.mpower.domain.CustomField;
@@ -52,9 +51,6 @@ public class AuditServiceImpl implements AuditService {
 
     @Resource(name = "auditDao")
     private AuditDao auditDao;
-
-    @Resource(name = "siteDao")
-    private SiteDao siteDao; // TODO: replace with IBatis siteDAO
 
     public List<Audit> auditObject(Object object) {
         List<Audit> audits = null;

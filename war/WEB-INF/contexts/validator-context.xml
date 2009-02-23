@@ -17,6 +17,7 @@
 
 	<bean id="codeValidator" class="com.mpower.controller.validator.CodeValidator">
         <property name="codeService" ref="codeService" />
+        <property name="sessionService" ref="sessionService" />
 	</bean>
 
 	<bean id="paymentSourceValidator" class="com.mpower.controller.validator.PaymentSourceValidator">

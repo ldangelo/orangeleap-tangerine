@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="CONSTITUENT">
+
+	<resultMap id="CONSTITUENT_RESULT" class="com.mpower.domain.model.Person">
+		<result property="id" column="PERSON_ID" jdbcType="BIGINT" />
+		<result property="constituentIndividualRoles" column="CONSTITUENT_INDIVIDUAL_ROLES" jdbcType="VARCHAR" />
+		<result property="constituentOrganizationRoles" column="CONSTITUENT_ORGANIZATION_ROLES" jdbcType="VARCHAR" />
+		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR" />
+		<result property="lapsedDonor" column="LAPSED_DONOR" jdbcType="BIT" />
+		<result property="lastName" column="LAST_NAME" jdbcType="VARCHAR" />
+		<result property="legalName" column="LEGAL_NAME" jdbcType="VARCHAR" />
+		<result property="loginId" column="LOGIN_ID" jdbcType="VARCHAR" />
+		<result property="majorDonor" column="MAJOR_DONOR" jdbcType="BIT" />
+		<result property="maritalStatus" column="MARITAL_STATUS" jdbcType="VARCHAR" />
+		<result property="middleName" column="MIDDLE_NAME" jdbcType="VARCHAR" />
+		<result property="ncaisCode" column="NCAIS_CODE" jdbcType="VARCHAR" />
+		<result property="organizationName" column="ORGANIZATION_NAME" jdbcType="VARCHAR" />
+		<result property="preferredPhoneType" column="PREFERRED_PHONE_TYPE" jdbcType="VARCHAR" />
+		<result property="recognitionName" column="RECOGNITION_NAME" jdbcType="VARCHAR" />
+		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
+		<result property="title" column="TITLE" jdbcType="VARCHAR" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+	</resultMap>
+
+	<sql id="SELECT_CONSTITUENT_FRAGMENT">
+		select p.PERSON_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
+		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
+		p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
+		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME
+		from PERSON p 
+	</sql>
+	
+	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		where p.PERSON_ID in 
+		<iterate property="personIds" conjunction="," open="(" close=")">
+			#personIds[]#
+		</iterate>
+		<isNotNull prepend="AND" property="siteName">
+			p.SITE_NAME = #siteName#
+		</isNotNull>
+	</select>
+	
+	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		where p.SITE_NAME = #siteName#
+	</select>
+
+	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		where p.LOGIN_ID = #loginId#
+		and p.SITE_NAME = #siteName#
+	</select>
+
+	<insert id="INSERT_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
+		insert into PERSON (PERSON_ID, CONSTITUENT_INDIVIDUAL_ROLES,
+		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME,
+		LOGIN_ID, MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
+		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME)
+		values (#id#, #constituentIndividualRoles#,
+		#constituentOrganizationRoles#, #constituentType#, 
+		#firstName#, #lapsedDonor#, #lastName#, #legalName#,
+		#loginId#, #majorDonor#, #maritalStatus#, #middleName#,
+		#ncaisCode#, #organizationName#, #preferredPhoneType#,
+		#recognitionName#, #suffix#, #title#, now(), now(),
+		#site.name#)
+	</insert>
+
+	<update id="UPDATE_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
+		update PERSON
+		set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#,
+		CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,
+		CONSTITUENT_TYPE = #constituentType#,
+		FIRST_NAME = #firstName#,
+		LAPSED_DONOR = #lapsedDonor#,
+		LAST_NAME = #lastName#,
+		LEGAL_NAME = #legalName#,
+		LOGIN_ID = #loginId#,
+		MAJOR_DONOR = #majorDonor#,
+		MARITAL_STATUS = #maritalStatus#,
+		MIDDLE_NAME = #middleName#,
+		NCAIS_CODE = #ncaisCode#,
+		ORGANIZATION_NAME = #organizationName#,
+		PREFERRED_PHONE_TYPE = #preferredPhoneType#,
+		RECOGNITION_NAME = #recognitionName#,
+		SUFFIX = #suffix#,
+		TITLE = #title#,
+		UPDATE_DATE = now(),
+		SITE_NAME = #site.name#
+		where PERSON_ID = #id#
+	</update>
+	
+</sqlMap>

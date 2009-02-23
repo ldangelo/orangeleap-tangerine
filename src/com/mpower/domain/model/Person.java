@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.util.StringConstants;
 
-public class Person implements Serializable {//SiteAware, Customizable, Viewable, Serializable {
+public class Person implements Serializable {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
-    
+
     public static final String INDIVIDUAL = "individual";
     public static final String ORGANIZATION = "organization";
 
@@ -37,8 +38,8 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     private List<Commitment> commitments;
     private boolean majorDonor = false;
     private boolean lapsedDonor = false;
-    private String constituentIndividualRoles = "";
-    private String constituentOrganizationRoles = "";
+    private String constituentIndividualRoles = StringConstants.EMPTY;
+    private String constituentOrganizationRoles = StringConstants.EMPTY;
     private String loginId;
     private Date createDate;
     private Date updateDate;
@@ -49,85 +50,83 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     private Map<String, String> fieldLabelMap = null;
     private Map<String, Object> fieldValueMap = null;
     private Map<String, FieldDefinition> fieldTypeMap = null;
-    
-    public Person() {
-    }
-    
+
+    public Person() { }
+
     @Override
     public String toString() {
-    	return getDisplayValue();
+        return getDisplayValue();
     }
-    
+
     public String getCustomFieldValue(String fieldName) {
-        // TODO: put back for IBatis
-//    	CustomField customField = getCustomFieldMap().get(fieldName);
-//    	if (customField == null || customField.getValue() == null) {
-//            return null;
-//        }
-//        return customField.getValue();
-        return null;
+        CustomField customField = getCustomFieldMap().get(fieldName);
+        if (customField == null || customField.getValue() == null) {
+            return null;
+        }
+        return customField.getValue();
     }
 
     public void setCustomFieldValue(String fieldName, String value) {
-        // TODO: put back for IBatis
-//    	CustomField customField = getCustomFieldMap().get(fieldName);
-//    	if (customField == null) {
-//            throw new RuntimeException("Invalid custom field name "+fieldName);
-//        }
-//    	customField.setValue(value);
+        CustomField customField = getCustomFieldMap().get(fieldName);
+        if (customField == null) {
+            throw new RuntimeException("Invalid custom field name " + fieldName);
+        }
+        customField.setValue(value);
     }
 
     public boolean isOrganization() {
-    	return getConstituentType().equals(ORGANIZATION);
+        return getConstituentType().equals(ORGANIZATION);
     }
 
     public String getDisplayValue() {
-    	if (isOrganization()) {
-    		return organizationName; 
-    	} else {
-    		return createName(true);
-    	}
+        if (isOrganization()) {
+            return organizationName;
+        } else {
+            return createName(true);
+        }
     }
-    
+
     public String getFirstLast() {
-		StringBuilder sb = new StringBuilder();
-		if (isOrganization()) {
-			sb.append(organizationName);
-		} else {
-			if (firstName != null) {
-				sb.append(firstName).append(" ");
-			}
-			if (lastName != null) {
-				sb.append(lastName);
-			}
-		}
-		return sb.toString();
-	}
-    
-    public String getFullName() {
-    	if (isOrganization()) {
-    		return organizationName; 
-    	} else {
-    		return createName(false);
-    	}
+        StringBuilder sb = new StringBuilder();
+        if (isOrganization()) {
+            sb.append(organizationName);
+        } 
+        else {
+            if (firstName != null) {
+                sb.append(firstName).append(" ");
+            }
+            if (lastName != null) {
+                sb.append(lastName);
+            }
+        }
+        return sb.toString();
     }
-    
+
+    public String getFullName() {
+        if (isOrganization()) {
+            return organizationName;
+        } 
+        else {
+            return createName(false);
+        }
+    }
+
     public String createName(boolean lastFirst) {
-    	StringBuilder sb = new StringBuilder();
-    	if (lastFirst) {
+        StringBuilder sb = new StringBuilder();
+        if (lastFirst) {
             sb.append(lastName == null ? "" : lastName).append(", ");
         }
-	    sb.append(firstName == null ? "" : firstName);
-	    if (middleName != null && middleName.length() > 0) {
+        sb.append(firstName == null ? "" : firstName);
+        if (middleName != null && middleName.length() > 0) {
             sb.append(" ").append(middleName);
         }
-    	if (!lastFirst) {
+        if (!lastFirst) {
             sb.append(" ").append(lastName == null ? "" : lastName);
         }
-	    if (suffix != null && suffix.length() > 0) {
+        if (suffix != null && suffix.length() > 0) {
             sb.append(", ").append(suffix);
         }
-	    return sb.toString();
+        return sb.toString();
     }
 
     public String getEntityName() {
@@ -205,7 +204,7 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     public Map<String, Address> getAddressMap() {
         if (addressMap == null) {
             // TODO: put back for IBatis
-//            addressMap = AddressMap.buildAddressMap(getAddresses(), this);
+            // addressMap = AddressMap.buildAddressMap(getAddresses(), this);
         }
         return addressMap;
     }
@@ -221,7 +220,7 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     public Map<String, Email> getEmailMap() {
         if (emailMap == null) {
             // TODO: put back for IBatis
-//            emailMap = EmailMap.buildEmailMap(getEmails(), this);
+            // emailMap = EmailMap.buildEmailMap(getEmails(), this);
         }
         return emailMap;
     }
@@ -237,7 +236,7 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     public Map<String, Phone> getPhoneMap() {
         if (phoneMap == null) {
             // TODO: put back for IBatis
-//            phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
+            // phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
         }
         return phoneMap;
     }
@@ -253,7 +252,7 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
             // TODO: put back for IBatis
-//            customFieldMap = PersonCustomFieldMap.buildCustomFieldMap(getPersonCustomFields(), this);
+            // customFieldMap = PersonCustomFieldMap.buildCustomFieldMap(getPersonCustomFields(), this);
         }
         return customFieldMap;
     }
@@ -331,147 +330,149 @@ public class Person implements Serializable {//SiteAware, Customizable, Viewable
     }
 
     // TODO: put back for IBatis
-//@Override
+    // @Override
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;
     }
 
     // TODO: put back for IBatis
-//  @Override
+    // @Override
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
         this.fieldLabelMap = fieldLabelMap;
     }
 
     // TODO: put back for IBatis
-//    @Override
+    // @Override
     public Map<String, Object> getFieldValueMap() {
         return fieldValueMap;
     }
 
     // TODO: put back for IBatis
-//    @Override
+    // @Override
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
     }
 
     // TODO: put back for IBatis
-//    @Override
+    // @Override
     public Person getPerson() {
         return this;
     }
 
     // TODO: put back for IBatis
-//    @Override
-	public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-		this.fieldTypeMap = fieldTypeMap;
-	}
+    // @Override
+    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
+        this.fieldTypeMap = fieldTypeMap;
+    }
 
     // TODO: put back for IBatis
-//    @Override
-	public Map<String, FieldDefinition> getFieldTypeMap() {
-		return fieldTypeMap;
-	}
+    // @Override
+    public Map<String, FieldDefinition> getFieldTypeMap() {
+        return fieldTypeMap;
+    }
 
-	public void setNcaisCode(String ncaisCode) {
-		this.ncaisCode = ncaisCode;
-	}
+    public void setNcaisCode(String ncaisCode) {
+        this.ncaisCode = ncaisCode;
+    }
 
-	public String getNcaisCode() {
-		return ncaisCode;
-	}
+    public String getNcaisCode() {
+        return ncaisCode;
+    }
 
-	public void setRecognitionName(String recognitionName) {
-		this.recognitionName = recognitionName;
-	}
+    public void setRecognitionName(String recognitionName) {
+        this.recognitionName = recognitionName;
+    }
 
-	public String getRecognitionName() {
-		return recognitionName;
-	}
+    public String getRecognitionName() {
+        return recognitionName;
+    }
 
-	public void setConstituentType(String constituentType) {
-		this.constituentType = constituentType;
-	}
+    public void setConstituentType(String constituentType) {
+        this.constituentType = constituentType;
+    }
 
-	public String getConstituentType() {
-		if (constituentType == null) {
+    public String getConstituentType() {
+        if (constituentType == null) {
             return INDIVIDUAL;
-        } 
-		return constituentType;
-	}
+        }
+        return constituentType;
+    }
 
-	public void setConstituentIndividualRoles(String constituentIndividualRoles) {
-		this.constituentIndividualRoles = constituentIndividualRoles;
-	}
+    public void setConstituentIndividualRoles(String constituentIndividualRoles) {
+        this.constituentIndividualRoles = constituentIndividualRoles;
+    }
 
-	public String getConstituentIndividualRoles() {
-		return constituentIndividualRoles;
-	}
+    public String getConstituentIndividualRoles() {
+        return constituentIndividualRoles;
+    }
 
-	public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
-		this.constituentOrganizationRoles = constituentOrganizationRoles;
-	}
+    public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
+        this.constituentOrganizationRoles = constituentOrganizationRoles;
+    }
 
-	public String getConstituentOrganizationRoles() {
-		return constituentOrganizationRoles;
-	}
-	
-	public void addConstituentRole(String constituentRole) {
-		if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) {
+    public String getConstituentOrganizationRoles() {
+        return constituentOrganizationRoles;
+    }
+
+    public void addConstituentRole(String constituentRole) {
+        if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) {
             return;
         }
-		if (isOrganization()) {
-			setConstituentOrganizationRoles(addToList(getConstituentOrganizationRoles(), constituentRole));
-		} else {
-			setConstituentIndividualRoles(addToList(getConstituentIndividualRoles(), constituentRole));
-		}
-	}
-	
-	private String addToList(String list, String s) {
-		if (list == null) {
+        if (isOrganization()) {
+            setConstituentOrganizationRoles(addToList(getConstituentOrganizationRoles(), constituentRole));
+        } 
+        else {
+            setConstituentIndividualRoles(addToList(getConstituentIndividualRoles(), constituentRole));
+        }
+    }
+
+    private String addToList(String list, String s) {
+        if (list == null) {
             list = "";
         }
-		if (!list.contains(s)) {
-			if (list.length() > 0) {
+        if (!list.contains(s)) {
+            if (list.length() > 0) {
                 list += ",";
             }
-			list += s;
-		}
-		return list;
-	}
-	
-	public void setConstituentAttributes(String constituentAttributes) {
-		  //noop - read only field for Spring MVC
-	}
+            list += s;
+        }
+        return list;
+    }
 
-	public String getConstituentAttributes() {
-		String constituentAttributes;
-		if (isOrganization()) {
-      		constituentAttributes = ORGANIZATION;
-      		if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
+    public void setConstituentAttributes(String constituentAttributes) {
+        // noop - read only field for Spring MVC
+    }
+
+    public String getConstituentAttributes() {
+        String constituentAttributes;
+        if (isOrganization()) {
+            constituentAttributes = ORGANIZATION;
+            if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
                 constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
             }
-		} else {
-			constituentAttributes = INDIVIDUAL;
-      		if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
+        } 
+        else {
+            constituentAttributes = INDIVIDUAL;
+            if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
                 constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
             }
-		}
-		return constituentAttributes;
-	}
+        }
+        return constituentAttributes;
+    }
 
-	public void setLegalName(String legalName) {
-		this.legalName = legalName;
-	}
+    public void setLegalName(String legalName) {
+        this.legalName = legalName;
+    }
 
-	public String getLegalName() {
-		return legalName;
-	}
+    public String getLegalName() {
+        return legalName;
+    }
 
-	public void setLoginId(String loginId) {
-		this.loginId = loginId;
-	}
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
 
-	public String getLoginId() {
-		return loginId;
-	}
+    public String getLoginId() {
+        return loginId;
+    }
 }

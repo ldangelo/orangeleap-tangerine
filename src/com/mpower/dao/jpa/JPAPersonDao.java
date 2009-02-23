@@ -56,10 +56,11 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @Override
+    // TODO: IBatisConstituentDao --> readConstituentById
     public Person readPerson(Long id) {
         Person person = em.find(Person.class, id);
         // Sanity check
-        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) { // TODO: move to Service class
             throw new RuntimeException("Person object does not belong to current site.");
         }
         return person;
@@ -67,6 +68,7 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisConstituentDao --> readConstituentByLoginIdSite
     public Person readPersonByLoginId(String loginId, String siteName) {
         Query query = em.createNamedQuery("READ_PERSON_BY_LOGIN_ID");
         query.setParameter("loginId", loginId);
@@ -218,12 +220,14 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // unneeded in IBatis
     public List<Person> readAllPeople() {
         Query query = em.createNamedQuery("READ_ALL_PEOPLE");
         return query.getResultList();
     }
 
     @Override
+    // unneeded in IBatis
     public void setLapsedDonor(Long personId) {
         Query query = em.createNamedQuery("SET_LAPSED_DONOR");
         query.setParameter("personId", personId);
@@ -232,6 +236,7 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // unneeded in IBatis
     public List<Person> readAllPeopleBySite(Site site) {
         Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE");
         query.setParameter("site", site);
@@ -240,6 +245,7 @@ public class JPAPersonDao implements PersonDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	// TODO: IBatisConstituentDao --> readAllConstituentsBySite
 	public List<Person> readAllPeopleBySiteName(String siteName) {
         Query query = em.createNamedQuery("READ_ALL_PEOPLE_BY_SITE_ID");
         query.setParameter("siteId", siteName);

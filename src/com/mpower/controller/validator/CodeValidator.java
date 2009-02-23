@@ -15,7 +15,7 @@ import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.CodeService;
-import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.service.SessionService;
 import com.mpower.type.FieldType;
 import com.mpower.web.customization.FieldVO;
 
@@ -24,12 +24,17 @@ public class CodeValidator implements Validator {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     private CodeService codeService;
+    private SessionService sessionService;
     public static final String PROJECT_CODE = "projectCode";
     public static final String MOTIVATION_CODE = "motivationCode";
     public static final String DISTRIBUTION_LINES = "distributionLines";
    
     public void setCodeService(CodeService codeService) {
         this.codeService = codeService;
+    }
+
+    public void setSessionService(SessionService sessionService) {
+        this.sessionService = sessionService;
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +60,7 @@ public class CodeValidator implements Validator {
             logger.debug("validate:");
         }
         if (target instanceof Viewable) {
-        	String sitename = SessionServiceImpl.lookupUserSiteName();
+        	String sitename = sessionService.lookupSiteName();
             Viewable viewable = (Viewable)target;
             Map<String, FieldDefinition> map = viewable.getFieldTypeMap();
             if (map != null) {

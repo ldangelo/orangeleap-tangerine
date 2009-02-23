@@ -30,6 +30,7 @@ public class SessionServiceImpl implements SessionService {
     @Resource(name = "siteService")
     private SiteService siteService;
 
+    @Override
     public Site lookupSite() {
         
         // TODO: remove cloning logic for IBatis
@@ -45,6 +46,11 @@ public class SessionServiceImpl implements SessionService {
         	siteClone.setParentSite(parentSite);
     	}
     	return siteClone;
+    }
+    
+    @Override
+    public String lookupSiteName() {
+        return lookupUserSiteName();
     }
 
     public static String lookupUserSiteName() {

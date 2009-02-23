@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.util.StringConstants;
 
 public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
 
@@ -17,7 +18,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
 
     protected Map<String, Object> setupParams() {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("siteName", SessionServiceImpl.lookupUserSiteName());
+        params.put(StringConstants.SITE_NAME, SessionServiceImpl.lookupUserSiteName());
         return params;
     }
     

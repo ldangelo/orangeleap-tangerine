@@ -19,8 +19,9 @@ import com.mpower.domain.Gift;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.CodeService;
+import com.mpower.service.SessionService;
 import com.mpower.test.BaseTest;
 import com.mpower.type.FieldType;
 
@@ -48,19 +49,22 @@ public class CodeValidatorTest extends BaseTest {
         currencyCode.setValue("USD");
         validator = new CodeValidator();
         mockery = new Mockery();
-        final CodeService service = mockery.mock(CodeService.class);
-        validator.setCodeService(service);
+        final CodeService codeService = mockery.mock(CodeService.class);
+        final SessionService sessionService = mockery.mock(SessionService.class);
+        validator.setCodeService(codeService);
+        validator.setSessionService(sessionService);
 
         mockery.checking(new Expectations() {{
-            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(currencyCode));
-            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", "foo"); will(returnValue(null));
-            allowing (service).readCodeBySiteTypeValue("company1", "currencyCode", " "); will(returnValue(null));
-            allowing (service).readCodeBySiteTypeValue("company1", "projectCode", "001000"); will(returnValue(projCode));
-            allowing (service).readCodeBySiteTypeValue("company1", "projectCode", "foo"); will(returnValue(null));
-            allowing (service).readCodeBySiteTypeValue("company1", "projectCode", " "); will(returnValue(null));
-            allowing (service).readCodeBySiteTypeValue("company1", "motivationCode", "XYZ"); will(returnValue(motivationCode));
-            allowing (service).readCodeBySiteTypeValue("company1", "motivationCode", "foo"); will(returnValue(null));
-            allowing (service).readCodeBySiteTypeValue("company1", "motivationCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(currencyCode));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", "001000"); will(returnValue(projCode));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "XYZ"); will(returnValue(motivationCode));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", " "); will(returnValue(null));
+            allowing (sessionService).lookupSiteName(); will(returnValue("company1"));
         }});
 
         gift = new Gift();

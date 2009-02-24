@@ -61,9 +61,13 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 
 	@Override
 	public Audit auditObject(Audit audit) {
+		
+		audit.setSiteName(getSiteName());
+		
         if (logger.isDebugEnabled()) {
-            logger.debug("readSite: siteName = " + audit.getSiteName());
+            logger.debug("auditObject:"+audit.getEntityType()+" - "+audit.getObjectId());
         }
+        
         getSqlMapClientTemplate().insert("INSERT_AUDIT", audit);
         return audit;
 	}

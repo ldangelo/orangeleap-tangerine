@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.CodeDao;
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.CodeType;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.CodeType;
 
 /** 
  * Corresponds to the CODE and Code_TYPE tables

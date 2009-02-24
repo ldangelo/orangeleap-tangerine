@@ -17,6 +17,9 @@
 	<insert id="INSERT_CONSTITUENT_CUSTOM_FIELD" parameterClass="com.mpower.domain.model.PersonCustomField">
 		insert into PERSON_CUSTOM_FIELD (PERSON_CUSTOM_FIELD_ID, CUSTOM_FIELD_ID, PERSON_ID)
 		values (#id#, #customField.id#, #personId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
 	</insert>
 
 	<update id="UPDATE_CONSTITUENT_CUSTOM_FIELD" parameterClass="com.mpower.domain.model.PersonCustomField">

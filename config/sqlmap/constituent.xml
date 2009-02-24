@@ -76,6 +76,9 @@
 		#ncaisCode#, #organizationName#, #preferredPhoneType#,
 		#recognitionName#, #suffix#, #title#, now(), now(),
 		#site.name#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
 	</insert>
 
 	<update id="UPDATE_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">

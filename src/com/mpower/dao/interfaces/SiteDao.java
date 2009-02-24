@@ -18,7 +18,7 @@ public interface SiteDao {
 	
     public EntityDefault createEntityDefault(EntityDefault entityDefault);
 
-    public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes);
+    public List<EntityDefault> readEntityDefaults(List<EntityType> entityTypes);
     
     public int updateEntityDefault(EntityDefault entityDefault);
 }

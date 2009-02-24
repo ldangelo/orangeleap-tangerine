@@ -31,13 +31,13 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testFieldRequired" })
     public void testReadFieldNotRequired() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.title", null);
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.title", null);
         assert fieldReq == null;
     }
 
     @Test(groups = { "testFieldRequired" })
     public void testReadFieldRequiredNoSecondary() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.firstName", null);
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.firstName", null);
         assert fieldReq != null;
         assert fieldReq.getSite() == null;
         assert fieldReq.getFieldDefinition() != null;
@@ -55,9 +55,9 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testFieldRequired" })
     public void testReadFieldRequiredHasSecondary() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("company2", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
         assert fieldReq != null;
-        assert fieldReq.getSite() != null && "company2".equals(fieldReq.getSite().getName());
+        assert fieldReq.getSite() != null && "company1".equals(fieldReq.getSite().getName());
         assert fieldReq.getFieldDefinition() != null;
         assert fieldReq.getSecondaryFieldDefinition() != null;
         assert fieldReq.isRequired();
@@ -69,7 +69,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert "Email".equals(fieldReq.getFieldDefinition().getDefaultLabel());
         assert FieldType.TEXT.equals(fieldReq.getFieldDefinition().getFieldType());
         assert fieldReq.getFieldDefinition().getEntityAttributes() == null;
-        assert fieldReq.getFieldDefinition().getSite() != null && "company2".equals(fieldReq.getFieldDefinition().getSite().getName());
+        assert fieldReq.getFieldDefinition().getSite() != null && "company1".equals(fieldReq.getFieldDefinition().getSite().getName());
 
         assert "email.emailAddress".equals(fieldReq.getSecondaryFieldDefinition().getId());
         assert EntityType.email.equals(fieldReq.getSecondaryFieldDefinition().getEntityType());
@@ -82,13 +82,13 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testFieldCondition" })
     public void testReadFieldRequiredNoCondition() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.title", null);
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.title", null);
         assert fieldReq == null;
     }
     
     @Test(groups = { "testFieldCondition" })
     public void testReadFieldRequiredConditions() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("company1", "person.contactInfo", "person.lastName", null);
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.lastName", null);
         assert fieldReq != null;
         assert fieldReq.getSite() == null;
         assert fieldReq.getFieldDefinition() != null;
@@ -106,15 +106,15 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testFieldCondition" })
     public void testReadFieldValidationNoCondition() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("company1", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.title", null);
         assert fieldVal == null;
     }
     
     @Test(groups = { "testFieldCondition" })
     public void testReadFieldValidationConditions() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("company2", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
         assert fieldVal != null;
-        assert fieldVal.getSite() != null && "company2".equals(fieldVal.getSite().getName());
+        assert fieldVal.getSite() != null && "company1".equals(fieldVal.getSite().getName());
         assert fieldVal.getFieldDefinition() != null;
         assert fieldVal.getSecondaryFieldDefinition() != null;
         assert "person.contactInfo".equals(fieldVal.getSectionName());
@@ -133,15 +133,15 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testFieldValidation" })
     public void testReadFieldNoValidation() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("company1", "person.contactInfo", "person.title", null);
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.title", null);
         assert fieldVal == null;
     }
 
     @Test(groups = { "testFieldValidation" })
     public void testReadFieldValidationHasSecondary() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("company2", "person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
         assert fieldVal != null;
-        assert fieldVal.getSite() != null && "company2".equals(fieldVal.getSite().getName());
+        assert fieldVal.getSite() != null && "company1".equals(fieldVal.getSite().getName());
         assert fieldVal.getFieldDefinition() != null;
         assert fieldVal.getSecondaryFieldDefinition() != null;
         assert "person.contactInfo".equals(fieldVal.getSectionName());
@@ -153,7 +153,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert "Email".equals(fieldVal.getFieldDefinition().getDefaultLabel());
         assert FieldType.TEXT.equals(fieldVal.getFieldDefinition().getFieldType());
         assert fieldVal.getFieldDefinition().getEntityAttributes() == null;
-        assert fieldVal.getFieldDefinition().getSite() != null && "company2".equals(fieldVal.getFieldDefinition().getSite().getName());
+        assert fieldVal.getFieldDefinition().getSite() != null && "company1".equals(fieldVal.getFieldDefinition().getSite().getName());
 
         assert "email.emailAddress".equals(fieldVal.getSecondaryFieldDefinition().getId());
         assert EntityType.email.equals(fieldVal.getSecondaryFieldDefinition().getEntityType());

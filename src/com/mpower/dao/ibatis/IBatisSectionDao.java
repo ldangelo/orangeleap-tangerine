@@ -32,12 +32,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<SectionDefinition> readSectionDefinitions(String siteName, PageType pageType, List<String> roles) {
+    public List<SectionDefinition> readSectionDefinitions(PageType pageType, List<String> roles) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readSectionDefinitions: siteName = " + siteName + " pageType = " + pageType + " roles = " + roles);
+            logger.debug("readSectionDefinitions: pageType = " + pageType + " roles = " + roles);
         }
-        Map<String, Object> params = new HashMap<String, Object>(3);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("pageType", pageType);
         params.put("roles", roles);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_PAGE_TYPE_SITE_ROLES", params);
@@ -45,12 +44,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<SectionField> readCustomizedSectionFields(String siteName, Long sectionDefinitionId) {
+    public List<SectionField> readCustomizedSectionFields(Long sectionDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCustomizedSectionFields: siteName = " + siteName + " sectionDefinitionId = " + sectionDefinitionId);
+            logger.debug("readCustomizedSectionFields: sectionDefinitionId = " + sectionDefinitionId);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("sectionDefinitionId", sectionDefinitionId);
         return getSqlMapClientTemplate().queryForList("SELECT_CUSTOMIZED_SEC_FLDS", params);
     }

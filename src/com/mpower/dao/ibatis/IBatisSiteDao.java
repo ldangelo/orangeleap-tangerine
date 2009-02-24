@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,12 +78,11 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<EntityDefault> readEntityDefaults(String siteName, List<EntityType> entityTypes) {
+    public List<EntityDefault> readEntityDefaults(List<EntityType> entityTypes) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readEntityDefaults: siteName = " + siteName);
+            logger.debug("readEntityDefaults: entityTypes = " + entityTypes);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("entityTypes", entityTypes);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_ENTITY_TYPE_AND_SITE", params);
     }

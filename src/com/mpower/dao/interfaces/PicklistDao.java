@@ -13,9 +13,9 @@ public interface PicklistDao {
 
 	public Picklist maintainPicklist(Picklist picklist);
 
-	public List<Picklist> listPicklists(String siteName);
+	public List<Picklist> listPicklists();
 
-    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType);
+    public Picklist readPicklistByFieldName(String fieldName, EntityType entityType);
 
     public PicklistItem readPicklistItemById(Long picklistItemId);
 

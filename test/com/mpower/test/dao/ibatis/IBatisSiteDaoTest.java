@@ -113,13 +113,13 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testCreateEntityDefault" })
     public void testCreateEntityDefault() throws Exception {
-        EntityDefault entityDefault = new EntityDefault("check", "paymentType", EntityType.gift.toString(), "company999");
+        EntityDefault entityDefault = new EntityDefault("check", "paymentType", EntityType.gift.toString(), "company1");
         entityDefault = siteDao.createEntityDefault(entityDefault);
         assert entityDefault != null;
         assert "check".equals(entityDefault.getDefaultValue());
         assert "paymentType".equals(entityDefault.getEntityFieldName());
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
-        assert "company999".equals(entityDefault.getSiteName());
+        assert "company1".equals(entityDefault.getSiteName());
         assert entityDefault.getId() != null;
         assert entityDefault.getId() > 0;
     } 
@@ -128,7 +128,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
     public void testReadEntityDefaults() throws Exception {
         List<EntityType> types = new ArrayList<EntityType>(1);
         types.add(EntityType.gift);
-        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults("company999", types);
+        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(types);
  
         assert entityDefaultList != null;
         assert entityDefaultList.size() == 1;
@@ -137,7 +137,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         assert "check".equals(entityDefault.getDefaultValue());
         assert "paymentType".equals(entityDefault.getEntityFieldName());
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
-        assert "company999".equals(entityDefault.getSiteName());
+        assert "company1".equals(entityDefault.getSiteName());
         assert entityDefault.getId() != null;
         assert entityDefault.getId() > 0;
     } 
@@ -146,7 +146,7 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
     public void testUpdateEntityDefault() throws Exception {
         List<EntityType> types = new ArrayList<EntityType>(1);
         types.add(EntityType.gift);
-        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults("company999", types);
+        List<EntityDefault> entityDefaultList = siteDao.readEntityDefaults(types);
  
         assert entityDefaultList != null;
         assert entityDefaultList.size() == 1;
@@ -155,14 +155,14 @@ public class IBatisSiteDaoTest extends AbstractIBatisTest {
         entityDefault.setDefaultValue("cash");
         siteDao.updateEntityDefault(entityDefault);
         
-        entityDefaultList = siteDao.readEntityDefaults("company999", types);
+        entityDefaultList = siteDao.readEntityDefaults(types);
         assert entityDefaultList != null;
         assert entityDefaultList.size() == 1;
         entityDefault = entityDefaultList.get(0);
         assert "cash".equals(entityDefault.getDefaultValue());
         assert "paymentType".equals(entityDefault.getEntityFieldName());
         assert EntityType.gift.toString().equals(entityDefault.getEntityType());
-        assert "company999".equals(entityDefault.getSiteName());
+        assert "company1".equals(entityDefault.getSiteName());
         assert entityDefault.getId() != null;
         assert entityDefault.getId() > 0;
     } 

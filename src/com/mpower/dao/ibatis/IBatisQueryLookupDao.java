@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -28,12 +27,11 @@ public class IBatisQueryLookupDao extends AbstractIBatisDao implements QueryLook
     }
     
     @Override
-    public QueryLookup readQueryLookup(String siteName, String fieldDefinitionId) {
+    public QueryLookup readQueryLookup(String fieldDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readQueryLookup: siteName = " + siteName + " fieldDefinitionId = " + fieldDefinitionId);
+            logger.debug("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("fieldDefinitionId", fieldDefinitionId);
         return (QueryLookup)getSqlMapClientTemplate().queryForObject("SELECT_QUERY_LOOKUP_BY_SITE_FLD_DEF_ID", params);
     }

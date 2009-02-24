@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com/DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
-	<sqlMap resource="sqlmap/messageResource.xml"/>
-	<sqlMap resource="sqlmap/code.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>
+	<sqlMap resource="sqlmap/code.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
 	<sqlMap resource="sqlmap/constituentCustomField.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
@@ -13,6 +12,7 @@
 	<sqlMap resource="sqlmap/fieldRelationship.xml"/>
 	<sqlMap resource="sqlmap/fieldRequired.xml"/>
 	<sqlMap resource="sqlmap/fieldValidation.xml"/>
+	<sqlMap resource="sqlmap/messageResource.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
 	<sqlMap resource="sqlmap/queryLookup.xml"/>
 	<sqlMap resource="sqlmap/queryLookupParam.xml"/>

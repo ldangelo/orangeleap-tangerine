@@ -1,21 +1,21 @@
 package com.mpower.dao.ibatis;
 
-import com.mpower.dao.interfaces.PicklistDao;
-import com.mpower.domain.customization.*;
-import com.mpower.type.EntityType;
-import com.ibatis.sqlmap.client.SqlMapClient;
-
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.mpower.dao.interfaces.PicklistDao;
+import com.mpower.domain.customization.Picklist;
+import com.mpower.domain.customization.PicklistItem;
+import com.mpower.type.EntityType;
+
 /**
- * Implementation of the FieldDao for iBatis
+ * Implementation of the PicklistDao for iBatis
  * @version 1.0
  */
 @Repository("picklistDAO")
@@ -30,10 +30,8 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         super.setSqlMapClient(sqlMapClient);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Picklist readPicklistById(String picklistId) {
-
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistById: picklistId = " + picklistId);
         }
@@ -59,23 +57,19 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Picklist> listPicklists(String siteName) {
+    public List<Picklist> listPicklists() {
         if (logger.isDebugEnabled()) {
-            logger.debug("listPicklists: siteName = " + siteName);
+            logger.debug("listPicklists:");
         }
-
-        return getSqlMapClientTemplate().queryForList("SELECT_BY_SITENAME", siteName);
+        return getSqlMapClientTemplate().queryForList("SELECT_BY_SITENAME", getSiteName());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Picklist readPicklistBySiteAndFieldName(String siteName, String fieldName, EntityType entityType) {
-
+    public Picklist readPicklistByFieldName(String fieldName, EntityType entityType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistBySiteAndFieldName: siteName = " + siteName);
+            logger.debug("readPicklistByFieldName: fieldName = " + fieldName + " entityType = " + entityType);
         }
-        Map<String, Object> params = new HashMap<String, Object>(3);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("fieldName", fieldName);
         params.put("entityType", entityType);
         return (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_BY_SITE_AND_FIELD_NAME", params);
@@ -86,17 +80,14 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistItemById: picklistId = " + picklistItemId);
         }
-
         return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLISTITEM_BY_ID", picklistItemId);
     }
 
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
-
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPicklistItem: picklistItem = " + picklistItem);
         }
-
         getSqlMapClientTemplate().update("UPDATE_PICKLISTITEM", picklistItem);
         return picklistItem;
     }

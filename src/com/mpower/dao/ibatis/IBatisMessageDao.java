@@ -15,7 +15,7 @@ import com.mpower.domain.model.customization.MessageResource;
 import com.mpower.type.MessageResourceType;
 
 /** 
- * Corresponds to the SITE table
+ * Corresponds to the MESSAGE_RESOURCE table
  */
 @Repository("messageDAO")
 public class IBatisMessageDao extends AbstractIBatisDao implements MessageDao {

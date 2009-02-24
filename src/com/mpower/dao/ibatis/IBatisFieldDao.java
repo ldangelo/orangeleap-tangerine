@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +29,11 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         super.setSqlMapClient(sqlMapClient);
     }
     
-    private Map<String, Object> setupParams(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    private Map<String, Object> setupFieldParams(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("setupParams: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+            logger.debug("setupFieldParams: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
-        Map<String, Object> params = new HashMap<String, Object>(4);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("sectionName", sectionName);
         params.put("fieldDefinitionId", fieldDefinitionId);
         params.put("secondaryFieldDefinitionId", secondaryFieldDefinitionId);
@@ -43,19 +41,19 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     }
     
     @Override
-    public FieldRequired readFieldRequired(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    public FieldRequired readFieldRequired(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readFieldRequired: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+            logger.debug("readFieldRequired: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
-        return (FieldRequired)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", setupParams(siteName, sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
+        return (FieldRequired)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
     }
     
     @Override
-    public FieldValidation readFieldValidation(String siteName, String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
+    public FieldValidation readFieldValidation(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readFieldValidation: siteName = " + siteName + " sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+            logger.debug("readFieldValidation: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
-        return (FieldValidation)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_VALIDATION_BY_SITE_SECTION_FIELD_DEF_ID", setupParams(siteName, sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
+        return (FieldValidation)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_VALIDATION_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
     }
 
     @SuppressWarnings("unchecked")

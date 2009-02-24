@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +29,11 @@ public class IBatisPageAccessDao extends AbstractIBatisDao implements PageAccess
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<PageAccess> readPageAccess(String siteName, List<String> roles) {
+    public List<PageAccess> readPageAccess(List<String> roles) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readPageAccess: siteName = " + siteName + " roles = " + roles);
+            logger.debug("readPageAccess: roles = " + roles);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("roleNames", roles);
         return getSqlMapClientTemplate().queryForList("SELECT_PAGE_ACCESS_BY_SITE_ROLES", params);
     }

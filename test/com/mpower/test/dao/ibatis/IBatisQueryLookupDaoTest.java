@@ -26,13 +26,13 @@ public class IBatisQueryLookupDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadQueryLookup" })
     public void testReadQueryLookupInvalid() throws Exception {
-        QueryLookup lookup = queryLookupDao.readQueryLookup("company1", "person.customFieldMap[headOfHousehold.householdMembers]");
+        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[headOfHousehold.householdMembers]");
         assert lookup == null;
     }
     
     @Test(groups = { "testReadQueryLookup" })
     public void testReadQueryLookupValid() throws Exception {
-        QueryLookup lookup = queryLookupDao.readQueryLookup("company1", "person.customFieldMap[organization.employees]");
+        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[organization.employees]");
         assert lookup != null;
         assert lookup.getSite() != null && "company1".equals(lookup.getSite().getName());
         assert "SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM PERSON WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Rev.'".equals(lookup.getSqlQuery());

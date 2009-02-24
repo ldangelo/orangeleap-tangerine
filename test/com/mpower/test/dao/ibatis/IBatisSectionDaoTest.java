@@ -33,7 +33,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     public void testReadSectionDefinitionsNoRole() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_DOOFUS");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions("company1", PageType.person, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.person, roles);
         assert sections != null && sections.isEmpty();
     }
     
@@ -41,7 +41,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     public void testReadSectionDefinitionsSuperManager() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_SUPER_MANAGER");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions("company1", PageType.person, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.person, roles);
         assert sections != null && sections.size() == 3;
         for (SectionDefinition secDef : sections) {
             assert PageType.person.equals(secDef.getPageType());
@@ -55,10 +55,10 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     } 
 
     @Test(groups = { "testReadSectionDefinitions" })
-    public void testReadSectionDefinitionsNoSite() throws Exception {
+    public void testReadSectionDefinitionsNone() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_USER");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions("companyDoesNotExist", PageType.gift, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.pledgeView, roles);
         assert sections != null && sections.isEmpty();
     }
     
@@ -66,7 +66,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     public void testReadSectionDefinitionsUser() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_USER");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions("company1", PageType.gift, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.gift, roles);
         assert sections != null && sections.size() == 2;
         for (SectionDefinition secDef : sections) {
             assert PageType.gift.equals(secDef.getPageType());
@@ -81,7 +81,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadSectionFields" })
     public void testReadCustomizedSectionFieldsNoSecondary() throws Exception {
-        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields("company1", 100L);
+        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields(200L);
         assert sectionFields != null && sectionFields.isEmpty() == false;
         assert sectionFields.size() == 1;
         assert 6000 == sectionFields.get(0).getFieldOrder();
@@ -99,11 +99,11 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         
         SectionDefinition sectionDef = sectionFields.get(0).getSectionDefinition();
         assert sectionDef != null;
-        assert 100L == sectionDef.getId();
+        assert 200L == sectionDef.getId();
         assert PageType.person.equals(sectionDef.getPageType());
-        assert "person.contactInfo".equals(sectionDef.getSectionName());
-        assert "Contact Details".equals(sectionDef.getDefaultLabel());
-        assert 1 == sectionDef.getSectionOrder();
+        assert "person.demographics".equals(sectionDef.getSectionName());
+        assert "Demographic Information".equals(sectionDef.getDefaultLabel());
+        assert 2 == sectionDef.getSectionOrder();
         assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
         assert "ROLE_SUPER_MANAGER".equals(sectionDef.getRole());
         assert sectionDef.getSite() == null;
@@ -111,7 +111,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadSectionFields" })
     public void testReadCustomizedSectionFieldsHasSecondary() throws Exception {
-        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields("company2", 100L);
+        List<SectionField> sectionFields = sectionDao.readCustomizedSectionFields(100L);
         assert sectionFields != null && sectionFields.isEmpty() == false;
         assert sectionFields.size() == 1;
         assert 7000 == sectionFields.get(0).getFieldOrder();
@@ -123,7 +123,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         assert "Email".equals(fieldDef.getDefaultLabel());
         assert FieldType.TEXT.equals(fieldDef.getFieldType());
         assert fieldDef.getEntityAttributes() == null;
-        assert "company2".equals(fieldDef.getSite().getName());
+        assert "company1".equals(fieldDef.getSite().getName());
         
         FieldDefinition secFieldDef = sectionFields.get(0).getSecondaryFieldDefinition();
         assert secFieldDef != null;

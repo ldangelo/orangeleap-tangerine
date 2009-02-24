@@ -2,6 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="AUDIT" >
 
+
   <resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" >
     <result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
     <result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
@@ -10,29 +11,29 @@
     <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
     <result property="objectId" column="OBJECT_ID" jdbcType="BIGINT" />
     <result property="user" column="USER" jdbcType="VARCHAR" />
-    <result property="personId" column="PERSON_ID" jdbcType="BIGINT" />
+	<!-- <result property="person" resultMap="PERSON.PERSON_RESULT" /> -->
     <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
   </resultMap>
   
-  <select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="com.mpower.domain.model.Audit" >
-    select AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, PERSON_ID,
-      SITE_NAME
-    from AUDIT
-    where SITE_NAME = #siteName#
+  <select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+    select *
+    from AUDIT a
+	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
+    where a.SITE_NAME = #siteName#
   </select>
   
-  <select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="com.mpower.domain.model.Audit" >
-    select AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, PERSON_ID,
-      SITE_NAME
-    from AUDIT
+  <select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+    select *
+    from AUDIT a
+	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
     where ENTITY_TYPE = #entityType# and OBJECT_ID = #objectId# 
     and SITE_NAME = #siteName#
   </select>
   
-  <select id="AUDIT_HISTORY_FOR_PERSON" resultMap="AUDIT_RESULT" parameterClass="com.mpower.domain.model.Audit" >
-    select AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, PERSON_ID,
-      SITE_NAME
-    from AUDIT
+  <select id="AUDIT_HISTORY_FOR_PERSON" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+    select *
+    from AUDIT a
+	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
     where PERSON_ID = #personId#
     and SITE_NAME = #siteName#
   </select>
@@ -40,9 +41,12 @@
   <insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit" >
     insert into AUDIT (AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER,
       PERSON_ID, SITE_NAME)
-    values (#auditId#, #auditType#, #date#, #description#,
-      #entityType#, #objectId#, #user#, #personId#,
+    values (#id#, #auditType#, #date#, #description#,
+      #entityType#, #objectId#, #user#, #person.id#,
       #siteName#)
+      <selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+	  </selectKey>
   </insert>
   
 </sqlMap>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="CODE" >
+
+
+  <resultMap id="CODE_TYPE_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="CODE_TYPE_RESULT" class="com.mpower.domain.model.customization.CodeType" >
+    <result property="id" column="ID" jdbcType="BIGINT" />
+    <result property="label" column="LABEL" jdbcType="VARCHAR" />
+    <result property="name" column="NAME" jdbcType="VARCHAR" />
+	<result property="site" resultMap="CODE_TYPE.CODE_TYPE_SITE_NAME_RESULT" />
+  </resultMap>
+  
+  <!-- Selects -->
+  <select id="SELECT_CODE_TYPE_BY_ID" resultMap="CODE_TYPE_RESULT" parameterClass="java.lang.String">
+	select ID, LABEL, NAME, SITE_NAME
+	from CODE_TYPE
+    where ID = #id#
+    and SITE_NAME = #siteName#
+  </select>
+  <select id="SELECT_CODE_TYPE_DISTINCT" resultClass="java.lang.String" parameterClass="java.lang.String">
+    SELECT DISTINCT ct.NAME as NAME 
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.SITE_NAME = #siteName#
+  </select>
+  <select id="SELECT_CODE_TYPE_BY_NAME" resultMap="CODE_TYPE_RESULT" parameterClass="java.lang.String">
+	select ID, LABEL, NAME, SITE_NAME
+	from CODE_TYPE
+    where NAME = #name#
+    and SITE_NAME = #siteName#
+  </select>
+	
+	
+	
+  <insert id="INSERT_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
+     insert into CODE_TYPE (ID, LABEL, NAME, SITE_NAME)
+     values (#id#, #label#, #name#, #siteName#)
+     <selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+	 </selectKey>
+  </insert>
+
+  <update id="UPDATE_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
+     update CODE_TYPE
+     set LABEL = #label#,
+       NAME = #name#,
+       SITE_NAME = #siteName#
+     where ID = #id#
+  </update>
+
+
+  <resultMap id="CODE_RESULT" class="com.mpower.domain.model.customization.Code" >
+    <result property="id" column="CODE_ID" jdbcType="BIGINT" />
+    <result property="description" column="CODE_DESCRIPTION" jdbcType="VARCHAR" />
+    <result property="inactive" column="INACTIVE" jdbcType="BIT" />
+    <result property="value" column="CODE_VALUE" jdbcType="VARCHAR" />
+    <result property="codeType" column="CODE_TYPE_ID" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <select id="SELECT_CODE_BY_ID" resultMap="CODE_RESULT" parameterClass="java.lang.Long" >
+    select CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and c.CODE_ID = #id#
+    and ct.SITE_NAME = #siteName#
+  </select>
+  <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+    insert into CODE (CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
+    values (#id#, #description#, #inactive#, #value#,
+      #codeTypeId#)
+    <selectKey keyProperty="id" resultClass="long">
+		SELECT LAST_INSERT_ID() AS value
+	</selectKey>
+  </insert>
+  <update id="UPDATE_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+    update CODE
+    set CODE_DESCRIPTION = #description#,
+      INACTIVE = #inactive#,
+      CODE_VALUE = #value#,
+      CODE_TYPE_ID = #codeTypeId#
+    where CODE_ID = #id#
+  </update>
+  
+  
+  <select id="SELECT_CODES_BY_CODE_TYPE" resultMap="CODE_RESULT" parameterClass="java.lang.String">
+    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.NAME = #codeType#
+    and ct.SITE_NAME = #siteName#
+    ORDER BY c.CODE_VALUE
+  </select>
+  
+  <select id="SELECT_CODE_BY_ACTIVE_CODE_AND_CODE_TYPE_AND_CODE_VALUE" resultMap="CODE_RESULT" parameterClass="java.lang.String">
+    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.NAME = #codeType#
+    and c.CODE_VALUE = #value#
+    and c.INACTIVE != TRUE
+    and ct.SITE_NAME = #siteName#
+    ORDER BY c.CODE_VALUE
+  </select>
+  
+  <select id="SELECT_CODES_BY_CODE_TYPE_AND_CODE_VALUE" resultMap="CODE_RESULT" parameterClass="java.lang.String" >
+    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.NAME = #codeType#
+    and c.CODE_VALUE LIKE #value#
+    and ct.SITE_NAME = #siteName#
+    ORDER BY c.CODE_VALUE
+  </select>
+  
+  
+  
+  <select id="SELECT_CODES_BY_ACTIVE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION" resultMap="CODE_RESULT" parameterClass="java.lang.String" >
+    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.NAME = #codeType#
+    and c.INACTIVE != TRUE
+    and c.CODE_VALUE LIKE #value#
+    and c.CODE_DESCRIPTION LIKE #description#
+    and ct.SITE_NAME = #siteName#
+    ORDER BY c.CODE_VALUE
+  </select>
+  
+  <select id="SELECT_CODES_BY_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION" resultMap="CODE_RESULT" parameterClass="java.lang.String" >
+    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and ct.NAME = #codeType#
+    and c.CODE_VALUE LIKE #value#
+    and c.CODE_DESCRIPTION LIKE #description#
+    and ct.SITE_NAME = #siteName#
+    ORDER BY c.CODE_VALUE
+  </select>
+  
+  
+  
+</sqlMap>

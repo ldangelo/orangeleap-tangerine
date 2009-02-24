@@ -29,7 +29,7 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
     private String organizationName;
     private String legalName;
     private String ncaisCode;
-    private String maritalStatus = "Unknown";
+    private String maritalStatus = StringConstants.UNKNOWN;
     private String preferredPhoneType;
     private List<Address> addresses;
     private List<Email> emails;

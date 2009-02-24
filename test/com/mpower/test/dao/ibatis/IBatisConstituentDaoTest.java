@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.PersonCustomField;
+import com.mpower.domain.model.Site;
+import com.mpower.util.StringConstants;
 
 public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
@@ -23,6 +25,42 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         constituentDao = (ConstituentDao)super.applicationContext.getBean("constituentDAO");
     }
 
+    @Test(groups = { "testMaintainConstituent" }, dependsOnGroups = { "testReadConstituent" })
+    public void testMaintainConstituent() throws Exception {
+        Person constituent = new Person();
+        constituent.setFirstName("Joe");
+        constituent.setLastName("Bob");
+        constituent.setSite(new Site("company1"));
+        constituent.setConstituentType(Person.INDIVIDUAL);
+        constituent.setTitle("Sir");
+        
+        constituent = constituentDao.maintainConstituent(constituent);
+        assert constituent.getId() > 0;
+        
+        Person readConstituent = constituentDao.readConstituentById(constituent.getId());
+        assert readConstituent != null;
+        assert constituent.getFirstName().equals(readConstituent.getFirstName());
+        assert constituent.getLastName().equals(readConstituent.getLastName());
+        assert constituent.getSite().getName().equals(readConstituent.getSite().getName());
+        assert constituent.getConstituentType().equals(readConstituent.getConstituentType());
+        assert constituent.getTitle().equals(readConstituent.getTitle());
+        
+        assert StringConstants.EMPTY.equals(readConstituent.getConstituentIndividualRoles());
+        assert StringConstants.EMPTY.equals(readConstituent.getConstituentOrganizationRoles());
+        assert readConstituent.getLegalName() == null;
+        assert readConstituent.getLoginId() == null;
+        assert readConstituent.isMajorDonor() == false;
+        assert StringConstants.UNKNOWN.equals(readConstituent.getMaritalStatus());
+        assert readConstituent.getMiddleName() == null;
+        assert readConstituent.getNcaisCode() == null;
+        assert readConstituent.getOrganizationName() == null;
+        assert readConstituent.getPreferredPhoneType() == null;
+        assert readConstituent.getRecognitionName() == null;
+        assert readConstituent.getSuffix() == null;
+        assert readConstituent.getCreateDate() != null;
+        assert readConstituent.getUpdateDate() != null;
+    }
+    
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByIdInvalid() throws Exception {
         Person constituent = constituentDao.readConstituentById(0L);

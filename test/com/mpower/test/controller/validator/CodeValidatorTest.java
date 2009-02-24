@@ -21,9 +21,9 @@ import com.mpower.domain.Site;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.CodeService;
-import com.mpower.service.SessionService;
 import com.mpower.test.BaseTest;
 import com.mpower.type.FieldType;
+import com.mpower.util.TangerineUserHelper;
 
 public class CodeValidatorTest extends BaseTest {
 
@@ -50,9 +50,9 @@ public class CodeValidatorTest extends BaseTest {
         validator = new CodeValidator();
         mockery = new Mockery();
         final CodeService codeService = mockery.mock(CodeService.class);
-        final SessionService sessionService = mockery.mock(SessionService.class);
+        final TangerineUserHelper tangerineUserHelper = mockery.mock(TangerineUserHelper.class);
         validator.setCodeService(codeService);
-        validator.setSessionService(sessionService);
+        validator.setTangerineUserHelper(tangerineUserHelper);
 
         mockery.checking(new Expectations() {{
             allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(currencyCode));
@@ -64,7 +64,7 @@ public class CodeValidatorTest extends BaseTest {
             allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "XYZ"); will(returnValue(motivationCode));
             allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "foo"); will(returnValue(null));
             allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", " "); will(returnValue(null));
-            allowing (sessionService).lookupSiteName(); will(returnValue("company1"));
+            allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
         }});
 
         gift = new Gift();

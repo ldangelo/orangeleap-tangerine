@@ -17,7 +17,7 @@
 
 	<bean id="codeValidator" class="com.mpower.controller.validator.CodeValidator">
         <property name="codeService" ref="codeService" />
-        <property name="sessionService" ref="sessionService" />
+        <property name="tangerineUserHelper" ref="tangerineUserHelper" />
 	</bean>
 
 	<bean id="paymentSourceValidator" class="com.mpower.controller.validator.PaymentSourceValidator">

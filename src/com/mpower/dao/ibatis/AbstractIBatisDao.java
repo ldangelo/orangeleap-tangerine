@@ -4,21 +4,30 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.StringConstants;
+import com.mpower.util.TangerineUserHelper;
 
 public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
+    
+    protected TangerineUserHelper tangerineUserHelper;
+
+    @Resource(name="tangerineUserHelper")
+    public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
+        this.tangerineUserHelper = tangerineUserHelper;
+    }
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     protected Map<String, Object> setupParams() {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(StringConstants.SITE_NAME, SessionServiceImpl.lookupUserSiteName());
+        params.put(StringConstants.SITE_NAME, tangerineUserHelper.lookupUserSiteName());
         return params;
     }
     

@@ -48,6 +48,10 @@
 			<value></value>
 		</property>
 	</bean>
+	
+	<!-- TODO: to be replaced with mock -->
+	<bean id="tangerineUserHelper" class="com.mpower.util.TangerineUserHelperImpl"/>
+	
 
    <!--
       The following beans were created and used in the JMS/MOM poc shown during

@@ -47,11 +47,6 @@ public class SessionServiceImpl implements SessionService {
     	}
     	return siteClone;
     }
-    
-    @Override
-    public String lookupSiteName() {
-        return lookupUserSiteName();
-    }
 
     public static String lookupUserSiteName() {
         AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();

@@ -6,5 +6,4 @@ public interface SessionService {
 
     public Site lookupSite();
 
-    public String lookupSiteName();
 }

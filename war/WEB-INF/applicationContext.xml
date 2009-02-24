@@ -108,7 +108,7 @@
 		</property>
 	</bean>
 
-
+	<bean id="tangerineUserHelper" class="com.mpower.util.TangerineUserHelperImpl"/>
 
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 

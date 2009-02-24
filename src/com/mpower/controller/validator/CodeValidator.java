@@ -15,8 +15,8 @@ import com.mpower.domain.Viewable;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.service.CodeService;
-import com.mpower.service.SessionService;
 import com.mpower.type.FieldType;
+import com.mpower.util.TangerineUserHelper;
 import com.mpower.web.customization.FieldVO;
 
 public class CodeValidator implements Validator {
@@ -24,7 +24,7 @@ public class CodeValidator implements Validator {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     private CodeService codeService;
-    private SessionService sessionService;
+    private TangerineUserHelper tangerineUserHelper;
     public static final String PROJECT_CODE = "projectCode";
     public static final String MOTIVATION_CODE = "motivationCode";
     public static final String DISTRIBUTION_LINES = "distributionLines";
@@ -33,8 +33,8 @@ public class CodeValidator implements Validator {
         this.codeService = codeService;
     }
 
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
+    public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
+        this.tangerineUserHelper = tangerineUserHelper;
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +60,7 @@ public class CodeValidator implements Validator {
             logger.debug("validate:");
         }
         if (target instanceof Viewable) {
-        	String sitename = sessionService.lookupSiteName();
+        	String sitename = tangerineUserHelper.lookupUserSiteName();
             Viewable viewable = (Viewable)target;
             Map<String, FieldDefinition> map = viewable.getFieldTypeMap();
             if (map != null) {

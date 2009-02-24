@@ -2,8 +2,8 @@ package com.mpower.dao.interfaces;
 
 import java.util.List;
 
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.CodeType;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.CodeType;
 
 public interface CodeDao {
 	

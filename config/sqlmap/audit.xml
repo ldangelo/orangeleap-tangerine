@@ -15,14 +15,14 @@
     <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
   </resultMap>
   
-  <select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+  <select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="map" >
     select *
     from AUDIT a
 	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
     where a.SITE_NAME = #siteName#
   </select>
   
-  <select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+  <select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="map" >
     select *
     from AUDIT a
 	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
@@ -30,7 +30,7 @@
     and SITE_NAME = #siteName#
   </select>
   
-  <select id="AUDIT_HISTORY_FOR_PERSON" resultMap="AUDIT_RESULT" parameterClass="java.lang.String" >
+  <select id="AUDIT_HISTORY_FOR_PERSON" resultMap="AUDIT_RESULT" parameterClass="map" >
     select *
     from AUDIT a
 	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID

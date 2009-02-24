@@ -2,7 +2,7 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Site;
 
 public class CodeType implements Serializable {
 

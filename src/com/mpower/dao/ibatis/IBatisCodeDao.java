@@ -99,7 +99,7 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
         }
         Map<String, Object> params = setupParams();
         String query;
-		if (inactive!=null) {
+		if (inactive!=null && inactive.booleanValue()) {
 			query = "SELECT_CODES_BY_ACTIVE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION";
 			params.put("inactive", inactive);
 		} else {

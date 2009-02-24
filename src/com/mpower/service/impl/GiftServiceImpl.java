@@ -337,7 +337,7 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
         Gift gift = new Gift();
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(gift);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.gift }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.gift }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }

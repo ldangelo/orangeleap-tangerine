@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MESSAGE" >
+
+  <resultMap id="MESSAGE_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="MESSAGE" class="com.mpower.domain.model.customization.MessageResource" >
+    <result property="id" column="MESSAGE_RESOURCE_ID" jdbcType="BIGINT" />
+    <result property="languageAbbreviation" column="LANGUAGE_ABBREVIATION" jdbcType="VARCHAR" />
+    <result property="messageKey" column="MESSAGE_KEY" jdbcType="VARCHAR" />
+    <result property="messageResourceType" column="MESSAGE_RESOURCE_TYPE" jdbcType="VARCHAR" />
+    <result property="messageValue" column="MESSAGE_VALUE" jdbcType="VARCHAR" />
+    <result property="site" resultMap="MESSAGE.MESSAGE_SITE_NAME_RESULT" />
+  </resultMap>
+  
+  
+  <select id="READ_MESSAGE_BY_ID" resultMap="MESSAGE" parameterClass="map" >
+    select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE,
+      MESSAGE_VALUE, SITE_NAME
+    from MESSAGE_RESOURCE
+    where MESSAGE_RESOURCE_ID = #messageResourceId#
+  </select>
+
+  <select id="READ_MESSAGE_BY_KEY" resultMap="MESSAGE" parameterClass="map" >
+    select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE,
+      MESSAGE_VALUE, SITE_NAME
+    from MESSAGE_RESOURCE
+    where MESSAGE_RESOURCE_TYPE = #messageResourceType#
+    and MESSAGE_KEY = #messageKey#
+    and LANGUAGE_ABBREVIATION = #language#
+    and (SITE_NAME is null or SITE_NAME = #siteName#)
+  </select>
+  
+  <insert id="INSERT_MESSAGE" parameterClass="com.mpower.domain.model.customization.MessageResource" >
+   insert into MESSAGE_RESOURCE (MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY,
+      MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE, SITE_NAME)
+    values (#id#, #languageAbbreviation#, #messageKey#,
+      #messageResourceType#, #messageValue#, #site.name#)
+  </insert>
+
+  <update id="UPDATE_MESSAGE" parameterClass="com.mpower.domain.model.customization.MessageResource" >
+    update MESSAGE_RESOURCE
+    set LANGUAGE_ABBREVIATION = #languageAbbreviation#,
+      MESSAGE_KEY = #messageKey#,
+      MESSAGE_RESOURCE_TYPE = #messageResourceType#,
+      MESSAGE_VALUE = #messageValue#,
+      SITE_NAME = #site.name#
+    where MESSAGE_RESOURCE_ID = #id#
+  </update>
+
+</sqlMap>

@@ -38,6 +38,9 @@
       MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE, SITE_NAME)
     values (#id#, #languageAbbreviation#, #messageKey#,
       #messageResourceType#, #messageValue#, #site.name#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
   </insert>
 
   <update id="UPDATE_MESSAGE" parameterClass="com.mpower.domain.model.customization.MessageResource" >

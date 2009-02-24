@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,23 +37,21 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     
     // Update if exists, otherwise insert.  
     // Useful for maintain* methods.
-    protected Object insertOrUpdate(Object o, String table) {
+    protected Object insertOrUpdate(GeneratedId o, String table) {
         if (logger.isDebugEnabled()) {
             logger.debug("insertOrUpdate: o = " + o + " table = " + table);
         }
-    	Long id = getId(o);
+    	Long id = o.getId();
     	if (id == null || id.longValue() == 0) {
             if (logger.isDebugEnabled()) {
                 logger.debug("insert " + table);
             }
         	String insertId = "INSERT_" + table;
         	Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
-        	if (o instanceof GeneratedId && generatedId != null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
-                }
-        	    ((GeneratedId)o).setId(generatedId);
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+            }
+    	    o.setId(generatedId);
     	} else {
             if (logger.isDebugEnabled()) {
                 logger.debug("update " + table + ", id=" + id);
@@ -65,14 +62,4 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return o;
     }
     
-    private Long getId(Object o) {
-    	try {
-    		Method getId = o.getClass().getMethod("getId", new Class[0]);
-			return (Long)getId.invoke(o, new Object[0]);
-		} catch (Exception e) {
-			return null;
-		}
-    }
-
-
 }

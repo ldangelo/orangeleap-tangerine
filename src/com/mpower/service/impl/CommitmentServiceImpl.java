@@ -243,7 +243,7 @@ public class CommitmentServiceImpl implements CommitmentService {
         Commitment commitment = new Commitment(commitmentType);
         BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(person.getSite().getName(), Arrays.asList(new EntityType[] { EntityType.commitment }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.commitment }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }

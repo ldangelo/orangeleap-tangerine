@@ -3,10 +3,11 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 import java.util.Locale;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.MessageResourceType;
 
-public class MessageResource implements Serializable {
+public class MessageResource implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,10 +71,12 @@ public class MessageResource implements Serializable {
         this.messageValue = messageValue;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -3,7 +3,7 @@
 <sqlMap namespace="AUDIT" >
 
 
-  <resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" >
+  <resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" groupBy="id">
     <result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
     <result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
     <result property="date" column="DATE" jdbcType="TIMESTAMP" />
@@ -11,7 +11,7 @@
     <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
     <result property="objectId" column="OBJECT_ID" jdbcType="BIGINT" />
     <result property="user" column="USER" jdbcType="VARCHAR" />
-	<!-- <result property="person" resultMap="PERSON.PERSON_RESULT" /> -->
+	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
     <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
   </resultMap>
   

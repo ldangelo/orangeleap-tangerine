@@ -3,10 +3,11 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 
 import com.mpower.domain.Auditable;
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.Person;
 
-public class Code implements Auditable, Inactivatible, Serializable 
+public class Code implements GeneratedId, Auditable, Inactivatible, Serializable 
 {
 
     private static final long serialVersionUID = 1L;
@@ -23,14 +24,15 @@ public class Code implements Auditable, Inactivatible, Serializable
 
     private Auditable originalObject;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getValue() {
         return value;

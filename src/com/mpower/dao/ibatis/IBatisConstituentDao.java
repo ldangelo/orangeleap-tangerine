@@ -29,6 +29,14 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     }
     
     @Override
+    public Person maintainConstituent(Person constituent) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("saveConstituent: constituent = " + constituent);
+        }
+        return (Person)insertOrUpdate(constituent, "PERSON");
+    }
+
+    @Override
     public Person readConstituentById(Long id) {
         if (logger.isDebugEnabled()) {
             logger.debug("readConstituentById: id = " + id);

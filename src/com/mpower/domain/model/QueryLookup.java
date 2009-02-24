@@ -3,9 +3,10 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
 
-public class QueryLookup implements Serializable {
+public class QueryLookup implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,10 +17,12 @@ public class QueryLookup implements Serializable {
     private String sqlQuery;
     private List<QueryLookupParam> queryLookupParams;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

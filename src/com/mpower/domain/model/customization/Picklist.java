@@ -1,12 +1,14 @@
 package com.mpower.domain.model.customization;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
-import com.mpower.type.EntityType;
+
 import com.mpower.domain.model.Site;
+import com.mpower.type.EntityType;
 
 public class Picklist implements Serializable {
 
@@ -36,7 +38,9 @@ public class Picklist implements Serializable {
 
     public String getPicklistViewName() {
     	String result = picklistName;
-    	if (result == null) result = "";
+    	if (result == null) {
+            result = "";
+        }
     	int i = result.indexOf("[");
    		if (i > -1) {
    			result = result.substring(i+1);
@@ -51,7 +55,9 @@ public class Picklist implements Serializable {
     	StringBuilder sb = new StringBuilder();
     	for (int i = 0; i < s.length(); i++) {
     		char c = s.charAt(i);
-    		if (c == Character.toUpperCase(c)) sb.append(" ");
+    		if (c == Character.toUpperCase(c)) {
+                sb.append(" ");
+            }
     		sb.append(c);
     	}
     	return sb.toString();
@@ -63,7 +69,9 @@ public class Picklist implements Serializable {
     	boolean initial = true;
     	for (int i = 0; i < s.length(); i++) {
     		char c = s.charAt(i);
-    		if (initial) c = Character.toUpperCase(c);
+    		if (initial) {
+                c = Character.toUpperCase(c);
+            }
     		initial = (c == ' ');
     		sb.append(c);
     	}
@@ -76,7 +84,11 @@ public class Picklist implements Serializable {
 
     public List<PicklistItem> getActivePicklistItems() {
     	List<PicklistItem> list = new ArrayList<PicklistItem>();
-    	for (PicklistItem item: getPicklistItems()) if (!item.isInactive()) list.add(item);
+    	for (PicklistItem item: getPicklistItems()) {
+            if (!item.isInactive()) {
+                list.add(item);
+            }
+        }
         return list;
     }
 

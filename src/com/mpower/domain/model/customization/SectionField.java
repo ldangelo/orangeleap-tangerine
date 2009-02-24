@@ -2,10 +2,11 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.FieldType;
 
-public class SectionField implements Serializable {
+public class SectionField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,10 +17,12 @@ public class SectionField implements Serializable {
     private Integer fieldOrder;
     private SectionDefinition sectionDefinition;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

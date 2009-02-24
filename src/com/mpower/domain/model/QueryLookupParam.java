@@ -2,7 +2,9 @@ package com.mpower.domain.model;
 
 import java.io.Serializable;
 
-public class QueryLookupParam implements Serializable {
+import com.mpower.domain.GeneratedId;
+
+public class QueryLookupParam implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,10 +12,12 @@ public class QueryLookupParam implements Serializable {
     private Long queryLookupId;
     private String name;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

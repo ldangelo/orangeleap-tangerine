@@ -2,7 +2,9 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
-public class FieldCondition implements Serializable {
+import com.mpower.domain.GeneratedId;
+
+public class FieldCondition implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -13,10 +15,12 @@ public class FieldCondition implements Serializable {
     private Long fieldRequiredId;
     private Long validationId;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

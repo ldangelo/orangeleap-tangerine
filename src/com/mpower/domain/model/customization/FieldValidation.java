@@ -3,9 +3,10 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 import java.util.List;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 
-public class FieldValidation implements Serializable {
+public class FieldValidation implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -17,10 +18,12 @@ public class FieldValidation implements Serializable {
     private String regex;
     private List<FieldCondition> fieldConditions;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

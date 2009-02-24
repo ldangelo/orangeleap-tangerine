@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 
@@ -35,7 +36,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return params;
     }
     
-    // Update if exists, otherwise insert.  Object must have a getId() method.
+    // Update if exists, otherwise insert.  
     // Useful for maintain* methods.
     protected Object insertOrUpdate(Object o, String table) {
     	Long id = getId(o);
@@ -44,7 +45,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
                 logger.debug("insert " + table);
             }
         	String insertId = "INSERT_" + table;
-        	getSqlMapClientTemplate().insert(insertId, o);
+        	Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
+        	if (o instanceof GeneratedId && generatedId != null) {
+        	    ((GeneratedId)o).setId(generatedId);
+        	}
     	} else {
             if (logger.isDebugEnabled()) {
                 logger.debug("update " + table + ", id=" + id);

@@ -1,13 +1,16 @@
 package com.mpower.domain.model.customization;
 
-import com.mpower.domain.Auditable;
-import com.mpower.domain.Person;
-import com.mpower.domain.model.Site;
 import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class PicklistItem implements Serializable {
+import com.mpower.domain.Auditable;
+import com.mpower.domain.GeneratedId;
+import com.mpower.domain.Person;
+import com.mpower.domain.model.Site;
+
+public class PicklistItem implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,10 +34,12 @@ public class PicklistItem implements Serializable {
 
     private Auditable originalObject;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -2,11 +2,12 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.AccessType;
 import com.mpower.type.PageType;
 
-public class PageAccess implements Serializable {
+public class PageAccess implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,10 +17,12 @@ public class PageAccess implements Serializable {
     private String role;
     private AccessType accessType;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

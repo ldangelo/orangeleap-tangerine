@@ -14,4 +14,6 @@ public interface ConstituentDao {
 
     public List<Person> readConstituentsByIds(List<Long> ids);
 
+    public Person maintainConstituent(Person constituent);
+    
 }

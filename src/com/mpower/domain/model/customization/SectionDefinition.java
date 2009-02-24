@@ -2,11 +2,12 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.LayoutType;
 import com.mpower.type.PageType;
 
-public class SectionDefinition implements Serializable {
+public class SectionDefinition implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,10 +20,12 @@ public class SectionDefinition implements Serializable {
     private Site site;
     private String role;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -2,7 +2,9 @@ package com.mpower.domain.model;
 
 import java.io.Serializable;
 
-public class CustomField implements Serializable {
+import com.mpower.domain.GeneratedId;
+
+public class CustomField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -14,10 +16,12 @@ public class CustomField implements Serializable {
      */
     private String value;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

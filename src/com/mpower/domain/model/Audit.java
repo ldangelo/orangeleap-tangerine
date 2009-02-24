@@ -3,10 +3,11 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Person;
 import com.mpower.type.AuditType;
 
-public class Audit implements Serializable {
+public class Audit implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,10 +44,12 @@ public class Audit implements Serializable {
         this.person = person;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

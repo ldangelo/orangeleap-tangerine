@@ -2,10 +2,11 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Site;
 import com.mpower.type.RelationshipType;
 
-public class FieldRelationship implements Serializable {
+public class FieldRelationship implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,10 +23,12 @@ public class FieldRelationship implements Serializable {
     private FieldDefinition detailRecordField;
     private Site site;
 
+    @Override
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+    @Override
 	public Long getId() {
 		return id;
 	}

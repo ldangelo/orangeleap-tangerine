@@ -6,10 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.StringConstants;
 
-public class Person implements Serializable {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
+public class Person implements GeneratedId, Serializable {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
 
@@ -133,6 +134,7 @@ public class Person implements Serializable {// SiteAware, Customizable, Viewabl
         return "person";
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -141,6 +143,7 @@ public class Person implements Serializable {// SiteAware, Customizable, Viewabl
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

@@ -1,7 +1,7 @@
 package com.mpower.domain.checkservice;
 
 /**
- * This class is used internalling for differenting
+ * This class is used internalling for different
  * padding and formatting options used by the Paperless
  * Payment API. Typically used for left-padding with zeros,
  * which is something their API seems infatuated with.

@@ -304,5 +304,10 @@
 		<dependency org="com.sun.rsajca" name="sunrasign" rev="1.0">
 			<artifact name="sunrasign" type="jar" ext="jar"/>
 		</dependency>
+
+        <dependency org="xmlunit" name="xmlunit" transitive="false" rev="1.2">
+            <artifact name="xmlunit" type="jar" ext="jar"/>
+        </dependency>
+
 	</dependencies>
 </ivy-module>

@@ -44,6 +44,6 @@
 		<property name="password" value="mpower"/>
 	</bean>
 
-	<bean id="tangerineUserHelper" class="com.mpower.test.dao.ibatis.AbstractIBatisTest" factory-method="createMockUserHelper" />
+	<bean id="tangerineUserHelper" class="com.mpower.test.dataprovider.MockTangerineUserHelperProvider" factory-method="createMockUserHelper" />
 
 </beans>

@@ -38,18 +38,18 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert "Billy".equals(person.getFirstName());
         assert person.getMiddleName() == null;
         assert person.getSuffix() == null;
-        assert "company2".equals(person.getSite().getName());
+        assert "company1".equals(person.getSite().getName());
     } 
     
     @Test(groups = { "testReadConstituent" })
-    public void testReadConstituentByLoginIdSiteInvalid() throws Exception {
-        Person person = constituentDao.readConstituentByLoginIdSite("pablo@company1.com", "company2");
+    public void testReadConstituentByLoginIdInvalid() throws Exception {
+        Person person = constituentDao.readConstituentByLoginId("pablo@companyDoesNotExist.com");
         assert person == null;
     }
     
     @Test(groups = { "testReadConstituent" })
-    public void testReadConstituentByLoginIdSite() throws Exception {
-        Person person = constituentDao.readConstituentByLoginIdSite("pablo@company1.com", "company1");
+    public void testReadConstituentByLoginId() throws Exception {
+        Person person = constituentDao.readConstituentByLoginId("pablo@company1.com");
         assert person != null;
         assert person.getId() == 200;
         assert "Painters, Inc.".equals(person.getOrganizationName());
@@ -61,21 +61,15 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     }
     
     @Test(groups = { "testReadConstituent" })
-    public void testReadAllConstituentsBySiteNameInvalid() throws Exception {
-        List<Person> constituents = constituentDao.readAllConstituentsBySite("companyDoesNotExist");
-        assert constituents != null && constituents.isEmpty();
-    }
-    
-    @Test(groups = { "testReadConstituent" })
     public void testReadAllConstituentsBySiteName() throws Exception {
-        List<Person> constituents = constituentDao.readAllConstituentsBySite("company1");
-        assert constituents != null && constituents.size() == 2;
+        List<Person> constituents = constituentDao.readAllConstituentsBySite();
+        assert constituents != null && constituents.size() == 3;
         for (Person constituent : constituents) {
             assert "company1".equals(constituent.getSite().getName());
-            assert constituent.getId() == 200 || constituent.getId() == 300;
-            assert "Painters, Inc.".equals(constituent.getOrganizationName()) || "Howdy Doody Inc".equals(constituent.getOrganizationName());
-            assert "Picasso".equals(constituent.getLastName()) || "Doody".equals(constituent.getLastName());
-            assert "Pablo".equals(constituent.getFirstName()) || "Howdy".equals(constituent.getFirstName());
+            assert constituent.getId() == 200 || constituent.getId() == 300 || constituent.getId() == 100;
+            assert "Painters, Inc.".equals(constituent.getOrganizationName()) || "Howdy Doody Inc".equals(constituent.getOrganizationName()) || "Billy Graham Ministries".equals(constituent.getOrganizationName());
+            assert "Picasso".equals(constituent.getLastName()) || "Doody".equals(constituent.getLastName()) || "Graham".equals(constituent.getLastName());
+            assert "Pablo".equals(constituent.getFirstName()) || "Howdy".equals(constituent.getFirstName()) || "Billy".equals(constituent.getFirstName());
             assert constituent.getMiddleName() == null;
             assert "Sr".equals(constituent.getSuffix()) || constituent.getSuffix() == null;
         }

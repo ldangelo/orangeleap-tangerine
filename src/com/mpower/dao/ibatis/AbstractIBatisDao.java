@@ -25,9 +25,13 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    protected String getSiteName() {
+        return tangerineUserHelper.lookupUserSiteName();
+    }
+    
     protected Map<String, Object> setupParams() {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(StringConstants.SITE_NAME, tangerineUserHelper.lookupUserSiteName());
+        params.put(StringConstants.SITE_NAME, getSiteName());
         return params;
     }
     

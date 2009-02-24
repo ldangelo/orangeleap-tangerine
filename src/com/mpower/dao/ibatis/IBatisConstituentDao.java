@@ -1,7 +1,6 @@
 package com.mpower.dao.ibatis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         if (logger.isDebugEnabled()) {
             logger.debug("readConstituentById: id = " + id);
         }
-        Map<String, List<Long>> params = new HashMap<String, List<Long>>(1);
+        Map<String, Object> params = setupParams();
         List<Long> personIds = new ArrayList<Long>(1);
         personIds.add(id);
         params.put("personIds", personIds);
@@ -43,33 +42,31 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readConstituentsByIdsSite(String siteName, List<Long> ids) {
+    public List<Person> readConstituentsByIds(List<Long> ids) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentsByIdsSite: siteName = " + siteName + " ids = " + ids);
+            logger.debug("readConstituentsByIds: ids = " + ids);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("siteName", siteName);
+        Map<String, Object> params = setupParams();
         params.put("personIds", ids);
         return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readAllConstituentsBySite(String siteName) {
+    public List<Person> readAllConstituentsBySite() {
         if (logger.isDebugEnabled()) {
-            logger.debug("readAllConstituentsBySiteName: siteName = " + siteName);
+            logger.debug("readAllConstituentsBySite:");
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENTS_BY_SITE", siteName);
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENTS_BY_SITE", getSiteName());
     }
 
     @Override
-    public Person readConstituentByLoginIdSite(String loginId, String siteName) {
+    public Person readConstituentByLoginId(String loginId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentByLoginIdSite: loginId = " + loginId + " siteName = " + siteName);
+            logger.debug("readConstituentByLoginId: loginId = " + loginId);
         }
-        Map<String, String> params = new HashMap<String, String>(2);
+        Map<String, Object> params = setupParams();
         params.put("loginId", loginId);
-        params.put("siteName", siteName);
         return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_LOGIN_ID_SITE", params);
     }
 }

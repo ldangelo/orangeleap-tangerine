@@ -25,15 +25,15 @@ public class JdbcQueryLookupExecutorDaoTest extends AbstractTestNGSpringContextT
     @Test(groups = { "testExecuteQueryLookup" })
     public void testExecuteQueryLookupNoResults() throws Exception {
         Map<String, String> parameters = new LinkedHashMap<String, String>(1); 
-        parameters.put("siteName", "company2");
-        List<Object> results = queryLookupExecutorDAO.executeQueryLookup("SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM PERSON WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Mr.'", parameters);
+        parameters.put("siteName", "company1");
+        List<Object> results = queryLookupExecutorDAO.executeQueryLookup("SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM PERSON WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Sucka.'", parameters);
         assert results != null && results.isEmpty();
     }
 
     @Test(groups = { "testExecuteQueryLookup" })
     public void testExecuteQueryLookup() throws Exception {
         Map<String, String> parameters = new LinkedHashMap<String, String>(1); 
-        parameters.put("siteName", "company2");
+        parameters.put("siteName", "company1");
         List<Object> results = queryLookupExecutorDAO.executeQueryLookup("SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM PERSON WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Rev.'", parameters);
         assert results != null && results.size() == 1;
         assert results.get(0) instanceof Person;

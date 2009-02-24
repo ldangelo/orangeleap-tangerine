@@ -68,7 +68,7 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    // TODO: IBatisConstituentDao --> readConstituentByLoginIdSite
+    // TODO: IBatisConstituentDao --> readConstituentByLoginId
     public Person readPersonByLoginId(String loginId, String siteName) {
         Query query = em.createNamedQuery("READ_PERSON_BY_LOGIN_ID");
         query.setParameter("loginId", loginId);
@@ -83,6 +83,7 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisConstituentDao --> readConstituentsByIds
     public List<Person> readPersons(String siteName, List<Long> ids) {
     	
     	if (ids == null || ids.size() == 0) {

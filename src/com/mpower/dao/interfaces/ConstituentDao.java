@@ -8,10 +8,10 @@ public interface ConstituentDao {
 
     public Person readConstituentById(Long id);
 
-    public List<Person> readAllConstituentsBySite(String siteName);
+    public List<Person> readAllConstituentsBySite();
 
-    public Person readConstituentByLoginIdSite(String loginId, String siteName);
+    public Person readConstituentByLoginId(String loginId);
 
-    public List<Person> readConstituentsByIdsSite(String siteName, List<Long> ids);
+    public List<Person> readConstituentsByIds(List<Long> ids);
 
 }

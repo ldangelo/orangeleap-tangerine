@@ -1,7 +1,6 @@
 package com.mpower.service.impl;
 
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Required;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.DocumentException;
@@ -43,7 +42,6 @@ public class CheckServiceImpl implements CheckService {
      *
      * @param echexUrl the web service URL
      */
-    @Required
     public void setUrl(String echexUrl) {
         try {
             this.echexUrl = new URL(echexUrl);

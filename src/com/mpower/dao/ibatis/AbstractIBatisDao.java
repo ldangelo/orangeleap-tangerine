@@ -39,6 +39,9 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     // Update if exists, otherwise insert.  
     // Useful for maintain* methods.
     protected Object insertOrUpdate(Object o, String table) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("insertOrUpdate: o = " + o + " table = " + table);
+        }
     	Long id = getId(o);
     	if (id == null || id.longValue() == 0) {
             if (logger.isDebugEnabled()) {
@@ -47,6 +50,9 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         	String insertId = "INSERT_" + table;
         	Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
         	if (o instanceof GeneratedId && generatedId != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+                }
         	    ((GeneratedId)o).setId(generatedId);
         	}
     	} else {

@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.domain.model.Person;
+import com.mpower.domain.model.PersonCustomField;
 
 public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
@@ -24,40 +25,54 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByIdInvalid() throws Exception {
-        Person person = constituentDao.readConstituentById(0L);
-        assert person == null;
+        Person constituent = constituentDao.readConstituentById(0L);
+        assert constituent == null;
     }
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentById() throws Exception {
-        Person person = constituentDao.readConstituentById(100L);
-        assert person != null;
-        assert person.getId() == 100;
-        assert "Billy Graham Ministries".equals(person.getOrganizationName());
-        assert "Graham".equals(person.getLastName());
-        assert "Billy".equals(person.getFirstName());
-        assert person.getMiddleName() == null;
-        assert person.getSuffix() == null;
-        assert "company1".equals(person.getSite().getName());
+        Person constituent = constituentDao.readConstituentById(100L);
+        assert constituent != null;
+        assert constituent.getId() == 100;
+        assert "Billy Graham Ministries".equals(constituent.getOrganizationName());
+        assert "Graham".equals(constituent.getLastName());
+        assert "Billy".equals(constituent.getFirstName());
+        assert constituent.getMiddleName() == null;
+        assert constituent.getSuffix() == null;
+        assert "company1".equals(constituent.getSite().getName());
+        
+        assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().size() == 2;
+        for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
+            if (personCustomField.getId() == 1000) {
+                assert "organization.parent".equals(personCustomField.getCustomField().getName());
+                assert "100005".equals(personCustomField.getCustomField().getValue());
+            }
+            else if (personCustomField.getId() == 2000) {
+                assert "organization.subsidiaryList".equals(personCustomField.getCustomField().getName());
+                assert "100002,100003,100004".equals(personCustomField.getCustomField().getValue());
+            }
+        }
     } 
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByLoginIdInvalid() throws Exception {
-        Person person = constituentDao.readConstituentByLoginId("pablo@companyDoesNotExist.com");
-        assert person == null;
+        Person constituent = constituentDao.readConstituentByLoginId("pablo@companyDoesNotExist.com");
+        assert constituent == null;
     }
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByLoginId() throws Exception {
-        Person person = constituentDao.readConstituentByLoginId("pablo@company1.com");
-        assert person != null;
-        assert person.getId() == 200;
-        assert "Painters, Inc.".equals(person.getOrganizationName());
-        assert "Picasso".equals(person.getLastName());
-        assert "Pablo".equals(person.getFirstName());
-        assert person.getMiddleName() == null;
-        assert "Sr".equals(person.getSuffix());
-        assert "company1".equals(person.getSite().getName());
+        Person constituent = constituentDao.readConstituentByLoginId("pablo@company1.com");
+        assert constituent != null;
+        assert constituent.getId() == 200;
+        assert "Painters, Inc.".equals(constituent.getOrganizationName());
+        assert "Picasso".equals(constituent.getLastName());
+        assert "Pablo".equals(constituent.getFirstName());
+        assert constituent.getMiddleName() == null;
+        assert "Sr".equals(constituent.getSuffix());
+        assert "company1".equals(constituent.getSite().getName());
+
+        assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().isEmpty();
     }
     
     @Test(groups = { "testReadConstituent" })
@@ -72,6 +87,31 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
             assert "Pablo".equals(constituent.getFirstName()) || "Howdy".equals(constituent.getFirstName()) || "Billy".equals(constituent.getFirstName());
             assert constituent.getMiddleName() == null;
             assert "Sr".equals(constituent.getSuffix()) || constituent.getSuffix() == null;
+            
+            if (constituent.getId() == 100) {
+                for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
+                    if (personCustomField.getId() == 1000) {
+                        assert "organization.parent".equals(personCustomField.getCustomField().getName());
+                        assert "100005".equals(personCustomField.getCustomField().getValue());
+                    }
+                    else if (personCustomField.getId() == 2000) {
+                        assert "organization.subsidiaryList".equals(personCustomField.getCustomField().getName());
+                        assert "100002,100003,100004".equals(personCustomField.getCustomField().getValue());
+                    }
+                }
+            }
+            else if (constituent.getId() == 300) {
+                assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().size() == 1;
+                for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
+                    if (personCustomField.getId() == 3000) {
+                        assert "organization.parent".equals(personCustomField.getCustomField().getName());
+                        assert "100005".equals(personCustomField.getCustomField().getValue());
+                    }
+                }
+            }
+            else {
+                assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().isEmpty();
+            }
         }
     }
 }

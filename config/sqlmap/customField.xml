@@ -4,12 +4,12 @@
 
 	<resultMap id="CUSTOM_FIELD_RESULT" class="com.mpower.domain.model.CustomField">
 		<result property="id" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
-		<result property="name" column="FIELD_NAME" jdbcType="VARCHAR" />
-		<result property="value" column="FIELD_VALUE" jdbcType="LONGVARCHAR" />
+		<result property="name" column="CUS_FLD_FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
 	</resultMap>
 
 	<select id="SELECT_CUSTOM_FIELD_BY_ID" resultMap="CUSTOM_FIELD_RESULT" parameterClass="com.mpower.domain.model.CustomField">
-		select CUSTOM_FIELD_ID, FIELD_NAME, FIELD_VALUE
+		select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE
 		from CUSTOM_FIELD
 		where CUSTOM_FIELD_ID = #id#
 	</select>

@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="CONSTITUENT">
 
-	<resultMap id="CONSTITUENT_RESULT" class="com.mpower.domain.model.Person">
+	<resultMap id="CONSTITUENT_RESULT" class="com.mpower.domain.model.Person" groupBy="id">
 		<result property="id" column="PERSON_ID" jdbcType="BIGINT" />
 		<result property="constituentIndividualRoles" column="CONSTITUENT_INDIVIDUAL_ROLES" jdbcType="VARCHAR" />
 		<result property="constituentOrganizationRoles" column="CONSTITUENT_ORGANIZATION_ROLES" jdbcType="VARCHAR" />
@@ -24,14 +24,22 @@
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+		<result property="personCustomFields" resultMap="CONSTITUENT_CUSTOM_FIELD.CONSTITUENT_CUSTOM_FIELD_RESULT" />
 	</resultMap>
 
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
 		select p.PERSON_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
 		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
-		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME
+		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME,
+		
+		pcf.PERSON_CUSTOM_FIELD_ID, pcf.PERSON_ID as CONS_CUS_FLD_PERSON_ID,
+		 
+		cf.CUSTOM_FIELD_ID, cf.FIELD_NAME as CUS_FLD_FIELD_NAME, cf.FIELD_VALUE as CUS_FLD_FIELD_VALUE
+		
 		from PERSON p 
+		left outer join PERSON_CUSTOM_FIELD pcf on p.PERSON_ID = pcf.PERSON_ID 
+		left outer join CUSTOM_FIELD cf on pcf.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID 
 	</sql>
 	
 	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">

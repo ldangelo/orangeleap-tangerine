@@ -4,6 +4,7 @@
 	<sqlMap resource="sqlmap/code.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
+	<sqlMap resource="sqlmap/constituentCustomField.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
 	<sqlMap resource="sqlmap/fieldCondition.xml"/>

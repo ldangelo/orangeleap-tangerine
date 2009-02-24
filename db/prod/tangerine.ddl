@@ -673,7 +673,7 @@ CREATE TABLE `PAYMENT_HISTORY` (
   `AMOUNT` decimal(19,2) default NULL,
   `CURRENCY_CODE` varchar(255) default NULL,
   `PAYMENT_DESC` varchar(255) default NULL,
-  `PAYMENT_HISTORY_TYPE` int(11) default NULL,
+  `PAYMENT_HISTORY_TYPE` varchar(255) default NULL,
   `PAYMENT_TYPE` varchar(255) default NULL,
   `TRANSACTION_DATE` datetime default NULL,
   `TRANSACTION_ID` varchar(255) default NULL,

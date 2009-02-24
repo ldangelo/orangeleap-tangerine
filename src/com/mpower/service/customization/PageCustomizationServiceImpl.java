@@ -120,7 +120,7 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Transactional
     public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
         Map<String, PageAccess> pageAccessMap = new HashMap<String, PageAccess>(); // pageType, PageAccess
-        List<PageAccess> pages = pageAccessDao.readPageAccess(siteName, roles);
+        List<PageAccess> pages = pageAccessDao.readPageAccess(roles);
         if (pages != null) {
             for (PageAccess pageAccess : pages) {
                 PageAccess pd = pageAccessMap.get(pageAccess.getPageType().name());

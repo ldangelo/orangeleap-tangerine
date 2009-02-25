@@ -84,10 +84,10 @@
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
         values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #addressType#, #city#,
-        #comments#, #country#, #createDate#, #effectiveDate#,
+        #comments#, #country#, now(), #effectiveDate#,
         #inactive#, #postalCode#, #receiveCorrespondence#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
-        #temporaryEndDate#, #temporaryStartDate#, #updateDate#,
+        #temporaryEndDate#, #temporaryStartDate#, now(),
         #personId#)
 
         <selectKey keyProperty="id" resultClass="long">
@@ -103,68 +103,61 @@
     <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
 
         update ADDRESS
-        <dynamic prepend="set">
-            <isNotNull prepend="," property="activationStatus">
-                ACTIVATION_STATUS = #activationStatus#
-            </isNotNull>
-            <isNotNull prepend="," property="addressLine1">
-                ADDRESS_LINE_1 = #addressLine1#
-            </isNotNull>
-            <isNotNull prepend="," property="addressLine2">
-                ADDRESS_LINE_2 = #addressLine2#
-            </isNotNull>
-            <isNotNull prepend="," property="addressLine3">
-                ADDRESS_LINE_3 = #addressLine3#
-            </isNotNull>
-            <isNotNull prepend="," property="addressType">
-                ADDRESS_TYPE = #addressType#
-            </isNotNull>
-            <isNotNull prepend="," property="city">
-                CITY = #city#
-            </isNotNull>
-            <isNotNull prepend="," property="comments">
-                COMMENT = #comments#
-            </isNotNull>
-            <isNotNull prepend="," property="country">
-                COUNTRY = #country#
-            </isNotNull>
-            <isNotNull prepend="," property="createDate">
-                CREATE_DATE = #createDate#
-            </isNotNull>
-            <isNotNull prepend="," property="effectiveDate">
-                EFFECTIVE_DATE = #effectiveDate#
-            </isNotNull>
-            <isNotNull prepend="," property="inactive">
-                INACTIVE = #inactive#
-            </isNotNull>
-            <isNotNull prepend="," property="postalCode">
-                POSTAL_CODE = #postalCode#
-            </isNotNull>
-            <isNotNull prepend="," property="receiveCorrespondence">
-                RECEIVE_CORRESPONDENCE = #receiveCorrespondence#
-            </isNotNull>
-            <isNotNull prepend="," property="seasonalEndDate">
-                SEASONAL_END_DATE = #seasonalEndDate#
-            </isNotNull>
-            <isNotNull prepend="," property="seasonalStartDate">
-                SEASONAL_START_DATE = #seasonalStartDate#
-            </isNotNull>
-            <isNotNull prepend="," property="stateProvince">
-                STATE_PROVINCE = #stateProvince#
-            </isNotNull>
-            <isNotNull prepend="," property="temporaryEndDate">
-                TEMPORARY_END_DATE = #temporaryEndDate#
-            </isNotNull>
-            <isNotNull prepend="," property="temporaryStartDate">
-                TEMPORARY_START_DATE = #temporaryStartDate#
-            </isNotNull>
-            <isNotNull prepend="," property="updateDate">
-                UPDATE_DATE = #updateDate#
-            </isNotNull>
-            <isNotNull prepend="," property="personId">
-                PERSON_ID = #personId#
-            </isNotNull>
-        </dynamic>
+        SET UPDATE_DATE = now()
+        <isNotNull prepend="," property="activationStatus">
+            ACTIVATION_STATUS = #activationStatus#
+        </isNotNull>
+        <isNotNull prepend="," property="addressLine1">
+            ADDRESS_LINE_1 = #addressLine1#
+        </isNotNull>
+        <isNotNull prepend="," property="addressLine2">
+            ADDRESS_LINE_2 = #addressLine2#
+        </isNotNull>
+        <isNotNull prepend="," property="addressLine3">
+            ADDRESS_LINE_3 = #addressLine3#
+        </isNotNull>
+        <isNotNull prepend="," property="addressType">
+            ADDRESS_TYPE = #addressType#
+        </isNotNull>
+        <isNotNull prepend="," property="city">
+            CITY = #city#
+        </isNotNull>
+        <isNotNull prepend="," property="comments">
+            COMMENT = #comments#
+        </isNotNull>
+        <isNotNull prepend="," property="country">
+            COUNTRY = #country#
+        </isNotNull>
+        <isNotNull prepend="," property="effectiveDate">
+            EFFECTIVE_DATE = #effectiveDate#
+        </isNotNull>
+        <isNotNull prepend="," property="inactive">
+            INACTIVE = #inactive#
+        </isNotNull>
+        <isNotNull prepend="," property="postalCode">
+            POSTAL_CODE = #postalCode#
+        </isNotNull>
+        <isNotNull prepend="," property="receiveCorrespondence">
+            RECEIVE_CORRESPONDENCE = #receiveCorrespondence#
+        </isNotNull>
+        <isNotNull prepend="," property="seasonalEndDate">
+            SEASONAL_END_DATE = #seasonalEndDate#
+        </isNotNull>
+        <isNotNull prepend="," property="seasonalStartDate">
+            SEASONAL_START_DATE = #seasonalStartDate#
+        </isNotNull>
+        <isNotNull prepend="," property="stateProvince">
+            STATE_PROVINCE = #stateProvince#
+        </isNotNull>
+        <isNotNull prepend="," property="temporaryEndDate">
+            TEMPORARY_END_DATE = #temporaryEndDate#
+        </isNotNull>
+        <isNotNull prepend="," property="temporaryStartDate">
+            TEMPORARY_START_DATE = #temporaryStartDate#
+        </isNotNull>
+        <isNotNull prepend="," property="personId">
+            PERSON_ID = #personId#
+        </isNotNull>
         where ADDRESS_ID = #Id#
     </update>
 

@@ -14,7 +14,6 @@ public interface PhoneDao {
 
     public List<Phone> readActivePhonesByConstituentId(Long constituentId);
 
-//    public void deletePhone(Phone phone);
-
-//    public void inactivatePhones();
+    public void inactivatePhones();
+    
 }

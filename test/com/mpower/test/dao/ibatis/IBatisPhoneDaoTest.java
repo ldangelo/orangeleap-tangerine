@@ -1,5 +1,7 @@
 package com.mpower.test.dao.ibatis;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -135,5 +137,38 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             assert "214-113-2542".equals(phone.getNumber());
             assert "home".equals(phone.getPhoneType());
         }
+    }
+    
+    @Test(groups = { "testInactivatePhone" }, dependsOnGroups = { "testReadPhone", "testMaintainPhone" })
+    public void testInactivatePhone() throws Exception {
+        Phone phone = new Phone(300L, "123-123-1234");
+        phone.setActivationStatus(ActivationType.temporary);
+        phone.setInactive(false);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date d = sdf.parse("01/01/1990");
+        phone.setTemporaryEndDate(d);
+        
+        phone = phoneDao.maintainPhone(phone);
+        assert phone.getId() > 0;
+        
+        Phone readPhone = phoneDao.readPhoneById(phone.getId());
+        assert readPhone != null;
+        assert phone.getId().equals(readPhone.getId());
+        assert ActivationType.temporary.equals(readPhone.getActivationStatus());
+        assert readPhone.isInactive() == false;
+        assert d.equals(readPhone.getTemporaryEndDate());
+        assert "123-123-1234".equals(readPhone.getNumber());
+        assert 300L == readPhone.getPersonId();
+        
+        phoneDao.inactivatePhones();
+        
+        readPhone = phoneDao.readPhoneById(phone.getId());
+        assert readPhone != null;
+        assert phone.getId().equals(readPhone.getId());
+        assert ActivationType.temporary.equals(readPhone.getActivationStatus());
+        assert readPhone.isInactive();
+        assert d.equals(readPhone.getTemporaryEndDate());
+        assert "123-123-1234".equals(readPhone.getNumber());
+        assert 300L == readPhone.getPersonId();
     }
 }

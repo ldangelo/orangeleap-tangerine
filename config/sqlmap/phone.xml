@@ -92,4 +92,12 @@
 		where PHONE_ID = #id#
 	</update>
 	
+	<update id="INACTIVATE_PHONES">
+		update PHONE
+		set INACTIVE = true
+		where ACTIVATION_STATUS = 'temporary' 
+		and INACTIVE = false
+		and TEMPORARY_END_DATE &lt;= now()
+	</update>
+	
 </sqlMap>

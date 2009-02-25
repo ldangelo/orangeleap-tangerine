@@ -59,4 +59,12 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID", constituentId);
     }
+    
+    @Override
+    public void inactivatePhones() {
+        int rows = getSqlMapClientTemplate().update("INACTIVATE_PHONES");
+        if (logger.isInfoEnabled()) {
+            logger.info("inactivatePhones: number of phones marked inactive = " + rows);
+        }
+    }
 }

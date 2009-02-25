@@ -9,7 +9,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.model.Person;
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
 
@@ -29,8 +28,8 @@ public class Address extends AbstractCommunication implements GeneratedId, Seria
 
     public Address() { }
 
-    public Address(Person person) {
-        this.personId = null;//person.getId();
+    public Address(Long personId) {
+        this.personId = personId;
         this.addressType = StringConstants.UNKNOWN;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = ActivationType.permanent;
     }

@@ -31,7 +31,7 @@ public class PaymentSource implements GeneratedId, Inactivatible, Serializable {
 
     private Long id;
     private Person person;
-    private Address address = new Address(person);
+    private Address address = new Address();
     private Phone phone = new Phone();
     private String profile;
     private String type = CREDIT_CARD;
@@ -59,7 +59,7 @@ public class PaymentSource implements GeneratedId, Inactivatible, Serializable {
     private Map<String, String> fieldLabelMap = null;
     private Map<String, Object> fieldValueMap = null;
     private Map<String, FieldDefinition> fieldTypeMap = null;
-    private Address selectedAddress = new Address(person);
+    private Address selectedAddress = new Address();
     private Phone selectedPhone = new Phone();
     private boolean userCreated = false;
   

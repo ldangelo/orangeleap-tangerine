@@ -24,8 +24,6 @@ import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.CommitmentType;
-import com.mpower.util.CommitmentCustomFieldMap;
-import com.mpower.util.Utilities;
 
 public class Commitment implements 
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
@@ -101,7 +99,7 @@ GeneratedId, Serializable {
 
     private PaymentSource paymentSource = new PaymentSource();
 
-    private Address address = new Address(person);
+    private Address address = new Address();
 
     private Phone phone = new Phone();
 
@@ -131,7 +129,7 @@ GeneratedId, Serializable {
 
     private PaymentSource selectedPaymentSource = new PaymentSource();
 
-    private Address selectedAddress = new Address(person);
+    private Address selectedAddress = new Address();
 
     private Phone selectedPhone = new Phone();
 

@@ -1,6 +1,6 @@
 package com.mpower.dao.ibatis;
 
-import com.mpower.dao.AddressDao;
+import com.mpower.dao.interfaces.AddressDao;
 import com.mpower.domain.model.Address;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import java.util.*;
@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
  * @version 1.0
  */
 @Repository("addressDAO")
-public class IBatisAddressDao extends AbstractIBatisDao { //implements AddressDao {
+public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
 
 /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

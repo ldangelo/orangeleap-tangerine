@@ -4,39 +4,67 @@
 
 	<resultMap id="PHONE_RESULT" class="com.mpower.domain.model.Phone">
 		<result property="id" column="PHONE_ID" jdbcType="BIGINT" />
-		<result property="activationStatus" column="ACTIVATION_STATUS" jdbcType="VARCHAR" />
-		<result property="comment" column="COMMENT" jdbcType="VARCHAR" />
-		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="effectiveDate" column="EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
-		<result property="inactive" column="INACTIVE" jdbcType="BIT" />
-		<result property="number" column="NUMBER" jdbcType="VARCHAR" />
+		<result property="activationStatus" column="PHONE_ACTIVATION_STATUS" jdbcType="VARCHAR" />
+		<result property="comments" column="PHONE_COMMENT" jdbcType="VARCHAR" />
+		<result property="createDate" column="PHONE_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="effectiveDate" column="PHONE_EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
+		<result property="inactive" column="PHONE_INACTIVE" jdbcType="BIT" />
+		<result property="number" column="PHONE_NUMBER" jdbcType="VARCHAR" />
 		<result property="phoneType" column="PHONE_TYPE" jdbcType="VARCHAR" />
-		<result property="provider" column="PROVIDER" jdbcType="VARCHAR" />
-		<result property="receiveCorrespondence" column="RECEIVE_CORRESPONDENCE" jdbcType="BIT" />
-		<result property="seasonalEndDate" column="SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
-		<result property="seasonalStartDate" column="SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
-		<result property="sms" column="SMS" jdbcType="VARCHAR" />
-		<result property="temporaryEndDate" column="TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />
-		<result property="temporaryStartDate" column="TEMPORARY_START_DATE"	jdbcType="TIMESTAMP" />
-		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="personId" column="PERSON_ID" jdbcType="BIGINT" />
+		<result property="provider" column="PHONE_PROVIDER" jdbcType="VARCHAR" />
+		<result property="receiveMail" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="BIT" />
+		<result property="seasonalEndDate" column="PHONE_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
+		<result property="seasonalStartDate" column="PHONE_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
+		<result property="sms" column="PHONE_SMS" jdbcType="VARCHAR" />
+		<result property="temporaryEndDate" column="PHONE_TEMPORARY_END_DATE" jdbcType="TIMESTAMP" />
+		<result property="temporaryStartDate" column="PHONE_TEMPORARY_START_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="PHONE_UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="personId" column="PHONE_PERSON_ID" jdbcType="BIGINT" />
 	</resultMap>
+	
+	<sql id="SELECT_PHONE_FRAGMENT">
+		select phone.PHONE_ID, phone.ACTIVATION_STATUS as PHONE_ACTIVATION_STATUS, phone.COMMENT as PHONE_COMMENT, 
+		phone.CREATE_DATE as PHONE_CREATE_DATE, phone.EFFECTIVE_DATE as PHONE_EFFECTIVE_DATE,
+		phone.INACTIVE as PHONE_INACTIVE, phone.NUMBER as PHONE_NUMBER, phone.PHONE_TYPE, phone.PROVIDER as PHONE_PROVIDER, 
+		phone.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, phone.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
+		phone.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, phone.SMS as PHONE_SMS, phone.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
+		phone.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, phone.UPDATE_DATE as PHONE_UPDATE_DATE, phone.PERSON_ID as PHONE_PERSON_ID
+<!-- 
+		phCF.PHONE_CUSTOM_FIELD_ID, phCF.PHONE_ID as PH_CUS_FLD_PHONE_ID,
+		 
+		cf.CUSTOM_FIELD_ID, cf.FIELD_NAME as CUS_FLD_FIELD_NAME, cf.FIELD_VALUE as CUS_FLD_FIELD_VALUE,
+ -->				
+		from PHONE phone
+		<!--  
+		left outer join PHONE_CUSTOM_FIELD phCF on phone.PHONE_ID = phCF.PHONE_ID
+		left outer join CUSTOM_FIELD cf on phCF.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID
+		 -->		
+	</sql>
 
-	<select id="SELECT_PHONE_BY_ID" resultMap="PHONE_RESULT" parameterClass="com.mpower.domain.model.Phone">
-		select PHONE_ID, ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
-		INACTIVE, NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE,
-		SEASONAL_START_DATE, SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID
-		from PHONE
-		where PHONE_ID = #id#
+	<select id="SELECT_PHONE_BY_PHONE_ID" resultMap="PHONE_RESULT" parameterClass="long">
+		<include refid="SELECT_PHONE_FRAGMENT"/>
+		where phone.PHONE_ID = #id#
+	</select>
+
+	<select id="SELECT_ALL_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
+		<include refid="SELECT_PHONE_FRAGMENT"/>
+		where phone.PERSON_ID = #id#
+	</select>
+	
+	<select id="SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
+		<include refid="SELECT_PHONE_FRAGMENT"/>
+		where phone.PERSON_ID = #id#
+		and phone.INACTIVE = false
+		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS
 	</select>
 
 	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.Phone">
 		insert into PHONE (PHONE_ID, ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
 		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-		values (#id#, #activationStatus#, #comment#, now(),
+		values (#id#, #activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, #phoneType#,
-		#provider#, #receiveCorrespondence#, #seasonalEndDate#,
+		#provider#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
 		#temporaryStartDate#, now(), #personId#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -47,13 +75,13 @@
 	<update id="UPDATE_PHONE" parameterClass="com.mpower.domain.model.Phone">
 		update PHONE
 		set ACTIVATION_STATUS = #activationStatus#,
-		COMMENT = #comment#,
+		COMMENT = #comments#,
 		EFFECTIVE_DATE = #effectiveDate#,
 		INACTIVE = #inactive#,
 		NUMBER = #number#,
 		PHONE_TYPE = #phoneType#,
 		PROVIDER = #provider#,
-		RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
+		RECEIVE_CORRESPONDENCE = #receiveMail#,
 		SEASONAL_END_DATE = #seasonalEndDate#,
 		SEASONAL_START_DATE = #seasonalStartDate#,
 		SMS = #sms#,

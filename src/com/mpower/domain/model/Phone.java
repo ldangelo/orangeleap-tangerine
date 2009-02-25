@@ -12,12 +12,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
 
-public class Phone implements GeneratedId, Serializable { //SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable {  TODO: put back for IBatis
+public class Phone implements GeneratedId, Serializable { // SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable { TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Person person;
+    private Long personId;
     private String phoneType = "unknown";
     private String number;
     private String provider;
@@ -48,10 +48,15 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
 
     public Phone() { }
 
-    public Phone(Person person) {
-        this.person = person;
-        this.phoneType = "unknown";  // defaulting to 'home' would change the home phone on the constituent whenever a new payment type is created with a new phone.
+    public Phone(Long personId) {
+        this.personId = personId;
+        this.phoneType = "unknown"; // defaulting to 'home' would change the home phone on the constituent whenever a new payment type is created with a new phone.
         this.activationStatus = "permanent";
+    }
+    
+    public Phone(Long personId, String number) {
+        this(personId);
+        this.number = number;
     }
 
     @Override
@@ -64,16 +69,12 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
         this.id = id;
     }
 
-    //@Override
-    // TODO: put back for IBatis
-    public Person getPerson() {
-        return person;
+    public Long getPersonId() {
+        return personId;
     }
 
-    //@Override
-    // TODO: put back for IBatis
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPersonId(Long personId) {
+        this.personId = personId;
     }
 
     public String getPhoneType() {
@@ -172,13 +173,13 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
         this.seasonalEndDate = seasonalEndDate;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public boolean isInactive() {
         return inactive;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
@@ -200,11 +201,11 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
     }
 
     @SuppressWarnings("unchecked")
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-//            customFieldMap = PhoneCustomFieldMap.buildCustomFieldMap(getPhoneCustomFields(), this);
+            // customFieldMap = PhoneCustomFieldMap.buildCustomFieldMap(getPhoneCustomFields(), this);
             // TODO: put back for IBatis
         }
         return customFieldMap;
@@ -218,43 +219,43 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
         this.effectiveDate = effectiveDate;
     }
 
-    //@Override
-    // TODO: put back for IBatis
-    public Site getSite() {
-        return person.getSite();
-    }
+    // @Override
+    // TODO: is this necessary?  
+//    public Site getSite() {
+//        return person.getSite();
+//    }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public Map<String, String> getFieldLabelMap() {
         return fieldLabelMap;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
         this.fieldLabelMap = fieldLabelMap;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public Map<String, Object> getFieldValueMap() {
         return fieldValueMap;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public void setFieldValueMap(Map<String, Object> fieldValueMap) {
         this.fieldValueMap = fieldValueMap;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
         this.fieldTypeMap = fieldTypeMap;
     }
 
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public Map<String, FieldDefinition> getFieldTypeMap() {
         return fieldTypeMap;
@@ -272,14 +273,14 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
      * Check if this is a dummy object; This is not a dummy object all required fields (number) are populated
      * @return true if this Address has all required fields populated
      */
-    //@Override
+    // @Override
     // TODO: put back for IBatis
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
     }
 
-//    @PrePersist
-//    @PreUpdate
+    // @PrePersist
+    // @PreUpdate
     public void normalize() {
         if (activationStatus != null) {
             if ("permanent".equals(getActivationStatus())) {
@@ -306,14 +307,14 @@ public class Phone implements GeneratedId, Serializable { //SiteAware, Customiza
         }
         Phone p = (Phone) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(person.getId(), p.getPerson().getId()).append(phoneType, p.getPhoneType()).append(activationStatus, p.getActivationStatus()).append(number, p.getNumber()).append(sms, p.getSms());
+        eb.append(getPersonId(), p.getPersonId()).append(phoneType, p.getPhoneType()).append(activationStatus, p.getActivationStatus()).append(number, p.getNumber()).append(sms, p.getSms());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(person.getId()).append(phoneType).append(activationStatus).append(number).append(sms);
+        hcb.append(getPersonId()).append(phoneType).append(activationStatus).append(number).append(sms);
         return hcb.hashCode();
     }
 }

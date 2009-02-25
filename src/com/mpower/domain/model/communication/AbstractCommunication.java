@@ -5,11 +5,12 @@ import java.util.Map;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
+import com.mpower.domain.Normalizable;
 import com.mpower.domain.model.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.type.ActivationType;
 
-public abstract class AbstractCommunication implements Inactivatible, GeneratedId { // TODO: add back Customizable,
+public abstract class AbstractCommunication implements Inactivatible, GeneratedId, Normalizable { // TODO: add back Customizable,
 
     protected Long id;
     protected Long personId;
@@ -182,7 +183,7 @@ public abstract class AbstractCommunication implements Inactivatible, GeneratedI
         this.userCreated = userCreated;
     }
     
-    // TODO: invoke for IBatis?
+    @Override
     public void normalize() {
         if (activationStatus != null) {
             if (ActivationType.permanent.equals(getActivationStatus())) {

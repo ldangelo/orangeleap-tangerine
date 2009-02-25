@@ -14,6 +14,7 @@
 	<sqlMap resource="sqlmap/fieldValidation.xml"/>
 	<sqlMap resource="sqlmap/messageResource.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
+	<sqlMap resource="sqlmap/paymentHistory.xml"/>
 	<sqlMap resource="sqlmap/queryLookup.xml"/>
 	<sqlMap resource="sqlmap/queryLookupParam.xml"/>
 	<sqlMap resource="sqlmap/sectionDefinition.xml"/>

@@ -56,6 +56,10 @@ public class PersonServiceImpl implements PersonService {
     	if (person.getConstituentType().equals(Person.INDIVIDUAL) && StringUtils.isBlank(person.getRecognitionName())) {
     		person.setRecognitionName(person.createName(false));
     	}
+
+    	person.setConstituentType(StringUtils.trimToEmpty(person.getConstituentType()).toLowerCase());
+    	person.setConstituentIndividualRoles(StringUtils.trimToEmpty(person.getConstituentIndividualRoles()).toLowerCase());
+    	person.setConstituentOrganizationRoles(StringUtils.trimToEmpty(person.getConstituentOrganizationRoles()).toLowerCase());
     	
         person = personDao.savePerson(person);
         relationshipService.maintainRelationships(person);

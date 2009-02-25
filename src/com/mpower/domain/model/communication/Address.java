@@ -30,7 +30,7 @@ public class Address extends AbstractCommunication implements GeneratedId, Seria
     public Address() { }
 
     public Address(Person person) {
-        this.personId = person.getId();
+        this.personId = null;//person.getId();
         this.addressType = StringConstants.UNKNOWN;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = ActivationType.permanent;
     }

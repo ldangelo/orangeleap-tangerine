@@ -21,7 +21,7 @@ import com.mpower.domain.model.communication.Address;
 @Repository("addressDAO")
 public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
 
-/** Logger for this class and subclasses */
+    /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
@@ -30,7 +30,7 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         super.setSqlMapClient(sqlMapClient);
     }
 
-    //@Override
+    @Override
     public Address maintainAddress(Address address) {
 
         if (logger.isDebugEnabled()) {
@@ -41,37 +41,37 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
     }
 
     @SuppressWarnings("unchecked")
-    //@Override
+    @Override
     public List<Address> readAddresses(Long personId) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("readAddresses: personId = " + personId);
         }
 
-        return getSqlMapClientTemplate().queryForList("ADDRESS.SELECT_BY_PERSONID", personId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ADDRESS_BY_CONSTITUENT_ID", personId);
     }
 
-    //@Override
+    @Override
     public void deleteAddress(Address address) {
         if (logger.isDebugEnabled()) {
             logger.debug("deleteAddress: addressId = " + address.getId());
         }
 
-        getSqlMapClientTemplate().delete("ADDRESS.DELETE_ADDRESS", address.getId());
+        getSqlMapClientTemplate().delete("DELETE_ADDRESS", address.getId());
     }
 
-    //@Override
+    @Override
     public Address readAddress(Long addressId) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("readAddress: addressId = " + addressId);
         }
 
-        return (Address) getSqlMapClientTemplate().queryForObject("ADDRESS.SELECT_BY_ID", addressId);
+        return (Address) getSqlMapClientTemplate().queryForObject("SELECT_ADDRESS_BY_ID", addressId);
     }
 
     @SuppressWarnings("unchecked")
-    //@Override
+    @Override
     public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean mailOnly) {
 
         if (logger.isDebugEnabled()) {
@@ -82,13 +82,13 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         params.put("effectiveDate", calendar.getTime());
         params.put("mailOnly", mailOnly);
 
-        return getSqlMapClientTemplate().queryForList("ADDRESS.SELECT_BY_CURRENT_ADDRESS", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_BY_CURRENT_ADDRESS", params);
     }
 
-    //@Override
+    @Override
     public void inactivateAddresses() {
 
-        int rows = getSqlMapClientTemplate().update("ADDRESS.INACTIVATE_ADDRESSES");
+        int rows = getSqlMapClientTemplate().update("INACTIVATE_ADDRESSES");
 
         if (logger.isInfoEnabled()) {
             logger.info("inactivateAddressJob: number of addresses marked inactive = " + rows);

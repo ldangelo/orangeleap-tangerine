@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ADDRESS">
 
     <resultMap id="ADDRESS_RESULT_MAP" class="com.mpower.domain.model.communication.Address">
@@ -16,7 +16,7 @@
         <result property="effectiveDate" column="EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
         <result property="inactive" column="INACTIVE" jdbcType="BIT"/>
         <result property="postalCode" column="POSTAL_CODE" jdbcType="VARCHAR"/>
-        <result property="receiveCorrespondence" column="RECEIVE_CORRESPONDENCE" jdbcType="BIT"/>
+        <result property="receiveMail" column="RECEIVE_CORRESPONDENCE" jdbcType="BIT"/>
         <result property="seasonalEndDate" column="SEASONAL_END_DATE" jdbcType="TIMESTAMP"/>
         <result property="seasonalStartDate" column="SEASONAL_START_DATE" jdbcType="TIMESTAMP"/>
         <result property="stateProvince" column="STATE_PROVINCE" jdbcType="VARCHAR"/>
@@ -27,20 +27,20 @@
     </resultMap>
 
 
-    <select id="SELECT_ADDRESS_FRAGMENT">
+    <sql id="SELECT_ADDRESS_FRAGMENT">
         select ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3,
         ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE, POSTAL_CODE,
         RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID
         from ADDRESS
-    </select>
+    </sql>
 
-    <select id="SELECT_BY_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         where ADDRESS_ID = #value#
     </select>
 
-    <select id="SELECT_BY_PERSONID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+    <select id="SELECT_ADDRESS_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         where PERSON_ID = #value#
     </select>
@@ -77,19 +77,17 @@
     </select>
 
     <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
-
-        insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
+        insert into ADDRESS (ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-        values (#activationStatus#, #addressLine1#,
+        values (#id#, #activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #addressType#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
-        #inactive#, #postalCode#, #receiveCorrespondence#,
+        #inactive#, #postalCode#, #receiveMail#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, now(),
         #personId#)
-
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -101,7 +99,6 @@
     </update>
 
     <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
-
         update ADDRESS
         SET UPDATE_DATE = now()
         <isNotNull prepend="," property="activationStatus">
@@ -137,8 +134,8 @@
         <isNotNull prepend="," property="postalCode">
             POSTAL_CODE = #postalCode#
         </isNotNull>
-        <isNotNull prepend="," property="receiveCorrespondence">
-            RECEIVE_CORRESPONDENCE = #receiveCorrespondence#
+        <isNotNull prepend="," property="receiveMail">
+            RECEIVE_CORRESPONDENCE = #receiveMail#
         </isNotNull>
         <isNotNull prepend="," property="seasonalEndDate">
             SEASONAL_END_DATE = #seasonalEndDate#
@@ -161,7 +158,7 @@
         where ADDRESS_ID = #Id#
     </update>
 
-    <update id="INACTIVATE_ADDRESSES" >
+    <update id="INACTIVATE_ADDRESSES">
         update ADDRESS
         set INACTIVE = true
         where ACTIVATION_STATUS='temporary'

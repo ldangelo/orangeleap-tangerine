@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ADDRESS">
+    <resultMap id="ADDRESS_RESULT_MAP" class="com.mpower.domain.model.Address">
+
+        <result property="Id" column="ADDRESS_ID" jdbcType="BIGINT"/>
+        <result property="activationStatus" column="ACTIVATION_STATUS" jdbcType="VARCHAR"/>
+        <result property="addressLine1" column="ADDRESS_LINE_1" jdbcType="VARCHAR"/>
+        <result property="addressLine2" column="ADDRESS_LINE_2" jdbcType="VARCHAR"/>
+        <result property="addressLine3" column="ADDRESS_LINE_3" jdbcType="VARCHAR"/>
+        <result property="addressType" column="ADDRESS_TYPE" jdbcType="VARCHAR"/>
+        <result property="city" column="CITY" jdbcType="VARCHAR"/>
+        <result property="comment" column="COMMENT" jdbcType="VARCHAR"/>
+        <result property="country" column="COUNTRY" jdbcType="VARCHAR"/>
+        <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="effectiveDate" column="EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="inactive" column="INACTIVE" jdbcType="BIT"/>
+        <result property="postalCode" column="POSTAL_CODE" jdbcType="VARCHAR"/>
+        <result property="receiveCorrespondence" column="RECEIVE_CORRESPONDENCE" jdbcType="BIT"/>
+        <result property="seasonalEndDate" column="SEASONAL_END_DATE" jdbcType="TIMESTAMP"/>
+        <result property="seasonalStartDate" column="SEASONAL_START_DATE" jdbcType="TIMESTAMP"/>
+        <result property="stateProvince" column="STATE_PROVINCE" jdbcType="VARCHAR"/>
+        <result property="temporaryEndDate" column="TEMPORARY_END_DATE" jdbcType="TIMESTAMP"/>
+        <result property="temporaryStartDate" column="TEMPORARY_START_DATE" jdbcType="TIMESTAMP"/>
+        <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="personId" column="PERSON_ID" jdbcType="BIGINT"/>
+    </resultMap>
+
+
+    <select id="SELECT_ADDRESS_FRAGMENT">
+         select ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3,
+        ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE, POSTAL_CODE,
+        RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
+        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID
+        from ADDRESS
+    </select>
+
+    <select id="SELECT_BY_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+        <include refid="SELECT_ADDRESS_FRAGMENT"/>
+        where ADDRESS_ID = #value#
+    </select>
+
+    <select id="SELECT_BY_PERSONID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+        <include refid="SELECT_ADDRESS_FRAGMENT"/>
+        where PERSON_ID = #value#
+    </select>
+
+    <select id="SELECT_BY_CURRENT_ADDRESS" resultMap="ADDRESS_RESULT_MAP" parameterClass="map">
+        <include refid="SELECT_ADDRESS_FRAGMENT"/>
+        where PERSON_ID = #personId#
+        and RECEIVE_CORRESPONDENCE = #mailOnly#
+        and INACTIVE = false
+        and ACTIVATION_STATUS = 'temporary'
+        and TEMPORARY_START_DATE &lt;= #effectiveDate#
+        and TEMPORARY_END_DATE &gt;= #effectiveDate#
+        UNION
+        <include refid="SELECT_ADDRESS_FRAGMENT"/>
+        where PERSON_ID = #personId#
+        and RECEIVE_CORRESPONDENCE = #mailOnly#
+        and INACTIVE = false
+        and ACTIVATION_STATUS = 'seasonal'
+        and ((year(seasonal_start_date) &lt; year(seasonal_end_date)
+            and( (dayofyear(#effectiveDate#) &gt;= dayofyear(seasonal_start_date)
+                    and dayofyear(#effectiveDate#) &lt;= dayofyear(seasonal_end_date)+365)
+                or( dayofyear(#effectiveDate#) + 365 &gt;= dayofyear(seasonal_start_date)
+                    and dayofyear(#effectiveDate#) + 365 &lt;= dayofyear(seasonal_end_date)+365)))
+        or (year(seasonal_end_date) = year(seasonal_end_date)
+            and dayofyear(#effectiveDate#) &gt;= dayofyear(seasonal_start_date)
+            and dayofyear(#effectiveDate#) &lt;= dayofyear(seasonal_end_date)))
+        UNION
+        <include refid="SELECT_ADDRESS_FRAGMENT"/>
+        where PERSON_ID = #personId#
+        and RECEIVE_CORRESPONDENCE = #mailOnly#
+        and INACTIVE = false
+        and ACTIVATION_STATUS = 'permanent'
+        and EFFECTIVE_DATE &lt;= #effectiveDate#
+    </select>
+
+    <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.Address">
+
+        insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
+        ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
+        POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
+        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
+        values (#activationStatus#, #addressLine1#,
+        #addressLine2#, #addressLine3#, #addressType#, #city#,
+        #comment#, #country#, #createDate#, #effectiveDate#,
+        #inactive#, #postalCode#, #receiveCorrespondence#,
+        #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
+        #temporaryEndDate#, #temporaryStartDate#, #updateDate#,
+        #personId#)
+
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="DELETE_ADDRESS" parameterClass="long">
+        delete from ADDRESS
+        where ADDRESS_ID = #value#
+    </update>
+
+    <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.Address">
+
+        update ADDRESS
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="activationStatus">
+                ACTIVATION_STATUS = #activationStatus#
+            </isNotNull>
+            <isNotNull prepend="," property="addressLine1">
+                ADDRESS_LINE_1 = #addressLine1#
+            </isNotNull>
+            <isNotNull prepend="," property="addressLine2">
+                ADDRESS_LINE_2 = #addressLine2#
+            </isNotNull>
+            <isNotNull prepend="," property="addressLine3">
+                ADDRESS_LINE_3 = #addressLine3#
+            </isNotNull>
+            <isNotNull prepend="," property="addressType">
+                ADDRESS_TYPE = #addressType#
+            </isNotNull>
+            <isNotNull prepend="," property="city">
+                CITY = #city#
+            </isNotNull>
+            <isNotNull prepend="," property="comment">
+                COMMENT = #comment#
+            </isNotNull>
+            <isNotNull prepend="," property="country">
+                COUNTRY = #country#
+            </isNotNull>
+            <isNotNull prepend="," property="createDate">
+                CREATE_DATE = #createDate#
+            </isNotNull>
+            <isNotNull prepend="," property="effectiveDate">
+                EFFECTIVE_DATE = #effectiveDate#
+            </isNotNull>
+            <isNotNull prepend="," property="inactive">
+                INACTIVE = #inactive#
+            </isNotNull>
+            <isNotNull prepend="," property="postalCode">
+                POSTAL_CODE = #postalCode#
+            </isNotNull>
+            <isNotNull prepend="," property="receiveCorrespondence">
+                RECEIVE_CORRESPONDENCE = #receiveCorrespondence#
+            </isNotNull>
+            <isNotNull prepend="," property="seasonalEndDate">
+                SEASONAL_END_DATE = #seasonalEndDate#
+            </isNotNull>
+            <isNotNull prepend="," property="seasonalStartDate">
+                SEASONAL_START_DATE = #seasonalStartDate#
+            </isNotNull>
+            <isNotNull prepend="," property="stateProvince">
+                STATE_PROVINCE = #stateProvince#
+            </isNotNull>
+            <isNotNull prepend="," property="temporaryEndDate">
+                TEMPORARY_END_DATE = #temporaryEndDate#
+            </isNotNull>
+            <isNotNull prepend="," property="temporaryStartDate">
+                TEMPORARY_START_DATE = #temporaryStartDate#
+            </isNotNull>
+            <isNotNull prepend="," property="updateDate">
+                UPDATE_DATE = #updateDate#
+            </isNotNull>
+            <isNotNull prepend="," property="personId">
+                PERSON_ID = #personId#
+            </isNotNull>
+        </dynamic>
+        where ADDRESS_ID = #Id#
+    </update>
+
+    <update id="INACTIVATE_ADDRESSES" >
+        update ADDRESS
+        set INACTIVE = true
+        where ACTIVATION_STATUS='temporary'
+        and INACTIVE = false
+        and TEMPORARY_END_DATE &lt;= NOW()
+    </update>    
+
+</sqlMap>

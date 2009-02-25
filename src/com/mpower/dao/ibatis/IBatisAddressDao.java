@@ -1,13 +1,18 @@
 package com.mpower.dao.ibatis;
 
-import com.mpower.dao.interfaces.AddressDao;
-import com.mpower.domain.model.communication.Address;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import java.util.*;
-import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.mpower.dao.interfaces.AddressDao;
+import com.mpower.domain.model.communication.Address;
 
 /**
  * iBatis version of the AddressDao
@@ -85,8 +90,8 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
 
         int rows = getSqlMapClientTemplate().update("ADDRESS.INACTIVATE_ADDRESSES");
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("inactivateAddressJob: number of addresses marked inactive = " + rows);
+        if (logger.isInfoEnabled()) {
+            logger.info("inactivateAddressJob: number of addresses marked inactive = " + rows);
         }
     }
 }

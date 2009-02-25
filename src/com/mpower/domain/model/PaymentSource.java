@@ -7,21 +7,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
+import com.mpower.domain.Normalizable;
 import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.AES;
 
-public class PaymentSource implements GeneratedId, Inactivatible, Serializable {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
+public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, Serializable {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -506,8 +504,7 @@ public class PaymentSource implements GeneratedId, Inactivatible, Serializable {
         return hcb.hashCode();
     }
 
-    @PrePersist
-    @PreUpdate
+    @Override
     public void normalize() {
         if (type != null) {
             if (ACH.equals(getType())) {

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="ADDRESS">
-    <resultMap id="ADDRESS_RESULT_MAP" class="com.mpower.domain.model.Address">
 
-        <result property="Id" column="ADDRESS_ID" jdbcType="BIGINT"/>
+    <resultMap id="ADDRESS_RESULT_MAP" class="com.mpower.domain.model.communication.Address">
+        <result property="id" column="ADDRESS_ID" jdbcType="BIGINT"/>
         <result property="activationStatus" column="ACTIVATION_STATUS" jdbcType="VARCHAR"/>
         <result property="addressLine1" column="ADDRESS_LINE_1" jdbcType="VARCHAR"/>
         <result property="addressLine2" column="ADDRESS_LINE_2" jdbcType="VARCHAR"/>
         <result property="addressLine3" column="ADDRESS_LINE_3" jdbcType="VARCHAR"/>
         <result property="addressType" column="ADDRESS_TYPE" jdbcType="VARCHAR"/>
         <result property="city" column="CITY" jdbcType="VARCHAR"/>
-        <result property="comment" column="COMMENT" jdbcType="VARCHAR"/>
+        <result property="comments" column="COMMENT" jdbcType="VARCHAR"/>
         <result property="country" column="COUNTRY" jdbcType="VARCHAR"/>
         <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="effectiveDate" column="EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
@@ -28,7 +28,7 @@
 
 
     <select id="SELECT_ADDRESS_FRAGMENT">
-         select ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3,
+        select ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2, ADDRESS_LINE_3,
         ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE, POSTAL_CODE,
         RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID
@@ -76,7 +76,7 @@
         and EFFECTIVE_DATE &lt;= #effectiveDate#
     </select>
 
-    <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.Address">
+    <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
 
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
@@ -84,7 +84,7 @@
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
         values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #addressType#, #city#,
-        #comment#, #country#, #createDate#, #effectiveDate#,
+        #comments#, #country#, #createDate#, #effectiveDate#,
         #inactive#, #postalCode#, #receiveCorrespondence#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, #updateDate#,
@@ -100,7 +100,7 @@
         where ADDRESS_ID = #value#
     </update>
 
-    <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.Address">
+    <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
 
         update ADDRESS
         <dynamic prepend="set">
@@ -122,8 +122,8 @@
             <isNotNull prepend="," property="city">
                 CITY = #city#
             </isNotNull>
-            <isNotNull prepend="," property="comment">
-                COMMENT = #comment#
+            <isNotNull prepend="," property="comments">
+                COMMENT = #comments#
             </isNotNull>
             <isNotNull prepend="," property="country">
                 COUNTRY = #country#

@@ -1,28 +1,12 @@
-package com.mpower.domain.model;
+package com.mpower.domain.model.communication;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.persistence.*;
+import com.mpower.domain.model.CustomField;
 
 public class AddressCustomField {
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    @Transient
-    private final Log logger = LogFactory.getLog(getClass());
-
-    @Id
-    @GeneratedValue
-    @Column(name = "ADDRESS_CUSTOM_FIELD_ID")
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "ADDRESS_ID")
     private Address address;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "CUSTOM_FIELD_ID")
     private CustomField customField;
 
     public AddressCustomField() {

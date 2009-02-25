@@ -1,4 +1,4 @@
-package com.mpower.domain.model;
+package com.mpower.domain.model.communication;
 
 public class PhoneCustomField {
     /**

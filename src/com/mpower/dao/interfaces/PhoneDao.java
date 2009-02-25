@@ -2,7 +2,7 @@ package com.mpower.dao.interfaces;
 
 import java.util.List;
 
-import com.mpower.domain.model.Phone;
+import com.mpower.domain.model.communication.Phone;
 
 public interface PhoneDao {
 

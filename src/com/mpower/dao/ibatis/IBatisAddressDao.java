@@ -1,7 +1,7 @@
 package com.mpower.dao.ibatis;
 
 import com.mpower.dao.interfaces.AddressDao;
-import com.mpower.domain.model.Address;
+import com.mpower.domain.model.communication.Address;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import java.util.*;
 import org.springframework.stereotype.Repository;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.PhoneDao;
-import com.mpower.domain.model.Phone;
+import com.mpower.domain.model.communication.Phone;
 
 /** 
  * Corresponds to the PHONE table

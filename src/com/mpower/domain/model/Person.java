@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.GeneratedId;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.StringConstants;
 
@@ -44,9 +47,9 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
     private String loginId;
     private Date createDate;
     private Date updateDate;
-    private final Map<String, Address> addressMap = null;
-    private final Map<String, Email> emailMap = null;
-    private final Map<String, Phone> phoneMap = null;
+    private final Map<String, List<Address>> addressMap = null;
+    private final Map<String, List<Email>> emailMap = null;
+    private final Map<String, List<Phone>> phoneMap = null;
     private final Map<String, CustomField> customFieldMap = null;
     private Map<String, String> fieldLabelMap = null;
     private Map<String, Object> fieldValueMap = null;
@@ -203,8 +206,12 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
         return addresses;
     }
 
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
     @SuppressWarnings("unchecked")
-    public Map<String, Address> getAddressMap() {
+    public Map<String, List<Address>> getAddressMap() {
         if (addressMap == null) {
             // TODO: put back for IBatis
             // addressMap = AddressMap.buildAddressMap(getAddresses(), this);
@@ -219,8 +226,12 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
         return emails;
     }
 
+    public void setEmails(List<Email> emails) {
+        this.emails = emails;
+    }
+
     @SuppressWarnings("unchecked")
-    public Map<String, Email> getEmailMap() {
+    public Map<String, List<Email>> getEmailMap() {
         if (emailMap == null) {
             // TODO: put back for IBatis
             // emailMap = EmailMap.buildEmailMap(getEmails(), this);
@@ -235,8 +246,12 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
         return phones;
     }
 
+    public void setPhones(List<Phone> phones) {
+        this.phones = phones;
+    }
+
     @SuppressWarnings("unchecked")
-    public Map<String, Phone> getPhoneMap() {
+    public Map<String, List<Phone>> getPhoneMap() {
         if (phoneMap == null) {
             // TODO: put back for IBatis
             // phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
@@ -249,6 +264,10 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
             personCustomFields = new ArrayList<PersonCustomField>();
         }
         return personCustomFields;
+    }
+
+    public void setPersonCustomFields(List<PersonCustomField> personCustomFields) {
+        this.personCustomFields = personCustomFields;
     }
 
     @SuppressWarnings("unchecked")

@@ -3,7 +3,7 @@ package com.mpower.dao.interfaces;
 import java.util.Calendar;
 import java.util.List;
 
-import com.mpower.domain.model.Address;
+import com.mpower.domain.model.communication.Address;
 
 public interface AddressDao {
 

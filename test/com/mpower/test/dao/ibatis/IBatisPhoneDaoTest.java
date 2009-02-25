@@ -8,7 +8,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.PhoneDao;
-import com.mpower.domain.model.Phone;
+import com.mpower.domain.model.communication.Phone;
+import com.mpower.type.ActivationType;
+import com.mpower.util.StringConstants;
 
 public class IBatisPhoneDaoTest extends AbstractIBatisTest {
     
@@ -32,8 +34,8 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
         assert "911-911-9110".equals(readPhone.getNumber());
-        assert "unknown".equals(readPhone.getPhoneType());
-        assert "permanent".equals(readPhone.getActivationStatus());
+        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
+        assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
         assert readPhone.isReceiveMail() == false;
@@ -59,7 +61,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getUpdateDate() != null;
         assert 100L == phone.getPersonId();
         assert phone.isReceiveMail() == false;
-        assert "permanent".equals(phone.getActivationStatus());
+        assert ActivationType.permanent.equals(phone.getActivationStatus());
         assert phone.isInactive() == false;
         assert phone.getComments() == null;
         assert phone.getEffectiveDate() == null;
@@ -82,7 +84,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
                 assert 100L == phone.getPersonId();
                 assert phone.isReceiveMail() == false;
                 assert phone.isInactive() == false;
-                assert "permanent".equals(phone.getActivationStatus());
+                assert ActivationType.permanent.equals(phone.getActivationStatus());
             }
             switch (phone.getId().intValue()) {
                 case 100:
@@ -129,7 +131,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             assert 200L == phone.getPersonId();
             assert phone.isReceiveMail() == false;
             assert phone.isInactive() == false;
-            assert "permanent".equals(phone.getActivationStatus());
+            assert ActivationType.permanent.equals(phone.getActivationStatus());
             assert "214-113-2542".equals(phone.getNumber());
             assert "home".equals(phone.getPhoneType());
         }

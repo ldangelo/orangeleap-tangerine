@@ -9,9 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
@@ -19,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.GeneratedId;
+import com.mpower.domain.Normalizable;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
@@ -27,7 +25,7 @@ import com.mpower.type.CommitmentType;
 
 public class Commitment implements 
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
-GeneratedId, Serializable {
+GeneratedId, Normalizable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -560,9 +558,8 @@ GeneratedId, Serializable {
 		return pledgeCancelReason;
 	}
 	
-    @PrePersist
-    @PreUpdate
-    public void normalize() {
+    @Override
+	public void normalize() {
         if (CommitmentType.RECURRING_GIFT.equals(getCommitmentType())) {
             setAmountTotal(null);
             setAutoPay(true);

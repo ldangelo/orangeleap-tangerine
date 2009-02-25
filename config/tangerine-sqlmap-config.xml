@@ -3,6 +3,7 @@
 <sqlMapConfig>
 	<sqlMap resource="sqlmap/audit.xml"/>
 	<sqlMap resource="sqlmap/code.xml"/>
+	<sqlMap resource="sqlmap/commitment.xml"/>
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
 	<sqlMap resource="sqlmap/constituentCustomField.xml"/>

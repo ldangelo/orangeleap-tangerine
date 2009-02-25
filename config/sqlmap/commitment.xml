@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="COMMITMENT" >
+
+  <resultMap id="COMMITMENT" class="com.mpower.domain.model.Commitment" >
+    <result property="id" column="COMMITMENT_ID" jdbcType="BIGINT" />
+    <result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+    <result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
+    <result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
+    <result property="autoPay" column="AUTO_PAY" jdbcType="BIT" />
+    <result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
+    <result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
+    <result property="commitmentType" column="COMMITMENT_TYPE" jdbcType="VARCHAR" />
+    <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+    <result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
+    <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
+    <result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
+    <result property="lastEntryDate" column="LAST_ENTRY_DATE" jdbcType="TIMESTAMP" />
+    <result property="notes" column="NOTES" jdbcType="VARCHAR" />
+    <result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
+    <result property="pledgeCancelDate" column="PLEDGE_CANCEL_DATE" jdbcType="TIMESTAMP" />
+    <result property="pledgeCancelReason" column="PLEDGE_CANCEL_REASON" jdbcType="VARCHAR" />
+    <result property="pledgeDate" column="PLEDGE_DATE" jdbcType="TIMESTAMP" />
+    <result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
+    <result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
+    <result property="recurring" column="RECURRING" jdbcType="BIT" />
+    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="BIT" />
+    <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
+    <result property="status" column="STATUS" jdbcType="VARCHAR" />
+    <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+    <!--<result property="addressId" column="ADDRESS_ID" jdbcType="BIGINT" /> -->
+    <!--<result property="emailId" column="EMAIL_ID" jdbcType="BIGINT" /> -->
+    <!--<result property="paymentSourceId" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" /> -->
+	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
+    <!-- <result property="phoneId" column="PHONE_ID" jdbcType="BIGINT" /> -->
+  </resultMap>
+  
+  <select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT" parameterClass="com.mpower.domain.model.Commitment" >
+    select COMMITMENT_ID, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AUTO_PAY,
+      CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE, END_DATE, FREQUENCY,
+      LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE, PLEDGE_CANCEL_REASON, PLEDGE_DATE,
+      PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT, START_DATE, STATUS,
+      UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID
+    from COMMITMENT
+    where COMMITMENT_ID = #id#
+  </select>
+  
+  <statement id="SELECT_COMMITMENT_BY_SQL" resultMap="COMMITMENT">
+  	 $sql$
+  </statement>
+  
+  <insert id="INSERT_COMMITMENT" parameterClass="com.mpower.domain.model.Commitment" >
+    insert into COMMITMENT (COMMITMENT_ID, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL,
+      AUTO_PAY, CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE, END_DATE,
+      FREQUENCY, LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE, PLEDGE_CANCEL_REASON,
+      PLEDGE_DATE, PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT, START_DATE,
+      STATUS, UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
+    values (#id#, #acknowledgmentDate#, #amountPerGift#,
+      #amountTotal#, #autoPay#, #checkNumber#, #comments#,
+      #commitmentType#, #createDate#, #currencyCode#, #endDate#,
+      #frequency#, #lastEntryDate#, #notes#, #paymentType#,
+      #pledgeCancelDate#, #pledgeCancelReason#, #pledgeDate#,
+      #pledgeStatus#, #projectedDate#, #recurring#, #sendAcknowledgment#,
+      #startDate#, #status#, #updateDate#, #address.id#,
+      #email.id#, #paymentSource.id#, #person.id#, #phone.id#)
+  </insert>
+  
+  <update id="UPDATE_COMMITMENT" parameterClass="com.mpower.domain.model.Commitment" >
+    update COMMITMENT
+    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+      AMOUNT_PER_GIFT = #amountPerGift#,
+      AMOUNT_TOTAL = #amountTotal#,
+      AUTO_PAY = #autoPay#,
+      CHECK_NUMBER = #checkNumber#,
+      COMMENTS = #comments#,
+      COMMITMENT_TYPE = #commitmentType#,
+      CREATE_DATE = #createDate#,
+      CURRENCY_CODE = #currencyCode#,
+      END_DATE = #endDate#,
+      FREQUENCY = #frequency#,
+      LAST_ENTRY_DATE = #lastEntryDate#,
+      NOTES = #notes#,
+      PAYMENT_TYPE = #paymentType#,
+      PLEDGE_CANCEL_DATE = #pledgeCancelDate#,
+      PLEDGE_CANCEL_REASON = #pledgeCancelReason#,
+      PLEDGE_DATE = #pledgeDate#,
+      PLEDGE_STATUS = #pledgeStatus#,
+      PROJECTED_DATE = #projectedDate#,
+      RECURRING = #recurring#,
+      SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+      START_DATE = #startDate#,
+      STATUS = #status#,
+      UPDATE_DATE = #updateDate#,
+      ADDRESS_ID = #address.id#,
+      EMAIL_ID = #email.id#,
+      PAYMENT_SOURCE_ID = #paymentSource.id#,
+      PERSON_ID = #person.id#,
+      PHONE_ID = #phone.id#
+    where COMMITMENT_ID = #id#
+  </update>
+  
+</sqlMap>

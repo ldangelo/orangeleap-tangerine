@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="COMMUNICATION_HISTORY" >
+
+  <resultMap id="COMMUNICATION_HISTORY" class="com.mpower.domain.model.CommunicationHistory" >
+    <result property="id" column="COMMUNICATION_HISTORY_ID" jdbcType="BIGINT" />
+    <result property="communicationHistoryType" column="COMMUNICATION_TYPE" jdbcType="INTEGER" />
+    <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+    <result property="recordDate" column="RECORD_DATE" jdbcType="TIMESTAMP" />
+    <result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="BIT" />
+    <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+    <!-- <result property="commitmentId" resultMap="COMMITMENT.COMMITMENT_RESULT" /> -->
+	<!-- <result property="gift" resultMap="GIFT.GIFT_RESULT" /> -->
+	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
+    <result property="comments" column="COMMENTS" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  
+   <sql id="SELECT_COMMUNICATION_HISTORY_FRAGMENT">
+    select 
+      ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.CREATE_DATE, ch.RECORD_DATE, ch.SYSTEM_GENERATED,
+      ch.UPDATE_DATE, ch.COMMITMENT_ID, ch.GIFT_ID, ch.PERSON_ID, ch.COMMENTS,
+      p.PERSON_ID, p.CONSTITUENT_INDIVIDUAL_ROLES, p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, 
+      p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
+	  p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
+	  p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME,
+	  pcf.PERSON_CUSTOM_FIELD_ID, pcf.PERSON_ID as CONS_CUS_FLD_PERSON_ID,
+	  cf.CUSTOM_FIELD_ID, cf.FIELD_NAME as CUS_FLD_FIELD_NAME, cf.FIELD_VALUE as CUS_FLD_FIELD_VALUE
+      from COMMUNICATION_HISTORY ch
+      inner join PERSON p on ch.PERSON_ID = p.PERSON_ID
+		left outer join PERSON_CUSTOM_FIELD pcf on p.PERSON_ID = pcf.PERSON_ID 
+		left outer join CUSTOM_FIELD cf on pcf.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID 
+      where 
+      p.SITE_NAME= #siteName#
+  </sql>
+  
+  
+  <select id="SELECT_COMMUNICATION_HISTORY_BY_ID" resultMap="COMMUNICATION_HISTORY" parameterClass="map" >
+	 <include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT"/>		 
+    and ch.COMMUNICATION_HISTORY_ID = #id#
+  </select>
+  
+  <select id="SELECT_COMMUNICATION_HISTORY_BY_PERSON" resultMap="COMMUNICATION_HISTORY" parameterClass="map" >
+	 <include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT"/>		 
+    and ch.PERSON_ID = #personId#
+  </select>
+  
+  <insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory" >
+    insert into COMMUNICATION_HISTORY (COMMUNICATION_HISTORY_ID, COMMUNICATION_TYPE, CREATE_DATE,
+      RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID, PERSON_ID,
+      COMMENTS)
+    values (#id#, #communicationHistoryType#, #createDate#,
+      #recordDate#, #systemGenerated#, #updateDate#, 
+      #commitment.id#, #gift.id#, #person.id#, 
+      #comments#)
+      	<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+  </insert>
+  
+  <update id="UPDATE_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory" >
+    update COMMUNICATION_HISTORY
+    set COMMUNICATION_TYPE = #communicationHistoryType:VARCHAR#,
+      CREATE_DATE = #createDate#,
+      RECORD_DATE = #recordDate#,
+      SYSTEM_GENERATED = #systemGenerated#,
+      UPDATE_DATE = #updateDate#,
+      COMMITMENT_ID = #commitment.id#,
+      GIFT_ID = #gift.id#,
+      PERSON_ID = #person.id#,
+      COMMENTS = #comments#
+    where COMMUNICATION_HISTORY_ID = #id#
+  </update>
+  
+</sqlMap>

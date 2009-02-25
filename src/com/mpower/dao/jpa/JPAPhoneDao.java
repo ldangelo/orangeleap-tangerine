@@ -33,6 +33,8 @@ public class JPAPhoneDao implements PhoneDao {
     private EntityManager em;
 
     @Override
+    // IBatisPhoneDao --> maintainPhone
+    // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Phone maintainPhone(Phone phone) {
         if (phone.getId() == null) {
             em.persist(phone);
@@ -44,6 +46,7 @@ public class JPAPhoneDao implements PhoneDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // IBatisPhoneDao --> readPhonesByConstituentId
     public List<Phone> readPhones(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_PHONES_BY_PERSON_ID");
         query.setFlushMode(FlushModeType.COMMIT);
@@ -52,17 +55,20 @@ public class JPAPhoneDao implements PhoneDao {
     }
 
     @Override
+    // Unneeded for IBatis
     public void deletePhone(Phone phone) {
         em.remove(phone);
     }
 
     @Override
+    // IBatisPhoneDao --> readPhoneById
     public Phone readPhone(Long phoneId) {
         return em.find(Phone.class, phoneId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: move logic below to PhoneServiceImpl; IBatisPhoneDao --> readActivePhonesByConstituentId
     public List<Phone> readCurrentPhones(Long personId, Calendar cal, boolean mailOnly) {
         // List<Address> retAddresses = new ArrayList<Address>();
         LinkedHashSet<String> typeSet = new LinkedHashSet<String>(); // store types of phones
@@ -148,6 +154,7 @@ public class JPAPhoneDao implements PhoneDao {
     }
 
     @Override
+    // Unneeded for IBatis
     public void inactivatePhones() {
         Query query = em.createNamedQuery("SET_EXPIRED_TEMPORARY_PHONES_INACTIVE");
         int modifedRecordCount = query.executeUpdate();

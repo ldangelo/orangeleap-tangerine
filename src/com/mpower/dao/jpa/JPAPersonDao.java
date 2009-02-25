@@ -35,7 +35,9 @@ public class JPAPersonDao implements PersonDao {
     @PersistenceContext
     private EntityManager em;
 
-    @Override
+    @Override 
+    // TODO: IBatisConstituentDao --> maintainConstituent
+    // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Person savePerson(Person person) {
         // Sanity check
         if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
@@ -106,12 +108,14 @@ public class JPAPersonDao implements PersonDao {
         	
     }
 
+    // unneeded for IBatis
     public List<Person> readPersons(String siteName, Map<String, Object> params) {
         return readPersons(siteName, params, null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: convert to JdbcTemplate
     public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds) {
         boolean whereUsed = true;
         StringBuilder queryString = new StringBuilder("SELECT person FROM com.mpower.domain.Person person WHERE person.site.name = :siteName");
@@ -212,6 +216,7 @@ public class JPAPersonDao implements PersonDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: move to Gift IbatisDao
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
         Query query = em.createNamedQuery("ANALYZE_FOR_LAPSED_DONOR");
         query.setParameter("beginDate", beginDate);

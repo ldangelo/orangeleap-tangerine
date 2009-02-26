@@ -9,8 +9,6 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.AuditDao;
 import com.mpower.domain.model.Audit;
-import com.mpower.domain.model.customization.Code;
-import com.mpower.domain.model.customization.CodeType;
 import com.mpower.type.AuditType;
 
 public class IBatisAuditDaoTest extends AbstractIBatisTest {

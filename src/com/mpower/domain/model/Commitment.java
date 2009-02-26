@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.GeneratedId;
@@ -46,8 +44,6 @@ GeneratedId, Normalizable, Serializable {
     public static final String FREQUENCY_TWICE_ANNUALLY = "twice annually";
     public static final String FREQUENCY_ANNUALLY = "annually";
     public static final String FREQUENCY_UNSPECIFIED = "unspecified";
-
-    private final Log logger = LogFactory.getLog(getClass());
 
     private Long id;
 

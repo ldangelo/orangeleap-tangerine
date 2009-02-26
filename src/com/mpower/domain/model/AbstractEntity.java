@@ -110,8 +110,26 @@ public abstract class AbstractEntity implements Serializable {
         this.fieldTypeMap = fieldTypeMap;
     }
 
+    /**
+     * Perform any required actions that need to happen to this
+     * Entity before it is persisted. Subclasses should ensure they
+     * call super.prePersist() if they override this method. The
+     * default implemenation is a no-op
+     */
+    public void prePersist() {
+        // no-op in the base implementation
+    }
 
-
+    /**
+     * Called after this Entity has been ready from the persistence
+     * store but before it is handed back to the service layer. useful
+     * for setting any transient properites. Subclasses should ensure
+     * they call super.postRead() if they override this method. The
+     * default implementation is a no-op
+     */
+    public void postRead() {
+        // no-op in base implementation    
+    }
 
 
 }

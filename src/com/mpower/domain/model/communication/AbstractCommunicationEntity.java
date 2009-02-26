@@ -3,9 +3,7 @@ package com.mpower.domain.model.communication;
 import java.util.Date;
 import java.util.Map;
 
-import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
-import com.mpower.domain.Normalizable;
 import com.mpower.domain.model.customization.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.domain.model.AbstractCustomizableEntity;
@@ -139,7 +137,10 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.userCreated = userCreated;
     }
     
-    public void normalize() {
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        
         if (activationStatus != null) {
             if (ActivationType.permanent.equals(getActivationStatus())) {
                 setSeasonalEndDate(null);

@@ -9,8 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Normalizable;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.util.StringConstants;
@@ -46,9 +44,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
             logger.debug("insertOrUpdate: o = " + o + " table = " + table);
         }
 
-        if (o instanceof AbstractCommunicationEntity) {
-    		((AbstractCommunicationEntity)o).normalize();
-    	}
+        o.prePersist();
         
     	Long id = o.getId();
     	if (id == null || id == 0) {

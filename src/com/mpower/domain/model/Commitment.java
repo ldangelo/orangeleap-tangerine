@@ -1,27 +1,22 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 
 import com.mpower.domain.DistributionLine;
-import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Normalizable;
-import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.CommitmentType;
 
-public class Commitment extends AbstractCustomizableEntity implements Normalizable { 
+public class Commitment extends AbstractCustomizableEntity {
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
 
     private static final long serialVersionUID = 1L;
@@ -121,14 +116,6 @@ public class Commitment extends AbstractCustomizableEntity implements Normalizab
 
     public Commitment(CommitmentType commitmentType) {
         this.commitmentType = commitmentType;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Person getPerson() {
@@ -503,7 +490,8 @@ public class Commitment extends AbstractCustomizableEntity implements Normalizab
 	}
 	
     @Override
-	public void normalize() {
+	public void prePersist() {
+        super.prePersist();
         if (CommitmentType.RECURRING_GIFT.equals(getCommitmentType())) {
             setAmountTotal(null);
             setAutoPay(true);

@@ -12,14 +12,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
-import com.mpower.domain.Normalizable;
 import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.AES;
 
-public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, Serializable {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
+public class PaymentSource extends AbstractEntity implements Inactivatible {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -27,7 +26,6 @@ public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, 
     public static final String CASH = "Cash";
     public static final String CHECK = "Check";
 
-    private Long id;
     private Person person;
     private Address address = new Address();
     private Phone phone = new Phone();
@@ -54,9 +52,6 @@ public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, 
     private String creditCardSecurityCode;
     @NotAuditable
     private String achAccountNumber;
-    private Map<String, String> fieldLabelMap = null;
-    private Map<String, Object> fieldValueMap = null;
-    private Map<String, FieldDefinition> fieldTypeMap = null;
     private Address selectedAddress = new Address();
     private Phone selectedPhone = new Phone();
     private boolean userCreated = false;
@@ -67,15 +62,6 @@ public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, 
     public PaymentSource(Person person) {
         this();
         this.person = person;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
 //    @Override
@@ -370,36 +356,6 @@ public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, 
         this.selectedPhone = selectedPhone;
     }
 
-//    @Override
-    public Map<String, String> getFieldLabelMap() {
-        return fieldLabelMap;
-    }
-
-//    @Override
-    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-        this.fieldLabelMap = fieldLabelMap;
-    }
-
-//    @Override
-    public Map<String, Object> getFieldValueMap() {
-        return fieldValueMap;
-    }
-
-//    @Override
-    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-        this.fieldValueMap = fieldValueMap;
-    }
-
-//    @Override
-    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-        this.fieldTypeMap = fieldTypeMap;
-    }
-
-//    @Override
-    public Map<String, FieldDefinition> getFieldTypeMap() {
-        return fieldTypeMap;
-    }
-
     public boolean isUserCreated() {
         return userCreated;
     }
@@ -505,7 +461,8 @@ public class PaymentSource implements GeneratedId, Normalizable, Inactivatible, 
     }
 
     @Override
-    public void normalize() {
+    public void prePersist() {
+        super.prePersist();
         if (type != null) {
             if (ACH.equals(getType())) {
                 clearCredit();

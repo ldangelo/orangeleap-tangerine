@@ -1,39 +1,27 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Normalizable;
-import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.GiftEntryType;
-import com.mpower.util.Utilities;
 
-public class Gift implements 
+public class Gift extends AbstractEntity {
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
-Normalizable, GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final Log logger = LogFactory.getLog(getClass());
-
-    private Long id;
 
     private Person person;
 
@@ -69,8 +57,6 @@ Normalizable, GeneratedId, Serializable {
     
     private Date acknowledgmentDate;
     
-    private List<GiftCustomField> giftCustomFields;
-
     private List<DistributionLine> distributionLines;
 
     private boolean deductible = false;
@@ -91,14 +77,6 @@ Normalizable, GeneratedId, Serializable {
     
     private String paymentMessage;
 
-    private Map<String, CustomField> customFieldMap = null;
-
-    private Map<String, String> fieldLabelMap = null;
-
-    private Map<String, Object> fieldValueMap = null;
-    
-    private Map<String, FieldDefinition> fieldTypeMap = null;
-
     private PaymentSource selectedPaymentSource = new PaymentSource(person);
 
     private Address selectedAddress = new Address();
@@ -115,32 +93,6 @@ Normalizable, GeneratedId, Serializable {
         this.person = commitment.getPerson();
         this.transactionDate = transactionDate;
         this.amount = commitment.getAmountPerGift();
-    }
-
-//    public String getCustomFieldValue(String fieldName) {
-//    	CustomField customField = getCustomFieldMap().get(fieldName);
-//    	if (customField == null || customField.getValue() == null) {
-//            return null;
-//        }
-//        return customField.getValue();
-//    }
-//
-//    public void setCustomFieldValue(String fieldName, String value) {
-//    	CustomField customField = getCustomFieldMap().get(fieldName);
-//    	if (customField == null) {
-//            throw new RuntimeException("Invalid custom field name "+fieldName);
-//        }
-//    	customField.setValue(value);
-//    }
-
-
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Person getPerson() {
@@ -285,21 +237,6 @@ Normalizable, GeneratedId, Serializable {
         this.acknowledgmentDate = acknowledgmentDate;
     }
 
-    public List<GiftCustomField> getCustomFields() {
-        if (giftCustomFields == null) {
-            giftCustomFields = new ArrayList<GiftCustomField>();
-        }
-        return giftCustomFields;
-    }
-
-//    @SuppressWarnings("unchecked")
-//    public Map<String, CustomField> getCustomFieldMap() {
-//        if (customFieldMap == null) {
-//            customFieldMap = GiftCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
-//        }
-//        return customFieldMap;
-//    }
-
     @SuppressWarnings("unchecked")
     public List<DistributionLine> getDistributionLines() {
         if (distributionLines == null) {
@@ -344,36 +281,6 @@ Normalizable, GeneratedId, Serializable {
         }
     }
 
-//    @Override
-//    public Map<String, String> getFieldLabelMap() {
-//        return fieldLabelMap;
-//    }
-//
-//    @Override
-//    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-//        this.fieldLabelMap = fieldLabelMap;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getFieldValueMap() {
-//        return fieldValueMap;
-//    }
-//
-//    @Override
-//    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-//        this.fieldValueMap = fieldValueMap;
-//    }
-//
-//    @Override
-//    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-//        this.fieldTypeMap = fieldTypeMap;
-//    }
-//
-//    @Override
-//    public Map<String, FieldDefinition> getFieldTypeMap() {
-//        return fieldTypeMap;
-//    }
-//
 //    @Override
 //    public Site getSite() {
 //        return person != null ? person.getSite() : null;
@@ -468,7 +375,8 @@ Normalizable, GeneratedId, Serializable {
     }
 
     @Override
-    public void normalize() {
+    public void prePersist() {
+        super.prePersist();
         if (deductibleAmount == null) {
             deductibleAmount = amount;
         }

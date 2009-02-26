@@ -1,184 +1,236 @@
 package com.mpower.test.dao.ibatis;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.mpower.dao.interfaces.AddressDao;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.type.ActivationType;
+import com.mpower.util.StringConstants;
 
 public class IBatisAddressDaoTest extends AbstractIBatisTest {
     
-//    /** Logger for this class and subclasses */
-//    protected final Log logger = LogFactory.getLog(getClass());
-//    
-//    private PhoneDao phoneDao;
-//
-//    @BeforeMethod
-//    public void setup() {
-//        phoneDao = (PhoneDao)super.applicationContext.getBean("phoneDAO");
-//    }
-//    
-//    @Test(groups = { "testMaintainPhone" }, dependsOnGroups = { "testReadPhone" })
-//    public void testMaintainPhone() throws Exception {
-//        // Insert
-//        Phone phone = new Phone(300L, "911-911-9110");
-//        phone = phoneDao.maintainPhone(phone);
-//        assert phone.getId() > 0;
-//        Phone readPhone = phoneDao.readPhoneById(phone.getId());
-//        assert readPhone != null;
-//        assert phone.getId().equals(readPhone.getId());
-//        assert 300L == readPhone.getPersonId();
-//        assert "911-911-9110".equals(readPhone.getNumber());
-//        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
-//        assert ActivationType.permanent.equals(readPhone.getActivationStatus());
-//        assert readPhone.getCreateDate() != null;
-//        assert readPhone.getUpdateDate() != null;
-//        assert readPhone.isReceiveMail() == false;
-//        assert readPhone.isInactive() == false;
-//        assert readPhone.getComments() == null;
-//        assert readPhone.getEffectiveDate() == null;
-//        assert readPhone.getProvider() == null;
-//        assert readPhone.getSeasonalStartDate() == null;
-//        assert readPhone.getSeasonalEndDate() == null;
-//        assert readPhone.getSms() == null;
-//        assert readPhone.getTemporaryStartDate() == null;
-//        assert readPhone.getTemporaryEndDate() == null;
-//        
-//        // Update
-//        phone.setNumber("000-000-0000");
-//        phone = phoneDao.maintainPhone(phone);
-//        readPhone = phoneDao.readPhoneById(phone.getId());
-//        assert "000-000-0000".equals(readPhone.getNumber());
-//        assert phone.getId().equals(readPhone.getId());
-//        assert 300L == readPhone.getPersonId();
-//        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
-//        assert ActivationType.permanent.equals(readPhone.getActivationStatus());
-//        assert readPhone.getCreateDate() != null;
-//        assert readPhone.getUpdateDate() != null;
-//        assert readPhone.isReceiveMail() == false;
-//        assert readPhone.isInactive() == false;
-//        assert readPhone.getComments() == null;
-//        assert readPhone.getEffectiveDate() == null;
-//        assert readPhone.getProvider() == null;
-//        assert readPhone.getSeasonalStartDate() == null;
-//        assert readPhone.getSeasonalEndDate() == null;
-//        assert readPhone.getSms() == null;
-//        assert readPhone.getTemporaryStartDate() == null;
-//        assert readPhone.getTemporaryEndDate() == null;
-//    }
-//
-//    @Test(groups = { "testReadPhone" })
-//    public void testReadPhone() throws Exception {
-//        Phone phone = phoneDao.readPhoneById(100L);
-//        assert phone != null;
-//        assert 100L == phone.getId();
-//        assert "214-443-6829".equals(phone.getNumber());
-//        assert "home".equals(phone.getPhoneType());
-//        assert phone.getCreateDate() != null;
-//        assert phone.getUpdateDate() != null;
-//        assert 100L == phone.getPersonId();
-//        assert phone.isReceiveMail() == false;
-//        assert ActivationType.permanent.equals(phone.getActivationStatus());
-//        assert phone.isInactive() == false;
-//        assert phone.getComments() == null;
-//        assert phone.getEffectiveDate() == null;
-//        assert phone.getProvider() == null;
-//        assert phone.getSeasonalStartDate() == null;
-//        assert phone.getSeasonalEndDate() == null;
-//        assert phone.getSms() == null;
-//        assert phone.getTemporaryStartDate() == null;
-//        assert phone.getTemporaryEndDate() == null;
-//    } 
-//
-//    @Test(groups = { "testReadPhone" })
-//    public void testReadPhonesByConstituentId() throws Exception {
-//        List<Phone> phones = phoneDao.readPhonesByConstituentId(100L); 
-//        assert phones != null && phones.size() == 6;
-//        for (Phone phone : phones) {
-//            if (phone.getId() >= 100L && phone.getId() <= 600L) {
-//                assert phone.getUpdateDate() != null;
-//                assert phone.getCreateDate() != null;
-//                assert 100L == phone.getPersonId();
-//                assert phone.isReceiveMail() == false;
-//                assert phone.isInactive() == false;
-//                assert ActivationType.permanent.equals(phone.getActivationStatus());
-//            }
-//            switch (phone.getId().intValue()) {
-//                case 100:
-//                    assert "214-443-6829".equals(phone.getNumber());
-//                    assert "home".equals(phone.getPhoneType());
-//                    break;
-//                case 200:
-//                    assert "214-105-6590".equals(phone.getNumber());
-//                    assert "home".equals(phone.getPhoneType());
-//                    break;
-//                case 300:
-//                    assert "214-911-6681".equals(phone.getNumber());
-//                    assert "work".equals(phone.getPhoneType());
-//                    break;
-//                case 400:
-//                    assert "214-129-9781".equals(phone.getNumber());
-//                    assert "work".equals(phone.getPhoneType());
-//                    break;
-//                case 500:
-//                    assert "214-548-0929".equals(phone.getNumber());
-//                    assert "mobile".equals(phone.getPhoneType());
-//                    break;
-//                case 600:
-//                    assert "214-878-1663".equals(phone.getNumber());
-//                    assert "mobile".equals(phone.getPhoneType());
-//                    break;
-//                default:
-//                    assert false == true;
-//            }
-//        }
-//        
-//        phones = phoneDao.readPhonesByConstituentId(200L);
-//        assert phones != null && phones.size() == 2;
-//    }
-//    
-//    @Test(groups = { "testReadPhone" })
-//    public void testReadActivePhonesByConstituentId() throws Exception {
-//        List<Phone> phones = phoneDao.readActivePhonesByConstituentId(200L);
-//        assert phones != null && phones.size() == 1;
-//        for (Phone phone : phones) {
-//            assert 700L == phone.getId();
-//            assert phone.getUpdateDate() != null;
-//            assert phone.getCreateDate() != null;
-//            assert 200L == phone.getPersonId();
-//            assert phone.isReceiveMail() == false;
-//            assert phone.isInactive() == false;
-//            assert ActivationType.permanent.equals(phone.getActivationStatus());
-//            assert "214-113-2542".equals(phone.getNumber());
-//            assert "home".equals(phone.getPhoneType());
-//        }
-//    }
-//    
-//    @Test(groups = { "testInactivatePhone" }, dependsOnGroups = { "testReadPhone", "testMaintainPhone" })
-//    public void testInactivatePhone() throws Exception {
-//        Phone phone = new Phone(300L, "123-123-1234");
-//        phone.setActivationStatus(ActivationType.temporary);
-//        phone.setInactive(false);
-//        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-//        Date d = sdf.parse("01/01/1990");
-//        phone.setTemporaryEndDate(d);
-//        
-//        phone = phoneDao.maintainPhone(phone);
-//        assert phone.getId() > 0;
-//        
-//        Phone readPhone = phoneDao.readPhoneById(phone.getId());
-//        assert readPhone != null;
-//        assert phone.getId().equals(readPhone.getId());
-//        assert ActivationType.temporary.equals(readPhone.getActivationStatus());
-//        assert readPhone.isInactive() == false;
-//        assert d.equals(readPhone.getTemporaryEndDate());
-//        assert "123-123-1234".equals(readPhone.getNumber());
-//        assert 300L == readPhone.getPersonId();
-//        
-//        phoneDao.inactivatePhones();
-//        
-//        readPhone = phoneDao.readPhoneById(phone.getId());
-//        assert readPhone != null;
-//        assert phone.getId().equals(readPhone.getId());
-//        assert ActivationType.temporary.equals(readPhone.getActivationStatus());
-//        assert readPhone.isInactive();
-//        assert d.equals(readPhone.getTemporaryEndDate());
-//        assert "123-123-1234".equals(readPhone.getNumber());
-//        assert 300L == readPhone.getPersonId();
-//    }
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+    
+    private AddressDao addressDao;
+
+    @BeforeMethod
+    public void setup() {
+        addressDao = (AddressDao)super.applicationContext.getBean("addressDAO");
+    }
+    
+    @Test(groups = { "testMaintainAddress" }, dependsOnGroups = { "testReadAddress" })
+    public void testMaintainAddress() throws Exception {
+        // Insert
+        Address address = new Address(300L, "1234 Fake Dr", "New York", "NY", "20211", "USA");
+        address = addressDao.maintainAddress(address);
+        assert address.getId() > 0;
+        Address readAddress = addressDao.readAddressById(address.getId());
+        assert readAddress != null;
+        assert address.getId().equals(readAddress.getId());
+        assert 300L == readAddress.getPersonId();
+        assert "1234 Fake Dr".equals(readAddress.getAddressLine1());
+        assert "New York".equals(readAddress.getCity());
+        assert "NY".equals(readAddress.getStateProvince());
+        assert "20211".equals(readAddress.getPostalCode());
+        assert "USA".equals(readAddress.getCountry());
+        assert StringConstants.UNKNOWN.equals(readAddress.getAddressType());
+        assert ActivationType.permanent.equals(readAddress.getActivationStatus());
+        assert readAddress.getAddressLine2() == null;
+        assert readAddress.getAddressLine3() == null;
+        assert readAddress.getCreateDate() != null;
+        assert readAddress.getUpdateDate() != null;
+        assert readAddress.isReceiveMail() == false;
+        assert readAddress.isInactive() == false;
+        assert readAddress.getComments() == null;
+        assert readAddress.getEffectiveDate() == null;
+        assert readAddress.getSeasonalStartDate() == null;
+        assert readAddress.getSeasonalEndDate() == null;
+        assert readAddress.getTemporaryStartDate() == null;
+        assert readAddress.getTemporaryEndDate() == null;
+        
+        // Update
+        address.setCity("San Francisco");
+        address.setStateProvince("CA");
+        address.setPostalCode("92111");
+        address = addressDao.maintainAddress(address);
+        readAddress = addressDao.readAddressById(address.getId());
+        assert "1234 Fake Dr".equals(readAddress.getAddressLine1());
+        assert "San Francisco".equals(readAddress.getCity());
+        assert "CA".equals(readAddress.getStateProvince());
+        assert "92111".equals(readAddress.getPostalCode());
+        assert "USA".equals(readAddress.getCountry());
+        assert address.getId().equals(readAddress.getId());
+        assert 300L == readAddress.getPersonId();
+        assert StringConstants.UNKNOWN.equals(readAddress.getAddressType());
+        assert ActivationType.permanent.equals(readAddress.getActivationStatus());
+        assert readAddress.getAddressLine2() == null;
+        assert readAddress.getAddressLine3() == null;
+        assert readAddress.getCreateDate() != null;
+        assert readAddress.getUpdateDate() != null;
+        assert readAddress.isReceiveMail() == false;
+        assert readAddress.isInactive() == false;
+        assert readAddress.getComments() == null;
+        assert readAddress.getEffectiveDate() == null;
+        assert readAddress.getSeasonalStartDate() == null;
+        assert readAddress.getSeasonalEndDate() == null;
+        assert readAddress.getTemporaryStartDate() == null;
+        assert readAddress.getTemporaryEndDate() == null;
+    }
+
+    @Test(groups = { "testReadAddress" })
+    public void testReadAddress() throws Exception {
+        Address address = addressDao.readAddressById(100L);
+        assert address != null;
+        assert 100L == address.getId();
+        assert "3726 THIRD ST".equals(address.getAddressLine1());
+        assert "home".equals(address.getAddressType());
+        assert "Dallas".equals(address.getCity());
+        assert "TX".equals(address.getStateProvince());
+        assert "75554".equals(address.getPostalCode());
+        assert "US".equals(address.getCountry());
+        assert address.getAddressLine2() == null;
+        assert address.getAddressLine3() == null;
+        assert address.getCreateDate() != null;
+        assert address.getUpdateDate() != null;
+        assert 100L == address.getPersonId();
+        assert address.isReceiveMail() == false;
+        assert ActivationType.permanent.equals(address.getActivationStatus());
+        assert address.isInactive() == false;
+        assert address.getComments() == null;
+        assert address.getEffectiveDate() == null;
+        assert address.getSeasonalStartDate() == null;
+        assert address.getSeasonalEndDate() == null;
+        assert address.getTemporaryStartDate() == null;
+        assert address.getTemporaryEndDate() == null;
+    } 
+
+    @Test(groups = { "testReadAddress" })
+    public void testReadAddressesByConstituentId() throws Exception {
+        List<Address> addresses = addressDao.readAddressesByConstituentId(100L); 
+        assert addresses != null && addresses.size() == 4;
+        for (Address address : addresses) {
+            if (address.getId() >= 100L && address.getId() <= 400L) {
+                assert address.getUpdateDate() != null;
+                assert address.getCreateDate() != null;
+                assert 100L == address.getPersonId();
+                assert "Dallas".equals(address.getCity());
+                assert "TX".equals(address.getStateProvince());
+                assert "US".equals(address.getCountry());
+                assert address.getAddressLine2() == null;
+                assert address.getAddressLine3() == null;
+                assert "home".equals(address.getAddressType());
+            }
+            switch (address.getId().intValue()) {
+                case 100:
+                    assert "3726 THIRD ST".equals(address.getAddressLine1());
+                    assert "75554".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == false;
+                    assert address.isInactive() == false;
+                    assert ActivationType.permanent.equals(address.getActivationStatus());
+                    break;
+                case 200:
+                    assert "406 FAIR OAK DR".equals(address.getAddressLine1());
+                    assert "75479".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == true;
+                    assert address.isInactive() == false;
+                    assert ActivationType.temporary.equals(address.getActivationStatus());
+                    break;
+                case 300:
+                    assert "3709 ASPEN BLVD".equals(address.getAddressLine1());
+                    assert "75238".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == false;
+                    assert address.isInactive() == true;
+                    assert ActivationType.seasonal.equals(address.getActivationStatus());
+                    break;
+                case 400:
+                    assert "5908 ELM RD".equals(address.getAddressLine1());
+                    assert "75347".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == false;
+                    assert address.isInactive() == true;
+                    assert ActivationType.permanent.equals(address.getActivationStatus());
+                    break;
+                default:
+                    assert false == true;
+            }
+        }
+        
+        addresses = addressDao.readAddressesByConstituentId(200L);
+        assert addresses != null && addresses.size() == 3;
+    }
+    
+    @Test(groups = { "testReadAddress" })
+    public void testReadActiveAddresssByConstituentId() throws Exception {
+        List<Address> addresses = addressDao.readActiveAddressesByConstituentId(100L);
+        assert addresses != null && addresses.size() == 2;
+        for (Address address : addresses) {
+            if (address.getId() >= 100L && address.getId() <= 400L) {
+                assert address.getUpdateDate() != null;
+                assert address.getCreateDate() != null;
+                assert 100L == address.getPersonId();
+                assert "Dallas".equals(address.getCity());
+                assert "TX".equals(address.getStateProvince());
+                assert "US".equals(address.getCountry());
+                assert address.getAddressLine2() == null;
+                assert address.getAddressLine3() == null;
+                assert "home".equals(address.getAddressType());
+            }
+            switch (address.getId().intValue()) {
+                case 100:
+                    assert "3726 THIRD ST".equals(address.getAddressLine1());
+                    assert "75554".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == false;
+                    assert address.isInactive() == false;
+                    assert ActivationType.permanent.equals(address.getActivationStatus());
+                    break;
+                case 200:
+                    assert "406 FAIR OAK DR".equals(address.getAddressLine1());
+                    assert "75479".equals(address.getPostalCode());
+                    assert address.isReceiveMail() == true;
+                    assert address.isInactive() == false;
+                    assert ActivationType.temporary.equals(address.getActivationStatus());
+                    break;
+            }
+        }
+    }
+    
+    @Test(groups = { "testInactivateAddress" }, dependsOnGroups = { "testReadAddress", "testMaintainAddress" })
+    public void testInactivateAddress() throws Exception {
+        Address address = new Address(300L, "1 Main Street", "Chicago", "IL", "34444", "US");
+        address.setActivationStatus(ActivationType.temporary);
+        address.setInactive(false);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date d = sdf.parse("01/01/1990");
+        address.setTemporaryEndDate(d);
+        
+        address = addressDao.maintainAddress(address);
+        assert address.getId() > 0;
+        
+        Address readAddress = addressDao.readAddressById(address.getId());
+        assert readAddress != null;
+        assert address.getId().equals(readAddress.getId());
+        assert ActivationType.temporary.equals(readAddress.getActivationStatus());
+        assert readAddress.isInactive() == false;
+        assert d.equals(readAddress.getTemporaryEndDate());
+        assert "1 Main Street".equals(readAddress.getAddressLine1());
+        assert 300L == readAddress.getPersonId();
+        
+        addressDao.inactivateAddresses();
+        
+        readAddress = addressDao.readAddressById(address.getId());
+        assert readAddress != null;
+        assert address.getId().equals(readAddress.getId());
+        assert ActivationType.temporary.equals(readAddress.getActivationStatus());
+        assert readAddress.isInactive();
+        assert d.equals(readAddress.getTemporaryEndDate());
+        assert "1 Main Street".equals(readAddress.getAddressLine1());
+        assert 300L == readAddress.getPersonId();
+    }
 }

@@ -79,7 +79,7 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
     public void inactivateAddresses() {
         int rows = getSqlMapClientTemplate().update("INACTIVATE_ADDRESSES");
         if (logger.isInfoEnabled()) {
-            logger.info("inactivateAddressJob: number of addresses marked inactive = " + rows);
+            logger.info("inactivateAddresses: number of addresses marked inactive = " + rows);
         }
     }
 }

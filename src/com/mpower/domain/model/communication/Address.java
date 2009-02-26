@@ -34,6 +34,15 @@ public class Address extends AbstractCommunication implements GeneratedId, Seria
         this.activationStatus = ActivationType.permanent;
     }
 
+    public Address(Long personId, String addressLine1, String city, String stateProvince, String postalCode, String country) {
+        this(personId);
+        this.addressLine1 = addressLine1;
+        this.city = city;
+        this.stateProvince = stateProvince;
+        this.country = country;
+        this.postalCode = postalCode;
+    }
+
     public String getAddressLine1() {
         return addressLine1;
     }

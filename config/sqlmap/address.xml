@@ -106,7 +106,7 @@
 
     <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
         update ADDRESS
-        SET UPDATE_DATE = now()
+        SET UPDATE_DATE = now(),
         ACTIVATION_STATUS = #activationStatus#,
         ADDRESS_LINE_1 = #addressLine1#,
         ADDRESS_LINE_2 = #addressLine2#,
@@ -131,9 +131,9 @@
     <update id="INACTIVATE_ADDRESSES">
         update ADDRESS
         set INACTIVE = true
-        where ACTIVATION_STATUS='temporary'
+        where ACTIVATION_STATUS = 'temporary'
         and INACTIVE = false
-        and TEMPORARY_END_DATE &lt;= NOW()
+        and TEMPORARY_END_DATE &lt;= now()
     </update>    
 
 </sqlMap>

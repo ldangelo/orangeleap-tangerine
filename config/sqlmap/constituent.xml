@@ -57,9 +57,7 @@
 		<iterate property="personIds" conjunction="," open="(" close=")">
 			#personIds[]#
 		</iterate>
-		<isNotNull prepend="AND" property="siteName">
 			p.SITE_NAME = #siteName#
-		</isNotNull>
 	</select>
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">

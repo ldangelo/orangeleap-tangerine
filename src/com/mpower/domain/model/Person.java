@@ -1,26 +1,22 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
-import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.StringConstants;
 
-public class Person implements GeneratedId, Serializable {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
+public class Person extends AbstractCustomizableEntity {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
 
     public static final String INDIVIDUAL = "individual";
     public static final String ORGANIZATION = "organization";
 
-    private Long id;
     private Site site;
     private String constituentType = INDIVIDUAL;
     private String title;
@@ -37,7 +33,6 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
     private List<Address> addresses;
     private List<Email> emails;
     private List<Phone> phones;
-    private List<PersonCustomField> personCustomFields;
     private List<Gift> gifts;
     private List<Commitment> commitments;
     private boolean majorDonor = false;
@@ -50,32 +45,13 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
     private final Map<String, List<Address>> addressMap = null;
     private final Map<String, List<Email>> emailMap = null;
     private final Map<String, List<Phone>> phoneMap = null;
-    private final Map<String, CustomField> customFieldMap = null;
-    private Map<String, String> fieldLabelMap = null;
-    private Map<String, Object> fieldValueMap = null;
-    private Map<String, FieldDefinition> fieldTypeMap = null;
+
 
     public Person() { }
 
     @Override
     public String toString() {
         return getDisplayValue();
-    }
-
-    public String getCustomFieldValue(String fieldName) {
-        CustomField customField = getCustomFieldMap().get(fieldName);
-        if (customField == null || customField.getValue() == null) {
-            return null;
-        }
-        return customField.getValue();
-    }
-
-    public void setCustomFieldValue(String fieldName, String value) {
-        CustomField customField = getCustomFieldMap().get(fieldName);
-        if (customField == null) {
-            throw new RuntimeException("Invalid custom field name " + fieldName);
-        }
-        customField.setValue(value);
     }
 
     public boolean isOrganization() {
@@ -137,18 +113,8 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
         return "person";
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public Long getAccountNumber() {
         return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Site getSite() {
@@ -259,26 +225,6 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
         return phoneMap;
     }
 
-    public List<PersonCustomField> getPersonCustomFields() {
-        if (personCustomFields == null) {
-            personCustomFields = new ArrayList<PersonCustomField>();
-        }
-        return personCustomFields;
-    }
-
-    public void setPersonCustomFields(List<PersonCustomField> personCustomFields) {
-        this.personCustomFields = personCustomFields;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Map<String, CustomField> getCustomFieldMap() {
-        if (customFieldMap == null) {
-            // TODO: put back for IBatis
-            // customFieldMap = PersonCustomFieldMap.buildCustomFieldMap(getPersonCustomFields(), this);
-        }
-        return customFieldMap;
-    }
-
     public String getSuffix() {
         return suffix;
     }
@@ -353,44 +299,8 @@ public class Person implements GeneratedId, Serializable {// SiteAware, Customiz
 
     // TODO: put back for IBatis
     // @Override
-    public Map<String, String> getFieldLabelMap() {
-        return fieldLabelMap;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
-    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-        this.fieldLabelMap = fieldLabelMap;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
-    public Map<String, Object> getFieldValueMap() {
-        return fieldValueMap;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
-    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-        this.fieldValueMap = fieldValueMap;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
     public Person getPerson() {
         return this;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
-    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-        this.fieldTypeMap = fieldTypeMap;
-    }
-
-    // TODO: put back for IBatis
-    // @Override
-    public Map<String, FieldDefinition> getFieldTypeMap() {
-        return fieldTypeMap;
     }
 
     public void setNcaisCode(String ncaisCode) {

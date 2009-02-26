@@ -43,8 +43,8 @@
     insert into COMMUNICATION_HISTORY (COMMUNICATION_HISTORY_ID, COMMUNICATION_TYPE, CREATE_DATE,
       RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID, PERSON_ID,
       COMMENTS)
-    values (#id#, #communicationHistoryType#, #createDate#,
-      #recordDate#, #systemGenerated#, #updateDate#, 
+    values (#id#, #communicationHistoryType#, now(),
+      #recordDate#, #systemGenerated#, now(), 
       #commitment.id#, #gift.id#, #person.id#, 
       #comments#)
       	<selectKey keyProperty="id" resultClass="long">
@@ -55,10 +55,9 @@
   <update id="UPDATE_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory" >
     update COMMUNICATION_HISTORY
     set COMMUNICATION_TYPE = #communicationHistoryType:VARCHAR#,
-      CREATE_DATE = #createDate#,
       RECORD_DATE = #recordDate#,
       SYSTEM_GENERATED = #systemGenerated#,
-      UPDATE_DATE = #updateDate#,
+      UPDATE_DATE = now(),
       COMMITMENT_ID = #commitment.id#,
       GIFT_ID = #gift.id#,
       PERSON_ID = #person.id#,

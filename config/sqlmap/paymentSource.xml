@@ -14,7 +14,8 @@
 		<result property="inactive" column="PAYMENT_SRC_INACTIVE" jdbcType="CHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
 		<result property="type" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT_MAP" /> 
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" /> 
+		<result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 		
 	</resultMap>
 

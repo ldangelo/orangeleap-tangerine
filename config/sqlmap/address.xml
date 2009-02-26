@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ADDRESS">
 
-    <resultMap id="ADDRESS_RESULT_MAP" class="com.mpower.domain.model.communication.Address">
+    <resultMap id="ADDRESS_RESULT" class="com.mpower.domain.model.communication.Address">
         <result property="id" column="ADDRESS_ID" jdbcType="BIGINT"/>
         <result property="activationStatus" column="ADDRESS_ACTIVATION_STATUS" jdbcType="VARCHAR"/>
         <result property="addressLine1" column="ADDRESS_LINE_1" jdbcType="VARCHAR"/>
@@ -42,17 +42,17 @@
         from ADDRESS addr 
     </sql>
 
-    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         where addr.ADDRESS_ID = #value#
     </select>
 
-    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         where addr.PERSON_ID = #value#
     </select>
 	
-	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT_MAP" parameterClass="long">
+	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
 		<include refid="SELECT_ADDRESS_FRAGMENT"/>
 		where addr.PERSON_ID = #id#
 		and addr.INACTIVE = false
@@ -60,7 +60,7 @@
 	</select>
 
 <!-- 
-    <select id="SELECT_BY_CURRENT_ADDRESS" resultMap="ADDRESS_RESULT_MAP" parameterClass="map">
+    <select id="SELECT_BY_CURRENT_ADDRESS" resultMap="ADDRESS_RESULT" parameterClass="map">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         where PERSON_ID = #personId#
         and RECEIVE_CORRESPONDENCE = #mailOnly#

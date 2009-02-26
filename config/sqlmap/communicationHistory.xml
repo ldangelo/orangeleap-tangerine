@@ -7,7 +7,7 @@
     <result property="communicationHistoryType" column="COMMUNICATION_TYPE" jdbcType="INTEGER" />
     <result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
     <result property="recordDate" column="RECORD_DATE" jdbcType="TIMESTAMP" />
-    <result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="BIT" />
+    <result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="CHAR" />
     <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
     <!-- <result property="commitmentId" resultMap="COMMITMENT.COMMITMENT_RESULT" /> -->
 	<!-- <result property="gift" resultMap="GIFT.GIFT_RESULT" /> -->

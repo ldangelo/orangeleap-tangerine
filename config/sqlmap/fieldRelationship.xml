@@ -4,7 +4,7 @@
 	
 	<resultMap id="FIELD_RELATIONSHIP_RESULT" class="com.mpower.domain.model.customization.FieldRelationship">
 		<result property="id" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
-		<result property="recursive" column="CHECK_RECURSION" jdbcType="BIT" />
+		<result property="recursive" column="CHECK_RECURSION" jdbcType="CHAR" />
 		<result property="relationshipType" column="RELATIONSHIP_TYPE" jdbcType="VARCHAR" />
 		<result property="masterRecordField" resultMap="FIELD_DEFINITION.FIELD_DEFINITION_RESULT" />
 		<result property="detailRecordField" resultMap="FIELD_DEFINITION.SECONDARY_FIELD_DEFINITION_RESULT" />

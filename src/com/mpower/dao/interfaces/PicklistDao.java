@@ -1,12 +1,11 @@
 package com.mpower.dao.interfaces;
 
-import com.mpower.domain.customization.*;
-import com.mpower.type.EntityType;
 import java.util.List;
 
-/**
- * @version 1.0
- */
+import com.mpower.domain.model.customization.Picklist;
+import com.mpower.domain.model.customization.PicklistItem;
+import com.mpower.type.EntityType;
+
 public interface PicklistDao {
 
     public Picklist readPicklistById(String picklistId);

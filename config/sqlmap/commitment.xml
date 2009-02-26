@@ -7,7 +7,7 @@
     <result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
     <result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
     <result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
-    <result property="autoPay" column="AUTO_PAY" jdbcType="BIT" />
+    <result property="autoPay" column="AUTO_PAY" jdbcType="CHAR" />
     <result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
     <result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
     <result property="commitmentType" column="COMMITMENT_TYPE" jdbcType="VARCHAR" />
@@ -23,8 +23,8 @@
     <result property="pledgeDate" column="PLEDGE_DATE" jdbcType="TIMESTAMP" />
     <result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
     <result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
-    <result property="recurring" column="RECURRING" jdbcType="BIT" />
-    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="BIT" />
+    <result property="recurring" column="RECURRING" jdbcType="CHAR" />
+    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
     <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
     <result property="status" column="STATUS" jdbcType="VARCHAR" />
     <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />

@@ -11,8 +11,8 @@
 		<result property="emailAddress" column="EMAIL_ADDRESS" jdbcType="VARCHAR" />
 		<result property="emailDisplay" column="EMAIL_DISPLAY" jdbcType="VARCHAR" />
 		<result property="emailType" column="EMAIL_TYPE" jdbcType="VARCHAR" />
-		<result property="inactive" column="EMAIL_INACTIVE" jdbcType="BIT" />
-		<result property="receiveMail" column="EMAIL_RECEIVE_CORRESPONDENCE" jdbcType="BIT" />
+		<result property="inactive" column="EMAIL_INACTIVE" jdbcType="CHAR" />
+		<result property="receiveMail" column="EMAIL_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="EMAIL_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="seasonalStartDate" column="EMAIL_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryEndDate" column="EMAIL_TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />

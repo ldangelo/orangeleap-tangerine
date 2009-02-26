@@ -2,36 +2,22 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.mpower.domain.Auditable;
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Person;
 import com.mpower.domain.model.Site;
 
 public class PicklistItem implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Log logger = LogFactory.getLog(getClass());
-
     private Long id;
-
     private String itemName;
-
     private String defaultDisplayValue;
-
     private String referenceValue;
-
     private String suppressReferenceValue;
-
     private Integer itemOrder;
-
     private boolean inactive = false;
-
     private Picklist picklist;
-
     private Auditable originalObject;
 
     @Override
@@ -90,10 +76,6 @@ public class PicklistItem implements GeneratedId, Serializable {
 
 	public Auditable getOriginalObject() {
 		return originalObject;
-	}
-
-	public Person getPerson() {
-		return null;
 	}
 
 	public Site getSite() {

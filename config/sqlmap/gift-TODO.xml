@@ -13,7 +13,7 @@
     <result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
     <result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
     <result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
-    <result property="deductible" column="DEDUCTIBLE" jdbcType="BIT" />
+    <result property="deductible" column="DEDUCTIBLE" jdbcType="CHAR" />
     <result property="deductibleAmount" column="DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />
     <result property="donationDate" column="DONATION_DATE" jdbcType="TIMESTAMP" />
     <result property="entryType" column="ENTRY_TYPE" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
     <result property="postmarkDate" column="POSTMARK_DATE" jdbcType="TIMESTAMP" />
     <result property="refundGiftId" column="REFUND_GIFT_ID" jdbcType="BIGINT" />
     <result property="refundGiftTransactionDate" column="REFUND_GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
-    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="BIT" />
+    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
     <result property="transactionDate" column="TRANSACTION_DATE" jdbcType="TIMESTAMP" />
     <result property="paymentTxrefnum" column="PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
     <result property="addressId" column="ADDRESS_ID" jdbcType="BIGINT" />

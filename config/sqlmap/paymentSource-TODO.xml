@@ -10,7 +10,7 @@
 		<result property="creditCardHolderName" column="CREDIT_CARD_HOLDER_NAME" jdbcType="VARCHAR" />
 		<result property="creditCardNumber" column="CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
 		<result property="creditCardType" column="CREDIT_CARD_TYPE" jdbcType="VARCHAR" />
-		<result property="inactive" column="INACTIVE" jdbcType="BIT" />
+		<result property="inactive" column="INACTIVE" jdbcType="CHAR" />
 		<result property="paymentProfile" column="PAYMENT_PROFILE" jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="addressId" column="ADDRESS_ID" jdbcType="BIGINT" />

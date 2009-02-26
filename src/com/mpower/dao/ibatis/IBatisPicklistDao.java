@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.PicklistDao;
-import com.mpower.domain.customization.Picklist;
-import com.mpower.domain.customization.PicklistItem;
+import com.mpower.domain.model.customization.Picklist;
+import com.mpower.domain.model.customization.PicklistItem;
 import com.mpower.type.EntityType;
 
 /**
- * Implementation of the PicklistDao for iBatis
+ * Implementation of the PicklistDao for iBatis for tables PICKLIST & PICKLIST_ITEM
  * @version 1.0
  */
 @Repository("picklistDAO")
@@ -61,7 +61,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("listPicklists:");
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_BY_SITENAME", getSiteName());
+        return getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_BY_SITE_NAME", getSiteName());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         Map<String, Object> params = setupParams();
         params.put("fieldName", fieldName);
         params.put("entityType", entityType);
-        return (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_BY_SITE_AND_FIELD_NAME", params);
+        return (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME", params);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistItemById: picklistId = " + picklistItemId);
         }
-        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLISTITEM_BY_ID", picklistItemId);
+        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_ID", picklistItemId);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPicklistItem: picklistItem = " + picklistItem);
         }
-        getSqlMapClientTemplate().update("UPDATE_PICKLISTITEM", picklistItem);
+        getSqlMapClientTemplate().update("UPDATE_PICKLIST_ITEM", picklistItem);
         return picklistItem;
     }
 }

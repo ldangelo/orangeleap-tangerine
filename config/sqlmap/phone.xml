@@ -8,11 +8,11 @@
 		<result property="comments" column="PHONE_COMMENT" jdbcType="VARCHAR" />
 		<result property="createDate" column="PHONE_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="effectiveDate" column="PHONE_EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
-		<result property="inactive" column="PHONE_INACTIVE" jdbcType="BIT" />
+		<result property="inactive" column="PHONE_INACTIVE" jdbcType="CHAR" />
 		<result property="number" column="PHONE_NUMBER" jdbcType="VARCHAR" />
 		<result property="phoneType" column="PHONE_TYPE" jdbcType="VARCHAR" />
 		<result property="provider" column="PHONE_PROVIDER" jdbcType="VARCHAR" />
-		<result property="receiveMail" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="BIT" />
+		<result property="receiveMail" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="PHONE_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="seasonalStartDate" column="PHONE_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="sms" column="PHONE_SMS" jdbcType="VARCHAR" />

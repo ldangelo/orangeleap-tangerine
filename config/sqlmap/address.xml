@@ -14,9 +14,9 @@
         <result property="country" column="ADDRESS_COUNTRY" jdbcType="VARCHAR"/>
         <result property="createDate" column="ADDRESS_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="effectiveDate" column="ADDRESS_EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
-        <result property="inactive" column="ADDRESS_INACTIVE" jdbcType="BIT"/>
+        <result property="inactive" column="ADDRESS_INACTIVE" jdbcType="CHAR"/>
         <result property="postalCode" column="ADDRESS_POSTAL_CODE" jdbcType="VARCHAR"/>
-        <result property="receiveMail" column="ADDRESS_RECEIVE_CORRESPONDENCE" jdbcType="BIT"/>
+        <result property="receiveMail" column="ADDRESS_RECEIVE_CORRESPONDENCE" jdbcType="CHAR"/>
         <result property="seasonalEndDate" column="ADDRESS_SEASONAL_END_DATE" jdbcType="TIMESTAMP"/>
         <result property="seasonalStartDate" column="ADDRESS_SEASONAL_START_DATE" jdbcType="TIMESTAMP"/>
         <result property="stateProvince" column="ADDRESS_STATE_PROVINCE" jdbcType="VARCHAR"/>

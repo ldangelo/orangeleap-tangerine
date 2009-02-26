@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.mpower.domain.model.Site;
 import com.mpower.type.EntityType;
 
@@ -14,26 +11,27 @@ public class Picklist implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Log logger = LogFactory.getLog(getClass());
-
     private String id;
-
     private String picklistName;
-
     private EntityType entityType;
-
     private Site site;
-
-    private Boolean multiselect;
-
+    private boolean multiselect;
     private List<PicklistItem> picklistItems;
 
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getPicklistName() {
         return picklistName;
+    }
+
+    public void setPicklistName(String picklistName) {
+        this.picklistName = picklistName;
     }
 
     public String getPicklistViewName() {
@@ -96,24 +94,16 @@ public class Picklist implements Serializable {
         return picklistItems;
     }
 
-    public Boolean isMultiselect() {
+    public void setPicklistItems(List<PicklistItem> picklistItems) {
+        this.picklistItems = picklistItems;
+    }
+
+    public boolean isMultiselect() {
         return multiselect;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setMultiselect(Boolean multiselect) {
+    public void setMultiselect(boolean multiselect) {
         this.multiselect = multiselect;
-    }
-
-    public void setPicklistName(String picklistName) {
-        this.picklistName = picklistName;
-    }
-
-    public void setPicklistItems(List<PicklistItem> picklistItems) {
-        this.picklistItems = picklistItems;
     }
 
     public EntityType getEntityType() {

@@ -9,11 +9,11 @@
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR" />
-		<result property="lapsedDonor" column="LAPSED_DONOR" jdbcType="BIT" />
+		<result property="lapsedDonor" column="LAPSED_DONOR" jdbcType="CHAR" />
 		<result property="lastName" column="LAST_NAME" jdbcType="VARCHAR" />
 		<result property="legalName" column="LEGAL_NAME" jdbcType="VARCHAR" />
 		<result property="loginId" column="LOGIN_ID" jdbcType="VARCHAR" />
-		<result property="majorDonor" column="MAJOR_DONOR" jdbcType="BIT" />
+		<result property="majorDonor" column="MAJOR_DONOR" jdbcType="CHAR" />
 		<result property="maritalStatus" column="MARITAL_STATUS" jdbcType="VARCHAR" />
 		<result property="middleName" column="MIDDLE_NAME" jdbcType="VARCHAR" />
 		<result property="ncaisCode" column="NCAIS_CODE" jdbcType="VARCHAR" />

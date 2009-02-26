@@ -56,7 +56,7 @@
   <resultMap id="CODE_RESULT" class="com.mpower.domain.model.customization.Code" >
     <result property="id" column="CODE_ID" jdbcType="BIGINT" />
     <result property="description" column="CODE_DESCRIPTION" jdbcType="VARCHAR" />
-    <result property="inactive" column="INACTIVE" jdbcType="BIT" />
+    <result property="inactive" column="INACTIVE" jdbcType="CHAR" />
     <result property="value" column="CODE_VALUE" jdbcType="VARCHAR" />
     <result property="codeType" column="CODE_TYPE_ID" jdbcType="BIGINT" />
   </resultMap>

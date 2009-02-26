@@ -57,7 +57,7 @@
 		<iterate property="personIds" conjunction="," open="(" close=")">
 			#personIds[]#
 		</iterate>
-			p.SITE_NAME = #siteName#
+		and p.SITE_NAME = #siteName#
 	</select>
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">

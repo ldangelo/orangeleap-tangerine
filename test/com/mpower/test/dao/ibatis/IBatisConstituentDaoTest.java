@@ -27,6 +27,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testMaintainConstituent" }, dependsOnGroups = { "testReadConstituent" })
     public void testMaintainConstituent() throws Exception {
+        // Insert
         Person constituent = new Person();
         constituent.setFirstName("Joe");
         constituent.setLastName("Bob");
@@ -59,6 +60,34 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getSuffix() == null;
         assert readConstituent.getCreateDate() != null;
         assert readConstituent.getUpdateDate() != null;
+        
+        // Update
+        constituent.setTitle("Lady");
+        constituent.setLoginId("joe@bob.com");
+        constituent.setNcaisCode("huh");        
+        constituent = constituentDao.maintainConstituent(constituent);
+        readConstituent = constituentDao.readConstituentById(constituent.getId());
+        assert readConstituent != null;
+        assert "Lady".equals(readConstituent.getTitle());
+        assert "joe@bob.com".equals(readConstituent.getLoginId());
+        assert "huh".equals(readConstituent.getNcaisCode());
+        
+        assert constituent.getFirstName().equals(readConstituent.getFirstName());
+        assert constituent.getLastName().equals(readConstituent.getLastName());
+        assert constituent.getSite().getName().equals(readConstituent.getSite().getName());
+        assert constituent.getConstituentType().equals(readConstituent.getConstituentType());
+        assert StringConstants.EMPTY.equals(readConstituent.getConstituentIndividualRoles());
+        assert StringConstants.EMPTY.equals(readConstituent.getConstituentOrganizationRoles());
+        assert readConstituent.getLegalName() == null;
+        assert readConstituent.isMajorDonor() == false;
+        assert StringConstants.UNKNOWN.equals(readConstituent.getMaritalStatus());
+        assert readConstituent.getMiddleName() == null;
+        assert readConstituent.getOrganizationName() == null;
+        assert readConstituent.getPreferredPhoneType() == null;
+        assert readConstituent.getRecognitionName() == null;
+        assert readConstituent.getSuffix() == null;
+        assert readConstituent.getCreateDate() != null;
+        assert readConstituent.getUpdateDate() != null;      
     }
     
     @Test(groups = { "testReadConstituent" })

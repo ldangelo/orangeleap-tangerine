@@ -28,6 +28,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testMaintainPhone" }, dependsOnGroups = { "testReadPhone" })
     public void testMaintainPhone() throws Exception {
+        // Insert
         Phone phone = new Phone(300L, "911-911-9110");
         phone = phoneDao.maintainPhone(phone);
         assert phone.getId() > 0;
@@ -36,6 +37,28 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
         assert "911-911-9110".equals(readPhone.getNumber());
+        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
+        assert ActivationType.permanent.equals(readPhone.getActivationStatus());
+        assert readPhone.getCreateDate() != null;
+        assert readPhone.getUpdateDate() != null;
+        assert readPhone.isReceiveMail() == false;
+        assert readPhone.isInactive() == false;
+        assert readPhone.getComments() == null;
+        assert readPhone.getEffectiveDate() == null;
+        assert readPhone.getProvider() == null;
+        assert readPhone.getSeasonalStartDate() == null;
+        assert readPhone.getSeasonalEndDate() == null;
+        assert readPhone.getSms() == null;
+        assert readPhone.getTemporaryStartDate() == null;
+        assert readPhone.getTemporaryEndDate() == null;
+        
+        // Update
+        phone.setNumber("000-000-0000");
+        phone = phoneDao.maintainPhone(phone);
+        readPhone = phoneDao.readPhoneById(phone.getId());
+        assert "000-000-0000".equals(readPhone.getNumber());
+        assert phone.getId().equals(readPhone.getId());
+        assert 300L == readPhone.getPersonId();
         assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;

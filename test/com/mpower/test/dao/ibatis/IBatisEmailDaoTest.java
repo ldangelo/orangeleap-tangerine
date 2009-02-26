@@ -28,7 +28,9 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testMaintainEmail" }, dependsOnGroups = { "testReadEmail" })
     public void testMaintainEmail() throws Exception {
+        // Insert
         Email email = new Email(300L, "bow@wow.com");
+        email.setEffectiveDate(new Date());
         email = emailDao.maintainEmail(email);
         assert email.getId() > 0;
         Email readEmail = emailDao.readEmailById(email.getId());
@@ -44,11 +46,38 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert readEmail.isReceiveMail() == false;
         assert readEmail.isInactive() == false;
         assert readEmail.getComments() == null;
-        assert readEmail.getEffectiveDate() == null;
+        assert readEmail.getEffectiveDate() != null;
         assert readEmail.getSeasonalStartDate() == null;
         assert readEmail.getSeasonalEndDate() == null;
         assert readEmail.getTemporaryStartDate() == null;
         assert readEmail.getTemporaryEndDate() == null;
+        
+        // Update
+        email.setEmailType("trash");
+        email.setActivationStatus(ActivationType.temporary);
+        email.setTemporaryStartDate(new Date());
+        email.setTemporaryEndDate(new Date());
+        email.setEffectiveDate(null);
+        email = emailDao.maintainEmail(email);
+        readEmail = emailDao.readEmailById(email.getId());
+        assert readEmail != null;
+        assert "trash".equals(readEmail.getEmailType());
+        assert ActivationType.temporary.equals(readEmail.getActivationStatus());
+        assert readEmail.getTemporaryStartDate() != null;
+        assert readEmail.getTemporaryEndDate() != null;
+
+        assert email.getId().equals(readEmail.getId());
+        assert 300L == readEmail.getPersonId();
+        assert "bow@wow.com".equals(readEmail.getEmailAddress());
+        assert readEmail.getEmailDisplay() == null;
+        assert readEmail.getCreateDate() != null;
+        assert readEmail.getUpdateDate() != null;
+        assert readEmail.isReceiveMail() == false;
+        assert readEmail.isInactive() == false;
+        assert readEmail.getComments() == null;
+        assert readEmail.getEffectiveDate() == null;
+        assert readEmail.getSeasonalStartDate() == null;
+        assert readEmail.getSeasonalEndDate() == null;        
     }
 
     @Test(groups = { "testReadEmail" })

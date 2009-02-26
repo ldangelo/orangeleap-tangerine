@@ -28,15 +28,62 @@
     <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
     <result property="status" column="STATUS" jdbcType="VARCHAR" />
     <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-    <!--<result property="addressId" column="ADDRESS_ID" jdbcType="BIGINT" /> -->
-    <!--<result property="emailId" column="EMAIL_ID" jdbcType="BIGINT" /> -->
-    <!--<result property="paymentSourceId" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" /> -->
+    <result property="address" resultMap="ADDRESS.ADDRESS_RESULT_MAP"  /> 
+    <result property="email" resultMap="EMAIL.EMAIL_RESULT"  /> 
+   <!--  <result property="paymentSource" resultMap="PAYMENT.PAYMENT_RESULT" />  -->
 	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
-    <!-- <result property="phoneId" column="PHONE_ID" jdbcType="BIGINT" /> -->
+    <result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
   </resultMap>
   
-  <select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT" parameterClass="com.mpower.domain.model.Commitment" >
-    select COMMITMENT_ID, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AUTO_PAY,
+   <sql id="SELECT_COMMITMENT_FRAGMENT">
+    select 
+      c.COMMITMENT_ID, c.ACKNOWLEDGMENT_DATE, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AUTO_PAY,
+      c.CHECK_NUMBER, c.COMMENTS, c.COMMITMENT_TYPE, c.CREATE_DATE, c.CURRENCY_CODE, c.END_DATE, c.FREQUENCY,
+      c.LAST_ENTRY_DATE, c.NOTES, c.PAYMENT_TYPE, c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
+      c.PLEDGE_STATUS, c.PROJECTED_DATE, c.RECURRING, c.SEND_ACKNOWLEDGMENT, c.START_DATE, c.STATUS,
+      c.UPDATE_DATE, c.ADDRESS_ID, c.EMAIL_ID, c.PAYMENT_SOURCE_ID, c.PERSON_ID, c.PHONE_ID,
+
+        address.ADDRESS_ID, address.ACTIVATION_STATUS, address.ADDRESS_LINE_1, address.ADDRESS_LINE_2, address.ADDRESS_LINE_3,
+        address.ADDRESS_TYPE, address.CITY, address.COMMENT, address.COUNTRY, address.CREATE_DATE, address.EFFECTIVE_DATE, address.INACTIVE, address.POSTAL_CODE,
+        address.RECEIVE_CORRESPONDENCE, address.SEASONAL_END_DATE, address.SEASONAL_START_DATE, address.STATE_PROVINCE,
+        address.TEMPORARY_END_DATE, address.TEMPORARY_START_DATE, address.UPDATE_DATE, address.PERSON_ID,
+
+		email.EMAIL_ID, email.ACTIVATION_STATUS as EMAIL_ACTIVATION_STATUS, email.COMMENT as EMAIL_COMMENT, email.CREATE_DATE as EMAIL_CREATE_DATE, email.EFFECTIVE_DATE as EMAIL_EFFECTIVE_DATE,
+		email.EMAIL_ADDRESS, email.EMAIL_DISPLAY, email.EMAIL_TYPE, email.INACTIVE as EMAIL_INACTIVE, email.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, email.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
+		email.SEASONAL_START_DATE as EMAIL_SEASONAL_START_DATE, email.TEMPORARY_END_DATE as EMAIL_TEMPORARY_END_DATE, email.TEMPORARY_START_DATE as EMAIL_TEMPORARY_START_DATE,
+		email.UPDATE_DATE as EMAIL_UPDATE_DATE, email.PERSON_ID as EMAIL_PERSON_ID,
+
+		phone.PHONE_ID, phone.ACTIVATION_STATUS as PHONE_ACTIVATION_STATUS, phone.COMMENT as PHONE_COMMENT, 
+		phone.CREATE_DATE as PHONE_CREATE_DATE, phone.EFFECTIVE_DATE as PHONE_EFFECTIVE_DATE,
+		phone.INACTIVE as PHONE_INACTIVE, phone.NUMBER as PHONE_NUMBER, phone.PHONE_TYPE, phone.PROVIDER as PHONE_PROVIDER, 
+		phone.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, phone.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
+		phone.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, phone.SMS as PHONE_SMS, phone.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
+		phone.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, phone.UPDATE_DATE as PHONE_UPDATE_DATE, phone.PERSON_ID as PHONE_PERSON_ID,
+
+    
+      p.PERSON_ID, p.CONSTITUENT_INDIVIDUAL_ROLES, p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, 
+      p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
+	  p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
+	  p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME,
+	  pcf.PERSON_CUSTOM_FIELD_ID, pcf.PERSON_ID as CONS_CUS_FLD_PERSON_ID,
+	  cf.CUSTOM_FIELD_ID, cf.FIELD_NAME as CUS_FLD_FIELD_NAME, cf.FIELD_VALUE as CUS_FLD_FIELD_VALUE
+	  
+      from COMMITMENT c
+      inner join PERSON p on c.PERSON_ID = p.PERSON_ID
+		left outer join PERSON_CUSTOM_FIELD pcf on p.PERSON_ID = pcf.PERSON_ID 
+		left outer join CUSTOM_FIELD cf on pcf.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID 
+		left outer join EMAIL email on c.EMAIL_ID = email.EMAIL_ID 
+		left outer join PHONE phone on c.PHONE_ID = phone.PHONE_ID 
+		left outer join ADDRESS address on c.ADDRESS_ID = address.ADDRESS_ID 
+		<!-- left outer join PAYMENT_SOURCE ps on c.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID  -->
+      where 
+      p.SITE_NAME= #siteName#
+  </sql>
+  
+  
+  <select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT" parameterClass="map" >
+    select 
+    COMMITMENT_ID, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AUTO_PAY,
       CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE, END_DATE, FREQUENCY,
       LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE, PLEDGE_CANCEL_REASON, PLEDGE_DATE,
       PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT, START_DATE, STATUS,
@@ -63,6 +110,10 @@
       #pledgeStatus#, #projectedDate#, #recurring#, #sendAcknowledgment#,
       #startDate#, #status#, #updateDate#, #address.id#,
       #email.id#, #paymentSource.id#, #person.id#, #phone.id#)
+        <selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+      
   </insert>
   
   <update id="UPDATE_COMMITMENT" parameterClass="com.mpower.domain.model.Commitment" >

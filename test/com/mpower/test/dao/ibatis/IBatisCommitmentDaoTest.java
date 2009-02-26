@@ -48,6 +48,9 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
     	commitment.setPerson(person);
     	commitmentDao.maintainCommitment(commitment);
     	
+    //	commitment = commitmentDao.readCommitment(commitment.getId());
+    //	assert commitment.getId().equals(new Long(200));
+    	
     } 
 
     

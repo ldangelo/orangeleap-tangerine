@@ -7,7 +7,6 @@
 	<sqlMap resource="sqlmap/commitment.xml"/>
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
-	<sqlMap resource="sqlmap/constituentCustomField.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
 	<sqlMap resource="sqlmap/email.xml"/>

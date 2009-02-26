@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.domain.model.Person;
-import com.mpower.domain.model.PersonCustomField;
 import com.mpower.domain.model.Site;
 import com.mpower.util.StringConstants;
 
@@ -106,19 +105,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert "Billy".equals(constituent.getFirstName());
         assert constituent.getMiddleName() == null;
         assert constituent.getSuffix() == null;
-        assert "company1".equals(constituent.getSite().getName());
-        
-        assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().size() == 2;
-        for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
-            if (personCustomField.getId() == 1000) {
-                assert "organization.parent".equals(personCustomField.getCustomField().getName());
-                assert "100005".equals(personCustomField.getCustomField().getValue());
-            }
-            else if (personCustomField.getId() == 2000) {
-                assert "organization.subsidiaryList".equals(personCustomField.getCustomField().getName());
-                assert "100002,100003,100004".equals(personCustomField.getCustomField().getValue());
-            }
-        }
+        assert "company1".equals(constituent.getSite().getName());        
     } 
     
     @Test(groups = { "testReadConstituent" })
@@ -138,8 +125,6 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert constituent.getMiddleName() == null;
         assert "Sr".equals(constituent.getSuffix());
         assert "company1".equals(constituent.getSite().getName());
-
-        assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().isEmpty();
     }
     
     @Test(groups = { "testReadConstituent" })
@@ -154,31 +139,6 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
             assert "Pablo".equals(constituent.getFirstName()) || "Howdy".equals(constituent.getFirstName()) || "Billy".equals(constituent.getFirstName());
             assert constituent.getMiddleName() == null;
             assert "Sr".equals(constituent.getSuffix()) || constituent.getSuffix() == null;
-            
-            if (constituent.getId() == 100) {
-                for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
-                    if (personCustomField.getId() == 1000) {
-                        assert "organization.parent".equals(personCustomField.getCustomField().getName());
-                        assert "100005".equals(personCustomField.getCustomField().getValue());
-                    }
-                    else if (personCustomField.getId() == 2000) {
-                        assert "organization.subsidiaryList".equals(personCustomField.getCustomField().getName());
-                        assert "100002,100003,100004".equals(personCustomField.getCustomField().getValue());
-                    }
-                }
-            }
-            else if (constituent.getId() == 300) {
-                assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().size() == 1;
-                for (PersonCustomField personCustomField : constituent.getPersonCustomFields()) {
-                    if (personCustomField.getId() == 3000) {
-                        assert "organization.parent".equals(personCustomField.getCustomField().getName());
-                        assert "100005".equals(personCustomField.getCustomField().getValue());
-                    }
-                }
-            }
-            else {
-                assert constituent.getPersonCustomFields() != null && constituent.getPersonCustomFields().isEmpty();
-            }
         }
     }
 }

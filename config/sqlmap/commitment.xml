@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="COMMITMENT" >
 
-  <resultMap id="COMMITMENT" class="com.mpower.domain.model.Commitment" >
+  <resultMap id="COMMITMENT_RESULT" class="com.mpower.domain.model.Commitment" >
     <result property="id" column="COMMITMENT_ID" jdbcType="BIGINT" />
     <result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
     <result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
@@ -30,7 +30,7 @@
     <result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
     <result property="address" resultMap="ADDRESS.ADDRESS_RESULT_MAP"  /> 
     <result property="email" resultMap="EMAIL.EMAIL_RESULT"  /> 
-   <!--  <result property="paymentSource" resultMap="PAYMENT.PAYMENT_RESULT" />  -->
+    <result property="paymentSource" resultMap="PAYMENT.PAYMENT_RESULT" />  
 	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
     <result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
   </resultMap>
@@ -81,7 +81,7 @@
   </sql>
   
   
-  <select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT" parameterClass="map" >
+  <select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT_RESULT" parameterClass="map" >
     select 
     COMMITMENT_ID, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AUTO_PAY,
       CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE, END_DATE, FREQUENCY,
@@ -92,7 +92,7 @@
     where COMMITMENT_ID = #id#
   </select>
   
-  <statement id="SELECT_COMMITMENT_BY_SQL" resultMap="COMMITMENT">
+  <statement id="SELECT_COMMITMENT_BY_SQL" resultMap="COMMITMENT_RESULT">
   	 $sql$
   </statement>
   

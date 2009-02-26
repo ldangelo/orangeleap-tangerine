@@ -8,6 +8,7 @@
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
+	<sqlMap resource="sqlmap/distroLine.xml"/>
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
 	<sqlMap resource="sqlmap/email.xml"/>
 	<sqlMap resource="sqlmap/fieldCondition.xml"/>
@@ -15,6 +16,7 @@
 	<sqlMap resource="sqlmap/fieldRelationship.xml"/>
 	<sqlMap resource="sqlmap/fieldRequired.xml"/>
 	<sqlMap resource="sqlmap/fieldValidation.xml"/>
+	<sqlMap resource="sqlmap/gift.xml"/>
 	<sqlMap resource="sqlmap/messageResource.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
 	<sqlMap resource="sqlmap/paymentHistory.xml"/>

@@ -1,21 +1,17 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Phone;
-import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.util.AES;
 
 public class PaymentSource extends AbstractEntity implements Inactivatible {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
@@ -30,7 +26,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     private Address address = new Address();
     private Phone phone = new Phone();
     private String profile;
-    private String type = CREDIT_CARD;
+    private String paymentType = CREDIT_CARD;
     private String creditCardHolderName;
     private String creditCardType;
     @NotAuditable
@@ -65,33 +61,37 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     }
 
 //    @Override
+// TODO: for Ibatis    
     public Person getPerson() {
         return person;
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public void setPerson(Person person) {
         this.person = person;
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public Address getAddress() {
-//        Utilities.populateIfNullPerson(address, person);
         return address;
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public void setAddress(Address address) {
         this.address = address;
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public Phone getPhone() {
-//        Utilities.populateIfNullPerson(phone, person);
         return phone;
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public void setPhone(Phone phone) {
         this.phone = phone;
     }
@@ -104,12 +104,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
         this.profile = profile;
     }
 
-    public String getType() {
-        return type;
+    public String getPaymentType() {
+        return paymentType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPaymentType(String type) {
+        this.paymentType = type;
     }
 
     public String getCreditCardHolderName() {
@@ -311,9 +311,9 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     }
 
 //    @Override
-//    public Site getSite() {
-//        return person != null ? person.getSite() : null;
-//    }
+    public Site getSite() {
+        return person != null ? person.getSite() : null;
+    }
 
     public List<String> getExpirationMonthList() {
         List<String> monthList = new ArrayList<String>();
@@ -337,8 +337,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public Address getSelectedAddress() {
-//        Utilities.populateIfNullPerson(selectedAddress, person);
         return selectedAddress;
     }
 
@@ -347,8 +347,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     }
 
 //    @Override
+ // TODO: for Ibatis    
     public Phone getSelectedPhone() {
-//        Utilities.populateIfNullPerson(selectedPhone, person);
         return selectedPhone;
     }
 
@@ -371,13 +371,13 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
         if (this.profile == null) {
             StringBuilder sb = new StringBuilder();
 
-            if (ACH.equals(type)) {
+            if (ACH.equals(paymentType)) {
                 sb.append(ACH); // TODO: move to message bundle and lookup
                 sb.append("****");
                 sb.append(findLastFourDigits(this.achAccountNumber));
                 this.profile = sb.toString();
             }
-            else if (CREDIT_CARD.equals(type)) {
+            else if (CREDIT_CARD.equals(paymentType)) {
                 if (creditCardType != null) {
                     sb.append(creditCardType);
                 }
@@ -413,18 +413,18 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
      * @return true if this PaymentSource has all required fields populated
      */
     public boolean isValid() {
-        if (ACH.equals(type)) {
+        if (ACH.equals(paymentType)) {
             return org.springframework.util.StringUtils.hasText(achHolderName) &&
             org.springframework.util.StringUtils.hasText(achAccountNumber) &&
             org.springframework.util.StringUtils.hasText(achRoutingNumber);
         }
-        else if (CREDIT_CARD.equals(type)) {
+        else if (CREDIT_CARD.equals(paymentType)) {
             return org.springframework.util.StringUtils.hasText(creditCardHolderName) &&
             org.springframework.util.StringUtils.hasText(creditCardType) &&
             org.springframework.util.StringUtils.hasText(creditCardNumber);
 
         }
-        else if (CASH.equals(type) || CHECK.equals(type)) {
+        else if (CASH.equals(paymentType) || CHECK.equals(paymentType)) {
             return true; // TODO: what are the validity constraints for CASH and CHECK?
         }
         return false;
@@ -463,7 +463,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
     @Override
     public void prePersist() {
         super.prePersist();
-        if (type != null) {
+        if (paymentType != null) {
             if (ACH.equals(getType())) {
                 clearCredit();
             }

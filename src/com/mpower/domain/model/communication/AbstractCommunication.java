@@ -6,7 +6,7 @@ import java.util.Map;
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.Normalizable;
-import com.mpower.domain.model.CustomField;
+import com.mpower.domain.model.customization.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.type.ActivationType;
 
@@ -27,13 +27,13 @@ public abstract class AbstractCommunication implements Inactivatible, GeneratedI
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate;
     protected boolean userCreated = false;
-    protected final Map<String, CustomField> customFieldMap = null;
+    protected Map<String, CustomField> customFieldMap = null;
     protected Map<String, String> fieldLabelMap = null;
     protected Map<String, Object> fieldValueMap = null;
     protected Map<String, FieldDefinition> fieldTypeMap = null;
 
     public AbstractCommunication() {
-        super();
+        
     }
 
     @Override
@@ -142,6 +142,34 @@ public abstract class AbstractCommunication implements Inactivatible, GeneratedI
         }
         return customFieldMap;
     }
+
+    public void setCustomFieldMap(Map<String,CustomField> customFieldMap) {
+        this.customFieldMap = customFieldMap;
+    }
+
+    public String getCustomFieldValue(String fieldName) {
+        CustomField customField = getCustomFieldMap().get(fieldName);
+        if (customField == null || customField.getValue() == null) {
+            return null;
+        }
+        return customField.getValue();
+    }
+
+    public void setCustomFieldValue(String fieldName, String value) {
+        CustomField customField = getCustomFieldMap().get(fieldName);
+        if (customField == null) {
+            customField = new CustomField();
+            customField.setName(fieldName);
+            customField.setValue(value);
+            customField.setEntityId(this.getId());
+            customField.setEntityType(this.getClass().getSimpleName().toLowerCase());
+            getCustomFieldMap().put(fieldName, customField);
+
+        } else {
+            customField.setValue(value);
+        }
+    }
+
 
     public Date getEffectiveDate() {
         return effectiveDate;

@@ -2,30 +2,35 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="CUSTOM_FIELD">
 
-	<resultMap id="CUSTOM_FIELD_RESULT" class="com.mpower.domain.model.CustomField">
+	<resultMap id="CUSTOM_FIELD_RESULT" class="java.util.HashMap">
 		<result property="id" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
 		<result property="name" column="CUS_FLD_FIELD_NAME" jdbcType="VARCHAR" />
 		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
+        <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
+        <result property="entityId" column="ENTITY_ID" jdbcType="BIGINT"/>
 	</resultMap>
 
-	<select id="SELECT_CUSTOM_FIELD_BY_ID" resultMap="CUSTOM_FIELD_RESULT" parameterClass="com.mpower.domain.model.CustomField">
-		select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE
-		from CUSTOM_FIELD
-		where CUSTOM_FIELD_ID = #id#
-	</select>
+    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
+        select CUSTOM_FIELD_ID, FIELD_NAME, FIELD_VALUE, SEQUENCE_NUM
+        from CUSTOM_FIELD
+        where ENTITY_ID = #entityId#
+        and ENTITY_TYPE = #entityType#
+        order by FIELD_NAME asc, SEQUENCE_NUM asc
+    </select>
 
-	<insert id="INSERT_CUSTOM_FIELD" parameterClass="com.mpower.domain.model.CustomField">
-		insert into CUSTOM_FIELD (CUSTOM_FIELD_ID, FIELD_NAME, FIELD_VALUE)
-		values (#id#, #name#, #value#)
+
+	<insert id="INSERT_CUSTOM_FIELD" parameterClass="map">
+		insert into CUSTOM_FIELD (FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM)
+		values (#fieldName#, #fieldValue#, #entityType#,#entityId#,#sequenceNum#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_CUSTOM_FIELD" parameterClass="com.mpower.domain.model.CustomField">
-		update CUSTOM_FIELD
-		set FIELD_NAME = #name#,
-		FIELD_VALUE = #value#
-		where CUSTOM_FIELD_ID = #id#
-	</update>
+    <delete id="DELETE_CUSTOM_FIELD" parameterClass="map">
+        delete from CUSTOM_FIELD
+        where ENTITY_TYPE = #entityType#
+        and ENTITY_ID = #entityId#
+    </delete>
+
 </sqlMap>

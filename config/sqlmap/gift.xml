@@ -32,15 +32,61 @@
 	<result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
   </resultMap>
   
+  <sql id="GIFT_COLS_FRAGMENT">
+      g.GIFT_ID, g.ACKNOWLEDGMENT_DATE, g.AMOUNT, g.AUTH_CODE, g.CHECK_NUMBER, g.COMMENTS, g.CURRENCY_CODE,
+      g.DEDUCTIBLE, g.DEDUCTIBLE_AMOUNT, g.DONATION_DATE, g.ENTRY_TYPE, g.ORIGINAL_GIFT_ID, g.PAYMENT_MESSAGE,
+      g.PAYMENT_STATUS, g.PAYMENT_TYPE, g.POSTMARK_DATE, g.REFUND_GIFT_ID, g.REFUND_GIFT_TRANSACTION_DATE,
+      g.SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE, g.PAYMENT_TXREFNUM, g.ADDRESS_ID, g.COMMITMENT_ID, g.EMAIL_ID,
+      g.PAYMENT_SOURCE_ID, g.PERSON_ID, g.PHONE_ID
+  </sql>
+  
+  <sql id="GIFT_QUERY_FRAGMENT">
+    select 
+    <include refid="GIFT_COLS_FRAGMENT"/>,
+    <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+    <include refid="ADDRESS_COLS_FRAGMENT"/>,
+    <include refid="PHONE_COLS_FRAGMENT"/>,
+    <include refid="EMAIL_COLS_FRAGMENT"/>,
+    <include refid="PAYMENT_SRC_COLS_FRAGMENT"/>,
+    <include refid="COMMITMENT_COLS_FRAGMENT"/>
+    from GIFT g
+    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+    inner join EMAIL e on g.EMAIL_ID = e.EMAIL_ID
+    inner join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+    inner join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+    inner join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+    inner join COMMITMENT c on g.COMMITMENT_ID = c.COMMITMENT_ID
+    where p.SITE_NAME = #siteName#
+  </sql>
+
   <select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map" >
-    select GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE, CHECK_NUMBER, COMMENTS, CURRENCY_CODE,
-      DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE, ORIGINAL_GIFT_ID, PAYMENT_MESSAGE,
-      PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID, REFUND_GIFT_TRANSACTION_DATE,
-      SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM, ADDRESS_ID, COMMITMENT_ID, EMAIL_ID,
-      PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID
-    from GIFT
-    where GIFT_ID = #id#
+    <include refid="GIFT_QUERY_FRAGMENT"/>
+    and g.GIFT_ID = #id#
   </select>
+
+  <select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map" >
+    <include refid="GIFT_QUERY_FRAGMENT"/>
+  </select>
+
+  <select id="SELECT_GIFTS_BY_PERSON" resultMap="GIFT_RESULT" parameterClass="map" >
+    <include refid="GIFT_QUERY_FRAGMENT"/>
+    and g.PERSON_ID = #personId#
+    order by g.TRANSACTION_DATE desc
+  </select>
+  
+  <select id="SELECT_GIFTS_BY_COMMITMENT" resultMap="GIFT_RESULT" parameterClass="map" >
+    <include refid="GIFT_QUERY_FRAGMENT"/>
+    and g.COMMITMENT_ID = #commitmentId#
+    order by g.TRANSACTION_DATE desc
+  </select>
+  
+  <sql id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID">
+    select SUM(g.AMOUNT) 
+    from GIFT g 
+    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+    where p.SITE_NAME = #siteName#
+    and g.COMMITMENT_ID = #commitmentId# 
+  </sql>
   
   <insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.Gift" >
     insert into GIFT (GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE, CHECK_NUMBER, COMMENTS,

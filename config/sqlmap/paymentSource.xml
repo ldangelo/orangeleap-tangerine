@@ -12,10 +12,9 @@
 		<result property="creditCardNumber" column="PAYMENT_SRC_CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
 		<result property="creditCardType" column="PAYMENT_SRC_CREDIT_CARD_TYPE" jdbcType="VARCHAR" />
 		<result property="inactive" column="PAYMENT_SRC_INACTIVE" jdbcType="CHAR" />
-		<result property="paymentProfile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
-		<result property="paymentType" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT_MAP"  /> 
-		<result property="email" resultMap="EMAIL.EMAIL_RESULT"  /> 
+		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
+		<result property="type" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT_MAP" /> 
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 		
 	</resultMap>
 
@@ -31,12 +30,10 @@
 		select 
 		<include refid="PAYMENT_SRC_COLS_FRAGMENT"/>,
 		<include refid="ADDRESS_COLS_FRAGMENT"/>,
-		<include refid="EMAIL_COLS_FRAGMENT"/>,
 	    <include refid="PHONE_COLS_FRAGMENT"/>,
       	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
 
 		from PAYMENT_SOURCE ps 
-		left outer join EMAIL e on ps.EMAIL_ID = e.EMAIL_ID 
 		left outer join PHONE ph on ps.PHONE_ID = ph.PHONE_ID 
 		left outer join ADDRESS addr on ps.ADDRESS_ID = addr.ADDRESS_ID
       	inner join PERSON p on ps.PERSON_ID = p.PERSON_ID
@@ -53,7 +50,7 @@
 		values (#id#, #achAccountNumber#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
 		#creditCardNumber#, #creditCardType#, #inactive#,
-		#paymentProfile#, #paymentType#, #address.id#, #person.id#,
+		#profile#, #type#, #address.id#, #person.id#,
 		#phone.id#)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
@@ -70,8 +67,8 @@
 		CREDIT_CARD_NUMBER = #creditCardNumber#,
 		CREDIT_CARD_TYPE = #creditCardType#,
 		INACTIVE = #inactive#,
-		PAYMENT_PROFILE = #paymentProfile#,
-		PAYMENT_TYPE = #paymentType#,
+		PAYMENT_PROFILE = #profile#,
+		PAYMENT_TYPE = #type#,
 		ADDRESS_ID = #address.id#,
 		PERSON_ID = #person.id#,
 		PHONE_ID = #phone.id#

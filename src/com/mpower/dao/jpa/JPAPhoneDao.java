@@ -154,7 +154,7 @@ public class JPAPhoneDao implements PhoneDao {
     }
 
     @Override
-    // Unneeded for IBatis
+    // IBatisPhoneDao --> inactivatePhones
     public void inactivatePhones() {
         Query query = em.createNamedQuery("SET_EXPIRED_TEMPORARY_PHONES_INACTIVE");
         int modifedRecordCount = query.executeUpdate();

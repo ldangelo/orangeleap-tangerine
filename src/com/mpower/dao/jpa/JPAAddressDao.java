@@ -33,6 +33,8 @@ public class JPAAddressDao implements AddressDao {
     private EntityManager em;
 
     @Override
+    // TODO: IBatisAddressDao --> maintainAddress
+    // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Address maintainAddress(Address address) {
         if (address.getId() == null) {
             em.persist(address);
@@ -44,6 +46,7 @@ public class JPAAddressDao implements AddressDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisAddressDao --> readAddressesByConstituentId
     public List<Address> readAddresses(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_ADDRESSES_BY_PERSON_ID");
         query.setFlushMode(FlushModeType.COMMIT);
@@ -52,17 +55,21 @@ public class JPAAddressDao implements AddressDao {
     }
 
     @Override
+    // Unused for IBatis
     public void deleteAddress(Address address) {
         em.remove(address);
     }
 
     @Override
+    // TODO: IBatisAddressDao --> readAddressById
     public Address readAddress(Long addressId) {
         return em.find(Address.class, addressId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisAddressDao --> readActiveAddressesByConstituentId
+    // TODO: move below logic to Service class 
     public List<Address> readCurrentAddresses(Long personId, Calendar cal, boolean mailOnly) {
         // List<Address> retAddresses = new ArrayList<Address>();
         LinkedHashSet<String> typeSet = new LinkedHashSet<String>(); // store types of addresses
@@ -148,6 +155,7 @@ public class JPAAddressDao implements AddressDao {
     }
 
     @Override
+    // TODO: IBatisAddressDao --> inactivateAddresses
     public void inactivateAddresses() {
         Query query = em.createNamedQuery("SET_EXPIRED_TEMPORARY_ADDRESSES_INACTIVE");
         int modifedRecordCount = query.executeUpdate();

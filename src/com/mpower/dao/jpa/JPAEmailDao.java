@@ -33,6 +33,8 @@ public class JPAEmailDao implements EmailDao {
     private EntityManager em;
 
     @Override
+    // TODO: IBatisEmailDao --> maintainEmail
+    // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Email maintainEmail(Email email) {
         if (email.getId() == null) {
             em.persist(email);
@@ -44,6 +46,7 @@ public class JPAEmailDao implements EmailDao {
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisEmailDao --> readEmailsByConstituentId
     public List<Email> readEmails(Long personId) {
         Query query = em.createNamedQuery("READ_ACTIVE_EMAILS_BY_PERSON_ID");
         query.setParameter("personId", personId);
@@ -52,17 +55,21 @@ public class JPAEmailDao implements EmailDao {
     }
 
     @Override
+    // Unneeded for IBatis
     public void deleteEmail(Email email) {
         em.remove(email);
     }
 
     @Override
+    // TODO: IBatisEmailDao --> readEmailById
     public Email readEmail(Long emailId) {
         return em.find(Email.class, emailId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: IBatisEmailDao --> readActiveEmailsByConstituentId
+    // TODO: move below logic to service class
     public List<Email> readCurrentEmails(Long personId, Calendar cal, boolean mailOnly) {
         // List<Address> retAddresses = new ArrayList<Address>();
         LinkedHashSet<String> typeSet = new LinkedHashSet<String>(); // store types of emails
@@ -148,6 +155,7 @@ public class JPAEmailDao implements EmailDao {
     }
 
     @Override
+    // TODO: IBatisEmailDao --> inactivateEmails
     public void inactivateEmails() {
         Query query = em.createNamedQuery("SET_EXPIRED_TEMPORARY_EMAILS_INACTIVE");
         int modifedRecordCount = query.executeUpdate();

@@ -19,19 +19,25 @@
 		<result property="name" column="PARENT_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<!-- Selects -->
+	<sql id="SITE_COLS_FRAGMENT">
+		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
+	</sql>
+	
 	<sql id="SELECT_SITE_FRAGMENT">
 		FROM SITE
 		WHERE SITE_NAME = #siteName#
 	</sql>
 			
+	<!-- Selects -->
 	<select id="SELECT_BY_SITE_NAME" resultMap="SITE_RESULT" parameterClass="java.lang.String">
-		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
+		select 
+		<include refid="SITE_COLS_FRAGMENT"/>
 		<include refid="SELECT_SITE_FRAGMENT"/>
 	</select>
 	
 	<select id="SELECT_ALL_SITES" resultMap="SITE_RESULT">
-		select SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
+		select 
+		<include refid="SITE_COLS_FRAGMENT"/>
 		from SITE
 	</select>
 

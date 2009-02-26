@@ -18,6 +18,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.WebUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -36,23 +37,27 @@ public class CsvImportController extends SimpleFormController {
 		this.siteService = siteService;
 	}
 
-	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {
+	@Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {
 		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
 
 	@SuppressWarnings("unchecked")
 	public static boolean importexportAllowed(HttpServletRequest request) {
-		Map<String, AccessType> pageAccess = (Map<String, AccessType>)request.getSession().getAttribute("pageAccess");
+		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
 		return pageAccess.get("/importexport.htm") == AccessType.ALLOWED;
 	}
 	
-	protected ModelAndView onSubmit(
+	@Override
+    protected ModelAndView onSubmit(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			Object command,
 			BindException errors) throws Exception {
 
-		if (!importexportAllowed(request)) return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
+		if (!importexportAllowed(request)) {
+            return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
+        }
 
 		String entity = request.getParameter("entity");
 
@@ -70,7 +75,7 @@ public class CsvImportController extends SimpleFormController {
 		
         ModelAndView mav = super.onSubmit(request, response, command, errors);
         mav.addObject(IMPORT_RESULT, result);
-        request.getSession().setAttribute(IMPORT_RESULT, result);
+        WebUtils.setSessionAttribute(request, IMPORT_RESULT, result);
         return mav;
 
 	}
@@ -88,7 +93,9 @@ public class CsvImportController extends SimpleFormController {
 	    	
 			String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrors().size();
 			result.add(summary);
-			if (handler.getErrors().size() == 0) result.add("Import successful.");
+			if (handler.getErrors().size() == 0) {
+                result.add("Import successful.");
+            }
 			for (String error : handler.getErrors()) {
 				if (errors.getAllErrors().size() > 1000) {
 					result.add("more...");
@@ -111,7 +118,7 @@ public class CsvImportController extends SimpleFormController {
 		StringReader sr = new StringReader(new String(file));
 		CSVReader reader = new CSVReader(sr);
 		try {
-			return (List<String[]>)reader.readAll();
+			return reader.readAll();
 		} catch (IOException e) {
 			return new ArrayList<String[]>();
 		}

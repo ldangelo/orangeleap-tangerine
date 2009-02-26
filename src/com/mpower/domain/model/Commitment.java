@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 
-import com.mpower.domain.DistributionLine;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
@@ -40,75 +39,40 @@ public class Commitment extends AbstractCustomizableEntity {
     public static final String FREQUENCY_UNSPECIFIED = "unspecified";
 
     private Person person;
-
     private CommitmentType commitmentType;
-
     private List<Gift> gifts;
-
     private String comments;
-
     private BigDecimal amountPerGift;
-
     private BigDecimal amountTotal = null;
-    
     private String currencyCode = "USD";
-
     private String paymentType;
-
     private Integer checkNumber;
-
     private List<DistributionLine> distributionLines;
-
     private Date startDate = Calendar.getInstance().getTime();
-
     private Date endDate;
-
     private Date pledgeDate = Calendar.getInstance().getTime();
-
     private Date pledgeCancelDate;
-
     private String pledgeCancelReason;
-
     private String status = STATUS_ACTIVE;
-
     private String pledgeStatus = PLEDGE_STATUS_PENDING;
-
     private Date createDate;
-
     private Date updateDate;
-
     private boolean autoPay = false;
-
     private String notes;
-
     private PaymentSource paymentSource = new PaymentSource();
-
     private Address address = new Address();
-
     private Phone phone = new Phone();
-
     private Email email = new Email();
-
     private String frequency;
-
     private Boolean sendAcknowledgment = false;
-    
     private Date acknowledgmentDate;
-
     private RecurringGift recurringGift;
-
     private Date lastEntryDate;
-
     private boolean recurring = false;
-
     private Date projectedDate;
-
     private PaymentSource selectedPaymentSource = new PaymentSource();
-
     private Address selectedAddress = new Address();
-
     private Phone selectedPhone = new Phone();
-
     private Email selectedEmail = new Email();
 
     public Commitment() {

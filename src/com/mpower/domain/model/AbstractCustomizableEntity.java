@@ -1,16 +1,16 @@
 package com.mpower.domain.model;
 
-import com.mpower.domain.model.customization.*;
-import com.mpower.domain.model.customization.CustomField;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.mpower.domain.model.customization.CustomField;
 
 /**
  * Extends AbstractEntity to include methods needed on Entites which
  * can be customized via Custom Fields.
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public abstract class AbstractCustomizableEntity extends AbstractEntity {
 
     protected Map<String, CustomField> customFieldMap = null;

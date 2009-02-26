@@ -1,15 +1,16 @@
 package com.mpower.domain.model;
 
-import com.mpower.domain.model.customization.FieldDefinition;
-
-import java.util.Map;
 import java.io.Serializable;
+import java.util.Map;
+
+import com.mpower.domain.model.customization.FieldDefinition;
 
 /**
  * Base class for all Entities. It provides base functionality
  * for keeping track of the ID value and returning the type.
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public abstract class AbstractEntity implements Serializable {
 
     protected Long id = null;
@@ -32,7 +33,9 @@ public abstract class AbstractEntity implements Serializable {
      * @param id the ID of the Entity
      */
     public void setId(Long id) {
-        if(id != null && id > 0) this.id = id;
+        if(id != null && id > 0) {
+            this.id = id;
+        }
     }
 
     /**

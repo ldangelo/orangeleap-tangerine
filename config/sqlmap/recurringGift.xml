@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="RECURRING_GIFT" >
+
+  <resultMap id="RECURRING_GIFT" class="com.mpower.domain.model.RecurringGift" >
+    <result property="id" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
+    <result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
+	<result property="commitment" resultMap="COMMITMENT.COMMITMENT" /> 
+  </resultMap>
+
+  <select id="SELECT_RECURRING_GIFT_BY_ID" resultMap="RECURRING_GIFT" parameterClass="map" >
+    select RECURRING_GIFT_ID, NEXT_RUN_DATE, COMMITMENT_ID
+    from RECURRING_GIFT
+    where RECURRING_GIFT_ID = #id#
+  </select>
+  
+  <select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT" parameterClass="map" >
+    select r.RECURRING_GIFT_ID, r.NEXT_RUN_DATE, r.COMMITMENT_ID
+    from RECURRING_GIFT r
+    inner join COMMITMENT c on r.COMMITMENT_ID = c.COMMITMENT_ID
+    where NEXT_RUN_DATE &lt;= #date#
+    and c.STATUS in
+    	<iterate property="statuses" conjunction="," open="(" close=")">
+			#statuses[]#
+		</iterate>
+  </select>
+  
+  <insert id="INSERT_RECURRING_GIFT" parameterClass="com.mpower.domain.model.RecurringGift" >
+    insert into RECURRING_GIFT (RECURRING_GIFT_ID, NEXT_RUN_DATE, COMMITMENT_ID)
+    values (#id#, #nextRunDate#, #commitment.id#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+  </insert>
+
+  <update id="UPDATE_RECURRING_GIFT" parameterClass="com.mpower.domain.model.RecurringGift" >
+    update RECURRING_GIFT
+    set NEXT_RUN_DATE = #nextRunDate#,
+      COMMITMENT_ID = #commitment.id#
+    where RECURRING_GIFT_ID = #id#
+  </update>
+  
+  <delete id="DELETE_RECURRING_GIFT" parameterClass="map" >
+    delete from RECURRING_GIFT
+    where RECURRING_GIFT_ID = #id#
+  </delete>
+  
+  
+</sqlMap>

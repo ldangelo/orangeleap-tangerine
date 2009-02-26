@@ -88,6 +88,15 @@
     and g.COMMITMENT_ID = #commitmentId# 
   </sql>
   
+  <sql id="ANALYZE_FOR_MAJOR_DONOR">
+    select SUM(g.AMOUNT) 
+    from GIFT g 
+    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+    where p.SITE_NAME = #siteName#
+    and g.PERSON_ID = #personId#
+    and g.TRANSACTION_DATE between #beginDate# and #currentDate#
+  </sql>
+  
   <insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.Gift" >
     insert into GIFT (GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE, CHECK_NUMBER, COMMENTS,
       CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE, ORIGINAL_GIFT_ID,

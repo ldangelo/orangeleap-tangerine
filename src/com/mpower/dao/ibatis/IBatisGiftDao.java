@@ -125,17 +125,13 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @Override
     public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
-    	return 0; //TODO
-    	/*
-        Query query = em.createNamedQuery("ANALYZE_FOR_MAJOR_DONOR");
-        query.setParameter("personId", personId);
-        query.setParameter("beginDate", beginDate);
-        query.setParameter("currentDate", currentDate);
-        if (query.getSingleResult() != null) {
-            return ((BigDecimal) query.getSingleResult()).doubleValue();
-        }
-        return 0.00;
-        */
+        Map<String, Object> params = setupParams();
+        params.put("personId", personId);
+        params.put("beginDate", beginDate);
+        params.put("currentDate", currentDate);
+        BigDecimal bd = (BigDecimal)getSqlMapClientTemplate().queryForObject("ANALYZE_FOR_MAJOR_DONOR", params);
+        if (bd == null) return 0.00d;
+        return bd.doubleValue();
     }
 
 //    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {

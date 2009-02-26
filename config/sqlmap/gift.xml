@@ -102,6 +102,10 @@
       #refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
       #txRefNum#, #address.id#, #commitment.id#, #email.id#,
       #paymentSource.id#, #person.id#, #phone.id#)
+      	<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+      
   </insert>
   <update id="UPDATE_GIFT" parameterClass="com.mpower.domain.model.Gift" >
     update GIFT

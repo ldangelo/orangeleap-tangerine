@@ -19,6 +19,7 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.security.ui.webapp.AuthenticationProcessingFilter;
 import org.springframework.security.util.TextUtils;
 import org.springframework.util.Assert;
+import org.springframework.web.util.WebUtils;
 
 import com.mpower.service.customization.PageCustomizationService;
 import com.mpower.service.ldap.LdapService;
@@ -36,7 +37,7 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
    
     public static final String FULLNAME_KEY = "j_fullname";
 
-    private String fullNameParameter = FULLNAME_KEY;
+    private final String fullNameParameter = FULLNAME_KEY;
     
 
     private PageCustomizationService pageCustomizationService;
@@ -95,13 +96,13 @@ public class MpowerAuthenticationProcessingFilter extends AuthenticationProcessi
             roles.add(authorities[i].getAuthority());
         }
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(((MpowerAuthenticationToken) authResult).getSite(), roles);
-        request.getSession().setAttribute("pageAccess", pageAccess);
+        WebUtils.setSessionAttribute(request, "pageAccess", pageAccess);
         ((MpowerAuthenticationToken) authResult).setPageAccess(pageAccess);
         logger.debug(pageAccess);
 
-        request.getSession().setAttribute("passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
-        request.getSession().setAttribute("lastLoginDate", ldapService.getLastLogin().getTime());
-        request.getSession().setAttribute("currentDate",new Date());
+        WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
+        WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin().getTime());
+        WebUtils.setSessionAttribute(request, "currentDate",new Date());
         ldapService.setLastLogin();
     }
 

@@ -10,14 +10,12 @@ import com.mpower.type.CommunicationHistoryType;
  * Communication history (including generated correspondence) for Constituent
  */
 
-public class CommunicationHistory implements GeneratedId, Serializable //, Customizable, Viewable
-{
+public class CommunicationHistory extends AbstractCustomizableEntity {
 
 	// recordedBy and assignedTo have been moved to custom fields
 	
     private static final long serialVersionUID = 1L;
 
-    private Long id;
 
     private Date recordDate;
 
@@ -38,17 +36,7 @@ public class CommunicationHistory implements GeneratedId, Serializable //, Custo
 
     private Date updateDate;
 
-    
-//    private List<CommunicationHistoryCustomField> communicationHistoryCustomFields;
-//
-//    private Map<String, CustomField> customFieldMap = null;
-//
-//    private Map<String, String> fieldLabelMap = null;
-//
-//    private Map<String, Object> fieldValueMap = null;
-//    
-//    private Map<String, FieldDefinition> fieldTypeMap = null;
-    
+
 	public Site getSite() {
 		return getPerson().getSite();
 	}
@@ -133,51 +121,6 @@ public class CommunicationHistory implements GeneratedId, Serializable //, Custo
 		return comments;
 	}
 
-
-//    public List<CommunicationHistoryCustomField> getCommunicationHistoryCustomFields() {
-//        if (communicationHistoryCustomFields == null) {
-//        	communicationHistoryCustomFields = new ArrayList<CommunicationHistoryCustomField>();
-//        }
-//        return communicationHistoryCustomFields;
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public Map<String, CustomField> getCustomFieldMap() {
-//        if (customFieldMap == null) {
-//            customFieldMap = CommunicationHistoryCustomFieldMap.buildCustomFieldMap(getCommunicationHistoryCustomFields(), this);
-//        }
-//        return customFieldMap;
-//    }
-//
-//    @Override
-//    public Map<String, String> getFieldLabelMap() {
-//        return fieldLabelMap;
-//    }
-//
-//    @Override
-//    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-//        this.fieldLabelMap = fieldLabelMap;
-//    }
-//
-//    @Override
-//    public Map<String, Object> getFieldValueMap() {
-//        return fieldValueMap;
-//    }
-//
-//    @Override
-//    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-//        this.fieldValueMap = fieldValueMap;
-//    }
-//
-//    @Override
-//    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-//        this.fieldTypeMap = fieldTypeMap;
-//    }
-//
-//    @Override
-//    public Map<String, FieldDefinition> getFieldTypeMap() {
-//        return fieldTypeMap;
-//    }
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;

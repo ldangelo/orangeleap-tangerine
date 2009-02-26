@@ -6,13 +6,11 @@ import com.mpower.domain.Auditable;
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.Person;
+import com.mpower.domain.model.AbstractEntity;
 
-public class Code implements GeneratedId, Auditable, Inactivatible, Serializable 
-{
+public class Code extends AbstractEntity implements Auditable, Inactivatible {
 
     private static final long serialVersionUID = 1L;
-
-    private Long id;
 
     private Long codeTypeId;
 
@@ -23,16 +21,6 @@ public class Code implements GeneratedId, Auditable, Inactivatible, Serializable
     private String description;
 
     private Auditable originalObject;
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getValue() {
         return value;

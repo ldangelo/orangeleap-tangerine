@@ -11,6 +11,8 @@ import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Normalizable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 
@@ -38,18 +40,18 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     
     // Update if exists, otherwise insert.  
     // Useful for maintain* methods.
-    protected Object insertOrUpdate(GeneratedId o, String table) {
+    protected Object insertOrUpdate(AbstractEntity o, String table) {
     
         if (logger.isDebugEnabled()) {
             logger.debug("insertOrUpdate: o = " + o + " table = " + table);
         }
 
-        if (o instanceof Normalizable) {
-    		((Normalizable)o).normalize();
+        if (o instanceof AbstractCommunicationEntity) {
+    		((AbstractCommunicationEntity)o).normalize();
     	}
         
     	Long id = o.getId();
-    	if (id == null || id.longValue() == 0) {
+    	if (id == null || id == 0) {
             if (logger.isDebugEnabled()) {
                 logger.debug("insert " + table);
             }

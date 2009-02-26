@@ -21,9 +21,8 @@ import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.CommitmentType;
 
-public class Commitment implements 
+public class Commitment extends AbstractCustomizableEntity implements Normalizable { 
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
-GeneratedId, Normalizable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,8 +44,6 @@ GeneratedId, Normalizable, Serializable {
     public static final String FREQUENCY_ANNUALLY = "annually";
     public static final String FREQUENCY_UNSPECIFIED = "unspecified";
 
-    private Long id;
-
     private Person person;
 
     private CommitmentType commitmentType;
@@ -64,8 +61,6 @@ GeneratedId, Normalizable, Serializable {
     private String paymentType;
 
     private Integer checkNumber;
-
-    private List<CommitmentCustomField> commitmentCustomFields;
 
     private List<DistributionLine> distributionLines;
 
@@ -112,14 +107,6 @@ GeneratedId, Normalizable, Serializable {
     private boolean recurring = false;
 
     private Date projectedDate;
-
-    private Map<String, CustomField> customFieldMap = null;
-
-    private Map<String, String> fieldLabelMap = null;
-
-    private Map<String, Object> fieldValueMap = null;
-    
-    private Map<String, FieldDefinition> fieldTypeMap = null;
 
     private PaymentSource selectedPaymentSource = new PaymentSource();
 
@@ -215,21 +202,6 @@ GeneratedId, Normalizable, Serializable {
         this.acknowledgmentDate = acknowledgmentDate;
     }
 
-    public List<CommitmentCustomField> getCustomFields() {
-        if (commitmentCustomFields == null) {
-            commitmentCustomFields = new ArrayList<CommitmentCustomField>();
-        }
-        return commitmentCustomFields;
-    }
-
-//    @SuppressWarnings("unchecked")  // TODO
-//    public Map<String, CustomField> getCustomFieldMap() {
-//        if (customFieldMap == null) {
-//            customFieldMap = CommitmentCustomFieldMap.buildCustomFieldMap(getCustomFields(), this);
-//        }
-//        return customFieldMap;
-//    }
-
     @SuppressWarnings("unchecked")
     public List<DistributionLine> getDistributionLines() {
         if (distributionLines == null) {
@@ -277,31 +249,7 @@ GeneratedId, Normalizable, Serializable {
     public String getComments() {
         return comments;
     }
-
-    public Map<String, String> getFieldLabelMap() {
-        return fieldLabelMap;
-    }
-
-    public void setFieldLabelMap(Map<String, String> fieldLabelMap) {
-        this.fieldLabelMap = fieldLabelMap;
-    }
-
-    public Map<String, Object> getFieldValueMap() {
-        return fieldValueMap;
-    }
-
-    public void setFieldValueMap(Map<String, Object> fieldValueMap) {
-        this.fieldValueMap = fieldValueMap;
-    }
-
-    public void setFieldTypeMap(Map<String, FieldDefinition> fieldTypeMap) {
-        this.fieldTypeMap = fieldTypeMap;
-    }
-
-    public Map<String, FieldDefinition> getFieldTypeMap() {
-        return fieldTypeMap;
-    }
-
+    
     public Site getSite() {
         return person != null ? person.getSite() : null;
     }

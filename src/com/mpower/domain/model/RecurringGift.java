@@ -5,11 +5,9 @@ import java.util.Date;
 
 import com.mpower.domain.GeneratedId;
 
-public class RecurringGift implements GeneratedId, Serializable {
+public class RecurringGift extends AbstractEntity {
 
     private static final long serialVersionUID = 1L;
-
-    private Long id;
 
     private Commitment commitment;
 
@@ -20,14 +18,6 @@ public class RecurringGift implements GeneratedId, Serializable {
 
     public RecurringGift(Commitment commitment) {
         this.commitment = commitment;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Commitment getCommitment() {

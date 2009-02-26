@@ -11,7 +11,7 @@ import com.mpower.domain.GeneratedId;
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
 
-public class Phone extends AbstractCommunication implements GeneratedId, Serializable { // SiteAware, ConstituentInfo TODO: put back for IBatis
+public class Phone extends AbstractCommunicationEntity { // SiteAware, ConstituentInfo TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
 
@@ -19,8 +19,7 @@ public class Phone extends AbstractCommunication implements GeneratedId, Seriali
     private String number;
     private String provider;
     private String sms;
-    private List<PhoneCustomField> phoneCustomFields;
-    
+
     public Phone() { }
 
     public Phone(Long personId) {
@@ -64,13 +63,6 @@ public class Phone extends AbstractCommunication implements GeneratedId, Seriali
 
     public void setSms(String sms) {
         this.sms = sms;
-    }
-
-    public List<PhoneCustomField> getPhoneCustomFields() {
-        if (phoneCustomFields == null) {
-            phoneCustomFields = new ArrayList<PhoneCustomField>();
-        }
-        return phoneCustomFields;
     }
 
     /**

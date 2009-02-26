@@ -1,7 +1,6 @@
 package com.mpower.domain.model.communication;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +11,7 @@ import com.mpower.domain.GeneratedId;
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
 
-public class Address extends AbstractCommunication implements GeneratedId, Serializable {
+public class Address extends AbstractCommunicationEntity {
     
     private static final long serialVersionUID = 1L;
 
@@ -24,7 +23,6 @@ public class Address extends AbstractCommunication implements GeneratedId, Seria
     private String stateProvince;
     private String country;
     private String postalCode;
-    private List<AddressCustomField> addressCustomFields;
 
     public Address() { }
 
@@ -105,13 +103,6 @@ public class Address extends AbstractCommunication implements GeneratedId, Seria
 
     public void setAddressType(String addressType) {
         this.addressType = addressType;
-    }
-
-    public List<AddressCustomField> getAddressCustomFields() {
-        if (addressCustomFields == null) {
-            addressCustomFields = new ArrayList<AddressCustomField>();
-        }
-        return addressCustomFields;
     }
 
     public String getShortDisplay() {

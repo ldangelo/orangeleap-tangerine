@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
@@ -20,8 +18,6 @@ public class Gift extends AbstractEntity {
 //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
 
     private static final long serialVersionUID = 1L;
-
-    private final Log logger = LogFactory.getLog(getClass());
 
     private Person person;
 

@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.mpower.domain.model.AbstractEntity;
-import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 

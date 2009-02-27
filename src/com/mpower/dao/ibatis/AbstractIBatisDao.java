@@ -73,6 +73,14 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return o;
     }
     
+    /**
+     * Perform a batch insert or update.  
+     * <strong>NOTE:</strong> for INSERTS, IBatis will not be able to return back the generated IDs correctly, thus they are not set.  
+     * You will have to do a SELECT to get the generated IDs. 
+     * @param entities to batch update or insert
+     * @param table
+     * @return list
+     */
     protected List<? extends AbstractEntity> batchInsertOrUpdate(final List<? extends AbstractEntity> entities, final String table) {
         if (logger.isDebugEnabled()) {
             logger.debug("batchInsertOrUpdate: entities = " + entities + " table = " + table);
@@ -85,11 +93,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
                         entity.prePersist();
                         
                         if (entity.getId() == null || entity.getId() <= 0) {
-                            Long id = (Long)executor.insert("INSERT_" + table, entity);
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("batchInsertOrUpdate: generatedId = " + id + " for " + entity + " table = " + table);
-                            }
-                            entity.setId(id);
+                            executor.insert("INSERT_" + table, entity);
                         }
                         else {
                             executor.update("UPDATE_" + table, entity);

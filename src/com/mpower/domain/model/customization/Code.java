@@ -1,9 +1,6 @@
 package com.mpower.domain.model.customization;
 
-import java.io.Serializable;
-
 import com.mpower.domain.Auditable;
-import com.mpower.domain.GeneratedId;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.Person;
 import com.mpower.domain.model.AbstractEntity;

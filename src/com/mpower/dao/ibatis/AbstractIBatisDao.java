@@ -1,14 +1,18 @@
 package com.mpower.dao.ibatis;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
@@ -35,18 +39,20 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return params;
     }
     
-    // Update if exists, otherwise insert.  
-    // Useful for maintain* methods.
-    protected Object insertOrUpdate(AbstractEntity o, String table) {
-    
+    /**
+     * Update if exists, otherwise insert. Useful for maintain* methods.  
+     * @param o
+     * @param table
+     * @return
+     */
+    protected Object insertOrUpdate(final AbstractEntity o, final String table) {
         if (logger.isDebugEnabled()) {
             logger.debug("insertOrUpdate: o = " + o + " table = " + table);
         }
-
         o.prePersist();
         
     	Long id = o.getId();
-    	if (id == null || id == 0) {
+    	if (id == null || id <= 0) {
             if (logger.isDebugEnabled()) {
                 logger.debug("insert " + table);
             }
@@ -56,7 +62,8 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
                 logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
             }
     	    o.setId(generatedId);
-    	} else {
+    	} 
+    	else {
             if (logger.isDebugEnabled()) {
                 logger.debug("update " + table + ", id=" + id);
             }
@@ -66,4 +73,33 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return o;
     }
     
+    protected List<? extends AbstractEntity> batchInsertOrUpdate(final List<? extends AbstractEntity> entities, final String table) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("batchInsertOrUpdate: entities = " + entities + " table = " + table);
+        }
+        if (entities != null && !entities.isEmpty()) {
+            getSqlMapClientTemplate().execute(new SqlMapClientCallback() {
+                public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                    executor.startBatch();
+                    for (AbstractEntity entity : entities) {
+                        entity.prePersist();
+                        
+                        if (entity.getId() == null || entity.getId() <= 0) {
+                            Long id = (Long)executor.insert("INSERT_" + table, entity);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("batchInsertOrUpdate: generatedId = " + id + " for " + entity + " table = " + table);
+                            }
+                            entity.setId(id);
+                        }
+                        else {
+                            executor.update("UPDATE_" + table, entity);
+                        }
+                    }
+                    executor.executeBatch();
+                    return null;
+                }
+            });
+        }
+        return entities;
+    }
 }

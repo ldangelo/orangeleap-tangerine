@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
-<sqlMap namespace="DISTRO_LINE" >
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="DISTRO_LINE">
 
-  <resultMap id="DISTRO_LINE_RESULT" class="com.mpower.domain.model.DistributionLine" >
-    <result property="id" column="DISTRO_LINE_ID" jdbcType="BIGINT" />
-    <result property="amount" column="AMOUNT" jdbcType="DECIMAL" />
-    <result property="motivationCode" column="MOTIVATION_CODE" jdbcType="VARCHAR" />
-    <result property="other_motivationCode" column="OTHER_MOTIVATION" jdbcType="VARCHAR" />
-    <result property="percentage" column="PERCENTAGE" jdbcType="DECIMAL" />
-    <result property="projectCode" column="PROJECT_CODE" jdbcType="VARCHAR" />
-	<result property="commitment" resultMap="COMMITMENT.COMMITMENT" /> 
-    <result property="gift" resultMap="GIFT.GIFT_RESULT" />  
-  </resultMap>
-  
-  <select id="SELECT_DISTRO_LINE_BY_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map" >
-    select DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE,
-      COMMITMENT_ID, GIFT_ID
-    from DISTRO_LINE
-    where DISTRO_LINE_ID = #id#
-  </select>
-  
-  <delete id="DELETE_DISTRO_LINE" parameterClass="map" >
-    delete from DISTRO_LINE
-    where DISTRO_LINE_ID = #id#
-  </delete>
-  
-  <insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine" >
-    insert into DISTRO_LINE (DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE,
-      PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
-    values (#id#, #amount#, #motivationCode#,
-      #other_motivationCode#, #percentage#, #projectCode#, #commitment.id#,
-      #gift.id#)		
-      <selectKey keyProperty="id" resultClass="long">
+	<resultMap id="DISTRO_LINE_RESULT" class="com.mpower.domain.model.DistributionLine">
+		<result property="id" column="DISTRO_LINE_ID" jdbcType="BIGINT" />
+		<result property="amount" column="DISTRO_LINE_AMOUNT" jdbcType="DECIMAL" />
+		<result property="percentage" column="DISTRO_LINE_PERCENTAGE" jdbcType="DECIMAL" />
+		<result property="projectCode" column="DISTRO_LINE_PROJECT_CODE" jdbcType="VARCHAR" />
+		<result property="motivationCode" column="DISTRO_LINE_MOTIVATION_CODE" jdbcType="VARCHAR" />
+		<result property="other_motivationCode" column="DISTRO_LINE_OTHER_MOTIVATION" jdbcType="VARCHAR" />
+		<result property="giftId" column="DISTRO_GIFT_ID" jdbcType="BIGINT" />
+		<result property="commitmentId" column="DISTRO_COMMITMENT_ID" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="DISTRO_COLS_FRAGMENT">
+		dl.DISTRO_LINE_ID, dl.AMOUNT as DISTRO_LINE_AMOUNT, dl.PERCENTAGE as DISTRO_LINE_PERCENTAGE,
+		dl.PROJECT_CODE as DISTRO_LINE_PROJECT_CODE, dl.MOTIVATION_CODE as DISTRO_LINE_MOTIVATION_CODE, 
+		dl.OTHER_MOTIVATION as DISTRO_LINE_OTHER_MOTIVATION, dl.GIFT_ID as DISTRO_GIFT_ID, dl.COMMITMENT_ID as DISTRO_COMMITMENT_ID
+	</sql>
+	
+	<select id="SELECT_DISTRO_LINE_BY_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="long">
+		select 
+		<include refid="DISTRO_COLS_FRAGMENT" />
+		from DISTRO_LINE dl
+		where dl.DISTRO_LINE_ID = #id#
+	</select>
+
+	<insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine">
+		insert into DISTRO_LINE (DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
+		values (#id#, #amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #commitmentId#, #giftId#)
+		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
-	  </selectKey>
-  </insert>
-  
-  <update id="UPDATE_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine" >
-    update DISTRO_LINE
-    set AMOUNT = #amount#,
-      MOTIVATION_CODE = #motivationCode#,
-      OTHER_MOTIVATION = #other_motivationCode#,
-      PERCENTAGE = #percentage#,
-      PROJECT_CODE = #projectCode#,
-      COMMITMENT_ID = #commitment.id#,
-      GIFT_ID = #gift.id#
-    where DISTRO_LINE_ID = #id#
-  </update>
-  
+		</selectKey>
+	</insert>
+
+	<update id="UPDATE_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine">
+		update DISTRO_LINE
+		set AMOUNT = #amount#,
+		PERCENTAGE = #percentage#,
+		PROJECT_CODE = #projectCode#,
+		MOTIVATION_CODE = #motivationCode#,
+		OTHER_MOTIVATION = #other_motivationCode#,
+		COMMITMENT_ID = #commitmentId#,
+		GIFT_ID = #giftId#
+		where DISTRO_LINE_ID = #id#
+	</update>
+
 </sqlMap>

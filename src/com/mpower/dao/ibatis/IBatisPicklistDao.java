@@ -1,14 +1,17 @@
 package com.mpower.dao.ibatis;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.mpower.dao.interfaces.PicklistDao;
 import com.mpower.domain.model.customization.Picklist;
 import com.mpower.domain.model.customization.PicklistItem;
@@ -39,17 +42,25 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
     }
 
     @Override
-    public Picklist maintainPicklist(Picklist picklist) {
+    public Picklist maintainPicklist(final Picklist picklist) {
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPicklist: picklist = " + picklist);
         }
-
         getSqlMapClientTemplate().update("UPDATE_PICKLIST", picklist);
 
-        List<PicklistItem> items = picklist.getPicklistItems();
-        for(PicklistItem item : items) {
-            item.setPicklist(picklist);
-            maintainPicklistItem(item);
+        final List<PicklistItem> items = picklist.getPicklistItems();
+        if (items != null && !items.isEmpty()) {
+            getSqlMapClientTemplate().execute(new SqlMapClientCallback() {
+                public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                    executor.startBatch();
+                    for (PicklistItem item : items) {
+                        item.setPicklist(picklist);
+                        executor.update("UPDATE_PICKLIST_ITEM", item);
+                    }
+                    executor.executeBatch();
+                    return null;
+                }
+            });
         }
 
         return picklist;

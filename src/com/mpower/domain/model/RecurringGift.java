@@ -1,9 +1,6 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.util.Date;
-
-import com.mpower.domain.GeneratedId;
 
 public class RecurringGift extends AbstractEntity {
 

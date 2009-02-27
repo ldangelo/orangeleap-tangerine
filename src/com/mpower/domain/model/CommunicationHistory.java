@@ -1,9 +1,7 @@
 package com.mpower.domain.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import com.mpower.domain.GeneratedId;
 import com.mpower.type.CommunicationHistoryType;
 
 /*
@@ -42,13 +40,15 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 	}
 
 
-	public void setId(Long id) {
+	@Override
+    public void setId(Long id) {
 		this.id = id;
 	}
 
 
 
-	public Long getId() {
+	@Override
+    public Long getId() {
 		return id;
 	}
 

@@ -1,13 +1,9 @@
 package com.mpower.domain.model.communication;
 
-import java.io.Serializable;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.mpower.domain.GeneratedId;
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
 

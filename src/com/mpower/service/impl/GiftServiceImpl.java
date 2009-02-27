@@ -3,7 +3,9 @@ package com.mpower.service.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -136,13 +138,24 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
         	logger.error(ex.getStackTrace());
         }
 
+        setDefaultDates(gift);
         gift = giftDao.maintainGift(gift);
-        
         paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
         
         auditService.auditObject(gift);
 
         return gift;
+    }
+    
+    private void setDefaultDates(Gift gift) {
+        if (gift.getId() == null) {
+            Calendar transCal = Calendar.getInstance();
+            gift.setTransactionDate(transCal.getTime());
+            if (gift.getPostmarkDate() == null) {
+                Calendar postCal = new GregorianCalendar(transCal.get(Calendar.YEAR), transCal.get(Calendar.MONTH), transCal.get(Calendar.DAY_OF_MONTH));
+                gift.setPostmarkDate(postCal.getTime());
+            }
+        }
     }
 
     /*
@@ -416,8 +429,9 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    // THIS METHOD IS NOT USED ANYWHERE TODO: remove
     public List<Gift> readAllGifts() {
-        return giftDao.readAllGifts();
+        return giftDao.readAllGifts(); 
     }
 
     public void setAuditService(AuditService auditService) {

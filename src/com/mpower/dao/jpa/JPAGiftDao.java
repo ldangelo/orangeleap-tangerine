@@ -1,9 +1,7 @@
 package com.mpower.dao.jpa;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,12 +38,6 @@ public class JPAGiftDao implements GiftDao {
     	//if (gift.getPerson()!=null && !gift.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
         
     	if (gift.getId() == null) {
-            Calendar transCal = Calendar.getInstance();
-            gift.setTransactionDate(transCal.getTime());
-            if (gift.getPostmarkDate() == null) {
-                Calendar postCal = new GregorianCalendar(transCal.get(Calendar.YEAR), transCal.get(Calendar.MONTH), transCal.get(Calendar.DAY_OF_MONTH));
-                gift.setPostmarkDate(postCal.getTime());
-            }
             em.persist(gift);
             return gift;
         }
@@ -55,7 +47,9 @@ public class JPAGiftDao implements GiftDao {
     @Override
     public Gift readGift(Long giftId) {
         Gift gift = em.find(Gift.class, giftId);
-        if (gift!=null && !gift.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        if (gift!=null && !gift.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
         return gift;
     }
 

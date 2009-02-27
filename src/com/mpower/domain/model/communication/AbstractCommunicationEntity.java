@@ -1,14 +1,12 @@
 package com.mpower.domain.model.communication;
 
 import java.util.Date;
-import java.util.Map;
 
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.model.AbstractCustomizableEntity;
-import com.mpower.domain.model.customization.CustomField;
-import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.type.ActivationType;
 
+@SuppressWarnings("serial")
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible {
 
     protected Long personId;
@@ -25,12 +23,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate; 
     protected boolean userCreated = false;
-    protected Map<String, CustomField> customFieldMap = null;
-    protected Map<String, String> fieldLabelMap = null;
-    protected Map<String, Object> fieldValueMap = null;
-    protected Map<String, FieldDefinition> fieldTypeMap = null;
-
-
 
     public Long getPersonId() {
         return personId;
@@ -104,10 +96,12 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.seasonalEndDate = seasonalEndDate;
     }
 
+    @Override
     public boolean isInactive() {
         return inactive;
     }
 
+    @Override
     public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }

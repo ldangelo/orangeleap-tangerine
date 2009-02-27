@@ -24,7 +24,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     protected boolean inactive = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
-    protected Date effectiveDate;
+    protected Date effectiveDate; 
     protected boolean userCreated = false;
     protected Map<String, CustomField> customFieldMap = null;
     protected Map<String, String> fieldLabelMap = null;
@@ -122,6 +122,12 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     }
 
     public Date getEffectiveDate() {
+        //TANGERINE-203, for a new, permanent contact, use Today as defaut
+        if((id == null || id == 0) && effectiveDate  == null
+                && ActivationType.permanent.equals(getActivationStatus())) {
+            this.effectiveDate = new Date();
+        }
+
         return effectiveDate;
     }
 

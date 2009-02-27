@@ -16,4 +16,6 @@ public interface ConstituentDao {
 
     public Person maintainConstituent(Person constituent);
     
+    public void setLapsedDonor(Long constituentId);
+
 }

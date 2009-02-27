@@ -108,5 +108,11 @@
 		SITE_NAME = #site.name#
 		where PERSON_ID = #id#
 	</update>
-	
+
+	<update id="SET_LAPSED_DONOR" parameterClass="long">
+		update PERSON
+		set LAPSED_DONOR = TRUE
+		where PERSON_ID = #id#
+	</update>
+
 </sqlMap>

@@ -89,6 +89,28 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getUpdateDate() != null;      
     }
     
+    @Test(groups = { "testSetLapsedDonor" }, dependsOnGroups = { "testReadConstituent", "testMaintainConstituent" })
+    public void testSetLapsedDonor() throws Exception {
+        Person constituent = constituentDao.readConstituentById(200L);
+        assert constituent.isLapsedDonor() == false;
+        assert "Painters, Inc.".equals(constituent.getOrganizationName());
+        assert "Picasso".equals(constituent.getLastName());
+        assert "Pablo".equals(constituent.getFirstName());
+        assert constituent.getMiddleName() == null;
+        assert "Sr".equals(constituent.getSuffix());
+        assert "company1".equals(constituent.getSite().getName());
+        
+        constituentDao.setLapsedDonor(200L);
+        constituent = constituentDao.readConstituentById(200L);
+        assert constituent.isLapsedDonor();
+        assert "Painters, Inc.".equals(constituent.getOrganizationName());
+        assert "Picasso".equals(constituent.getLastName());
+        assert "Pablo".equals(constituent.getFirstName());
+        assert constituent.getMiddleName() == null;
+        assert "Sr".equals(constituent.getSuffix());
+        assert "company1".equals(constituent.getSite().getName());
+    }
+    
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByIdInvalid() throws Exception {
         Person constituent = constituentDao.readConstituentById(0L);

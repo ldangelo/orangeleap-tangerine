@@ -4,14 +4,13 @@ import java.util.Date;
 import java.util.Map;
 
 import com.mpower.domain.Inactivatible;
+import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.domain.model.customization.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
-import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.type.ActivationType;
 
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible {
 
-    protected Long id;
     protected Long personId;
     protected Date createDate;
     protected Date updateDate;

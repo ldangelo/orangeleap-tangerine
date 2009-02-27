@@ -44,7 +44,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.isReceiveMail() == false;
         assert readPhone.isInactive() == false;
         assert readPhone.getComments() == null;
-        assert readPhone.getEffectiveDate() == null;
+        assert readPhone.getEffectiveDate() != null;
         assert readPhone.getProvider() == null;
         assert readPhone.getSeasonalStartDate() == null;
         assert readPhone.getSeasonalEndDate() == null;
@@ -57,6 +57,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         phone = phoneDao.maintainPhone(phone);
         readPhone = phoneDao.readPhoneById(phone.getId());
         assert "000-000-0000".equals(readPhone.getNumber());
+        assert readPhone.getId() > 0;
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
         assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
@@ -66,7 +67,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.isReceiveMail() == false;
         assert readPhone.isInactive() == false;
         assert readPhone.getComments() == null;
-        assert readPhone.getEffectiveDate() == null;
+        assert readPhone.getEffectiveDate() != null;
         assert readPhone.getProvider() == null;
         assert readPhone.getSeasonalStartDate() == null;
         assert readPhone.getSeasonalEndDate() == null;

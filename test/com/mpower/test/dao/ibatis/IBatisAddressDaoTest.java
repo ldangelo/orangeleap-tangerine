@@ -50,7 +50,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.isReceiveMail() == false;
         assert readAddress.isInactive() == false;
         assert readAddress.getComments() == null;
-        assert readAddress.getEffectiveDate() == null;
+        assert readAddress.getEffectiveDate() != null;
         assert readAddress.getSeasonalStartDate() == null;
         assert readAddress.getSeasonalEndDate() == null;
         assert readAddress.getTemporaryStartDate() == null;
@@ -62,6 +62,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         address.setPostalCode("92111");
         address = addressDao.maintainAddress(address);
         readAddress = addressDao.readAddressById(address.getId());
+        assert readAddress.getId() > 0;
         assert "1234 Fake Dr".equals(readAddress.getAddressLine1());
         assert "San Francisco".equals(readAddress.getCity());
         assert "CA".equals(readAddress.getStateProvince());
@@ -78,7 +79,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.isReceiveMail() == false;
         assert readAddress.isInactive() == false;
         assert readAddress.getComments() == null;
-        assert readAddress.getEffectiveDate() == null;
+        assert readAddress.getEffectiveDate() != null;
         assert readAddress.getSeasonalStartDate() == null;
         assert readAddress.getSeasonalEndDate() == null;
         assert readAddress.getTemporaryStartDate() == null;

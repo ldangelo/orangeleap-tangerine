@@ -3,7 +3,7 @@ package com.mpower.dao.interfaces;
 import java.util.Date;
 import java.util.List;
 
-import com.mpower.domain.model.RecurringGift;
+import com.mpower.domain.model.paymentInfo.RecurringGift;
 
 public interface RecurringGiftDao {
 

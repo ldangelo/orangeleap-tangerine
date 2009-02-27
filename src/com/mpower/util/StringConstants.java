@@ -49,4 +49,6 @@ public final class StringConstants {
     public static final String CUSTOM_FIELD_MAP = "customFieldMap[";
     public static final String SITE_NAME = "siteName";
     public static final String UNKNOWN = "Unknown";
+    
+    public static final String USD = "USD";
 }

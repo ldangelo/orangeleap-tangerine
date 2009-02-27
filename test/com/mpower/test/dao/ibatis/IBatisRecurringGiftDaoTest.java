@@ -11,8 +11,8 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.dao.interfaces.RecurringGiftDao;
-import com.mpower.domain.model.Commitment;
-import com.mpower.domain.model.RecurringGift;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.RecurringGift;
 
 public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     

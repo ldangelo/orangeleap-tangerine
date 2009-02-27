@@ -1,22 +1,14 @@
-package com.mpower.domain.model;
+package com.mpower.domain.model.paymentInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.list.LazyList;
-
-import com.mpower.domain.model.communication.Address;
-import com.mpower.domain.model.communication.Email;
-import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.CommitmentType;
 
-public class Commitment extends AbstractCustomizableEntity {
-//SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, 
+public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable TODO: for Ibatis 
 
     private static final long serialVersionUID = 1L;
 
@@ -38,16 +30,10 @@ public class Commitment extends AbstractCustomizableEntity {
     public static final String FREQUENCY_ANNUALLY = "annually";
     public static final String FREQUENCY_UNSPECIFIED = "unspecified";
 
-    private Person person;
     private CommitmentType commitmentType;
     private List<Gift> gifts;
-    private String comments;
     private BigDecimal amountPerGift;
     private BigDecimal amountTotal = null;
-    private String currencyCode = "USD";
-    private String paymentType;
-    private Integer checkNumber;
-    private List<DistributionLine> distributionLines;
     private Date startDate = Calendar.getInstance().getTime();
     private Date endDate;
     private Date pledgeDate = Calendar.getInstance().getTime();
@@ -59,35 +45,16 @@ public class Commitment extends AbstractCustomizableEntity {
     private Date updateDate;
     private boolean autoPay = false;
     private String notes;
-    private PaymentSource paymentSource = new PaymentSource();
-    private Address address = new Address();
-    private Phone phone = new Phone();
-    private Email email = new Email();
     private String frequency;
-    private Boolean sendAcknowledgment = false;
-    private Date acknowledgmentDate;
     private RecurringGift recurringGift;
     private Date lastEntryDate;
     private boolean recurring = false;
     private Date projectedDate;
-    private PaymentSource selectedPaymentSource = new PaymentSource();
-    private Address selectedAddress = new Address();
-    private Phone selectedPhone = new Phone();
-    private Email selectedEmail = new Email();
 
-    public Commitment() {
-    }
+    public Commitment() { }
 
     public Commitment(CommitmentType commitmentType) {
         this.commitmentType = commitmentType;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     public CommitmentType getCommitmentType() {
@@ -109,100 +76,12 @@ public class Commitment extends AbstractCustomizableEntity {
         this.gifts = gifts;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
     public BigDecimal getAmountPerGift() {
         return amountPerGift;
     }
 
     public void setAmountPerGift(BigDecimal amountPerGift) {
         this.amountPerGift = amountPerGift;
-    }
-
-    public String getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(String paymentType) {
-        this.paymentType = paymentType;
-    }
-
-    public Integer getCheckNumber() {
-        return checkNumber;
-    }
-
-    public void setCheckNumber(Integer checkNumber) {
-        this.checkNumber = checkNumber;
-    }
-
-    public Boolean getSendAcknowledgment() {
-        return sendAcknowledgment;
-    }
-
-    public void setSendAcknowledgment(Boolean sendAcknowledgment) {
-        this.sendAcknowledgment = sendAcknowledgment;
-    }
-
-    public Date getAcknowledgmentDate() {
-        return acknowledgmentDate;
-    }
-
-    public void setAcknowledgmentDate(Date acknowledgmentDate) {
-        this.acknowledgmentDate = acknowledgmentDate;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<DistributionLine> getDistributionLines() {
-        if (distributionLines == null) {
-            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Commitment.class }, new Object[] { this }));
-        }
-        return distributionLines;
-    }
-
-    public void setDistributionLines(List<DistributionLine> distributionLines) {
-        this.distributionLines = distributionLines;
-    }
-
-    public void addDistributionLine(DistributionLine distributionLine) {
-        getDistributionLines().add(distributionLine);
-    }
-
-    public void removeInvalidDistributionLines() {
-        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
-        while (distLineIter.hasNext()) {
-            DistributionLine line = distLineIter.next();
-            if (line == null || line.getAmount() == null) {
-                distLineIter.remove();
-            }
-        }
-    }
-
-    /**
-     * Check for at least 1 valid DistributionLine; create one if not found
-     */
-    public void defaultCreateDistributionLine() {
-        boolean hasValid = false;
-        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
-        while (distLineIter.hasNext()) {
-            DistributionLine line = distLineIter.next();
-            if (line != null) {
-                hasValid = true;
-                break;
-            }
-        }
-        if (!hasValid) {
-            getDistributionLines().get(0); // Default create one Distribution Line object if necessary
-        }
-    }
- 
-    public String getComments() {
-        return comments;
-    }
-    
-    public Site getSite() {
-        return person != null ? person.getSite() : null;
     }
 
     public Date getStartDate() {
@@ -259,42 +138,6 @@ public class Commitment extends AbstractCustomizableEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public PaymentSource getPaymentSource() {
- //       Utilities.populateIfNullPerson(paymentSource, person);  // TODO
-        return paymentSource;
-    }
-
-    public void setPaymentSource(PaymentSource paymentSource) {
-        this.paymentSource = paymentSource;
-    }
-
-    public Address getAddress() {
-//        Utilities.populateIfNullPerson(address, person); // TODO
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Phone getPhone() {
-//        Utilities.populateIfNullPerson(phone, person);  // TODO
-        return phone;
-    }
-
-    public void setPhone(Phone phone) {
-        this.phone = phone;
-    }
-
-    public Email getEmail() {
-//       Utilities.populateIfNullPerson(email, person);  // TODO
-        return email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
     }
 
     public String getFrequency() {
@@ -376,57 +219,12 @@ public class Commitment extends AbstractCustomizableEntity {
         return amount;
     }
 
-    public PaymentSource getSelectedPaymentSource() {
- //       Utilities.populateIfNullPerson(selectedPaymentSource, person); // TODO
-        return selectedPaymentSource;
-    }
-
-    public void setSelectedPaymentSource(PaymentSource selectedPaymentSource) {
-        this.selectedPaymentSource = selectedPaymentSource;
-    }
-
-    public Address getSelectedAddress() {
- //       Utilities.populateIfNullPerson(selectedAddress, person);// TODO
-        return selectedAddress;
-    }
-
-    public void setSelectedAddress(Address selectedAddress) {
-        this.selectedAddress = selectedAddress;
-    }
-
-    public Phone getSelectedPhone() {
-//        Utilities.populateIfNullPerson(selectedPhone, person);// TODO
-        return selectedPhone;
-    }
-
-    public void setSelectedPhone(Phone selectedPhone) {
-        this.selectedPhone = selectedPhone;
-    }
-
-    public Email getSelectedEmail() {
-//        Utilities.populateIfNullPerson(selectedEmail, person);// TODO
-        return selectedEmail;
-    }
-
-    public void setSelectedEmail(Email selectedEmail) {
-        this.selectedEmail = selectedEmail;
-    }
-
 	public void setPledgeStatus(String pledgeStatus) {
 		this.pledgeStatus = pledgeStatus;
 	}
 
 	public String getPledgeStatus() {
 		return pledgeStatus;
-	}
-
-
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
-	}
-
-	public String getCurrencyCode() {
-		return currencyCode;
 	}
 
 	public void setPledgeDate(Date pledgeDate) {
@@ -460,7 +258,8 @@ public class Commitment extends AbstractCustomizableEntity {
             setAmountTotal(null);
             setAutoPay(true);
             setProjectedDate(null);
-        } else if (CommitmentType.PLEDGE.equals(getCommitmentType())) {
+        } 
+        else if (CommitmentType.PLEDGE.equals(getCommitmentType())) {
             setAutoPay(false);
             setAddress(null);
             setPaymentSource(null);
@@ -471,15 +270,16 @@ public class Commitment extends AbstractCustomizableEntity {
             if (isRecurring()) {
                 setProjectedDate(null);
                 setAmountTotal(null);
-            } else {
+            } 
+            else {
                 setStartDate(null);
                 setEndDate(null);
                 setAmountPerGift(null);
                 setFrequency(null);
             }
-        } else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
+        } 
+        else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
         }
     }
-
 }

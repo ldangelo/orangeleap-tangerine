@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.dao.interfaces.ConstituentDao;
-import com.mpower.domain.model.Commitment;
 import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.type.CommitmentType;
 
 public class IBatisCommitmentDaoTest extends AbstractIBatisTest {

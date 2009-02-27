@@ -1,6 +1,8 @@
-package com.mpower.domain.model;
+package com.mpower.domain.model.paymentInfo;
 
 import java.math.BigDecimal;
+
+import com.mpower.domain.model.AbstractCustomizableEntity;
 
 public class DistributionLine extends AbstractCustomizableEntity { //Customizable, Viewable, TODO: for IBatis 
  

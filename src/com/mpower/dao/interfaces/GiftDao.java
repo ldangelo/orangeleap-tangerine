@@ -5,27 +5,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.model.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public interface GiftDao {
 
     public Gift maintainGift(Gift gift);
 
-    public Gift readGift(Long giftId);
+    public Gift readGiftById(Long giftId);
 
-    public List<Gift> readGifts(Long personId);
+    public List<Gift> readGiftsByConstituentId(Long constituentId);
 
     public List<Gift> readGifts(String siteName, Map<String, Object> params);
-
-    public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
-
-    public List<Gift> readGiftsByPersonId(Long personId);
-
-    public List<Gift> readAllGifts();
 
     public List<Gift> readGiftsByCommitmentId(Long commitmentId);
 
     public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId);
 
 	public List<Gift> readAllGiftsBySite();
+
+	public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
+
 }

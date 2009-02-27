@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.RecurringGiftDao;
-import com.mpower.domain.model.RecurringGift;
+import com.mpower.domain.model.paymentInfo.RecurringGift;
 
 @Repository("recurringGiftDAO")
 public class IBatisRecurringGiftDao extends AbstractIBatisDao implements RecurringGiftDao {

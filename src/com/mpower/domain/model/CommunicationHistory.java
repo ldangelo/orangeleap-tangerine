@@ -2,6 +2,8 @@ package com.mpower.domain.model;
 
 import java.util.Date;
 
+import com.mpower.domain.model.paymentInfo.AbstractPaymentInfoEntity;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.type.CommunicationHistoryType;
 
 /*
@@ -23,7 +25,7 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 
     private boolean systemGenerated = false;
 
-    private Gift gift;
+    private AbstractPaymentInfoEntity gift;
 
     private Commitment commitment;
 
@@ -87,13 +89,13 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 
 
 
-	public void setGift(Gift gift) {
+	public void setGift(AbstractPaymentInfoEntity gift) {
 		this.gift = gift;
 	}
 
 
 
-	public Gift getGift() {
+	public AbstractPaymentInfoEntity getGift() {
 		return gift;
 	}
 

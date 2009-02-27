@@ -13,13 +13,13 @@ import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.dao.interfaces.EmailDao;
 import com.mpower.dao.interfaces.GiftDao;
 import com.mpower.dao.interfaces.PhoneDao;
-import com.mpower.domain.model.Commitment;
-import com.mpower.domain.model.Gift;
 import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class IBatisGiftDaoTest extends AbstractIBatisTest {
     
@@ -97,7 +97,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         gift.setPhone(phone);
         gift.setAddress(address);
         gift.setPaymentSource(paymentSource);
-        gift.setCommitment(commitment);
+        gift.setCommitmentId(commitment.getId());
         gift.setTxRefNum("123123123123123");
         
         giftDao.maintainGift(gift);
@@ -110,7 +110,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         
         // Read
         
-        gift = giftDao.readGift(gift.getId());
+        gift = giftDao.readGiftById(gift.getId());
         // assert gift.getEmail() == null;   
         
 

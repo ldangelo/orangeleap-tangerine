@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="COMMITMENT">
 
-	<resultMap id="COMMITMENT_RESULT" class="com.mpower.domain.model.Commitment">
+	<resultMap id="COMMITMENT_RESULT" class="com.mpower.domain.model.paymentInfo.Commitment">
 		<result property="id" column="COMMITMENT_ID" jdbcType="BIGINT" />
 		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
@@ -59,8 +59,7 @@
 		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on c.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on c.ADDRESS_ID = addr.ADDRESS_ID
-		left outer join PAYMENT_SOURCE ps on c.PAYMENT_SOURCE_ID =
-		ps.PAYMENT_SOURCE_ID
+		left outer join PAYMENT_SOURCE ps on c.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 
 		where
 		p.SITE_NAME= #siteName#
@@ -79,7 +78,7 @@
 		$sql$
 	</statement>
 
-	<insert id="INSERT_COMMITMENT" parameterClass="com.mpower.domain.model.Commitment">
+	<insert id="INSERT_COMMITMENT" parameterClass="com.mpower.domain.model.paymentInfo.Commitment">
 		insert into COMMITMENT (COMMITMENT_ID, ACKNOWLEDGMENT_DATE,
 		AMOUNT_PER_GIFT, AMOUNT_TOTAL,
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE,
@@ -99,7 +98,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_COMMITMENT" parameterClass="com.mpower.domain.model.Commitment">
+	<update id="UPDATE_COMMITMENT" parameterClass="com.mpower.domain.model.paymentInfo.Commitment">
 		update COMMITMENT
 		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		AMOUNT_PER_GIFT = #amountPerGift#,

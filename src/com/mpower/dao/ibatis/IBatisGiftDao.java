@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.GiftDao;
-import com.mpower.domain.model.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
@@ -45,7 +45,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     }
 
     @Override
-    public Gift readGift(Long giftId) {
+    public Gift readGiftById(Long giftId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readGiftById: giftId = " + giftId);
         }
@@ -56,7 +56,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(Long personId) {
+    public List<Gift> readGiftsByConstituentId(Long personId) {
         Map<String, Object> params = setupParams();
         params.put("personId", personId);
         return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_PERSON", params);
@@ -130,7 +130,9 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         params.put("beginDate", beginDate);
         params.put("currentDate", currentDate);
         BigDecimal bd = (BigDecimal)getSqlMapClientTemplate().queryForObject("ANALYZE_FOR_MAJOR_DONOR", params);
-        if (bd == null) return 0.00d;
+        if (bd == null) {
+            return 0.00d;
+        }
         return bd.doubleValue();
     }
 
@@ -157,26 +159,12 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 //        return addressString;
 //    }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Gift> readGiftsByPersonId(Long personId) {
-        Map<String, Object> params = setupParams();
-        params.put("personId", personId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_PERSON", params);
-    }
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readAllGiftsBySite() {
         Map<String, Object> params = setupParams();
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_SITE", params);
 	}
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Gift> readAllGifts() {
-    	return null; // TODO Is this method used at all?  Does it need to be site-specific?
-    }
 
     @SuppressWarnings("unchecked")
     public List<Gift> readGiftsByCommitmentId(Long commitmentId) {

@@ -27,10 +27,10 @@
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/paymentHistory.xml"/>
 		
+	<sqlMap resource="sqlmap/distroLine.xml"/>
 	<sqlMap resource="sqlmap/paymentSource.xml"/>
 	<sqlMap resource="sqlmap/commitment.xml"/>
 	<sqlMap resource="sqlmap/gift.xml"/>
-	<sqlMap resource="sqlmap/distroLine.xml"/>
 	<sqlMap resource="sqlmap/recurringGift.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>
 </sqlMapConfig>

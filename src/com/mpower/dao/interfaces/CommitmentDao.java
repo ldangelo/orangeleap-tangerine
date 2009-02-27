@@ -3,7 +3,7 @@ package com.mpower.dao.interfaces;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.model.Commitment;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.type.CommitmentType;
 
 public interface CommitmentDao {

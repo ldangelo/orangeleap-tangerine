@@ -1,149 +1,171 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
-<sqlMap namespace="GIFT" >
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="GIFT">
 
-  <resultMap id="GIFT_RESULT" class="com.mpower.domain.model.Gift" >
-    <result property="id" column="GIFT_ID" jdbcType="BIGINT" />
-    <result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
-    <result property="amount" column="AMOUNT" jdbcType="DECIMAL" />
-    <result property="authCode" column="AUTH_CODE" jdbcType="VARCHAR" />
-    <result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
-    <result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
-    <result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
-    <result property="deductible" column="DEDUCTIBLE" jdbcType="CHAR" />
-    <result property="deductibleAmount" column="DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />
-    <result property="donationDate" column="DONATION_DATE" jdbcType="TIMESTAMP" />
-    <result property="entryType" column="ENTRY_TYPE" jdbcType="VARCHAR" />
-    <result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
-    <result property="paymentMessage" column="PAYMENT_MESSAGE" jdbcType="VARCHAR" />
-    <result property="paymentStatus" column="PAYMENT_STATUS" jdbcType="VARCHAR" />
-    <result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
-    <result property="postmarkDate" column="POSTMARK_DATE" jdbcType="TIMESTAMP" />
-    <result property="refundGiftId" column="REFUND_GIFT_ID" jdbcType="BIGINT" />
-    <result property="refundGiftTransactionDate" column="REFUND_GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
-    <result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
-    <result property="transactionDate" column="TRANSACTION_DATE" jdbcType="TIMESTAMP" />
-    <result property="txRefNum" column="PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
-	<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" /> 
-	<result property="email" resultMap="EMAIL.EMAIL_RESULT" /> 
-	<result property="commitment" resultMap="COMMITMENT.COMMITMENT_RESULT" /> 
-	<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" /> 
-    <result property="person" resultMap="PERSON.PERSON_RESULT" /> 
-	<result property="phone" resultMap="PHONE.PHONE_RESULT" /> 
-  </resultMap>
-  
-  <sql id="GIFT_COLS_FRAGMENT">
-      g.GIFT_ID, g.ACKNOWLEDGMENT_DATE, g.AMOUNT, g.AUTH_CODE, g.CHECK_NUMBER, g.COMMENTS, g.CURRENCY_CODE,
-      g.DEDUCTIBLE, g.DEDUCTIBLE_AMOUNT, g.DONATION_DATE, g.ENTRY_TYPE, g.ORIGINAL_GIFT_ID, g.PAYMENT_MESSAGE,
-      g.PAYMENT_STATUS, g.PAYMENT_TYPE, g.POSTMARK_DATE, g.REFUND_GIFT_ID, g.REFUND_GIFT_TRANSACTION_DATE,
-      g.SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE, g.PAYMENT_TXREFNUM, g.ADDRESS_ID, g.COMMITMENT_ID, g.EMAIL_ID,
-      g.PAYMENT_SOURCE_ID, g.PERSON_ID, g.PHONE_ID
-  </sql>
-  
-  <sql id="GIFT_QUERY_FRAGMENT">
-    select 
-    <include refid="GIFT_COLS_FRAGMENT"/>,
-    <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
-    <include refid="ADDRESS_COLS_FRAGMENT"/>,
-    <include refid="PHONE_COLS_FRAGMENT"/>,
-    <include refid="EMAIL_COLS_FRAGMENT"/>,
-    <include refid="PAYMENT_SRC_COLS_FRAGMENT"/>,
-    <include refid="COMMITMENT_COLS_FRAGMENT"/>
-    from GIFT g
-    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
-    inner join EMAIL e on g.EMAIL_ID = e.EMAIL_ID
-    inner join PHONE ph on g.PHONE_ID = ph.PHONE_ID
-    inner join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
-    inner join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
-    inner join COMMITMENT c on g.COMMITMENT_ID = c.COMMITMENT_ID
-    where p.SITE_NAME = #siteName#
-  </sql>
+	<resultMap id="GIFT_RESULT" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id">
+		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
+		<result property="acknowledgmentDate" column="GIFT_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
+		<result property="authCode" column="GIFT_AUTH_CODE" jdbcType="VARCHAR" />
+		<result property="checkNumber" column="GIFT_CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="comments" column="GIFT_COMMENTS" jdbcType="VARCHAR" />
+		<result property="currencyCode" column="GIFT_CURRENCY_CODE" jdbcType="VARCHAR" />
+		<result property="deductible" column="GIFT_DEDUCTIBLE" jdbcType="CHAR" />
+		<result property="deductibleAmount" column="GIFT_DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />
+		<result property="donationDate" column="GIFT_DONATION_DATE" jdbcType="TIMESTAMP" />
+		<result property="entryType" column="GIFT_ENTRY_TYPE" jdbcType="VARCHAR" />
+		<result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
+		<result property="paymentMessage" column="GIFT_PAYMENT_MESSAGE" jdbcType="VARCHAR" />
+		<result property="paymentStatus" column="GIFT_PAYMENT_STATUS" jdbcType="VARCHAR" />
+		<result property="paymentType" column="GIFT_PAYMENT_TYPE" jdbcType="VARCHAR" />
+		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
+		<result property="refundGiftId" column="REFUND_GIFT_ID" jdbcType="BIGINT" />
+		<result property="refundGiftTransactionDate" column="REFUND_GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
+		<result property="sendAcknowledgment" column="GIFT_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
+		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
+		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
+		<result property="commitmentId" column="GIFT_COMMITMENT_ID" jdbcType="BIGINT" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="email" resultMap="EMAIL.EMAIL_RESULT" />
+		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+	</resultMap>
 
-  <select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map" >
-    <include refid="GIFT_QUERY_FRAGMENT"/>
-    and g.GIFT_ID = #id#
-  </select>
+	<sql id="GIFT_COLS_FRAGMENT">
+		g.GIFT_ID, g.ACKNOWLEDGMENT_DATE as GIFT_ACKNOWLEDGMENT_DATE, g.AMOUNT as GIFT_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.CHECK_NUMBER as GIFT_CHECK_NUMBER,
+		g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
+		g.DEDUCTIBLE as GIFT_DEDUCTIBLE, g.DEDUCTIBLE_AMOUNT as GIFT_DEDUCTIBLE_AMOUNT, g.DONATION_DATE as GIFT_DONATION_DATE, g.ENTRY_TYPE as GIFT_ENTRY_TYPE,
+		g.ORIGINAL_GIFT_ID, g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE,
+		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE, g.REFUND_GIFT_ID,
+		g.REFUND_GIFT_TRANSACTION_DATE,
+		g.SEND_ACKNOWLEDGMENT as GIFT_SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE as GIFT_TRANSACTION_DATE, g.PAYMENT_TXREFNUM as GIFT_PAYMENT_TXREFNUM, 
+		g.COMMITMENT_ID as GIFT_COMMITMENT_ID 
+	</sql>
+	
+	<sql id="GIFT_COLS_CHILD_IDS_FRAGMENT">
+		<include refid="GIFT_COLS_FRAGMENT"/>,
+		g.PERSON_ID, g.ADDRESS_ID, g.PHONE_ID, g.EMAIL_ID, g.PAYMENT_SOURCE_ID
+	</sql>
 
-  <select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map" >
-    <include refid="GIFT_QUERY_FRAGMENT"/>
-  </select>
+	<sql id="GIFT_QUERY_FRAGMENT">
+		select
+		<include refid="GIFT_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		from GIFT g
+		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		left outer join EMAIL e on g.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
+		where p.SITE_NAME = #siteName#
+	</sql>
 
-  <select id="SELECT_GIFTS_BY_PERSON" resultMap="GIFT_RESULT" parameterClass="map" >
-    <include refid="GIFT_QUERY_FRAGMENT"/>
-    and g.PERSON_ID = #personId#
-    order by g.TRANSACTION_DATE desc
-  </select>
-  
-  <select id="SELECT_GIFTS_BY_COMMITMENT" resultMap="GIFT_RESULT" parameterClass="map" >
-    <include refid="GIFT_QUERY_FRAGMENT"/>
-    and g.COMMITMENT_ID = #commitmentId#
-    order by g.TRANSACTION_DATE desc
-  </select>
-  
-  <sql id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID">
-    select SUM(g.AMOUNT) 
-    from GIFT g 
-    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
-    where p.SITE_NAME = #siteName#
-    and g.COMMITMENT_ID = #commitmentId# 
-  </sql>
-  
-  <sql id="ANALYZE_FOR_MAJOR_DONOR">
-    select SUM(g.AMOUNT) 
-    from GIFT g 
-    inner join PERSON p on g.PERSON_ID = p.PERSON_ID
-    where p.SITE_NAME = #siteName#
-    and g.PERSON_ID = #personId#
-    and g.TRANSACTION_DATE between #beginDate# and #currentDate#
-  </sql>
-  
-  <insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.Gift" >
-    insert into GIFT (GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE, CHECK_NUMBER, COMMENTS,
-      CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE, ORIGINAL_GIFT_ID,
-      PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
-      REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM,
-      ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
-    values (#id#, #acknowledgmentDate#, #amount#, #authCode#,
-      #checkNumber#, #comments#, #currencyCode#, #deductible#,
-      #deductibleAmount#, #donationDate#, #entryType#,
-      #originalGiftId#, #paymentMessage#, #paymentStatus#,
-      #paymentType#, #postmarkDate#, #refundGiftId#,
-      #refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
-      #txRefNum#, #address.id#, #commitment.id#, #email.id#,
-      #paymentSource.id#, #person.id#, #phone.id#)
-      	<selectKey keyProperty="id" resultClass="long">
+	<select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.GIFT_ID = #id#
+	</select>
+
+	<select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+	</select>
+
+	<select id="SELECT_GIFTS_BY_PERSON" resultMap="GIFT_RESULT"	parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.PERSON_ID = #personId#
+		order by g.TRANSACTION_DATE desc
+	</select>
+
+	<select id="SELECT_GIFTS_BY_COMMITMENT" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.COMMITMENT_ID = #commitmentId#
+		order by g.TRANSACTION_DATE desc
+	</select>
+
+	<select id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID" parameterClass="map" resultClass="double">
+		select SUM(g.AMOUNT)
+		from GIFT g
+		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		where p.SITE_NAME = #siteName#
+		and g.COMMITMENT_ID = #commitmentId#
+	</select>
+
+	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="double">
+		select SUM(g.AMOUNT)
+		from GIFT g
+		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		where p.SITE_NAME = #siteName#
+		and g.PERSON_ID = #personId#
+		and g.TRANSACTION_DATE between #beginDate# and #currentDate#
+	</select>
+
+	<select id="ANALYZE_FOR_LAPSED_DONOR" parameterClass="map" resultMap="CONSTITUENT.CONSTITUENT_RESULT">
+		select 
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
+		from PERSON p 
+		inner join GIFT g on p.PERSON_ID = g.PERSON_ID
+		where g.AMOUNT > 0 
+		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
+	</select>
+
+	<insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.Gift">
+		insert into GIFT (GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
+		CHECK_NUMBER, COMMENTS,
+		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
+		ORIGINAL_GIFT_ID,
+		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
+		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
+		PAYMENT_TXREFNUM,
+		ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
+		values (#id#, #acknowledgmentDate#, #amount#, #authCode#,
+		#checkNumber#, #comments#, #currencyCode#, #deductible#,
+		#deductibleAmount#, #donationDate#, #entryType#,
+		#originalGiftId#, #paymentMessage#, #paymentStatus#,
+		#paymentType#, #postmarkDate#, #refundGiftId#,
+		#refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
+		#txRefNum#, #address.id#, #commitmentId#, #email.id#,
+		#paymentSource.id#, #person.id#, #phone.id#)
+		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
-      
-  </insert>
-  <update id="UPDATE_GIFT" parameterClass="com.mpower.domain.model.Gift" >
-    update GIFT
-    set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
-      AMOUNT = #amount#,
-      AUTH_CODE = #authCode#,
-      CHECK_NUMBER = #checkNumber#,
-      COMMENTS = #comments#,
-      CURRENCY_CODE = #currencyCode#,
-      DEDUCTIBLE = #deductible#,
-      DEDUCTIBLE_AMOUNT = #deductibleAmount#,
-      DONATION_DATE = #donationDate#,
-      ENTRY_TYPE = #entryType#,
-      ORIGINAL_GIFT_ID = #originalGiftId#,
-      PAYMENT_MESSAGE = #paymentMessage#,
-      PAYMENT_STATUS = #paymentStatus#,
-      PAYMENT_TYPE = #paymentType#,
-      POSTMARK_DATE = #postmarkDate#,
-      REFUND_GIFT_ID = #refundGiftId#,
-      REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
-      SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
-      TRANSACTION_DATE = #transactionDate#,
-      PAYMENT_TXREFNUM = #txRefNum#,
-      ADDRESS_ID = #address.id#,
-      COMMITMENT_ID = #commitment.id#,
-      EMAIL_ID = #email.id#,
-      PAYMENT_SOURCE_ID = #paymentSource.id#,
-      PERSON_ID = #person.id#,
-      PHONE_ID = #phone.id#
-    where GIFT_ID = #id#
-  </update>
+	</insert>
+	
+	<update id="UPDATE_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.Gift">
+		update GIFT
+		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		AMOUNT = #amount#,
+		AUTH_CODE = #authCode#,
+		CHECK_NUMBER = #checkNumber#,
+		COMMENTS = #comments#,
+		CURRENCY_CODE = #currencyCode#,
+		DEDUCTIBLE = #deductible#,
+		DEDUCTIBLE_AMOUNT = #deductibleAmount#,
+		DONATION_DATE = #donationDate#,
+		ENTRY_TYPE = #entryType#,
+		ORIGINAL_GIFT_ID = #originalGiftId#,
+		PAYMENT_MESSAGE = #paymentMessage#,
+		PAYMENT_STATUS = #paymentStatus#,
+		PAYMENT_TYPE = #paymentType#,
+		POSTMARK_DATE = #postmarkDate#,
+		REFUND_GIFT_ID = #refundGiftId#,
+		REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
+		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+		TRANSACTION_DATE = #transactionDate#,
+		PAYMENT_TXREFNUM = #txRefNum#,
+		ADDRESS_ID = #address.id#,
+		COMMITMENT_ID = #commitmentId#,
+		EMAIL_ID = #email.id#,
+		PAYMENT_SOURCE_ID = #paymentSource.id#,
+		PERSON_ID = #person.id#,
+		PHONE_ID = #phone.id#
+		where GIFT_ID = #id#
+	</update>
+	
 </sqlMap>

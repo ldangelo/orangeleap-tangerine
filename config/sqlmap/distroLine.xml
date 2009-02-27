@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="DISTRO_LINE">
 
-	<resultMap id="DISTRO_LINE_RESULT" class="com.mpower.domain.model.DistributionLine">
+	<resultMap id="DISTRO_LINE_RESULT" class="com.mpower.domain.model.paymentInfo.DistributionLine">
 		<result property="id" column="DISTRO_LINE_ID" jdbcType="BIGINT" />
 		<result property="amount" column="DISTRO_LINE_AMOUNT" jdbcType="DECIMAL" />
 		<result property="percentage" column="DISTRO_LINE_PERCENTAGE" jdbcType="DECIMAL" />
@@ -13,7 +13,7 @@
 		<result property="commitmentId" column="DISTRO_COMMITMENT_ID" jdbcType="BIGINT" />
 	</resultMap>
 
-	<sql id="DISTRO_COLS_FRAGMENT">
+	<sql id="DISTRO_LINE_COLS_FRAGMENT">
 		dl.DISTRO_LINE_ID, dl.AMOUNT as DISTRO_LINE_AMOUNT, dl.PERCENTAGE as DISTRO_LINE_PERCENTAGE,
 		dl.PROJECT_CODE as DISTRO_LINE_PROJECT_CODE, dl.MOTIVATION_CODE as DISTRO_LINE_MOTIVATION_CODE, 
 		dl.OTHER_MOTIVATION as DISTRO_LINE_OTHER_MOTIVATION, dl.GIFT_ID as DISTRO_GIFT_ID, dl.COMMITMENT_ID as DISTRO_COMMITMENT_ID
@@ -21,12 +21,12 @@
 	
 	<select id="SELECT_DISTRO_LINE_BY_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="long">
 		select 
-		<include refid="DISTRO_COLS_FRAGMENT" />
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 		from DISTRO_LINE dl
 		where dl.DISTRO_LINE_ID = #id#
 	</select>
 
-	<insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine">
+	<insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.paymentInfo.DistributionLine">
 		insert into DISTRO_LINE (DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
 		values (#id#, #amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #commitmentId#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -34,7 +34,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_DISTRO_LINE" parameterClass="com.mpower.domain.model.DistributionLine">
+	<update id="UPDATE_DISTRO_LINE" parameterClass="com.mpower.domain.model.paymentInfo.DistributionLine">
 		update DISTRO_LINE
 		set AMOUNT = #amount#,
 		PERCENTAGE = #percentage#,

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.CommitmentDao;
-import com.mpower.domain.model.Commitment;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.type.CommitmentType;
 
 @Repository("commitmentDAO")

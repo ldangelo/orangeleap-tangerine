@@ -1,6 +1,8 @@
-package com.mpower.domain.model;
+package com.mpower.domain.model.paymentInfo;
 
 import java.util.Date;
+
+import com.mpower.domain.model.AbstractEntity;
 
 public class RecurringGift extends AbstractEntity {
 

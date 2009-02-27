@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="RECURRING_GIFT" >
 
-  <resultMap id="RECURRING_GIFT" class="com.mpower.domain.model.RecurringGift" >
+  <resultMap id="RECURRING_GIFT" class="com.mpower.domain.model.paymentInfo.RecurringGift" >
     <result property="id" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
     <result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
 	<result property="commitment" resultMap="COMMITMENT.COMMITMENT" /> 
@@ -25,7 +25,7 @@
 		</iterate>
   </select>
   
-  <insert id="INSERT_RECURRING_GIFT" parameterClass="com.mpower.domain.model.RecurringGift" >
+  <insert id="INSERT_RECURRING_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.RecurringGift" >
     insert into RECURRING_GIFT (RECURRING_GIFT_ID, NEXT_RUN_DATE, COMMITMENT_ID)
     values (#id#, #nextRunDate#, #commitment.id#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -33,7 +33,7 @@
 		</selectKey>
   </insert>
 
-  <update id="UPDATE_RECURRING_GIFT" parameterClass="com.mpower.domain.model.RecurringGift" >
+  <update id="UPDATE_RECURRING_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.RecurringGift" >
     update RECURRING_GIFT
     set NEXT_RUN_DATE = #nextRunDate#,
       COMMITMENT_ID = #commitment.id#

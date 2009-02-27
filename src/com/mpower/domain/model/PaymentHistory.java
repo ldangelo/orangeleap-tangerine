@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.PaymentSource;
+import com.mpower.domain.model.paymentInfo.AbstractPaymentInfoEntity;
 import com.mpower.type.PaymentHistoryType;
 
 /*
@@ -36,7 +37,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
     // CC# and ACH# must be stored in masked format
     private String description = "";
 
-    private Gift gift;
+    private AbstractPaymentInfoEntity gift;
 
     
     
@@ -115,11 +116,11 @@ public class PaymentHistory implements GeneratedId, Serializable {
 		return currencyCode;
 	}
 
-	public void setGift(Gift gift) {
+	public void setGift(AbstractPaymentInfoEntity gift) {
 		this.gift = gift;
 	}
 
-	public Gift getGift() {
+	public AbstractPaymentInfoEntity getGift() {
 		return gift;
 	}
 

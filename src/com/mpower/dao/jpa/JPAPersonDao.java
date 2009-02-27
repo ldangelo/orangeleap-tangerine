@@ -233,7 +233,7 @@ public class JPAPersonDao implements PersonDao {
     }
 
     @Override
-    // unneeded in IBatis
+    // TODO: unneeded in IBatis?
     public void setLapsedDonor(Long personId) {
         Query query = em.createNamedQuery("SET_LAPSED_DONOR");
         query.setParameter("personId", personId);

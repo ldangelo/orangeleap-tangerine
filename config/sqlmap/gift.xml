@@ -77,9 +77,9 @@
 		<include refid="GIFT_QUERY_FRAGMENT" />
 	</select>
 
-	<select id="SELECT_GIFTS_BY_PERSON" resultMap="GIFT_RESULT"	parameterClass="map">
+	<select id="SELECT_GIFTS_BY_CONSTITUENT" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
-		and g.PERSON_ID = #personId#
+		and g.PERSON_ID = #constituentId#
 		order by g.TRANSACTION_DATE desc
 	</select>
 
@@ -102,7 +102,7 @@
 		from GIFT g
 		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
 		where p.SITE_NAME = #siteName#
-		and g.PERSON_ID = #personId#
+		and g.PERSON_ID = #constituentId#
 		and g.TRANSACTION_DATE between #beginDate# and #currentDate#
 	</select>
 

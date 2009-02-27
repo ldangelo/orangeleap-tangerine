@@ -1,9 +1,7 @@
 package com.mpower.dao.ibatis;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.domain.model.paymentInfo.Gift;
 
 @Repository("giftDAO")
@@ -29,19 +28,18 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     }
 
     @Override
-    public Gift maintainGift(Gift gift) {
+    public Gift maintainGift(final Gift gift) {
         if (logger.isDebugEnabled()) {
             logger.debug("maintainGift: gift = " + gift);
         }
-    	if (gift.getId() == null) {
-            Calendar transCal = Calendar.getInstance();
-            gift.setTransactionDate(transCal.getTime());
-            if (gift.getPostmarkDate() == null) {
-                Calendar postCal = new GregorianCalendar(transCal.get(Calendar.YEAR), transCal.get(Calendar.MONTH), transCal.get(Calendar.DAY_OF_MONTH));
-                gift.setPostmarkDate(postCal.getTime());
+        Gift aGift = (Gift)insertOrUpdate(gift, "GIFT");
+        for (DistributionLine line : aGift.getDistributionLines()) {
+            if (line.getGiftId() == null || line.getGiftId() <= 0) {
+                line.setGiftId(aGift.getId());
             }
         }
-        return (Gift)insertOrUpdate(gift, "GIFT");
+        batchInsertOrUpdate(gift.getDistributionLines(), "DISTRO_LINE");
+        return aGift;
     }
 
     @Override
@@ -56,10 +54,13 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGiftsByConstituentId(Long personId) {
+    public List<Gift> readGiftsByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByConstituentId: constituentId = " + constituentId);
+        }
         Map<String, Object> params = setupParams();
-        params.put("personId", personId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_PERSON", params);
+        params.put("constituentId", constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_CONSTITUENT", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,9 +125,12 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     }
 
     @Override
-    public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
+    public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
+        }
         Map<String, Object> params = setupParams();
-        params.put("personId", personId);
+        params.put("constituentId", constituentId);
         params.put("beginDate", beginDate);
         params.put("currentDate", currentDate);
         BigDecimal bd = (BigDecimal)getSqlMapClientTemplate().queryForObject("ANALYZE_FOR_MAJOR_DONOR", params);
@@ -162,21 +166,31 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readAllGiftsBySite() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllGiftsBySite:");
+        }
         Map<String, Object> params = setupParams();
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_SITE", params);
 	}
 
     @SuppressWarnings("unchecked")
+    @Override
     public List<Gift> readGiftsByCommitmentId(Long commitmentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByCommitmentId: commitmentId = " + commitmentId);
+        }
         Map<String, Object> params = setupParams();
         params.put("commitmentId", commitmentId);
         return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_COMMITMENT", params);
     }
 
+    @Override
     public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsReceivedSumByCommitmentId: commitmentId = " + commitmentId);
+        }
         Map<String, Object> params = setupParams();
         params.put("commitmentId", commitmentId);
         return (BigDecimal)getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID", params);
     }
-
 }

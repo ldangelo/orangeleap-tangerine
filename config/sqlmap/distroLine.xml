@@ -27,8 +27,8 @@
 	</select>
 
 	<insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.paymentInfo.DistributionLine">
-		insert into DISTRO_LINE (DISTRO_LINE_ID, AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
-		values (#id#, #amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #commitmentId#, #giftId#)
+		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
+		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #commitmentId#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

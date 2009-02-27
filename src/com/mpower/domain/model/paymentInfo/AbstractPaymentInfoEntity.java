@@ -79,7 +79,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         return checkNumber;
     }
 
-    public boolean getSendAcknowledgment() {
+    public boolean isSendAcknowledgment() {
         return sendAcknowledgment;
     }
 

@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-//import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.dao.interfaces.AddressDao;
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.dao.interfaces.ConstituentDao;
@@ -73,7 +72,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     	constituentDao.maintainConstituent(person);
     	
     	PaymentSource paymentSource = new PaymentSource();
-    	paymentSource.setType(PaymentSource.CASH);
+    	paymentSource.setPaymentType(PaymentSource.CASH);
     	paymentSource.setPerson(person);
     	//paymentSourceDao.maintainPaymentSource(paymentSource);
     	

@@ -41,9 +41,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     
     /**
      * Update if exists, otherwise insert. Useful for maintain* methods.  
+     * Sets the generated IDs for inserts.
      * @param o
      * @param table
-     * @return
+     * @return object inserted or updated
      */
     protected Object insertOrUpdate(final AbstractEntity o, final String table) {
         if (logger.isDebugEnabled()) {

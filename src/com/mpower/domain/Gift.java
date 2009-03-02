@@ -28,6 +28,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -568,19 +569,20 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 	}
 	
 	public Boolean getIsAuthorized() {
-		return authCode.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(authCode).equals("");
 	}
 	
 	public Boolean getIsCaptured() {
-		return txRefNum.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(txRefNum).equals("");
 	}
 	
 	public Boolean getIsProcessed() {
-		return txRefNum.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(txRefNum).equals("");
 	}
 	
 	public Boolean getIsDeclined() {
-		return paymentStatus.compareTo("") == 0;
+		return !StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
+	
 	
 }

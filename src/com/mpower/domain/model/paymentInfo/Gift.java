@@ -3,6 +3,8 @@ package com.mpower.domain.model.paymentInfo;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mpower.type.GiftEntryType;
 import com.mpower.util.StringConstants;
 
@@ -157,21 +159,21 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, P
 	}
 	
 	public Boolean getIsAuthorized() {
-		return authCode.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(authCode).equals("");
 	}
 	
 	public Boolean getIsCaptured() {
-		return txRefNum.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(txRefNum).equals("");
 	}
 	
 	public Boolean getIsProcessed() {
-		return txRefNum.compareTo("") != 0;
+		return !StringUtils.trimToEmpty(txRefNum).equals("");
 	}
 	
 	public Boolean getIsDeclined() {
-		return paymentStatus.compareTo("") == 0;
+		return !StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
-
+	
 	@Override
     public void prePersist() {
         super.prePersist();

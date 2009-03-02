@@ -33,9 +33,11 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
             logger.debug("maintainCommitment: commitment = " + commitment);
         }
         Commitment aCommitment = (Commitment) insertOrUpdate(commitment, "COMMITMENT");
-        for (DistributionLine line : commitment.getDistributionLines()) {
-            if (line.getCommitmentId() == null || line.getCommitmentId() <= 0) {
-                line.setCommitmentId(commitment.getId());
+        if (commitment.getDistributionLines() != null) {
+            for (DistributionLine line : commitment.getDistributionLines()) {
+                if (line.getCommitmentId() == null || line.getCommitmentId() <= 0) {
+                    line.setCommitmentId(commitment.getId());
+                }
             }
         }
         batchInsertOrUpdate(commitment.getDistributionLines(), "DISTRO_LINE");

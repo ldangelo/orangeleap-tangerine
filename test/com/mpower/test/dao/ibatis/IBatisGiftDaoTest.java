@@ -285,7 +285,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert PaymentSource.ACH.equals(gift.getPaymentType());
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getCommitmentId() == null;
+                    assert gift.getCommitmentId() == 300L;
                     assert gift.getDonationDate() != null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
@@ -360,7 +360,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert PaymentSource.CREDIT_CARD.equals(gift.getPaymentType());
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getCommitmentId() == null;
+                    assert gift.getCommitmentId() == 300L;
                     assert gift.getDonationDate() != null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
@@ -445,6 +445,24 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 default:
                     Assert.assertEquals("Id = " + constituent.getId(), true, false);
             }
+        }
+    }
+    
+    @Test(groups = { "testCommitmentForGift" })
+    public void testReadGiftsReceivedSumByCommitmentId() throws Exception {
+        assert BigDecimal.ZERO.equals(giftDao.readGiftsReceivedSumByCommitmentId(0L));
+        assert 100299 == giftDao.readGiftsReceivedSumByCommitmentId(300L).intValue();
+    }
+    
+    @Test(groups = { "testCommitmentForGift" })
+    public void testReadGiftsByCommitmentId() throws Exception {
+        List<Gift> gifts = giftDao.readGiftsByCommitmentId(0L);
+        assert gifts != null && gifts.isEmpty();
+        gifts = giftDao.readGiftsByCommitmentId(300L);
+        
+        assert gifts.size() == 2;
+        for (Gift gift : gifts) {
+            assert gift.getId() == 300L || gift.getId() == 400L;
         }
     }
  }

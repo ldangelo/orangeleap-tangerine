@@ -206,6 +206,10 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         }
         Map<String, Object> params = setupParams();
         params.put("commitmentId", commitmentId);
-        return (BigDecimal)getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID", params);
+        BigDecimal result = (BigDecimal) getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID", params);
+        if (result == null) {
+            result = BigDecimal.ZERO;
+        }
+        return result;
     }
 }

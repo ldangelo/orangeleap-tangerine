@@ -63,7 +63,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_CONSTITUENT", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_CONSTITUENT_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -196,7 +196,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         }
         Map<String, Object> params = setupParams();
         params.put("commitmentId", commitmentId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_COMMITMENT", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_COMMITMENT_ID", params);
     }
 
     @Override

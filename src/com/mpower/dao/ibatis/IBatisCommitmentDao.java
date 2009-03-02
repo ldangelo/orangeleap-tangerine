@@ -45,9 +45,9 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
     }
 
     @Override
-    public Commitment readCommitment(Long commitmentId) {
+    public Commitment readCommitmentById(Long commitmentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommitment: commitmentId = " + commitmentId);
+            logger.debug("readCommitmentById: commitmentId = " + commitmentId);
         }
         Map<String, Object> params = setupParams();
 		params.put("id", commitmentId);
@@ -56,9 +56,9 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Commitment> readCommitments(Long constituentId, CommitmentType commitmentType) {
+    public List<Commitment> readCommitmentsByConstituentIdType(Long constituentId, CommitmentType commitmentType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommitments: constituentId = " + constituentId);
+            logger.debug("readCommitmentsByConstituentIdType: constituentId = " + constituentId + " commitmentType = " + commitmentType);
         }
         Map<String, Object> params = setupParams();
 		params.put("constituentId", constituentId);

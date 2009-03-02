@@ -49,10 +49,11 @@
 	<sql id="SELECT_COMMITMENT_FRAGMENT">
 		select
 		<include refid="COMMITMENT_COLS_FRAGMENT" />,
-		<include refid="ADDRESS_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
-		<include refid="PHONE_COLS_FRAGMENT" />	,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />	,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 
 		from COMMITMENT c
@@ -71,6 +72,12 @@
 	<select id="SELECT_COMMITMENT_BY_ID" resultMap="COMMITMENT_RESULT" parameterClass="map">
 		<include refid="SELECT_COMMITMENT_FRAGMENT" />
 		and c.COMMITMENT_ID = #id#
+	</select>
+
+	<select id="SELECT_COMMITMENTS_BY_CONSTITUENT_ID_AND_TYPE" resultMap="COMMITMENT_RESULT" parameterClass="map">
+		<include refid="SELECT_COMMITMENT_FRAGMENT" />
+		and c.PERSON_ID = #constituentId#
+		and c.COMMITMENT_TYPE = #commitmentType#
 	</select>
 
 	<statement id="SELECT_COMMITMENT_BY_SQL" resultMap="COMMITMENT_RESULT">

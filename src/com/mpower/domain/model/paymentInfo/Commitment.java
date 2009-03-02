@@ -18,7 +18,7 @@ public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Payment
     public static final String STATUS_FULFILLED = "fulfilled";
 
     public static final String PLEDGE_STATUS_PENDING = "pending";
-    public static final String PLEDGE_STATUS_IN_PROGRESS= "inProgress";
+    public static final String PLEDGE_STATUS_IN_PROGRESS = "inProgress";
     public static final String PLEDGE_STATUS_FULFILLED = "fulfilled";
 
     public static final String FREQUENCY_ONE_TIME = "one time";
@@ -160,7 +160,8 @@ public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Payment
         boolean recur = true;
         if (getEndDate() != null && getEndDate().before(Calendar.getInstance().getTime())) {
             recur = false;
-        } else if ("canceled".equals(getStatus()) || "expired".equals(getStatus())) {
+        } 
+        else if (STATUS_CANCELED.equals(getStatus()) || STATUS_EXPIRED.equals(getStatus())) {
             recur = false;
         }
         return recur;

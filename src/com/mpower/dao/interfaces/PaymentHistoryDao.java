@@ -8,7 +8,7 @@ public interface PaymentHistoryDao {
 	
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory);
 	
-	public List<PaymentHistory> readPaymentHistory(Long personId);
+	public List<PaymentHistory> readPaymentHistoryByConstituentId(Long personId);
 	
 	public List<PaymentHistory> readPaymentHistoryBySite();
 

@@ -13,6 +13,7 @@ import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
@@ -37,6 +38,19 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(StringConstants.SITE_NAME, getSiteName());
         return params;
+    }
+    
+    protected GeneratedId insert(final GeneratedId o, final String table) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("insert: o = " + o + " table = " + table);
+        }
+        String insertId = "INSERT_" + table;
+        Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
+        if (logger.isDebugEnabled()) {
+            logger.debug("insert: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+        }
+        o.setId(generatedId);
+        return o;
     }
     
     /**

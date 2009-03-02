@@ -35,6 +35,61 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         giftDao = (GiftDao)super.applicationContext.getBean("giftDAO");
     }
     
+    public static void testGiftId100(Gift gift) {
+        assert gift != null;
+        assert 100L == gift.getId(); 
+        assert "Thank you for your support".equals(gift.getComments());
+        assert gift.getTransactionDate() != null;
+        assert 1000 == gift.getAmount().intValue();
+        assert 1000 == gift.getDeductibleAmount().intValue();
+        assert PaymentSource.CASH.equals(gift.getPaymentType());
+        assert gift.isDeductible() == true;
+        assert GiftEntryType.MANUAL.equals(gift.getEntryType());
+        assert gift.getCommitmentId() == null;
+        assert gift.getDonationDate() != null;
+        assert gift.getPostmarkDate() == null;
+        assert gift.getAuthCode() == null;
+        assert gift.getOriginalGiftId() == null;
+        assert gift.getRefundGiftId() == null;
+        assert gift.getRefundGiftTransactionDate() == null;
+        assert gift.getTxRefNum() == null;
+        assert gift.getPaymentStatus() == null;
+        assert gift.getPaymentMessage() == null;
+        assert StringConstants.USD.equals(gift.getCurrencyCode());
+        assert gift.getCheckNumber() == null;
+        assert gift.isSendAcknowledgment() == false;
+        assert gift.getAcknowledgmentDate() == null;
+        
+        assert gift.getPerson() != null && gift.getPerson().getId() == 100L;
+        assert "Billy Graham Ministries".equals(gift.getPerson().getOrganizationName());
+        assert "Graham".equals(gift.getPerson().getLastName());
+        assert "Billy".equals(gift.getPerson().getFirstName());
+        
+        assert gift.getAddress() != null && gift.getAddress().getId() == 100L;
+        assert "3726 THIRD ST".equals(gift.getAddress().getAddressLine1());
+        assert "home".equals(gift.getAddress().getAddressType());
+        assert "Dallas".equals(gift.getAddress().getCity());
+        assert "TX".equals(gift.getAddress().getStateProvince());
+        assert "75554".equals(gift.getAddress().getPostalCode());
+        assert "US".equals(gift.getAddress().getCountry());
+        assert gift.getAddress().getAddressLine2() == null;
+        assert gift.getAddress().getAddressLine3() == null;
+        
+        assert gift.getPhone() != null && gift.getPhone().getId() == 100L;
+        assert "214-443-6829".equals(gift.getPhone().getNumber());
+        assert "home".equals(gift.getPhone().getPhoneType());
+        assert gift.getPhone().getCreateDate() != null;
+        assert gift.getPhone().getUpdateDate() != null;
+        assert 100L == gift.getPhone().getPersonId();
+        
+        assert gift.getEmail() != null && gift.getEmail().getId() == 100L;
+        assert "hobo@gmail.com".equals(gift.getEmail().getEmailAddress());
+        assert "home".equals(gift.getEmail().getEmailType());
+        assert gift.getEmail().isInactive() == false;
+        
+        assert gift.getPaymentSource() == null;
+    }
+    
     private void setupDistributionLines(Gift gift) {
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         
@@ -202,60 +257,9 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift == null;
         
         gift = giftDao.readGiftById(100L);
-        assert gift != null;
-        assert 100L == gift.getId(); 
-        assert "Thank you for your support".equals(gift.getComments());
-        assert gift.getTransactionDate() != null;
-        assert 1000 == gift.getAmount().intValue();
-        assert 1000 == gift.getDeductibleAmount().intValue();
-        assert PaymentSource.CASH.equals(gift.getPaymentType());
-        assert gift.isDeductible() == true;
-        assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-        assert gift.getCommitmentId() == null;
-        assert gift.getDonationDate() != null;
-        assert gift.getPostmarkDate() == null;
-        assert gift.getAuthCode() == null;
-        assert gift.getOriginalGiftId() == null;
-        assert gift.getRefundGiftId() == null;
-        assert gift.getRefundGiftTransactionDate() == null;
-        assert gift.getTxRefNum() == null;
-        assert gift.getPaymentStatus() == null;
-        assert gift.getPaymentMessage() == null;
-        assert StringConstants.USD.equals(gift.getCurrencyCode());
-        assert gift.getCheckNumber() == null;
-        assert gift.isSendAcknowledgment() == false;
-        assert gift.getAcknowledgmentDate() == null;
+        testGiftId100(gift);
         
-        assert gift.getPerson() != null && gift.getPerson().getId() == 100L;
-        assert "Billy Graham Ministries".equals(gift.getPerson().getOrganizationName());
-        assert "Graham".equals(gift.getPerson().getLastName());
-        assert "Billy".equals(gift.getPerson().getFirstName());
-        
-        assert gift.getAddress() != null && gift.getAddress().getId() == 100L;
-        assert "3726 THIRD ST".equals(gift.getAddress().getAddressLine1());
-        assert "home".equals(gift.getAddress().getAddressType());
-        assert "Dallas".equals(gift.getAddress().getCity());
-        assert "TX".equals(gift.getAddress().getStateProvince());
-        assert "75554".equals(gift.getAddress().getPostalCode());
-        assert "US".equals(gift.getAddress().getCountry());
-        assert gift.getAddress().getAddressLine2() == null;
-        assert gift.getAddress().getAddressLine3() == null;
-        
-        assert gift.getPhone() != null && gift.getPhone().getId() == 100L;
-        assert "214-443-6829".equals(gift.getPhone().getNumber());
-        assert "home".equals(gift.getPhone().getPhoneType());
-        assert gift.getPhone().getCreateDate() != null;
-        assert gift.getPhone().getUpdateDate() != null;
-        assert 100L == gift.getPhone().getPersonId();
-        
-        assert gift.getEmail() != null && gift.getEmail().getId() == 100L;
-        assert "hobo@gmail.com".equals(gift.getEmail().getEmailAddress());
-        assert "home".equals(gift.getEmail().getEmailType());
-        assert gift.getEmail().isInactive() == false;
-        
-        assert gift.getPaymentSource() == null;
-        
-        assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();
+        assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();        
     }
     
     @Test(groups = { "testReadGift" })

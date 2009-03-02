@@ -6,43 +6,29 @@ import java.util.Date;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.PaymentSource;
-import com.mpower.domain.model.paymentInfo.AbstractPaymentInfoEntity;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.type.PaymentHistoryType;
+import com.mpower.util.StringConstants;
 
 /*
  * Payment history for all payments including non-Gift, by Constituent
  */
-
 public class PaymentHistory implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
-
-
     private Long id;
-
     private PaymentHistoryType paymentHistoryType = PaymentHistoryType.UNSPECIFIED;
-
-    private Person person;
-
-    private String transactionId = "";
-
+    private String transactionId = StringConstants.EMPTY;
     private Date transactionDate;
-
     private BigDecimal amount;
-
     private String currencyCode;
-
     private String paymentType = PaymentSource.CREDIT_CARD;
-
     // CC# and ACH# must be stored in masked format
-    private String description = "";
-
-    private AbstractPaymentInfoEntity gift;
-
+    private String description = StringConstants.EMPTY;
+    private Person person;
+    private Gift gift;
     
-    
-    public PaymentHistory() {
-    }
+    public PaymentHistory() {  }
 
     public PaymentHistory(Person person) {
         this.person = person;
@@ -116,11 +102,11 @@ public class PaymentHistory implements GeneratedId, Serializable {
 		return currencyCode;
 	}
 
-	public void setGift(AbstractPaymentInfoEntity gift) {
+	public void setGift(Gift gift) {
 		this.gift = gift;
 	}
 
-	public AbstractPaymentInfoEntity getGift() {
+	public Gift getGift() {
 		return gift;
 	}
 
@@ -131,6 +117,4 @@ public class PaymentHistory implements GeneratedId, Serializable {
 	public PaymentHistoryType getPaymentHistoryType() {
 		return paymentHistoryType;
 	}
-
-
 }

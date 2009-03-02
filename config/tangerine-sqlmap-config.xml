@@ -24,8 +24,6 @@
 	<sqlMap resource="sqlmap/email.xml"/>
 	<sqlMap resource="sqlmap/phone.xml"/>
 	<sqlMap resource="sqlmap/constituent.xml"/>
-	<sqlMap resource="sqlmap/communicationHistory.xml"/>
-	<sqlMap resource="sqlmap/paymentHistory.xml"/>
 		
 	<sqlMap resource="sqlmap/distroLine.xml"/>
 	<sqlMap resource="sqlmap/paymentSource.xml"/>
@@ -33,4 +31,6 @@
 	<sqlMap resource="sqlmap/gift.xml"/>
 	<sqlMap resource="sqlmap/recurringGift.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>
+	<sqlMap resource="sqlmap/communicationHistory.xml"/>
+	<sqlMap resource="sqlmap/paymentHistory.xml"/>
 </sqlMapConfig>

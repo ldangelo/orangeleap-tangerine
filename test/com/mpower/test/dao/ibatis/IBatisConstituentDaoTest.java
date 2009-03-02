@@ -24,7 +24,18 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         constituentDao = (ConstituentDao)super.applicationContext.getBean("constituentDAO");
     }
     
+    public static void testConstituentId100(Person constituent) {
+        assert constituent.getId() == 100L;
+        assert "Billy Graham Ministries".equals(constituent.getOrganizationName());
+        assert "Graham".equals(constituent.getLastName());
+        assert "Billy".equals(constituent.getFirstName());
+        assert constituent.getMiddleName() == null;
+        assert constituent.getSuffix() == null;
+        assert "company1".equals(constituent.getSite().getName());        
+    }
+    
     public static void testConstituentId200(Person constituent) {
+        assert constituent.getId() == 200L;
         assert "Painters, Inc.".equals(constituent.getOrganizationName());
         assert "Picasso".equals(constituent.getLastName());
         assert "Pablo".equals(constituent.getFirstName());
@@ -34,6 +45,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     }
 
     public static void testConstituentId300(Person constituent) {
+        assert constituent.getId() == 300L;
         assert "Howdy Doody Inc".equals(constituent.getOrganizationName());
         assert "Doody".equals(constituent.getLastName());
         assert "Howdy".equals(constituent.getFirstName());

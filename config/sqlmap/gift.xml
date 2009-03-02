@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="GIFT">
 
-	<resultMap id="GIFT_RESULT" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id">
+	<resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id">
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="acknowledgmentDate" column="GIFT_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
@@ -30,6 +30,9 @@
 		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="email" resultMap="EMAIL.EMAIL_RESULT" />
 		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+	</resultMap>
+	
+	<resultMap id="GIFT_RESULT" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 

@@ -26,29 +26,30 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 
 	@Override
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory) {
-		
         if (logger.isDebugEnabled()) {
-            logger.debug("addPaymentHistory:"+paymentHistory.getPerson().getId());
+            logger.debug("addPaymentHistory: personId = " + paymentHistory.getPerson().getId());
         }
-        
-        getSqlMapClientTemplate().insert("INSERT_PAYMENT_HISTORY", paymentHistory);
-        return paymentHistory;
+        return (PaymentHistory)insert(paymentHistory, "PAYMENT_HISTORY");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PaymentHistory> readPaymentHistory(Long personId) {
+	public List<PaymentHistory> readPaymentHistoryByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
+        }
         Map<String, Object> params = setupParams();
-		params.put("personId", personId);
-		List<PaymentHistory> payments =getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_PERSON", params);
-        return payments;
+		params.put("constituentId", constituentId);
+		return getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID", params);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PaymentHistory> readPaymentHistoryBySite() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentHistoryBySite:");
+        }
         Map<String, Object> params = setupParams();
-		List<PaymentHistory> payments =getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_SITE", params);
-        return payments;
+		return getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_SITE", params);
 	}
 }

@@ -97,7 +97,7 @@
 		and g.COMMITMENT_ID = #commitmentId#
 	</select>
 
-	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="double">
+	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
 		select SUM(g.AMOUNT)
 		from GIFT g
 		inner join PERSON p on g.PERSON_ID = p.PERSON_ID

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 
 public interface GiftDao {
@@ -25,4 +26,5 @@ public interface GiftDao {
 
 	public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
+	public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 }

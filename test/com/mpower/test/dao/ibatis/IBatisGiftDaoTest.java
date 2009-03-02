@@ -403,4 +403,48 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
             }
         }
     }
+    
+    @Test(groups = { "testReadGift" })
+    public void testReadAllGiftsBySite() throws Exception {
+        List<Gift> gifts = giftDao.readAllGiftsBySite();
+        assert gifts != null && gifts.size() == 6;
+        for (Gift gift : gifts) {
+            assert gift.getId() >= 100L && gift.getId() <= 600L;
+        }
+    }
+    
+    @Test(groups = { "testAnalyze" })
+    public void testAnalyzeMajorDonor() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
+        assert 1025d == giftDao.analyzeMajorDonor(100L, sdf.parse("06/05/2007 00:00"), sdf.parse("06/07/2007 00:00"));
+        assert 0 == giftDao.analyzeMajorDonor(100L, sdf.parse("01/01/1990 00:00"), sdf.parse("01/02/1990 00:00"));
+        assert 1000d == giftDao.analyzeMajorDonor(100L, sdf.parse("06/06/2007 00:00"), sdf.parse("06/07/2007 00:00"));
+    }
+    
+    @Test(groups = { "testAnalyze" })
+    public void testAnalyzeLapsedDonor() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
+        List<Person> constituents = giftDao.analyzeLapsedDonor(sdf.parse("06/05/2007 00:00"), sdf.parse("06/07/2007 00:00"));
+        assert constituents != null && constituents.size() == 1 && constituents.get(0).getId() == 100L;
+        
+        constituents = giftDao.analyzeLapsedDonor(sdf.parse("06/03/2007 00:00"), sdf.parse("06/07/2007 00:00"));
+        assert constituents != null && constituents.size() == 2;
+        for (Person constituent : constituents) {
+            assert constituent.getId() == 100L || constituent.getId() == 200L;
+            switch (constituent.getId().intValue()) {
+                case 100:
+                    assert "Billy Graham Ministries".equals(constituent.getOrganizationName());
+                    assert "Graham".equals(constituent.getLastName());
+                    assert "Billy".equals(constituent.getFirstName());
+                    break;
+                case 200:
+                    assert "Painters, Inc.".equals(constituent.getOrganizationName());
+                    assert "Picasso".equals(constituent.getLastName());
+                    assert "Pablo".equals(constituent.getFirstName());
+                    break;
+                default:
+                    Assert.assertEquals("Id = " + constituent.getId(), true, false);
+            }
+        }
+    }
  }

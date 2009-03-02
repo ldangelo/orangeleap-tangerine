@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.type.CommitmentType;
 
 @Repository("commitmentDAO")
@@ -28,25 +29,39 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
  
     @Override
     public Commitment maintainCommitment(Commitment commitment) {
-       return (Commitment) insertOrUpdate(commitment, "COMMITMENT");
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainCommitment: commitment = " + commitment);
+        }
+        Commitment aCommitment = (Commitment) insertOrUpdate(commitment, "COMMITMENT");
+        for (DistributionLine line : commitment.getDistributionLines()) {
+            if (line.getCommitmentId() == null || line.getCommitmentId() <= 0) {
+                line.setCommitmentId(commitment.getId());
+            }
+        }
+        batchInsertOrUpdate(commitment.getDistributionLines(), "DISTRO_LINE");
+        return aCommitment;
     }
 
     @Override
     public Commitment readCommitment(Long commitmentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommitment: commitmentId = " + commitmentId);
+        }
         Map<String, Object> params = setupParams();
 		params.put("id", commitmentId);
-	    Commitment commitment = (Commitment)getSqlMapClientTemplate().queryForObject("SELECT_COMMITMENT_BY_ID", params);
-        return commitment;
+	    return (Commitment)getSqlMapClientTemplate().queryForObject("SELECT_COMMITMENT_BY_ID", params);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType) {
+    public List<Commitment> readCommitments(Long constituentId, CommitmentType commitmentType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommitments: constituentId = " + constituentId);
+        }
         Map<String, Object> params = setupParams();
-		params.put("personId", personId);
+		params.put("constituentId", constituentId);
 		params.put("commitmentType", commitmentType);
-		List<Commitment> commitments = getSqlMapClientTemplate().queryForList("SELECT_COMMITMENTS_BY_PERSON_ID_AND_TYPE", params);
-        return commitments;
+		return getSqlMapClientTemplate().queryForList("SELECT_COMMITMENTS_BY_CONSTITUENT_ID_AND_TYPE", params);
     }
 
     @SuppressWarnings("unchecked")

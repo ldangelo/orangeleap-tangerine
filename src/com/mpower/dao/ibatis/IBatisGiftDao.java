@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.domain.model.paymentInfo.Gift;
 
@@ -124,22 +125,6 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         */
     }
 
-    @Override
-    public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("constituentId", constituentId);
-        params.put("beginDate", beginDate);
-        params.put("currentDate", currentDate);
-        BigDecimal bd = (BigDecimal)getSqlMapClientTemplate().queryForObject("ANALYZE_FOR_MAJOR_DONOR", params);
-        if (bd == null) {
-            return 0.00d;
-        }
-        return bd.doubleValue();
-    }
-
 //    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
 //        StringBuilder addressString = new StringBuilder();
 //        if (addressParams != null && !addressParams.isEmpty()) {
@@ -163,7 +148,35 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 //        return addressString;
 //    }
 
+    @Override
+    public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("beginDate", beginDate);
+        params.put("currentDate", currentDate);
+        BigDecimal bd = (BigDecimal)getSqlMapClientTemplate().queryForObject("ANALYZE_FOR_MAJOR_DONOR", params);
+        if (bd == null) {
+            return 0.00d;
+        }
+        return bd.doubleValue();
+    }
+    
 	@SuppressWarnings("unchecked")
+    @Override
+    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("analyzeLapsedDonor:  beginDate = " + beginDate + " currentDate = " + currentDate);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("beginDate", beginDate);
+        params.put("currentDate", currentDate);
+        return getSqlMapClientTemplate().queryForList("ANALYZE_FOR_LAPSED_DONOR", params);
+    }
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readAllGiftsBySite() {
         if (logger.isDebugEnabled()) {

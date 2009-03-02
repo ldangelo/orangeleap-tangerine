@@ -171,7 +171,7 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, P
 	}
 	
 	public Boolean getIsDeclined() {
-		return !StringUtils.trimToEmpty(paymentStatus).equals("");
+		return StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
 	
 	@Override

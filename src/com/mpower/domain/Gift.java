@@ -581,7 +581,7 @@ public class Gift implements SiteAware, PaymentSourceAware, AddressAware, PhoneA
 	}
 	
 	public Boolean getIsDeclined() {
-		return !StringUtils.trimToEmpty(paymentStatus).equals("");
+		return StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
 	
 	

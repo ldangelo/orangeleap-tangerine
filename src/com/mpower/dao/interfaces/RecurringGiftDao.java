@@ -9,7 +9,7 @@ public interface RecurringGiftDao {
 
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);
 
-    public RecurringGift maintain(RecurringGift rg);
+    public RecurringGift maintainRecurringGift(RecurringGift rg);
 
-    public void remove(RecurringGift rg);
+    public void removeRecurringGift(RecurringGift rg);
 }

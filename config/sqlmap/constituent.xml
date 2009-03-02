@@ -72,11 +72,11 @@
 	</select>
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
-		insert into PERSON (PERSON_ID, CONSTITUENT_INDIVIDUAL_ROLES,
+		insert into PERSON (CONSTITUENT_INDIVIDUAL_ROLES,
 		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
 		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME)
-		values (#id#, #constituentIndividualRoles#,
+		values (#constituentIndividualRoles#,
 		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lapsedDonor#, #lastName#, #legalName#,
 		#loginId#, #majorDonor#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
 		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#)

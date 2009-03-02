@@ -27,9 +27,10 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
 
     @SuppressWarnings("unchecked")
     @Override
+    // TODO: determine if this query requires a join against site?
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGifts: date = " + date);
+            logger.debug("readRecurringGifts: date = " + date + " statuses = " + statuses);
         }
         Map<String, Object> params = setupParams();
         params.put("date", date);
@@ -39,18 +40,24 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
     }
 
     @Override
-    public RecurringGift maintain(RecurringGift rg) {
+    public RecurringGift maintainRecurringGift(RecurringGift rg) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainRecurringGift: recurringGift = " + rg);
+        }
 		return (RecurringGift)insertOrUpdate(rg, "RECURRING_GIFT");
     }
 
     @Override
-    public void remove(RecurringGift rg) {
+    // TODO: determine if this query requires a join against site?
+    public void removeRecurringGift(RecurringGift rg) {
         if (logger.isDebugEnabled()) {
-            logger.debug("RecurringGiftDao.remove: id = " + rg.getId());
+            logger.debug("removeRecurringGift: id = " + rg.getId());
         }
         Map<String, Object> params = setupParams();
         params.put("id", rg.getId());
-        getSqlMapClientTemplate().queryForObject("DELETE_RECURRING_GIFT", params);
+        int rows = getSqlMapClientTemplate().delete("DELETE_RECURRING_GIFT", params);
+        if (logger.isInfoEnabled()) {
+            logger.info("removeRecurringGift: number of rows deleted = " + rows);
+        }
     }
-    
 }

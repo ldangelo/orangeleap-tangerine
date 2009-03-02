@@ -181,13 +181,8 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert readCommitment.getPaymentType() == null;
         assert readCommitment.getCheckNumber() == null;
     } 
-
-    @Test(groups = { "testReadCommitment" })
-    public void testReadCommitmentById() throws Exception {
-        Commitment commitment = commitmentDao.readCommitmentById(0L);
-        assert commitment == null;
-        
-        commitment = commitmentDao.readCommitmentById(100L);
+    
+    public static void testId100L(Commitment commitment) {
         assert commitment != null;
         assert commitment.getId() == 100L;
         assert CommitmentType.RECURRING_GIFT.equals(commitment.getCommitmentType());
@@ -239,6 +234,15 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert commitment.getCheckNumber() == null;
         assert commitment.isSendAcknowledgment() == false;
         assert commitment.getAcknowledgmentDate() == null;
+    }
+
+    @Test(groups = { "testReadCommitment" })
+    public void testReadCommitmentById() throws Exception {
+        Commitment commitment = commitmentDao.readCommitmentById(0L);
+        assert commitment == null;
+        
+        commitment = commitmentDao.readCommitmentById(100L);
+        testId100L(commitment);
     }
     
     @Test(groups = { "testReadCommitment" })

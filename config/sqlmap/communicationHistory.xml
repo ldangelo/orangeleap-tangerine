@@ -40,10 +40,10 @@
   </select>
   
   <insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory" >
-    insert into COMMUNICATION_HISTORY (COMMUNICATION_HISTORY_ID, COMMUNICATION_TYPE, CREATE_DATE,
+    insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, CREATE_DATE,
       RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID, PERSON_ID,
       COMMENTS)
-    values (#id#, #communicationHistoryType#, now(),
+    values (#communicationHistoryType#, now(),
       #recordDate#, #systemGenerated#, now(), 
       #commitment.id#, #gift.id#, #person.id#, 
       #comments#)

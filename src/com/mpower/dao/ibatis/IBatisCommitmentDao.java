@@ -32,6 +32,7 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
         if (logger.isDebugEnabled()) {
             logger.debug("maintainCommitment: commitment = " + commitment);
         }
+        // TODO: delete distribution lines?
         Commitment aCommitment = (Commitment) insertOrUpdate(commitment, "COMMITMENT");
         if (commitment.getDistributionLines() != null) {
             for (DistributionLine line : commitment.getDistributionLines()) {

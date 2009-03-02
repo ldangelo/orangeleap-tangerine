@@ -34,6 +34,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
             logger.debug("maintainGift: gift = " + gift);
         }
         Gift aGift = (Gift)insertOrUpdate(gift, "GIFT");
+        // TODO: delete distribution lines?
         if (gift.getDistributionLines() != null) {
             for (DistributionLine line : aGift.getDistributionLines()) {
                 if (line.getGiftId() == null || line.getGiftId() <= 0) {

@@ -9,14 +9,17 @@ public class RecurringGift extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     private Commitment commitment;
-
     private Date nextRunDate;
 
-    public RecurringGift() {
-    }
+    public RecurringGift() { }
 
     public RecurringGift(Commitment commitment) {
         this.commitment = commitment;
+    }
+
+    public RecurringGift(Commitment commitment, Date nextRunDate) {
+        this(commitment);
+        this.nextRunDate = nextRunDate;
     }
 
     public Commitment getCommitment() {

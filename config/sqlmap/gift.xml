@@ -175,7 +175,7 @@
 	<statement id="SELECT_GIFT_BY_SEARCH_TERMS" resultMap="GIFT_RESULT" parameterClass="map">
 	    select
 		<include refid="GIFT_COLS_FRAGMENT"/>,	 
-		<include refid="PERSON_COLS_FRAGMENT"/>		 
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/>		 
 		from GIFT g
 		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
 		where 

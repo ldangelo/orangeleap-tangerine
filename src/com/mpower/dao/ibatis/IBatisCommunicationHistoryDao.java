@@ -26,26 +26,34 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
     
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
-         if (!communicationHistory.getPerson().getSite().getName().equals(getSiteName())) throw new RuntimeException("Person object does not belong to current site.");
-		 insertOrUpdate(communicationHistory, "COMMUNICATION_HISTORY");
-         return communicationHistory;
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
+	    }
+        if (!communicationHistory.getPerson().getSite().getName().equals(getSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
+        insertOrUpdate(communicationHistory, "COMMUNICATION_HISTORY");
+        return communicationHistory;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByPerson(Long personId) {
+	public List<CommunicationHistory> readCommunicationHistoryByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommunicationHistoryByConstituentId: constituentId = " + constituentId);
+        }
         Map<String, Object> params = setupParams();
-		params.put("personId", personId);
-		List<CommunicationHistory> history = getSqlMapClientTemplate().queryForList("SELECT_COMMUNICATION_HISTORY_BY_PERSON", params);
-        return history;
+		params.put("constituentId", constituentId);
+		return getSqlMapClientTemplate().queryForList("SELECT_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID", params);
 	}
-	
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
+        }
         Map<String, Object> params = setupParams();
 		params.put("id", communicationHistoryId);
-		CommunicationHistory history = (CommunicationHistory) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_BY_ID", params);
-        return history;
+		return (CommunicationHistory) getSqlMapClientTemplate().queryForObject("SELECT_COMMUNICATION_HISTORY_BY_ID", params);
 	}
 }

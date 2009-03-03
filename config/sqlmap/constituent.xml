@@ -169,6 +169,7 @@
 		   and exists (
 		    select * from CUSTOM_FIELD cf where 
 		    cf.ENTITY_ID = p.PERSON_ID
+		    and cf.ENTITY_TYPE = 'person'
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
 		    </iterate>

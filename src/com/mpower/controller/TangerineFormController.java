@@ -2,8 +2,10 @@ package com.mpower.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,30 +19,29 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.domain.Viewable;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
 import com.mpower.util.StringConstants;
+import com.mpower.util.TangerineUserHelper;
 
 public abstract class TangerineFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="personService")
     protected PersonService personService;
+
+    @Resource(name="siteService")
     protected SiteService siteService;    
+    
+    @Resource(name="tangerineUserHelper")
+    protected TangerineUserHelper tangerineUserHelper;
+
     protected String pageType;    
-
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     /**
      * The default page type is the commandName.  Override for specific page types
@@ -65,11 +66,11 @@ public abstract class TangerineFormController extends SimpleFormController {
         return null;
     }
 
-    protected Long getPersonId(HttpServletRequest request) {
+    protected Long getConstituentId(HttpServletRequest request) {
         return this.getIdAsLong(request, StringConstants.PERSON_ID);
     }
 
-    protected String getPersonIdString(HttpServletRequest request) {
+    protected String getConstituentIdString(HttpServletRequest request) {
         return request.getParameter(StringConstants.PERSON_ID);
     }
 
@@ -83,21 +84,23 @@ public abstract class TangerineFormController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
-        Viewable viewable = findViewable(request);
-        this.createFieldMaps(request, viewable);
-        return viewable;
+        AbstractEntity entity = findEntity(request);
+        this.createFieldMaps(request, entity);
+        return entity;
     }
 
-    protected void createFieldMaps(HttpServletRequest request, Viewable viewable) {
+    protected void createFieldMaps(HttpServletRequest request, AbstractEntity entity) {
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles(), request.getLocale());
-            viewable.setFieldLabelMap(fieldLabelMap);
+            List<String> roles = tangerineUserHelper.lookupUserRoles();
+            
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.valueOf(this.getPageType()), roles, request.getLocale());
+            entity.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles(), viewable);
-            viewable.setFieldValueMap(valueMap);
+            Map<String, Object> valueMap = siteService.readFieldValues(PageType.valueOf(this.getPageType()), roles, entity);
+            entity.setFieldValueMap(valueMap);
 
-            Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(this.getPageType()), SessionServiceImpl.lookupUserRoles());
-            viewable.setFieldTypeMap(typeMap);
+            Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(PageType.valueOf(this.getPageType()), roles);
+            entity.setFieldTypeMap(typeMap);
         }
     }
     
@@ -107,8 +110,8 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        return new ModelAndView(appendSaved(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(getPersonId(request)).toString()));
+        return new ModelAndView(appendSaved(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(getConstituentId(request)).toString()));
     }
 
-    protected abstract Viewable findViewable(HttpServletRequest request);
+    protected abstract AbstractEntity findEntity(HttpServletRequest request);
 }

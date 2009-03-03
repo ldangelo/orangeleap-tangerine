@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.type.CommitmentType;
 
 public interface CommitmentService {
@@ -18,17 +18,15 @@ public interface CommitmentService {
 
     public Commitment readCommitmentById(Long commitmentId);
     
-    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person, CommitmentType commitmentType);
+    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person constituent, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(Person person, CommitmentType commitmentType);
+    public List<Commitment> readCommitments(Person constituent, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType);
+    public List<Commitment> readCommitments(Long constituentId, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params);
+    public List<Commitment> searchCommitments(CommitmentType commitmentType, Map<String, Object> params);
 
     public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType);
-
-    public void setAuditService(AuditService auditService);
 
     public List<Calendar> getCommitmentGiftDates(Commitment commitment);
 

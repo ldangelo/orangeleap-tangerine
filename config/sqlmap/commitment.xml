@@ -137,13 +137,7 @@
 	</update>
 	
 	<statement id="SELECT_COMMITMENT_BY_SEARCH_TERMS" resultMap="COMMITMENT_RESULT" parameterClass="map">
-	    select
-		<include refid="COMMITMENT_COLS_FRAGMENT"/>,	 
-		<include refid="CONSTITUENT_COLS_FRAGMENT"/>		 
-		from COMMITMENT c
-		inner join PERSON p on c.PERSON_ID = p.PERSON_ID
-		where 
-		p.SITE_NAME = #siteName#
+		<include refid="SELECT_COMMITMENT_FRAGMENT"/>
 		<isNotNull property="stringParams"> 
 		   <iterate property="stringParams" conjunction="and" open="and" close="">
 		   c.$stringParams[].key$ like #stringParams[].value#
@@ -156,37 +150,37 @@
 		</isNotNull>
 		<isNotNull property="phoneParams"> 
 		   and exists (
-		    select * from PHONE ph where 
-		    ph.PERSON_ID = p.PERSON_ID
+		    select * from PHONE sph where 
+		    sph.PERSON_ID = p.PERSON_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
-		    ph.$phoneParams[].key$ like #phoneParams[].value#
+		    sph.$phoneParams[].key$ like #phoneParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
 		<isNotNull property="addressParams"> 
 		   and exists (
-		    select * from ADDRESS addr where 
-		    addr.PERSON_ID = p.PERSON_ID
+		    select * from ADDRESS saddr where 
+		    saddr.PERSON_ID = p.PERSON_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
-		    addr.$addressParams[].key$ like #addressParams[].value#
+		    saddr.$addressParams[].key$ like #addressParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
 		<isNotNull property="emailParams"> 
 		   and exists (
-		    select * from EMAIL e where 
-		    e.PERSON_ID = p.PERSON_ID
+		    select * from EMAIL se where 
+		    se.PERSON_ID = p.PERSON_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
-		    e.$emailParams[].key$ like #emailParams[].value#
+		    se.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
 		<isNotNull property="customParams"> 
 		   and exists (
-		    select * from CUSTOM_FIELD cf where 
-		   ((cf.ENTITY_ID = c.COMMITMENT_ID and cf.ENTITY_TYPE = 'commitment') or (cf.ENTITY_ID = p.PERSON_ID and cf.ENTITY_TYPE = 'person'))
+		    select * from CUSTOM_FIELD scf where 
+		   ((scf.ENTITY_ID = c.COMMITMENT_ID and scf.ENTITY_TYPE = 'commitment') or (scf.ENTITY_ID = p.PERSON_ID and scf.ENTITY_TYPE = 'person'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
-		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
+		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>

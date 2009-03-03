@@ -186,10 +186,10 @@
 		</isNotNull>
 		<isNotNull property="phoneParams"> 
 		   and exists (
-		    select * from PHONE ph where 
-		    ph.PERSON_ID = p.PERSON_ID
+		    select * from PHONE sph where 
+		    sph.PERSON_ID = p.PERSON_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
-		    ph.$phoneParams[].key$ like #phoneParams[].value#
+		    sph.$phoneParams[].key$ like #phoneParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
@@ -204,7 +204,7 @@
 		</isNotNull>
 		<isNotNull property="emailParams"> 
 		   and exists (
-		    select * from EMAIL e where 
+		    select * from EMAIL se where 
 		    se.PERSON_ID = p.PERSON_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
 		    se.$emailParams[].key$ like #emailParams[].value#
@@ -216,7 +216,7 @@
 		    select * from CUSTOM_FIELD scf where 
 		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.PERSON_ID and scf.ENTITY_TYPE = 'person'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
-		    scf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
+		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>

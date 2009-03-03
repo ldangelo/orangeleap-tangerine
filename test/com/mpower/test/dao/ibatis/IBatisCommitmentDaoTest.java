@@ -3,7 +3,9 @@ package com.mpower.test.dao.ibatis;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -334,4 +336,30 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert commitment.getCheckNumber() == null;
         assert commitment.getAcknowledgmentDate() == null;
     }
+    
+    @Test(groups = { "testSearchCommitments" })
+    public void testSearchCommitments() throws Exception {
+    	
+    	Map<String, Object> params = new HashMap<String, Object>();
+        
+        params.put("firstName", "Pablo");
+        params.put("accountNumber", new Long(200));
+        params.put("phoneMap[home].number", "214-113-2542");
+        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("emailMap[home].email", "");
+        params.put("amountPerGift", new BigDecimal(10.00));
+    	
+        CommitmentType ct = CommitmentType.RECURRING_GIFT;
+        List<Commitment> commitments = commitmentDao.searchCommitments(ct, params);
+        assert commitments != null && commitments.size() > 0;
+        for (Commitment commitment : commitments) {
+        	System.out.println(commitment.getPerson().getFirstName());
+            assert commitment.getPerson().getFirstName().equals("Pablo");
+            assert commitment.getAmountPerGift().compareTo(new BigDecimal(10.00)) == 0;
+        }
+        
+    }    
+    
+
+    
 }

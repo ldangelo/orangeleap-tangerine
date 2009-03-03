@@ -24,6 +24,7 @@ import com.mpower.domain.Address;
 import com.mpower.util.CalendarUtils;
 
 @Repository("addressDao")
+@Deprecated
 public class JPAAddressDao implements AddressDao {
 
     /** Logger for this class and subclasses */

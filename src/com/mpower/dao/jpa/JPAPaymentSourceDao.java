@@ -15,6 +15,7 @@ import com.mpower.dao.PaymentSourceDao;
 import com.mpower.domain.PaymentSource;
 
 @Repository("paymentSourceDao")
+@Deprecated
 public class JPAPaymentSourceDao implements PaymentSourceDao {
 
     /** Logger for this class and subclasses */

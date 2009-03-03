@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.FactoryUtils;
-import org.apache.commons.collections.list.LazyList;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.springframework.validation.BindException;
@@ -14,12 +12,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mpower.controller.validator.CodeValidator;
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CodeService;
 import com.mpower.test.BaseTest;
 import com.mpower.type.FieldType;
@@ -55,15 +53,15 @@ public class CodeValidatorTest extends BaseTest {
         validator.setTangerineUserHelper(tangerineUserHelper);
 
         mockery.checking(new Expectations() {{
-            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", "USD"); will(returnValue(currencyCode));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "currencyCode", " "); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", "001000"); will(returnValue(projCode));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "projectCode", " "); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "XYZ"); will(returnValue(motivationCode));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("company1", "motivationCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("currencyCode", "USD"); will(returnValue(currencyCode));
+            allowing (codeService).readCodeBySiteTypeValue("currencyCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("currencyCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("projectCode", "001000"); will(returnValue(projCode));
+            allowing (codeService).readCodeBySiteTypeValue("projectCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("projectCode", " "); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("motivationCode", "XYZ"); will(returnValue(motivationCode));
+            allowing (codeService).readCodeBySiteTypeValue("motivationCode", "foo"); will(returnValue(null));
+            allowing (codeService).readCodeBySiteTypeValue("motivationCode", " "); will(returnValue(null));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
         }});
 
@@ -95,8 +93,8 @@ public class CodeValidatorTest extends BaseTest {
         person.setSite(site);
         
         gift.setPerson(person);
-        distributionLine.setGift(gift);
-        List<DistributionLine> lines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
+        distributionLine.setGiftId(gift.getId());
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
         lines.add(distributionLine);
         gift.setDistributionLines(lines);
     }

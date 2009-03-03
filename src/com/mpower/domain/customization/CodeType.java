@@ -18,6 +18,7 @@ import com.mpower.domain.Site;
 
 @Entity
 @Table(name = "CODE_TYPE")
+@Deprecated
 public class CodeType implements Serializable {
 
 	private static final long serialVersionUID = 1L;

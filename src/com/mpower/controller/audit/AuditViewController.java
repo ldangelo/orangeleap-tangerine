@@ -2,6 +2,7 @@ package com.mpower.controller.audit;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,8 +12,8 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.mpower.domain.Person;
 import com.mpower.domain.model.Audit;
+import com.mpower.domain.model.Person;
 import com.mpower.service.AuditService;
 import com.mpower.service.PersonService;
 import com.mpower.type.EntityType;
@@ -22,17 +23,11 @@ public class AuditViewController extends ParameterizableViewController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="auditService")
     private AuditService auditService;
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
-    }
-
+    @Resource(name="personService")
     private PersonService personService;
-
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -44,9 +39,9 @@ public class AuditViewController extends ParameterizableViewController {
             audits = auditService.allAuditHistoryForSite();
         } else {
             if (EntityType.valueOf(entityType) == EntityType.person) {
-                Person person = personService.readPersonById(Long.valueOf(objectId));
-                mav.addObject("person", person);
-                audits = auditService.auditHistoryForPerson(person.getId());
+                Person constituent = personService.readConstituentById(Long.valueOf(objectId));
+                mav.addObject("person", constituent);
+                audits = auditService.auditHistoryForConstituent(constituent.getId());
             } else {
                 audits = auditService.auditHistoryForEntity(EntityType.valueOf(entityType).name(), Long.valueOf(objectId));
             }

@@ -24,6 +24,7 @@ import com.mpower.type.RelationshipType;
 
 @Entity
 @Table(name = "FIELD_RELATIONSHIP", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "MASTER_FIELD_DEFINITION_ID", "DETAIL_FIELD_DEFINITION_ID" }) })
+@Deprecated
 public class FieldRelationship implements Serializable {
 
     private static final long serialVersionUID = 1L;

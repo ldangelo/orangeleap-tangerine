@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.domain.Address;
 import com.mpower.domain.Person;
 
+@Deprecated
 public class AddressMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

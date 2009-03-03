@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.annotation.Resource;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
@@ -21,7 +22,7 @@ import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
 
-import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.util.TangerineUserHelper;
 
 @Service("ldapService")
 public class LdapServiceImpl implements LdapService {
@@ -36,6 +37,9 @@ public class LdapServiceImpl implements LdapService {
     private static final String LDAP_PASSWORD_CHANGE_DATE = "passwordchangedate";
 
     private static final String LDAP_LAST_LOGIN = "lastlogin";
+    
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
 
     public LdapServiceImpl() {
     }
@@ -47,8 +51,8 @@ public class LdapServiceImpl implements LdapService {
     }
 
     private String getDN() {
-        String siteName = SessionServiceImpl.lookupUserSiteName();
-        String userName = SessionServiceImpl.lookupUserName();
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+        String userName = tangerineUserHelper.lookupUserName();
         String dn = "uid=" + userName + ", ou=users, o=" + siteName;
         logger.debug("dn = " + dn);
         return dn;

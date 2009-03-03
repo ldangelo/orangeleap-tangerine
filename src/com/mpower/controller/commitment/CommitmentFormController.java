@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,9 +15,9 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Gift;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CommitmentService;
 import com.mpower.type.CommitmentType;
 import com.mpower.util.StringConstants;
@@ -26,13 +27,10 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="commitmentService")
     protected CommitmentService commitmentService;
     protected CommitmentType commitmentType;
     protected String formUrl;
-
-    public void setCommitmentService(CommitmentService commitmentService) {
-        this.commitmentService = commitmentService;
-    }
 
     public void setCommitmentType(CommitmentType commitmentType) {
         this.commitmentType = commitmentType;
@@ -64,7 +62,7 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
         Commitment current = commitmentService.maintainCommitment(commitment);
         
         String url = current.getGifts().isEmpty() ? formUrl : getSuccessView();
-        return new ModelAndView(super.appendSaved(url + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request)));
+        return new ModelAndView(super.appendSaved(url + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +88,7 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
     }
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
-        return commitmentService.readCommitmentByIdCreateIfNull(request.getParameter(StringConstants.COMMITMENT_ID), super.getPerson(request), commitmentType);
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+        return commitmentService.readCommitmentByIdCreateIfNull(request.getParameter(StringConstants.COMMITMENT_ID), super.getConstituent(request), commitmentType);
     }
 }

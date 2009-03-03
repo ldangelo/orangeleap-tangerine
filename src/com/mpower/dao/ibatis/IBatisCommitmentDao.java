@@ -17,8 +17,7 @@ import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.type.CommitmentType;
 
 @Repository("commitmentDAO")
-public class IBatisCommitmentDao extends AbstractIBatisDao implements
-		CommitmentDao {
+public class IBatisCommitmentDao extends AbstractIBatisDao implements CommitmentDao {
 
 	/** Logger for this class and subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -55,23 +54,19 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements
 		}
 		Map<String, Object> params = setupParams();
 		params.put("id", commitmentId);
-		return (Commitment) getSqlMapClientTemplate().queryForObject(
-				"SELECT_COMMITMENT_BY_ID", params);
+		return (Commitment) getSqlMapClientTemplate().queryForObject("SELECT_COMMITMENT_BY_ID", params);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Commitment> readCommitmentsByConstituentIdType(
-			Long constituentId, CommitmentType commitmentType) {
+	public List<Commitment> readCommitmentsByConstituentIdType(Long constituentId, CommitmentType commitmentType) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("readCommitmentsByConstituentIdType: constituentId = "
-					+ constituentId + " commitmentType = " + commitmentType);
+			logger.debug("readCommitmentsByConstituentIdType: constituentId = "	+ constituentId + " commitmentType = " + commitmentType);
 		}
 		Map<String, Object> params = setupParams();
 		params.put("constituentId", constituentId);
 		params.put("commitmentType", commitmentType);
-		return getSqlMapClientTemplate().queryForList(
-				"SELECT_COMMITMENTS_BY_CONSTITUENT_ID_AND_TYPE", params);
+		return getSqlMapClientTemplate().queryForList("SELECT_COMMITMENTS_BY_CONSTITUENT_ID_AND_TYPE", params);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,7 +99,5 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements
 		fieldMap.put("referenceNumber", "COMMITMENT_ID");
 		fieldMap.put("amountPerGift", "AMOUNT_PER_GIFT");
 		fieldMap.put("amountTotal", "AMOUNT_TOTAL");
-
 	}
-
 }

@@ -6,8 +6,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.AddressAware;
+import com.mpower.domain.model.AddressAware;
+import com.mpower.domain.model.communication.Address;
 
 public class AddressValidator implements Validator {
 

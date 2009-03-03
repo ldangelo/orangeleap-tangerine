@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "CUSTOM_FIELD")
+@Deprecated
 public class CustomField implements Serializable {
 
     private static final long serialVersionUID = 1L;

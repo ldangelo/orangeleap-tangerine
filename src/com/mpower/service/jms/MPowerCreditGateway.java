@@ -1,6 +1,6 @@
 package com.mpower.service.jms;
 
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public interface MPowerCreditGateway {
 

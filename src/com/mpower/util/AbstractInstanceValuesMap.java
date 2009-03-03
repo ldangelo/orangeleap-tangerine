@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public abstract class AbstractInstanceValuesMap extends HashMap {
 	
     /** Logger for this class and subclasses */

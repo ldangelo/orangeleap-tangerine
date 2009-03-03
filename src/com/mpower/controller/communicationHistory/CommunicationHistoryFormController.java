@@ -1,5 +1,6 @@
 package com.mpower.controller.communicationHistory;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,8 +10,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.CommunicationHistory;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.CommunicationHistory;
 import com.mpower.service.CommunicationHistoryService;
 import com.mpower.util.StringConstants;
 
@@ -19,16 +20,13 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="communicationHistoryService")
     protected CommunicationHistoryService communicationHistoryService;
 
-    public void setCommunicationHistoryService(CommunicationHistoryService communicationHistoryService) {
-        this.communicationHistoryService = communicationHistoryService;
-    }
-
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
+    protected AbstractEntity findEntity(HttpServletRequest request) {
         // TODO: if the user navigates directly to CommunicationHistory.htm with no personId, we should redirect to CommunicationHistorySearch.htm
-        return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getPerson(request));
+        return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getConstituent(request));
     }
 
     @Override
@@ -49,7 +47,7 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         CommunicationHistory communicationHistory = (CommunicationHistory) command;
         CommunicationHistory current = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
     }
     
 }

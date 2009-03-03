@@ -2,6 +2,7 @@ package com.mpower.controller.code;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,9 +13,8 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.mpower.domain.customization.Code;
+import com.mpower.domain.model.customization.Code;
 import com.mpower.service.CodeService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class CodeHelperController extends ParameterizableViewController {
 
@@ -22,14 +22,11 @@ public class CodeHelperController extends ParameterizableViewController {
     protected final Log logger = LogFactory.getLog(getClass());
     public static final String VIEW = "view";
 
+    @Resource(name="codeService")
     private CodeService codeService;
     private String tableView;
     private String autoCompleteView;
     private String resultsOnlyView;
-
-    public void setCodeService(CodeService codeService) {
-        this.codeService = codeService;
-    }
 
     public void setTableView(String tableView) {
         this.tableView = tableView;
@@ -66,10 +63,10 @@ public class CodeHelperController extends ParameterizableViewController {
         }
         List<Code> codes;
         if (description != null) {
-            codes = codeService.readCodes(SessionServiceImpl.lookupUserSiteName(), codeType, searchString, description, showInactive);
+            codes = codeService.readCodes(codeType, searchString, description, showInactive);
         } 
         else {
-            codes = codeService.readCodes(SessionServiceImpl.lookupUserSiteName(), codeType, searchString);
+            codes = codeService.readCodes(codeType, searchString);
         }
         String view = super.getViewName();
         if ("table".equals(request.getParameter(VIEW))) {

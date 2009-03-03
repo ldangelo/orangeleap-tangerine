@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Deprecated
 public @interface AutoPopulate {
 	boolean autoUpdateValue() default false;
 }

@@ -10,6 +10,7 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.DistributionLine;
 import com.mpower.domain.DistributionLineCustomField;
 
+@Deprecated
 public class DistributionLineCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

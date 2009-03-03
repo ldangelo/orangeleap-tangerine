@@ -23,6 +23,7 @@ import com.mpower.domain.listener.TemporalTimestampListener;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "SITE")
+@Deprecated
 public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;

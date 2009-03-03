@@ -9,8 +9,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.PaymentSource;
 
 public class PaymentManagerFormController extends TangerineConstituentAttributesFormController {
 
@@ -18,8 +18,8 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
-        return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getPerson(request));
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+        return paymentSourceService.readPaymentSourceCreateIfNull(request.getParameter("paymentSourceId"), super.getConstituent(request));
     }
     
     @Override

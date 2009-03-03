@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.type.GiftEntryType;
 
 public interface GiftService {
@@ -17,29 +17,27 @@ public interface GiftService {
     
     public Gift readGiftById(Long giftId);
 
-    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person);
+    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent);
 
-    public List<Gift> readGifts(Person person);
+    public List<Gift> readGifts(Person constituent);
 
-    public List<Gift> readGifts(Long personId);
+    public List<Gift> readGifts(Long constituentId);
 
-    public List<Gift> readGifts(String siteName, Map<String, Object> params);
+    public List<Gift> readGifts(Map<String, Object> params);
 
-    public Gift createDefaultGift(Person person);
+    public Gift createDefaultGift(Person constituent);
 
-    public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate);
+    public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
     public Gift refundGift(Long giftId);
 
-    public List<Gift> readGiftsByPersonId(Long personId);
+    public List<Gift> readGiftsByConstituentId(Long constituentId);
 
-    public List<Gift> readAllGifts();
-
-    public void setAuditService(AuditService auditService);
+//    public List<Gift> readAllGifts();
 
     public Gift createGift(Commitment commitment, GiftEntryType giftEntryType);
 
     public List<Gift> readGiftsByCommitment(Commitment commitment);
 
-	public List<Gift> readAllGiftsBySiteName(String siteName);
+	public List<Gift> readAllGiftsBySiteName();
 }

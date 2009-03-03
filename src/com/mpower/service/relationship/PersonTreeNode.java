@@ -6,11 +6,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
 
 public class PersonTreeNode {
-	
-
 	private Person person;
 	private List<PersonTreeNode> children = new ArrayList<PersonTreeNode>();
 	private int level;

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PaymentHistoryDao;
-import com.mpower.domain.PaymentHistory;
+import com.mpower.dao.interfaces.PaymentHistoryDao;
+import com.mpower.domain.model.PaymentHistory;
 import com.mpower.service.PaymentHistoryService;
 
 @Service("paymentHistoryService")
@@ -21,24 +21,33 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "paymentHistoryDao")
+    @Resource(name = "paymentHistoryDAO")
     private PaymentHistoryDao paymentHistoryDao;
-
 
 	@Override
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory) {
-		if (paymentHistory.getPerson() == null) return null;
+        if (logger.isDebugEnabled()) {
+            logger.debug("addPaymentHistory: paymentHistory = " + paymentHistory);
+        }
+		if (paymentHistory.getPerson() == null) {
+            return null;
+        }
 		return paymentHistoryDao.addPaymentHistory(paymentHistory);
 	}
 
 	@Override
-	public List<PaymentHistory> readPaymentHistory(Long personId) {
-		return paymentHistoryDao.readPaymentHistory(personId);
+	public List<PaymentHistory> readPaymentHistory(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentHistory: constituentId = " + constituentId);
+        }
+		return paymentHistoryDao.readPaymentHistoryByConstituentId(constituentId);
 	}
 	
 	@Override
-	public List<PaymentHistory> readPaymentHistoryBySite(String siteId) {
-		return paymentHistoryDao.readPaymentHistoryBySite(siteId);
+	public List<PaymentHistory> readPaymentHistoryBySite() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentHistoryBySite:");
+        }
+		return paymentHistoryDao.readPaymentHistoryBySite();
 	}
-	
 }

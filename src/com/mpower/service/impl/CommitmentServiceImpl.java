@@ -19,19 +19,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.CommitmentDao;
-import com.mpower.dao.GiftDao;
-import com.mpower.dao.PaymentSourceDao;
+import com.mpower.dao.interfaces.CommitmentDao;
+import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.dao.interfaces.SiteDao;
-import com.mpower.domain.Address;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Email;
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.EntityDefault;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
@@ -64,17 +64,17 @@ public class CommitmentServiceImpl implements CommitmentService {
     @Resource(name = "paymentSourceService")
     private PaymentSourceService paymentSourceService;
 
-    @Resource(name = "commitmentDao")
-    private CommitmentDao commitmentDao;
-
-    @Resource(name = "giftDao")
-    private GiftDao giftDao;
-
-    @Resource(name = "paymentSourceDao")
-    private PaymentSourceDao paymentSourceDao;
-
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
+
+    @Resource(name = "commitmentDAO")
+    private CommitmentDao commitmentDao;
+
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
+
+    @Resource(name = "paymentSourceDAO")
+    private PaymentSourceDao paymentSourceDao;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
@@ -102,7 +102,7 @@ public class CommitmentServiceImpl implements CommitmentService {
     	
     	
         if (PaymentSource.CREDIT_CARD.equals(commitment.getPaymentType()) || PaymentSource.ACH.equals(commitment.getPaymentType())) {
-            commitment.getPaymentSource().setType(commitment.getPaymentType());
+            commitment.getPaymentSource().setPaymentType(commitment.getPaymentType());
             List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(commitment.getPerson().getId());
             if (paymentSources != null) {
                 for (PaymentSource paymentSource : paymentSources) {
@@ -178,19 +178,19 @@ public class CommitmentServiceImpl implements CommitmentService {
         if (logger.isDebugEnabled()) {
             logger.debug("readCommitmentById: commitmentId = " + commitmentId);
         }
-        return normalize(commitmentDao.readCommitment(commitmentId));
+        return normalize(commitmentDao.readCommitmentById(commitmentId));
     }
     
     @Override
-    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person person, CommitmentType commitmentType) {
+    public Commitment readCommitmentByIdCreateIfNull(String commitmentId, Person constituent, CommitmentType commitmentType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " commitmentType = " + commitmentType + " personId = " + (person == null ? null : person.getId()));
+            logger.debug("readCommitmentByIdCreateIfNull: commitmentId = " + commitmentId + " commitmentType = " + commitmentType + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Commitment commitment = null;
         if (commitmentId == null) {
-            if (person != null) {
-                commitment = this.createDefaultCommitment(person, commitmentType);
-                commitment.setPerson(person);
+            if (constituent != null) {
+                commitment = this.createDefaultCommitment(constituent, commitmentType);
+                commitment.setPerson(constituent);
             }
         } 
         else {
@@ -203,13 +203,13 @@ public class CommitmentServiceImpl implements CommitmentService {
     private Commitment normalize(Commitment commitment) {
     	if (commitment.getCommitmentType() == CommitmentType.RECURRING_GIFT) {
 	    	if (commitment.getAddress() == null) {
-	            commitment.setAddress(new Address(commitment.getPerson()));
+	            commitment.setAddress(new Address(commitment.getPerson().getId()));
 	        }
 	    	if (commitment.getPhone() == null) {
-	            commitment.setPhone(new Phone(commitment.getPerson()));
+	            commitment.setPhone(new Phone(commitment.getPerson().getId()));
 	        }
 	        if (commitment.getEmail() == null) {
-	            commitment.setEmail(new Email(commitment.getPerson()));
+	            commitment.setEmail(new Email(commitment.getPerson().getId()));
 	        }
 	        if (commitment.getPaymentSource() == null) {
 	            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
@@ -220,24 +220,33 @@ public class CommitmentServiceImpl implements CommitmentService {
     }
 
     @Override
-    public List<Commitment> readCommitments(Person person, CommitmentType commitmentType) {
-        return readCommitments(person.getId(), commitmentType);
-    }
-
-    @Override
-    public List<Commitment> readCommitments(Long personId, CommitmentType commitmentType) {
-        return commitmentDao.readCommitments(personId, commitmentType);
-    }
-
-    @Override
-    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params) {
-        return commitmentDao.readCommitments(siteName, commitmentType, params);
-    }
-
-    @Override
-    public Commitment createDefaultCommitment(Person person, CommitmentType commitmentType) {
+    public List<Commitment> readCommitments(Person constituent, CommitmentType commitmentType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultCommitment: person = " + (person == null ? null : person.getId()) + " commitmentType = " + commitmentType);
+            logger.debug("readCommitments: constituent = " + constituent + " commitmentType = " + commitmentType);
+        }
+        return readCommitments(constituent.getId(), commitmentType);
+    }
+
+    @Override
+    public List<Commitment> readCommitments(Long constituentId, CommitmentType commitmentType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommitments: constituentId = " + constituentId + " commitmentType = " + commitmentType);
+        }
+        return commitmentDao.readCommitmentsByConstituentIdType(constituentId, commitmentType);
+    }
+
+    @Override
+    public List<Commitment> searchCommitments(CommitmentType commitmentType, Map<String, Object> params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("searchCommitments: commitmentType = " + commitmentType + " params = " + params);
+        }
+        return commitmentDao.searchCommitments(commitmentType, params);
+    }
+
+    @Override
+    public Commitment createDefaultCommitment(Person constituent, CommitmentType commitmentType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createDefaultCommitment: constituent = " + (constituent == null ? null : constituent.getId()) + " commitmentType = " + commitmentType);
         }
         // get initial commitment with built-in defaults
         Commitment commitment = new Commitment(commitmentType);
@@ -247,16 +256,26 @@ public class CommitmentServiceImpl implements CommitmentService {
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
-        commitment.addDistributionLine(new DistributionLine(commitment));
+        DistributionLine line = new DistributionLine();
+        line.setCommitmentId(commitment.getId());
+        commitment.addDistributionLine(line);
 
         return commitment;
     }
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
+    @Override
+    public BigDecimal getAmountReceived(Long commitmentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getAmountReceived: commitmentId = " + commitmentId);
+        }
+        return giftDao.readGiftsReceivedSumByCommitmentId(commitmentId);
     }
 
+    @Override
     public List<Calendar> getCommitmentGiftDates(Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getCommitmentGiftDates: commitment = " + commitment);
+        }
         List<Calendar> giftDates = null;
         if (commitment.getStartDate() == null) {
             logger.debug("Commitment start date is null");
@@ -325,7 +344,11 @@ public class CommitmentServiceImpl implements CommitmentService {
         return giftDates;
     }
 
+    @Override
     public List<Gift> getCommitmentGifts(Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getCommitmentGifts: commitment = " + commitment);
+        }
         List<Calendar> giftDates = getCommitmentGiftDates(commitment);
         if (giftDates != null) {
             List<Gift> gifts = new ArrayList<Gift>();
@@ -337,15 +360,16 @@ public class CommitmentServiceImpl implements CommitmentService {
         return new ArrayList<Gift>();
     }
 
-    public static Calendar createGiftDate(Commitment commitment, Calendar giftCal) {
+    public Calendar createGiftDate(Commitment commitment, Calendar giftCal) {
         return new GregorianCalendar(giftCal.get(Calendar.YEAR), giftCal.get(Calendar.MONTH), giftCal.get(Calendar.DAY_OF_MONTH));
     }
 
-    public static Gift createGift(Commitment commitment, Calendar giftCal) {
+    public Gift createGift(Commitment commitment, Calendar giftCal) {
         logger.debug("Creating gift for " + commitment.getAmountPerGift() + ", on " + giftCal.getTime());
         return new Gift(commitment, giftCal.getTime());
     }
 
+    // TODO: do the methods below need to be static???
     public static boolean isPastEndDate(Commitment commitment, Date date) {
         return commitment.getEndDate() == null ? false : date.after(commitment.getEndDate());
     }
@@ -366,9 +390,5 @@ public class CommitmentServiceImpl implements CommitmentService {
         }
         logger.debug("getBimonthlyCalendar() = " + next.getTime() + " millis=" + next.getTimeInMillis());
         return next;
-    }
-
-    public BigDecimal getAmountReceived(Long commitmentId) {
-        return giftDao.readGiftsReceivedSumByCommitmentId(commitmentId);
     }
 }

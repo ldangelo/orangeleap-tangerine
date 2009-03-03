@@ -6,8 +6,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Email;
-import com.mpower.domain.EmailAware;
+import com.mpower.domain.model.EmailAware;
+import com.mpower.domain.model.communication.Email;
 
 public class EmailValidator implements Validator {
 

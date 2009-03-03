@@ -16,6 +16,7 @@ import com.mpower.domain.customization.MessageResource;
 import com.mpower.type.MessageResourceType;
 
 @Repository("messageDao")
+@Deprecated
 public class JPAMessageDao implements MessageDao {
 
     /** Logger for this class and subclasses */

@@ -2,7 +2,7 @@ package com.mpower.service;
 
 import java.util.List;
 
-import com.mpower.domain.PaymentHistory;
+import com.mpower.domain.model.PaymentHistory;
 
 public interface PaymentHistoryService {
 
@@ -10,6 +10,6 @@ public interface PaymentHistoryService {
 
     public List<PaymentHistory> readPaymentHistory(Long personId);
 
-    public List<PaymentHistory> readPaymentHistoryBySite(String siteId);
+    public List<PaymentHistory> readPaymentHistoryBySite();
 
 }

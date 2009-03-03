@@ -23,6 +23,7 @@ import com.mpower.type.PageType;
 
 @Entity
 @Table(name = "PAGE_ACCESS", uniqueConstraints = @UniqueConstraint(columnNames = { "PAGE_TYPE", "SITE_NAME", "ROLE" }))
+@Deprecated
 public class PageAccess implements Serializable {
 
     private static final long serialVersionUID = 1L;

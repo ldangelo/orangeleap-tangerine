@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "GIFT_CUSTOM_FIELD")
+@Deprecated
 public class GiftCustomField implements Serializable {
 
     private static final long serialVersionUID = 1L;

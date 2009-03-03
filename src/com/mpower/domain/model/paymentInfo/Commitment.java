@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.mpower.type.CommitmentType;
 
-public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable TODO: for Ibatis 
+public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Viewable TODO: for Ibatis 
 
     private static final long serialVersionUID = 1L;
 

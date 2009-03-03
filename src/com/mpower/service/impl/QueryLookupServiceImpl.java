@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.QueryLookupDao;
-import com.mpower.domain.QueryLookup;
-import com.mpower.domain.QueryLookupParam;
+import com.mpower.dao.interfaces.QueryLookupDao;
+import com.mpower.dao.interfaces.QueryLookupExecutorDao;
+import com.mpower.domain.model.QueryLookup;
+import com.mpower.domain.model.QueryLookupParam;
 import com.mpower.service.QueryLookupService;
 
 @Service("queryLookupService")
@@ -24,23 +25,30 @@ public class QueryLookupServiceImpl implements QueryLookupService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "queryLookupDao")
+    @Resource(name = "queryLookupDAO")
     private QueryLookupDao queryLookupDao;
+    
+    @Resource(name = "queryLookupExecutorDAO")
+    private QueryLookupExecutorDao queryLookupExecutorDao;
 
-    // @Resource(name = "siteDao")
-    // private SiteDao siteDao;
-
-    public QueryLookup readQueryLookup(String siteName, String fieldDefinitionId) {
-        return queryLookupDao.readQueryLookup(siteName, fieldDefinitionId);
+    @Override
+    public QueryLookup readQueryLookup(String fieldDefinitionId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
+        }
+        return queryLookupDao.readQueryLookup(fieldDefinitionId);
     }
 
-    public List<Object> executeQueryLookup(String siteName, String fieldDefinitionId, Map<String, String> params) {
-        QueryLookup ql = readQueryLookup(siteName, fieldDefinitionId);
+    @Override
+    public List<Object> executeQueryLookup(String fieldDefinitionId, Map<String, String> params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("executeQueryLookup: fieldDefinitionId = " + fieldDefinitionId + " params = " + params);
+        }
+        QueryLookup ql = readQueryLookup(fieldDefinitionId);
         List<Object> objects = null;
         if (ql != null) {
             StringBuilder query = new StringBuilder(ql.getSqlQuery());
             LinkedHashMap<String, String> paramsMap = new LinkedHashMap<String, String>();
-            paramsMap.put("siteName", siteName);
             List<QueryLookupParam> lookupParams = ql.getQueryLookupParams();
             if (lookupParams != null) {
                 for (QueryLookupParam qlp : lookupParams) {
@@ -49,14 +57,14 @@ public class QueryLookupServiceImpl implements QueryLookupService {
                         query.append(" AND ");
                         query.append(key);
                         query.append(" LIKE :");
-                        query.append(key.replace('.', '_'));
-                        paramsMap.put(key.replace('.', '_'), params.get(key) + "%");
+                        query.append(key.replace('.', '_')); // TODO: fix for JDBCTemplate
+                        paramsMap.put(key.replace('.', '_'), params.get(key) + "%"); // TODO: fix for JDBCTemplate
                     }
                 }
             }
 
             if (ql != null) {
-                objects = queryLookupDao.executeQueryLookup(query.toString(), paramsMap);
+                objects = queryLookupExecutorDao.executeQueryLookup(query.toString(), paramsMap);
             }
         }
         return objects;

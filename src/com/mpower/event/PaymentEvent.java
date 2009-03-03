@@ -1,7 +1,6 @@
 package com.mpower.event;
 
-
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class PaymentEvent extends GiftEvent {
 	

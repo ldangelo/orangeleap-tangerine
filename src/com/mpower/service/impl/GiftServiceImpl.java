@@ -24,19 +24,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.GiftDao;
-import com.mpower.dao.PaymentSourceDao;
+import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.dao.interfaces.SiteDao;
-import com.mpower.domain.Address;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Email;
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentHistory;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
+import com.mpower.domain.model.PaymentHistory;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.EntityDefault;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.integration.NewGift;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
@@ -53,7 +53,6 @@ import com.mpower.type.PaymentHistoryType;
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class GiftServiceImpl implements GiftService, ApplicationContextAware {
-
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -79,25 +78,32 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "giftDao")
+    @Resource(name = "giftDAO")
     private GiftDao giftDao;
 
-    @Resource(name = "paymentSourceDao")
+    @Resource(name = "paymentSourceDAO")
     private PaymentSourceDao paymentSourceDao;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
-
     private ApplicationContext context;
+
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        context = applicationContext;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainGift: gift = " + gift);
+        }
         if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType()) || PaymentSource.ACH.equals(gift.getPaymentType())) {
 //            gift.setAuthCode(RandomStringUtils.randomNumeric(6));
             if (gift.getPaymentSource() != null && gift.getPaymentSource().getId() == null) {
-                gift.getPaymentSource().setType(gift.getPaymentType());
+                gift.getPaymentSource().setPaymentType(gift.getPaymentType());
                 List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(gift.getPerson().getId());
                 if (paymentSources != null) {
                     for (PaymentSource paymentSource : paymentSources) {
@@ -263,13 +269,13 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
         if (logger.isDebugEnabled()) {
             logger.debug("readGiftById: giftId = " + giftId);
         }
-        return normalize(giftDao.readGift(giftId));
+        return normalize(giftDao.readGiftById(giftId));
     }
 
     @Override
-    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person person) {
+    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " personId = " + (person == null ? null : person.getId()));
+            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Gift gift = null;
         if (giftId == null) {
@@ -284,9 +290,9 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
                 gift.setPerson(commitment.getPerson());
             }
             if (gift == null) {
-                if (person != null) {
-                    gift = this.createDefaultGift(person);
-                    gift.setPerson(person);
+                if (constituent != null) {
+                    gift = this.createDefaultGift(constituent);
+                    gift.setPerson(constituent);
                 }
             }
         }
@@ -299,13 +305,13 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
     // only needed for gifts not entered by the program and entered via sql.
     private Gift normalize(Gift gift) {
         if (gift.getAddress() == null) {
-            gift.setAddress(new Address(gift.getPerson()));
+            gift.setAddress(new Address(gift.getPerson().getId()));
         }
         if (gift.getPhone() == null) {
-            gift.setPhone(new Phone(gift.getPerson()));
+            gift.setPhone(new Phone(gift.getPerson().getId()));
         }
         if (gift.getEmail() == null) {
-            gift.setEmail(new Email(gift.getPerson()));
+            gift.setEmail(new Email(gift.getPerson().getId()));
         }
         if (gift.getPaymentSource() == null) {
             gift.setPaymentSource(new PaymentSource(gift.getPerson()));
@@ -315,18 +321,25 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
     }
 
     @Override
-    public List<Gift> readGifts(Person person) {
-        return readGifts(person.getId());
+    public List<Gift> readGifts(Person constituent) {
+        return readGifts(constituent.getId());
     }
 
     @Override
-    public List<Gift> readGifts(Long personId) {
-        return giftDao.readGifts(personId);
+    public List<Gift> readGifts(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGifts: constituentId = " + constituentId);
+        }
+        return giftDao.readGiftsByConstituentId(constituentId);
     }
 
     @Override
-    public List<Gift> readGifts(String siteName, Map<String, Object> params) {
-        return giftDao.readGifts(siteName, params);
+    public List<Gift> readGifts(Map<String, Object> params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGifts: params = " + params);
+        }
+//        return giftDao.readGifts(params);//TODO fix for Search
+        return null;
     }
 
     public void createPaymentSource(PaymentSource paymentSource) {
@@ -355,7 +368,9 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
-        gift.addDistributionLine(new DistributionLine(gift));
+        DistributionLine line = new DistributionLine();
+        line.setGiftId(gift.getId());
+        gift.addDistributionLine(line);
 
         // TODO: consider caching techniques for the default Gift
         return gift;
@@ -363,16 +378,20 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
 
     @Override
     public Gift createGift(Commitment commitment, GiftEntryType giftEntryType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createGift: commitment = " + commitment + " giftEntryType = " + giftEntryType);
+        }
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
-        gift.setCommitment(commitment);
+        gift.setCommitmentId(commitment.getId());
         gift.setComments(commitment.getComments());
         gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
         gift.setEntryType(giftEntryType);
         for (DistributionLine dl : commitment.getDistributionLines()) {
-            DistributionLine gdl = new DistributionLine(gift);
+            DistributionLine gdl = new DistributionLine();
+            gdl.setGiftId(gift.getId());
             gdl.setProjectCode(dl.getProjectCode());
             gdl.setAmount(dl.getAmount());
             gift.addDistributionLine(gdl);
@@ -383,13 +402,19 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
     }
 
     @Override
-    public double analyzeMajorDonor(Long personId, Date beginDate, Date currentDate) {
-        return giftDao.analyzeMajorDonor(personId, beginDate, currentDate);
+    public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
+        }
+        return giftDao.analyzeMajorDonor(constituentId, beginDate, currentDate);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift refundGift(Long giftId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("refundGift: giftId = " + giftId);
+        }
         Gift originalGift = readGiftById(giftId);
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
@@ -403,7 +428,12 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
             List<DistributionLine> lines = originalGift.getDistributionLines();
             for (DistributionLine line : lines) {
                 BigDecimal negativeAmount = line.getAmount() == null ? null : line.getAmount().negate();
-                refundGift.addDistributionLine(new DistributionLine(refundGift, negativeAmount, line.getProjectCode(), line.getMotivationCode()));
+                DistributionLine newLine = new DistributionLine();
+                newLine.setGiftId(refundGift.getId());
+                newLine.setAmount(negativeAmount);
+                newLine.setProjectCode(line.getProjectCode());
+                newLine.setMotivationCode(line.getMotivationCode());
+                refundGift.addDistributionLine(newLine);
             }
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
@@ -423,37 +453,34 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Gift> readGiftsByPersonId(Long personId) {
-        return giftDao.readGiftsByPersonId(personId);
+    public List<Gift> readGiftsByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByConstituentId: constituentId = " + constituentId);
+        }
+        return giftDao.readGiftsByConstituentId(constituentId);
     }
 
+//    @Override
+//    @Transactional(propagation = Propagation.REQUIRED)
+    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
+//    public List<Gift> readAllGifts() {
+//        return giftDao.readAllGifts(); 
+//    }
+
+    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    // THIS METHOD IS NOT USED ANYWHERE TODO: remove
-    public List<Gift> readAllGifts() {
-        return giftDao.readAllGifts(); 
-    }
-
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
-    }
-
     public List<Gift> readGiftsByCommitment(Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByCommitment: commitment = " + commitment);
+        }
         return giftDao.readGiftsByCommitmentId(commitment.getId());
     }
 
-
-
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		context = applicationContext;
-		
-	}
-
-
 	@Override
-	public List<Gift> readAllGiftsBySiteName(String siteName) {
-        return giftDao.readAllGiftsBySiteName(siteName);
+	public List<Gift> readAllGiftsBySiteName() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllGiftsBySiteName:");
+        }
+        return giftDao.readAllGiftsBySite();
 	}
-
 }

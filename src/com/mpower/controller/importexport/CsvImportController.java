@@ -22,7 +22,6 @@ import org.springframework.web.util.WebUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-import com.mpower.service.SiteService;
 import com.mpower.type.AccessType;
 
 public class CsvImportController extends SimpleFormController {
@@ -30,12 +29,6 @@ public class CsvImportController extends SimpleFormController {
     public static final String IMPORT_RESULT = "importResult";
 
 	protected final Log logger = LogFactory.getLog(getClass());
-	
-	private SiteService siteService;
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
 
 	@Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException {

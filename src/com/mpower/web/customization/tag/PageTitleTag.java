@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mpower.service.customization.MessageService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.MessageResourceType;
 
 public class PageTitleTag extends TagSupport {
@@ -30,7 +29,7 @@ public class PageTitleTag extends TagSupport {
         messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
         Locale locale = pageContext.getRequest().getLocale();
-        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.TITLE, pageName, locale);
+        String messageValue = messageService.lookupMessage(MessageResourceType.TITLE, pageName, locale);
         try {
             pageContext.getOut().write(messageValue);
         } catch (IOException e) {

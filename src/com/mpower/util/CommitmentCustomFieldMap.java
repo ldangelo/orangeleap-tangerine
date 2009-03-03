@@ -10,6 +10,7 @@ import com.mpower.domain.Commitment;
 import com.mpower.domain.CommitmentCustomField;
 import com.mpower.domain.CustomField;
 
+@Deprecated
 public class CommitmentCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

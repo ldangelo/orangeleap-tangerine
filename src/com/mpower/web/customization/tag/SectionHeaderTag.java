@@ -12,9 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionDefinition;
 import com.mpower.service.customization.MessageService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.MessageResourceType;
 
 public class SectionHeaderTag extends TagSupport {
@@ -32,7 +31,7 @@ public class SectionHeaderTag extends TagSupport {
         messageService = (MessageService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("messageService");
 
         Locale locale = pageContext.getRequest().getLocale();
-        String messageValue = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
+        String messageValue = messageService.lookupMessage(MessageResourceType.SECTION_HEADER, sectionDefinition.getSectionName(), locale);
         if (GenericValidator.isBlankOrNull(messageValue)) {
             messageValue = sectionDefinition.getDefaultLabel();
         }

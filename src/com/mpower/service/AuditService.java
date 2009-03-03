@@ -12,7 +12,7 @@ public interface AuditService {
 
     public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId);
 
-    public List<Audit> auditHistoryForPerson(Long personId);
+    public List<Audit> auditHistoryForConstituent(Long constituentId);
 
     public Audit auditObjectInactive(Object object);
 }

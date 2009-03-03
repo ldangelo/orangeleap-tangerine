@@ -10,6 +10,7 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.Person;
 import com.mpower.domain.PersonCustomField;
 
+@Deprecated
 public class PersonCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

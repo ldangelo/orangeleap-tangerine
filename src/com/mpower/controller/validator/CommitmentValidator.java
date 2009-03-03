@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Commitment;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.type.CommitmentType;
 
 public class CommitmentValidator implements Validator {

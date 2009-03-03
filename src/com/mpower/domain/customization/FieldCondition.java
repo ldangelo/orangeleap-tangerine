@@ -20,6 +20,7 @@ import com.mpower.domain.listener.TemporalTimestampListener;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "FIELD_CONDITION")
+@Deprecated
 public class FieldCondition implements Serializable {
 
     private static final long serialVersionUID = 1L;

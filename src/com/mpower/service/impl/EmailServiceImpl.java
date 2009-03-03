@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.EmailDao;
-import com.mpower.domain.Email;
-import com.mpower.domain.Viewable;
+import com.mpower.dao.interfaces.EmailDao;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Email;
 import com.mpower.service.AuditService;
 import com.mpower.service.CloneService;
 import com.mpower.service.EmailService;
@@ -31,18 +31,18 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "emailDao")
+    @Resource(name = "emailDAO")
     private EmailDao emailDao;
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
-    }
-
     @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public Email saveEmail(Email email) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("saveEmail: email = " + email);
+        }
         boolean found = false;
         if (email.getId() == null) {
-            List<Email> emailList = readEmails(email.getPerson().getId());
+            List<Email> emailList = readEmails(email.getPersonId());
             for (Email e : emailList) {
                 if (email.equals(e)) {
                     found = true;
@@ -68,16 +68,20 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         return email;
     }
 
-    public List<Email> readEmails(Long personId) {
-        return emailDao.readEmails(personId);
+    @Override
+    public List<Email> readEmails(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readEmails: constituentId = " + constituentId);
+        }
+        return emailDao.readEmailsByConstituentId(constituentId);
     }
 
     @Override
-    public List<Email> filterValidEmails(Long personId) {
+    public List<Email> filterValidEmails(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("filterValidEmails: personId = " + personId);
+            logger.debug("filterValidEmails: constituentId = " + constituentId);
         }
-        List<Email> emails = this.readEmails(personId);
+        List<Email> emails = this.readEmails(constituentId);
         List<Email> filteredEmails = new ArrayList<Email>();
         for (Email email : emails) {
             if (email.isValid()) {
@@ -87,15 +91,24 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         return filteredEmails;
     }
 
+    @Override
     public Email readEmail(Long emailId) {
-        return emailDao.readEmail(emailId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("readEmail: emailId = " + emailId);
+        }
+        return emailDao.readEmailById(emailId);
     }
 
-    public List<Email> readCurrentEmails(Long personId, Calendar calendar, boolean mailOnly) {
-        return emailDao.readCurrentEmails(personId, calendar, mailOnly);
+    @Override
+    public List<Email> readCurrentEmails(Long constituentId, Calendar calendar, boolean mailOnly) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCurrentEmails: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
+        }
+        return emailDao.readActiveEmailsByConstituentId(constituentId); // TODO: move JPAEmailDao logic here
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    // TODO: is this being used?
     public void inactivateEmails() {
         emailDao.inactivateEmails();
     }
@@ -112,8 +125,11 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
     }
 
     @Override
-    public Viewable clone(Viewable viewable) {
-        Email email = (Email)viewable;
+    public AbstractEntity clone(AbstractEntity entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("clone: entity = " + entity);
+        }
+        Email email = (Email)entity;
         if (email != null) {
             Email originalEmail = this.readEmail(email.getId());
             try {

@@ -7,6 +7,7 @@ import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
 import com.mpower.type.PageType;
 
+@Deprecated
 public interface PageCustomizationDAO {
 
     public List<SectionDefinition> readSectionDefinitions(String siteName, PageType pageType, List<String> roles);

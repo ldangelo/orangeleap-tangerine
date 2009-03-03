@@ -3,7 +3,7 @@ package com.mpower.service;
 import java.util.Calendar;
 import java.util.List;
 
-import com.mpower.domain.Address;
+import com.mpower.domain.model.communication.Address;
 
 public interface AddressService {
 
@@ -13,7 +13,7 @@ public interface AddressService {
 
     public List<Address> filterValidAddresses(Long personId);
 
-    public void setAuditService(AuditService auditService);
+//    public void setAuditService(AuditService auditService);
 
     public Address readAddress(Long addressId);
 

@@ -2,11 +2,11 @@ package com.mpower.test.dataprovider;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.CustomField;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Phone;
+import com.mpower.domain.model.customization.CustomField;
 
 public class PersonDataProvider {
 
@@ -41,7 +41,7 @@ public class PersonDataProvider {
         person.setLastName("lastname");
         person.setSite(site);
 
-        Address address1 = new Address(person);
+        Address address1 = new Address(person.getId());
         address1.setAddressLine1("addressLine1");
         address1.setAddressLine2("addressLine2");
         address1.setAddressLine3("addressLine3");
@@ -51,7 +51,7 @@ public class PersonDataProvider {
         address1.setPostalCode("postalCode");
         address1.setStateProvince("TX");
 
-        Address address2 = new Address(person);
+        Address address2 = new Address(person.getId());
         address2.setAddressLine1("addressLine1");
         address2.setAddressLine2("addressLine2");
         address2.setAddressLine3("addressLine3");
@@ -74,11 +74,11 @@ public class PersonDataProvider {
         person.setLastName("lastname");
         person.setSite(site);
 
-        Phone phone1 = new Phone(person);
+        Phone phone1 = new Phone(person.getId());
         phone1.setNumber("111-222-3333");
         phone1.setPhoneType("homePhone");
 
-        Phone phone2 = new Phone(person);
+        Phone phone2 = new Phone(person.getId());
         phone2.setNumber("111-222-3333");
         phone2.setPhoneType("workPhone");
 

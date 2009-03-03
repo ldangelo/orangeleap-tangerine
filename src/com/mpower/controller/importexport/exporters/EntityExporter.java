@@ -12,12 +12,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.SiteService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.FieldType;
 import com.mpower.type.PageType;
-
+import com.mpower.util.TangerineUserHelper;
 
 public abstract class EntityExporter {
 
@@ -30,11 +29,13 @@ public abstract class EntityExporter {
 	protected String entity;
 	protected ApplicationContext applicationContext;
 	protected SiteService siteservice;
+	protected TangerineUserHelper tangerineUserHelper;
 	
 	protected EntityExporter(String entity, ApplicationContext applicationContext) {
 		this.entity = entity;
 		this.applicationContext = applicationContext;
 		siteservice = (SiteService)applicationContext.getBean("siteService");
+		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -83,14 +84,16 @@ public abstract class EntityExporter {
 	
 	public List<FieldDescriptor> getExportFieldDescriptors() {
 		
-		Map<String, FieldDefinition> fields = siteservice.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles());
+		Map<String, FieldDefinition> fields = siteservice.readFieldTypes(getPageType(), tangerineUserHelper.lookupUserRoles());
 		
 		// Use siteservice to read FIELD_DEFINITIONS to get all entity fields for site.
 		List<FieldDescriptor> list = new ArrayList<FieldDescriptor>();
 		for (Map.Entry<String, FieldDefinition> es : fields.entrySet()) {
 			String name = es.getKey();
 			FieldDefinition fd = es.getValue();
-			if (exclude(name, fd)) continue;
+			if (exclude(name, fd)) {
+                continue;
+            }
 			logger.debug("HEADER_FIELD : "+ name);
 			if (fd.isCustom()) {
 				list.add(new FieldDescriptor(fd.getCustomFieldName(), FieldDescriptor.CUSTOM, fd));
@@ -149,7 +152,9 @@ public abstract class EntityExporter {
 				String depobject = fd.getDependentObject();
 				Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 				Object so = m.invoke(o);
-				if (so == null) return "";
+				if (so == null) {
+                    return "";
+                }
 				result = BeanUtils.getProperty(so, fd.getDependentField());
 			} else {
 				result = BeanUtils.getProperty(o, name);
@@ -158,7 +163,9 @@ public abstract class EntityExporter {
 			// Some screen fields are not entity properties
 			fd.setDisabled(true);
 		}
-		if (result == null) result = "";
+		if (result == null) {
+            result = "";
+        }
 		
 		if (fd.getFieldDefinition().getFieldType() == FieldType.DATE && result.endsWith(MIDNITE)) {
 			result = result.substring(0,result.length()-MIDNITE.length());

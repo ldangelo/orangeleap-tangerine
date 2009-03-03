@@ -15,6 +15,7 @@ import com.mpower.domain.PaymentHistory;
 import com.mpower.service.impl.SessionServiceImpl;
 
 @Repository("paymentHistoryDao")
+@Deprecated
 public class JPAPaymentHistoryDao implements PaymentHistoryDao {
 
     /** Logger for this class and subclasses */

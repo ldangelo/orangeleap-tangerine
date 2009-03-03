@@ -43,6 +43,7 @@ import com.mpower.util.Utilities;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMITMENT")
+@Deprecated
 public class Commitment implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;

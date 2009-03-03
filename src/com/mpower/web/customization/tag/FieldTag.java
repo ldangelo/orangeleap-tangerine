@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.web.customization.FieldVO;
 import com.mpower.web.customization.handler.FieldHandler;

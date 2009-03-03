@@ -34,6 +34,7 @@ import com.mpower.util.PhoneMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "PERSON")
+@Deprecated
 public class Person implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;

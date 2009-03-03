@@ -10,10 +10,10 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Viewable;
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.service.CodeService;
 import com.mpower.type.FieldType;
 import com.mpower.util.TangerineUserHelper;
@@ -40,17 +40,7 @@ public class CodeValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        boolean supports = false;
-        Class[] classes = clazz.getInterfaces();
-        if (classes != null) {
-            for (Class thisClass : classes) {
-                if (thisClass.equals(Viewable.class)) {
-                    supports = true;
-                    break;
-                }
-            }
-        }
-        return supports;
+        return AbstractEntity.class.isAssignableFrom(clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -59,16 +49,16 @@ public class CodeValidator implements Validator {
         if (logger.isDebugEnabled()) {
             logger.debug("validate:");
         }
-        if (target instanceof Viewable) {
+        if (target instanceof AbstractEntity) {
         	String sitename = tangerineUserHelper.lookupUserSiteName();
-            Viewable viewable = (Viewable)target;
-            Map<String, FieldDefinition> map = viewable.getFieldTypeMap();
+            AbstractEntity entity = (AbstractEntity)target;
+            Map<String, FieldDefinition> map = entity.getFieldTypeMap();
             if (map != null) {
                 for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
                     String key = e.getKey();
                     FieldDefinition fd = e.getValue();
                     if (FieldType.CODE == fd.getFieldType() || FieldType.CODE_OTHER == fd.getFieldType()) {
-                        BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(viewable);
+                        BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
                         
                         if (PROJECT_CODE.equals(key) || MOTIVATION_CODE.equals(key)) {
                             if (beanWrapper.isReadableProperty(DISTRIBUTION_LINES)) {
@@ -84,7 +74,7 @@ public class CodeValidator implements Validator {
                             }
                         }
                         else {
-                            validateCode(beanWrapper, key, viewable, fd, errors, sitename);
+                            validateCode(beanWrapper, key, entity, fd, errors, sitename);
                         }
                     }
                 }
@@ -92,7 +82,7 @@ public class CodeValidator implements Validator {
         }
     }
     
-    private void validateCode(BeanWrapper beanWrapper, String key, Viewable viewable, FieldDefinition fd, Errors errors, String siteName) {
+    private void validateCode(BeanWrapper beanWrapper, String key, AbstractEntity entity, FieldDefinition fd, Errors errors, String siteName) {
         if (logger.isDebugEnabled()) {
             logger.debug("validateCode: key = " + key + " siteName = " + siteName);
         }
@@ -119,7 +109,7 @@ public class CodeValidator implements Validator {
         
         if (propertyValue != null) {
             String codeValue = (String)propertyValue;
-            Code code = codeService.readCodeBySiteTypeValue(siteName, key, codeValue);
+            Code code = codeService.readCodeBySiteTypeValue(key, codeValue);
             if (code != null && codeValue.equals(code.getValue())) {
                 isValid = true;
             }

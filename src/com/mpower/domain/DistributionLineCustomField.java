@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "DISTRO_LINE_CUSTOM_FIELD")
+@Deprecated
 public class DistributionLineCustomField implements Serializable {
 
     private static final long serialVersionUID = 1L;

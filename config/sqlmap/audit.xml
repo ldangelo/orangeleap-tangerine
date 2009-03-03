@@ -30,11 +30,11 @@
     and SITE_NAME = #siteName#
   </select>
   
-  <select id="AUDIT_HISTORY_FOR_PERSON" resultMap="AUDIT_RESULT" parameterClass="map" >
+  <select id="AUDIT_HISTORY_FOR_CONSTITUENT" resultMap="AUDIT_RESULT" parameterClass="map" >
     select *
     from AUDIT a
 	left outer join PERSON p on a.PERSON_ID = p.PERSON_ID
-    where PERSON_ID = #personId#
+    where PERSON_ID = #constituentId#
     and SITE_NAME = #siteName#
   </select>
   

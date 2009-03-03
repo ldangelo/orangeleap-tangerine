@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.Phone;
 
+@Deprecated
 public interface PhoneDao {
 
     public Phone maintainPhone(Phone phone);

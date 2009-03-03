@@ -19,6 +19,7 @@ import com.mpower.type.EntityType;
 
 @Entity
 @Table(name = "ENTITY_DEFAULT", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "ENTITY_FIELD_NAME" }) })
+@Deprecated
 public class EntityDefault implements Serializable {
 
     private static final long serialVersionUID = 1L;

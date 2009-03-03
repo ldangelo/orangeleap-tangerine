@@ -18,6 +18,7 @@ import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
 @Repository("siteDao")
+@Deprecated
 public class JPASiteDao implements SiteDao {
 
     /** Logger for this class and subclasses */

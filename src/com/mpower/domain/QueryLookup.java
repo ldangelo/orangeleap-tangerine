@@ -21,6 +21,7 @@ import com.mpower.domain.customization.FieldDefinition;
 
 @Entity
 @Table(name="QUERY_LOOKUP")
+@Deprecated
 public class QueryLookup implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -23,6 +23,7 @@ import com.mpower.type.AuditType;
 
 @Entity
 @Table(name = "AUDIT")
+@Deprecated
 public class Audit implements Serializable {
 
     private static final long serialVersionUID = 1L;

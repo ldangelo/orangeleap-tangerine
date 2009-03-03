@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
 import com.mpower.service.PersonService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.PersonDataProvider;
@@ -25,7 +25,7 @@ public class PersonTest extends BaseTest {
         em.persist(person);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("lastName", "last");
-        List<Person> persons = personService.readPersons(site.getName(), params);
+        List<Person> persons = personService.searchConstituents(params);
         assert persons.size() == 1;
         em.remove(person);
         em.remove(site);
@@ -37,7 +37,7 @@ public class PersonTest extends BaseTest {
         em.getTransaction().begin();
         em.persist(site);
         String siteName = site.getName();
-        Person person = personService.createDefaultPerson(site.getName());
+        Person person = personService.createDefaultConstituent();
         person.setSite(site);
         em.persist(person);
         Long personId = person.getId();

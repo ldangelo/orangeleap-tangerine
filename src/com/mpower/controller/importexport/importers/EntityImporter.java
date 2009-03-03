@@ -2,7 +2,6 @@ package com.mpower.controller.importexport.importers;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,9 @@ public abstract class EntityImporter {
 		siteservice = (SiteService)applicationContext.getBean("siteService");
 		entityexporter = new EntityExporterFactory().getEntityExporter(entity, applicationContext);
 		fieldDescriptors = entityexporter.getExportFieldDescriptors();
-		for (FieldDescriptor fd : fieldDescriptors) fieldDescriptorMap.put(fd.getName(), fd);
+		for (FieldDescriptor fd : fieldDescriptors) {
+            fieldDescriptorMap.put(fd.getName(), fd);
+        }
 	}	
 	
 	public abstract void importValueMap(String action, Map<String, String> m) throws PersonValidationException;
@@ -67,7 +68,9 @@ public abstract class EntityImporter {
 		
 			try {
 				FieldDescriptor fd = getFieldDescriptor(key);
-				if (fd == null) throw new RuntimeException("Unrecognized import field name: "+key);
+				if (fd == null) {
+                    throw new RuntimeException("Unrecognized import field name: "+key);
+                }
 				
 				Object value = convertToObject(svalue, fd);
 				
@@ -78,13 +81,17 @@ public abstract class EntityImporter {
 					Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
 					Map map = (Map)m.invoke(o);
 					Object so = map.get(fd.getKey()); 
-					if (so == null) throw new RuntimeException("Unable to import field.");
+					if (so == null) {
+                        throw new RuntimeException("Unable to import field.");
+                    }
 					BeanUtils.setProperty(so, fd.getSubField(), value);
 				} else if (fd.isDependentField()) {
 					String depobject = fd.getDependentObject();
 					Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
 					Object so = m.invoke(o);
-					if (so == null) throw new RuntimeException("Unable to import field."); 
+					if (so == null) {
+                        throw new RuntimeException("Unable to import field.");
+                    } 
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
 				} else {
 					BeanUtils.setProperty(o, key, value);

@@ -15,6 +15,7 @@ import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.CodeType;
 
 @Repository("codeDao")
+@Deprecated
 public class JPACodeDao implements CodeDao {
 
 	/** Logger for this class and subclasses */

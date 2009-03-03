@@ -7,8 +7,8 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.AuditService;
 import com.mpower.service.impl.AuditServiceImpl;
 import com.mpower.test.BaseTest;

@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Deprecated
 public class History implements Serializable {
 
     private static final long serialVersionUID = 1L;

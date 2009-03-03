@@ -26,6 +26,7 @@ import com.mpower.type.PaymentHistoryType;
 
 @Entity
 @Table(name = "PAYMENT_HISTORY")
+@Deprecated
 public class PaymentHistory implements SiteAware, Serializable {
 
     private static final long serialVersionUID = 1L;

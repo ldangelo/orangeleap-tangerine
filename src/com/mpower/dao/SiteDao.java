@@ -6,6 +6,7 @@ import com.mpower.domain.Site;
 import com.mpower.domain.customization.EntityDefault;
 import com.mpower.type.EntityType;
 
+@Deprecated
 public interface SiteDao {
 
 	public Site readSite(String siteName);

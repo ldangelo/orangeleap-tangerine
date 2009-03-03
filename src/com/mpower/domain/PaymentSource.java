@@ -30,6 +30,7 @@ import com.mpower.util.Utilities;
 
 @Entity
 @Table(name = "PAYMENT_SOURCE")
+@Deprecated
 public class PaymentSource implements SiteAware, AddressAware, PhoneAware, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;

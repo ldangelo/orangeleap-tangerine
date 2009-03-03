@@ -7,8 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.service.CodeService;
 import com.mpower.web.customization.FieldVO;
 
@@ -36,7 +36,7 @@ public class CodeFieldHandler extends GenericFieldHandler {
             logger.debug("resolve: codeValue = " + codeValue);
         }
         String val = codeValue;
-        Code code = codeService.readCodeBySiteTypeValue(siteName, codeType, codeValue);
+        Code code = codeService.readCodeBySiteTypeValue(codeType, codeValue);
         if (code != null) {
             val = code.getDisplayValue();
         }

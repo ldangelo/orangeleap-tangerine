@@ -20,6 +20,7 @@ import com.mpower.type.FieldType;
 
 @Entity
 @Table(name = "SECTION_FIELD", uniqueConstraints = @UniqueConstraint(columnNames = { "SECTION_DEFINITION_ID", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID", "SITE_NAME" }))
+@Deprecated
 public class SectionField implements Serializable {
 
     private static final long serialVersionUID = 1L;

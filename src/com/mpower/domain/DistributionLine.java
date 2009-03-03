@@ -28,6 +28,7 @@ import com.mpower.util.DistributionLineCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "DISTRO_LINE")
+@Deprecated
 public class DistributionLine implements Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;

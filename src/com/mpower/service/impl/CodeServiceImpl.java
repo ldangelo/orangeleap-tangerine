@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.CodeDao;
-import com.mpower.domain.customization.Code;
-import com.mpower.domain.customization.CodeType;
+import com.mpower.dao.interfaces.CodeDao;
+import com.mpower.domain.model.customization.Code;
+import com.mpower.domain.model.customization.CodeType;
 import com.mpower.service.AuditService;
 import com.mpower.service.CodeService;
 
@@ -28,33 +28,42 @@ public class CodeServiceImpl implements CodeService {
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "codeDao")
+    @Resource(name = "codeDAO")
     private CodeDao codeDao;
 
     @Override
-    public List<Code> readCodes(String siteName, String codeType) {
-        return codeDao.readCodes(siteName, codeType);
+    public List<Code> readCodes(String codeType) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCodes: codeType = " + codeType);
+        }
+        return codeDao.readCodes(codeType);
     }
 
     @Override
-    public List<Code> readCodes(String siteName, String codeType, String startsWith) {
-        return codeDao.readCodes(siteName, codeType, startsWith);
+    public List<Code> readCodes(String codeType, String startsWith) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCodes: codeType = " + codeType + " startsWith = " + startsWith);
+        }
+        return codeDao.readCodes(codeType, startsWith);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Code maintainCode(Code code) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainCode: code = " + code);
+        }
         Code oldCode = null;
         if (code.getId() != null) {
-            Code dbCode = codeDao.readCode(code.getId());
-            oldCode = codeDao.readCode(code.getId());
+            Code dbCode = codeDao.readCodeById(code.getId());
+            oldCode = codeDao.readCodeById(code.getId());
             oldCode = new Code();
             try {
                 BeanUtils.copyProperties(oldCode, dbCode);
                 code.setOriginalObject(oldCode);
-            } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
-            }
+            } 
+            catch (IllegalAccessException e) { } 
+            catch (InvocationTargetException e) { }
         }
         code = codeDao.maintainCode(code);
         code.setOriginalObject(oldCode);
@@ -64,29 +73,29 @@ public class CodeServiceImpl implements CodeService {
 
     @Override
     public Code readCodeById(Long id) {
-        return codeDao.readCode(id);
+        return codeDao.readCodeById(id);
     }
 
     @Override
-    public List<Code> readCodes(String siteName, String codeType, String startsWith, String partialDescription, Boolean inactive) {
-        return codeDao.readCodes(siteName, codeType, startsWith, partialDescription, inactive);
+    public List<Code> readCodes(String codeType, String startsWith, String partialDescription, Boolean inactive) {
+        return codeDao.readCodes(codeType, startsWith, partialDescription, inactive);
     }
 
 	@Override
-	public List<String> listCodeTypes(String siteName) {
-		return codeDao.listCodeTypes(siteName);
+	public List<String> listCodeTypes() {
+		return codeDao.listCodeTypes();
 	}
 
 	@Override
-	public CodeType readCodeType(String codeType, String siteName) {
-		return codeDao.readCodeType(codeType, siteName);
+	public CodeType readCodeTypeByName(String codeTypeName) {
+		return codeDao.readCodeTypeByName(codeTypeName);
 	}
 
 	@Override
-    public Code readCodeBySiteTypeValue(String siteName, String codeType, String codeValue) {
+    public Code readCodeBySiteTypeValue(String codeType, String codeValue) {
 	    if (logger.isDebugEnabled()) {
-	        logger.debug("readCodeBySiteTypeValue: siteName = " + siteName + " codeType = " + codeType + " codeValue = " + codeValue);
+	        logger.debug("readCodeBySiteTypeValue: codeType = " + codeType + " codeValue = " + codeValue);
 	    }
-	    return codeDao.readCodeBySiteTypeValue(siteName, codeType, codeValue);
+	    return codeDao.readCodeBySiteTypeValue(codeType, codeValue);
 	}
 }

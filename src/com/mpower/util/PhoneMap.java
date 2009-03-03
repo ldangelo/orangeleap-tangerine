@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 
+@Deprecated
 public class PhoneMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

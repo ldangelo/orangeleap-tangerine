@@ -1,5 +1,6 @@
 package com.mpower.controller.code;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,20 +10,16 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.domain.customization.Code;
+import com.mpower.domain.model.customization.Code;
 import com.mpower.service.CodeService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class CodeFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="codeService")
     private CodeService codeService;
-
-    public void setCodeService(CodeService codeService) {
-        this.codeService = codeService;
-    }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
@@ -30,7 +27,7 @@ public class CodeFormController extends SimpleFormController {
         String codeType = request.getParameter("codeType");
         if (codeId == null) {
             Code code = new Code();
-            code.setType(codeService.readCodeType(codeType,SessionServiceImpl.lookupUserSiteName()));
+            code.setCodeType(codeService.readCodeTypeByName(codeType).getId());
             return code;
         } else {
             return codeService.readCodeById(new Long(codeId));
@@ -40,7 +37,7 @@ public class CodeFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Code code = (Code) command;
-        code.setType(codeService.readCodeType(code.getCodeType(),SessionServiceImpl.lookupUserSiteName()));
+//        code.setCodeType(codeService.readCodeTypeByName(code.getCodeType())); TODO: this needs to be fixed to get code type name
         Code newCode = codeService.maintainCode(code);
 
         ModelAndView mav = new ModelAndView(getSuccessView());

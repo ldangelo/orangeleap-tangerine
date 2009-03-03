@@ -23,6 +23,7 @@ import com.mpower.type.PageType;
 
 @Entity
 @Table(name = "SECTION_DEFINITION", uniqueConstraints = @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "ROLE" }))
+@Deprecated
 public class SectionDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;

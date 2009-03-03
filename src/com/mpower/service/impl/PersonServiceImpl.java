@@ -11,21 +11,22 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PersonDao;
-import com.mpower.dao.SiteDao;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
-import com.mpower.domain.customization.EntityDefault;
+import com.mpower.dao.interfaces.ConstituentDao;
+import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.dao.interfaces.SiteDao;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.EntityDefault;
 import com.mpower.service.AuditService;
 import com.mpower.service.PersonService;
 import com.mpower.service.RelationshipService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.EntityType;
+import com.mpower.util.TangerineUserHelper;
 
 @Service("personService")
 public class PersonServiceImpl implements PersonService {
@@ -33,105 +34,125 @@ public class PersonServiceImpl implements PersonService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="tangerineUserHelper")
+    protected TangerineUserHelper tangerineUserHelper;
+
     @Resource(name = "auditService")
     private AuditService auditService;
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
 
-    @Resource(name = "personDao")
-    private PersonDao personDao;
+    @Resource(name = "constituentDAO")
+    private ConstituentDao constituentDao;
 
-    @Resource(name = "siteDao")
-    private SiteDao siteDao; // TODO: replace with IBatis siteDAO
+    @Resource(name = "siteDAO")
+    private SiteDao siteDao;
+
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
+
+//    public void setAuditService(AuditService auditService) {
+//        this.auditService = auditService;
+//    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-    public Person maintainPerson(Person person) throws PersonValidationException {
-    	
-    	if (person.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(person.getLegalName())) {
-    		person.setLegalName(person.getOrganizationName());
+    public Person maintainConstituent(Person constituent) throws PersonValidationException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainConstituent: constituent = " + constituent);
+        }
+    	if (constituent.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(constituent.getLegalName())) {
+    		constituent.setLegalName(constituent.getOrganizationName());
     	}
-    	
-    	if (person.getConstituentType().equals(Person.INDIVIDUAL) && StringUtils.isBlank(person.getRecognitionName())) {
-    		person.setRecognitionName(person.createName(false));
+    	if (constituent.getConstituentType().equals(Person.INDIVIDUAL) && StringUtils.isBlank(constituent.getRecognitionName())) {
+    		constituent.setRecognitionName(constituent.createName(false));
     	}
-
-    	person.setConstituentType(StringUtils.trimToEmpty(person.getConstituentType()).toLowerCase());
-    	person.setConstituentIndividualRoles(StringUtils.trimToEmpty(person.getConstituentIndividualRoles()).toLowerCase());
-    	person.setConstituentOrganizationRoles(StringUtils.trimToEmpty(person.getConstituentOrganizationRoles()).toLowerCase());
+    	constituent.setConstituentType(StringUtils.trimToEmpty(constituent.getConstituentType()).toLowerCase());
+    	constituent.setConstituentIndividualRoles(StringUtils.trimToEmpty(constituent.getConstituentIndividualRoles()).toLowerCase());
+    	constituent.setConstituentOrganizationRoles(StringUtils.trimToEmpty(constituent.getConstituentOrganizationRoles()).toLowerCase());
     	
-        person = personDao.savePerson(person);
-        relationshipService.maintainRelationships(person);
-        auditService.auditObject(person);
-        return person;
+        constituent = constituentDao.maintainConstituent(constituent);
+        relationshipService.maintainRelationships(constituent);
+        auditService.auditObject(constituent);
+        return constituent;
     }
 
     @Override
-    public Person readPersonById(Long id) {
-        return personDao.readPerson(id);
+    public Person readConstituentById(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readConstituentById: id = " + id);
+        }
+        return constituentDao.readConstituentById(id);
     }
 
     @Override
-    public Person readPersonByLoginId(String id, String siteName) {
-        return personDao.readPersonByLoginId(id, siteName);
+    public Person readConstituentByLoginId(String loginId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readConstituentByLoginId: loginId = " + loginId);
+        }
+        return constituentDao.readConstituentByLoginId(loginId);
     }
 
     @Override
-    public List<Person> readPersons(String siteName, Map<String, Object> params) {
-        return personDao.readPersons(siteName, params, null);
+    public List<Person> searchConstituents(Map<String, Object> params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("searchConstituents: params = " + params);
+        }
+        return constituentDao.searchConstituents(params, null);
     }
 
     @Override
-    public List<Person> readPersons(String siteName, Map<String, Object> params, List<Long> ignoreIds) {
-        return personDao.readPersons(siteName, params, ignoreIds);
+    // Unused
+    public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);
+        }
+        return constituentDao.searchConstituents(params, ignoreIds);
     }
 
     @Override
-    public Person createDefaultPerson(String siteName) {
+    public Person createDefaultConstituent() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createDefaultConstituent:");
+        }
         // get initial person with built-in defaults
-        Person person = new Person();
-        person.setSite(siteDao.readSite(siteName));
-        BeanWrapper personBeanWrapper = new BeanWrapperImpl(person);
+        Person constituent = new Person();
+        constituent.setSite(siteDao.readSite(tangerineUserHelper.lookupUserSiteName()));
+        BeanWrapper personBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(siteName, Arrays.asList(new EntityType[] { EntityType.person }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.person }));
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
         // TODO: consider caching techniques for the default Person
-        return person;
+        return constituent;
     }
 
     @Override
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
-        return personDao.analyzeLapsedDonor(beginDate, currentDate);
+        if (logger.isDebugEnabled()) {
+            logger.debug("analyzeLapsedDonor: beginDate = " + beginDate + " currentDate = " + currentDate);
+        }
+        return giftDao.analyzeLapsedDonor(beginDate, currentDate);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Person> readAllPeople() {
-        return personDao.readAllPeople();
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void setLapsedDonor(Long personId) {
-        personDao.setLapsedDonor(personId);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public List<Person> readAllPeopleBySite(Site site) {
-        return personDao.readAllPeopleBySite(site);
-    }
-
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
+    public void setLapsedDonor(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("setLapsedDonor: constituentId = " + constituentId);
+        }
+        constituentDao.setLapsedDonor(constituentId);
     }
 
 	@Override
-	public List<Person> readAllPeopleBySiteName(String siteName) {
-        return personDao.readAllPeopleBySiteName(siteName);
+    @Transactional(propagation = Propagation.REQUIRED)
+	public List<Person> readAllConstituentsBySite() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllConstituentsBySite:");
+        }
+        return constituentDao.readAllConstituentsBySite();
 	}
 }

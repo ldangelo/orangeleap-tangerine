@@ -13,8 +13,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.Phone;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.util.StringConstants;
 
 public class PhoneFormController extends TangerineConstituentAttributesFormController {
@@ -26,11 +26,11 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Phone> phones = phoneService.readPhones(super.getPersonId(request));
+        List<Phone> phones = phoneService.readPhones(super.getConstituentId(request));
         refData.put("phones", phones);
-        List<Phone> currentPhones = phoneService.readCurrentPhones(super.getPersonId(request), Calendar.getInstance(), false);
+        List<Phone> currentPhones = phoneService.readCurrentPhones(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentPhones", currentPhones);
-        List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(super.getPersonId(request), Calendar.getInstance(), true);
+        List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(super.getConstituentId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondencePhones", currentCorrespondencePhones);
 
         if (logger.isDebugEnabled()) {
@@ -42,11 +42,11 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     }
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
+    protected AbstractEntity findEntity(HttpServletRequest request) {
         String phoneId = request.getParameter(StringConstants.PHONE_ID);
         Phone phone = null;
         if (phoneId == null) {
-            phone = new Phone(super.getPerson(request));
+            phone = new Phone(super.getConstituent(request).getId());
         }
         else {
             phone = phoneService.readPhone(Long.valueOf(phoneId));

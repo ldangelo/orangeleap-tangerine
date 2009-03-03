@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.annotation.AutoPopulate;
 
+@Deprecated
 public class TemporalTimestampListener {
 
     /** Logger for this class and subclasses */

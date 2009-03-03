@@ -2,11 +2,11 @@ package com.mpower.test.dataprovider;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.Site;
 import com.mpower.domain.customization.FieldDefinition;
 import com.mpower.domain.customization.FieldRequired;
 import com.mpower.domain.customization.SectionDefinition;
 import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.Site;
 
 public class FieldRequiredDataProvider {
 

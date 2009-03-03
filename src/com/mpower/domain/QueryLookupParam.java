@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name="QUERY_LOOKUP_PARAM")
+@Deprecated
 public class QueryLookupParam implements Serializable {
 
     private static final long serialVersionUID = 1L;

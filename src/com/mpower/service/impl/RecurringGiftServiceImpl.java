@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.RecurringGiftDao;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Gift;
-import com.mpower.domain.RecurringGift;
+import com.mpower.dao.interfaces.RecurringGiftDao;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
+import com.mpower.domain.model.paymentInfo.RecurringGift;
 import com.mpower.service.GiftService;
 import com.mpower.service.RecurringGiftService;
 import com.mpower.type.GiftEntryType;
@@ -32,25 +32,34 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     @Resource(name = "giftService")
     private GiftService giftService;
 
-    @Resource(name = "recurringGiftDao")
+    @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readRecurringGifts: date = " + date + " statuses = " + statuses);
+        }
         return recurringGiftDao.readRecurringGifts(date, statuses);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public RecurringGift maintainRecurringGift(Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainRecurringGift: commitment = " + commitment);
+        }
         RecurringGift rg = commitment.getRecurringGift();
         if (commitment.isAutoPay()) {
             if (rg == null) {
                 rg = new RecurringGift(commitment);
             }
             rg.setNextRunDate(getNextRecurringGiftDate(commitment));
-        } else {
+        } 
+        else {
             if (rg != null) {
-                recurringGiftDao.remove(rg);
+                recurringGiftDao.removeRecurringGift(rg);
                 rg = null;
             }
         }
@@ -59,7 +68,11 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public void processRecurringGifts() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("processRecurringGifts:");
+        }
         List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { "Active", "Fulfilled" }));
         if (recurringGifts != null) {
             for (RecurringGift rg : recurringGifts) {
@@ -71,11 +84,11 @@ public class RecurringGiftServiceImpl implements RecurringGiftService {
                     nextDate = getNextRecurringGiftDate(rg.getCommitment());
                     if (nextDate != null) {
                         rg.setNextRunDate(nextDate);
-                        recurringGiftDao.maintain(rg);
+                        recurringGiftDao.maintainRecurringGift(rg);
                     }
                 }
                 if (nextDate == null) {
-                    recurringGiftDao.remove(rg);
+                    recurringGiftDao.removeRecurringGift(rg);
                     commitment.setRecurringGift(null);
                 }
             }

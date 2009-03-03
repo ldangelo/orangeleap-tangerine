@@ -1,24 +1,21 @@
 package com.mpower.json.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.context.SecurityContextHolder;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.service.PersonService;
-import com.mpower.security.MpowerAuthenticationToken;
-import com.mpower.domain.Person;
-import com.mpower.domain.Address;
-import com.mpower.domain.Phone;
-import com.mpower.domain.Email;
-
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Retrieves the JSON data used for populating the constituent
@@ -41,8 +38,10 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readPersonById(id);
-        if (person == null) return new ModelMap();
+        Person person = personService.readConstituentById(id);
+        if (person == null) {
+            return new ModelMap();
+        }
 
         List<Address> addresses = person.getAddresses();
 
@@ -70,8 +69,10 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readPersonById(id);
-        if (person == null) return new ModelMap();
+        Person person = personService.readConstituentById(id);
+        if (person == null) {
+            return new ModelMap();
+        }
 
         List<Phone> phones = person.getPhones();
 
@@ -96,8 +97,10 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readPersonById(id);
-        if (person == null) return new ModelMap();
+        Person person = personService.readConstituentById(id);
+        if (person == null) {
+            return new ModelMap();
+        }
 
         List<Email> emails = person.getEmails();
 

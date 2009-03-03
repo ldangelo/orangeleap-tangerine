@@ -15,6 +15,7 @@ import com.mpower.dao.RecurringGiftDao;
 import com.mpower.domain.RecurringGift;
 
 @Repository("recurringGiftDao")
+@Deprecated
 public class JPARecurringGiftDao implements RecurringGiftDao {
 
     /** Logger for this class and subclasses */

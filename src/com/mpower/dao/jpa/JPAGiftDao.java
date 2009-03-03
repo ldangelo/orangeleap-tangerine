@@ -23,6 +23,7 @@ import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.EntityUtility;
 
 @Repository("giftDao")
+@Deprecated
 public class JPAGiftDao implements GiftDao {
 
     /** Logger for this class and subclasses */

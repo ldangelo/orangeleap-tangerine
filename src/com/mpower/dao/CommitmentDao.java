@@ -6,6 +6,7 @@ import java.util.Map;
 import com.mpower.domain.Commitment;
 import com.mpower.type.CommitmentType;
 
+@Deprecated
 public interface CommitmentDao {
 
     public Commitment maintainCommitment(Commitment commitment);

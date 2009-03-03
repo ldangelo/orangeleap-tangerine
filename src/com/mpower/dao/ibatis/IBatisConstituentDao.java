@@ -89,23 +89,22 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<Person> searchPersons(Map<String, Object> searchparams, List<Long> ignoreIds) {
-    	
+    public List<Person> searchConstituents(Map<String, Object> searchparams, List<Long> ignoreIds) {
     	Map<String, Object> params = setupParams();
-    	if (ignoreIds == null) ignoreIds = new ArrayList<Long>();
-    	if (ignoreIds.size() > 0) params.put("ignoreIds", ignoreIds);
+    	if (ignoreIds == null) {
+            ignoreIds = new ArrayList<Long>();
+        }
+    	if (ignoreIds.size() > 0) {
+            params.put("ignoreIds", ignoreIds);
+        }
     	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, fieldMap);
-    	
     	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
     	return persons;
-        
     }
-    
    
     // These are the fields we support for searching.
     private Map<String, String> fieldMap = new HashMap<String, String>();
     {
-    	
     	// Constituent
     	fieldMap.put("accountNumber", "PERSON_ID");
     	fieldMap.put("firstName", "FIRST_NAME");
@@ -123,8 +122,5 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
     	// Phone
     	fieldMap.put("number", "NUMBER");
-    	
     }
-
-    
 }

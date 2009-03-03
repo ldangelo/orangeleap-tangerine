@@ -35,6 +35,7 @@ import com.mpower.util.PhoneCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "PHONE")
+@Deprecated
 public class Phone implements SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;

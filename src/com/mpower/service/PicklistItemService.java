@@ -2,16 +2,15 @@ package com.mpower.service;
 
 import java.util.List;
 
-import com.mpower.domain.customization.Picklist;
-import com.mpower.domain.customization.PicklistItem;
-
+import com.mpower.domain.model.customization.Picklist;
+import com.mpower.domain.model.customization.PicklistItem;
 
 public interface PicklistItemService {
 
-	List<Picklist> listPicklists(String siteName);
+	List<Picklist> listPicklists();
 
-	Picklist getPicklist(String siteName, String picklistId);
+	Picklist getPicklist(String picklistId);
 
-	PicklistItem maintainPicklistItem(String siteName, PicklistItem picklistItem);
+	PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
 }

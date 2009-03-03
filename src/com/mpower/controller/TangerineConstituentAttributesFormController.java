@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,16 +17,16 @@ import com.mpower.controller.address.AddressEditor;
 import com.mpower.controller.email.EmailEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
 import com.mpower.controller.phone.PhoneEditor;
-import com.mpower.domain.Address;
-import com.mpower.domain.AddressAware;
-import com.mpower.domain.Email;
-import com.mpower.domain.EmailAware;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.PaymentSourceAware;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
-import com.mpower.domain.PhoneAware;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.AddressAware;
+import com.mpower.domain.model.EmailAware;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.PaymentSourceAware;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.PhoneAware;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.service.AddressService;
 import com.mpower.service.EmailService;
 import com.mpower.service.PaymentSourceService;
@@ -37,31 +38,22 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="paymentSourceService")
     protected PaymentSourceService paymentSourceService;
+    
+    @Resource(name="addressService")
     protected AddressService addressService;
+    
+    @Resource(name="phoneService")
     protected PhoneService phoneService;
+    
+    @Resource(name="emailService")
     protected EmailService emailService;
     
     protected boolean bindPaymentSource = true;
     protected boolean bindAddress = true;
     protected boolean bindPhone = true;
     protected boolean bindEmail = true;
-    
-    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
-        this.paymentSourceService = paymentSourceService;
-    }
-
-    public void setAddressService(AddressService addressService) {
-        this.addressService = addressService;
-    }
-
-    public void setPhoneService(PhoneService phoneService) {
-        this.phoneService = phoneService;
-    }
-
-    public void setEmailService(EmailService emailService) {
-        this.emailService = emailService;
-    }
     
     /**
      * If you do not want to bind to PaymentSources, set to false.  Default is true
@@ -95,19 +87,19 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         this.bindEmail = bindEmail;
     }
     
-    protected Person getPerson(HttpServletRequest request) {
-        Long personId = getPersonId(request);
-        if (personId != null) {
-            return personService.readPersonById(personId); // TODO: do we need to check if the user can view this person (authorization)?
+    protected Person getConstituent(HttpServletRequest request) {
+        Long constituentId = getConstituentId(request);
+        if (constituentId != null) {
+            return personService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    protected void addPersonToReferenceData(HttpServletRequest request, Map refData) {
-        Person person = getPerson(request);
-        if (person != null) {
-            refData.put(StringConstants.PERSON, getPerson(request));
+    protected void addConstituentToReferenceData(HttpServletRequest request, Map refData) {
+        Person constituent = getConstituent(request);
+        if (constituent != null) {
+            refData.put(StringConstants.PERSON, getConstituent(request));
         }
     }
 
@@ -115,40 +107,40 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
         if (bindPaymentSource) {
-            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, personService, this.getPersonIdString(request)));
+            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(this.getConstituentIdString(request)));
         }
         if (bindAddress) {
-            binder.registerCustomEditor(Address.class, new AddressEditor(addressService, personService, this.getPersonIdString(request)));
+            binder.registerCustomEditor(Address.class, new AddressEditor(this.getConstituentIdString(request)));
         }
         if (bindPhone) {
-            binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, personService, this.getPersonIdString(request)));
+            binder.registerCustomEditor(Phone.class, new PhoneEditor(this.getConstituentIdString(request)));
         }
         if (bindEmail) {
-            binder.registerCustomEditor(Email.class, new EmailEditor(emailService, personService, this.getPersonIdString(request)));
+            binder.registerCustomEditor(Email.class, new EmailEditor(this.getConstituentIdString(request)));
         }
     }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        Viewable viewable = (Viewable)super.formBackingObject(request);        
+        AbstractEntity entity = (AbstractEntity)super.formBackingObject(request);        
         if (isFormSubmission(request)) {
-            userCreateNew(request, viewable);
+            userCreateNew(request, entity);
         }
-        return viewable;
+        return entity;
     }
     
-    protected void userCreateNew(HttpServletRequest request, Viewable viewable) {
-        if (bindAddress && viewable instanceof AddressAware) {
-            this.userCreateNewAddress(request, (AddressAware)viewable);
+    protected void userCreateNew(HttpServletRequest request, AbstractEntity entity) {
+        if (bindAddress && entity instanceof AddressAware) {
+            this.userCreateNewAddress(request, (AddressAware)entity);
         }
-        if (bindPhone && viewable instanceof PhoneAware) {
-            this.userCreateNewPhone(request, (PhoneAware)viewable);
+        if (bindPhone && entity instanceof PhoneAware) {
+            this.userCreateNewPhone(request, (PhoneAware)entity);
         }
-        if (bindEmail && viewable instanceof EmailAware) {
-            this.userCreateNewEmail(request, (EmailAware)viewable);
+        if (bindEmail && entity instanceof EmailAware) {
+            this.userCreateNewEmail(request, (EmailAware)entity);
         }
-        if (bindPaymentSource && viewable instanceof PaymentSourceAware) {
-            this.userCreateNewPaymentSource(request, (PaymentSourceAware)viewable);
+        if (bindPaymentSource && entity instanceof PaymentSourceAware) {
+            this.userCreateNewPaymentSource(request, (PaymentSourceAware)entity);
         }
     }
 
@@ -164,7 +156,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 }
                 else {
                     // new payment source, set the type
-                    obj.getPaymentSource().setType(obj.getPaymentType());                    
+                    obj.getPaymentSource().setPaymentType(obj.getPaymentType());                    
                 }
             }
         }
@@ -222,22 +214,22 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = new HashMap();
-        this.addPersonToReferenceData(request, refData);
+        this.addConstituentToReferenceData(request, refData);
 
         if (bindPaymentSource) {
-            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(this.getPersonId(request));
+            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(this.getConstituentId(request));
             refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
         }
         if (bindAddress) {
-            List<Address> addresses = addressService.filterValidAddresses(this.getPersonId(request));
+            List<Address> addresses = addressService.filterValidAddresses(this.getConstituentId(request));
             refData.put(StringConstants.ADDRESSES, addresses);
         }
         if (bindPhone) {
-            List<Phone> phones = phoneService.filterValidPhones(this.getPersonId(request));
+            List<Phone> phones = phoneService.filterValidPhones(this.getConstituentId(request));
             refData.put(StringConstants.PHONES, phones);
         }
         if (bindEmail) {
-            List<Email> emails = emailService.filterValidEmails(this.getPersonId(request));
+            List<Email> emails = emailService.filterValidEmails(this.getConstituentId(request));
             refData.put(StringConstants.EMAILS, emails);
         }
         return refData;
@@ -245,7 +237,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     protected void userCreateNewAddress(HttpServletRequest request, AddressAware addressAware) {
         if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
-            Address addr = new Address(this.getPerson(request));
+            Address addr = new Address(this.getConstituentId(request));
             addr.setUserCreated(true);
             addressAware.setAddress(addr);
         }
@@ -253,7 +245,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     protected void userCreateNewPhone(HttpServletRequest request, PhoneAware phoneAware) {
         if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_PHONE))) {
-            Phone phone = new Phone(this.getPerson(request));
+            Phone phone = new Phone(this.getConstituentId(request));
             phone.setUserCreated(true);
             phoneAware.setPhone(phone);
         }
@@ -261,7 +253,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     protected void userCreateNewEmail(HttpServletRequest request, EmailAware emailAware) {
         if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_EMAIL))) {
-            Email email = new Email(this.getPerson(request));
+            Email email = new Email(this.getConstituentId(request));
             email.setUserCreated(true);
             emailAware.setEmail(email);
         }
@@ -269,7 +261,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     protected void userCreateNewPaymentSource(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
         if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
-            PaymentSource source = new PaymentSource(this.getPerson(request));
+            PaymentSource source = new PaymentSource(this.getConstituent(request));
             source.setUserCreated(true);
             paymentSourceAware.setPaymentSource(source);
         }
@@ -277,24 +269,24 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     
     protected void setAddressToNone(HttpServletRequest request, AddressAware addressAware) {
         if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
-            addressAware.setAddress(new Address(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
+            addressAware.setAddress(new Address(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
     protected void setPhoneToNone(HttpServletRequest request, PhoneAware phoneAware) {
         if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PHONE))) {
-            phoneAware.setPhone(new Phone(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
+            phoneAware.setPhone(new Phone(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
 
     protected void setEmailToNone(HttpServletRequest request, EmailAware emailAware) {
         if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_EMAIL))) {
-            emailAware.setEmail(new Email(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
+            emailAware.setEmail(new Email(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
 
     protected void setPaymentSourceToNone(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
         if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
-            paymentSourceAware.setPaymentSource(new PaymentSource(this.getPerson(request))); // this is equivalent to setting it to the dummy (empty) value
+            paymentSourceAware.setPaymentSource(new PaymentSource(this.getConstituent(request))); // this is equivalent to setting it to the dummy (empty) value
         }
     }
 }

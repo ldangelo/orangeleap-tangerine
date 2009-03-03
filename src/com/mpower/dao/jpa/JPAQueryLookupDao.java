@@ -15,6 +15,7 @@ import com.mpower.dao.QueryLookupDao;
 import com.mpower.domain.QueryLookup;
 
 @Repository("queryLookupDao")
+@Deprecated
 public class JPAQueryLookupDao implements QueryLookupDao {
 
     /** Logger for this class and subclasses */

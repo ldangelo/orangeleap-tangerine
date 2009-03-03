@@ -33,14 +33,14 @@ public class IBatisCodeDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadCodeType" }, dependsOnGroups = { "testListCodeTypes" })
     public void testReadCodeType() throws Exception {
-    	CodeType codeType  = codeDao.readCodeType(TEST_CODE_TYPE);
+    	CodeType codeType  = codeDao.readCodeTypeByName(TEST_CODE_TYPE);
     	assert codeType != null && codeType.getName().equals(TEST_CODE_TYPE);
     } 
     
     @Test(groups = { "testReadCodes" }, dependsOnGroups = { "testListCodeTypes" })
     public void testReadCodes() throws Exception {
     	List<Code> list;
-    	Code code  =  codeDao.readCode(new Long(1));
+    	Code code  =  codeDao.readCodeById(new Long(1));
     	assert code != null && code.getId().equals(new Long(1));
     	list  =  codeDao.readCodes("");
     	assert list.size() == 0;

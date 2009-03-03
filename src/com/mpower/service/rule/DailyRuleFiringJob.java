@@ -14,9 +14,9 @@ import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
 import com.mpower.domain.model.Site;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
@@ -73,7 +73,7 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 
 					workingMemory.insert(p);
 
-					List<Gift> giftList = gs.readGiftsByPersonId(p.getId());
+					List<Gift> giftList = gs.readGiftsByConstituentId(p.getId());
 
 					for (Gift g : giftList) {
 						workingMemory.insert(g);

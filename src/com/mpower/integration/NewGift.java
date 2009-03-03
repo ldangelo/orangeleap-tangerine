@@ -2,7 +2,7 @@ package com.mpower.integration;
 
 import org.springframework.integration.annotation.Gateway;
 
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public interface NewGift {
 

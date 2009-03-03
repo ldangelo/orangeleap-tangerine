@@ -3,8 +3,8 @@ package com.mpower.service;
 import java.util.Date;
 import java.util.List;
 
-import com.mpower.domain.Commitment;
-import com.mpower.domain.RecurringGift;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.RecurringGift;
 
 public interface RecurringGiftService {
 

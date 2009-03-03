@@ -1,5 +1,6 @@
 package com.mpower.controller.gift;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,8 +10,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.Gift;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
 import com.mpower.util.StringConstants;
 
@@ -19,16 +20,13 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="giftService")
     protected GiftService giftService;
 
-    public void setGiftService(GiftService giftService) {
-        this.giftService = giftService;
-    }
-
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
+    protected AbstractEntity findEntity(HttpServletRequest request) {
         // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-        return giftService.readGiftByIdCreateIfNull(request.getParameter(StringConstants.GIFT_ID), request.getParameter(StringConstants.COMMITMENT_ID), super.getPerson(request));
+        return giftService.readGiftByIdCreateIfNull(request.getParameter(StringConstants.GIFT_ID), request.getParameter(StringConstants.COMMITMENT_ID), super.getConstituent(request));
     }
 
     @Override
@@ -52,6 +50,6 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Gift gift = (Gift) command;
         Gift current = giftService.maintainGift(gift);
-        return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request)));
+        return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
     }
 }

@@ -8,8 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Person;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.type.ReferenceType;
 import com.mpower.web.customization.FieldVO;
 
@@ -53,7 +53,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
 
     private String resolve(Long id, ReferenceType referenceType) {
         if (referenceType == ReferenceType.person) {
-            Person person = personService.readPersonById(id);
+            Person person = personService.readConstituentById(id);
             return person.getDisplayValue();
         }
         return "" + id;

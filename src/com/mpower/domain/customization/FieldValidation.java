@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "FIELD_VALIDATION", uniqueConstraints = { @UniqueConstraint(columnNames = { "SITE_NAME", "SECTION_NAME", "FIELD_DEFINITION_ID", "SECONDARY_FIELD_DEFINITION_ID" }) })
+@Deprecated
 public class FieldValidation implements Serializable {
 
     private static final long serialVersionUID = 1L;

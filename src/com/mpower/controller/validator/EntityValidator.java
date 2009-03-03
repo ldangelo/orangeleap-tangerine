@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,34 +17,37 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.AddressAware;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.CommunicationHistory;
-import com.mpower.domain.CustomField;
-import com.mpower.domain.Email;
-import com.mpower.domain.EmailAware;
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.PaymentSourceAware;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
-import com.mpower.domain.PhoneAware;
-import com.mpower.domain.Viewable;
-import com.mpower.domain.customization.FieldCondition;
-import com.mpower.domain.customization.FieldRequired;
-import com.mpower.domain.customization.FieldValidation;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.AddressAware;
+import com.mpower.domain.model.CommunicationHistory;
+import com.mpower.domain.model.EmailAware;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.PaymentSourceAware;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.PhoneAware;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Email;
+import com.mpower.domain.model.communication.Phone;
+import com.mpower.domain.model.customization.CustomField;
+import com.mpower.domain.model.customization.FieldCondition;
+import com.mpower.domain.model.customization.FieldRequired;
+import com.mpower.domain.model.customization.FieldValidation;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.SiteService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
 import com.mpower.util.StringConstants;
+import com.mpower.util.TangerineUserHelper;
 
 public class EntityValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+    
     private SiteService siteService;
 
     public void setSiteService(SiteService siteService) {
@@ -118,8 +123,8 @@ public class EntityValidator implements Validator {
             }
         }
         
-        Viewable viewable = (Viewable) target;
-        Map<String, String> fieldLabelMap = viewable.getFieldLabelMap();
+        AbstractEntity entity = (AbstractEntity) target;
+        Map<String, String> fieldLabelMap = entity.getFieldLabelMap();
 
         // used as a cache to prevent having to use reflection if the value has already been read
         Map<String, Object> fieldValueMap = new HashMap<String, Object>();
@@ -127,14 +132,14 @@ public class EntityValidator implements Validator {
         // used to know that a field already has an error, so don't add another
 
         // first, validate required fields
-        validateRequiredFields(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+        validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
 
         // next, validate custom validation (regex)  
-        validateRegex(viewable, errors, fieldLabelMap, fieldValueMap, errorSet);
+        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
     }
 
-    private void validateRequiredFields(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
-        Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+    private void validateRequiredFields(AbstractEntity viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+        Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
         if (requiredFieldMap != null) {
             for (String key : requiredFieldMap.keySet()) {
                 FieldRequired fr = requiredFieldMap.get(key);
@@ -162,7 +167,7 @@ public class EntityValidator implements Validator {
         }
     }
     
-    private boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, Viewable viewable, Map<String, Object> fieldValueMap) {
+    private boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         boolean conditionsMet = true;
         if (conditions != null) {
             for (FieldCondition fc : conditions) {
@@ -172,7 +177,7 @@ public class EntityValidator implements Validator {
                 if (fc.getDependentSecondaryFieldDefinition() != null) {
                     dependentKey += "." + fc.getDependentSecondaryFieldDefinition().getFieldName();
                 }
-                Object dependentProperty = getProperty(dependentKey, viewable, fieldValueMap);
+                Object dependentProperty = getProperty(dependentKey, entity, fieldValueMap);
                 if (fc.getValue() == null) {
                     if (dependentProperty != null) {
                         conditionsMet = false;
@@ -187,8 +192,8 @@ public class EntityValidator implements Validator {
         return conditionsMet;
     }
 
-    private void validateRegex(Viewable viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
-        Map<String, FieldValidation> validationMap = siteService.readFieldValidations(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles());
+    private void validateRegex(AbstractEntity viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+        Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
         if (validationMap != null) {
             for (String key : validationMap.keySet()) {
                 FieldValidation fv = validationMap.get(key);
@@ -229,10 +234,10 @@ public class EntityValidator implements Validator {
         }
     }
 
-    private Object getProperty(String key, Viewable viewable, Map<String, Object> fieldValueMap) {
+    private Object getProperty(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         Object property = fieldValueMap.get(key);
         if (property == null) {
-            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(viewable);
+            BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
             property = beanWrapper.getPropertyValue(key);
             if (property instanceof CustomField) {
                 property = ((CustomField) property).getValue();
@@ -242,8 +247,8 @@ public class EntityValidator implements Validator {
         return property;
     }
     
-    private String getPropertyString(String key, Viewable viewable, Map<String, Object> fieldValueMap) {
-        Object property = getProperty(key, viewable, fieldValueMap);
+    private String getPropertyString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+        Object property = getProperty(key, entity, fieldValueMap);
         return property == null ? StringConstants.EMPTY : property.toString();
     }
 }

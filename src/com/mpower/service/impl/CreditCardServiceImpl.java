@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CreditCardService;
 
 @Service("creditCardService")

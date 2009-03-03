@@ -27,6 +27,7 @@ import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.EntityUtility;
 
 @Repository("personDao")
+@Deprecated
 public class JPAPersonDao implements PersonDao {
 
     /** Logger for this class and subclasses */

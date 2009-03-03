@@ -10,8 +10,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.PaymentSourceAware;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.PaymentSourceAware;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.util.CalendarUtils;
 

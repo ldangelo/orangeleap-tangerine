@@ -9,6 +9,7 @@ import com.mpower.domain.customization.Picklist;
 import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.EntityType;
 
+@Deprecated
 public interface FieldDao {
 	
     public FieldDefinition readFieldById(String fieldId);

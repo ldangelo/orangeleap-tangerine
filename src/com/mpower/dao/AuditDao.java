@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mpower.domain.model.Audit;
 
+@Deprecated
 public interface AuditDao {
 
     public Audit auditObject(Audit audit);

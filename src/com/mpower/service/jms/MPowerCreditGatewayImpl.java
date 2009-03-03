@@ -2,7 +2,7 @@ package com.mpower.service.jms;
 
 import org.springframework.jms.core.JmsTemplate;
 
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class MPowerCreditGatewayImpl implements MPowerCreditGateway {
 

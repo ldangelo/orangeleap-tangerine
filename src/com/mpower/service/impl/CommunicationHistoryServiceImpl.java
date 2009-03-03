@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.CommunicationHistoryDao;
-import com.mpower.domain.CommunicationHistory;
-import com.mpower.domain.Person;
+import com.mpower.dao.interfaces.CommunicationHistoryDao;
+import com.mpower.domain.model.CommunicationHistory;
+import com.mpower.domain.model.Person;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.CommunicationHistoryService;
 import com.mpower.service.PersonService;
@@ -25,7 +25,7 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 	/** Logger for this class and subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	@Resource(name = "communicationHistoryDao")
+	@Resource(name = "communicationHistoryDAO")
 	private CommunicationHistoryDao communicationHistoryDao;
 
 	@Resource(name = "personService")
@@ -33,30 +33,42 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
-		if (communicationHistory.getPerson() == null) return null;
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
+        }
+		if (communicationHistory.getPerson() == null) {
+            return null;
+        }
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Person person = personService.readPersonById(authentication.getPersonId());
-        communicationHistory.setRecordedBy(person);
+        Person constituent = personService.readConstituentById(authentication.getPersonId());
+        communicationHistory.setCustomFieldValue("recordedBy", constituent.getId().toString());
 		return communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
 	}
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
+        }
 		return communicationHistoryDao.readCommunicationHistoryById(communicationHistoryId);
 	}
+	
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByPerson(Long personId) {
-		return communicationHistoryDao.readCommunicationHistoryByPerson(personId);
+	public List<CommunicationHistory> readCommunicationHistoryByConstituent(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCommunicationHistoryByConstituent: constituentId = " + constituentId);
+        }
+		return communicationHistoryDao.readCommunicationHistoryByConstituentId(constituentId);
 	}
 
 	@Override
-	public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Person person) {
+	public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Person constituent) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("readCommunicationHistoryByIdCreateIfNull: personId = " + (person == null ? null : person.getId()));
+			logger.debug("readCommunicationHistoryByIdCreateIfNull: communicationHistoryId = " + communicationHistoryId + " constituentId = " + (constituent == null ? null : constituent.getId()));
 		}
 		CommunicationHistory communicationHistory = null;
 		if (communicationHistoryId == null) {
-			communicationHistory = this.createCommunicationHistory(person);
+			communicationHistory = this.createCommunicationHistory(constituent);
 			communicationHistory.setRecordDate(new java.util.Date()); // default to today
 		}
 		else {
@@ -65,10 +77,9 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 		return communicationHistory;
 	}
 
-	private CommunicationHistory createCommunicationHistory(Person person) {
+	private CommunicationHistory createCommunicationHistory(Person constituent) {
 		CommunicationHistory communicationHistory = new CommunicationHistory();
-		communicationHistory.setPerson(person);
+		communicationHistory.setPerson(constituent);
 		return communicationHistory;
 	}
-
 }

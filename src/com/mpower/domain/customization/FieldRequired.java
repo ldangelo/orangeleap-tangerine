@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Entity
 @Table(name = "FIELD_REQUIRED")
+@Deprecated
 public class FieldRequired implements Serializable {
 
     private static final long serialVersionUID = 1L;

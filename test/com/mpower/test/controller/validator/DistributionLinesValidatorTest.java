@@ -9,9 +9,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.mpower.controller.validator.DistributionLinesValidator;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.test.BaseTest;
 
 public class DistributionLinesValidatorTest extends BaseTest {

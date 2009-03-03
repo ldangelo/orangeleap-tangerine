@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.mpower.dao.AuditDao;
+import com.mpower.dao.interfaces.AuditDao;
 import com.mpower.domain.model.Audit;
 
 /** 
@@ -39,7 +39,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 	@Override
 	public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForEntity:");
+            logger.debug("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
         Map<String, Object> params = setupParams();
         params.put("entityType", entityTypeDisplay);
@@ -49,13 +49,13 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<Audit> auditHistoryForPerson(Long personId) {
+	public List<Audit> auditHistoryForConstituent(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForPerson:");
+            logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
-        params.put("personId", personId);
-        return getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_PERSON", params);
+        params.put("constituentId", constituentId);
+        return getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_CONSTITUENT", params);
 	}
 
 	@Override

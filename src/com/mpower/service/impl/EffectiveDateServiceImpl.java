@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PersonDao;
-import com.mpower.domain.Person;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.dao.interfaces.ConstituentDao;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.EffectiveDateService;
 import com.mpower.service.exception.EffectiveDateValidationException;
 import com.mpower.service.relationship.DateRangedValue;
@@ -25,15 +25,14 @@ public class EffectiveDateServiceImpl implements EffectiveDateService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "personDao")
-    private PersonDao personDao;
-
+    @Resource(name = "constituentDAO")
+    private ConstituentDao constituentDao;
     
     // Read historical or future values of all fields
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly=true)
-    public Person readPersonAsOfDate(Person person, Date date) {
-    	return person;
+    public Person readConstituentAsOfDate(Person constituent, Date date) {
+    	return constituent;
     }
 
     

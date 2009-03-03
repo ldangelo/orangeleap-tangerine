@@ -4,9 +4,9 @@ package com.mpower.test.service.payments;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.payments.OrbitalPaymentGateway;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.GiftDataProvider;

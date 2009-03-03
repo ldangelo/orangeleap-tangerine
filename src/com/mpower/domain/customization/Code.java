@@ -23,6 +23,7 @@ import com.mpower.domain.SiteAware;
 
 @Entity
 @Table(name = "CODE", uniqueConstraints = { @UniqueConstraint(columnNames = { "CODE_VALUE","CODE_TYPE_ID" }) })
+@Deprecated
 public class Code implements SiteAware, Auditable, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;

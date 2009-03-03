@@ -1,5 +1,6 @@
 package com.mpower.domain;
 
+@Deprecated
 public interface EmailAware {
 
     public Email getEmail();

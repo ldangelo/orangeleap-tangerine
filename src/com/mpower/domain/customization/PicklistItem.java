@@ -9,6 +9,7 @@ import com.mpower.domain.Auditable;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 
+@Deprecated
 public class PicklistItem implements Serializable, Auditable {
 
     private static final long serialVersionUID = 1L;

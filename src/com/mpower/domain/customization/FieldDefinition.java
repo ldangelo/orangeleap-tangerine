@@ -26,6 +26,7 @@ import com.mpower.type.ReferenceType;
 
 @Entity
 @Table(name = "FIELD_DEFINITION")
+@Deprecated
 public class FieldDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;

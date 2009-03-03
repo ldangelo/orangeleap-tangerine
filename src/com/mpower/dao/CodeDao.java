@@ -5,6 +5,7 @@ import java.util.List;
 import com.mpower.domain.customization.Code;
 import com.mpower.domain.customization.CodeType;
 
+@Deprecated
 public interface CodeDao {
 	
 	public List<String> listCodeTypes(String siteName);

@@ -10,6 +10,7 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.Email;
 import com.mpower.domain.EmailCustomField;
 
+@Deprecated
 public class EmailCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

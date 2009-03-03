@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,20 +19,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.HtmlUtils;
 
-import com.mpower.domain.QueryLookup;
+import com.mpower.domain.model.QueryLookup;
 import com.mpower.service.QueryLookupService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class QueryLookupController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="queryLookupService")
     protected QueryLookupService queryLookupService;
-
-    public void setQueryLookupService(QueryLookupService queryLookupService) {
-        this.queryLookupService = queryLookupService;
-    }
     
     protected String findFieldDef(HttpServletRequest request) {
         return getParameter(request, "fieldDef");
@@ -39,14 +36,13 @@ public class QueryLookupController extends SimpleFormController {
     
     protected List<Object> executeQueryLookup(HttpServletRequest request, String fieldDef) {
         Map<String, String> queryParams = findQueryParams(request);
-        List<Object> objects = queryLookupService.executeQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef,
-                queryParams);
+        List<Object> objects = queryLookupService.executeQueryLookup(fieldDef, queryParams);
         request.setAttribute("objects", objects);
         return objects;
     }
     
     protected QueryLookup doQueryLookup(HttpServletRequest request, String fieldDef) {
-        QueryLookup queryLookup = queryLookupService.readQueryLookup(SessionServiceImpl.lookupUserSiteName(), fieldDef);
+        QueryLookup queryLookup = queryLookupService.readQueryLookup(fieldDef);
         request.setAttribute("queryLookup", queryLookup);
         return queryLookup;
     }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,27 +23,20 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.controller.NoneStringTrimmerEditor;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
 import com.mpower.service.PersonService;
 import com.mpower.service.SessionService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class PersonSearchFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="personService")
     private PersonService personService;
 
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
+    @Resource(name="sessionService")
     private SessionService sessionService;
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
-    }
 
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
@@ -51,7 +45,9 @@ public class PersonSearchFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        logger.info("**** in formBackingObject");
+        if (logger.isDebugEnabled()) {
+            logger.debug("formBackingObject:");
+        }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
         return p;
@@ -59,9 +55,10 @@ public class PersonSearchFormController extends SimpleFormController {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command,
-            BindException errors) throws Exception {
-        logger.info("**** in onSubmit()");
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSubmit:");
+        }
         Person person = (Person) command;
         BeanWrapper bw = new BeanWrapperImpl(person);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -75,7 +72,7 @@ public class PersonSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Person> personList = personService.readPersons(SessionServiceImpl.lookupUserSiteName(), params);
+        List<Person> personList = personService.searchConstituents(params);
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;

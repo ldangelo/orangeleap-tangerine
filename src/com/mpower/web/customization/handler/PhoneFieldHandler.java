@@ -4,8 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.SectionField;
 
 public class PhoneFieldHandler extends GenericFieldHandler {
 

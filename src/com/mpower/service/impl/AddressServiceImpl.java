@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.AddressDao;
-import com.mpower.domain.Address;
-import com.mpower.domain.Viewable;
+import com.mpower.dao.interfaces.AddressDao;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Address;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.CloneService;
@@ -31,18 +31,23 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
-    }
+// TODO: remove below
+//    public void setAuditService(AuditService auditService) {
+//        this.auditService = auditService;
+//    }
 
-    @Resource(name = "addressDao")
+    @Resource(name = "addressDAO")
     private AddressDao addressDao;
 
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Address saveAddress(Address address) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("saveAddress: address = " + address);
+        }
         boolean found = false;
         if (address.getId() == null) {
-            List<Address> addressList = readAddresses(address.getPerson().getId());
+            List<Address> addressList = readAddresses(address.getPersonId());
             for (Address a : addressList) {
                 if (address.equals(a)) {
                     found = true;
@@ -50,8 +55,11 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
                     try {
                         BeanUtils.copyProperties(a, address);
                         a.setId(id);
-                    } catch (Exception e) {
-                        logger.debug(e.getMessage(), e);
+                    } 
+                    catch (Exception e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(e.getMessage(), e);
+                        }
                     }
                     address = a;
                 }
@@ -61,23 +69,28 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
             address = addressDao.maintainAddress(address);
             if (address.isInactive()) {
                 auditService.auditObjectInactive(address);
-            } else {
+            } 
+            else {
                 auditService.auditObject(address);
             }
         }
         return address;
     }
 
-    public List<Address> readAddresses(Long personId) {
-        return addressDao.readAddresses(personId);
+    @Override
+    public List<Address> readAddresses(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAddresses: constituentId = " + constituentId);
+        }
+        return addressDao.readAddressesByConstituentId(constituentId);
     }
 
     @Override
-    public List<Address> filterValidAddresses(Long personId) {
+    public List<Address> filterValidAddresses(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("filterValidAddresses: personId = " + personId);
+            logger.debug("filterValidAddresses: constituentId = " + constituentId);
         }
-        List<Address> addresses = this.readAddresses(personId);
+        List<Address> addresses = this.readAddresses(constituentId);
         List<Address> filteredAddresses = new ArrayList<Address>();
         for (Address address : addresses) {
             if (address.isValid()) {
@@ -87,15 +100,25 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
         return filteredAddresses;
     }
 
+    @Override
     public Address readAddress(Long addressId) {
-        return addressDao.readAddress(addressId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAddress: addressId = " + addressId);
+        }
+        return addressDao.readAddressById(addressId);
     }
 
-    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean mailOnly) {
-        return addressDao.readCurrentAddresses(personId, calendar, mailOnly);
+    @Override
+    public List<Address> readCurrentAddresses(Long constituentId, Calendar calendar, boolean mailOnly) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCurrentAddresses: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
+        }
+        return addressDao.readActiveAddressesByConstituentId(constituentId);
+        // TODO: move filtering logic from JPAAddressDao to here
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    // TODO: is this being used?
     public void inactivateAddresses() {
         addressDao.inactivateAddresses();
     }
@@ -112,8 +135,11 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
     }
 
     @Override
-    public Viewable clone(Viewable viewable) {
-        Address address = (Address)viewable;
+    public AbstractEntity clone(AbstractEntity entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("clone: entity = " + entity);
+        }
+        Address address = (Address)entity;
         if (address.getId() != null) {
             Address originalAddress = this.readAddress(address.getId());
 

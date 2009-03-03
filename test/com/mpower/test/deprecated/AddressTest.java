@@ -9,11 +9,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.communication.Address;
 import com.mpower.service.AddressService;
-import com.mpower.service.AuditService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.AddressDataProvider;
 import com.mpower.util.CalendarUtils;
@@ -26,9 +25,6 @@ public class AddressTest extends BaseTest {
     @Autowired
     private AddressService addressService;
 
-    @Autowired
-    private AuditService auditService;
-
     private List<String> siteIds = new ArrayList<String>();
 
     private Long personId;
@@ -37,7 +33,6 @@ public class AddressTest extends BaseTest {
 
     @Test(groups = { "createAddresses" }, dataProvider = "setupAddresses", dataProviderClass = AddressDataProvider.class)
     public void createAddress(Site site, Person person, List<Address> addresses) {
-        addressService.setAuditService(auditService);
         em.getTransaction().begin();
         em.persist(site);
         siteIds.add(site.getName());
@@ -46,7 +41,7 @@ public class AddressTest extends BaseTest {
         personId = person.getId();
         int begin = addressService.readAddresses(person.getId()).size();
         for (Address address : addresses) {
-            address.setPerson(person);
+            address.setPersonId(person.getId());
             address = addressService.saveAddress(address);
             addressIds.add(address.getId());
         }

@@ -19,7 +19,7 @@ public interface CodeDao {
 
 	public Code maintainCode(Code code);
 
-	public Code readCode(Long id);
+	public Code readCodeById(Long id);
 	
-	public CodeType readCodeType(String codeType);
+	public CodeType readCodeTypeByName(String codeType);
 }

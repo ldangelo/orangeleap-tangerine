@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,46 +22,37 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.controller.NoneStringTrimmerEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 import com.mpower.service.SiteService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
+import com.mpower.util.TangerineUserHelper;
 
 public class MembershipFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+    
+    @Resource(name="commitmentService")
     private CommitmentService commitmentService;
 
+    @Resource(name="paymentSourceService")
     private PaymentSourceService paymentSourceService;
 
+    @Resource(name="personService")
     private PersonService personService;
 
+    @Resource(name="siteService")
     private SiteService siteService;
-
-    public void setCommitmentService(CommitmentService commitmentService) {
-        this.commitmentService = commitmentService;
-    }
-
-    public void setPaymentSourceService(PaymentSourceService paymentSourceService) {
-        this.paymentSourceService = paymentSourceService;
-    }
-
-    public void setPersonService(PersonService personService) {
-        this.personService = personService;
-    }
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     private PageType pageType;
 
@@ -72,7 +64,7 @@ public class MembershipFormController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
-        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, personService, request.getParameter("personId")));
+        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(request.getParameter("personId")));
     }
 
     @SuppressWarnings("unchecked")
@@ -118,7 +110,7 @@ public class MembershipFormController extends SimpleFormController {
             // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
             Person person = null;
             if (personId != null) {
-                person = personService.readPersonById(Long.valueOf(personId));
+                person = personService.readConstituentById(Long.valueOf(personId));
                 if (person == null) {
                     logger.error("**** person not found for id: " + personId);
                     return commitment;
@@ -130,10 +122,10 @@ public class MembershipFormController extends SimpleFormController {
             commitment = commitmentService.readCommitmentById(new Long(commitmentId));
         }
         if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), request.getLocale());
+            Map<String, String> fieldLabelMap = siteService.readFieldLabels(pageType, tangerineUserHelper.lookupUserRoles(), request.getLocale());
             commitment.setFieldLabelMap(fieldLabelMap);
 
-            Map<String, Object> valueMap = siteService.readFieldValues(SessionServiceImpl.lookupUserSiteName(), pageType, SessionServiceImpl.lookupUserRoles(), commitment);
+            Map<String, Object> valueMap = siteService.readFieldValues(pageType, tangerineUserHelper.lookupUserRoles(), commitment);
             commitment.setFieldValueMap(valueMap);
         }
         return commitment;

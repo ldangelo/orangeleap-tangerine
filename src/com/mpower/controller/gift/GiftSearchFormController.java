@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,33 +21,27 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
 import com.mpower.service.SessionService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class GiftSearchFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="giftService")
     private GiftService giftService;
 
-    public void setGiftService(GiftService giftService) {
-        this.giftService = giftService;
-    }
-
+    @Resource(name="sessionService")
     private SessionService sessionService;
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
-    }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        logger.info("**** in formBackingObject");
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("formBackingObject:");
+        }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
         Gift g = new Gift();
@@ -57,7 +52,9 @@ public class GiftSearchFormController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        logger.info("**** in onSubmit()");
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSubmit:");
+        }
         Gift gift = (Gift) command;
         BeanWrapper bw = new BeanWrapperImpl(gift);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -71,7 +68,7 @@ public class GiftSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Gift> giftList = giftService.readGifts(SessionServiceImpl.lookupUserSiteName(), params);
+        List<Gift> giftList = giftService.readGifts(params);
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;

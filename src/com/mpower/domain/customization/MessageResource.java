@@ -23,6 +23,7 @@ import com.mpower.type.MessageResourceType;
 
 @Entity
 @Table(name = "MESSAGE_RESOURCE", uniqueConstraints = { @UniqueConstraint(columnNames = { "MESSAGE_KEY", "LANGUAGE_ABBREVIATION", "MESSAGE_RESOURCE_TYPE", "SITE_NAME" }) })
+@Deprecated
 public class MessageResource implements Serializable {
 
     private static final long serialVersionUID = 1L;

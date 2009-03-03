@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.RecurringGift;
 
+@Deprecated
 public interface RecurringGiftDao {
 
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);

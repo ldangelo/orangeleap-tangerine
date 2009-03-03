@@ -6,8 +6,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Phone;
-import com.mpower.domain.PhoneAware;
+import com.mpower.domain.model.PhoneAware;
+import com.mpower.domain.model.communication.Phone;
 
 public class PhoneValidator implements Validator {
 

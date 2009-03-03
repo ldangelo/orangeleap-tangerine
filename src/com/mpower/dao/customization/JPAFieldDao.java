@@ -19,6 +19,7 @@ import com.mpower.domain.customization.PicklistItem;
 import com.mpower.type.EntityType;
 
 @Repository("fieldDao")
+@Deprecated
 public class JPAFieldDao implements FieldDao {
 
     /** Logger for this class and subclasses */

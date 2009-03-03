@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mpower.domain.PaymentSource;
 
+@Deprecated
 public interface PaymentSourceDao {
 
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource);

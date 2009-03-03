@@ -2,10 +2,8 @@ package com.mpower.service.payments;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
 
-import com.mpower.domain.Gift;
-
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.paymentech.orbital.sdk.configurator.Configurator;
 import com.paymentech.orbital.sdk.configurator.ConfiguratorIF;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
@@ -13,7 +11,6 @@ import com.paymentech.orbital.sdk.interfaces.ResponseIF;
 import com.paymentech.orbital.sdk.interfaces.TransactionProcessorIF;
 import com.paymentech.orbital.sdk.request.FieldNotFoundException;
 import com.paymentech.orbital.sdk.request.Request;
-import com.paymentech.orbital.sdk.transactionProcessor.TransactionException;
 import com.paymentech.orbital.sdk.transactionProcessor.TransactionProcessor;
 import com.paymentech.orbital.sdk.util.exceptions.InitializationException;
 
@@ -51,8 +48,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	public void AuthorizeAndCapture(Gift gift) {
 		RequestIF request = null;
 
-		if (configurator == null)
-			Initialize();
+		if (configurator == null) {
+            Initialize();
+        }
 
 		try {
 			//
@@ -150,8 +148,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	public void Authorize(Gift gift) {
 		RequestIF request = null;
 
-		if (configurator == null)
-			Initialize();
+		if (configurator == null) {
+            Initialize();
+        }
 
 		try {
 			//
@@ -241,8 +240,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	public void Capture(Gift gift) {
 		RequestIF request = null;
 
-		if (configurator == null)
-			Initialize();
+		if (configurator == null) {
+            Initialize();
+        }
 
 		try {
 			//

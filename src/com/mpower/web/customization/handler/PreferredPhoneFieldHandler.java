@@ -9,8 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.type.FieldType;
 import com.mpower.type.MessageResourceType;
 import com.mpower.web.customization.FieldVO;
@@ -36,7 +36,7 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
         for (SectionField currentSectionField : sectionFields) {
             if (FieldType.PHONE == currentSectionField.getFieldDefinition().getFieldType()) {
                 FieldDefinition currentFieldDefinition = currentSectionField.getFieldDefinition();
-                String displayValue = messageService.lookupMessage(siteName, MessageResourceType.FIELD_LABEL, currentSectionField.getFieldLabelName(), locale);
+                String displayValue = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, currentSectionField.getFieldLabelName(), locale);
                 if (GenericValidator.isBlankOrNull(displayValue)) {
                     displayValue = currentSectionField.getFieldDefinition().getDefaultLabel();
                 }

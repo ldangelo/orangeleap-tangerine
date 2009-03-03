@@ -10,6 +10,7 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.Gift;
 import com.mpower.domain.GiftCustomField;
 
+@Deprecated
 public class GiftCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

@@ -6,10 +6,11 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.domain.CustomField;
 import com.mpower.domain.CommunicationHistory;
 import com.mpower.domain.CommunicationHistoryCustomField;
+import com.mpower.domain.CustomField;
 
+@Deprecated
 public class CommunicationHistoryCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

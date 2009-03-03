@@ -24,6 +24,7 @@ import com.mpower.domain.Email;
 import com.mpower.util.CalendarUtils;
 
 @Repository("emailDao")
+@Deprecated
 public class JPAEmailDao implements EmailDao {
 
     /** Logger for this class and subclasses */

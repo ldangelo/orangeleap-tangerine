@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.Address;
 
+@Deprecated
 public interface AddressDao {
 
     public Address maintainAddress(Address address);

@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.CommunicationHistoryDao;
 import com.mpower.domain.CommunicationHistory;
-import com.mpower.domain.Person;
 import com.mpower.service.impl.SessionServiceImpl;
 
 @Repository("communicationHistoryDao")
+@Deprecated
 public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 
     /** Logger for this class and subclasses */
@@ -27,7 +27,9 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
-         if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+         if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
 		 em.persist(communicationHistory);
 		 return communicationHistory;
 	}
@@ -47,7 +49,9 @@ public class JPACommunicationHistoryDao implements CommunicationHistoryDao {
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
 		CommunicationHistory communicationHistory = em.find(CommunicationHistory.class, communicationHistoryId);
         // Sanity check
-        if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) throw new RuntimeException("Person object does not belong to current site.");
+        if (!communicationHistory.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+            throw new RuntimeException("Person object does not belong to current site.");
+        }
         return communicationHistory;
 	}
 }

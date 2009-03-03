@@ -36,6 +36,7 @@ import com.mpower.util.CommunicationHistoryCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "COMMUNICATION_HISTORY")
+@Deprecated
 public class CommunicationHistory implements SiteAware, Customizable, Viewable, Serializable {
 
     private static final long serialVersionUID = 1L;

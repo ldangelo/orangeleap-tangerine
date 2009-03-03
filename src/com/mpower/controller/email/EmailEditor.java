@@ -1,32 +1,30 @@
 package com.mpower.controller.email;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.controller.constituent.RequiresConstituentEditor;
-import com.mpower.domain.Email;
+import com.mpower.domain.model.communication.Email;
 import com.mpower.service.EmailService;
-import com.mpower.service.PersonService;
+import com.mpower.type.ActivationType;
 
 public class EmailEditor extends RequiresConstituentEditor {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="emailService")
     private EmailService emailService;
 
     public EmailEditor() {
         super();
     }
 
-    public EmailEditor(EmailService emailService, PersonService personService, String personId) {
-        super(personService, personId);
-        setEmailService(emailService);
-    }
-
-    public void setEmailService(EmailService emailService) {
-        this.emailService = emailService;
+    public EmailEditor(String personId) {
+        super(personId);
     }
 
     @Override
@@ -37,8 +35,8 @@ public class EmailEditor extends RequiresConstituentEditor {
             setValue(a);
         }
         else if ("new".equals(text)) {
-            Email a = new Email(super.getPerson());
-            a.setActivationStatus("permanent");
+            Email a = new Email(super.getPerson().getId());
+            a.setActivationStatus(ActivationType.permanent);
             a.setEmailType("home");
             a.setUserCreated(true);
 

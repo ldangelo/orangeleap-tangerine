@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.Address;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.type.ActivationType;
 import com.mpower.util.CalendarUtils;
 
 public class AddressDataProvider {
@@ -24,44 +25,44 @@ public class AddressDataProvider {
         person1.setLastName("createAddressLastName-1");
 
         List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address(person1);
+        Address address = new Address(person1.getId());
         address.setAddressLine1("1-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("permanent");
+        address.setActivationStatus(ActivationType.permanent);
         address.setAddressType("home");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("2-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("permanent");
+        address.setActivationStatus(ActivationType.permanent);
         address.setAddressType("work");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("3-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("permanent");
+        address.setActivationStatus(ActivationType.permanent);
         address.setAddressType("home");
         addresses.add(address);
 
         // set seasonals to be 10/1 - 3/31
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("1-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("seasonal");
+        address.setActivationStatus(ActivationType.seasonal);
         Calendar today = CalendarUtils.getToday(false);
         Calendar seasonStart = new GregorianCalendar(today.get(Calendar.YEAR) - 1, 9, 1);
         address.setSeasonalStartDate(seasonStart.getTime());
@@ -70,38 +71,38 @@ public class AddressDataProvider {
         address.setAddressType("home");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("2-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("seasonal");
+        address.setActivationStatus(ActivationType.seasonal);
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
         address.setAddressType("work");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("3-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("seasonal");
+        address.setActivationStatus(ActivationType.seasonal);
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
         address.setAddressType("home");
         addresses.add(address);
 
         // set temporary addresses for 10/15/<today's year> - 11/14/<today's year>
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("1-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("temporary");
+        address.setActivationStatus(ActivationType.temporary);
         Calendar tempStart = CalendarUtils.getToday(false);
         tempStart.set(tempStart.get(Calendar.YEAR), 9, 15);
         address.setTemporaryStartDate(tempStart.getTime());
@@ -111,25 +112,25 @@ public class AddressDataProvider {
         address.setAddressType("home");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("2-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("temporary");
+        address.setActivationStatus(ActivationType.temporary);
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
         address.setAddressType("work");
         addresses.add(address);
 
-        address = new Address(person1);
+        address = new Address(person1.getId());
         address.setAddressLine1("3-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
         address.setPostalCode("11111");
         address.setStateProvince("state");
-        address.setActivationStatus("temporary");
+        address.setActivationStatus(ActivationType.temporary);
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
         address.setAddressType("home");

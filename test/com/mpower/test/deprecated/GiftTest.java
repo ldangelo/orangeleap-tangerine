@@ -3,10 +3,9 @@ package com.mpower.test.deprecated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
-import com.mpower.service.AuditService;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.GiftDataProvider;
@@ -16,12 +15,8 @@ public class GiftTest extends BaseTest {
     @Autowired
     private GiftService giftService;
 
-    @Autowired
-    private AuditService auditService;
-
     @Test(dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
     public void createGift(Site site, Person person, Gift gift) {
-        giftService.setAuditService(auditService);
         em.getTransaction().begin();
         em.persist(site);
         person.setSite(site);

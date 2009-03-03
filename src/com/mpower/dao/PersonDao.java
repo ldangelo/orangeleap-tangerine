@@ -7,6 +7,7 @@ import java.util.Map;
 import com.mpower.domain.Person;
 import com.mpower.domain.Site;
 
+@Deprecated
 public interface PersonDao {
 
     public Person savePerson(Person person);

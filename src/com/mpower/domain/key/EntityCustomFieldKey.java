@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @Embeddable
+@Deprecated
 public class EntityCustomFieldKey implements Serializable {
 
     /** Logger for this class and subclasses */

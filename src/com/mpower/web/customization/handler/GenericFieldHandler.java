@@ -11,8 +11,8 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.FieldRequired;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.FieldRequired;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.service.PersonService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
@@ -71,10 +71,10 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setFieldType(getFieldType(currentField));
 
         String fieldLabelName = getFieldLabelName(currentField);
-        fieldVO.setHelpText(messageService.lookupMessage(siteName, MessageResourceType.FIELD_HELP, fieldLabelName, locale));
+        fieldVO.setHelpText(messageService.lookupMessage(MessageResourceType.FIELD_HELP, fieldLabelName, locale));
         fieldVO.setHelpAvailable(!GenericValidator.isBlankOrNull(fieldVO.getHelpText()));
 
-        String labelText = messageService.lookupMessage(siteName, MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
+        String labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, fieldLabelName, locale);
         if (GenericValidator.isBlankOrNull(labelText)) {
             if (!currentField.isCompoundField()) {
                 labelText = currentField.getFieldDefinition().getDefaultLabel();
@@ -97,10 +97,10 @@ public class GenericFieldHandler implements FieldHandler {
         fieldVO.setEntityAttributes(entityAttributesStyle.toString().trim());
 
 
-        FieldRequired fr = fieldService.lookupFieldRequired(siteName, currentField);
+        FieldRequired fr = fieldService.lookupFieldRequired(currentField);
         fieldVO.setRequired(fr != null && fr.isRequired());
-        fieldVO.setHierarchy(currentField.getFieldDefinition().isTree(siteName));
-        fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName));
+//        fieldVO.setHierarchy(currentField.getFieldDefinition().isTree(siteName)); // TODO: put back for IBatis
+//        fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName)); // TODO: put back for IBatis
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
             Object propertyValue = getPropertyValue(model, fieldVO);

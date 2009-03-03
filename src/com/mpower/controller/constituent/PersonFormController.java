@@ -10,10 +10,9 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineFormController;
-import com.mpower.domain.Person;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.Person;
 import com.mpower.service.exception.PersonValidationException;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.StringConstants;
 
 public class PersonFormController extends TangerineFormController {
@@ -24,21 +23,21 @@ public class PersonFormController extends TangerineFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
-        binder.registerCustomEditor(Person.class, new PersonEditor(personService));
+        binder.registerCustomEditor(Person.class, new PersonEditor());
     }
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
-        String personId = super.getPersonIdString(request);
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+        String personId = super.getConstituentIdString(request);
         if (personId == null) {
             personId = request.getParameter("id");
         }
         Person person = null;
         if (personId == null) {
-            person = personService.createDefaultPerson(SessionServiceImpl.lookupUserSiteName());
+            person = personService.createDefaultConstituent();
         } 
         else {
-            person = personService.readPersonById(new Long(personId));
+            person = personService.readConstituentById(new Long(personId));
         }
         return person;
     }
@@ -46,14 +45,14 @@ public class PersonFormController extends TangerineFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Person p = (Person) command;
-        if (logger.isInfoEnabled()) {
-            logger.info("onSubmit: person = " + p.getFullName());
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSubmit: person = " + p.getFullName());
         }
         
         boolean saved = true;
         Person current = null;
         try {
-            current = personService.maintainPerson(p);
+            current = personService.maintainConstituent(p);
         } 
         catch (PersonValidationException e) {
             saved = false;

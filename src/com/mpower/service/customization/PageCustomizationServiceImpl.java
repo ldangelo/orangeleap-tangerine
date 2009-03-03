@@ -14,11 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.customization.PageCustomizationDAO;
 import com.mpower.dao.interfaces.PageAccessDao;
-import com.mpower.domain.customization.SectionDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.dao.interfaces.SectionDao;
 import com.mpower.domain.model.customization.PageAccess;
+import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.type.AccessType;
 import com.mpower.type.PageType;
 import com.mpower.type.RoleType;
@@ -31,20 +31,23 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     private static final Integer ZERO = Integer.valueOf(0);
 
-    @Resource(name = "pageCustomizationDao")
-    private PageCustomizationDAO pageCustomizationDao;
+    @Resource(name = "sectionDAO")
+    private SectionDao sectionDao;
 
     @Resource(name = "pageAccessDAO")
     private PageAccessDao pageAccessDao;
 
     /*
      * (non-Javadoc)
-     * @see com.mpower.service.customization.PageCustomizationService#readSectionDefinitionsBySiteAndPageType(java.lang.String, com.mpower.type.PageType, java.util.List)
+     * @see com.mpower.service.customization.PageCustomizationService#readSectionDefinitionsByPageTypeRoles(com.mpower.type.PageType, java.util.List)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<SectionDefinition> readSectionDefinitionsBySiteAndPageType(String siteName, PageType pageType, List<String> roles) {
-        List<SectionDefinition> sectionDefinitions = pageCustomizationDao.readSectionDefinitions(siteName, pageType, roles);
+    public List<SectionDefinition> readSectionDefinitionsByPageTypeRoles(PageType pageType, List<String> roles) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readSectionDefinitionsByPageTypeRoles: pageType = " + pageType + " roles = " + roles);
+        }
+        List<SectionDefinition> sectionDefinitions = sectionDao.readSectionDefinitions(pageType, roles);
         List<SectionDefinition> returnSections = removeDuplicateSectionDefinitions(sectionDefinitions);
         Collections.sort(returnSections, new BeanComparator("sectionOrder"));
         return returnSections;
@@ -52,17 +55,21 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     /*
      * (non-Javadoc)
-     * @see com.mpower.service.customization.PageCustomizationService#readSectionFieldsBySiteAndSectionName(java.lang.String, com.mpower.domain.customization.SectionDefinition)
+     * @see com.mpower.service.customization.PageCustomizationService#readSectionFieldsBySection(com.mpower.domain.model.customization.SectionDefinition)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<SectionField> readSectionFieldsBySiteAndSectionName(String siteName, SectionDefinition sectionDefinition) {
+    public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readSectionFieldsBySection: sectionDefinition = " + sectionDefinition);
+        }
         List<SectionField> returnFields;
-        List<SectionField> outOfBoxSectionFields = pageCustomizationDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
-        List<SectionField> customSectionFields = pageCustomizationDao.readCustomizedSectionFields(siteName, sectionDefinition.getId());
+        List<SectionField> outOfBoxSectionFields = sectionDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
+        List<SectionField> customSectionFields = sectionDao.readCustomizedSectionFields(sectionDefinition.getId());
         if (customSectionFields.isEmpty()) {
             returnFields = outOfBoxSectionFields;
-        } else {
+        } 
+        else {
             returnFields = new ArrayList<SectionField>(outOfBoxSectionFields);
             for (SectionField customizedField : customSectionFields) {
                 removeMatchingOutOfBoxField(returnFields, customizedField);
@@ -99,7 +106,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
                 SectionDefinition sd = nameDefinitionMap.get(sectionDefinition.getSectionName());
                 if (sd == null) {
                     nameDefinitionMap.put(sectionDefinition.getSectionName(), sectionDefinition);
-                } else {
+                } 
+                else {
                     Integer sectionDefinitionRoleRank = sectionDefinition.getRole() == null ? -1 : RoleType.valueOf(sectionDefinition.getRole()).getRoleRank();
                     Integer sdRoleRank = sd.getRole() == null ? -1 : RoleType.valueOf(sd.getRole()).getRoleRank();
                     if ((sd.getSite() == null && sectionDefinition.getSite() != null) || sdRoleRank < sectionDefinitionRoleRank) {
@@ -114,11 +122,14 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     /*
      * (non-Javadoc)
-     * @see com.mpower.service.customization.PageCustomizationService#readPageAccess(java.lang.String, java.util.List)
+     * @see com.mpower.service.customization.PageCustomizationService#readPageAccess(java.util.List)
      */
     @Override
     @Transactional
-    public Map<String, AccessType> readPageAccess(String siteName, List<String> roles) {
+    public Map<String, AccessType> readPageAccess(List<String> roles) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPageAccess: roles = " + roles);
+        }
         Map<String, PageAccess> pageAccessMap = new HashMap<String, PageAccess>(); // pageType, PageAccess
         List<PageAccess> pages = pageAccessDao.readPageAccess(roles);
         if (pages != null) {

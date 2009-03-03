@@ -12,10 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PaymentSourceDao;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Phone;
+import com.mpower.dao.interfaces.PaymentSourceDao;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.InactivateService;
@@ -38,18 +37,19 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     @Resource(name = "phoneService")
     private PhoneService phoneService;
 
-    @Resource(name = "paymentSourceDao")
+    @Resource(name = "paymentSourceDAO")
     private PaymentSourceDao paymentSourceDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
-        boolean found = false;
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainPaymentSource: paymentSource = " + paymentSource);
+        }
         if (paymentSource.getId() == null) {
             List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
             for (PaymentSource a : paymentSourceList) {
                 if (paymentSource.equals(a)) {
-                    found = true;
                     Long id = a.getId();
                     try {
                         BeanUtils.copyProperties(a, paymentSource);
@@ -79,23 +79,23 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
         else {
             auditService.auditObject(paymentSource);
         }
-        
-        
-
         return paymentSource;
     }
 
     @Override
-    public List<PaymentSource> readPaymentSources(Long personId) {
-        return paymentSourceDao.readActivePaymentSources(personId);
+    public List<PaymentSource> readPaymentSources(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentSources: constituentId = " + constituentId);
+        }
+        return paymentSourceDao.readActivePaymentSources(constituentId);
     }
 
     @Override
-    public List<PaymentSource> filterValidPaymentSources(Long personId) {
+    public List<PaymentSource> filterValidPaymentSources(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("filterValidPaymentSources: personId = " + personId);
+            logger.debug("filterValidPaymentSources: constituentId = " + constituentId);
         }
-        List<PaymentSource> paymentSources = this.readPaymentSources(personId);
+        List<PaymentSource> paymentSources = this.readPaymentSources(constituentId);
         List<PaymentSource> filteredPaymentSources = new ArrayList<PaymentSource>();
         for (PaymentSource paymentSource : paymentSources) {
             if (paymentSource.isValid()) {
@@ -106,40 +106,41 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     }
 
     @Override
-    public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long personId) {
+    public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSourcesACHCreditCard: personId = " + personId);
+            logger.debug("readActivePaymentSourcesACHCreditCard: constituentId = " + constituentId);
         }
         List<String> paymentTypes = new ArrayList<String>(2);
         paymentTypes.add(PaymentSource.ACH);
         paymentTypes.add(PaymentSource.CREDIT_CARD);
 
-        return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
+        return paymentSourceDao.readActivePaymentSourcesByTypes(constituentId, paymentTypes);
     }
 
     @Override
-    public List<PaymentSource> readActivePaymentSourcesByTypes(Long personId, List<String> paymentTypes) {
+    public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSourcesByTypes: personId = " + personId + " paymentTypes = " + paymentTypes);
+            logger.debug("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
         }
-        return paymentSourceDao.readActivePaymentSourcesByTypes(personId, paymentTypes);
-    }
-
-    @Override
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
+        return paymentSourceDao.readActivePaymentSourcesByTypes(constituentId, paymentTypes);
     }
 
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
-        return paymentSourceDao.readPaymentSource(paymentSourceId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentSource: paymentSourceId = " + paymentSourceId);
+        }
+        return paymentSourceDao.readPaymentSourceById(paymentSourceId);
     }
 
     @Override
-    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person person) {
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person constituent) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaymentSourceCreateIfNull: paymentSourceId = " + paymentSourceId + " constituent = " + constituent);
+        }
         PaymentSource paymentSource = null;
         if (paymentSourceId == null) {
-            paymentSource = new PaymentSource(person);
+            paymentSource = new PaymentSource(constituent);
         }
         else {
             paymentSource = this.readPaymentSource(Long.valueOf(paymentSourceId));
@@ -159,10 +160,10 @@ public class PaymentSourceServiceImpl implements PaymentSourceService, Inactivat
     }
 
     @Override
-    public PaymentSource findPaymentSourceProfile(Long personId, String profile) {
+    public PaymentSource findPaymentSourceProfile(Long constituentId, String profile) {
         if (logger.isDebugEnabled()) {
-            logger.debug("findPaymentSourceProfile: personId = " + personId + " profile = " + profile);
+            logger.debug("findPaymentSourceProfile: constituentId = " + constituentId + " profile = " + profile);
         }
-        return paymentSourceDao.findPaymentSourceProfile(personId, profile);
+        return paymentSourceDao.readPaymentSourceByProfile(constituentId, profile);
     }
 }

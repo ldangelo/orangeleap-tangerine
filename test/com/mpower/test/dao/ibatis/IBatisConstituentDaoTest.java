@@ -198,7 +198,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         params.put("emailMap[home].email", "");
         //params.put("customFieldMap[emailFormat].value", "HTML");
     	
-        List<Person> constituents = constituentDao.searchPersons(params, ignoreIds);
+        List<Person> constituents = constituentDao.searchConstituents(params, ignoreIds);
         assert constituents != null && constituents.size() > 0;
         for (Person constituent : constituents) {
         	System.out.println(constituent);

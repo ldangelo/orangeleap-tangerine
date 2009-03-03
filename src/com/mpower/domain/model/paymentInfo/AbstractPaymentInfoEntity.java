@@ -5,8 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.mpower.domain.model.AbstractCustomizableEntity;
+import com.mpower.domain.model.AddressAware;
+import com.mpower.domain.model.EmailAware;
 import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.PaymentSourceAware;
 import com.mpower.domain.model.Person;
+import com.mpower.domain.model.PhoneAware;
 import com.mpower.domain.model.Site;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
@@ -14,7 +18,7 @@ import com.mpower.domain.model.communication.Phone;
 import com.mpower.util.StringConstants;
 
 @SuppressWarnings("serial")
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity {
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, EmailAware  {
 
     protected String comments;
     protected String currencyCode = StringConstants.USD;
@@ -63,10 +67,12 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.currencyCode = currencyCode;
     }
 
+    @Override
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
     }
 
+    @Override
     public String getPaymentType() {
         return paymentType;
     }
@@ -139,38 +145,47 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         }
     }
 
+    @Override
     public PaymentSource getPaymentSource() {
         return paymentSource;
     }
 
+    @Override
     public void setPaymentSource(PaymentSource paymentSource) {
         this.paymentSource = paymentSource;
     }
 
+    @Override
     public Address getAddress() {
         return address;
     }
 
+    @Override
     public void setAddress(Address address) {
         this.address = address;
     }
 
+    @Override
     public Phone getPhone() {
         return phone;
     }
 
+    @Override
     public void setPhone(Phone phone) {
         this.phone = phone;
     }
 
+    @Override
     public Email getEmail() {
         return email;
     }
 
+    @Override
     public void setEmail(Email email) {
         this.email = email;
     }
 
+    @Override
     public PaymentSource getSelectedPaymentSource() {
         return selectedPaymentSource;
     }
@@ -179,6 +194,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.selectedPaymentSource = selectedPaymentSource;
     }
 
+    @Override
     public Address getSelectedAddress() {
         return selectedAddress;
     }
@@ -187,6 +203,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.selectedAddress = selectedAddress;
     }
 
+    @Override
     public Phone getSelectedPhone() {
         return selectedPhone;
     }
@@ -195,6 +212,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.selectedPhone = selectedPhone;
     }
 
+    @Override
     public Email getSelectedEmail() {
         return selectedEmail;
     }

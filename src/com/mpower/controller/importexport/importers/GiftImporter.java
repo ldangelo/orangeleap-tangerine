@@ -6,9 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
@@ -56,7 +56,7 @@ public class GiftImporter extends EntityImporter {
 		if (id == null) {
             throw new RuntimeException(getIdField() + " field is required.");
         }
-	    Person person = personservice.readPersonById(new Long(id));
+	    Person person = personservice.readConstituentById(new Long(id));
 		if (person == null) {
             throw new RuntimeException(getIdField() + " " + id + " not found.");
         }

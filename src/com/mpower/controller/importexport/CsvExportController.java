@@ -18,23 +18,17 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.mpower.controller.importexport.exporters.EntityExporter;
 import com.mpower.controller.importexport.exporters.EntityExporterFactory;
-import com.mpower.service.SiteService;
 
 public class CsvExportController extends SimpleFormController {
 
     protected final Log logger = LogFactory.getLog(getClass());
 
-	
-	private SiteService siteService;
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-
-
-	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		if (!CsvImportController.importexportAllowed(request)) return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
+		if (!CsvImportController.importexportAllowed(request)) {
+            return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
+        }
 		
 		String entity = request.getParameter("entity");
 		String exportData = getExport(entity);
@@ -62,7 +56,7 @@ public class CsvExportController extends SimpleFormController {
 		List<List<String>> data = ex.exportAll();
 		List<String[]> csvdata = new ArrayList<String[]>();
 		for (List<String> line:data) {
-			String[] aline = (String[])line.toArray(new String[line.size()]);
+			String[] aline = line.toArray(new String[line.size()]);
 			csvdata.add(aline);
 		}
 

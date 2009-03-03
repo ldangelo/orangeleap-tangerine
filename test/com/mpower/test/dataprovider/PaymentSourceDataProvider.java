@@ -2,9 +2,9 @@ package com.mpower.test.dataprovider;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
 
 public class PaymentSourceDataProvider {
 
@@ -18,7 +18,7 @@ public class PaymentSourceDataProvider {
         person1.setLastName("createPaymentSourceLastName-1");
 
         PaymentSource ps1 = new PaymentSource();
-        ps1.setType(PaymentSource.ACH);
+        ps1.setPaymentType(PaymentSource.ACH);
 
         Site site2 = new Site();
         site2.setName("setupPaymentSourceSite-2");
@@ -28,7 +28,7 @@ public class PaymentSourceDataProvider {
         person2.setLastName("createPaymentSourceLastName-2");
 
         PaymentSource ps2 = new PaymentSource();
-        ps2.setType(PaymentSource.ACH);
+        ps2.setPaymentType(PaymentSource.ACH);
 
         Site site3 = new Site();
         site3.setName("setupPaymentSourceSite-3");
@@ -38,7 +38,7 @@ public class PaymentSourceDataProvider {
         person3.setLastName("createPaymentSourceLastName-3");
 
         PaymentSource ps3 = new PaymentSource();
-        ps3.setType(PaymentSource.ACH);
+        ps3.setPaymentType(PaymentSource.ACH);
 
         Site site4 = new Site();
         site4.setName("setupPaymentSourceSite-4");
@@ -48,7 +48,7 @@ public class PaymentSourceDataProvider {
         person4.setLastName("createPaymentSourceLastName-4");
 
         PaymentSource ps4 = new PaymentSource();
-        ps4.setType(PaymentSource.CREDIT_CARD);
+        ps4.setPaymentType(PaymentSource.CREDIT_CARD);
         ps4.setProfile("MyProfile");
 
         return new Object[][] { new Object[] { site1, person1, ps1 }, new Object[] { site2, person2, ps2 }, new Object[] { site3, person3, ps3 }, new Object[] { site4, person4, ps4 }  };
@@ -65,15 +65,15 @@ public class PaymentSourceDataProvider {
         person5.setLastName("createPaymentSourceLastName-5");
 
         PaymentSource ps5 = new PaymentSource();
-        ps5.setType(PaymentSource.CASH);
+        ps5.setPaymentType(PaymentSource.CASH);
         ps5.setProfile("MyCash");
 
         PaymentSource ps6 = new PaymentSource();
-        ps6.setType(PaymentSource.CHECK);
+        ps6.setPaymentType(PaymentSource.CHECK);
         ps6.setProfile("MyCheck");
 
         PaymentSource ps7 = new PaymentSource();
-        ps6.setType(PaymentSource.CREDIT_CARD);
+        ps6.setPaymentType(PaymentSource.CREDIT_CARD);
         ps6.setProfile("MyCreditCard");
 
         return new Object[][] { new Object[] { site5, person5, ps5 }, new Object[] { site5, person5, ps6 }, new Object[] { site5, person5, ps7 }  };

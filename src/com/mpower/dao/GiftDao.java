@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.mpower.domain.Gift;
 
+@Deprecated
 public interface GiftDao {
 
     public Gift maintainGift(Gift gift);

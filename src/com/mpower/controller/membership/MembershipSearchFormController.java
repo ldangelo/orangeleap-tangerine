@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,11 +19,10 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.mpower.domain.Commitment;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.SessionService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.CommitmentType;
 
 public class MembershipSearchFormController extends SimpleFormController {
@@ -30,22 +30,17 @@ public class MembershipSearchFormController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="commitmentService")
     private CommitmentService commitmentService;
 
-    public void setCommitmentService(CommitmentService commitmentService) {
-        this.commitmentService = commitmentService;
-    }
-
+    @Resource(name="sessionService")
     private SessionService sessionService;
-
-    public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
-    }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        logger.info("**** in formBackingObject");
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("handleRequestInternal:");
+        }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
         Commitment g = new Commitment();
@@ -56,7 +51,9 @@ public class MembershipSearchFormController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        logger.info("**** in onSubmit()");
+        if (logger.isDebugEnabled()) {
+            logger.debug("onSubmit:");
+        }
         Commitment commitment = (Commitment) command;
         BeanWrapper bw = new BeanWrapperImpl(commitment);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -70,7 +67,7 @@ public class MembershipSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Commitment> commitmentList = commitmentService.readCommitments(SessionServiceImpl.lookupUserSiteName(), CommitmentType.MEMBERSHIP, params);
+        List<Commitment> commitmentList = commitmentService.searchCommitments(CommitmentType.MEMBERSHIP, params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.

@@ -10,9 +10,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.customization.Picklist;
-import com.mpower.domain.customization.PicklistItem;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.Picklist;
+import com.mpower.domain.model.customization.PicklistItem;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.type.EntityType;
 import com.mpower.type.MessageResourceType;
 import com.mpower.web.customization.FieldVO;
@@ -33,12 +33,12 @@ public class PicklistFieldHandler extends GenericFieldHandler {
         fieldVO.setDisplayValues(new ArrayList<String>());
         fieldVO.setReferenceValues(new ArrayList<String>());
         EntityType entityType = currentField.getSecondaryFieldDefinition() != null ? currentField.getSecondaryFieldDefinition().getEntityType() : currentField.getFieldDefinition().getEntityType();
-        Picklist picklist = fieldService.readPicklistBySiteAndFieldName(siteName, currentField.getPicklistName(), entityType);
+        Picklist picklist = fieldService.readPicklistByFieldNameEntityType(currentField.getPicklistName(), entityType);
         if (picklist != null) {
             for (Iterator<PicklistItem> iterator = picklist.getActivePicklistItems().iterator(); iterator.hasNext();) {
                 PicklistItem item = iterator.next();
                 fieldVO.getCodes().add(item.getItemName());
-                String displayValue = messageService.lookupMessage(siteName, MessageResourceType.PICKLIST_VALUE, item.getItemName(), locale);
+                String displayValue = messageService.lookupMessage(MessageResourceType.PICKLIST_VALUE, item.getItemName(), locale);
                 if (GenericValidator.isBlankOrNull(displayValue)) {
                     displayValue = item.getDefaultDisplayValue();
                 }

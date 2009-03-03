@@ -14,7 +14,7 @@ import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Phone;
 import com.mpower.util.AES;
 
-public class PaymentSource extends AbstractEntity implements Inactivatible {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
+public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -72,26 +72,22 @@ public class PaymentSource extends AbstractEntity implements Inactivatible {//Si
         this.person = person;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public Address getAddress() {
         return address;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public void setAddress(Address address) {
         this.address = address;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public Phone getPhone() {
         return phone;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public void setPhone(Phone phone) {
         this.phone = phone;
     }

@@ -8,6 +8,7 @@ import com.mpower.domain.customization.FieldDefinition;
  * Use this class to indicate an entity can be displayed on a page
  * @author jball
  */
+@Deprecated
 public interface Viewable {
 
     public Map<String, String> getFieldLabelMap();

@@ -5,5 +5,5 @@ import java.util.Locale;
 import com.mpower.type.MessageResourceType;
 
 public interface MessageService {
-	public String lookupMessage(String siteName, MessageResourceType messageResourceType, String messageKey, Locale locale);
+	public String lookupMessage(MessageResourceType messageResourceType, String messageKey, Locale locale);
 }

@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 import org.testng.annotations.DataProvider;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class GiftDataProvider {
 
@@ -28,7 +28,7 @@ public class GiftDataProvider {
         paymentSource.setCreditCardExpirationYear(2010);
         paymentSource.setCreditCardHolderName("John Q. Test");
         paymentSource.setCreditCardNumber("4111111111111111");
-        paymentSource.setType("CREDIT_CARD");
+        paymentSource.setPaymentType("CREDIT_CARD");
         
         Gift gift = new Gift();
         gift.setComments("My gift to you");

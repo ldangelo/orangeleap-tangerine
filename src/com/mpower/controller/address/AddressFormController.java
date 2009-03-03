@@ -13,8 +13,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.Address;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Address;
 import com.mpower.util.StringConstants;
 
 public class AddressFormController extends TangerineConstituentAttributesFormController {
@@ -23,11 +23,11 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
+    protected AbstractEntity findEntity(HttpServletRequest request) {
         String addressId = request.getParameter(StringConstants.ADDRESS_ID);
         Address address = null;
         if (addressId == null) {
-            address = new Address(super.getPerson(request));
+            address = new Address(super.getConstituentId(request));
         }
         else {
             address = addressService.readAddress(Long.valueOf(addressId));
@@ -39,11 +39,11 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Address> addresses = addressService.readAddresses(super.getPersonId(request));
+        List<Address> addresses = addressService.readAddresses(super.getConstituentId(request));
         refData.put("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getPersonId(request), Calendar.getInstance(), false);
+        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentAddresses", currentAddresses);
-        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getPersonId(request), Calendar.getInstance(), true);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
 
         if (logger.isDebugEnabled()) {

@@ -21,6 +21,7 @@ import com.mpower.type.CommitmentType;
 import com.mpower.util.EntityUtility;
 
 @Repository("commitmentDao")
+@Deprecated
 public class JPACommitmentDao implements CommitmentDao {
 
     /** Logger for this class and subclasses */

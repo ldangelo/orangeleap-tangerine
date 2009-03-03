@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.mpower.dao.AuditDao;
+import com.mpower.dao.interfaces.AuditDao;
 import com.mpower.domain.model.Audit;
 import com.mpower.type.AuditType;
 

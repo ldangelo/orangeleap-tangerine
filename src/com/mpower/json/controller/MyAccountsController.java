@@ -14,8 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mpower.domain.Gift;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
 import com.mpower.service.PersonService;
@@ -46,8 +46,10 @@ public class MyAccountsController {
 
         MpowerAuthenticationToken mPowerAuthenticationToken = (MpowerAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
         siteService.createSiteAndUserIfNotExist(mPowerAuthenticationToken.getSite());
-        Person person = personService.readPersonById(mPowerAuthenticationToken.getPersonId());
-        if (person == null) return new ModelMap();
+        Person person = personService.readConstituentById(mPowerAuthenticationToken.getPersonId());
+        if (person == null) {
+            return new ModelMap();
+        }
         
         String acctString = person.getCustomFieldValue("individual.accountManagerFor");
 
@@ -57,7 +59,7 @@ public class MyAccountsController {
             for (String account : accounts) {
 
                 Long acctId = Long.parseLong(account);
-                Person client = personService.readPersonById(acctId);
+                Person client = personService.readConstituentById(acctId);
 
                 BigDecimal totalGiving = new BigDecimal(0);
 
@@ -76,6 +78,7 @@ public class MyAccountsController {
         return model;
     }
 
+    @SuppressWarnings("unchecked")
     private Map fromPerson(Person person, BigDecimal amount, int gifts) {
 
         Map<String,Object> ret = new HashMap<String,Object>();

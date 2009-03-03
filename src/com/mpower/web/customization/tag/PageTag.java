@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionDefinition;
 import com.mpower.service.customization.PageCustomizationService;
 import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.LayoutType;
@@ -37,7 +37,7 @@ public class PageTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(SessionServiceImpl.lookupUserSiteName(), PageType.valueOf(pageName), SessionServiceImpl.lookupUserRoles());
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageName), SessionServiceImpl.lookupUserRoles());
         
         pageContext.getRequest().setAttribute("sectionDefinitions", sectionDefinitions);
         seperateSectionsByGridColumns(sectionDefinitions);

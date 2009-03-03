@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PhoneDao;
-import com.mpower.domain.Phone;
-import com.mpower.domain.Viewable;
+import com.mpower.dao.interfaces.PhoneDao;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.service.AuditService;
 import com.mpower.service.CloneService;
 import com.mpower.service.InactivateService;
@@ -31,14 +31,22 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "phoneDao")
+    @Resource(name = "phoneDAO")
     private PhoneDao phoneDao;
+
+// TODO: remove
+//    public void setAuditService(AuditService auditService) {
+//        this.auditService = auditService;
+//    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Phone savePhone(Phone phone) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("savePhone: phone = " + phone);
+        }
         boolean found = false;
         if (phone.getId() == null) {
-            List<Phone> phoneList = readPhones(phone.getPerson().getId());
+            List<Phone> phoneList = readPhones(phone.getPersonId());
             for (Phone p : phoneList) {
                 if (phone.equals(p)) {
                     found = true;
@@ -64,16 +72,20 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
         return phone;
     }
 
-    public List<Phone> readPhones(Long personId) {
-        return phoneDao.readPhones(personId);
+    @Override
+    public List<Phone> readPhones(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPhones: constituentId = " + constituentId);
+        }
+        return phoneDao.readPhonesByConstituentId(constituentId);
     }
 
     @Override
-    public List<Phone> filterValidPhones(Long personId) {
+    public List<Phone> filterValidPhones(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("filterValidPhones: personId = " + personId);
+            logger.debug("filterValidPhones: constituentId = " + constituentId);
         }
-        List<Phone> phones = this.readPhones(personId);
+        List<Phone> phones = this.readPhones(constituentId);
         List<Phone> filteredPhones = new ArrayList<Phone>();
         for (Phone phone : phones) {
             if (phone.isValid()) {
@@ -83,19 +95,25 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
         return filteredPhones;
     }
 
-    public void setAuditService(AuditService auditService) {
-        this.auditService = auditService;
-    }
-
+    @Override
     public Phone readPhone(Long phoneId) {
-        return phoneDao.readPhone(phoneId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPhone: phoneId = " + phoneId);
+        }
+        return phoneDao.readPhoneById(phoneId);
     }
 
-    public List<Phone> readCurrentPhones(Long personId, Calendar calendar, boolean mailOnly) {
-        return phoneDao.readCurrentPhones(personId, calendar, mailOnly);
+    @Override
+    public List<Phone> readCurrentPhones(Long constituentId, Calendar calendar, boolean mailOnly) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCurrentPhones: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
+        }
+        return phoneDao.readActivePhonesByConstituentId(constituentId);
+        // TODO: move filtering logic from JPAPhoneDao to here
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    // TODO: is this being used?
     public void inactivatePhones() {
         phoneDao.inactivatePhones();
     }
@@ -112,8 +130,11 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
     }
 
     @Override
-    public Viewable clone(Viewable viewable) {
-        Phone phone = (Phone)viewable;
+    public AbstractEntity clone(AbstractEntity entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("clone: entity = " + entity);
+        }
+        Phone phone = (Phone)entity;
         if (phone.getId() != null) {
             Phone originalPhone = this.readPhone(phone.getId());
 

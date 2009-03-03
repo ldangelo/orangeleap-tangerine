@@ -7,12 +7,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.domain.Person;
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.PersonService;
 import com.mpower.service.exception.PersonValidationException;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.PageType;
+import com.mpower.util.TangerineUserHelper;
 
 
 public class PersonImporter extends EntityImporter {
@@ -20,10 +20,12 @@ public class PersonImporter extends EntityImporter {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private PersonService personservice;
+    private TangerineUserHelper tangerineUserHelper;
 
 	public PersonImporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
 		personservice = (PersonService)applicationContext.getBean("personService");
+		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 	}
 	
 	@Override
@@ -45,29 +47,33 @@ public class PersonImporter extends EntityImporter {
 		
 		String id = values.get(getIdField());
 		if (action.equals(EntityImporter.ACTION_ADD)) {
-			person = personservice.createDefaultPerson(SessionServiceImpl.lookupUserSiteName());
+			person = personservice.createDefaultConstituent();
 			logger.debug("Adding new entity...");
 		} else {
-			if (id == null) throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
+			if (id == null) {
+                throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
+            }
 			Long lid;
 			try {
 				lid = new Long(id);
 			} catch (Exception e) {
 				throw new RuntimeException("Invalid id value "+id);
 			}
-		    person = personservice.readPersonById(lid);
-			if (person == null) throw new RuntimeException(getIdField() + " " + id + " not found.");
+		    person = personservice.readConstituentById(lid);
+			if (person == null) {
+                throw new RuntimeException(getIdField() + " " + id + " not found.");
+            }
 			logger.debug("Importing constituent "+id+"...");
 		}
 		
 		// We want person relationship maintenance, so type maps are required, similar to manual edit screen.
-        Map<String, String> fieldLabelMap = siteservice.readFieldLabels(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles(), Locale.getDefault());
+        Map<String, String> fieldLabelMap = siteservice.readFieldLabels(getPageType(), tangerineUserHelper.lookupUserRoles(), Locale.getDefault());
         person.setFieldLabelMap(fieldLabelMap);
 
-        Map<String, Object> valueMap = siteservice.readFieldValues(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles(), person);
+        Map<String, Object> valueMap = siteservice.readFieldValues(getPageType(), tangerineUserHelper.lookupUserRoles(), person);
         person.setFieldValueMap(valueMap);
 
-        Map<String, FieldDefinition> typeMap = siteservice.readFieldTypes(SessionServiceImpl.lookupUserSiteName(), getPageType(), SessionServiceImpl.lookupUserRoles());
+        Map<String, FieldDefinition> typeMap = siteservice.readFieldTypes(getPageType(), tangerineUserHelper.lookupUserRoles());
         person.setFieldTypeMap(typeMap);
 
 		if (action.equals(EntityImporter.ACTION_DELETE)) {
@@ -76,7 +82,7 @@ public class PersonImporter extends EntityImporter {
 			mapValuesToObject(values, person);
 		}
 		
-		personservice.maintainPerson(person);
+		personservice.maintainConstituent(person);
 		
 	}
 	

@@ -10,6 +10,7 @@ import com.mpower.domain.Address;
 import com.mpower.domain.AddressCustomField;
 import com.mpower.domain.CustomField;
 
+@Deprecated
 public class AddressCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

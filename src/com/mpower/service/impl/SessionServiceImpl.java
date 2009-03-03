@@ -14,11 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Site;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.SessionService;
 import com.mpower.service.SiteService;
 import com.mpower.type.RoleType;
+import com.mpower.util.TangerineUserHelper;
 
 @Component("sessionService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -30,11 +31,14 @@ public class SessionServiceImpl implements SessionService {
     @Resource(name = "siteService")
     private SiteService siteService;
 
+    @Resource(name="tangerineUserHelper")
+    protected TangerineUserHelper tangerineUserHelper;
+
     @Override
     public Site lookupSite() {
         
         // TODO: remove cloning logic for IBatis
-    	com.mpower.domain.model.Site site = siteService.createSiteAndUserIfNotExist(lookupUserSiteName());
+    	Site site = siteService.createSiteAndUserIfNotExist(tangerineUserHelper.lookupUserSiteName());
     	Site siteClone = new Site();
     	siteClone.setName(site.getName());
     	siteClone.setMerchantNumber(site.getMerchantNumber());
@@ -48,21 +52,26 @@ public class SessionServiceImpl implements SessionService {
     	return siteClone;
     }
 
+    // TODO: remove all static methods below
+    @Deprecated
     public static String lookupUserSiteName() {
         AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && authentication instanceof MpowerAuthenticationToken ? ((MpowerAuthenticationToken)authentication).getSite() : null;
     }
 
+    @Deprecated
     public static String lookupUserName() {
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
 
+    @Deprecated
     public static String lookupUserPassword() {
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         return (String) authentication.getCredentials();
     }
 
+    @Deprecated
     public static List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         RoleType greatestRoleType = null;
@@ -82,14 +91,6 @@ public class SessionServiceImpl implements SessionService {
         }
         return roles;
     }
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-
-	public SiteService getSiteService() {
-		return siteService;
-	}
 
     // private static void storeUser(ServletRequest request, User user) {
     // storeValue((HttpServletRequest) request, SessionValue.USER, user);

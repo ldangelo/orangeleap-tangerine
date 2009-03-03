@@ -8,9 +8,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.mpower.domain.Commitment;
-import com.mpower.domain.DistributionLine;
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.DistributionLine;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class DistributionLinesValidator implements Validator {
 

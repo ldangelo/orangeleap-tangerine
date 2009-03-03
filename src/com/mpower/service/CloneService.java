@@ -1,7 +1,7 @@
 package com.mpower.service;
 
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
 
 public interface CloneService {
-    public Viewable clone(Viewable viewable);
+    public AbstractEntity clone(AbstractEntity entity);
 }

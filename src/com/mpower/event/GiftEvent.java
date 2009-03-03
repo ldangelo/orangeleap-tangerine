@@ -2,7 +2,7 @@ package com.mpower.event;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.mpower.domain.Gift;
+import com.mpower.domain.model.paymentInfo.Gift;
 
 public class GiftEvent extends ApplicationEvent {
 	

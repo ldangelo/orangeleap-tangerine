@@ -40,12 +40,12 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 	}
 
 	@Override
-	public CodeType readCodeType(String codeType) {
+	public CodeType readCodeTypeByName(String codeTypeName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCodeType: " + codeType);
+            logger.debug("readCodeTypeByName: codeTypeName = " + codeTypeName);
         }
         Map<String, Object> params = setupParams();
-        params.put("name", codeType);
+        params.put("name", codeTypeName);
         return (CodeType)getSqlMapClientTemplate().queryForObject("SELECT_CODE_TYPE_BY_NAME", params);
 	}
 	
@@ -55,7 +55,7 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 	@Override
 	public List<Code> readCodes(String codeType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCodes: " + codeType);
+            logger.debug("readCodes: codeType = " + codeType);
         }
         Map<String, Object> params = setupParams();
         params.put("codeType", codeType);
@@ -65,7 +65,7 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 	@Override
 	public Code readCodeBySiteTypeValue(String codeType, String codeValue) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCodeBySiteTypeValue: " + codeType + "," + codeValue);
+            logger.debug("readCodeBySiteTypeValue: codeType = " + codeType + " codeValue = " + codeValue);
         }
         Map<String, Object> params = setupParams();
         
@@ -76,10 +76,9 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<Code> readCodes(String codeType,
-			String startsWith) {
+	public List<Code> readCodes(String codeType, String startsWith) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCodes: " + codeType);
+            logger.debug("readCodes: codeType = " + codeType + " startsWith = " + startsWith);
         }
         Map<String, Object> params = setupParams();
         params.put("codeType", codeType);
@@ -91,10 +90,9 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<Code> readCodes(String codeType,
-			String startsWith, String partialDescription, Boolean inactive) {
+	public List<Code> readCodes(String codeType, String startsWith, String partialDescription, Boolean inactive) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCodes: " + codeType);
+            logger.debug("readCodes: codeType = " + codeType + " startsWith = " + startsWith + " partialDescription = " + partialDescription + " inactive = " + inactive);
         }
         Map<String, Object> params = setupParams();
         String query;
@@ -110,25 +108,22 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 
         return getSqlMapClientTemplate().queryForList(query, params);
 	}
-    
-
-	
 	
 	@Override
 	public Code maintainCode(Code code) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainCode: code = " + code);
+        }
 		return (Code)insertOrUpdate(code, "CODE");
 	}
 
 	@Override
-	public Code readCode(Long id) {
+	public Code readCodeById(Long id) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCode: "+id);
+            logger.debug("readCodeById: id = " + id);
         }
         Map<String, Object> params = setupParams();
         params.put("id", id);
         return (Code)getSqlMapClientTemplate().queryForObject("SELECT_CODE_BY_ID", params);
 	}
-
-
-
 }

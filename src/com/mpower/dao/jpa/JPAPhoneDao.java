@@ -24,6 +24,7 @@ import com.mpower.domain.Phone;
 import com.mpower.util.CalendarUtils;
 
 @Repository("phoneDao")
+@Deprecated
 public class JPAPhoneDao implements PhoneDao {
 
     /** Logger for this class and subclasses */

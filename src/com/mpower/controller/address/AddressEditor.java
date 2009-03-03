@@ -1,32 +1,30 @@
 package com.mpower.controller.address;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.controller.constituent.RequiresConstituentEditor;
-import com.mpower.domain.Address;
+import com.mpower.domain.model.communication.Address;
 import com.mpower.service.AddressService;
-import com.mpower.service.PersonService;
+import com.mpower.type.ActivationType;
 
 public class AddressEditor extends RequiresConstituentEditor {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="addressService")
     private AddressService addressService;
 
     public AddressEditor() {
         super();
     }
 
-    public AddressEditor(AddressService addressService, PersonService personService, String personId) {
-        super(personService, personId);
-        setAddressService(addressService);
-    }
-
-    public void setAddressService(AddressService addressService) {
-        this.addressService = addressService;
+    public AddressEditor(String personId) {
+        super(personId);
     }
 
     @Override
@@ -37,9 +35,9 @@ public class AddressEditor extends RequiresConstituentEditor {
             setValue(a);
         }
         else if ("new".equals(text)){
-            Address a = new Address(super.getPerson());
+            Address a = new Address(super.getPerson().getId());
             a.setUserCreated(true);
-            a.setActivationStatus("permanent");
+            a.setActivationStatus(ActivationType.permanent);
             a.setAddressType("home");
             setValue(a);
         }

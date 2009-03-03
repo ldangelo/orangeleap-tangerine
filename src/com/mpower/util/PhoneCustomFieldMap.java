@@ -10,6 +10,7 @@ import com.mpower.domain.CustomField;
 import com.mpower.domain.Phone;
 import com.mpower.domain.PhoneCustomField;
 
+@Deprecated
 public class PhoneCustomFieldMap extends AbstractInstanceValuesMap {
 
     /** Logger for this class and subclasses */

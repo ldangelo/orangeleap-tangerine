@@ -13,8 +13,8 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
-import com.mpower.domain.Email;
-import com.mpower.domain.Viewable;
+import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.communication.Email;
 
 public class EmailFormController extends TangerineConstituentAttributesFormController {
 
@@ -22,11 +22,11 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    protected Viewable findViewable(HttpServletRequest request) {
+    protected AbstractEntity findEntity(HttpServletRequest request) {
         String emailId = request.getParameter("emailId");
         Email email = null;
         if (emailId == null) {
-            email = new Email(super.getPerson(request));
+            email = new Email(super.getConstituentId(request));
         }
         else {
             email = emailService.readEmail(Long.valueOf(emailId));
@@ -38,11 +38,11 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Email> emails = emailService.readEmails(super.getPersonId(request));
+        List<Email> emails = emailService.readEmails(super.getConstituentId(request));
         refData.put("emails", emails);
-        List<Email> currentEmails = emailService.readCurrentEmails(super.getPersonId(request), Calendar.getInstance(), false);
+        List<Email> currentEmails = emailService.readCurrentEmails(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentEmails", currentEmails);
-        List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(super.getPersonId(request), Calendar.getInstance(), true);
+        List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(super.getConstituentId(request), Calendar.getInstance(), true);
         refData.put("currentCorrespondenceEmails", currentCorrespondenceEmails);
 
         if (logger.isDebugEnabled()) {

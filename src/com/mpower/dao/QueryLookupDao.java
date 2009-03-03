@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.QueryLookup;
 
+@Deprecated
 public interface QueryLookupDao {
 
     public QueryLookup readQueryLookup(String siteName, String fieldDefinitionId);

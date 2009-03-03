@@ -2,7 +2,7 @@ package com.mpower.integration;
 
 import org.springframework.integration.annotation.Gateway;
 
-import com.mpower.domain.Email;
+import com.mpower.domain.model.communication.Email;
 
 public interface NewEmailAddress {
 	@Gateway(requestChannel="newEmailAddressChannel")

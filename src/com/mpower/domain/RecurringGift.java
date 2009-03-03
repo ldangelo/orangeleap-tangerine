@@ -24,6 +24,7 @@ import com.mpower.domain.listener.TemporalTimestampListener;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "RECURRING_GIFT", uniqueConstraints = @UniqueConstraint(columnNames = { "COMMITMENT_ID" }))
+@Deprecated
 public class RecurringGift implements Serializable {
 
     private static final long serialVersionUID = 1L;

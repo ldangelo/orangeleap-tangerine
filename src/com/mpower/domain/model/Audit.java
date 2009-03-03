@@ -10,30 +10,21 @@ import com.mpower.type.AuditType;
 public class Audit implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private Long id;
-
     private AuditType auditType;
-
     private Date date;
-
     private String user;
-
     private String description;
-
     private Person person;
-
     private String siteName;
-
     private String entityType;
-
     private Long objectId;
 
     public Audit() {
         super();
     }
 
-    public Audit(AuditType auditType, String user, Date date, String description, String siteName, String entityType, Long objectId, Person person) {
+    public Audit(AuditType auditType, String user, Date date, String description, String siteName, String entityType, Long objectId, Person constituent) {
         this.auditType = auditType;
         this.user = user;
         this.date = date;
@@ -41,7 +32,7 @@ public class Audit implements GeneratedId, Serializable {
         this.siteName = siteName;
         this.entityType = entityType;
         this.objectId = objectId;
-        this.person = person;
+        this.person = constituent;
     }
 
     @Override

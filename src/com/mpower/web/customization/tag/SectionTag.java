@@ -10,10 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.mpower.domain.customization.SectionDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.service.customization.PageCustomizationService;
-import com.mpower.service.impl.SessionServiceImpl;
 
 public class SectionTag extends TagSupport {
 
@@ -28,7 +27,7 @@ public class SectionTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         pageCustomizationService = (PageCustomizationService) WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext()).getBean("pageCustomizationService");
-        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(SessionServiceImpl.lookupUserSiteName(), sectionDefinition);
+        List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDefinition);
         pageContext.getRequest().setAttribute("sectionFieldList", sectionFields);
         pageContext.getRequest().setAttribute("sectionFieldCount", sectionFields.size());
         return Tag.EVAL_BODY_INCLUDE;

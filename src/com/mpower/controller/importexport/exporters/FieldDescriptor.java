@@ -1,6 +1,6 @@
 package com.mpower.controller.importexport.exporters;
 
-import com.mpower.domain.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldDefinition;
 
 public class FieldDescriptor {
 	
@@ -87,7 +87,9 @@ public class FieldDescriptor {
 				) {
 			int i = importFieldName.indexOf("[");
 			int j = importFieldName.indexOf("]");
-			if (i < 0 || j < 0 || i > j) return "";
+			if (i < 0 || j < 0 || i > j) {
+                return "";
+            }
 		    return importFieldName.substring(0, i) + "Map[" + getKey(importFieldName) + "]." + importFieldName.substring(j + 1);
 		} else {
 			return importFieldName;
@@ -107,7 +109,9 @@ public class FieldDescriptor {
 
 	private String getMapType(String name) {
 		int i = name.indexOf("Map[");
-		if (i < 0 ) return "";
+		if (i < 0 ) {
+            return "";
+        }
 		String type = name.substring(0,i);
 		return toInitialUpperCase(type);
 	}
@@ -115,31 +119,41 @@ public class FieldDescriptor {
 	private static String getKey(String name) {
 		int i = name.indexOf("[");
 		int j = name.indexOf("]");
-		if (i < 0 || j < 0 || i > j) return "";
+		if (i < 0 || j < 0 || i > j) {
+            return "";
+        }
 		return name.substring(i + 1, j);
 	}
 	
 	private String getSubField(String name) {
 		int j = name.indexOf("]");
-		if (j < 0) return "";
+		if (j < 0) {
+            return "";
+        }
 		return name.substring(j+2);
 	}
 	
 	private String getDependentObject(String name) {
 		int j = name.indexOf(".");
-		if (j < 0) return "";
+		if (j < 0) {
+            return "";
+        }
 		return name.substring(0,j);
 	}
 	
 	private String getDependentField(String name) {
 		int j = name.indexOf(".");
-		if (j < 0) return "";
+		if (j < 0) {
+            return "";
+        }
 		return name.substring(j+1);
 	}
 	
 	// Create an export field name for a mapped field.
 	private String getExportFieldNameForMap(String name) {
-		if (!isMap(name)) return name;
+		if (!isMap(name)) {
+            return name;
+        }
 		return toInitialLowerCase(getMapType(name)) + "[" + getKey(name) + "]" + getSubField(name);
 	}
 

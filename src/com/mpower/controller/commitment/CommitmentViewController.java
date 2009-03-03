@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mpower.domain.Commitment;
+import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.util.StringConstants;
 
 public class CommitmentViewController extends CommitmentFormController {
@@ -20,6 +20,6 @@ public class CommitmentViewController extends CommitmentFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Commitment commitment = (Commitment)command;
         Commitment current = commitmentService.editCommitment(commitment);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getPersonId(request));
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMITMENT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
     }
 }

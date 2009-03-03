@@ -11,7 +11,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
 import com.mpower.service.customization.MessageService;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.type.MessageResourceType;
 
 /**
@@ -44,10 +43,10 @@ public class MpowerMessageSource extends AbstractMessageSource implements Resour
         catch (NoSuchMessageException ne) { }
 
         if (!StringUtils.hasText(message)) {
-            message = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.FIELD_VALIDATION, code, locale);
+            message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code, locale);
             if (message == null && (code.startsWith("fieldRequiredFailure.") || code.startsWith("fieldValidationFailure."))) {
                 logger.info("message code, " + code + ", not found - use out-of-the-box error message");
-                message = messageService.lookupMessage(SessionServiceImpl.lookupUserSiteName(), MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
+                message = messageService.lookupMessage(MessageResourceType.FIELD_VALIDATION, code.substring(0, code.indexOf('.')), locale);
             }
         }
         if (message != null) {

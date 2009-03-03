@@ -14,6 +14,7 @@ import com.mpower.dao.AuditDao;
 import com.mpower.domain.model.Audit;
 
 @Repository("auditDao")
+@Deprecated
 public class JPAAuditDao implements AuditDao {
 
     /** Logger for this class and subclasses */

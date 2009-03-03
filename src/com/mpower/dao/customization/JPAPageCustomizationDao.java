@@ -17,6 +17,7 @@ import com.mpower.domain.customization.SectionField;
 import com.mpower.type.PageType;
 
 @Repository("pageCustomizationDao")
+@Deprecated
 public class JPAPageCustomizationDao implements PageCustomizationDAO {
 
     /** Logger for this class and subclasses */

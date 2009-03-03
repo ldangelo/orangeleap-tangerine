@@ -3,11 +3,11 @@ package com.mpower.test.deprecated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.Site;
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.FieldRequired;
-import com.mpower.domain.customization.SectionDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.Site;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldRequired;
+import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.service.customization.FieldService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.FieldRequiredDataProvider;
@@ -34,10 +34,10 @@ public class FieldTest extends BaseTest {
 
         em.persist(defaultField);
 
-        modifiedField.setSiteName(siteName);
+        modifiedField.setSite(new Site(siteName));
         em.persist(modifiedField);
 
-        assert fieldService.lookupFieldRequired(siteName, em.find(SectionField.class, sectionFieldId)).isRequired() == expectedValue;
+        assert fieldService.lookupFieldRequired(em.find(SectionField.class, sectionFieldId)).isRequired() == expectedValue;
         em.getTransaction().rollback();
     }
 }

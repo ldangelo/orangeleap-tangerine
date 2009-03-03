@@ -35,6 +35,7 @@ import com.mpower.util.EmailCustomFieldMap;
 @Entity
 @EntityListeners(value = { TemporalTimestampListener.class })
 @Table(name = "EMAIL")
+@Deprecated
 public class Email implements SiteAware, Customizable, ConstituentInfo, Inactivatible, Serializable {
 
     private static final long serialVersionUID = 1L;

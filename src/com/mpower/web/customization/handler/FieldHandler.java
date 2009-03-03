@@ -3,7 +3,7 @@ package com.mpower.web.customization.handler;
 import java.util.List;
 import java.util.Locale;
 
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.web.customization.FieldVO;
 
 public interface FieldHandler {

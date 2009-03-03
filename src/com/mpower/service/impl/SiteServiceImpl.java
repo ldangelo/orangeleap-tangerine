@@ -21,14 +21,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.interfaces.SiteDao;
-import com.mpower.domain.CustomField;
-import com.mpower.domain.Person;
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.FieldRequired;
-import com.mpower.domain.customization.FieldValidation;
-import com.mpower.domain.customization.SectionDefinition;
-import com.mpower.domain.customization.SectionField;
+import com.mpower.domain.model.Person;
 import com.mpower.domain.model.Site;
+import com.mpower.domain.model.customization.CustomField;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldRequired;
+import com.mpower.domain.model.customization.FieldValidation;
+import com.mpower.domain.model.customization.SectionDefinition;
+import com.mpower.domain.model.customization.SectionField;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.security.MpowerLdapAuthoritiesPopulator;
 import com.mpower.service.PersonService;
@@ -69,13 +69,13 @@ public class SiteServiceImpl implements SiteService {
     	}
         Site site = siteDao.readSite(siteName);
         if (site == null) {
-            site = siteDao.createSite(new Site(siteName, "", null));
+            site = siteDao.createSite(new Site(siteName));
         }
 
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-  	    Long personId = authentication.getPersonId();
-  	    if (personId == null) {
-          	Person person = getPersonService().readPersonByLoginId(authentication.getName(), siteName);
+  	    Long constituentId = authentication.getPersonId();
+  	    if (constituentId == null) {
+          	Person person = personService.readConstituentByLoginId(authentication.getName());
           	if (person == null) {
           	    try {
 					person = createPerson(authentication, siteName);
@@ -86,19 +86,18 @@ public class SiteServiceImpl implements SiteService {
 				}
           	} 
           	authentication.setPersonId(person.getId());
-          	
   	    }
         return site;
     }
     
     // Create a Person object row corresponding to the login user.
     private Person createPerson(MpowerAuthenticationToken authentication, String siteName)  throws PersonValidationException, javax.naming.NamingException {
-        Person person = getPersonService().createDefaultPerson(siteName);
-        person.setFirstName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.FIRST_NAME));
-        person.setLastName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.LAST_NAME));
-        person.setConstituentIndividualRoles("user");
-        person.setLoginId(authentication.getName());
-        return getPersonService().maintainPerson(person);
+        Person constituent = personService.createDefaultConstituent();
+        constituent.setFirstName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.FIRST_NAME));
+        constituent.setLastName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.LAST_NAME));
+        constituent.setConstituentIndividualRoles("user");
+        constituent.setLoginId(authentication.getName());
+        return personService.maintainConstituent(constituent);
     }
      
     @Override
@@ -108,12 +107,12 @@ public class SiteServiceImpl implements SiteService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, FieldRequired> readRequiredFields(String siteName, PageType pageType, List<String> roles) {
+    public Map<String, FieldRequired> readRequiredFields(PageType pageType, List<String> roles) {
         Map<String, FieldRequired> returnMap = new ListOrderedMap(); // ListOrderedMap used to ensure the order of the fields is maintained
-        List<SectionField> fields = getSectionFields(siteName, pageType, roles);
+        List<SectionField> fields = getSectionFields(pageType, roles);
         if (fields != null) {
             for (SectionField sectionField : fields) {
-                FieldRequired fieldRequired = fieldService.lookupFieldRequired(siteName, sectionField);
+                FieldRequired fieldRequired = fieldService.lookupFieldRequired(sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
@@ -127,15 +126,15 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, String> readFieldLabels(String siteName, PageType pageType, List<String> roles, Locale locale) {
+    public Map<String, String> readFieldLabels(PageType pageType, List<String> roles, Locale locale) {
         Map<String, String> returnMap = new HashMap<String, String>();
-        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
+        List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
             for (SectionField sectionField : sfs) {
                 String labelText = null;
                 // TODO: find out how to get current locale
                 if (locale != null) {
-                    labelText = messageService.lookupMessage(siteName, MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), locale);
+                    labelText = messageService.lookupMessage(MessageResourceType.FIELD_LABEL, sectionField.getFieldLabelName(), locale);
                 }
                 if (GenericValidator.isBlankOrNull(labelText)) {
                     if (!sectionField.isCompoundField()) {
@@ -155,12 +154,12 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, FieldValidation> readFieldValidations(String siteName, PageType pageType, List<String> roles) {
+    public Map<String, FieldValidation> readFieldValidations(PageType pageType, List<String> roles) {
         Map<String, FieldValidation> returnMap = new HashMap<String, FieldValidation>();
-        List<SectionField> fields = getSectionFields(siteName, pageType, roles);
+        List<SectionField> fields = getSectionFields(pageType, roles);
         if (fields != null) {
             for (SectionField sectionField : fields) {
-                FieldValidation fieldValidation = fieldService.lookupFieldValidation(siteName, sectionField);
+                FieldValidation fieldValidation = fieldService.lookupFieldValidation(sectionField);
                 String key = sectionField.getFieldDefinition().getFieldName();
                 if (sectionField.getSecondaryFieldDefinition() != null) {
                     key += "." + sectionField.getSecondaryFieldDefinition().getFieldName();
@@ -173,12 +172,12 @@ public class SiteServiceImpl implements SiteService {
         return returnMap;
     }
 
-    private List<SectionField> getSectionFields(String siteName, PageType pageType, List<String> roles) {
+    private List<SectionField> getSectionFields(PageType pageType, List<String> roles) {
         List<SectionField> fields = new ArrayList<SectionField>();
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsBySiteAndPageType(siteName, pageType, roles);
+        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, roles);
         if (sectionDefinitions != null) {
             for (SectionDefinition sectionDefinition : sectionDefinitions) {
-                List<SectionField> currentSectionFields = pageCustomizationService.readSectionFieldsBySiteAndSectionName(siteName, sectionDefinition);
+                List<SectionField> currentSectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDefinition);
                 if (currentSectionFields != null) {
                     fields.addAll(currentSectionFields);
                 }
@@ -188,9 +187,9 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, Object> readFieldValues(String siteName, PageType pageType, List<String> roles, Object object) {
+    public Map<String, Object> readFieldValues(PageType pageType, List<String> roles, Object object) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
-        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
+        List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
             BeanWrapperImpl bean = new BeanWrapperImpl(object);
             for (SectionField sectionField : sfs) {
@@ -214,9 +213,9 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public Map<String, FieldDefinition> readFieldTypes(String siteName, PageType pageType, List<String> roles) {
+    public Map<String, FieldDefinition> readFieldTypes(PageType pageType, List<String> roles) {
         Map<String, FieldDefinition> returnMap = new HashMap<String, FieldDefinition>();
-        List<SectionField> sfs = getSectionFields(siteName, pageType, roles);
+        List<SectionField> sfs = getSectionFields(pageType, roles);
         if (sfs != null) {
             for (SectionField sectionField : sfs) {
                 String key = sectionField.getFieldDefinition().getFieldName();
@@ -228,13 +227,4 @@ public class SiteServiceImpl implements SiteService {
         }
         return returnMap;
     }
-
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
-
-	public PersonService getPersonService() {
-		return personService;
-	}
-
 }

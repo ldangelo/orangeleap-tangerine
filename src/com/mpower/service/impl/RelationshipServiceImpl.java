@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.PersonDao;
-import com.mpower.domain.CustomField;
-import com.mpower.domain.Person;
-import com.mpower.domain.customization.FieldDefinition;
-import com.mpower.domain.customization.FieldRelationship;
+import com.mpower.dao.interfaces.ConstituentDao;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.CustomField;
+import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.domain.model.customization.FieldRelationship;
 import com.mpower.service.RelationshipService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.service.relationship.PersonTreeNode;
@@ -36,22 +36,25 @@ public class RelationshipServiceImpl implements RelationshipService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "personDao")
-    private PersonDao personDao;
+    @Resource(name = "constituentDAO")
+    private ConstituentDao constituentDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-    public Person maintainRelationships(Person person) throws PersonValidationException {
-    	
-    	if (person.getSite() == null) return person;
-    	
+    public Person maintainRelationships(Person constituent) throws PersonValidationException {
+    	if (logger.isDebugEnabled()) {
+    	    logger.debug("maintainRelationships: constituent = " + constituent);
+    	}
+    	if (constituent.getSite() == null) {
+            return constituent;
+        }
     	PersonValidationException ex = new PersonValidationException();
     	String lastRecursiveParentCustomFieldName = null;
     	
-    	Map<String, FieldDefinition> map = person.getFieldTypeMap();
+    	Map<String, FieldDefinition> map = constituent.getFieldTypeMap();
     	if (map == null) {
     		logger.debug("FieldTypeMap not set, skipping relationship maintenance.");
-    		return person;
+    		return constituent;
     	}
     	
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
@@ -61,16 +64,18 @@ public class RelationshipServiceImpl implements RelationshipService {
     		if (isReferenceTypeField && fd.isCustom()) {
     			
     			// Determine if there is a relationship defined with another field.
-    			List<FieldRelationship> masters = fd.getSiteMasterFieldRelationships(person.getSite().getName());
-    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite().getName());
-    			if (masters.size() == 0 && details.size() == 0) continue;
+    			List<FieldRelationship> masters = new ArrayList<FieldRelationship>(); //fd.getSiteMasterFieldRelationships(person.getSite().getName()); TODO: fix for IBatis
+    			List<FieldRelationship> details = new ArrayList<FieldRelationship>(); //fd.getSiteDetailFieldRelationships(person.getSite().getName()); TODO: fix for IBatis
+    			if (masters.size() == 0 && details.size() == 0) {
+                    continue;
+                }
 
     			String fieldlabel = fd.getDefaultLabel();
     			String customFieldName = fd.getCustomFieldName();
 
     			// Get old and new reference field value for comparison
-    			String oldFieldValue = getOldFieldValue(person, key);
-       			String newFieldValue = getNewFieldValue(person, key);  
+    			String oldFieldValue = getOldFieldValue(constituent, key);
+       			String newFieldValue = getNewFieldValue(constituent, key);  
        		    List<Long> oldids = RelationshipUtil.getIds(oldFieldValue);
     			List<Long> newids = RelationshipUtil.getIds(newFieldValue);
     			
@@ -81,7 +86,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 	    			// Setup for recursion checks
 	    			boolean needToCheckForRecursion = false;
 		   			for (FieldRelationship fr : masters) {
-		   				if (fr.isRecursive()) needToCheckForRecursion = true;
+		   				if (fr.isRecursive()) {
+                            needToCheckForRecursion = true;
+                        }
 		   			}
 		   			for (FieldRelationship fr : details) {
 		   				if (fr.isRecursive()) {
@@ -95,29 +102,28 @@ public class RelationshipServiceImpl implements RelationshipService {
 		   			for (FieldRelationship fr : details) {
 			   			if (needToCheckForRecursion) {
 			   				descendants = new ArrayList<Long>();
-			   				getDescendantIds(descendants, person, fr.getMasterRecordField().getCustomFieldName(), 0);
+			   				getDescendantIds(descendants, constituent, fr.getMasterRecordField().getCustomFieldName(), 0);
 			   			}
-	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getMasterRecordField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
+	   			    	maintainRelationShip(fieldlabel, customFieldName, constituent, fr.getMasterRecordField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			for (FieldRelationship fr : masters) {
-	   			    	maintainRelationShip(fieldlabel, customFieldName, person, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
+	   			    	maintainRelationShip(fieldlabel, customFieldName, constituent, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
 	 	   			}
 		   			
     			}
 	   			
     		}
     	}
-    	if (!ex.getValidationResults().isEmpty()) throw ex;
-    	
+    	if (!ex.getValidationResults().isEmpty()) {
+            throw ex;
+        }
     	
 	    if (logger.isDebugEnabled() && lastRecursiveParentCustomFieldName != null) {
-	    	debugPrintTree(person, lastRecursiveParentCustomFieldName);
+	    	debugPrintTree(constituent, lastRecursiveParentCustomFieldName);
 	    }
 			
-
-        return person;
+        return constituent;
     }
-    
     
     // Return the tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
     @Override
@@ -128,7 +134,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
-    			List<FieldRelationship> details = fd.getSiteDetailFieldRelationships(person.getSite().getName());
+    			List<FieldRelationship> details = new ArrayList<FieldRelationship>(); //fd.getSiteDetailFieldRelationships(person.getSite().getName());  TODO: fix for IBatis
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
@@ -139,7 +145,6 @@ public class RelationshipServiceImpl implements RelationshipService {
     		}
     	}
     	return null;
-		
 	}
 
     // TODO Turn off in production since getting the whole tree could be expensive.
@@ -202,14 +207,18 @@ public class RelationshipServiceImpl implements RelationshipService {
 		// Get merged list of all ids, both adds and deletes.
         List<Long> allids = new ArrayList<Long>();
         allids.addAll(oldIds);
-        for (Long id : newIds) if (!allids.contains(id)) allids.add(id);
+        for (Long id : newIds) {
+            if (!allids.contains(id)) {
+                allids.add(id);
+            }
+        }
         
 		// Check other person's related field for deletion or addition of a reference to this id.
 		boolean otherCanBeMultiValued = otherCanBeMultiValued(direction, fieldRelationship.getRelationshipType());
         Long thisId = person.getId();
 		String otherfieldname = otherField.getCustomFieldName();  
 		
-		List<Person> otherPersons = personDao.readPersons(person.getSite().getName(), allids);
+		List<Person> otherPersons = constituentDao.readConstituentsByIds(allids);
 		for (Person otherPerson : otherPersons) {
 			
 			Long otherId = otherPerson.getId();
@@ -256,7 +265,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 				otherFieldIds.remove(thisId);
 				needToPersist = true;
 			} else if (!found && shouldBeFound) {
-				if (!otherCanBeMultiValued) otherFieldIds.clear();
+				if (!otherCanBeMultiValued) {
+                    otherFieldIds.clear();
+                }
 				otherFieldIds.add(thisId);
 				needToPersist = true;
 				ensureOtherPersonAttributeIsSet(otherField, otherPerson);
@@ -266,7 +277,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 				String newOtherFieldValue = RelationshipUtil.getIdString(otherFieldIds);
 				logger.debug("Updating related field "+otherCustomField.getName()+" value on "+otherPerson.getDisplayValue() + " to " + newOtherFieldValue);
 				otherCustomField.setValue(newOtherFieldValue);
-				personDao.savePerson(otherPerson); 
+				constituentDao.maintainConstituent(otherPerson); 
 			}
 			
 		}
@@ -275,7 +286,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 	
 	private void ensureOtherPersonAttributeIsSet(FieldDefinition otherFieldDefinition, Person otherPerson) {
 		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
-		if (fieldAttributes == null) return;
+		if (fieldAttributes == null) {
+            return;
+        }
 		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other person. 
 		// For multiple attributes, take the first as the default.
 		if (fieldAttributes.contains(",")) {
@@ -319,14 +332,16 @@ public class RelationshipServiceImpl implements RelationshipService {
 	// Returns list of Person objects referenced by the custom field
 	private List<Person> getPersons(Person person, String customFieldName) {
 		
-		List<Person> persons = personDao.readPersons(person.getSite().getName(), getIdList(person, customFieldName));
+		List<Person> persons = constituentDao.readConstituentsByIds(getIdList(person, customFieldName));
 		return persons;
 		
 	}
 	
 	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
 	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException {
-		if (fromHeadOfTree) person = getHeadOfTree(person, parentCustomFieldName);
+		if (fromHeadOfTree) {
+            person = getHeadOfTree(person, parentCustomFieldName);
+        }
 		PersonTreeNode personNode = new PersonTreeNode(person, 0);
 		getSubTree(personNode, childrenCustomFieldName, oneLevelOnly);
 		return personNode;
@@ -334,7 +349,6 @@ public class RelationshipServiceImpl implements RelationshipService {
 	
 	// Field must be a master (parent id) custom field.
 	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws PersonValidationException {
-	
 		int level = 0;
 		while (true) {
 			level++;
@@ -342,14 +356,14 @@ public class RelationshipServiceImpl implements RelationshipService {
 				throw new TooManyLevelsException(parentCustomFieldName);
 			}
 			List<Person> referencedPersons = getPersons(person, parentCustomFieldName);
-			if (referencedPersons.size() == 0) return person;
+			if (referencedPersons.size() == 0) {
+                return person;
+            }
 			person = referencedPersons.get(0);
 		}
-
 	}
 	
 	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName, boolean oneLevelOnly) throws PersonValidationException {
-		
 		if (personNode.getLevel() > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(childrenCustomFieldName);
 		}
@@ -358,23 +372,27 @@ public class RelationshipServiceImpl implements RelationshipService {
 		for (Person referencedPerson : referencedPersons) {
 			PersonTreeNode child = new PersonTreeNode(referencedPerson, personNode.getLevel() + 1);
 			personNode.getChildren().add(child);
-			if (!oneLevelOnly) getSubTree(child, childrenCustomFieldName, oneLevelOnly);
+			if (!oneLevelOnly) {
+                getSubTree(child, childrenCustomFieldName, oneLevelOnly);
+            }
 		}
-		
 	}
 	
 	// If person is in tree, return the node, otherwise return null.
 	public PersonTreeNode findPersonNodeInTree(Person person, PersonTreeNode tree) {
-		if (equals(person, tree.getPerson())) return tree;
+		if (equals(person, tree.getPerson())) {
+            return tree;
+        }
 	    for (PersonTreeNode personNode: tree.getChildren()) {
 	    	PersonTreeNode node = findPersonNodeInTree(person, personNode);
-	    	if (node != null) return node;
+	    	if (node != null) {
+                return node;
+            }
 	    }
 	    return null;
 	}
 
 	public Person getFirstCommonAncestor(Person p1, Person p2, String parentCustomFieldName) throws PersonValidationException {
-		
 		List<Person> p1Parents = new ArrayList<Person>();
 		p1Parents.add(p1);
 		List<Person> p2Parents = new ArrayList<Person>();
@@ -387,32 +405,53 @@ public class RelationshipServiceImpl implements RelationshipService {
 			}
 			List<Person> referencedPersons1 = getPersons(p1, parentCustomFieldName);
 			List<Person> referencedPersons2 = getPersons(p2, parentCustomFieldName);
-			if (referencedPersons1.size() == 0 && referencedPersons2.size() == 0) return null;
-			if (referencedPersons1.size() > 0) p1 = referencedPersons1.get(0);
-			if (referencedPersons2.size() > 0) p2 = referencedPersons2.get(0);
-			if (contains(p1Parents, p2)) return p2;
-			if (contains(p2Parents, p1)) return p1;
+			if (referencedPersons1.size() == 0 && referencedPersons2.size() == 0) {
+                return null;
+            }
+			if (referencedPersons1.size() > 0) {
+                p1 = referencedPersons1.get(0);
+            }
+			if (referencedPersons2.size() > 0) {
+                p2 = referencedPersons2.get(0);
+            }
+			if (contains(p1Parents, p2)) {
+                return p2;
+            }
+			if (contains(p2Parents, p1)) {
+                return p1;
+            }
 		}
-		
 	}
 	
 	public String debugPrintTree(PersonTreeNode tree) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < tree.getLevel(); i++) sb.append("\t");
+		for (int i = 0; i < tree.getLevel(); i++) {
+            sb.append("\t");
+        }
 		sb.append(tree.getPerson().getDisplayValue()).append("\r\n");
-		for (PersonTreeNode child: tree.getChildren()) sb.append(debugPrintTree(child));
+		for (PersonTreeNode child: tree.getChildren()) {
+            sb.append(debugPrintTree(child));
+        }
 		return sb.toString();
 	}
 	
 	private boolean contains(List<Person> persons, Person person) {
-		for (Person aperson: persons) if (equals(person, aperson)) return true;
+		for (Person aperson: persons) {
+            if (equals(person, aperson)) {
+                return true;
+            }
+        }
 		return false;
 	}
 
 	// Don't want to add an equals method to the JPA object
 	private boolean equals(Person p1, Person p2) {
-		if (p1 == null && p2 == null) return true;
-		if (p1 == null || p2 == null) return false;
+		if (p1 == null && p2 == null) {
+            return true;
+        }
+		if (p1 == null || p2 == null) {
+            return false;
+        }
 		return p1.getId().equals(p2.getId());
 	}
 	
@@ -425,5 +464,4 @@ public class RelationshipServiceImpl implements RelationshipService {
 		return fieldRelationshipType.equals(RelationshipType.MANY_TO_MANY) ||
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
 	}
-    
 }

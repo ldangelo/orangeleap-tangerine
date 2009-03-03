@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.Email;
 
+@Deprecated
 public interface EmailDao {
 
     public Email maintainEmail(Email email);

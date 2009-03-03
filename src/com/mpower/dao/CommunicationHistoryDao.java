@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mpower.domain.CommunicationHistory;
 
+@Deprecated
 public interface CommunicationHistoryDao {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);

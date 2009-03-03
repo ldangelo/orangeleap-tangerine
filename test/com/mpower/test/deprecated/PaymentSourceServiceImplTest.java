@@ -6,10 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.mpower.domain.PaymentSource;
-import com.mpower.domain.Person;
-import com.mpower.domain.Site;
-import com.mpower.service.AuditService;
+import com.mpower.domain.model.PaymentSource;
+import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Site;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PersonService;
 import com.mpower.test.BaseTest;
@@ -20,9 +19,6 @@ public class PaymentSourceServiceImplTest extends BaseTest {
     @Autowired
     private PaymentSourceService paymentSourceService;
 
-    @Autowired
-    private AuditService auditService;
-
     private final List<String> siteIds = new ArrayList<String>();
 
     private final List<Long> personIds = new ArrayList<Long>();
@@ -31,7 +27,6 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "createPaymentSource" }, dataProvider = "setupPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void createPaymentSource(Site site, Person person, PaymentSource ps) {
-        paymentSourceService.setAuditService(auditService);
         em.getTransaction().begin();
         em.persist(site);
         siteIds.add(site.getName());
@@ -50,9 +45,8 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "checkPaymentSource" }, dependsOnGroups = { "createPaymentSource" })
     public void checkForExistingPaymentSources() {
-        paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");
-        List<Person> persons = personService.readAllPeople();
+        List<Person> persons = personService.readAllConstituentsBySite();
         Long personId = null;
         for (Person person : persons) {
             if ("createPaymentSourceLastName-4".equals(person.getLastName())) {
@@ -68,7 +62,6 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "createEtcPaymentSource" }, dataProvider = "setupEtcPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void createEtcPaymentSource(Site site, Person person, PaymentSource ps) {
-        paymentSourceService.setAuditService(auditService);
         em.getTransaction().begin();
         em.persist(site);
         siteIds.add(site.getName());
@@ -87,9 +80,8 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "checkEtcPaymentSource" }, dependsOnGroups = { "createEtcPaymentSource" })
     public void testReadActivePaymentSourcesACHCreditCard() {
-        paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");
-        List<Person> persons = personService.readAllPeople();
+        List<Person> persons = personService.readAllConstituentsBySite();
         Long personId = null;
         for (Person person : persons) {
             if ("createPaymentSourceLastName-5".equals(person.getLastName())) {
@@ -106,9 +98,8 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource", "checkPaymentSource" })
     public void inactivatePaymentSources() {
-        paymentSourceService.setAuditService(auditService);
         PersonService personService = (PersonService) applicationContext.getBean("personService");
-        List<Person> persons = personService.readAllPeople();
+        List<Person> persons = personService.readAllConstituentsBySite();
         for (Person person : persons) {
             List<PaymentSource> sources = paymentSourceService.readPaymentSources(person.getId());
             for (PaymentSource ps : sources) {

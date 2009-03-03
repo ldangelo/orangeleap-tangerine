@@ -16,6 +16,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 
@@ -125,5 +126,17 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
             });
         }
         return entities;
+    }
+
+    /**
+     * Used to delete the custom fields associated with an Entity. This method
+     * should be called when a delete operation is called and the paramater does
+     * not contain the AbstractCustomizableEntity. Implementations need to call
+     * this method to avoid creating orphan record in the Custom Field table
+     * @param entity the Entity that is being deleted
+     */
+    public final void deleteCustomFields(AbstractCustomizableEntity entity) {
+        IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(getSqlMapClientTemplate());
+        helper.deleteCustomFields(entity.getCustomFieldMap());
     }
 }

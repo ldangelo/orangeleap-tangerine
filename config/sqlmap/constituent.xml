@@ -117,8 +117,10 @@
 	
 	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select
-		<include refid="CONSTITUENT_COLS_FRAGMENT"/>		 
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
+<!-- 	, <include refid="ADDRESS_COLS_FRAGMENT"/>  -->
 		from PERSON p
+<!--		left outer join ADDRESS addr on (p.PERSON_ID = addr.PERSON_ID and addr.IS_PRIMARY = '1') -->
 		where 
 		p.SITE_NAME = #siteName#
 		<isNotNull property="ignoreIds"> 
@@ -148,10 +150,10 @@
 		</isNotNull>
 		<isNotNull property="addressParams"> 
 		   and exists (
-		    select * from ADDRESS addr where 
-		    addr.PERSON_ID = p.PERSON_ID
+		    select * from ADDRESS saddr where 
+		    saddr.PERSON_ID = p.PERSON_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
-		    addr.$addressParams[].key$ like #addressParams[].value#
+		    saddr.$addressParams[].key$ like #addressParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>
@@ -164,7 +166,6 @@
 		    </iterate>
 		   )
 		</isNotNull>
-		<!--  TODO  -->
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD cf where 

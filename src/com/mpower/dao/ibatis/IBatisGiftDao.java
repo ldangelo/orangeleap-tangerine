@@ -2,6 +2,7 @@ package com.mpower.dao.ibatis;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.GiftDao;
+import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.domain.model.paymentInfo.Gift;
@@ -68,87 +70,33 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGifts(String siteName, Map<String, Object> params) {
-    	return null;
-    
-/*        boolean whereUsed = true;
-        StringBuilder queryString = new StringBuilder("SELECT gift FROM com.mpower.domain.Gift gift WHERE gift.person.site.name = :siteName");
-        Map<String, Object> addressParams = new HashMap<String, Object>();
-        Map<String, String> customParams = new HashMap<String, String>();
-        LinkedHashMap<String, Object> parameterMap = new LinkedHashMap<String, Object>();
-        if (params != null) {
-            String key;
-            Object value;
-            for (Map.Entry<String, Object> pair : params.entrySet()) {
-                key = pair.getKey();
-                value = pair.getValue();
-                boolean isString = true;
-                if (value instanceof String) {
-                    if (GenericValidator.isBlankOrNull((String) value)) {
-                        continue;
-                    }
-                } else {
-                    if (value == null) {
-                        continue;
-                    }
-                    isString = false;
-                }
-                if (key.startsWith("person.addressMap[")) {
-                    addressParams.put(key.substring(key.lastIndexOf('.') + 1), value);
-                } else if (key.startsWith("customFieldMap[")) {
-                    customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), (String) value);
-                } else {
-                    whereUsed = EntityUtility.addWhereOrAnd(whereUsed, queryString);
-                    queryString.append(" gift.");
-                    queryString.append(key);
-                    String paramName = key.replace(".", "_");
-                    if (isString) {
-                        queryString.append(" LIKE :");
-                        queryString.append(paramName);
-                        parameterMap.put(paramName, "%" + value + "%");
-                    } else {
-                        queryString.append(" = :");
-                        queryString.append(paramName);
-                        parameterMap.put(paramName, value);
-                    }
-                }
-            }
-        }
-        queryString.append(getAddressString(addressParams, parameterMap));
-        queryString.append(QueryUtil.getCustomString(customParams, parameterMap));
-
-        Query query = em.createQuery(queryString.toString());
-        query.setParameter("siteName", siteName);
-        for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
-            query.setParameter(entry.getKey(), entry.getValue());
-        }
-        List giftList = query.getResultList();
-        return giftList;
-        */
+    public List<Gift> searchGifts(Map<String, Object> searchparams)
+    {
+    	Map<String, Object> params = setupParams();
+    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, fieldMap);
+    	
+    	List<Gift> gifts = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_SEARCH_TERMS", params);
+    	return gifts;
     }
+    
+    // These are the fields we support for searching.
+    private Map<String, String> fieldMap = new HashMap<String, String>();
+    {
+    	
+    	// Constituent
+    	fieldMap.put("person.accountNumber", "PERSON_ID");
+    	fieldMap.put("person.firstName", "FIRST_NAME");
+    	fieldMap.put("person.lastName", "LAST_NAME");
+    	fieldMap.put("person.organizationName", "ORGANIZATION_NAME");
 
-//    private StringBuilder getAddressString(Map<String, Object> addressParams, LinkedHashMap<String, Object> parameterMap) {
-//        StringBuilder addressString = new StringBuilder();
-//        if (addressParams != null && !addressParams.isEmpty()) {
-//            addressString.append(" AND EXISTS ( SELECT address FROM com.mpower.domain.Address address WHERE address.person.id = gift.person.id ");
-//            for (Map.Entry<String, Object> pair : addressParams.entrySet()) {
-//                String key = pair.getKey();
-//                Object value = pair.getValue();
-//                addressString.append("AND address.");
-//                addressString.append(key);
-//                addressString.append(" LIKE :");
-//                String paramName = key.replace(".", "_");
-//                addressString.append(paramName);
-//                if (value instanceof String) {
-//                    parameterMap.put(paramName, "%" + value + "%");
-//                } else {
-//                    parameterMap.put(paramName, value);
-//                }
-//            }
-//            addressString.append(")");
-//        }
-//        return addressString;
-//    }
+    	// Address
+    	fieldMap.put("postalCode", "POSTAL_CODE");
+    	
+    	// Gift
+    	fieldMap.put("referenceNumber", "GIFT_ID");
+    	fieldMap.put("amount", "AMOUNT");
+
+    }
 
     @Override
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {

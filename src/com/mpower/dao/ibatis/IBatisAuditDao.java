@@ -23,8 +23,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 
     @Autowired
     public IBatisAuditDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
     @SuppressWarnings("unchecked")

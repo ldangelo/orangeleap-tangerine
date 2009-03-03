@@ -25,8 +25,7 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
     @Autowired
     public IBatisSiteDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

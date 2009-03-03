@@ -21,8 +21,7 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
 
     @Autowired
     public IBatisRecurringGiftDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @SuppressWarnings("unchecked")

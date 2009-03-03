@@ -23,8 +23,7 @@ public class IBatisPageAccessDao extends AbstractIBatisDao implements PageAccess
 
     @Autowired
     public IBatisPageAccessDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @SuppressWarnings("unchecked")

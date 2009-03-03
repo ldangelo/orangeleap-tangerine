@@ -20,8 +20,7 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 
     @Autowired
     public IBatisCommunicationHistoryDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
 	@Override

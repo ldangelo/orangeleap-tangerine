@@ -22,8 +22,7 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
 
     @Autowired
     public IBatisPhoneDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
     @Override

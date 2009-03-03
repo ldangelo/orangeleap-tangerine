@@ -22,8 +22,7 @@ public class IBatisQueryLookupDao extends AbstractIBatisDao implements QueryLook
 
     @Autowired
     public IBatisQueryLookupDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
     @Override

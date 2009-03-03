@@ -24,8 +24,7 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 
     @Autowired
     public IBatisCodeDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
 /// Code Types    

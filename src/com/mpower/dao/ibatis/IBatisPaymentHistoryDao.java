@@ -20,8 +20,7 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
   
     @Autowired
     public IBatisPaymentHistoryDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
 	@Override

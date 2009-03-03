@@ -23,8 +23,7 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 
     @Autowired
     public IBatisCommitmentDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
  
     @Override

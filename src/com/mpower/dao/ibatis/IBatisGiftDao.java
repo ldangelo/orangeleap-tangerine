@@ -24,8 +24,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @Autowired
     public IBatisGiftDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

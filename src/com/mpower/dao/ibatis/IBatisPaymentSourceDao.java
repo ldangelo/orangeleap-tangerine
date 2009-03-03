@@ -24,8 +24,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
 
     @Autowired
     public IBatisPaymentSourceDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

@@ -24,8 +24,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
     @Autowired
     public IBatisConstituentDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
     @Override

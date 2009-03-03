@@ -29,8 +29,7 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
 
     @Autowired
     public IBatisPicklistDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

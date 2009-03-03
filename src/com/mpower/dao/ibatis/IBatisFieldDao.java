@@ -25,8 +25,7 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
 
     @Autowired
     public IBatisFieldDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
     
     private Map<String, Object> setupFieldParams(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {

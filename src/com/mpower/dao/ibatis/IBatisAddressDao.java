@@ -23,8 +23,7 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
 
     @Autowired
     public IBatisAddressDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

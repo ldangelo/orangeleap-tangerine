@@ -22,8 +22,7 @@ public class IBatisEmailDao extends AbstractIBatisDao implements EmailDao {
 
     @Autowired
     public IBatisEmailDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @Override

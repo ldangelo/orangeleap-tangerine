@@ -26,8 +26,7 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
 
     @Autowired
     public IBatisSectionDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
 
     @SuppressWarnings("unchecked")

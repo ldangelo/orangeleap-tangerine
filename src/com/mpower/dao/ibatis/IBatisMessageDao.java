@@ -25,8 +25,7 @@ public class IBatisMessageDao extends AbstractIBatisDao implements MessageDao {
 
     @Autowired
     public IBatisMessageDao(SqlMapClient sqlMapClient) {
-        super();
-        super.setSqlMapClient(sqlMapClient);
+        super(sqlMapClient);
     }
   
     @SuppressWarnings("unchecked")

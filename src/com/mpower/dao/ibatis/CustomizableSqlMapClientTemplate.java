@@ -14,7 +14,11 @@ import java.util.List;
  * of this class which check for the type of object being returned, and if it
  * derives from AbstractCustomizableEntity, it will also load the custom fields
  * for the entity.  All the queryForXXX() methods are overriden with the logic to
- * load custom fields.
+ * load custom fields.<br/>
+ * This class will also correctly handle insertions and deletions in cases
+ * where the parameterObject is an AbstractCustomizableEntity. In situations
+ * where this is not the case, the Entity is responsible for deleting, updating
+ * or inserting the customfields itself. 
  *
  * @version 1.0
  */

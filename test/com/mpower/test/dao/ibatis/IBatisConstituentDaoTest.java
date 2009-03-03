@@ -1,6 +1,9 @@
 package com.mpower.test.dao.ibatis;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -178,4 +181,31 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
             assert "Sr".equals(constituent.getSuffix()) || constituent.getSuffix() == null;
         }
     }
+    
+    
+    @Test(groups = { "testSearchPersons" })
+    public void testSearchPersons() throws Exception {
+    	
+    	Map<String, Object> params = new HashMap<String, Object>();
+        List<Long> ignoreIds = new ArrayList<Long>();
+        long ignoreId = 100l;
+        ignoreIds.add(ignoreId);
+        
+        params.put("firstName", "Pablo");
+        params.put("accountNumber", new Long(200));
+        params.put("phoneMap[home].number", "214-113-2542");
+        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("emailMap[home].email", "");
+        //params.put("customFieldMap[emailFormat].value", "HTML");
+    	
+        List<Person> constituents = constituentDao.searchPersons(params, ignoreIds);
+        assert constituents != null && constituents.size() > 0;
+        for (Person constituent : constituents) {
+        	System.out.println(constituent);
+            assert constituent.getFirstName().equals("Pablo");
+            assert constituent.getId().longValue() != ignoreId;
+        }
+        
+    }    
+    
 }

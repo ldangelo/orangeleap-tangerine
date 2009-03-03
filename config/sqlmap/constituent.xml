@@ -114,5 +114,70 @@
 		set LAPSED_DONOR = TRUE
 		where PERSON_ID = #id#
 	</update>
+	
+	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+	    select
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/>		 
+		from PERSON p
+		where 
+		p.SITE_NAME = #siteName#
+		<isNotNull property="ignoreIds"> 
+	       and p.PERSON_ID not in 
+		   <iterate property="ignoreIds" conjunction="," open="(" close=")">
+		      #ignoreIds[]#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="stringParams"> 
+		   <iterate property="stringParams" conjunction="and" open="and" close="">
+		   p.$stringParams[].key$ like #stringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="nonStringParams"> 
+		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
+		   p.$nonStringParams[].key$ = #nonStringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="phoneParams"> 
+		   and exists (
+		    select * from PHONE ph where 
+		    ph.PERSON_ID = p.PERSON_ID
+		    <iterate property="phoneParams" conjunction="and" open="and" close="">
+		    ph.$phoneParams[].key$ like #phoneParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="addressParams"> 
+		   and exists (
+		    select * from ADDRESS addr where 
+		    addr.PERSON_ID = p.PERSON_ID
+		    <iterate property="addressParams" conjunction="and" open="and" close="">
+		    addr.$addressParams[].key$ like #addressParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="emailParams"> 
+		   and exists (
+		    select * from EMAIL e where 
+		    e.PERSON_ID = p.PERSON_ID
+		    <iterate property="emailParams" conjunction="and" open="and" close="">
+		    e.$emailParams[].key$ like #emailParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<!--  TODO  -->
+		<isNotNull property="customParams"> 
+		   and exists (
+		    select * from CUSTOM_FIELD cf where 
+		    cf.ENTITY_ID = p.PERSON_ID
+		    <iterate property="customParams" conjunction="and" open="and" close="">
+		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		
+		
+	</statement>
+	
+	
 
 </sqlMap>

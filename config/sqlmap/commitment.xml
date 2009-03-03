@@ -146,12 +146,12 @@
 		p.SITE_NAME = #siteName#
 		<isNotNull property="stringParams"> 
 		   <iterate property="stringParams" conjunction="and" open="and" close="">
-		   p.$stringParams[].key$ like #stringParams[].value#
+		   c.$stringParams[].key$ like #stringParams[].value#
 		   </iterate>
 		</isNotNull>
 		<isNotNull property="nonStringParams"> 
 		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
-		   p.$nonStringParams[].key$ = #nonStringParams[].value#
+		   c.$nonStringParams[].key$ = #nonStringParams[].value#
 		   </iterate>
 		</isNotNull>
 		<isNotNull property="phoneParams"> 

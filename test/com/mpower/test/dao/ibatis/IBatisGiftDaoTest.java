@@ -3,7 +3,9 @@ package com.mpower.test.dao.ibatis;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -469,4 +471,29 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
             assert gift.getId() == 300L || gift.getId() == 400L;
         }
     }
+    
+    @Test(groups = { "testSearchGifts" })
+    public void testSearchGifts() throws Exception {
+    	
+    	Map<String, Object> params = new HashMap<String, Object>();
+        
+        params.put("firstName", "Pablo");
+        params.put("accountNumber", new Long(200));
+        params.put("phoneMap[home].number", "214-113-2542");
+        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("emailMap[home].email", "");
+        params.put("amount", new BigDecimal(300.00));
+    	
+        List<Gift> gifts = giftDao.searchGifts(params);
+        assert gifts != null && gifts.size() > 0;
+        for (Gift gift : gifts) {
+        	System.out.println(gift.getPerson().getFirstName());
+            assert gift.getPerson().getFirstName().equals("Pablo");
+            assert gift.getAmount().compareTo(new BigDecimal(300.00)) == 0;
+        }
+        
+    }    
+    
+
+    
  }

@@ -83,7 +83,7 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements
 				fieldMap);
 
 		List<Commitment> commitments = getSqlMapClientTemplate().queryForList(
-				"SELECT_COMMITMENTS_BY_SEARCH_TERMS", params);
+				"SELECT_COMMITMENT_BY_SEARCH_TERMS", params);
 		return commitments;
 	}
 

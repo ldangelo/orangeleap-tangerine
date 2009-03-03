@@ -75,7 +75,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     	Map<String, Object> params = setupParams();
     	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, fieldMap);
     	
-    	List<Gift> gifts = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_SEARCH_TERMS", params);
+    	List<Gift> gifts = getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_SEARCH_TERMS", params);
     	return gifts;
     }
     

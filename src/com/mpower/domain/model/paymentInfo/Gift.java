@@ -181,4 +181,9 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, P
             deductibleAmount = amount;
         }
     }
+	
+	public String toString() {
+		return ""  + getAmount();
+	}
+	
 }

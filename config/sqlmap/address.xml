@@ -93,11 +93,11 @@
  -->
  
     <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
-        insert into ADDRESS (ADDRESS_ID, ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
+        insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-        values (#id#, #activationStatus#, #addressLine1#,
+        values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #addressType#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
         #inactive#, #postalCode#, #receiveMail#,

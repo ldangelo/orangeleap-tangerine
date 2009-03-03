@@ -65,10 +65,10 @@
 	</select>
 
 	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">
-		insert into PHONE (PHONE_ID, ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
+		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
 		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-		values (#id#, #activationStatus#, #comments#, now(),
+		values (#activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, #phoneType#,
 		#provider#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,

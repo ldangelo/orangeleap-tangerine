@@ -37,8 +37,8 @@
 	
 	
   <insert id="INSERT_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
-     insert into CODE_TYPE (ID, LABEL, NAME, SITE_NAME)
-     values (#id#, #label#, #name#, #siteName#)
+     insert into CODE_TYPE (LABEL, NAME, SITE_NAME)
+     values (#label#, #name#, #siteName#)
      <selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 	 </selectKey>
@@ -69,9 +69,8 @@
     and ct.SITE_NAME = #siteName#
   </select>
   <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
-    insert into CODE (CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
-    values (#id#, #description#, #inactive#, #value#,
-      #codeTypeId#)
+    insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
+    values (#description#, #inactive#, #value#, #codeTypeId#)
     <selectKey keyProperty="id" resultClass="long">
 		SELECT LAST_INSERT_ID() AS value
 	</selectKey>

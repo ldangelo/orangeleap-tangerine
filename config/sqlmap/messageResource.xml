@@ -34,9 +34,9 @@
   </select>
   
   <insert id="INSERT_MESSAGE" parameterClass="com.mpower.domain.model.customization.MessageResource" >
-   insert into MESSAGE_RESOURCE (MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY,
+   insert into MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY,
       MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE, SITE_NAME)
-    values (#id#, #languageAbbreviation#, #messageKey#,
+    values (#languageAbbreviation#, #messageKey#,
       #messageResourceType#, #messageValue#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value

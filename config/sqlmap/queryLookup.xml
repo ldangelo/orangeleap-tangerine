@@ -23,8 +23,8 @@
 	</select>
 
 	<insert id="INSERT_QUERY_LOOKUP" parameterClass="com.mpower.domain.model.QueryLookup">
-		insert into QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, SECTION_NAME,	FIELD_DEFINITION_ID, SITE_NAME)
-		values (#id#, #sqlQuery#, #sectionName#, #fieldDefinition.id#, #site.name#)
+		insert into QUERY_LOOKUP (SQL_QUERY, SECTION_NAME,	FIELD_DEFINITION_ID, SITE_NAME)
+		values (#sqlQuery#, #sectionName#, #fieldDefinition.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

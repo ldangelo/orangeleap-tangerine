@@ -62,8 +62,8 @@
 	</select>
 	
 	<insert id="INSERT_FIELD_DEF" parameterClass="com.mpower.domain.model.customization.FieldDefinition">
-		insert into FIELD_DEFINITION (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
-		values (#id#, #defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
+		insert into FIELD_DEFINITION (DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
+		values (#defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

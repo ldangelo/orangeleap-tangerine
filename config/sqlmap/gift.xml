@@ -119,7 +119,7 @@
 	</select>
 
 	<insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.Gift">
-		insert into GIFT (GIFT_ID, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
+		insert into GIFT (ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
 		CHECK_NUMBER, COMMENTS,
 		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
 		ORIGINAL_GIFT_ID,
@@ -127,7 +127,7 @@
 		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
 		PAYMENT_TXREFNUM,
 		ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
-		values (#id#, #acknowledgmentDate#, #amount#, #authCode#,
+		values (#acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
 		#originalGiftId#, #paymentMessage#, #paymentStatus#,

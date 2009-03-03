@@ -52,10 +52,10 @@
 	</select>
 
 	<insert id="INSERT_EMAIL" parameterClass="com.mpower.domain.model.communication.Email">
-		insert into EMAIL (EMAIL_ID, ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
+		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
 		EMAIL_ADDRESS, EMAIL_DISPLAY, EMAIL_TYPE, INACTIVE, RECEIVE_CORRESPONDENCE,
 		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
-		values (#id#, #activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
+		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
 		#emailType#, #inactive#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
 		now(), #personId#)

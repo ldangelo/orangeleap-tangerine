@@ -39,9 +39,9 @@
   </select>
   
   <insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit" >
-    insert into AUDIT (AUDIT_ID, AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER,
+    insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER,
       PERSON_ID, SITE_NAME)
-    values (#id#, #auditType#, #date#, #description#,
+    values (#auditType#, #date#, #description#,
       #entityType#, #objectId#, #user#, #person.id#,
       #siteName#)
       <selectKey keyProperty="id" resultClass="long">

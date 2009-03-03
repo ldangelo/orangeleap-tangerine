@@ -9,8 +9,8 @@
 	</resultMap>
 
 	<insert id="INSERT_QUERY_LOOKUP_PARAM" parameterClass="com.mpower.domain.model.QueryLookupParam">
-		insert into QUERY_LOOKUP_PARAM (QUERY_LOOKUP_PARAM_ID, PARAM_NAME, QUERY_LOOKUP_ID)
-		values (#id#, #name#, #queryLookupId#)
+		insert into QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID)
+		values (#name#, #queryLookupId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

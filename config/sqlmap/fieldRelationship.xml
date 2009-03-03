@@ -40,8 +40,8 @@
 	</select>
 	
 	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.customization.FieldRelationship">
-		insert into FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, CHECK_RECURSION, RELATIONSHIP_TYPE, DETAIL_FIELD_DEFINITION_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME)
-		values (#id#, #recursive#,	#relationshipType#, #detailRecordField.id#, #masterRecordField.id#, #site.name#)
+		insert into FIELD_RELATIONSHIP (CHECK_RECURSION, RELATIONSHIP_TYPE, DETAIL_FIELD_DEFINITION_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME)
+		values (#recursive#, #relationshipType#, #detailRecordField.id#, #masterRecordField.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

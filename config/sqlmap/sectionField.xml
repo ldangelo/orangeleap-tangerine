@@ -46,15 +46,14 @@
 	</select>
 
 	<insert id="INSERT_SECTION_FIELD" parameterClass="com.mpower.domain.model.customization.SectionField">
-		insert into SECTION_FIELD (SECTION_FIELD_ID, FIELD_ORDER, FIELD_DEFINITION_ID,
+		insert into SECTION_FIELD (FIELD_ORDER, FIELD_DEFINITION_ID,
 		SECONDARY_FIELD_DEFINITION_ID, SECTION_DEFINITION_ID, SITE_NAME)
-		values (#id#, #fieldOrder#, #fieldDefinition.id#,
+		values (#fieldOrder#, #fieldDefinition.id#,
 		#secondaryFieldDefinition.id#, #sectionDefinition.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
 	</insert>
-
 
 	<update id="UPDATE_SECTION_FIELD" parameterClass="com.mpower.domain.model.customization.SectionField">
 		update SECTION_FIELD

@@ -46,4 +46,12 @@
 		where DISTRO_LINE_ID = #id#
 	</update>
 
+	<delete id="DELETE_DISTRO_LINE" parameterClass="map">
+	    delete from DISTRO_LINE
+	    where DISTRO_LINE_ID in
+		<iterate property="lineIds" conjunction="," open="(" close=")">
+			#lineIds[]#
+		</iterate>	    
+	</delete>
+	
 </sqlMap>

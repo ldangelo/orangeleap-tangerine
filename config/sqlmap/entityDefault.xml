@@ -26,8 +26,8 @@
 
 	<!-- Inserts -->
 	<insert id="INSERT_ENTITY_DEFAULT" parameterClass="com.mpower.domain.model.customization.EntityDefault">
-		insert into ENTITY_DEFAULT (ENTITY_DEFAULT_ID, DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
-		values (#id#, #defaultValue#, #entityFieldName#, #entityType#, #siteName#)
+		insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
+		values (#defaultValue#, #entityFieldName#, #entityType#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

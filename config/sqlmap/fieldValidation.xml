@@ -44,8 +44,8 @@
 	</select>
 
 	<insert id="INSERT_FIELD_VALIDATION" parameterClass="com.mpower.domain.model.customization.FieldValidation">
-		insert into FIELD_VALIDATION (VALIDATION_ID, VALIDATION_REGEX, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
-		values (#id#, #regex#, #sectionName#, #site.name#, #fieldDefinition.id#, #secondaryFieldDefinition.id#)
+		insert into FIELD_VALIDATION (VALIDATION_REGEX, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
+		values (#regex#, #sectionName#, #site.name#, #fieldDefinition.id#, #secondaryFieldDefinition.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

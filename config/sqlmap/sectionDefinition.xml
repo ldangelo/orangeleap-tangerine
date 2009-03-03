@@ -39,9 +39,9 @@
 	</select>
 
 	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.mpower.domain.model.customization.SectionDefinition">
-		insert into SECTION_DEFINITION (SECTION_DEFINITION_ID, DEFAULT_LABEL, LAYOUT_TYPE, PAGE_TYPE,
+		insert into SECTION_DEFINITION (DEFAULT_LABEL, LAYOUT_TYPE, PAGE_TYPE,
 		ROLE, SECTION_NAME, SECTION_ORDER, SITE_NAME)
-		values (#id#, #defaultLabel#, #layoutType#,
+		values (#defaultLabel#, #layoutType#,
 		#pageType#, #role#, #sectionName#, #sectionOrder#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value

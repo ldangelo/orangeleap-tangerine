@@ -14,5 +14,5 @@ public interface CommitmentDao {
 
     public List<Commitment> readCommitmentsByConstituentIdType(Long personId, CommitmentType commitmentType);
 
-    public List<Commitment> readCommitments(String siteName, CommitmentType commitmentType, Map<String, Object> params);
+    public List<Commitment> searchCommitments(CommitmentType commitmentType, Map<String, Object> params);
 }

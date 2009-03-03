@@ -7,7 +7,7 @@
  
    	<bean id="addressManager" class="com.mpower.controller.address.AddressFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="address"/>
-    	<property name="commandClass" value="com.mpower.domain.Address"/>
+    	<property name="commandClass" value="com.mpower.domain.model.communication.Address"/>
         <property name="bindAddress" value="false"/>
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>

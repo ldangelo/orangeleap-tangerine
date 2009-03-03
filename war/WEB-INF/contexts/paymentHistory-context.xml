@@ -6,8 +6,6 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
 
     <bean id="paymentHistory" class="com.mpower.controller.payment.PaymentHistoryListController">
-        <property name="personService" ref="personService"/>
-        <property name="paymentHistoryService" ref="paymentHistoryService"/>
 		<property name="viewName" value="payment/paymentHistory"/>
     </bean>
     

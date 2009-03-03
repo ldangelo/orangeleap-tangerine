@@ -34,16 +34,12 @@
 
     <bean id="pledgeSearchController" class="com.mpower.controller.commitment.pledge.PledgeSearchFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
         <property name="formView" value="pledge/pledgeSearch"/>
         <property name="successView" value="pledge/pledgeSearch"/>
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
     <bean id="pledgeListController" class="com.mpower.controller.commitment.pledge.PledgeListController">
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="personService" ref="personService"/>
         <property name="viewName" value="pledge/pledgeList"></property>
     </bean>
 

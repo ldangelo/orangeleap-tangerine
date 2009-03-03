@@ -11,7 +11,6 @@
        
 	<!-- Query Lookup -->
     <bean id="queryLookupController" class="com.mpower.controller.lookup.QueryLookupController">
-        <property name="queryLookupService" ref="queryLookupService"/>
         <property name="formView" value="lookup/queryLookup"/>
         <property name="successView" value="lookup/queryLookupResults"/>
     </bean>

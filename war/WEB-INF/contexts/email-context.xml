@@ -7,7 +7,7 @@
        
 	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="email" />
-    	<property name="commandClass" value="com.mpower.domain.Email" />
+    	<property name="commandClass" value="com.mpower.domain.model.communication.Email" />
         <property name="bindAddress" value="false"/>
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>

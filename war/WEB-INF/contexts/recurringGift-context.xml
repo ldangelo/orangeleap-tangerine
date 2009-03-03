@@ -31,16 +31,12 @@
 
     <bean id="recurringGiftSearchController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftSearchFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
         <property name="formView" value="gift/recurringGiftSearch"/>
         <property name="successView" value="gift/recurringGiftSearch"/>
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
     <bean id="recurringGiftListController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftListController">
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="personService" ref="personService"/>
         <property name="viewName" value="gift/recurringGiftList"/>
     </bean>
     

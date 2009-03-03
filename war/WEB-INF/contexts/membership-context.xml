@@ -7,7 +7,7 @@
 
     <bean id="membership" class="com.mpower.controller.membership.MembershipFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
         <property name="pageType" value="membership"/>
 		<property name="validators">
 			<list>
@@ -20,31 +20,22 @@
         </property>
         <property name="formView" value="membership/membership" />
         <property name="successView" value="membership/membershipView" />
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
     </bean>
 
     <bean id="membershipSearch" class="com.mpower.controller.membership.MembershipSearchFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
         <property name="formView" value="membership/membershipSearch"/>
         <property name="successView" value="membership/membershipSearch"/>
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
-
     <bean id="membershipList" class="com.mpower.controller.membership.MembershipListController">
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="personService" ref="personService"/>
         <property name="viewName" value="membership/membershipList"/>
     </bean>
 
     <bean id="membershipView" class="com.mpower.controller.membership.MembershipFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.Commitment"/>
+        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
 		<property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
 		        <property name="pageType" value="membershipView"/>
@@ -53,10 +44,6 @@
         </property>
         <property name="formView" value="membership/membershipView" />
         <property name="successView" value="membership/membershipView" />
-        <property name="commitmentService" ref="commitmentService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="personService" ref="personService" />
-        <property name="siteService" ref="siteService" />
     </bean>
     
     <bean id="membershipUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

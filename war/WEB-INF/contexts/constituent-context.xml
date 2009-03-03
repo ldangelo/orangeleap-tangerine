@@ -8,19 +8,17 @@
 
     <bean id="personSearch" class="com.mpower.controller.constituent.PersonSearchFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.Person"/>
+        <property name="commandClass" value="com.mpower.domain.model.Person"/>
 <!--        <property name="validator">-->
 <!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
 <!--        </property>-->
         <property name="formView" value="constituent/personSearch"/>
         <property name="successView" value="constituent/personSearch"/>
-        <property name="personService" ref="personService"/>
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
     <bean id="person" class="com.mpower.controller.constituent.PersonFormController" parent="tangerineFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.Person"/>
+        <property name="commandClass" value="com.mpower.domain.model.Person"/>
         <property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
 		        <property name="pageType" value="person"/>
@@ -32,8 +30,6 @@
     </bean>
 
     <bean id="personView" class="com.mpower.controller.constituent.PersonViewController">
-        <property name="personService" ref="personService"/>
-        <property name="giftService" ref="giftService" />
         <property name="viewName" value="constituent/personView"/>
     </bean>
     

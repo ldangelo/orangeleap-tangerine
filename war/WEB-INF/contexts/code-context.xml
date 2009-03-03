@@ -6,7 +6,6 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
     <bean id="codeHelper" class="com.mpower.controller.code.CodeHelperController">
-        <property name="codeService" ref="codeService"/>
         <property name="viewName" value="code/codeHelper"/>
         <property name="resultsOnlyView" value="code/codeHelperResults"/>
         <property name="tableView" value="code/codeTable"/>
@@ -14,16 +13,14 @@
     </bean>
 
     <bean id="codes" class="com.mpower.controller.code.CodeManageController">
-        <property name="codeService" ref="codeService"/>
         <property name="viewName" value="code/codes"/>
     </bean>
 
 	<bean id="code" class="com.mpower.controller.code.CodeFormController">
         <property name="commandName" value="code"/>
-        <property name="commandClass" value="com.mpower.domain.customization.Code"/>
+        <property name="commandClass" value="com.mpower.domain.model.customization.Code"/>
         <property name="formView" value="code/code" />
         <property name="successView" value="code/code" />
-        <property name="codeService" ref="codeService"/>
     </bean>
 
     <bean id="codeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

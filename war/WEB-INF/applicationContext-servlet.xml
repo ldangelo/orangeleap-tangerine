@@ -3,8 +3,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<import resource="contexts/address-context.xml"/>
 	<import resource="contexts/audit-context.xml"/>
@@ -27,18 +30,12 @@
 	<import resource="contexts/recurringGift-context.xml"/>
 	<import resource="contexts/validator-context.xml"/>
 
-	<!-- Abstract Controllers for Tangerine -->
-	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true">
-    	<property name="personService" ref="personService"/>
-    	<property name="siteService" ref="siteService"/>
-	</bean>
+    <context:component-scan base-package="com.mpower.controller"/>
 
-	<bean id="tangerineConstituentAttributesFormController" class="com.mpower.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController">
-        <property name="addressService" ref="addressService" />
-        <property name="paymentSourceService" ref="paymentSourceService" />
-        <property name="phoneService" ref="phoneService" />
-        <property name="emailService" ref="emailService" />
-	</bean>
+	<!-- Abstract Controllers for Tangerine -->
+	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true"/>
+
+	<bean id="tangerineConstituentAttributesFormController" class="com.mpower.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController"/>
 
     <bean id="account" class="com.mpower.controller.AccountFormController">
         <property name="commandName" value="user"/>

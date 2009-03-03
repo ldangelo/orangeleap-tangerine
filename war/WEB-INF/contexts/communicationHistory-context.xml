@@ -7,7 +7,7 @@
     <!-- CommunicationHistory -->
 	<bean id="communicationHistoryFormController" class="com.mpower.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="communicationHistory"/>
-        <property name="commandClass" value="com.mpower.domain.CommunicationHistory"/>
+        <property name="commandClass" value="com.mpower.domain.model.CommunicationHistory"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
@@ -18,7 +18,6 @@
         </property>
         <property name="formView" value="communicationHistory/communicationHistory" />
         <property name="successView" value="redirect:/communicationHistoryView.htm" />
-        <property name="communicationHistoryService" ref="communicationHistoryService" />
     </bean>
 
     <bean id="communicationHistoryViewController" class="com.mpower.controller.communicationHistory.CommunicationHistoryViewController" parent="communicationHistoryFormController">
@@ -28,16 +27,12 @@
 
     <bean id="communicationHistorySearchController" class="com.mpower.controller.communicationHistory.CommunicationHistorySearchFormController">
         <property name="commandName" value="communicationHistory"/>
-        <property name="commandClass" value="com.mpower.domain.CommunicationHistory"/>
+        <property name="commandClass" value="com.mpower.domain.model.CommunicationHistory"/>
         <property name="formView" value="communicationHistory/communicationHistorySearch"/>
         <property name="successView" value="communicationHistory/communicationHistorySearch"/>
-        <property name="communicationHistoryService" ref="communicationHistoryService"/>
-        <property name="sessionService" ref="sessionService"/>
     </bean>
 
     <bean id="communicationHistoryListController" class="com.mpower.controller.communicationHistory.CommunicationHistoryListController">
-        <property name="communicationHistoryService" ref="communicationHistoryService"/>
-        <property name="personService" ref="personService"/>
         <property name="viewName" value="communicationHistory/communicationHistoryList"/>
     </bean>
     

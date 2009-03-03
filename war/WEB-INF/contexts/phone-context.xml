@@ -7,7 +7,7 @@
 
 	<bean id="phoneManager" class="com.mpower.controller.phone.PhoneFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="phone" />
-    	<property name="commandClass" value="com.mpower.domain.Phone" />
+    	<property name="commandClass" value="com.mpower.domain.model.communication.Phone" />
         <property name="bindAddress" value="false"/>
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>

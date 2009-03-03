@@ -6,13 +6,10 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
 
     <bean id="siteAudit" class="com.mpower.controller.audit.AuditViewController">
-        <property name="auditService" ref="auditService"/>
 		<property name="viewName" value="audit/siteAudit"/>
     </bean>
 
     <bean id="audit" class="com.mpower.controller.audit.AuditViewController">
-        <property name="personService" ref="personService"/>
-        <property name="auditService" ref="auditService"/>
 		<property name="viewName" value="audit/audit"/>
     </bean>
     

@@ -7,7 +7,7 @@
 
 	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="paymentSource" />
-    	<property name="commandClass" value="com.mpower.domain.PaymentSource" />
+    	<property name="commandClass" value="com.mpower.domain.model.PaymentSource" />
         <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>

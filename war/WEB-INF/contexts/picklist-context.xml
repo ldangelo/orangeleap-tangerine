@@ -6,21 +6,18 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
     <bean id="picklistItemHelper" class="com.mpower.controller.picklist.PicklistItemHelperController">
-        <property name="picklistItemService" ref="picklistItemService"/>
         <property name="viewName" value="picklist/picklistItemHelper"/>
     </bean>
 
     <bean id="picklistItems" class="com.mpower.controller.picklist.PicklistItemManageController">
-        <property name="picklistItemService" ref="picklistItemService"/>
         <property name="viewName" value="picklist/picklistItems"/>
     </bean>
 
 	<bean id="picklistItem" class="com.mpower.controller.picklist.PicklistItemFormController">
         <property name="commandName" value="picklistItem"/>
-        <property name="commandClass" value="com.mpower.domain.customization.PicklistItem"/>
+        <property name="commandClass" value="com.mpower.domain.model.customization.Picklist"/>
         <property name="formView" value="picklist/picklistItem" />
         <property name="successView" value="picklist/picklistItem" />
-        <property name="picklistItemService" ref="picklistItemService"/>
     </bean>
 
     <bean id="picklistItemUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

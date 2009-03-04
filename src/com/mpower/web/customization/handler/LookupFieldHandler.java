@@ -53,8 +53,8 @@ public class LookupFieldHandler extends GenericFieldHandler {
 
     private String resolve(Long id, ReferenceType referenceType) {
         if (referenceType == ReferenceType.person) {
-            Person person = personService.readConstituentById(id);
-            return person.getDisplayValue();
+            Person constituent = constituentService.readConstituentById(id);
+            return constituent.getDisplayValue();
         }
         return "" + id;
     }

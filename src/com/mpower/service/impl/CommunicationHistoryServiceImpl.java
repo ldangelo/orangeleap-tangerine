@@ -29,7 +29,7 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 	private CommunicationHistoryDao communicationHistoryDao;
 
 	@Resource(name = "constituentService")
-	private ConstituentService personService;
+	private ConstituentService constituentService;
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
@@ -40,7 +40,7 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
             return null;
         }
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Person constituent = personService.readConstituentById(authentication.getPersonId());
+        Person constituent = constituentService.readConstituentById(authentication.getPersonId());
         communicationHistory.setCustomFieldValue("recordedBy", constituent.getId().toString());
 		return communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
 	}

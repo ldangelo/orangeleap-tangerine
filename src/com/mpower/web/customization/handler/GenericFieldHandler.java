@@ -28,10 +28,10 @@ public class GenericFieldHandler implements FieldHandler {
 
     protected FieldService fieldService;
     protected MessageService messageService;
-    protected ConstituentService personService;
+    protected ConstituentService constituentService;
 
     public GenericFieldHandler(ApplicationContext appContext) {
-        personService = (ConstituentService) appContext.getBean("constituentService");
+        constituentService = (ConstituentService) appContext.getBean("constituentService");
         messageService = (MessageService) appContext.getBean("messageService");
         fieldService = (FieldService) appContext.getBean("fieldService");
     }

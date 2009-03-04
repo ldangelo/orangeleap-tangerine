@@ -47,7 +47,7 @@ public class SiteServiceImpl implements SiteService {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name = "constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Resource(name = "fieldService")
     private FieldService fieldService;
@@ -75,29 +75,29 @@ public class SiteServiceImpl implements SiteService {
         MpowerAuthenticationToken authentication = (MpowerAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
   	    Long constituentId = authentication.getPersonId();
   	    if (constituentId == null) {
-          	Person person = personService.readConstituentByLoginId(authentication.getName());
-          	if (person == null) {
+          	Person constituent = constituentService.readConstituentByLoginId(authentication.getName());
+          	if (constituent == null) {
           	    try {
-					person = createPerson(authentication, siteName);
+					constituent = createPerson(authentication, siteName);
 				} 
           	    catch (Exception e) {
 					e.printStackTrace();
 					throw new RuntimeException("Unable to create new user record.");
 				}
           	} 
-          	authentication.setPersonId(person.getId());
+          	authentication.setPersonId(constituent.getId());
   	    }
         return site;
     }
     
     // Create a Person object row corresponding to the login user.
     private Person createPerson(MpowerAuthenticationToken authentication, String siteName)  throws PersonValidationException, javax.naming.NamingException {
-        Person constituent = personService.createDefaultConstituent();
+        Person constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.FIRST_NAME));
         constituent.setLastName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.LAST_NAME));
         constituent.setConstituentIndividualRoles("user");
         constituent.setLoginId(authentication.getName());
-        return personService.maintainConstituent(constituent);
+        return constituentService.maintainConstituent(constituent);
     }
      
     @Override

@@ -30,7 +30,7 @@ import com.mpower.service.ConstituentService;
 public class ContactInfoController {
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/addresses.json")
@@ -38,12 +38,12 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readConstituentById(id);
-        if (person == null) {
+        Person constituent = constituentService.readConstituentById(id);
+        if (constituent == null) {
             return new ModelMap();
         }
 
-        List<Address> addresses = person.getAddresses();
+        List<Address> addresses = constituent.getAddresses();
 
         for(Address addr : addresses) {
 
@@ -69,7 +69,7 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readConstituentById(id);
+        Person person = constituentService.readConstituentById(id);
         if (person == null) {
             return new ModelMap();
         }
@@ -97,7 +97,7 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = personService.readConstituentById(id);
+        Person person = constituentService.readConstituentById(id);
         if (person == null) {
             return new ModelMap();
         }

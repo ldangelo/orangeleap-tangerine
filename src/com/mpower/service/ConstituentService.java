@@ -9,7 +9,7 @@ import com.mpower.service.exception.PersonValidationException;
 
 public interface ConstituentService {
 
-    public Person maintainConstituent(Person person) throws PersonValidationException;
+    public Person maintainConstituent(Person constituent) throws PersonValidationException;
 
     public Person readConstituentById(Long id);
 
@@ -23,7 +23,7 @@ public interface ConstituentService {
 
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
-    public void setLapsedDonor(Long personId);
+    public void setLapsedDonor(Long constituentId);
 
     public List<Person> readAllConstituentsBySite();
 }

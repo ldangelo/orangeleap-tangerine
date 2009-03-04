@@ -92,6 +92,9 @@ public class ConstituentServiceImpl implements ConstituentService {
             logger.debug("readConstituentById: id = " + id);
         }
         Person constituent = constituentDao.readConstituentById(id);
+        constituent.setAddresses(addressService.readAddressesByConstituentId(constituent.getId()));
+        constituent.setPhones(phoneService.readPhonesByConstituentId(constituent.getId()));
+        constituent.setEmails(emailService.readEmailsByConstituentId(constituent.getId()));
         return constituent;
     }
 

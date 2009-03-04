@@ -2,6 +2,8 @@ package com.mpower.security;
 
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -27,7 +29,6 @@ import org.springframework.util.StringUtils;
 import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 
-
 public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
 
@@ -37,14 +38,16 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private LdapAuthoritiesPopulator authoritiesPopulator;
     private UserDetailsContextMapper userDetailsContextMapper = new LdapUserDetailsMapper();
     private boolean useAuthenticationRequestCredentials = true;
-    private SiteService siteService;
-    private ConstituentService personService;
     
-    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, ConstituentService personService, SiteService siteService) {
+    @Resource(name="siteService")
+    private SiteService siteService;
+
+    @Resource(name="constituentService")
+    private ConstituentService constituentService;
+    
+    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator) {
         this.setAuthenticator(authenticator);
         this.setAuthoritiesPopulator(authoritiesPopulator);
-        this.setPersonService(personService);
-        this.setSiteService(siteService);
     }
 
     public MpowerAuthenticationProvider(LdapAuthenticator authenticator) {
@@ -161,22 +164,6 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class authentication) {
         return (MpowerAuthenticationToken.class.isAssignableFrom(authentication));
     }
-
-    public void setPersonService(ConstituentService personService) {
-		this.personService = personService;
-	}
-
-	public ConstituentService getPersonService() {
-		return personService;
-	}
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-
-	public SiteService getSiteService() {
-		return siteService;
-	}
 
 	private static class NullAuthoritiesPopulator implements LdapAuthoritiesPopulator {
         public GrantedAuthority[] getGrantedAuthorities(DirContextOperations userDetails, String username) {

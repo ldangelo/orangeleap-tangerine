@@ -14,7 +14,7 @@ import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.util.StringConstants;
 
-public class Person extends AbstractCustomizableEntity {// SiteAware, Customizable, Viewable, Serializable { // TODO: put back for IBatis
+public class Person extends AbstractCustomizableEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -186,8 +186,6 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
 //        public Map<String, List<Address>> getAddressMap() {
         if (addressMap == null) {
             addressMap = buildMap(getAddresses());
-            // TODO: put back for IBatis
-            // addressMap = AddressMap.buildAddressMap(getAddresses(), this);
         }
         return addressMap;
     }
@@ -207,8 +205,6 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
 //        public Map<String, List<Email>> getEmailMap() {
         if (emailMap == null) {
             emailMap = buildMap(getEmails());
-            // TODO: put back for IBatis
-            // emailMap = EmailMap.buildEmailMap(getEmails(), this);
         }
         return emailMap;
     }
@@ -228,8 +224,6 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
 //        public Map<String, List<Phone>> getPhoneMap() {
         if (phoneMap == null) {
             phoneMap = buildMap(getPhones());
-            // TODO: put back for IBatis
-            // phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
         }
         return phoneMap;
     }
@@ -306,8 +300,6 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.updateDate = updateDate;
     }
 
-    // TODO: put back for IBatis
-    // @Override
     public Person getPerson() {
         return this;
     }
@@ -420,8 +412,10 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
     @SuppressWarnings("unchecked")
     private static <T extends AbstractCommunicationEntity> Map<String, T> buildMap(List<T> masterList) {
         Map<String, T> map = new HashMap<String, T>();
-        for (AbstractCommunicationEntity entity : masterList) {
-            map.put(entity.getCommunicationType(), (T) entity);
+        if (masterList != null) {
+            for (AbstractCommunicationEntity entity : masterList) {
+                map.put(entity.getCommunicationType(), (T) entity);
+            }
         }
         return map;
     }

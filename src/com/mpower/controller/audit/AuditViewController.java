@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.model.Audit;
 import com.mpower.domain.model.Person;
 import com.mpower.service.AuditService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.type.EntityType;
 
 public class AuditViewController extends ParameterizableViewController {
@@ -26,8 +26,8 @@ public class AuditViewController extends ParameterizableViewController {
     @Resource(name="auditService")
     private AuditService auditService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

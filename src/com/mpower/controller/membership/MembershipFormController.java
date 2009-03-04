@@ -28,7 +28,7 @@ import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CommitmentService;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
@@ -48,8 +48,8 @@ public class MembershipFormController extends SimpleFormController {
     @Resource(name="paymentSourceService")
     private PaymentSourceService paymentSourceService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Resource(name="siteService")
     private SiteService siteService;

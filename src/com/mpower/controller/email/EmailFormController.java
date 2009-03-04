@@ -38,7 +38,7 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Email> emails = emailService.readEmails(super.getConstituentId(request));
+        List<Email> emails = emailService.readEmailsByConstituentId(super.getConstituentId(request));
         refData.put("emails", emails);
         List<Email> currentEmails = emailService.readCurrentEmails(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentEmails", currentEmails);

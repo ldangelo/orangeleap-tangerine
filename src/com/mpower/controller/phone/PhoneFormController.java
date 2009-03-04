@@ -26,7 +26,7 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Phone> phones = phoneService.readPhones(super.getConstituentId(request));
+        List<Phone> phones = phoneService.readPhonesByConstituentId(super.getConstituentId(request));
         refData.put("phones", phones);
         List<Phone> currentPhones = phoneService.readCurrentPhones(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentPhones", currentPhones);

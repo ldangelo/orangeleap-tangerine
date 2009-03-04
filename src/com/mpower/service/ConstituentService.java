@@ -7,7 +7,7 @@ import java.util.Map;
 import com.mpower.domain.model.Person;
 import com.mpower.service.exception.PersonValidationException;
 
-public interface PersonService {
+public interface ConstituentService {
 
     public Person maintainConstituent(Person person) throws PersonValidationException;
 

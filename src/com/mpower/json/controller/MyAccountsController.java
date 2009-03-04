@@ -18,7 +18,7 @@ import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 
 /**
@@ -32,8 +32,8 @@ public class MyAccountsController {
     @Resource(name="siteService")
     private SiteService siteService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Resource(name="giftService")
     private GiftService giftService;

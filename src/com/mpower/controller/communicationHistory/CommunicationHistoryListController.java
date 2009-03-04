@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.model.CommunicationHistory;
 import com.mpower.domain.model.Person;
 import com.mpower.service.CommunicationHistoryService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 
 public class CommunicationHistoryListController extends ParameterizableViewController {
 
@@ -24,8 +24,8 @@ public class CommunicationHistoryListController extends ParameterizableViewContr
     @Resource(name="communicationHistoryService")
     protected CommunicationHistoryService communicationHistoryService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

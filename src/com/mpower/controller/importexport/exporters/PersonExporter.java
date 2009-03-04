@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.type.PageType;
 
 
@@ -14,11 +14,11 @@ public class PersonExporter extends EntityExporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
     
-    private PersonService personservice;
+    private ConstituentService personservice;
 
 	public PersonExporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
-		personservice = (PersonService)applicationContext.getBean("personService");
+		personservice = (ConstituentService)applicationContext.getBean("constituentService");
 	}
 	
 	@SuppressWarnings("unchecked")

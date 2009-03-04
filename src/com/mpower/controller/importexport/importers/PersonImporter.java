@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.customization.FieldDefinition;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.PageType;
 import com.mpower.util.TangerineUserHelper;
@@ -19,12 +19,12 @@ public class PersonImporter extends EntityImporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private PersonService personservice;
+    private ConstituentService personservice;
     private TangerineUserHelper tangerineUserHelper;
 
 	public PersonImporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
-		personservice = (PersonService)applicationContext.getBean("personService");
+		personservice = (ConstituentService)applicationContext.getBean("constituentService");
 		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 	}
 	

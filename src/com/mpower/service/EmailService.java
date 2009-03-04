@@ -9,7 +9,7 @@ public interface EmailService {
 
     public Email saveEmail(Email email);
 
-    public List<Email> readEmails(Long constituentId);
+    public List<Email> readEmailsByConstituentId(Long constituentId);
 
     public List<Email> filterValidEmails(Long constituentId);
 

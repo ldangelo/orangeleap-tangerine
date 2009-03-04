@@ -9,7 +9,7 @@ public interface PhoneService {
 
     public Phone savePhone(Phone phone);
 
-    public List<Phone> readPhones(Long constituentId);
+    public List<Phone> readPhonesByConstituentId(Long constituentId);
 
     public List<Phone> filterValidPhones(Long constituentId);
 

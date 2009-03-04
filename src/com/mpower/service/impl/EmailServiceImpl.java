@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         }
         boolean found = false;
         if (email.getId() == null) {
-            List<Email> emailList = readEmails(email.getPersonId());
+            List<Email> emailList = readEmailsByConstituentId(email.getPersonId());
             for (Email e : emailList) {
                 if (email.equals(e)) {
                     found = true;
@@ -69,9 +69,9 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
     }
 
     @Override
-    public List<Email> readEmails(Long constituentId) {
+    public List<Email> readEmailsByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readEmails: constituentId = " + constituentId);
+            logger.debug("readEmailsByConstituentId: constituentId = " + constituentId);
         }
         return emailDao.readEmailsByConstituentId(constituentId);
     }
@@ -81,7 +81,7 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         if (logger.isDebugEnabled()) {
             logger.debug("filterValidEmails: constituentId = " + constituentId);
         }
-        List<Email> emails = this.readEmails(constituentId);
+        List<Email> emails = this.readEmailsByConstituentId(constituentId);
         List<Email> filteredEmails = new ArrayList<Email>();
         for (Email email : emails) {
             if (email.isValid()) {

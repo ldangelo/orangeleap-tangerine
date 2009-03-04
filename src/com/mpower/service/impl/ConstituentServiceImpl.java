@@ -21,15 +21,18 @@ import com.mpower.dao.interfaces.GiftDao;
 import com.mpower.dao.interfaces.SiteDao;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.customization.EntityDefault;
+import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
+import com.mpower.service.EmailService;
+import com.mpower.service.PhoneService;
 import com.mpower.service.RelationshipService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.EntityType;
 import com.mpower.util.TangerineUserHelper;
 
-@Service("personService")
-public class PersonServiceImpl implements PersonService {
+@Service("constituentService")
+public class ConstituentServiceImpl implements ConstituentService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -39,6 +42,15 @@ public class PersonServiceImpl implements PersonService {
 
     @Resource(name = "auditService")
     private AuditService auditService;
+
+    @Resource(name = "addressService")
+    private AddressService addressService;
+
+    @Resource(name = "phoneService")
+    private PhoneService phoneService;
+
+    @Resource(name = "emailService")
+    private EmailService emailService;
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
@@ -51,10 +63,6 @@ public class PersonServiceImpl implements PersonService {
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
-
-//    public void setAuditService(AuditService auditService) {
-//        this.auditService = auditService;
-//    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
@@ -104,7 +112,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    // Unused
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
         if (logger.isDebugEnabled()) {
             logger.debug("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);

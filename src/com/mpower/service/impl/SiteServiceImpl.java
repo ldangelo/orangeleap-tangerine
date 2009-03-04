@@ -31,7 +31,7 @@ import com.mpower.domain.model.customization.SectionDefinition;
 import com.mpower.domain.model.customization.SectionField;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.security.MpowerLdapAuthoritiesPopulator;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
@@ -46,8 +46,8 @@ public class SiteServiceImpl implements SiteService {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name = "personService")
-    private PersonService personService;
+    @Resource(name = "constituentService")
+    private ConstituentService personService;
 
     @Resource(name = "fieldService")
     private FieldService fieldService;

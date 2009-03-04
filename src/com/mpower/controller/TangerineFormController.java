@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.customization.FieldDefinition;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 import com.mpower.type.PageType;
 import com.mpower.util.StringConstants;
@@ -32,8 +32,8 @@ public abstract class TangerineFormController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name="personService")
-    protected PersonService personService;
+    @Resource(name="constituentService")
+    protected ConstituentService personService;
 
     @Resource(name="siteService")
     protected SiteService siteService;    

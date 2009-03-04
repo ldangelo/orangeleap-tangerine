@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.model.PaymentHistory;
 import com.mpower.domain.model.Person;
 import com.mpower.service.PaymentHistoryService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 
 public class PaymentHistoryListController extends ParameterizableViewController {
 
@@ -27,8 +27,8 @@ public class PaymentHistoryListController extends ParameterizableViewController 
     @Resource(name="paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
     
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

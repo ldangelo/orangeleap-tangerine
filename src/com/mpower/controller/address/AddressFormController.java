@@ -39,7 +39,7 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Address> addresses = addressService.readAddresses(super.getConstituentId(request));
+        List<Address> addresses = addressService.readAddressesByConstituentId(super.getConstituentId(request));
         refData.put("addresses", addresses);
         List<Address> currentAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), Calendar.getInstance(), false);
         refData.put("currentAddresses", currentAddresses);

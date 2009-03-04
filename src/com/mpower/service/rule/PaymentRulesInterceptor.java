@@ -22,7 +22,7 @@ import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.event.NewGiftEvent;
 import com.mpower.event.PaymentEvent;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.util.TangerineUserHelper;
 
 //TODO: all the interceptors are cut & paste code!!!
@@ -58,7 +58,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware, Applica
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 		
 		@SuppressWarnings("unused")
-		PersonService ps = (PersonService) applicationContext.getBean("personService");
+		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		TangerineUserHelper tangerineUserHelper = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 

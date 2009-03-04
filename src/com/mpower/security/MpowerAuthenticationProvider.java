@@ -24,7 +24,7 @@ import org.springframework.security.userdetails.ldap.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 
 
@@ -38,9 +38,9 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
     private UserDetailsContextMapper userDetailsContextMapper = new LdapUserDetailsMapper();
     private boolean useAuthenticationRequestCredentials = true;
     private SiteService siteService;
-    private PersonService personService;
+    private ConstituentService personService;
     
-    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, PersonService personService, SiteService siteService) {
+    public MpowerAuthenticationProvider(LdapAuthenticator authenticator, LdapAuthoritiesPopulator authoritiesPopulator, ConstituentService personService, SiteService siteService) {
         this.setAuthenticator(authenticator);
         this.setAuthoritiesPopulator(authoritiesPopulator);
         this.setPersonService(personService);
@@ -162,11 +162,11 @@ public class MpowerAuthenticationProvider implements AuthenticationProvider {
         return (MpowerAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
-    public void setPersonService(PersonService personService) {
+    public void setPersonService(ConstituentService personService) {
 		this.personService = personService;
 	}
 
-	public PersonService getPersonService() {
+	public ConstituentService getPersonService() {
 		return personService;
 	}
 

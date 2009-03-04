@@ -9,7 +9,7 @@ public interface AddressService {
 
     public Address saveAddress(Address address);
 
-    public List<Address> readAddresses(Long personId);
+    public List<Address> readAddressesByConstituentId(Long personId);
 
     public List<Address> filterValidAddresses(Long personId);
 

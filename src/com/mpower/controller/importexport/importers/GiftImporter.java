@@ -10,7 +10,7 @@ import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.PageType;
 
@@ -19,12 +19,12 @@ public class GiftImporter extends EntityImporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final PersonService personservice;
+    private final ConstituentService personservice;
     private final GiftService giftservice;
 
 	public GiftImporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
-		personservice = (PersonService)applicationContext.getBean("personService");
+		personservice = (ConstituentService)applicationContext.getBean("constituentService");
 		giftservice = (GiftService)applicationContext.getBean("giftService");
 	}
 	

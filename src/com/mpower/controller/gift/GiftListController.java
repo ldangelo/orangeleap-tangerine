@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 
 public class GiftListController extends ParameterizableViewController {
 
@@ -24,8 +24,8 @@ public class GiftListController extends ParameterizableViewController {
     @Resource(name="giftService")
     private GiftService giftService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

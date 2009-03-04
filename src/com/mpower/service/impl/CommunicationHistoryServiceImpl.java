@@ -16,7 +16,7 @@ import com.mpower.domain.model.CommunicationHistory;
 import com.mpower.domain.model.Person;
 import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.service.CommunicationHistoryService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -28,8 +28,8 @@ public class CommunicationHistoryServiceImpl implements CommunicationHistoryServ
 	@Resource(name = "communicationHistoryDAO")
 	private CommunicationHistoryDao communicationHistoryDao;
 
-	@Resource(name = "personService")
-	private PersonService personService;
+	@Resource(name = "constituentService")
+	private ConstituentService personService;
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {

@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationListener;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.util.TangerineUserHelper;
 
 // TODO: all the interceptors are cut & paste code!!!
@@ -57,7 +57,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		workingMemory.addEventListener (new DebugAgendaEventListener());
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 		@SuppressWarnings("unused")
-		PersonService ps = (PersonService) applicationContext.getBean("personService");
+		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
         TangerineUserHelper tangerineUserHelper = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 

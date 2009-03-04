@@ -47,7 +47,7 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
         }
         boolean found = false;
         if (address.getId() == null) {
-            List<Address> addressList = readAddresses(address.getPersonId());
+            List<Address> addressList = readAddressesByConstituentId(address.getPersonId());
             for (Address a : addressList) {
                 if (address.equals(a)) {
                     found = true;
@@ -78,9 +78,9 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
     }
 
     @Override
-    public List<Address> readAddresses(Long constituentId) {
+    public List<Address> readAddressesByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readAddresses: constituentId = " + constituentId);
+            logger.debug("readAddressesByConstituentId: constituentId = " + constituentId);
         }
         return addressDao.readAddressesByConstituentId(constituentId);
     }
@@ -90,7 +90,7 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
         if (logger.isDebugEnabled()) {
             logger.debug("filterValidAddresses: constituentId = " + constituentId);
         }
-        List<Address> addresses = this.readAddresses(constituentId);
+        List<Address> addresses = this.readAddressesByConstituentId(constituentId);
         List<Address> filteredAddresses = new ArrayList<Address>();
         for (Address address : addresses) {
             if (address.isValid()) {

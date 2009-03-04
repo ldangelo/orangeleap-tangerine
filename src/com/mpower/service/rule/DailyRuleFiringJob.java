@@ -18,7 +18,7 @@ import com.mpower.domain.model.Person;
 import com.mpower.domain.model.Site;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.GiftService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
 
 public class DailyRuleFiringJob extends QuartzJobBean {
@@ -37,13 +37,13 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 
 		ApplicationContext applicationContext = null;
-		PersonService ps = null;
+		ConstituentService ps = null;
 		GiftService gs = null;
 		SiteService ss = null;
 
 		try {
 			applicationContext = getApplicationContext(context);
-			ps = (PersonService)applicationContext.getBean("personService");
+			ps = (ConstituentService)applicationContext.getBean("constituentService");
 			gs = (GiftService)applicationContext.getBean("giftService");
 			ss = (SiteService)applicationContext.getBean("siteService");
 

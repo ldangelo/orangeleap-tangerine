@@ -9,15 +9,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mpower.domain.model.Person;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 
 public class PersonEditor extends PropertyEditorSupport {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.service.CommitmentService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.type.CommitmentType;
 
 //TODO: refactor this and PledgeListController into one class
@@ -26,8 +26,8 @@ public class RecurringGiftListController extends ParameterizableViewController {
     @Resource(name="commitmentService")
     private CommitmentService commitmentService;
 
-    @Resource(name="personService")
-    private PersonService personService;
+    @Resource(name="constituentService")
+    private ConstituentService personService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

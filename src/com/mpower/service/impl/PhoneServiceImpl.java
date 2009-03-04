@@ -46,7 +46,7 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
         }
         boolean found = false;
         if (phone.getId() == null) {
-            List<Phone> phoneList = readPhones(phone.getPersonId());
+            List<Phone> phoneList = readPhonesByConstituentId(phone.getPersonId());
             for (Phone p : phoneList) {
                 if (phone.equals(p)) {
                     found = true;
@@ -73,9 +73,9 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
     }
 
     @Override
-    public List<Phone> readPhones(Long constituentId) {
+    public List<Phone> readPhonesByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readPhones: constituentId = " + constituentId);
+            logger.debug("readPhonesByConstituentId: constituentId = " + constituentId);
         }
         return phoneDao.readPhonesByConstituentId(constituentId);
     }
@@ -85,7 +85,7 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
         if (logger.isDebugEnabled()) {
             logger.debug("filterValidPhones: constituentId = " + constituentId);
         }
-        List<Phone> phones = this.readPhones(constituentId);
+        List<Phone> phones = this.readPhonesByConstituentId(constituentId);
         List<Phone> filteredPhones = new ArrayList<Phone>();
         for (Phone phone : phones) {
             if (phone.isValid()) {

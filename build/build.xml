@@ -128,6 +128,12 @@
 		    </sql>
 	</target>
 
+	<target name="reloadDb">
+		<antcall target="9.1. Clear Schema"/>
+		<antcall target="9.3 Load Schema"/>
+		<antcall target="9. Load Data"/>
+	</target>
+
 	<target name="app.synch" description="Syncs the XHTML, JSP, JS, CSS, and Images of the project with a running application.">
 		<ant antfile="${internal.build.file}" target="app.synch" />
 	</target>

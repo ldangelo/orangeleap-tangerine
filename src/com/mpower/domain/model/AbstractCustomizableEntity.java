@@ -2,9 +2,8 @@ package com.mpower.domain.model;
 
 import java.util.Map;
 
-import org.apache.commons.collections.map.DefaultedMap;
-
 import com.mpower.domain.model.customization.CustomField;
+import com.mpower.domain.util.CustomFieldMap;
 
 /**
  * Extends AbstractEntity to include methods needed on Entites which
@@ -16,17 +15,23 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
 
     protected Map<String, CustomField> customFieldMap = null;
 
-
+    /**
+     * Static method to return a CustomFieldMap implementation
+     * @return CustomFieldMap
+     */
+    public static Map<String, CustomField> createCustomFieldMap() {
+        return new CustomFieldMap<String, CustomField>();
+    }
+    
     /**
      * Get the map of custom fields associated with this Entity. The returned
      * Map points to the internal map, so modifying the returned map will chage
      * the internal representation.
      * @return a Map<String,CustomField>
      */
-    @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = new DefaultedMap(new CustomField());
+            customFieldMap = createCustomFieldMap();
         }
         return customFieldMap;
     }

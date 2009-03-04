@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.DefaultedMap;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
+import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.domain.model.customization.CustomField;
 
 /**
@@ -33,8 +33,7 @@ public class IBatisCustomFieldHelper {
      */
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> readCustomFields(Long entityId, String entityType) {
-
-        Map<String, CustomField> ret = new DefaultedMap(new CustomField());
+        Map<String, CustomField> ret = AbstractCustomizableEntity.createCustomFieldMap();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityId", entityId);
         params.put("entityType", entityType);
@@ -184,7 +183,4 @@ public class IBatisCustomFieldHelper {
         Long id = (Long) template.insert("INSERT_CUSTOM_FIELD", params);
         customField.setId(id);
     }
-
-
-
 }

@@ -1,8 +1,8 @@
 package com.mpower.domain.model.customization;
 
-import com.mpower.domain.GeneratedId;
-
 import java.io.Serializable;
+
+import com.mpower.domain.GeneratedId;
 
 /**
  * Implementation of a Custom Field which tracks the Entity it
@@ -18,6 +18,14 @@ public class CustomField implements GeneratedId, Serializable {
     private Long entityId;
     private String value;
 
+    public CustomField() {
+        super();
+    }
+
+    public CustomField(String name) {
+        super();
+        this.name = name;
+    }
 
     @Override
     public Long getId() {

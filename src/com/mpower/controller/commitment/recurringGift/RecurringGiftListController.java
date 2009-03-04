@@ -27,7 +27,7 @@ public class RecurringGiftListController extends ParameterizableViewController {
     private CommitmentService commitmentService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -37,11 +37,11 @@ public class RecurringGiftListController extends ParameterizableViewController {
         String personId = request.getParameter("personId");
 
         List<Commitment> commitmentList = commitmentService.readCommitments(Long.valueOf(personId), CommitmentType.RECURRING_GIFT);
-        Person person = personService.readConstituentById(Long.valueOf(personId));
+        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
 
         ModelAndView mav = new ModelAndView(super.getViewName());
-        if (person != null) {
-            mav.addObject("person", person);
+        if (constituent != null) {
+            mav.addObject("person", constituent);
         }
         mav.addObject("commitmentList", commitmentList);
         mav.addObject("commitmentListSize", commitmentList.size());

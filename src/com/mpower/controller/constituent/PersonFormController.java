@@ -28,18 +28,18 @@ public class PersonFormController extends TangerineFormController {
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        String personId = super.getConstituentIdString(request);
-        if (personId == null) {
-            personId = request.getParameter("id");
+        String constituentId = super.getConstituentIdString(request);
+        if (constituentId == null) {
+            constituentId = request.getParameter("id");
         }
-        Person person = null;
-        if (personId == null) {
-            person = personService.createDefaultConstituent();
+        Person constituent = null;
+        if (constituentId == null) {
+            constituent = constituentService.createDefaultConstituent();
         } 
         else {
-            person = personService.readConstituentById(new Long(personId));
+            constituent = constituentService.readConstituentById(new Long(constituentId));
         }
-        return person;
+        return constituent;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PersonFormController extends TangerineFormController {
         boolean saved = true;
         Person current = null;
         try {
-            current = personService.maintainConstituent(p);
+            current = constituentService.maintainConstituent(p);
         } 
         catch (PersonValidationException e) {
             saved = false;

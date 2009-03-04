@@ -33,7 +33,7 @@ public class PersonSearchFormController extends SimpleFormController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Resource(name="sessionService")
     private SessionService sessionService;
@@ -72,7 +72,7 @@ public class PersonSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Person> personList = personService.searchConstituents(params);
+        List<Person> constituentList = constituentService.searchConstituents(params);
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;
@@ -82,7 +82,7 @@ public class PersonSearchFormController extends SimpleFormController {
             sortAscending = new Boolean(true);
         }
         MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
-        PagedListHolder pagedListHolder = new PagedListHolder(personList,sortDef);
+        PagedListHolder pagedListHolder = new PagedListHolder(constituentList,sortDef);
         pagedListHolder.resort();
         pagedListHolder.setMaxLinkedPages(3);
         pagedListHolder.setPageSize(10);
@@ -100,8 +100,8 @@ public class PersonSearchFormController extends SimpleFormController {
         mav.addObject("currentSort", sort);
         mav.addObject("currentAscending", sortAscending);
         mav.addObject("person", person);
-        mav.addObject("personList", personList);
-        mav.addObject("personListSize", personList.size());
+        mav.addObject("personList", constituentList);
+        mav.addObject("personListSize", constituentList.size());
         return mav;
     }
 }

@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
-import com.mpower.service.GiftService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.GiftService;
 
 public class PersonViewController extends ParameterizableViewController {
 
@@ -26,22 +26,22 @@ public class PersonViewController extends ParameterizableViewController {
     private GiftService giftService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String personId = request.getParameter("personId");
-        Person person = personService.readConstituentById(Long.valueOf(personId));
+        String constituentId = request.getParameter("personId");
+        Person constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
         BigDecimal totalGiving = new BigDecimal(0);
 
-        List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
+        List<Gift> giftList = giftService.readGifts(Long.valueOf(constituentId));
         for (Gift gft : giftList) {
             totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
         }
 
         ModelAndView mav = new ModelAndView(super.getViewName());
-        if (person != null) {
-            mav.addObject("person", person);
+        if (constituent != null) {
+            mav.addObject("person", constituent);
         }
         mav.addObject("totalGiving", totalGiving);
         mav.addObject("numberOfGifts", giftList.size());

@@ -16,19 +16,19 @@ public abstract class RequiresConstituentEditor extends PropertyEditorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="constituentService")
-    protected ConstituentService personService;
-    protected String personId;
+    protected ConstituentService constituentService;
+    protected String constituentId;
 
     public RequiresConstituentEditor() {
         super();
     }
 
-    public RequiresConstituentEditor(String personId) {
+    public RequiresConstituentEditor(String constituentId) {
         super();
-        this.personId = personId;
+        this.constituentId = constituentId;
     }
 
     protected Person getPerson() {
-        return personService.readConstituentById(new Long(personId));
+        return constituentService.readConstituentById(new Long(constituentId));
     }
 }

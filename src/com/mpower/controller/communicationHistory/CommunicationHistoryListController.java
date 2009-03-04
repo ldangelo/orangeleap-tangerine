@@ -25,7 +25,7 @@ public class CommunicationHistoryListController extends ParameterizableViewContr
     protected CommunicationHistoryService communicationHistoryService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -35,11 +35,11 @@ public class CommunicationHistoryListController extends ParameterizableViewContr
         String personId = request.getParameter("personId");
 
         List<CommunicationHistory> communicationHistoryList = communicationHistoryService.readCommunicationHistoryByConstituent(Long.valueOf(personId));
-        Person person = personService.readConstituentById(Long.valueOf(personId));
+        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
 
         ModelAndView mav = new ModelAndView(super.getViewName());
-        if (person != null) {
-            mav.addObject("person", person);
+        if (constituent != null) {
+            mav.addObject("person", constituent);
         }
         mav.addObject("communicationHistoryList", communicationHistoryList);
         mav.addObject("communicationHistoryListSize", communicationHistoryList.size());

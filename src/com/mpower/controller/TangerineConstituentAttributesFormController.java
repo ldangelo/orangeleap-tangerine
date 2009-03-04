@@ -90,7 +90,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected Person getConstituent(HttpServletRequest request) {
         Long constituentId = getConstituentId(request);
         if (constituentId != null) {
-            return personService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
+            return constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
         }
         return null;
     }

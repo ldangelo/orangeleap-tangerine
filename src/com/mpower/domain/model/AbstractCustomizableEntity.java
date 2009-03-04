@@ -1,7 +1,8 @@
 package com.mpower.domain.model;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.collections.map.DefaultedMap;
 
 import com.mpower.domain.model.customization.CustomField;
 
@@ -22,9 +23,10 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
      * the internal representation.
      * @return a Map<String,CustomField>
      */
+    @SuppressWarnings("unchecked")
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = new HashMap<String, CustomField>();
+            customFieldMap = new DefaultedMap(new CustomField());
         }
         return customFieldMap;
     }

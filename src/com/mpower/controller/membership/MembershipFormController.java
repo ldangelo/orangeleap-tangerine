@@ -27,8 +27,8 @@ import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CommitmentService;
-import com.mpower.service.PaymentSourceService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.PaymentSourceService;
 import com.mpower.service.SiteService;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.PageType;
@@ -49,7 +49,7 @@ public class MembershipFormController extends SimpleFormController {
     private PaymentSourceService paymentSourceService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Resource(name="siteService")
     private SiteService siteService;
@@ -110,7 +110,7 @@ public class MembershipFormController extends SimpleFormController {
             // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
             Person person = null;
             if (personId != null) {
-                person = personService.readConstituentById(Long.valueOf(personId));
+                person = constituentService.readConstituentById(Long.valueOf(personId));
                 if (person == null) {
                     logger.error("**** person not found for id: " + personId);
                     return commitment;

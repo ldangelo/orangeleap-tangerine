@@ -9,8 +9,8 @@ import org.springframework.context.ApplicationContext;
 import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
-import com.mpower.service.GiftService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.GiftService;
 import com.mpower.service.exception.PersonValidationException;
 import com.mpower.type.PageType;
 
@@ -19,12 +19,12 @@ public class GiftImporter extends EntityImporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final ConstituentService personservice;
+    private final ConstituentService constituentService;
     private final GiftService giftservice;
 
 	public GiftImporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
-		personservice = (ConstituentService)applicationContext.getBean("constituentService");
+		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 		giftservice = (GiftService)applicationContext.getBean("giftService");
 	}
 	
@@ -56,13 +56,13 @@ public class GiftImporter extends EntityImporter {
 		if (id == null) {
             throw new RuntimeException(getIdField() + " field is required.");
         }
-	    Person person = personservice.readConstituentById(new Long(id));
-		if (person == null) {
+	    Person constituent = constituentService.readConstituentById(new Long(id));
+		if (constituent == null) {
             throw new RuntimeException(getIdField() + " " + id + " not found.");
         }
 		logger.debug("Importing gift for constituent "+id+"...");
 		
-		Gift gift = giftservice.readGiftByIdCreateIfNull(null, null, person);
+		Gift gift = giftservice.readGiftByIdCreateIfNull(null, null, constituent);
 		
 		mapValuesToObject(values, gift);
 		

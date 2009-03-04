@@ -27,7 +27,7 @@ public class AuditViewController extends ParameterizableViewController {
     private AuditService auditService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -39,7 +39,7 @@ public class AuditViewController extends ParameterizableViewController {
             audits = auditService.allAuditHistoryForSite();
         } else {
             if (EntityType.valueOf(entityType) == EntityType.person) {
-                Person constituent = personService.readConstituentById(Long.valueOf(objectId));
+                Person constituent = constituentService.readConstituentById(Long.valueOf(objectId));
                 mav.addObject("person", constituent);
                 audits = auditService.auditHistoryForConstituent(constituent.getId());
             } else {

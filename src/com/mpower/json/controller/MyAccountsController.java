@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.security.MpowerAuthenticationToken;
-import com.mpower.service.GiftService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.GiftService;
 import com.mpower.service.SiteService;
 
 /**
@@ -33,7 +33,7 @@ public class MyAccountsController {
     private SiteService siteService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Resource(name="giftService")
     private GiftService giftService;
@@ -46,12 +46,12 @@ public class MyAccountsController {
 
         MpowerAuthenticationToken mPowerAuthenticationToken = (MpowerAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
         siteService.createSiteAndUserIfNotExist(mPowerAuthenticationToken.getSite());
-        Person person = personService.readConstituentById(mPowerAuthenticationToken.getPersonId());
-        if (person == null) {
+        Person constituent = constituentService.readConstituentById(mPowerAuthenticationToken.getPersonId());
+        if (constituent == null) {
             return new ModelMap();
         }
         
-        String acctString = person.getCustomFieldValue("individual.accountManagerFor");
+        String acctString = constituent.getCustomFieldValue("individual.accountManagerFor");
 
         if (acctString != null) {
             String[] accounts = acctString.split(",");
@@ -59,7 +59,7 @@ public class MyAccountsController {
             for (String account : accounts) {
 
                 Long acctId = Long.parseLong(account);
-                Person client = personService.readConstituentById(acctId);
+                Person client = constituentService.readConstituentById(acctId);
 
                 BigDecimal totalGiving = new BigDecimal(0);
 
@@ -69,7 +69,7 @@ public class MyAccountsController {
                 }
 
 
-                response.add(fromPerson(client, totalGiving, giftList.size()));
+                response.add(fromConstituent(client, totalGiving, giftList.size()));
             }
         }
 
@@ -79,15 +79,15 @@ public class MyAccountsController {
     }
 
     @SuppressWarnings("unchecked")
-    private Map fromPerson(Person person, BigDecimal amount, int gifts) {
+    private Map fromConstituent(Person constituent, BigDecimal amount, int gifts) {
 
         Map<String,Object> ret = new HashMap<String,Object>();
-        ret.put("id", person.getId());
-        ret.put("first", person.getFirstName());
-        ret.put("last", person.getLastName());
-        ret.put("orgName", person.getOrganizationName());
-        ret.put("majorDonor", person.isMajorDonor());
-        ret.put("lapsedDonor", person.isLapsedDonor());
+        ret.put("id", constituent.getId());
+        ret.put("first", constituent.getFirstName());
+        ret.put("last", constituent.getLastName());
+        ret.put("orgName", constituent.getOrganizationName());
+        ret.put("majorDonor", constituent.isMajorDonor());
+        ret.put("lapsedDonor", constituent.isLapsedDonor());
         ret.put("amount", amount);
         ret.put("gifts", gifts);
         return ret;

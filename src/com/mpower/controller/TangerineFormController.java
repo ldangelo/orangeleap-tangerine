@@ -33,7 +33,7 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="constituentService")
-    protected ConstituentService personService;
+    protected ConstituentService constituentService;
 
     @Resource(name="siteService")
     protected SiteService siteService;    

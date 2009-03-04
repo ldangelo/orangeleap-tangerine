@@ -17,16 +17,16 @@ public class PersonEditor extends PropertyEditorSupport {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
     	if(StringUtils.trimToNull(text)==null) {
             return;
         }
-        long personId = Long.valueOf(StringUtils.trimToNull(text));
-        Person person = personService.readConstituentById(personId);
-        setValue(person);
+        long constituentId = Long.valueOf(StringUtils.trimToNull(text));
+        Person constituent = constituentService.readConstituentById(constituentId);
+        setValue(constituent);
     }
     
    // public String getAsText() {

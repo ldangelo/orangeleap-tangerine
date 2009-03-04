@@ -16,8 +16,8 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.mpower.domain.model.PaymentHistory;
 import com.mpower.domain.model.Person;
-import com.mpower.service.PaymentHistoryService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.PaymentHistoryService;
 
 public class PaymentHistoryListController extends ParameterizableViewController {
 
@@ -28,7 +28,7 @@ public class PaymentHistoryListController extends ParameterizableViewController 
     private PaymentHistoryService paymentHistoryService;
     
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -38,7 +38,7 @@ public class PaymentHistoryListController extends ParameterizableViewController 
         String personId = request.getParameter("personId");
 
         List<PaymentHistory> historyList = paymentHistoryService.readPaymentHistory(Long.valueOf(personId));
-        Person person = personService.readConstituentById(Long.valueOf(personId));
+        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
 
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
@@ -65,8 +65,8 @@ public class PaymentHistoryListController extends ParameterizableViewController 
         
         
         ModelAndView mav = new ModelAndView(super.getViewName());
-        if (person != null) {
-            mav.addObject("person", person);
+        if (constituent != null) {
+            mav.addObject("person", constituent);
         }
         mav.addObject("paymentHistoryList", historyList);
         mav.addObject("pagedListHolder", pagedListHolder);

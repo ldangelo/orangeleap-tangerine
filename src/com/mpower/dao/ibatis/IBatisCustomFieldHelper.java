@@ -1,13 +1,14 @@
 package com.mpower.dao.ibatis;
 
-import com.mpower.domain.model.customization.CustomField;
-
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 
+import org.apache.commons.collections.map.DefaultedMap;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
+
+import com.mpower.domain.model.customization.CustomField;
 
 /**
  * This class abstracts out the base methods used for working
@@ -33,7 +34,7 @@ public class IBatisCustomFieldHelper {
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> readCustomFields(Long entityId, String entityType) {
 
-        Map<String, CustomField> ret = new HashMap<String,CustomField>();
+        Map<String, CustomField> ret = new DefaultedMap(new CustomField());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityId", entityId);
         params.put("entityType", entityType);
@@ -124,7 +125,9 @@ public class IBatisCustomFieldHelper {
 
                     // save the Id value from the element at Sequence 0, which we'll
                     // use for the final Id for the custom field
-                    if(firstValue == null) firstValue = customField.getId();
+                    if(firstValue == null) {
+                        firstValue = customField.getId();
+                    }
                 }
             }
 

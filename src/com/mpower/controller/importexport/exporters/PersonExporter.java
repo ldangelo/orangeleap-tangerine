@@ -14,17 +14,17 @@ public class PersonExporter extends EntityExporter {
 	
     protected final Log logger = LogFactory.getLog(getClass());
     
-    private ConstituentService personservice;
+    private ConstituentService constituentService;
 
 	public PersonExporter(String entity, ApplicationContext applicationContext) {
 		super(entity, applicationContext);
-		personservice = (ConstituentService)applicationContext.getBean("constituentService");
+		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List readAll() {
-		return personservice.readAllConstituentsBySite();
+		return constituentService.readAllConstituentsBySite();
 	}
 
 	@Override

@@ -13,8 +13,8 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
-import com.mpower.service.GiftService;
 import com.mpower.service.ConstituentService;
+import com.mpower.service.GiftService;
 
 public class GiftListController extends ParameterizableViewController {
 
@@ -25,7 +25,7 @@ public class GiftListController extends ParameterizableViewController {
     private GiftService giftService;
 
     @Resource(name="constituentService")
-    private ConstituentService personService;
+    private ConstituentService constituentService;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -35,11 +35,11 @@ public class GiftListController extends ParameterizableViewController {
         String personId = request.getParameter("personId");
 
         List<Gift> giftList = giftService.readGifts(Long.valueOf(personId));
-        Person person = personService.readConstituentById(Long.valueOf(personId));
+        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
 
         ModelAndView mav = new ModelAndView(super.getViewName());
-        if (person != null) {
-            mav.addObject("person", person);
+        if (constituent != null) {
+            mav.addObject("person", constituent);
         }
         mav.addObject("giftList", giftList);
         mav.addObject("giftListSize", giftList.size());

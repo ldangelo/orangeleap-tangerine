@@ -8,12 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.model.customization.FieldRequired;
 import com.mpower.domain.model.customization.SectionField;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
 import com.mpower.type.FieldType;
@@ -27,10 +28,10 @@ public class GenericFieldHandler implements FieldHandler {
 
     protected FieldService fieldService;
     protected MessageService messageService;
-    protected PersonService personService;
+    protected ConstituentService personService;
 
     public GenericFieldHandler(ApplicationContext appContext) {
-        personService = (PersonService) appContext.getBean("personService");
+        personService = (ConstituentService) appContext.getBean("constituentService");
         messageService = (MessageService) appContext.getBean("messageService");
         fieldService = (FieldService) appContext.getBean("fieldService");
     }
@@ -59,7 +60,15 @@ public class GenericFieldHandler implements FieldHandler {
     protected Object getPropertyValue(Object model, FieldVO fieldVO) {
         BeanWrapper modelBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(model);
         String fieldProperty = fieldVO.getFieldName();
-        Object propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
+        Object propertyValue = null;
+        try {
+            propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
+        }
+        catch (NullValueInNestedPathException ne) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("Exception resolving " + fieldProperty, ne);
+            }
+        }
         return propertyValue;
     }
     

@@ -11,12 +11,12 @@
 		
 		<div class="columns">
 		
-			<div class="column googleWidget">
+			<div class="column googleWidget" style="display:none;visibility:hidden">
 				<h5>Gifts By Motivation</h5>
 				<div id="chart_div"></div>
 			</div>
 	
-			<div class="column googleWidget">
+			<div class="column googleWidget" style="display:none;visibility:hidden">
 				<h5>Gifts Over Past 7 Days</h5>
 				<div id="barchart"></div>
 			</div>
@@ -27,7 +27,7 @@
 				<h5>From The Orange Leap Blog</h5>
 				<div id="feed"></div>
 			</div>
-			<div class="column googleWidget">
+			<div class="column googleWidget" style="display:none;visibility:hidden">
 				<h5>Donor Trends</h5>
 				<div id="chart_div2"></div>
 			</div>

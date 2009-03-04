@@ -24,6 +24,7 @@
         <result property="temporaryStartDate" column="ADDRESS_TEMPORARY_START_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="ADDRESS_UPDATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="personId" column="ADDRESS_PERSON_ID" jdbcType="BIGINT"/>
+		<result property="primary" column="ADDRESS_IS_PRIMARY" jdbcType="CHAR" />
     </resultMap>
 
     <sql id="ADDRESS_COLS_FRAGMENT">
@@ -33,7 +34,7 @@
         addr.POSTAL_CODE as ADDRESS_POSTAL_CODE, addr.RECEIVE_CORRESPONDENCE as ADDRESS_RECEIVE_CORRESPONDENCE, addr.SEASONAL_END_DATE as ADDRESS_SEASONAL_END_DATE, 
         addr.SEASONAL_START_DATE as ADDRESS_SEASONAL_START_DATE, addr.STATE_PROVINCE as ADDRESS_STATE_PROVINCE,
         addr.TEMPORARY_END_DATE as ADDRESS_TEMPORARY_END_DATE, addr.TEMPORARY_START_DATE as ADDRESS_TEMPORARY_START_DATE, 
-        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.PERSON_ID as ADDRESS_PERSON_ID
+        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.PERSON_ID as ADDRESS_PERSON_ID, addr.IS_PRIMARY as ADDRESS_IS_PRIMARY
     </sql>
 
     <sql id="SELECT_ADDRESS_FRAGMENT">
@@ -96,14 +97,14 @@
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
-        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
+        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID, IS_PRIMARY)
         values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #addressType#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
         #inactive#, #postalCode#, #receiveMail#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, now(),
-        #personId#)
+        #personId#, #primary#)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -129,7 +130,8 @@
         STATE_PROVINCE = #stateProvince#,
         TEMPORARY_END_DATE = #temporaryEndDate#,
         TEMPORARY_START_DATE = #temporaryStartDate#,
-        PERSON_ID = #personId#
+        PERSON_ID = #personId#,
+		IS_PRIMARY = #primary#
         where ADDRESS_ID = #id#
     </update>
 

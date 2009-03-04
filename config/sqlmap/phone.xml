@@ -20,6 +20,7 @@
 		<result property="temporaryStartDate" column="PHONE_TEMPORARY_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="PHONE_UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="personId" column="PHONE_PERSON_ID" jdbcType="BIGINT" />
+		<result property="primary" column="PHONE_IS_PRIMARY" jdbcType="CHAR" />
 	</resultMap>
 	
 	<sql id="PHONE_COLS_FRAGMENT">
@@ -28,7 +29,8 @@
 		ph.INACTIVE as PHONE_INACTIVE, ph.NUMBER as PHONE_NUMBER, ph.PHONE_TYPE, ph.PROVIDER as PHONE_PROVIDER, 
 		ph.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, ph.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
 		ph.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, ph.SMS as PHONE_SMS, ph.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
-		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.PERSON_ID as PHONE_PERSON_ID
+		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.PERSON_ID as PHONE_PERSON_ID,
+	    ph.IS_PRIMARY as PHONE_IS_PRIMARY
 	</sql>
 	
 	<sql id="SELECT_PHONE_FRAGMENT">
@@ -67,12 +69,12 @@
 	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
 		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
-		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID)
+		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID, IS_PRIMARY)
 		values (#activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, #phoneType#,
 		#provider#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
-		#temporaryStartDate#, now(), #personId#)
+		#temporaryStartDate#, now(), #personId#, #primary#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -94,7 +96,8 @@
 		TEMPORARY_END_DATE = #temporaryEndDate#,
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
-		PERSON_ID = #personId#
+		PERSON_ID = #personId#,
+		IS_PRIMARY = #primary#
 		where PHONE_ID = #id#
 	</update>
 	

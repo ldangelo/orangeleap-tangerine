@@ -19,6 +19,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     protected Date seasonalStartDate;
     protected Date seasonalEndDate;
     protected boolean inactive = false;
+    protected boolean isPrimary = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate; 
@@ -135,6 +136,16 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
     }
+    
+    public boolean isPrimary() {
+        return isPrimary;
+    }
+
+    public void setPrimary(boolean isPrimary) {
+        this.isPrimary = isPrimary;
+    }
+
+
     
     @Override
     public void prePersist() {

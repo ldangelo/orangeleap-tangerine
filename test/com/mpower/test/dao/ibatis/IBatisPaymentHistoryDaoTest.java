@@ -64,7 +64,7 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
         
         assert history.getGift() != null;
         IBatisGiftDaoTest.testGiftId100(history.getGift());
-        assert history.getGift().getDistributionLines() == null;        
+        assert history.getGift().getDistributionLines() != null && history.getGift().getDistributionLines().isEmpty();        
     }
 
     @Test(groups = { "testReadPaymentHistoryEntries" }, dependsOnGroups = { "testCreatePaymentHistoryEntry" })

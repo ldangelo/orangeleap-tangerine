@@ -64,7 +64,7 @@ public class GenericFieldHandler implements FieldHandler {
         try {
             propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
         }
-        catch (NullValueInNestedPathException ne) {
+        catch (NullValueInNestedPathException ne) { // TODO: remove this catch
             if (logger.isWarnEnabled()) {
                 logger.warn("Exception resolving " + fieldProperty, ne);
             }

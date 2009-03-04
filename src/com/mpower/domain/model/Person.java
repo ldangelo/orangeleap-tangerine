@@ -60,6 +60,12 @@ public class Person extends AbstractCustomizableEntity {
         return getDisplayValue();
     }
 
+    @Override
+    // TODO: remove this overridden method when this class is renamed to "Constituent"
+    public String getType() {
+        return "person";
+    }
+
     public boolean isOrganization() {
         return getConstituentType().equals(ORGANIZATION);
     }
@@ -299,11 +305,7 @@ public class Person extends AbstractCustomizableEntity {
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
-
-    public Person getPerson() {
-        return this;
-    }
-
+    
     public void setNcaisCode(String ncaisCode) {
         this.ncaisCode = ncaisCode;
     }

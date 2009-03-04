@@ -200,7 +200,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         }
         
         /* Test for 1 result */
-        relationships = fieldDao.readMasterFieldRelationships("person.customFieldMap[headOfHousehold.householdMembers]");
+        relationships = fieldDao.readMasterFieldRelationships("person.customFieldMap[headofhousehold.householdMembers]");
         assert relationships != null && relationships.isEmpty() == false && relationships.size() == 1;
     }
     

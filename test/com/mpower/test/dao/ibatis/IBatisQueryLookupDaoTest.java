@@ -26,7 +26,7 @@ public class IBatisQueryLookupDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadQueryLookup" })
     public void testReadQueryLookupInvalid() throws Exception {
-        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[headOfHousehold.householdMembers]");
+        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[headofhousehold.householdMembers]");
         assert lookup == null;
     }
     

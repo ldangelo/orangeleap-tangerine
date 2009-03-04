@@ -146,12 +146,12 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
                 assert item.isInactive() == false;
                 assert item.getSuppressReferenceValue() == null;
             }
-            else if ("headOfHousehold".equals(item.getItemName())) {
+            else if ("headofhousehold".equals(item.getItemName())) {
                 assert "Head of Household".equals(item.getDefaultDisplayValue());
-                assert "li:has(.ea-headOfHousehold)".equals(item.getReferenceValue());
+                assert "li:has(.ea-headofhousehold)".equals(item.getReferenceValue());
                 assert 800 == item.getItemOrder();
                 assert item.isInactive() == false;
-                assert "li:has(.ea-not.headOfHousehold)".equals(item.getSuppressReferenceValue());
+                assert "li:has(.ea-not.headofhousehold)".equals(item.getSuppressReferenceValue());
             }
             else if ("contact".equals(item.getItemName())) {
                 assert "Contact".equals(item.getDefaultDisplayValue());

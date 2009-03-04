@@ -10,11 +10,11 @@ INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('first_name
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middle_name', 4);
 
 // Head of Household relationship
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (5, 'SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = ''individual'' ', 'person.customFieldMap[individual.headOfHousehold]', 'person.headOfHousehold', null);
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (5, 'SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = ''individual'' ', 'person.customFieldMap[individual.headofhousehold]', 'person.headofhousehold', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('last_name', 5);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('first_name', 5);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middle_name', 5);
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (6, 'SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = ''individual'' ', 'person.customFieldMap[headOfHousehold.householdMembers]', 'person.householdMembers', null);
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (6, 'SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = ''individual'' ', 'person.customFieldMap[headofhousehold.householdMembers]', 'person.householdMembers', null);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('last_name', 6);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('first_name', 6);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middle_name', 6);

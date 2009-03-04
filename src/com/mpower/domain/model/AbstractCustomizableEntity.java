@@ -33,6 +33,13 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         if (customFieldMap == null) {
             customFieldMap = createCustomFieldMap();
         }
+
+        for(String key : customFieldMap.keySet()) {
+            CustomField field = customFieldMap.get(key);
+            field.setEntityId(this.getId());
+            field.setEntityType(this.getType());
+        }
+        
         return customFieldMap;
     }
 

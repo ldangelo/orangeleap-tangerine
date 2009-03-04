@@ -9,13 +9,11 @@ public interface AddressService {
 
     public Address saveAddress(Address address);
 
-    public List<Address> readAddressesByConstituentId(Long personId);
+    public List<Address> readAddressesByConstituentId(Long constituentId);
 
-    public List<Address> filterValidAddresses(Long personId);
-
-//    public void setAuditService(AuditService auditService);
+    public List<Address> filterValidAddresses(Long constituentId);
 
     public Address readAddress(Long addressId);
 
-    public List<Address> readCurrentAddresses(Long personId, Calendar calendar, boolean receiveCorrespondence);
+    public List<Address> readCurrentAddresses(Long constituentId, Calendar calendar, boolean receiveCorrespondence);
 }

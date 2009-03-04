@@ -13,8 +13,6 @@ public interface PhoneService {
 
     public List<Phone> filterValidPhones(Long constituentId);
 
-//    public void setAuditService(AuditService auditService);
-
     public Phone readPhone(Long phoneId);
 
     public List<Phone> readCurrentPhones(Long constituentId, Calendar calendar, boolean receiveCorrespondence);

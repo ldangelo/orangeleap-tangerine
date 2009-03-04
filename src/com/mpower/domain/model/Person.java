@@ -46,9 +46,12 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
     private String loginId;
     private Date createDate;
     private Date updateDate;
-    private Map<String, List<Address>> addressMap = null;
-    private Map<String, List<Email>> emailMap = null;
-    private Map<String, List<Phone>> phoneMap = null;
+    private Map<String, Address> addressMap = null;
+    private Map<String, Email> emailMap = null;
+    private Map<String, Phone> phoneMap = null;
+//    private Map<String, List<Address>> addressMap = null;
+//    private Map<String, List<Email>> emailMap = null;
+//    private Map<String, List<Phone>> phoneMap = null;
 
     public Person() { }
 
@@ -179,7 +182,8 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.addresses = addresses;
     }
 
-    public Map<String, List<Address>> getAddressMap() {
+    public Map<String, Address> getAddressMap() {
+//        public Map<String, List<Address>> getAddressMap() {
         if (addressMap == null) {
             addressMap = buildMap(getAddresses());
             // TODO: put back for IBatis
@@ -199,7 +203,8 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.emails = emails;
     }
 
-    public Map<String, List<Email>> getEmailMap() {
+    public Map<String, Email> getEmailMap() {
+//        public Map<String, List<Email>> getEmailMap() {
         if (emailMap == null) {
             emailMap = buildMap(getEmails());
             // TODO: put back for IBatis
@@ -219,7 +224,8 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.phones = phones;
     }
 
-    public Map<String, List<Phone>> getPhoneMap() {
+    public Map<String, Phone> getPhoneMap() {
+//        public Map<String, List<Phone>> getPhoneMap() {
         if (phoneMap == null) {
             phoneMap = buildMap(getPhones());
             // TODO: put back for IBatis
@@ -412,19 +418,26 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
     }
     
     @SuppressWarnings("unchecked")
-    private static <T extends AbstractCommunicationEntity> Map<String, List<T>> buildMap(List<T> masterList) {
-        Map<String, List<T>> map = new HashMap<String, List<T>>();
+    private static <T extends AbstractCommunicationEntity> Map<String, T> buildMap(List<T> masterList) {
+        Map<String, T> map = new HashMap<String, T>();
         for (AbstractCommunicationEntity entity : masterList) {
-            List<T> typedList = null; 
-            if (map.containsKey(entity.getCommunicationType())) {
-                typedList = map.get(entity.getCommunicationType());
-            }
-            else {
-                typedList = new ArrayList<T>();
-                map.put(entity.getCommunicationType(), typedList);
-            }
-            typedList.add((T) entity);
+            map.put(entity.getCommunicationType(), (T) entity);
         }
         return map;
     }
+//    private static <T extends AbstractCommunicationEntity> Map<String, List<T>> buildMap(List<T> masterList) {
+//        Map<String, List<T>> map = new HashMap<String, List<T>>();
+//        for (AbstractCommunicationEntity entity : masterList) {
+//            List<T> typedList = null; 
+//            if (map.containsKey(entity.getCommunicationType())) {
+//                typedList = map.get(entity.getCommunicationType());
+//            }
+//            else {
+//                typedList = new ArrayList<T>();
+//                map.put(entity.getCommunicationType(), typedList);
+//            }
+//            typedList.add((T) entity);
+//        }
+//        return map;
+//    }
  }

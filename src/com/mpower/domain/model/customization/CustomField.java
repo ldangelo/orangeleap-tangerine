@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 
 /**
@@ -77,6 +79,11 @@ public class CustomField implements GeneratedId, Serializable {
      */
     public void setEntityId(Long entityId) {
         this.entityId = entityId;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("name", name).append("entityType", entityType).append("entityId", entityId).append("value", value).toString();
     }
 }
 

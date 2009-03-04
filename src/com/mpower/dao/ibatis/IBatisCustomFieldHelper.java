@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
 import com.mpower.domain.model.AbstractCustomizableEntity;
@@ -17,6 +19,9 @@ import com.mpower.domain.model.customization.CustomField;
  * @version 1.0
  */
 public class IBatisCustomFieldHelper {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private SqlMapClientTemplate template;
 
@@ -143,7 +148,6 @@ public class IBatisCustomFieldHelper {
      * @param customFields
      */
     public void deleteCustomFields(Map<String, CustomField> customFields) {
-
         for (String key : customFields.keySet()) {
 
             CustomField customField = customFields.get(key);
@@ -160,19 +164,23 @@ public class IBatisCustomFieldHelper {
 
     // Helper method to delete a single custom file
     private void deleteCustomField(CustomField customField) {
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("deleteCustomField: customField = " + customField);
+        }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityType", customField.getEntityType());
         params.put("entityId", customField.getEntityId());
+        params.put("fieldName", customField.getName());
 
         // Entity exists, but client is clearing the value, so remove the orphans
         template.delete("DELETE_CUSTOM_FIELD", params);
-
     }
 
     // Helper method to persist a single value for custom field, include sequence number
     private void saveSingleCustomField(CustomField customField, String value, int sequenceNumber) {
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("saveSingleCustomField: customField = " + customField + " value = " + value + " sequenceNumber = " + sequenceNumber);
+        }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityType", customField.getEntityType());
         params.put("entityId", customField.getEntityId());

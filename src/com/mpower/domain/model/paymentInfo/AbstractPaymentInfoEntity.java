@@ -1,5 +1,6 @@
 package com.mpower.domain.model.paymentInfo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -102,16 +103,19 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public List<DistributionLine> getDistributionLines() {
+        if (distributionLines == null) {
+            distributionLines = new ArrayList<DistributionLine>();
+        }
     //        if (distributionLines == null) { // TODO: lazyList for IBatis?
     //            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
     //        }
-            return distributionLines;
-        }
+        return distributionLines;
+    }
 
     public void setDistributionLines(List<DistributionLine> distributionLines) {
-            this.distributionLines = distributionLines;
+        this.distributionLines = distributionLines;
     //        this.distributionLines = LazyList.decorate(distributionLines, FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
-        }
+    }
 
     public void addDistributionLine(DistributionLine distributionLine) {
         getDistributionLines().add(distributionLine);

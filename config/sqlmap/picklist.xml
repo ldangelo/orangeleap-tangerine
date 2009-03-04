@@ -43,17 +43,20 @@
 
     <select id="SELECT_PICKLIST_BY_SITE_NAME" resultMap="PICKLIST_RESULT" parameterClass="string" cacheModel="picklist-cache">
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
-        where P.SITE_NAME = #value#
+        where ((P.SITE_NAME = #value#) or (P.SITE_NAME is NULL))
+        order by SITE_NAME, ENTITY_TYPE
     </select>
 
     <select id="SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map" cacheModel="picklist-cache">
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
-        where P.SITE_NAME = #siteName# AND P.ENTITY_TYPE = #entityType# AND P.PICKLIST_NAME = #fieldName#
+        where P.PICKLIST_NAME = #fieldName#
+        and ((P.SITE_NAME = #siteName#) or (P.SITE_NAME is NULL))
+        and ((P.ENTITY_TYPE = #entityType#) or (P.ENTITY_TYPE is NULL)) 
+        order by SITE_NAME, ENTITY_TYPE
     </select>
 
     <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="long" cacheModel="picklist-cache">
-        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER,
-        REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER, REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
         from PICKLIST_ITEM
         where PICKLIST_ITEM_ID = #id#
     </select>

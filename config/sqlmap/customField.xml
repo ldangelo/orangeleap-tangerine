@@ -18,10 +18,9 @@
         order by FIELD_NAME asc, SEQUENCE_NUM asc
     </select>
 
-
 	<insert id="INSERT_CUSTOM_FIELD" parameterClass="map">
 		insert into CUSTOM_FIELD (FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM)
-		values (#fieldName#, #fieldValue#, #entityType#,#entityId#,#sequenceNum#)
+		values (#fieldName#, #fieldValue#, #entityType#, #entityId#, #sequenceNum#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -31,6 +30,7 @@
         delete from CUSTOM_FIELD
         where ENTITY_TYPE = #entityType#
         and ENTITY_ID = #entityId#
+        and FIELD_NAME = #fieldName#
     </delete>
 
 </sqlMap>

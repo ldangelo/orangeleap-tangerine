@@ -70,7 +70,6 @@
 
 		<jar destfile="${stage.dir}/mpower-tests.jar" basedir="${stage.dir}/test-folder">
 			<include name="**/*.*"/>
-			<exclude name="**/persistence.xml"/>
 		</jar>
 		
 		<copy todir="${stage.dir}">

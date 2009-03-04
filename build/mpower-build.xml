@@ -49,7 +49,6 @@
 			<fileset dir="${src.dir}">
 				<include name="**/*.*" />
 				<exclude name="**/*.java" />
-				<exclude name="META-INF/persistence-container.xml"/>
 			</fileset>
 			<fileset dir="${config.dir}">
 				<include name="**/*.properties" />
@@ -59,40 +58,6 @@
 				<include name="**/*.dsl" />
 			</fileset>
 		</copy>
-
-		<if>
-			<equals arg1="${build.env}" arg2="dev" casesensitive="false" />
-			<then>
-				<copy tofile="${classes.dir}/META-INF/persistence.xml">
-					<fileset dir="${src.dir}">
-						<include name="META-INF/persistence-container.xml" />
-					</fileset>
-				</copy>
-				<replace file="${classes.dir}/META-INF/persistence.xml"
-					token="@@DIALECT@@" value="${mysql.db.dialect}"/>
-			</then>
-			<elseif>
-				<equals arg1="${build.env}" arg2="unit-test" casesensitive="false" />
-				<then>
-					<!-- We have a special file for unit tests -->
-					<copy todir="${classes.dir}">
-						<fileset dir="${test.src.dir}">
-							<include name="META-INF/persistence.xml"/>
-						</fileset>
-					</copy>
-
-				</then>
-			</elseif>
-			<else>
-				<copy tofile="${classes.dir}/META-INF/persistence.xml">
-					<fileset dir="${src.dir}">
-						<include name="META-INF/persistence-container.xml" />
-					</fileset>
-				</copy>
-				<replace file="${classes.dir}/META-INF/persistence.xml"
-					token="@@DIALECT@@" value="${sqlserver.db.dialect}"/>
-			</else>
-		</if>
 
 		<jar jarfile="${stage.dir}/${app.name}.jar" basedir="${classes.dir}">
 			<include name="**/*.class" />

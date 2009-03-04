@@ -11,8 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mpower.service.impl.SessionServiceImpl;
-
 public class MpowerDataSource implements DataSource {
 	
     protected final Log logger = LogFactory.getLog(getClass());
@@ -24,13 +22,14 @@ public class MpowerDataSource implements DataSource {
 	
 	private boolean splitDatabases = true;
 	private DataSource dataSource;
+	private TangerineUserHelper tangerineUserHelper;
 
 	@Override
 	public Connection getConnection() throws SQLException {
 		
 		Connection conn = dataSource.getConnection();
 		
-		String siteName = SessionServiceImpl.lookupUserSiteName();
+		String siteName = tangerineUserHelper.lookupUserSiteName();
 		boolean hasSite = siteName != null && siteName.trim().length() > 0;
 		if (hasSite) {
 			//logger.debug("getConnection() called.");
@@ -127,7 +126,15 @@ public class MpowerDataSource implements DataSource {
 		return dataSource;
 	}
 
-	public void setSplitDatabases(boolean splitDatabases) {
+    public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
+        this.tangerineUserHelper = tangerineUserHelper;
+    }
+
+    public TangerineUserHelper getTangerineUserHelper() {
+        return tangerineUserHelper;
+    }
+
+    public void setSplitDatabases(boolean splitDatabases) {
 		this.splitDatabases = splitDatabases;
 	}
 

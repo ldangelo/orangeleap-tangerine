@@ -23,7 +23,6 @@ import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Person;
 import com.mpower.domain.Phone;
 import com.mpower.domain.Site;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.EntityUtility;
 
 @Repository("personDao")
@@ -41,9 +40,9 @@ public class JPAPersonDao implements PersonDao {
     // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Person savePerson(Person person) {
         // Sanity check
-        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
-            throw new RuntimeException("Person object does not belong to current site.");
-        }
+//        if (!person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+//            throw new RuntimeException("Person object does not belong to current site.");
+//        }
 
         for (Iterator<Phone> iter = person.getPhones().iterator(); iter.hasNext();) {
             Phone phone = iter.next();
@@ -63,9 +62,9 @@ public class JPAPersonDao implements PersonDao {
     public Person readPerson(Long id) {
         Person person = em.find(Person.class, id);
         // Sanity check
-        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) { // TODO: move to Service class
-            throw new RuntimeException("Person object does not belong to current site.");
-        }
+//        if (person!=null && !person.getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) { // TODO: move to Service class
+//            throw new RuntimeException("Person object does not belong to current site.");
+//        }
         return person;
     }
 

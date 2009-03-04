@@ -1,5 +1,7 @@
 package com.mpower.controller.validator;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -7,7 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.mpower.domain.PasswordChange;
-import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.util.TangerineUserHelper;
 
 public class PasswordChangeValidator implements Validator {
 
@@ -15,6 +17,9 @@ public class PasswordChangeValidator implements Validator {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private static final int MINIMUM_PASSWORD_LENGTH = 6;
+    
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -35,7 +40,7 @@ public class PasswordChangeValidator implements Validator {
         // new password must be different than current password
         // minimum 6 characters
         // TODO: force change password every 60 days
-        String authenticatedPw = SessionServiceImpl.lookupUserPassword();
+        String authenticatedPw = tangerineUserHelper.lookupUserPassword();
         if (!authenticatedPw.equals(oldPw)) {
             errors.rejectValue("currentPassword", "currentPasswordIncorrect", null, "current password is incorrect");
             logger.debug("current password, " + authenticatedPw + ", didn't match " + oldPw);

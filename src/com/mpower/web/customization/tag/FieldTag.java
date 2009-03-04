@@ -13,7 +13,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.domain.model.customization.SectionField;
-import com.mpower.service.impl.SessionServiceImpl;
+import com.mpower.util.TangerineUserHelper;
 import com.mpower.web.customization.FieldVO;
 import com.mpower.web.customization.handler.FieldHandler;
 import com.mpower.web.customization.handler.FieldHandlerHelper;
@@ -30,6 +30,7 @@ public class FieldTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
+        TangerineUserHelper tangerineUserHelper = (TangerineUserHelper)appContext.getBean("tangerineUserHelper");
         FieldDefinition fieldDefinition = sectionField.getFieldDefinition();
         FieldHandler fieldHandler = FieldHandlerHelper.lookupFieldHandler(appContext, sectionField);
         if (fieldHandler == null) {
@@ -37,7 +38,7 @@ public class FieldTag extends TagSupport {
         }
 
         Object modelParam = model != null ? model : pageContext.getRequest().getAttribute(fieldDefinition.getEntityType().toString());
-        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), SessionServiceImpl.lookupUserSiteName(), modelParam);
+        FieldVO fieldVO = fieldHandler.handleField(sectionFieldList, sectionField, pageContext.getRequest().getLocale(), tangerineUserHelper.lookupUserSiteName(), modelParam);
 
         pageContext.getRequest().setAttribute("fieldVO", fieldVO);
         return Tag.SKIP_BODY;

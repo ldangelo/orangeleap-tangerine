@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import com.mpower.dao.GiftDao;
 import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.Gift;
-import com.mpower.service.impl.SessionServiceImpl;
 import com.mpower.util.EntityUtility;
 
 @Repository("giftDao")
@@ -48,9 +47,9 @@ public class JPAGiftDao implements GiftDao {
     @Override
     public Gift readGift(Long giftId) {
         Gift gift = em.find(Gift.class, giftId);
-        if (gift!=null && !gift.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
-            throw new RuntimeException("Person object does not belong to current site.");
-        }
+//        if (gift!=null && !gift.getPerson().getSite().getName().equals(SessionServiceImpl.lookupUserSiteName())) {
+//            throw new RuntimeException("Person object does not belong to current site.");
+//        }
         return gift;
     }
 

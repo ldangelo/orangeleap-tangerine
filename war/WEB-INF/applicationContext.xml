@@ -36,8 +36,9 @@
 	    <property name="arguments"><list><value>drools.port</value><value>${drools.port}</value></list></property>
 	</bean>
 
-
-	<context:component-scan base-package="com.mpower" />
+	<context:component-scan base-package="com.mpower">
+		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
+	</context:component-scan>
 
 	<aop:aspectj-autoproxy />
 
@@ -57,18 +58,10 @@
 		<property name="useCodeAsDefaultMessage" value="false" />
 	</bean>
 
-	<bean id="entityManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="MPowerOpenPu" />
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource"/>
 		</property>
-	</bean>
-
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
@@ -78,6 +71,7 @@
 	
 	<bean id="dataSource" class="com.mpower.util.MpowerDataSource">
 		<property name="dataSource" ref="dataSource-pooled" />
+		<property name="tangerineUserHelper" ref="tangerineUserHelper" />
 		<property name="splitDatabases" value="false" />
 	</bean>
 	

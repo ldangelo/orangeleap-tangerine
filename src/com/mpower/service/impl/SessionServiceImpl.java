@@ -28,18 +28,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Site lookupSite() {
-        // TODO: remove cloning logic for IBatis
-    	Site site = siteService.createSiteAndUserIfNotExist(tangerineUserHelper.lookupUserSiteName());
-    	Site siteClone = new Site();
-    	siteClone.setName(site.getName());
-    	siteClone.setMerchantNumber(site.getMerchantNumber());
-    	siteClone.setCreateDate(site.getCreateDate());
-    	siteClone.setUpdateDate(site.getUpdateDate());
-    	if (site.getParentSite() != null) {
-        	Site parentSite = new Site();
-        	parentSite.setName(site.getParentSite().getName());
-        	siteClone.setParentSite(parentSite);
-    	}
-    	return siteClone;
+    	return siteService.createSiteAndUserIfNotExist(tangerineUserHelper.lookupUserSiteName());
     }
 }

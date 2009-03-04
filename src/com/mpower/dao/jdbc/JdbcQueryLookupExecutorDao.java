@@ -28,7 +28,7 @@ public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
 
     /**
      * Query lookups map to RowMapper classes based on the first table in the FROM clause
-     * e.g. FROM PERSON -> com.mpower.dao.jdbc.rowmappers.PersonRowMapper
+     * e.g. FROM CONSTITUENT -> com.mpower.dao.jdbc.rowmappers.ConstituentRowMapper
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -58,7 +58,9 @@ public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
     			String table = token.toLowerCase();
     			return table.substring(0,1).toUpperCase() + table.substring(1);
     		}
-    		if (token.trim().toLowerCase().equals("from")) fromClause = true;
+    		if (token.trim().toLowerCase().equals("from")) {
+                fromClause = true;
+            }
     	}
     	return "";
     }

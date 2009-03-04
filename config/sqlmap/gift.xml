@@ -49,7 +49,7 @@
 	
 	<sql id="GIFT_COLS_CHILD_IDS_FRAGMENT">
 		<include refid="GIFT_COLS_FRAGMENT"/>,
-		g.PERSON_ID, g.ADDRESS_ID, g.PHONE_ID, g.EMAIL_ID, g.PAYMENT_SOURCE_ID
+		g.CONSTITUENT_ID, g.ADDRESS_ID, g.PHONE_ID, g.EMAIL_ID, g.PAYMENT_SOURCE_ID
 	</sql>
 
 	<sql id="GIFT_QUERY_FRAGMENT">
@@ -62,7 +62,7 @@
 		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 		from GIFT g
-		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
 		left outer join EMAIL e on g.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
@@ -82,7 +82,7 @@
 
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
-		and g.PERSON_ID = #constituentId#
+		and g.CONSTITUENT_ID = #constituentId#
 		order by g.TRANSACTION_DATE desc
 	</select>
 
@@ -95,7 +95,7 @@
 	<select id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID" parameterClass="map" resultClass="decimal">
 		select SUM(g.AMOUNT)
 		from GIFT g
-		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where p.SITE_NAME = #siteName#
 		and g.COMMITMENT_ID = #commitmentId#
 	</select>
@@ -103,17 +103,17 @@
 	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
 		select SUM(g.AMOUNT)
 		from GIFT g
-		inner join PERSON p on g.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where p.SITE_NAME = #siteName#
-		and g.PERSON_ID = #constituentId#
+		and g.CONSTITUENT_ID = #constituentId#
 		and g.TRANSACTION_DATE between #beginDate# and #currentDate#
 	</select>
 
 	<select id="ANALYZE_FOR_LAPSED_DONOR" parameterClass="map" resultMap="CONSTITUENT.CONSTITUENT_RESULT">
 		select 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
-		from PERSON p 
-		inner join GIFT g on p.PERSON_ID = g.PERSON_ID
+		from CONSTITUENT p 
+		inner join GIFT g on p.CONSTITUENT_ID = g.CONSTITUENT_ID
 		where g.AMOUNT > 0 
 		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
 	</select>
@@ -126,7 +126,7 @@
 		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
 		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
 		PAYMENT_TXREFNUM,
-		ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
+		ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
 		values (#acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
@@ -166,7 +166,7 @@
 		COMMITMENT_ID = #commitmentId#,
 		EMAIL_ID = #email.id#,
 		PAYMENT_SOURCE_ID = #paymentSource.id#,
-		PERSON_ID = #person.id#,
+		CONSTITUENT_ID = #person.id#,
 		PHONE_ID = #phone.id#
 		where GIFT_ID = #id#
 	</update>
@@ -187,7 +187,7 @@
 		<isNotNull property="phoneParams"> 
 		   and exists (
 		    select * from PHONE sph where 
-		    sph.PERSON_ID = p.PERSON_ID
+		    sph.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
 		    sph.$phoneParams[].key$ like #phoneParams[].value#
 		    </iterate>
@@ -196,7 +196,7 @@
 		<isNotNull property="addressParams"> 
 		   and exists (
 		    select * from ADDRESS saddr where 
-		    saddr.PERSON_ID = p.PERSON_ID
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ like #addressParams[].value#
 		    </iterate>
@@ -205,7 +205,7 @@
 		<isNotNull property="emailParams"> 
 		   and exists (
 		    select * from EMAIL se where 
-		    se.PERSON_ID = p.PERSON_ID
+		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
 		    se.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
@@ -214,7 +214,7 @@
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD scf where 
-		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.PERSON_ID and scf.ENTITY_TYPE = 'person'))
+		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>

@@ -35,7 +35,7 @@ public class IBatisQueryLookupDaoTest extends AbstractIBatisTest {
         QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[organization.employees]");
         assert lookup != null;
         assert lookup.getSite() != null && "company1".equals(lookup.getSite().getName());
-        assert "SELECT person_id, organization_name, last_name, first_name, middle_name, suffix FROM PERSON WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Rev.'".equals(lookup.getSqlQuery());
+        assert "SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = 'individual' AND title = 'Rev.'".equals(lookup.getSqlQuery());
         assert "person.contactInfo".equals(lookup.getSectionName());
         assert lookup.getFieldDefinition() != null;
         assert "person.customFieldMap[organization.employees]".equals(lookup.getFieldDefinition().getId());

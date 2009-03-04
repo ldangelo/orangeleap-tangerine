@@ -16,7 +16,7 @@ import com.mpower.dao.util.QueryUtil;
 import com.mpower.domain.model.Person;
 
 /** 
- * Corresponds to the PERSON (Constituent) tables
+ * Corresponds to the CONSTITUENT tables
  */
 @Repository("constituentDAO")
 public class IBatisConstituentDao extends AbstractIBatisDao implements ConstituentDao {
@@ -106,7 +106,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     private Map<String, String> fieldMap = new HashMap<String, String>();
     {
     	// Constituent
-    	fieldMap.put("accountNumber", "PERSON_ID");
+    	fieldMap.put("accountNumber", "CONSTITUENT_ID");
     	fieldMap.put("firstName", "FIRST_NAME");
     	fieldMap.put("lastName", "LAST_NAME");
     	fieldMap.put("organizationName", "ORGANIZATION_NAME");

@@ -19,7 +19,7 @@
 		<result property="temporaryEndDate" column="PHONE_TEMPORARY_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryStartDate" column="PHONE_TEMPORARY_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="PHONE_UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="personId" column="PHONE_PERSON_ID" jdbcType="BIGINT" />
+		<result property="personId" column="PHONE_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="primary" column="PHONE_IS_PRIMARY" jdbcType="CHAR" />
 	</resultMap>
 	
@@ -29,7 +29,7 @@
 		ph.INACTIVE as PHONE_INACTIVE, ph.NUMBER as PHONE_NUMBER, ph.PHONE_TYPE, ph.PROVIDER as PHONE_PROVIDER, 
 		ph.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, ph.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
 		ph.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, ph.SMS as PHONE_SMS, ph.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
-		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.PERSON_ID as PHONE_PERSON_ID,
+		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.CONSTITUENT_ID as PHONE_CONSTITUENT_ID,
 	    ph.IS_PRIMARY as PHONE_IS_PRIMARY
 	</sql>
 	
@@ -56,12 +56,12 @@
 
 	<select id="SELECT_ALL_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
-		where ph.PERSON_ID = #id#
+		where ph.CONSTITUENT_ID = #id#
 	</select>
 	
 	<select id="SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
-		where ph.PERSON_ID = #id#
+		where ph.CONSTITUENT_ID = #id#
 		and ph.INACTIVE = false
 		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS
 	</select>
@@ -69,7 +69,7 @@
 	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
 		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
-		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID, IS_PRIMARY)
+		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
 		values (#activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, #phoneType#,
 		#provider#, #receiveMail#, #seasonalEndDate#,
@@ -96,7 +96,7 @@
 		TEMPORARY_END_DATE = #temporaryEndDate#,
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
-		PERSON_ID = #personId#,
+		CONSTITUENT_ID = #personId#,
 		IS_PRIMARY = #primary#
 		where PHONE_ID = #id#
 	</update>

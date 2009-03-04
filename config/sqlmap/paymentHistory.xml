@@ -28,7 +28,7 @@
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from PAYMENT_HISTORY phis
-		inner join PERSON p on phis.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
 		left outer join GIFT g on phis.GIFT_ID = g.GIFT_ID 
 		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
 		left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
@@ -40,7 +40,7 @@
 
 	<select id="SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_HISTORY_FRAGMENT" />
-		and p.PERSON_ID = #constituentId#
+		and p.CONSTITUENT_ID = #constituentId#
 		order by phis.TRANSACTION_DATE desc
 	</select>
 
@@ -51,7 +51,7 @@
 
 	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.mpower.domain.model.PaymentHistory">
 		insert into PAYMENT_HISTORY (AMOUNT, CURRENCY_CODE, PAYMENT_DESC,
-		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, PERSON_ID)
+		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, CONSTITUENT_ID)
 		values (#amount#, #currencyCode#, #description#,
 		#paymentHistoryType:VARCHAR#, #paymentType#,
 		#transactionDate#, #transactionId#, #gift.id#, #person.id#)

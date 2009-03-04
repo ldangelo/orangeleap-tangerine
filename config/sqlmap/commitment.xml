@@ -58,7 +58,7 @@
 
 		from COMMITMENT c
 
-		inner join PERSON p on c.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
 		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on c.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on c.ADDRESS_ID = addr.ADDRESS_ID
@@ -76,7 +76,7 @@
 
 	<select id="SELECT_COMMITMENTS_BY_CONSTITUENT_ID_AND_TYPE" resultMap="COMMITMENT_RESULT" parameterClass="map">
 		<include refid="SELECT_COMMITMENT_FRAGMENT" />
-		and c.PERSON_ID = #constituentId#
+		and c.CONSTITUENT_ID = #constituentId#
 		and c.COMMITMENT_TYPE = #commitmentType#
 	</select>
 
@@ -89,7 +89,7 @@
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE,
 		END_DATE, FREQUENCY, LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE,
 		PLEDGE_CANCEL_REASON, PLEDGE_DATE, PLEDGE_STATUS, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT,
-		START_DATE,	STATUS, UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, PERSON_ID, PHONE_ID)
+		START_DATE,	STATUS, UPDATE_DATE, ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
 		values (#acknowledgmentDate#, #amountPerGift#,
 		#amountTotal#, #autoPay#, #checkNumber#, #comments#,
 		#commitmentType#, now(), #currencyCode#, #endDate#,
@@ -131,7 +131,7 @@
 		ADDRESS_ID = #address.id#,
 		EMAIL_ID = #email.id#,
 		PAYMENT_SOURCE_ID = #paymentSource.id#,
-		PERSON_ID = #person.id#,
+		CONSTITUENT_ID = #person.id#,
 		PHONE_ID = #phone.id#
 		where COMMITMENT_ID = #id#
 	</update>
@@ -151,7 +151,7 @@
 		<isNotNull property="phoneParams"> 
 		   and exists (
 		    select * from PHONE sph where 
-		    sph.PERSON_ID = p.PERSON_ID
+		    sph.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
 		    sph.$phoneParams[].key$ like #phoneParams[].value#
 		    </iterate>
@@ -160,7 +160,7 @@
 		<isNotNull property="addressParams"> 
 		   and exists (
 		    select * from ADDRESS saddr where 
-		    saddr.PERSON_ID = p.PERSON_ID
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ like #addressParams[].value#
 		    </iterate>
@@ -169,7 +169,7 @@
 		<isNotNull property="emailParams"> 
 		   and exists (
 		    select * from EMAIL se where 
-		    se.PERSON_ID = p.PERSON_ID
+		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
 		    se.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
@@ -178,7 +178,7 @@
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD scf where 
-		   ((scf.ENTITY_ID = c.COMMITMENT_ID and scf.ENTITY_TYPE = 'commitment') or (scf.ENTITY_ID = p.PERSON_ID and scf.ENTITY_TYPE = 'person'))
+		   ((scf.ENTITY_ID = c.COMMITMENT_ID and scf.ENTITY_TYPE = 'commitment') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>

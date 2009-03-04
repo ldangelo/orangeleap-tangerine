@@ -83,7 +83,8 @@ public class PersonServiceImpl implements PersonService {
         if (logger.isDebugEnabled()) {
             logger.debug("readConstituentById: id = " + id);
         }
-        return constituentDao.readConstituentById(id);
+        Person constituent = constituentDao.readConstituentById(id);
+        return constituent;
     }
 
     @Override

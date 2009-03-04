@@ -84,7 +84,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     {
     	
     	// Constituent
-    	fieldMap.put("person.accountNumber", "PERSON_ID");
+    	fieldMap.put("person.accountNumber", "CONSTITUENT_ID");
     	fieldMap.put("person.firstName", "FIRST_NAME");
     	fieldMap.put("person.lastName", "LAST_NAME");
     	fieldMap.put("person.organizationName", "ORGANIZATION_NAME");

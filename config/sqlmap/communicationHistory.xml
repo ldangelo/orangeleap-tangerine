@@ -23,7 +23,7 @@
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from COMMUNICATION_HISTORY ch
-		inner join PERSON p on ch.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
@@ -35,12 +35,12 @@
 
 	<select id="SELECT_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
 		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
-		and ch.PERSON_ID = #constituentId#
+		and ch.CONSTITUENT_ID = #constituentId#
 	</select>
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, CREATE_DATE,
-		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID,	PERSON_ID, COMMENTS)
+		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID,	CONSTITUENT_ID, COMMENTS)
 		values (#communicationHistoryType#, now(),
 		#recordDate#, #systemGenerated#, now(),
 		#commitmentId#, #giftId#, #person.id#, #comments#)
@@ -57,7 +57,7 @@
 		UPDATE_DATE = now(),
 		COMMITMENT_ID = #commitmentId#,
 		GIFT_ID = #giftId#,
-		PERSON_ID = #person.id#,
+		CONSTITUENT_ID = #person.id#,
 		COMMENTS = #comments#
 		where COMMUNICATION_HISTORY_ID = #id#
 	</update>

@@ -20,7 +20,7 @@
 		
 		from RECURRING_GIFT rg
 		inner join COMMITMENT c on rg.COMMITMENT_ID = c.COMMITMENT_ID
-		inner join PERSON p on c.PERSON_ID = p.PERSON_ID
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
 		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on c.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on c.ADDRESS_ID = addr.ADDRESS_ID

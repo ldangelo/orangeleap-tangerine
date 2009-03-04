@@ -35,7 +35,7 @@
       	<include refid="CONSTITUENT_COLS_FRAGMENT"/>
 
 		from PAYMENT_SOURCE ps 
-      	inner join PERSON p on ps.PERSON_ID = p.PERSON_ID
+      	inner join CONSTITUENT p on ps.CONSTITUENT_ID = p.CONSTITUENT_ID
 		left outer join PHONE ph on ps.PHONE_ID = ph.PHONE_ID 
 		left outer join ADDRESS addr on ps.ADDRESS_ID = addr.ADDRESS_ID
     </sql>
@@ -47,20 +47,20 @@
 
 	<select id="SELECT_PAYMENT_SOURCE_BY_CONSTITUENT_ID_PROFILE" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
-		where ps.PERSON_ID = #constituentId#
+		where ps.CONSTITUENT_ID = #constituentId#
 		and ps.PAYMENT_PROFILE = #profile#
 	</select>
 
 	<select id="SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="long">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
-		where ps.PERSON_ID = #constituentId#
+		where ps.CONSTITUENT_ID = #constituentId#
 		and ps.INACTIVE = false
 		order by PAYMENT_SRC_TYPE
 	</select>
 
 	<select id="SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
-		where ps.PERSON_ID = #constituentId#
+		where ps.CONSTITUENT_ID = #constituentId#
 		and ps.INACTIVE = false
 		and ps.PAYMENT_TYPE in 
 		<iterate property="paymentTypes" conjunction="," open="(" close=")">
@@ -74,7 +74,7 @@
 		ACH_HOLDER_NAME,
 		ACH_ROUTING_NUMBER, CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER,
 		CREDIT_CARD_TYPE, INACTIVE, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID,
-		PERSON_ID, PHONE_ID)
+		CONSTITUENT_ID, PHONE_ID)
 		values (#achAccountNumber#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
 		#creditCardNumber#, #creditCardType#, #inactive#,
@@ -98,7 +98,7 @@
 		PAYMENT_PROFILE = #profile#,
 		PAYMENT_TYPE = #paymentType#,
 		ADDRESS_ID = #address.id#,
-		PERSON_ID = #person.id#,
+		CONSTITUENT_ID = #person.id#,
 		PHONE_ID = #phone.id#
 		where PAYMENT_SOURCE_ID = #id#
 	</update>

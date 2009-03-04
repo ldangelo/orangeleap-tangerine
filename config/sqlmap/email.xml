@@ -18,7 +18,7 @@
 		<result property="temporaryEndDate" column="EMAIL_TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />
 		<result property="temporaryStartDate" column="EMAIL_TEMPORARY_START_DATE"	jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="EMAIL_UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="personId" column="EMAIL_PERSON_ID" jdbcType="BIGINT" />
+		<result property="personId" column="EMAIL_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="primary" column="EMAIL_IS_PRIMARY" jdbcType="CHAR" />
 	</resultMap>
 
@@ -26,7 +26,7 @@
     	e.EMAIL_ID, e.ACTIVATION_STATUS as EMAIL_ACTIVATION_STATUS, e.COMMENT as EMAIL_COMMENT, e.CREATE_DATE as EMAIL_CREATE_DATE, e.EFFECTIVE_DATE as EMAIL_EFFECTIVE_DATE,
 		e.EMAIL_ADDRESS, e.EMAIL_DISPLAY, e.EMAIL_TYPE, e.INACTIVE as EMAIL_INACTIVE, e.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, e.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
 		e.SEASONAL_START_DATE as EMAIL_SEASONAL_START_DATE, e.TEMPORARY_END_DATE as EMAIL_TEMPORARY_END_DATE, e.TEMPORARY_START_DATE as EMAIL_TEMPORARY_START_DATE,
-		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.PERSON_ID as EMAIL_PERSON_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY
+		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.CONSTITUENT_ID as EMAIL_CONSTITUENT_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY
 	</sql>
 	
 	<sql id="SELECT_EMAIL_FRAGMENT">
@@ -42,12 +42,12 @@
 	
 	<select id="SELECT_ALL_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="long">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
-		where e.PERSON_ID = #id#
+		where e.CONSTITUENT_ID = #id#
 	</select>
 
 	<select id="SELECT_ACTIVE_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="long">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
-		where e.PERSON_ID = #id#
+		where e.CONSTITUENT_ID = #id#
 		and e.INACTIVE = false
 		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS
 	</select>
@@ -55,7 +55,7 @@
 	<insert id="INSERT_EMAIL" parameterClass="com.mpower.domain.model.communication.Email">
 		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
 		EMAIL_ADDRESS, EMAIL_DISPLAY, EMAIL_TYPE, INACTIVE, RECEIVE_CORRESPONDENCE,
-		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, PERSON_ID, IS_PRIMARY)
+		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
 		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
 		#emailType#, #inactive#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
@@ -80,7 +80,7 @@
 		TEMPORARY_END_DATE = #temporaryEndDate#,
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
-		PERSON_ID = #personId#,
+		CONSTITUENT_ID = #personId#,
 		IS_PRIMARY = #primary#
 		where EMAIL_ID = #id#
 	</update>

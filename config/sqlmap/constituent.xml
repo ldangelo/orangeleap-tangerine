@@ -3,7 +3,7 @@
 <sqlMap namespace="CONSTITUENT">
 
 	<resultMap id="CONSTITUENT_RESULT" class="com.mpower.domain.model.Person" groupBy="id">
-		<result property="id" column="PERSON_ID" jdbcType="BIGINT" />
+		<result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="constituentIndividualRoles" column="CONSTITUENT_INDIVIDUAL_ROLES" jdbcType="VARCHAR" />
 		<result property="constituentOrganizationRoles" column="CONSTITUENT_ORGANIZATION_ROLES" jdbcType="VARCHAR" />
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
@@ -24,13 +24,10 @@
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
-		<!-- 
-		<result property="personCustomFields" resultMap="CONSTITUENT_CUSTOM_FIELD.CONSTITUENT_CUSTOM_FIELD_RESULT" /> 
-		-->
 	</resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
-    	p.PERSON_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
+    	p.CONSTITUENT_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
 		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
 		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME
@@ -39,21 +36,12 @@
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
 		select 
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
-		<!-- 
-		pcf.PERSON_CUSTOM_FIELD_ID, pcf.PERSON_ID as CONS_CUS_FLD_PERSON_ID,
-		 
-		cf.CUSTOM_FIELD_ID, cf.FIELD_NAME as CUS_FLD_FIELD_NAME, cf.FIELD_VALUE as CUS_FLD_FIELD_VALUE
-		 -->
-		from PERSON p
-		<!-- 
-		left outer join PERSON_CUSTOM_FIELD pcf on p.PERSON_ID = pcf.PERSON_ID 
-		left outer join CUSTOM_FIELD cf on pcf.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID
-		 -->  
+		from CONSTITUENT p
 	</sql>
 	
 	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		where p.PERSON_ID in 
+		where p.CONSTITUENT_ID in 
 		<iterate property="personIds" conjunction="," open="(" close=")">
 			#personIds[]#
 		</iterate>
@@ -72,7 +60,7 @@
 	</select>
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
-		insert into PERSON (CONSTITUENT_INDIVIDUAL_ROLES,
+		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
 		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
 		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME)
@@ -86,7 +74,7 @@
 	</insert>
 
 	<update id="UPDATE_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
-		update PERSON
+		update CONSTITUENT
 		set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#,
 		CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,
 		CONSTITUENT_TYPE = #constituentType#,
@@ -106,25 +94,25 @@
 		TITLE = #title#,
 		UPDATE_DATE = now(),
 		SITE_NAME = #site.name#
-		where PERSON_ID = #id#
+		where CONSTITUENT_ID = #id#
 	</update>
 
 	<update id="SET_LAPSED_DONOR" parameterClass="long">
-		update PERSON
+		update CONSTITUENT
 		set LAPSED_DONOR = TRUE
-		where PERSON_ID = #id#
+		where CONSTITUENT_ID = #id#
 	</update>
 	
 	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select
 		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
 <!-- 	, <include refid="ADDRESS_COLS_FRAGMENT"/>  -->
-		from PERSON p
-<!--		left outer join ADDRESS addr on (p.PERSON_ID = addr.PERSON_ID and addr.IS_PRIMARY = '1') -->
+		from CONSTITUENT p
+<!--		left outer join ADDRESS addr on (p.CONSTITUENT_ID = addr.CONSTITUENT_ID and addr.IS_PRIMARY = '1') -->
 		where 
 		p.SITE_NAME = #siteName#
 		<isNotNull property="ignoreIds"> 
-	       and p.PERSON_ID not in 
+	       and p.CONSTITUENT_ID not in 
 		   <iterate property="ignoreIds" conjunction="," open="(" close=")">
 		      #ignoreIds[]#
 		   </iterate>
@@ -142,7 +130,7 @@
 		<isNotNull property="phoneParams"> 
 		   and exists (
 		    select * from PHONE ph where 
-		    ph.PERSON_ID = p.PERSON_ID
+		    ph.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="phoneParams" conjunction="and" open="and" close="">
 		    ph.$phoneParams[].key$ like #phoneParams[].value#
 		    </iterate>
@@ -151,7 +139,7 @@
 		<isNotNull property="addressParams"> 
 		   and exists (
 		    select * from ADDRESS saddr where 
-		    saddr.PERSON_ID = p.PERSON_ID
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ like #addressParams[].value#
 		    </iterate>
@@ -160,7 +148,7 @@
 		<isNotNull property="emailParams"> 
 		   and exists (
 		    select * from EMAIL e where 
-		    e.PERSON_ID = p.PERSON_ID
+		    e.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="emailParams" conjunction="and" open="and" close="">
 		    e.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
@@ -169,7 +157,7 @@
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD cf where 
-		    cf.ENTITY_ID = p.PERSON_ID
+		    cf.ENTITY_ID = p.CONSTITUENT_ID
 		    and cf.ENTITY_TYPE = 'person'
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#

@@ -24,7 +24,7 @@ public class ExpirationFieldHandler extends GenericFieldHandler {
     }
 
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
         FieldVO fieldVO = new FieldVO();
 
         fieldVO.setFieldName(getFieldPropertyName(currentField));

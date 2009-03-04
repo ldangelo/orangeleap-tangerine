@@ -24,14 +24,14 @@ public class CodeFieldHandler extends GenericFieldHandler {
     }
 
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
-        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
+        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         Object propertyValue = super.getPropertyValue(model, fieldVO);
-        fieldVO.setDisplayValue(resolve(siteName, fieldVO.getFieldName(), (String)propertyValue));
+        fieldVO.setDisplayValue(resolve(fieldVO.getFieldName(), (String)propertyValue));
         return fieldVO;
     }
     
-    private String resolve(String siteName, String codeType, String codeValue) {
+    private String resolve(String codeType, String codeValue) {
         if (logger.isDebugEnabled()) {
             logger.debug("resolve: codeValue = " + codeValue);
         }

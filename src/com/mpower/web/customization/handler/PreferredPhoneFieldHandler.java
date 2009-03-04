@@ -29,8 +29,8 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
      * Reads each field on the page to get a list of phones types that are used to build the drop-down.
      */
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
-        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
+        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         fieldVO.setCodes(new ArrayList<String>());
         fieldVO.setDisplayValues(new ArrayList<String>());
         for (SectionField currentSectionField : sectionFields) {

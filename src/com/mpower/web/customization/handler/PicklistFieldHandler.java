@@ -27,8 +27,8 @@ public class PicklistFieldHandler extends GenericFieldHandler {
     }
 
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
-        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
+        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         fieldVO.setCodes(new ArrayList<String>());
         fieldVO.setDisplayValues(new ArrayList<String>());
         fieldVO.setReferenceValues(new ArrayList<String>());

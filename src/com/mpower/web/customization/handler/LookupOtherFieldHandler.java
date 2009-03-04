@@ -20,8 +20,8 @@ public class LookupOtherFieldHandler extends LookupFieldHandler {
     }
 
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
-        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
+        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         OtherFieldHandler.handleOtherField(fieldVO, model);
         return fieldVO;
     }

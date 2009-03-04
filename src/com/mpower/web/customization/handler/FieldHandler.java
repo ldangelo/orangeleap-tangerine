@@ -7,5 +7,5 @@ import com.mpower.domain.model.customization.SectionField;
 import com.mpower.web.customization.FieldVO;
 
 public interface FieldHandler {
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model);
 }

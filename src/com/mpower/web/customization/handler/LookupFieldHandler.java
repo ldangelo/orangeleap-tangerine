@@ -23,8 +23,8 @@ public class LookupFieldHandler extends GenericFieldHandler {
     }
 
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
-        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, siteName, model);
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
+        FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         boolean isCustom = currentField.getFieldDefinition().isCustom();
         Object propertyValue = super.getPropertyValue(model, fieldVO);
 

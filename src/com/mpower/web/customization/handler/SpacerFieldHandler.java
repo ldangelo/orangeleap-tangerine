@@ -17,7 +17,7 @@ public class SpacerFieldHandler implements FieldHandler {
 
 	
     @Override
-    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, String siteName, Object model) {
+    public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
         FieldVO fieldVO = new FieldVO();
         fieldVO.setFieldType(FieldType.SPACER);
         return fieldVO;

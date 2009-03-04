@@ -12,32 +12,28 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.AbstractCustomizableEntity;
+import com.mpower.domain.model.AbstractEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 
 public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
 
-    protected TangerineUserHelper tangerineUserHelper;
-
     @Resource(name="tangerineUserHelper")
-    public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
-        this.tangerineUserHelper = tangerineUserHelper;
-    }
-
-    protected AbstractIBatisDao(SqlMapClient sqlMapClient) {
-        setSqlMapClientTemplate( new CustomizableSqlMapClientTemplate(sqlMapClient));
-    }
+    protected TangerineUserHelper tangerineUserHelper;
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     protected String getSiteName() {
         return tangerineUserHelper.lookupUserSiteName();
+    }
+
+    protected AbstractIBatisDao(SqlMapClient sqlMapClient) {
+        setSqlMapClientTemplate( new CustomizableSqlMapClientTemplate(sqlMapClient));
     }
 
     protected Map<String, Object> setupParams() {

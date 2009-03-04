@@ -13,6 +13,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.mpower.dao.interfaces.QueryLookupExecutorDao;
+import com.mpower.util.StringConstants;
+import com.mpower.util.TangerineUserHelper;
 
 @Repository("queryLookupExecutorDAO")
 public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
@@ -20,6 +22,8 @@ public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
     
     @Resource(name="dataSource")
     public void setDataSource(DataSource dataSource) {
@@ -36,6 +40,7 @@ public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
         if (logger.isDebugEnabled()) {
             logger.debug("executeQueryLookup: queryString = " + queryString + " parameters = " + parameters);
         }
+        parameters.put(StringConstants.SITE_NAME, tangerineUserHelper.lookupUserSiteName());
         RowMapper rowMapper = getRowMapper(queryString);
         return namedParameterJdbcTemplate.query(queryString, parameters, rowMapper);
     }
@@ -43,9 +48,11 @@ public class JdbcQueryLookupExecutorDao implements QueryLookupExecutorDao {
     private RowMapper getRowMapper(String queryString) {
 		try {
 	        String table = getMainTable(queryString);
-			return (RowMapper) Class.forName("com.mpower.dao.jdbc.rowmappers."+table+"RowMapper").newInstance();
+			return (RowMapper) Class.forName("com.mpower.dao.jdbc.rowmappers." + table + "RowMapper").newInstance();
 		} catch (Exception e) {
-			e.printStackTrace();
+		    if (logger.isErrorEnabled()) {
+		        logger.error("Invalid query lookup SQL", e);
+		    }
 			throw new RuntimeException("Invalid query lookup string " + queryString);
 		}
     }

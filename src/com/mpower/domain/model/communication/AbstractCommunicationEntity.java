@@ -159,4 +159,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
             }
         }
     }
+    
+    public abstract String getCommunicationType();
 }

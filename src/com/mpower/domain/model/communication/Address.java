@@ -139,4 +139,9 @@ public class Address extends AbstractCommunicationEntity {
         hcb.append(personId).append(addressType).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
         return hcb.hashCode();
     }
+
+    @Override
+    public String getCommunicationType() {
+        return addressType;
+    }
 }

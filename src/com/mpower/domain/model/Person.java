@@ -2,9 +2,11 @@ package com.mpower.domain.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
@@ -44,10 +46,9 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
     private String loginId;
     private Date createDate;
     private Date updateDate;
-    private final Map<String, List<Address>> addressMap = null;
-    private final Map<String, List<Email>> emailMap = null;
-    private final Map<String, List<Phone>> phoneMap = null;
-
+    private Map<String, List<Address>> addressMap = null;
+    private Map<String, List<Email>> emailMap = null;
+    private Map<String, List<Phone>> phoneMap = null;
 
     public Person() { }
 
@@ -178,9 +179,9 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.addresses = addresses;
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, List<Address>> getAddressMap() {
         if (addressMap == null) {
+            addressMap = buildMap(getAddresses());
             // TODO: put back for IBatis
             // addressMap = AddressMap.buildAddressMap(getAddresses(), this);
         }
@@ -198,9 +199,9 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.emails = emails;
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, List<Email>> getEmailMap() {
         if (emailMap == null) {
+            emailMap = buildMap(getEmails());
             // TODO: put back for IBatis
             // emailMap = EmailMap.buildEmailMap(getEmails(), this);
         }
@@ -218,9 +219,9 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
         this.phones = phones;
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, List<Phone>> getPhoneMap() {
         if (phoneMap == null) {
+            phoneMap = buildMap(getPhones());
             // TODO: put back for IBatis
             // phoneMap = PhoneMap.buildPhoneMap(getPhones(), this);
         }
@@ -409,4 +410,21 @@ public class Person extends AbstractCustomizableEntity {// SiteAware, Customizab
     public String getLoginId() {
         return loginId;
     }
-}
+    
+    @SuppressWarnings("unchecked")
+    private static <T extends AbstractCommunicationEntity> Map<String, List<T>> buildMap(List<T> masterList) {
+        Map<String, List<T>> map = new HashMap<String, List<T>>();
+        for (AbstractCommunicationEntity entity : masterList) {
+            List<T> typedList = null; 
+            if (map.containsKey(entity.getCommunicationType())) {
+                typedList = map.get(entity.getCommunicationType());
+            }
+            else {
+                typedList = new ArrayList<T>();
+                map.put(entity.getCommunicationType(), typedList);
+            }
+            typedList.add((T) entity);
+        }
+        return map;
+    }
+ }

@@ -76,4 +76,9 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         hcb.append(getPersonId()).append(emailType).append(activationStatus).append(emailAddress).append(emailDisplay);
         return hcb.hashCode();
     }
+
+    @Override
+    public String getCommunicationType() {
+        return emailType;
+    }
 }

@@ -87,4 +87,9 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         hcb.append(getPersonId()).append(phoneType).append(activationStatus).append(number).append(sms);
         return hcb.hashCode();
     }
+
+    @Override
+    public String getCommunicationType() {
+        return phoneType;
+    }
 }

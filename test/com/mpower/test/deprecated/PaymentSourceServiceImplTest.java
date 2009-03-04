@@ -10,7 +10,7 @@ import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.Site;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.PaymentSourceDataProvider;
 
@@ -45,7 +45,7 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "checkPaymentSource" }, dependsOnGroups = { "createPaymentSource" })
     public void checkForExistingPaymentSources() {
-        PersonService personService = (PersonService) applicationContext.getBean("personService");
+        ConstituentService personService = (ConstituentService) applicationContext.getBean("constituentService");
         List<Person> persons = personService.readAllConstituentsBySite();
         Long personId = null;
         for (Person person : persons) {
@@ -80,7 +80,7 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "checkEtcPaymentSource" }, dependsOnGroups = { "createEtcPaymentSource" })
     public void testReadActivePaymentSourcesACHCreditCard() {
-        PersonService personService = (PersonService) applicationContext.getBean("personService");
+        ConstituentService personService = (ConstituentService) applicationContext.getBean("constituentService");
         List<Person> persons = personService.readAllConstituentsBySite();
         Long personId = null;
         for (Person person : persons) {
@@ -98,7 +98,7 @@ public class PaymentSourceServiceImplTest extends BaseTest {
 
     @Test(groups = { "deletePaymentSource" }, dependsOnGroups = { "createPaymentSource", "checkPaymentSource" })
     public void inactivatePaymentSources() {
-        PersonService personService = (PersonService) applicationContext.getBean("personService");
+        ConstituentService personService = (ConstituentService) applicationContext.getBean("constituentService");
         List<Person> persons = personService.readAllConstituentsBySite();
         for (Person person : persons) {
             List<PaymentSource> sources = paymentSourceService.readPaymentSources(person.getId());

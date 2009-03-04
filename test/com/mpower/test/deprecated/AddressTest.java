@@ -39,13 +39,13 @@ public class AddressTest extends BaseTest {
         person.setSite(site);
         em.persist(person);
         personId = person.getId();
-        int begin = addressService.readAddresses(person.getId()).size();
+        int begin = addressService.readAddressesByConstituentId(person.getId()).size();
         for (Address address : addresses) {
             address.setPersonId(person.getId());
             address = addressService.saveAddress(address);
             addressIds.add(address.getId());
         }
-        int end = addressService.readAddresses(person.getId()).size();
+        int end = addressService.readAddressesByConstituentId(person.getId()).size();
         logger.debug("change = " + (end - begin));
         assert (end - begin) == addresses.size();
         em.getTransaction().commit();
@@ -63,7 +63,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("1-temporary-addressLine1");
         address1StringList.add("2-temporary-addressLine1");
         address1StringList.add("3-temporary-addressLine1");
-        List<Address> addresses = addressService.readAddresses(personId);
+        List<Address> addresses = addressService.readAddressesByConstituentId(personId);
         assert addresses.size() == 9;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());

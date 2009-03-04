@@ -9,14 +9,14 @@ import org.testng.annotations.Test;
 
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.Site;
-import com.mpower.service.PersonService;
+import com.mpower.service.ConstituentService;
 import com.mpower.test.BaseTest;
 import com.mpower.test.dataprovider.PersonDataProvider;
 
 public class PersonTest extends BaseTest {
 
     @Autowired
-    private PersonService personService;
+    private ConstituentService personService;
 
     @Test(dataProvider = "setupCreatePerson", dataProviderClass = PersonDataProvider.class)
     public void searchPerson(Site site, Person person) {

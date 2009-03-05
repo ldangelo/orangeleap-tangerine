@@ -42,16 +42,21 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return params;
     }
 
-    protected GeneratedId insert(final GeneratedId o, final String table) {
+    protected GeneratedId insertOrUpdate(final GeneratedId o, final String table) {
         if (logger.isDebugEnabled()) {
-            logger.debug("insert: o = " + o + " table = " + table);
+            logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
         }
-        String insertId = "INSERT_" + table;
-        Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
-        if (logger.isDebugEnabled()) {
-            logger.debug("insert: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+        if (o.getId() == null || o.getId() <= 0) {
+            String insertId = "INSERT_" + table;
+            Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
+            if (logger.isDebugEnabled()) {
+                logger.debug("insert: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+            }
+            o.setId(generatedId);
         }
-        o.setId(generatedId);
+        else {
+            getSqlMapClientTemplate().update("UPDATE_" + table, o);
+        }
         return o;
     }
 
@@ -64,7 +69,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
      */
     protected Object insertOrUpdate(final AbstractEntity o, final String table) {
         if (logger.isDebugEnabled()) {
-            logger.debug("insertOrUpdate: o = " + o + " table = " + table);
+            logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
         }
         o.prePersist();
 

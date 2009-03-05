@@ -28,7 +28,7 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
         if (logger.isDebugEnabled()) {
             logger.debug("addPaymentHistory: personId = " + paymentHistory.getPerson().getId());
         }
-        return (PaymentHistory)insert(paymentHistory, "PAYMENT_HISTORY");
+        return (PaymentHistory)insertOrUpdate(paymentHistory, "PAYMENT_HISTORY");
 	}
 
 	@SuppressWarnings("unchecked")

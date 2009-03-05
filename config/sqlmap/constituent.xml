@@ -37,26 +37,24 @@
 		select 
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
 		from CONSTITUENT p
+		where p.SITE_NAME = #siteName#
 	</sql>
 	
 	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		where p.CONSTITUENT_ID in 
+		and p.CONSTITUENT_ID in 
 		<iterate property="personIds" conjunction="," open="(" close=")">
 			#personIds[]#
 		</iterate>
-		and p.SITE_NAME = #siteName#
 	</select>
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		where p.SITE_NAME = #siteName#
 	</select>
 
 	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		where p.LOGIN_ID = #loginId#
-		and p.SITE_NAME = #siteName#
+		and p.LOGIN_ID = #loginId#
 	</select>
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">

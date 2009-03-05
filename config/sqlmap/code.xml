@@ -14,12 +14,18 @@
 	<result property="site" resultMap="CODE.CODE_TYPE_SITE_NAME_RESULT" />
   </resultMap>
   
+  <sql id="CODE_TYPE_COLS_FRAGMENT">
+		ct.ID, ct.LABEL, ct.NAME, ct.SITE_NAME
+  </sql>
+	
+  
   <!-- Selects -->
   <select id="SELECT_CODE_TYPE_BY_ID" resultMap="CODE_TYPE_RESULT" parameterClass="map">
-	select ID, LABEL, NAME, SITE_NAME
-	from CODE_TYPE
-    where ID = #id#
-    and SITE_NAME = #siteName#
+	select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>
+	from CODE_TYPE ct
+    where ct.SITE_NAME = #siteName#
+    and ct.ID = #id#
   </select>
   <select id="SELECT_CODE_TYPE_DISTINCT" resultClass="java.lang.String" parameterClass="map">
     SELECT DISTINCT ct.NAME as NAME 
@@ -28,14 +34,16 @@
     and ct.SITE_NAME = #siteName#
   </select>
   <select id="SELECT_CODE_TYPE_BY_NAME" resultMap="CODE_TYPE_RESULT" parameterClass="map">
-	select ID, LABEL, NAME, SITE_NAME
-	from CODE_TYPE
-    where NAME = #name#
-    and SITE_NAME = #siteName#
+	select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>
+	from CODE_TYPE ct
+    where ct.SITE_NAME = #siteName#
+    and NAME = #name#
   </select>
   <select id="SELECT_GENERIC_CODE_TYPES" resultMap="CODE_TYPE_RESULT" parameterClass="map" >
-	select ID, LABEL, NAME, SITE_NAME
-	from CODE_TYPE
+	select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>
+	from CODE_TYPE ct
     where SITE_NAME is null
   </select>
 	
@@ -56,48 +64,42 @@
      where ID = #id#
   </update>
 
-
+ 
   <resultMap id="CODE_RESULT" class="com.mpower.domain.model.customization.Code" >
     <result property="id" column="CODE_ID" jdbcType="BIGINT" />
     <result property="description" column="CODE_DESCRIPTION" jdbcType="VARCHAR" />
     <result property="inactive" column="INACTIVE" jdbcType="CHAR" />
     <result property="value" column="CODE_VALUE" jdbcType="VARCHAR" />
-    <result property="codeType" column="CODE_TYPE_ID" jdbcType="BIGINT" />
+	<result property="codeTypeId" column="CODE_TYPE_ID" jdbcType="BIGINT" />
   </resultMap>
   
+  <sql id="CODE_COLS_FRAGMENT">
+	 c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+  </sql>
+  
   <select id="SELECT_CODE_BY_ID" resultMap="CODE_RESULT" parameterClass="map" >
-    select CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and c.CODE_ID = #id#
     and ct.SITE_NAME = #siteName#
   </select>
+  
   <select id="SELECT_GENERIC_CODES" resultMap="CODE_RESULT" parameterClass="map" >
-    select CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
-    and c.CODE_ID = #id#
     and ct.SITE_NAME is null
   </select>
-  <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
-    insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
-    values (#description#, #inactive#, #value#, #codeTypeId#)
-    <selectKey keyProperty="id" resultClass="long">
-		SELECT LAST_INSERT_ID() AS value
-	</selectKey>
-  </insert>
-  <update id="UPDATE_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
-    update CODE
-    set CODE_DESCRIPTION = #description#,
-      INACTIVE = #inactive#,
-      CODE_VALUE = #value#,
-      CODE_TYPE_ID = #codeTypeId#
-    where CODE_ID = #id#
-  </update>
-  
   
   <select id="SELECT_CODES_BY_CODE_TYPE" resultMap="CODE_RESULT" parameterClass="map">
-    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and ct.NAME = #codeType#
@@ -106,7 +108,9 @@
   </select>
   
   <select id="SELECT_CODE_BY_ACTIVE_CODE_AND_CODE_TYPE_AND_CODE_VALUE" resultMap="CODE_RESULT" parameterClass="map">
-    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and ct.NAME = #codeType#
@@ -117,7 +121,9 @@
   </select>
   
   <select id="SELECT_CODES_BY_CODE_TYPE_AND_CODE_VALUE" resultMap="CODE_RESULT" parameterClass="map" >
-    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and ct.NAME = #codeType#
@@ -126,10 +132,10 @@
     ORDER BY c.CODE_VALUE
   </select>
   
-  
-  
   <select id="SELECT_CODES_BY_ACTIVE_AND_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION" resultMap="CODE_RESULT" parameterClass="map" >
-    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and ct.NAME = #codeType#
@@ -141,7 +147,9 @@
   </select>
   
   <select id="SELECT_CODES_BY_CODE_TYPE_AND_CODE_VALUE_AND_CODE_DESCRIPTION" resultMap="CODE_RESULT" parameterClass="map" >
-    select c.CODE_ID, c.CODE_DESCRIPTION, c.INACTIVE, c.CODE_VALUE, c.CODE_TYPE_ID
+    select 
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>,
+	<include refid="CODE_COLS_FRAGMENT"/>
     from CODE c, CODE_TYPE ct
     where c.CODE_TYPE_ID = ct.ID
     and ct.NAME = #codeType#
@@ -150,6 +158,24 @@
     and ct.SITE_NAME = #siteName#
     ORDER BY c.CODE_VALUE
   </select>
+  
+  
+  <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+    insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
+    values (#description#, #inactive#, #value#, #codeTypeId#)
+    <selectKey keyProperty="id" resultClass="long">
+		SELECT LAST_INSERT_ID() AS value
+	</selectKey>
+  </insert>
+  
+  <update id="UPDATE_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+    update CODE
+    set CODE_DESCRIPTION = #description#,
+      INACTIVE = #inactive#,
+      CODE_VALUE = #value#,
+      CODE_TYPE_ID = #codeTypeId#
+    where CODE_ID = #id#
+  </update>
   
   
   

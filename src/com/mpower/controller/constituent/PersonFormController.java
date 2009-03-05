@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineFormController;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.Person;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.util.StringConstants;
 
 public class PersonFormController extends TangerineFormController {
@@ -54,7 +54,7 @@ public class PersonFormController extends TangerineFormController {
         try {
             current = constituentService.maintainConstituent(p);
         } 
-        catch (PersonValidationException e) {
+        catch (ConstituentValidationException e) {
             saved = false;
         	current = p;
             e.createMessages(errors);

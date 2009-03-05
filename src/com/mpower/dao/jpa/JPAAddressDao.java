@@ -35,7 +35,6 @@ public class JPAAddressDao implements AddressDao {
 
     @Override
     // TODO: IBatisAddressDao --> maintainAddress
-    // TODO: save nested properties such as custom fields, etc (must be invoked in Service class)
     public Address maintainAddress(Address address) {
         if (address.getId() == null) {
             em.persist(address);

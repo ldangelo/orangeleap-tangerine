@@ -19,7 +19,7 @@ import com.mpower.domain.model.customization.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.domain.model.customization.FieldRelationship;
 import com.mpower.service.RelationshipService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.service.relationship.PersonTreeNode;
 import com.mpower.service.relationship.RelationshipUtil;
 import com.mpower.service.relationship.TooManyLevelsException;
@@ -40,15 +40,15 @@ public class RelationshipServiceImpl implements RelationshipService {
     private ConstituentDao constituentDao;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-    public Person maintainRelationships(Person constituent) throws PersonValidationException {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
+    public Person maintainRelationships(Person constituent) throws ConstituentValidationException {
     	if (logger.isDebugEnabled()) {
     	    logger.debug("maintainRelationships: constituent = " + constituent);
     	}
     	if (constituent.getSite() == null) {
             return constituent;
         }
-    	PersonValidationException ex = new PersonValidationException();
+    	ConstituentValidationException ex = new ConstituentValidationException();
     	String lastRecursiveParentCustomFieldName = null;
     	
     	Map<String, FieldDefinition> map = constituent.getFieldTypeMap();
@@ -127,8 +127,8 @@ public class RelationshipServiceImpl implements RelationshipService {
     
     // Return the tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
     @Override
-    @Transactional(readOnly=true, propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException {
+    @Transactional(readOnly=true, propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
     	
        	Map<String, FieldDefinition> map = person.getFieldTypeMap();
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
@@ -148,7 +148,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
     // TODO Turn off in production since getting the whole tree could be expensive.
-    private void debugPrintTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+    private void debugPrintTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
     	try {
     		PersonTreeNode tree = getTree(person, parentCustomFieldName, false, true);
     		String result = debugPrintTree(tree);
@@ -186,7 +186,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 			List<Long> oldIds,
 			List<Long> newIds, 
 			List<Long> checkDescendents,
-			PersonValidationException ex) throws PersonValidationException { 
+			ConstituentValidationException ex) throws ConstituentValidationException { 
 
         logger.debug("maintainRelationShip() called for " + otherField.getFieldName() + ", " + direction + ", " + fieldRelationship.getRelationshipType() + ", recursive=" + fieldRelationship.isRecursive());	
         
@@ -298,7 +298,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 
 	// Field must be a detail (child list) custom field.
-	private void getDescendantIds(List<Long> list, Person person, String customFieldName, int level) throws PersonValidationException {
+	private void getDescendantIds(List<Long> list, Person person, String customFieldName, int level) throws ConstituentValidationException {
 		
 		if (level > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(customFieldName);
@@ -338,7 +338,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 	
 	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws PersonValidationException {
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
 		if (fromHeadOfTree) {
             person = getHeadOfTree(person, parentCustomFieldName);
         }
@@ -348,7 +348,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	}
 	
 	// Field must be a master (parent id) custom field.
-	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws PersonValidationException {
+	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
 		int level = 0;
 		while (true) {
 			level++;
@@ -363,7 +363,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 		}
 	}
 	
-	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName, boolean oneLevelOnly) throws PersonValidationException {
+	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName, boolean oneLevelOnly) throws ConstituentValidationException {
 		if (personNode.getLevel() > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(childrenCustomFieldName);
 		}
@@ -392,7 +392,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 	    return null;
 	}
 
-	public Person getFirstCommonAncestor(Person p1, Person p2, String parentCustomFieldName) throws PersonValidationException {
+	public Person getFirstCommonAncestor(Person p1, Person p2, String parentCustomFieldName) throws ConstituentValidationException {
 		List<Person> p1Parents = new ArrayList<Person>();
 		p1Parents.add(p1);
 		List<Person> p2Parents = new ArrayList<Person>();

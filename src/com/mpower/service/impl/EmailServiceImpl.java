@@ -23,7 +23,7 @@ import com.mpower.service.InactivateService;
 
 @Service("emailService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class EmailServiceImpl implements EmailService, InactivateService, CloneService {
+public class EmailServiceImpl extends AbstractCommunicationService<Email> implements EmailService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -50,7 +50,8 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
                     try {
                         BeanUtils.copyProperties(e, email);
                         e.setId(id);
-                    } catch (Exception ex) {
+                    } 
+                    catch (Exception ex) {
                         logger.debug(ex.getMessage(), ex);
                     }
                     email = e;
@@ -61,7 +62,8 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
             email = emailDao.maintainEmail(email);
             if (email.isInactive()) {
                 auditService.auditObjectInactive(email);
-            } else {
+            } 
+            else {
                 auditService.auditObject(email);
             }
         }
@@ -104,12 +106,15 @@ public class EmailServiceImpl implements EmailService, InactivateService, CloneS
         if (logger.isDebugEnabled()) {
             logger.debug("readCurrentEmails: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
         }
-        return emailDao.readActiveEmailsByConstituentId(constituentId); // TODO: move JPAEmailDao logic here
+        return filterByActivationType(emailDao.readActiveEmailsByConstituentId(constituentId), mailOnly);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     // TODO: is this being used?
     public void inactivateEmails() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivateEmails:");
+        }
         emailDao.inactivateEmails();
     }
 

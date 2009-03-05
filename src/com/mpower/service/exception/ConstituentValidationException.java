@@ -3,7 +3,7 @@ package com.mpower.service.exception;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class PersonValidationException extends ValidationException {
+public class ConstituentValidationException extends ValidationException {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

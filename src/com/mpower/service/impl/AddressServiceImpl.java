@@ -1,7 +1,6 @@
 package com.mpower.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,18 +22,13 @@ import com.mpower.service.InactivateService;
 
 @Service("addressService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class AddressServiceImpl implements AddressService, InactivateService, CloneService {
+public class AddressServiceImpl extends AbstractCommunicationService<Address> implements AddressService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name = "auditService")
     private AuditService auditService;
-
-// TODO: remove below
-//    public void setAuditService(AuditService auditService) {
-//        this.auditService = auditService;
-//    }
 
     @Resource(name = "addressDAO")
     private AddressDao addressDao;
@@ -109,17 +103,19 @@ public class AddressServiceImpl implements AddressService, InactivateService, Cl
     }
 
     @Override
-    public List<Address> readCurrentAddresses(Long constituentId, Calendar calendar, boolean mailOnly) {
+    public List<Address> readCurrentAddresses(Long constituentId, boolean mailOnly) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCurrentAddresses: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
+            logger.debug("readCurrentAddresses: constituentId = " + constituentId + " mailOnly = " + mailOnly);
         }
-        return addressDao.readActiveAddressesByConstituentId(constituentId);
-        // TODO: move filtering logic from JPAAddressDao to here
+        return filterByActivationType(addressDao.readActiveAddressesByConstituentId(constituentId), mailOnly);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     // TODO: is this being used?
     public void inactivateAddresses() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivateAddresses:");
+        }
         addressDao.inactivateAddresses();
     }
 

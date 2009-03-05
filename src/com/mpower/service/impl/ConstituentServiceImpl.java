@@ -27,7 +27,7 @@ import com.mpower.service.ConstituentService;
 import com.mpower.service.EmailService;
 import com.mpower.service.PhoneService;
 import com.mpower.service.RelationshipService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.EntityType;
 import com.mpower.util.TangerineUserHelper;
 
@@ -65,13 +65,13 @@ public class ConstituentServiceImpl implements ConstituentService {
     private GiftDao giftDao;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = PersonValidationException.class)
-    public Person maintainConstituent(Person constituent) throws PersonValidationException {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
+    public Person maintainConstituent(Person constituent) throws ConstituentValidationException {
         if (logger.isDebugEnabled()) {
             logger.debug("maintainConstituent: constituent = " + constituent);
         }
         if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
-            throw new PersonValidationException(); 
+            throw new ConstituentValidationException(); 
         }
     	if (constituent.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(constituent.getLegalName())) {
     		constituent.setLegalName(constituent.getOrganizationName());

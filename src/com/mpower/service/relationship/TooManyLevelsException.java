@@ -1,8 +1,8 @@
 package com.mpower.service.relationship;
 
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 
-public class TooManyLevelsException extends PersonValidationException {
+public class TooManyLevelsException extends ConstituentValidationException {
 
 	private static final long serialVersionUID = 1L;
 

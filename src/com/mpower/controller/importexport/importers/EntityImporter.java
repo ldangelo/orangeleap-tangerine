@@ -16,7 +16,7 @@ import com.mpower.controller.importexport.exporters.EntityExporter;
 import com.mpower.controller.importexport.exporters.EntityExporterFactory;
 import com.mpower.controller.importexport.exporters.FieldDescriptor;
 import com.mpower.service.SiteService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.FieldType;
 import com.mpower.type.PageType;
 
@@ -46,7 +46,7 @@ public abstract class EntityImporter {
         }
 	}	
 	
-	public abstract void importValueMap(String action, Map<String, String> m) throws PersonValidationException;
+	public abstract void importValueMap(String action, Map<String, String> m) throws ConstituentValidationException;
 	public abstract String getIdField();
 	protected abstract PageType getPageType();
 

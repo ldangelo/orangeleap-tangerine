@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.ConstituentService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.PageType;
 import com.mpower.util.TangerineUserHelper;
 
@@ -41,7 +41,7 @@ public class PersonImporter extends EntityImporter {
 
 
 	@Override
-	public void importValueMap(String action, Map<String, String> values) throws PersonValidationException {
+	public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException {
 		
 		Person constituent;
 		

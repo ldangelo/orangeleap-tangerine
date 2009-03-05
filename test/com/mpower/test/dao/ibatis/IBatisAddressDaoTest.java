@@ -169,7 +169,10 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadAddress" })
     public void testReadActiveAddresssByConstituentId() throws Exception {
-        List<Address> addresses = addressDao.readActiveAddressesByConstituentId(100L);
+        List<Address> addresses = addressDao.readActiveAddressesByConstituentId(0L);
+        assert addresses != null && addresses.isEmpty();
+        
+        addresses = addressDao.readActiveAddressesByConstituentId(100L);
         assert addresses != null && addresses.size() == 2;
         for (Address address : addresses) {
             if (address.getId() >= 100L && address.getId() <= 400L) {

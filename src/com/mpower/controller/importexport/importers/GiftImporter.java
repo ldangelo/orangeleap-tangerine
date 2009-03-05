@@ -11,7 +11,7 @@ import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.ConstituentService;
 import com.mpower.service.GiftService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.PageType;
 
 
@@ -41,7 +41,7 @@ public class GiftImporter extends EntityImporter {
 
 
 	@Override
-	public void importValueMap(String action, Map<String, String> values) throws PersonValidationException {
+	public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException {
 		
 		if (!action.equals(EntityImporter.ACTION_ADD)) {
 			throw new RuntimeException("Gifts can only be ADDed.");

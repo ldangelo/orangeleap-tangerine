@@ -1,8 +1,9 @@
 package com.mpower.domain.model.communication;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
 
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
@@ -22,14 +23,14 @@ public class Address extends AbstractCommunicationEntity {
 
     public Address() { }
 
-    public Address(Long personId) {
-        this.personId = personId;
+    public Address(Long constituentId) {
+        this.personId = constituentId;
         this.addressType = StringConstants.UNKNOWN;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = ActivationType.permanent;
     }
 
-    public Address(Long personId, String addressLine1, String city, String stateProvince, String postalCode, String country) {
-        this(personId);
+    public Address(Long constituentId, String addressLine1, String city, String stateProvince, String postalCode, String country) {
+        this(constituentId);
         this.addressLine1 = addressLine1;
         this.city = city;
         this.stateProvince = stateProvince;
@@ -104,7 +105,7 @@ public class Address extends AbstractCommunicationEntity {
     public String getShortDisplay() {
         String shortDisplay = null;
         if (isValid()) {
-            shortDisplay = StringUtils.substring(addressLine1, 0, 10) + " ... " + StringUtils.substring(postalCode, 0, 5);
+            shortDisplay = org.apache.commons.lang.StringUtils.substring(addressLine1, 0, 10) + " ... " + org.apache.commons.lang.StringUtils.substring(postalCode, 0, 5);
         }
         return shortDisplay;
     }
@@ -114,11 +115,11 @@ public class Address extends AbstractCommunicationEntity {
      * @return true if this Address has all required fields populated
      */
     public boolean isValid() {
-        return (org.springframework.util.StringUtils.hasText(addressLine1) &&
-                org.springframework.util.StringUtils.hasText(city) &&
-                org.springframework.util.StringUtils.hasText(stateProvince) &&
-                org.springframework.util.StringUtils.hasText(postalCode) &&
-                org.springframework.util.StringUtils.hasText(country));
+        return (StringUtils.hasText(addressLine1) &&
+                StringUtils.hasText(city) &&
+                StringUtils.hasText(stateProvince) &&
+                StringUtils.hasText(postalCode) &&
+                StringUtils.hasText(country));
     }
 
     @Override
@@ -138,6 +139,12 @@ public class Address extends AbstractCommunicationEntity {
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb.append(personId).append(addressType).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
         return hcb.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("addressLine1", addressLine1).append("addressLine2", addressLine2).append("addressLine3", addressLine3).append("city", city).
+            append("stateProvince", stateProvince).append("postalCode", postalCode).append("country", country).append("addressType", addressType).toString();
     }
 
     @Override

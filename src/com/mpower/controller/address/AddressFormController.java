@@ -1,6 +1,5 @@
 package com.mpower.controller.address;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +40,9 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
         Map refData = super.referenceData(request);
         List<Address> addresses = addressService.readAddressesByConstituentId(super.getConstituentId(request));
         refData.put("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), Calendar.getInstance(), false);
+        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), false);
         refData.put("currentAddresses", currentAddresses);
-        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), Calendar.getInstance(), true);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), true);
         refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
 
         if (logger.isDebugEnabled()) {

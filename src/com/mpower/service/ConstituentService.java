@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.model.Person;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 
 public interface ConstituentService {
 
-    public Person maintainConstituent(Person constituent) throws PersonValidationException;
+    public Person maintainConstituent(Person constituent) throws ConstituentValidationException;
 
     public Person readConstituentById(Long id);
 

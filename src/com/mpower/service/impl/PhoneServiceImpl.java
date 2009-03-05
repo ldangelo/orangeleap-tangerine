@@ -23,7 +23,7 @@ import com.mpower.service.PhoneService;
 
 @Service("phoneService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PhoneServiceImpl implements PhoneService, InactivateService, CloneService {
+public class PhoneServiceImpl extends AbstractCommunicationService<Phone> implements PhoneService, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -33,11 +33,6 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
 
     @Resource(name = "phoneDAO")
     private PhoneDao phoneDao;
-
-// TODO: remove
-//    public void setAuditService(AuditService auditService) {
-//        this.auditService = auditService;
-//    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Phone savePhone(Phone phone) {
@@ -54,7 +49,8 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
                     try {
                         BeanUtils.copyProperties(p, phone);
                         p.setId(id);
-                    } catch (Exception e) {
+                    } 
+                    catch (Exception e) {
                         logger.debug(e.getMessage(), e);
                     }
                     phone = p;
@@ -65,7 +61,8 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
             phone = phoneDao.maintainPhone(phone);
             if (phone.isInactive()) {
                 auditService.auditObjectInactive(phone);
-            } else {
+            } 
+            else {
                 auditService.auditObject(phone);
             }
         }
@@ -108,13 +105,15 @@ public class PhoneServiceImpl implements PhoneService, InactivateService, CloneS
         if (logger.isDebugEnabled()) {
             logger.debug("readCurrentPhones: constituentId = " + constituentId + " calendar = " + calendar + " mailOnly = " + mailOnly);
         }
-        return phoneDao.readActivePhonesByConstituentId(constituentId);
-        // TODO: move filtering logic from JPAPhoneDao to here
+        return filterByActivationType(phoneDao.readActivePhonesByConstituentId(constituentId), mailOnly);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     // TODO: is this being used?
     public void inactivatePhones() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivatePhones:");
+        }
         phoneDao.inactivatePhones();
     }
 

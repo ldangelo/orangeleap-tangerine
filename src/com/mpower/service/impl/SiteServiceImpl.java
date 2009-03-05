@@ -37,7 +37,7 @@ import com.mpower.service.VersionService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
 import com.mpower.service.customization.PageCustomizationService;
-import com.mpower.service.exception.PersonValidationException;
+import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.MessageResourceType;
 import com.mpower.type.PageType;
 
@@ -98,7 +98,7 @@ public class SiteServiceImpl implements SiteService {
     }
     
     // Create a Person object row corresponding to the login user.
-    private Person createPerson(MpowerAuthenticationToken authentication, String siteName)  throws PersonValidationException, javax.naming.NamingException {
+    private Person createPerson(MpowerAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, javax.naming.NamingException {
         Person constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.FIRST_NAME));
         constituent.setLastName(authentication.getUserAttributes().get(MpowerLdapAuthoritiesPopulator.LAST_NAME));

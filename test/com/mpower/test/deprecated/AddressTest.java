@@ -78,7 +78,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-temporary-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 9, 15);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -93,7 +93,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-seasonal-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 10, 15);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             logger.debug("address: " + a.getActivationStatus() + ", effective=" + a.getEffectiveDate() + ", season start=" + a.getSeasonalStartDate() + ", season end=" + a.getSeasonalEndDate() + ", temp start=" + a.getTemporaryStartDate() + ", temp end=" + a.getTemporaryEndDate());
@@ -102,7 +102,7 @@ public class AddressTest extends BaseTest {
 
         cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 2, 15);
-        addresses = addressService.readCurrentAddresses(personId, cal, false);
+        addresses = addressService.readCurrentAddresses(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -117,7 +117,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-permanent-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 3, 1);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, cal, false);
+        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());

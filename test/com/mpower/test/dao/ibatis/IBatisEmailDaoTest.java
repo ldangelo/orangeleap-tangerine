@@ -38,7 +38,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email.getId().equals(readEmail.getId());
         assert 300L == readEmail.getPersonId();
         assert "bow@wow.com".equals(readEmail.getEmailAddress());
-        assert StringConstants.UNKNOWN.equals(readEmail.getEmailType());
+        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readEmail.getEmailType());
         assert ActivationType.permanent.equals(readEmail.getActivationStatus());
         assert readEmail.getEmailDisplay() == null;
         assert readEmail.getCreateDate() != null;

@@ -32,7 +32,7 @@ public class Person extends AbstractCustomizableEntity {
     private String organizationName;
     private String legalName;
     private String ncaisCode;
-    private String maritalStatus = StringConstants.UNKNOWN;
+    private String maritalStatus = "Unknown";
     private String preferredPhoneType;
     private List<Address> addresses;
     private List<Email> emails;

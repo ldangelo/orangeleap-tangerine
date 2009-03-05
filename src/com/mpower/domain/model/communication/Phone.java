@@ -11,7 +11,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
 
     private static final long serialVersionUID = 1L;
 
-    private String phoneType = StringConstants.UNKNOWN;
+    private String phoneType = StringConstants.UNKNOWN_LOWER_CASE;
     private String number;
     private String provider;
     private String sms;
@@ -20,7 +20,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
 
     public Phone(Long personId) {
         this.personId = personId;
-        this.phoneType = StringConstants.UNKNOWN; // defaulting to 'home' would change the home phone on the constituent whenever a new payment type is created with a new phone.
+        this.phoneType = StringConstants.UNKNOWN_LOWER_CASE; // defaulting to 'home' would change the home phone on the constituent whenever a new payment type is created with a new phone.
         this.activationStatus = ActivationType.permanent;
     }
     

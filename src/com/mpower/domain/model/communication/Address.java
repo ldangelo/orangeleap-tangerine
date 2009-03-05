@@ -12,7 +12,7 @@ public class Address extends AbstractCommunicationEntity {
     
     private static final long serialVersionUID = 1L;
 
-    private String addressType = StringConstants.UNKNOWN;
+    private String addressType = StringConstants.UNKNOWN_LOWER_CASE;
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -25,7 +25,7 @@ public class Address extends AbstractCommunicationEntity {
 
     public Address(Long constituentId) {
         this.personId = constituentId;
-        this.addressType = StringConstants.UNKNOWN;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
+        this.addressType = StringConstants.UNKNOWN_LOWER_CASE;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = ActivationType.permanent;
     }
 

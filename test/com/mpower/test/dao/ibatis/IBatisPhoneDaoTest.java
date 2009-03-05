@@ -37,7 +37,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
         assert "911-911-9110".equals(readPhone.getNumber());
-        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
+        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readPhone.getPhoneType());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
@@ -60,7 +60,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.getId() > 0;
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
-        assert StringConstants.UNKNOWN.equals(readPhone.getPhoneType());
+        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readPhone.getPhoneType());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;

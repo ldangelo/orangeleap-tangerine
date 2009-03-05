@@ -11,7 +11,7 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
 
     private static final long serialVersionUID = 1L;
 
-    private String emailType = StringConstants.UNKNOWN;
+    private String emailType = StringConstants.UNKNOWN_LOWER_CASE;
     private String emailAddress;
     private String emailDisplay;
 
@@ -19,7 +19,7 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
 
     public Email(Long personId) {
         this.personId = personId;
-        this.emailType = StringConstants.UNKNOWN;  
+        this.emailType = StringConstants.UNKNOWN_LOWER_CASE;  
         this.activationStatus = ActivationType.permanent;
     }
 

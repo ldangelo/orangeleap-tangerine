@@ -41,7 +41,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "NY".equals(readAddress.getStateProvince());
         assert "20211".equals(readAddress.getPostalCode());
         assert "USA".equals(readAddress.getCountry());
-        assert StringConstants.UNKNOWN.equals(readAddress.getAddressType());
+        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readAddress.getAddressType());
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;
@@ -70,7 +70,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "USA".equals(readAddress.getCountry());
         assert address.getId().equals(readAddress.getId());
         assert 300L == readAddress.getPersonId();
-        assert StringConstants.UNKNOWN.equals(readAddress.getAddressType());
+        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readAddress.getAddressType());
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;

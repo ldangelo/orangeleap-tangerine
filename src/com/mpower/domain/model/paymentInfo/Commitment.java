@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.type.CommitmentType;
 
 public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Viewable TODO: for Ibatis 
@@ -282,5 +284,15 @@ public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Viewabl
         else if (CommitmentType.MEMBERSHIP.equals(getCommitmentType())) {
             setAutoPay(false);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("commitmentType", commitmentType).append("amountPerGift", amountPerGift).append("amountTotal", amountTotal).append("startDate", startDate).
+               append("endDate", endDate).append("pledgeDate", pledgeDate).append("pledgeCancelDate", pledgeCancelDate).append("pledgeCancelReason", pledgeCancelReason).
+               append("status", status).append("pledgeStatus", pledgeStatus).append("createDate", createDate).append("updateDate", updateDate).
+               append("autoPay", autoPay).append("notes", notes).append("frequency", frequency).append("recurringGift", recurringGift).
+               append("lastEntryDate", lastEntryDate).append("recurring", recurring).append("projectedDate", projectedDate).
+               toString();
     }
 }

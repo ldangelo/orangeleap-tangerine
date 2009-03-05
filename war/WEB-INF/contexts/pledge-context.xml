@@ -16,7 +16,6 @@
 	            <ref bean="commitmentValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="pledge"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 	            <ref bean="codeValidator"/>	            
 	            <ref bean="distributionLinesValidator"/>	            

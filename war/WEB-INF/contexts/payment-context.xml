@@ -14,7 +14,6 @@
 	            <ref bean="paymentSourceValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="paymentManager"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 			</list>
         </property>

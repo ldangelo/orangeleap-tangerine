@@ -12,7 +12,6 @@
 			<list>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="gift"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 	            <ref bean="codeValidator"/>	            
 	            <ref bean="distributionLinesValidator"/>	            

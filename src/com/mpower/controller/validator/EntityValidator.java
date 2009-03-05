@@ -48,11 +48,8 @@ public class EntityValidator implements Validator {
     @Resource(name="tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
     
+    @Resource(name="siteService")
     private SiteService siteService;
-
-    public void setSiteService(SiteService siteService) {
-        this.siteService = siteService;
-    }
 
     private PageType pageType;
 

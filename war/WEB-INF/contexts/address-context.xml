@@ -17,8 +17,7 @@
 			<list>
 	            <ref bean="addressValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="address"/>
-			        <property name="siteService" ref="siteService"/>
+			        <property name="pageType" value="addressManager"/>
 	            </bean>
 			</list>
         </property>

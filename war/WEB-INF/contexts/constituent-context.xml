@@ -22,7 +22,6 @@
         <property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
 		        <property name="pageType" value="person"/>
-		        <property name="siteService" ref="siteService" />
             </bean>
         </property>
         <property name="formView" value="constituent/person" />

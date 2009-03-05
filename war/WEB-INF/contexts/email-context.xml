@@ -16,8 +16,7 @@
 			<list>
 	            <ref bean="emailValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="email"/>
-			        <property name="siteService" ref="siteService" />
+			        <property name="pageType" value="emailManager"/>
 	            </bean>
 			</list>
         </property>

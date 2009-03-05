@@ -16,8 +16,7 @@
 			<list>
 	            <ref bean="phoneValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
-			        <property name="pageType" value="phone"/>
-			        <property name="siteService" ref="siteService" />
+			        <property name="pageType" value="phoneManager"/>
 	            </bean>
 			</list>
         </property>

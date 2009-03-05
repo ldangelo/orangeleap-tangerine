@@ -14,7 +14,6 @@
 	            <ref bean="commitmentValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="membership"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 			</list>
         </property>
@@ -39,7 +38,6 @@
 		<property name="validator">
             <bean class="com.mpower.controller.validator.EntityValidator">
 		        <property name="pageType" value="membershipView"/>
-		        <property name="siteService" ref="siteService" />
             </bean>
         </property>
         <property name="formView" value="membership/membershipView" />

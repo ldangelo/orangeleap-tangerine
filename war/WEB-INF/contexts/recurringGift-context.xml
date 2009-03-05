@@ -13,7 +13,6 @@
 	            <ref bean="commitmentValidator"/>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="recurringGift"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 	            <ref bean="codeValidator"/>	            
 	            <ref bean="distributionLinesValidator"/>	            

@@ -12,7 +12,6 @@
 			<list>
 	            <bean class="com.mpower.controller.validator.EntityValidator">
 			        <property name="pageType" value="communicationHistory"/>
-			        <property name="siteService" ref="siteService" />
 	            </bean>
 	        </list>
         </property>

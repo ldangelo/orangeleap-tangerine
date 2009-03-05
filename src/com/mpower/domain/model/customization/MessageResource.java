@@ -3,6 +3,8 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 import java.util.Locale;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.MessageResourceType;
@@ -12,15 +14,10 @@ public class MessageResource implements GeneratedId, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
     private String languageAbbreviation;
-
     private MessageResourceType messageResourceType;
-
     private Site site;
-
     private String messageKey;
-
     private String messageValue;
 
     public Locale getLocale() {
@@ -81,4 +78,9 @@ public class MessageResource implements GeneratedId, Serializable {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("messageKey", messageKey).append("messageValue", messageValue).append("messageResourceType", messageResourceType).
+               append("languageAbbreviation", languageAbbreviation).append("site", site).toString();
+    }
 }

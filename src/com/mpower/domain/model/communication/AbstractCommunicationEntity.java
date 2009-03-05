@@ -144,8 +144,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     public void setPrimary(boolean isPrimary) {
         this.isPrimary = isPrimary;
     }
-
-
     
     @Override
     public void prePersist() {
@@ -172,4 +170,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     }
     
     public abstract String getCommunicationType();
+    
+    public abstract boolean isValid();
 }

@@ -70,6 +70,9 @@ public class ConstituentServiceImpl implements ConstituentService {
         if (logger.isDebugEnabled()) {
             logger.debug("maintainConstituent: constituent = " + constituent);
         }
+        if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
+            throw new PersonValidationException(); 
+        }
     	if (constituent.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(constituent.getLegalName())) {
     		constituent.setLegalName(constituent.getOrganizationName());
     	}

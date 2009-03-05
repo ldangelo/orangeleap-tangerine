@@ -418,7 +418,7 @@ public class GiftServiceImpl extends AbstractTangerineService implements GiftSer
         Gift originalGift = readGiftById(giftId);
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
-            refundGift.setId(null);
+            refundGift.resetIdToNull();
             refundGift.setTransactionDate(null);
             refundGift.getPaymentSource().setCreditCardExpiration(null);
             refundGift.setAmount(originalGift.getAmount().negate());

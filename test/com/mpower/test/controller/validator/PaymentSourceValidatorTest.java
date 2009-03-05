@@ -60,7 +60,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
 
     @Test(groups = { "validatePaymentProfile" })
     public void testExistingPaymentProfileForNewPaymentSource() throws Exception {
-        source.setId(null);
+        source.resetIdToNull();
         source.setProfile("MyProfile");
         validator.validatePaymentProfile(source, errors);
 

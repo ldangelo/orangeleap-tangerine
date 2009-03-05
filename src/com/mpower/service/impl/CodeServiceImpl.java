@@ -18,7 +18,6 @@ import com.mpower.domain.model.customization.Code;
 import com.mpower.domain.model.customization.CodeType;
 import com.mpower.service.AuditService;
 import com.mpower.service.CodeService;
-import com.mpower.util.TangerineUserHelper;
 
 @Service("codeService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -104,7 +103,7 @@ public class CodeServiceImpl extends AbstractTangerineService implements CodeSer
 			Long newId = codeDao.maintainCodeType(codeType).getId();
 			for (Code code : codes) {
 				if (origId.equals(code.getCodeTypeId())) {
-					code.setId(null);
+					code.resetIdToNull();
 					code.setCodeType(newId);
 					codeDao.maintainCode(code);
 				}

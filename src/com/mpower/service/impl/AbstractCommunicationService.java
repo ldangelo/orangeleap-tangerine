@@ -139,7 +139,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
             try {
                 entity = (T)BeanUtils.cloneBean(original);
-                entity.setId(null);
+                entity.resetIdToNull();
             }
             catch (Exception e) {
                 if (logger.isErrorEnabled()) {

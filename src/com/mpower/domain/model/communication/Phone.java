@@ -2,6 +2,7 @@ package com.mpower.domain.model.communication;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.core.style.ToStringCreator;
 
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
@@ -66,6 +67,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
      */
     // @Override
     // TODO: put back for IBatis
+    @Override
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
     }
@@ -86,6 +88,11 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb.append(getPersonId()).append(phoneType).append(activationStatus).append(number).append(sms);
         return hcb.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("number", number).append("provider", provider).append("sms", sms).append("phoneType", phoneType).toString();
     }
 
     @Override

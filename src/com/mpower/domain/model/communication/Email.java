@@ -2,6 +2,7 @@ package com.mpower.domain.model.communication;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.core.style.ToStringCreator;
 
 import com.mpower.type.ActivationType;
 import com.mpower.util.StringConstants;
@@ -55,6 +56,7 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
      * Check if this is a dummy object; This is not a dummy object all required fields (emailAddress) are populated
      * @return true if this Email has all required fields populated
      */
+    @Override
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(emailAddress));
     }
@@ -75,6 +77,11 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         HashCodeBuilder hcb = new HashCodeBuilder();
         hcb.append(getPersonId()).append(emailType).append(activationStatus).append(emailAddress).append(emailDisplay);
         return hcb.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("emailAddress", emailAddress).append("emailDisplay", emailDisplay).append("emailType", emailType).toString();
     }
 
     @Override

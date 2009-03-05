@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.LayoutType;
@@ -88,5 +90,11 @@ public class SectionDefinition implements GeneratedId, Serializable {
 
     public String getSectionHtmlName() {
         return sectionName.replace('.', '_');
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("pageType", pageType).append("sectionName", sectionName).append("defaultLabel", defaultLabel).
+                append("layoutType", layoutType).append("sectionOrder", sectionOrder).append("site", site).append("role", role).toString();
     }
 }

@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 
 public class FieldCondition implements GeneratedId, Serializable {
@@ -63,5 +65,11 @@ public class FieldCondition implements GeneratedId, Serializable {
 
     public void setValidationId(Long validationId) {
         this.validationId = validationId;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("value", value).append("dependentFieldDefinition", dependentFieldDefinition).append("dependentSecondaryFieldDefinition", dependentSecondaryFieldDefinition).
+                append("fieldRequiredId", fieldRequiredId).append("validationId", validationId).toString();
     }
 }

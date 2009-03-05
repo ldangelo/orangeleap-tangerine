@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 import com.mpower.type.FieldType;
@@ -114,5 +116,11 @@ public class SectionField implements GeneratedId, Serializable {
         else {
             return fieldDefinition.getFieldName() + "." + secondaryFieldDefinition.getFieldName();
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("fieldDefinition", fieldDefinition).append("secondaryFieldDefinition", secondaryFieldDefinition).append("site", site).
+                append("fieldOrder", fieldOrder).append("sectionDefinition", sectionDefinition).toString();
     }
 }

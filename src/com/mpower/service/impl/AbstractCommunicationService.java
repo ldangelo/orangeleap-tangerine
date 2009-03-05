@@ -179,7 +179,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
         for (T entity : entities) {
             if (ActivationType.temporary.equals(entity.getActivationStatus())) {
-                if (!nowDate.before(entity.getTemporaryStartDate()) && !nowDate.after(entity.getTemporaryEndDate())) {
+                if (entity.getTemporaryStartDate() != null && entity.getTemporaryEndDate() != null && 
+                    !nowDate.before(entity.getTemporaryStartDate()) && !nowDate.after(entity.getTemporaryEndDate())) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.temporary, entity);
                 }
             } 

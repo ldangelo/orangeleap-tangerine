@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 
 import com.mpower.domain.model.AddressAware;
 import com.mpower.domain.model.communication.Address;
+import com.mpower.type.ActivationType;
 
 public class AddressValidator implements Validator {
 
@@ -38,10 +39,10 @@ public class AddressValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressLine1", "invalidAddressLine1", "Address Line 1 is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city", "invalidCity", "City is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State/Province is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Postal/Zip Code is required");
         //        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Zipcode is required"); // TODO: country
-        if ("seasonal".equals(address.getActivationStatus())) {
+        if (ActivationType.seasonal.equals(address.getActivationStatus())) {
             if (address.getSeasonalStartDate() == null) {
                 errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
             }
@@ -53,7 +54,7 @@ public class AddressValidator implements Validator {
                     errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
                 }
             }
-        } else if ("temporary".equals(address.getActivationStatus())) {
+        } else if (ActivationType.temporary.equals(address.getActivationStatus())) {
             if (address.getTemporaryStartDate() == null) {
                 errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
             }

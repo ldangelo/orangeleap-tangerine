@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 
 import com.mpower.domain.model.PhoneAware;
 import com.mpower.domain.model.communication.Phone;
+import com.mpower.type.ActivationType;
 
 public class PhoneValidator implements Validator {
 
@@ -37,7 +38,7 @@ public class PhoneValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");
-        if ("seasonal".equals(phone.getActivationStatus())) {
+        if (ActivationType.seasonal.equals(phone.getActivationStatus())) {
             if (phone.getSeasonalStartDate() == null) {
                 errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
             }
@@ -49,7 +50,7 @@ public class PhoneValidator implements Validator {
                     errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
                 }
             }
-        } else if ("temporary".equals(phone.getActivationStatus())) {
+        } else if (ActivationType.temporary.equals(phone.getActivationStatus())) {
             if (phone.getTemporaryStartDate() == null) {
                 errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
             }

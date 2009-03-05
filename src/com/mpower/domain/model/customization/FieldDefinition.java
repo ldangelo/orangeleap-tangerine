@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.model.Site;
 import com.mpower.type.EntityType;
 import com.mpower.type.FieldType;
@@ -113,6 +115,11 @@ public class FieldDefinition implements Serializable {
         return (fieldName != null && fieldName.startsWith(StringConstants.CUSTOM_FIELD_MAP));
     }
 
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("fieldName", fieldName).append("defaultLabel", defaultLabel).append("fieldType", fieldType).
+                append("entityType", entityType).append("referenceType", referenceType).append("entityAttributes", entityAttributes).append("site", site).toString();
+    }
 
     // TODO: move below to RelationshipService
 //  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.

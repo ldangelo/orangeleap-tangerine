@@ -3,6 +3,8 @@ package com.mpower.domain.model.customization;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 
@@ -78,5 +80,11 @@ public class FieldRequired implements GeneratedId, Serializable {
 
     public boolean hasConditions() {
         return fieldConditions != null && fieldConditions.size() > 0;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("sectionName", sectionName).append("fieldDefinition", fieldDefinition).append("secondaryFieldDefinition", secondaryFieldDefinition).
+                append("required", required).append("site", site).toString();
     }
 }

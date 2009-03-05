@@ -138,13 +138,13 @@ public class EntityValidator implements Validator {
         validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
     }
 
-    private void validateRequiredFields(AbstractEntity viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+    private void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
         if (requiredFieldMap != null) {
             for (String key : requiredFieldMap.keySet()) {
                 FieldRequired fr = requiredFieldMap.get(key);
                 List<FieldCondition> conditions = fr.getFieldConditions();
-                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, viewable, fieldValueMap);
+                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(key + " validation doesn't apply:  conditions not met");
@@ -157,7 +157,7 @@ public class EntityValidator implements Validator {
                     }
                     continue;
                 }
-                String propertyString = getPropertyString(key, viewable, fieldValueMap);
+                String propertyString = getPropertyString(key, entity, fieldValueMap);
                 boolean required = fr.isRequired();
                 if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
                     errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
@@ -192,13 +192,13 @@ public class EntityValidator implements Validator {
         return conditionsMet;
     }
 
-    private void validateRegex(AbstractEntity viewable, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+    private void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
         if (validationMap != null) {
             for (String key : validationMap.keySet()) {
                 FieldValidation fv = validationMap.get(key);
                 List<FieldCondition> conditions = fv.getFieldConditions();
-                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, viewable, fieldValueMap);
+                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
                 if (!conditionsMet) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(key + " validation doesn't apply:  conditions not met");
@@ -211,7 +211,7 @@ public class EntityValidator implements Validator {
                     }
                     continue;
                 }
-                String propertyString = getPropertyString(key, viewable, fieldValueMap);
+                String propertyString = getPropertyString(key, entity, fieldValueMap);
                 String regex = validationMap.get(key).getRegex();
                 boolean valid;
                 String validator = "extensions:";

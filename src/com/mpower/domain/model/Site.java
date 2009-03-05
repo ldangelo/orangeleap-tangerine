@@ -3,6 +3,8 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.core.style.ToStringCreator;
+
 public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -80,5 +82,11 @@ public class Site implements Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("name", name).append("merchantNumber", merchantNumber).append("merchantBin", merchantBin).append("parentSite", parentSite).
+                append("createDate", createDate).append("updateDate", updateDate).toString();
     }
 }

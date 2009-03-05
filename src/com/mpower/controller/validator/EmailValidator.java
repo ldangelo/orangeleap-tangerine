@@ -8,6 +8,7 @@ import org.springframework.validation.Validator;
 
 import com.mpower.domain.model.EmailAware;
 import com.mpower.domain.model.communication.Email;
+import com.mpower.type.ActivationType;
 
 public class EmailValidator implements Validator {
 
@@ -38,7 +39,7 @@ public class EmailValidator implements Validator {
     	}
 
     	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
-		if ("seasonal".equals(email.getActivationStatus())) {
+		if (ActivationType.seasonal.equals(email.getActivationStatus())) {
 			if (email.getSeasonalStartDate() == null) {
 				errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
 			}
@@ -50,7 +51,7 @@ public class EmailValidator implements Validator {
 					errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
 				}
 			}
-		} else if ("temporary".equals(email.getActivationStatus())) {
+		} else if (ActivationType.temporary.equals(email.getActivationStatus())) {
 			if (email.getTemporaryStartDate() == null) {
 				errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
 			}

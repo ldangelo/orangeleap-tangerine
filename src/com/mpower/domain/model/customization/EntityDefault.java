@@ -2,6 +2,8 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 
 public class EntityDefault implements GeneratedId, Serializable {
@@ -21,16 +23,12 @@ public class EntityDefault implements GeneratedId, Serializable {
     }
 
     private Long id;
-
     private String defaultValue;
-
     /**
      * Should be a field on the specified entity (e.g. "lastName" for Person)
      */
     private String entityFieldName;
-
     private String entityType;
-
     private String siteName;
 
     @Override
@@ -73,5 +71,11 @@ public class EntityDefault implements GeneratedId, Serializable {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("defaultValue", defaultValue).append("entityFieldName", entityFieldName).append("entityType", entityType).
+                append("siteName", siteName).toString();
     }
 }

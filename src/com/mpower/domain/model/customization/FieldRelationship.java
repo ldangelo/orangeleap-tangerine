@@ -2,8 +2,10 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Site;
+import com.mpower.domain.model.Site;
 import com.mpower.type.RelationshipType;
 
 public class FieldRelationship implements GeneratedId, Serializable {
@@ -72,4 +74,10 @@ public class FieldRelationship implements GeneratedId, Serializable {
 	public Site getSite() {
 		return site;
 	}
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("relationshipType", relationshipType).append("recursive", recursive).append("masterRecordField", masterRecordField).
+                append("detailRecordField", detailRecordField).append("site", site).toString();
+    }
 }

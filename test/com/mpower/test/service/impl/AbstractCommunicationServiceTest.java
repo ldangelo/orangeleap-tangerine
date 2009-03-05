@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.Test;
 
+import com.mpower.dao.interfaces.CommunicationDao;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.service.impl.AbstractCommunicationService;
 import com.mpower.test.BaseTest;
@@ -123,6 +124,11 @@ public class AbstractCommunicationServiceTest extends BaseTest {
     class MockCommunicationServiceImpl extends AbstractCommunicationService<Address> {
         public List<Address> filter(List<Address> entities, boolean mailOnly) {
             return filterByActivationType(entities, mailOnly);
+        }
+
+        @Override
+        protected CommunicationDao<Address> getDao() {
+            return null;
         }
 
         @Override

@@ -126,13 +126,13 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
             gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
         }
         if (gift.getAddress() != null && gift.getAddress().getId() == null) {
-            gift.setAddress(addressService.saveAddress(gift.getAddress()));
+            gift.setAddress(addressService.save(gift.getAddress()));
         }
         if (gift.getPhone() != null && gift.getPhone().getId() == null) {
-            gift.setPhone(phoneService.savePhone(gift.getPhone()));
+            gift.setPhone(phoneService.save(gift.getPhone()));
         }
         if (gift.getEmail() != null && gift.getEmail().getId() == null) {
-            gift.setEmail(emailService.saveEmail(gift.getEmail()));
+            gift.setEmail(emailService.save(gift.getEmail()));
         }
 
 
@@ -179,13 +179,13 @@ public class GiftServiceImpl implements GiftService, ApplicationContextAware {
             gift.setPaymentSource(paymentSourceService.maintainPaymentSource(gift.getPaymentSource()));
         }
         if (gift.getAddress() != null && gift.getAddress().getId() == null) {
-            gift.setAddress(addressService.saveAddress(gift.getAddress()));
+            gift.setAddress(addressService.save(gift.getAddress()));
         }
         if (gift.getPhone() != null && gift.getPhone().getId() == null) {
-            gift.setPhone(phoneService.savePhone(gift.getPhone()));
+            gift.setPhone(phoneService.save(gift.getPhone()));
         }
         if (gift.getEmail() != null && gift.getEmail().getId() == null) {
-            gift.setEmail(emailService.saveEmail(gift.getEmail()));
+            gift.setEmail(emailService.save(gift.getEmail()));
         }
         gift = giftDao.maintainGift(gift);
 

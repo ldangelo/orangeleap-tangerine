@@ -29,7 +29,7 @@
 
   	<bean id="inactivateAddressJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="addressService"/>
-		<property name="targetMethod" value="inactivateAddresses" />
+		<property name="targetMethod" value="inactivateEntities" />
 	</bean>
 
   	<bean id="inactivateAddressJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -40,7 +40,7 @@
 
   	<bean id="inactivateEmailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="emailService"/>
-		<property name="targetMethod" value="inactivateEmails" />
+		<property name="targetMethod" value="inactivateEntities" />
 	</bean>
 
   	<bean id="inactivateEmailJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -51,7 +51,7 @@
 
   	<bean id="inactivatePhoneJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="phoneService"/>
-		<property name="targetMethod" value="inactivatePhones" />
+		<property name="targetMethod" value="inactivateEntities" />
 	</bean>
 
   	<bean id="inactivatePhoneJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

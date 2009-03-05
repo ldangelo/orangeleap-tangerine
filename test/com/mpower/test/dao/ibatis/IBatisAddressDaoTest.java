@@ -30,9 +30,9 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
     public void testMaintainAddress() throws Exception {
         // Insert
         Address address = new Address(300L, "1234 Fake Dr", "New York", "NY", "20211", "USA");
-        address = addressDao.maintainAddress(address);
+        address = addressDao.maintainEntity(address);
         assert address.getId() > 0;
-        Address readAddress = addressDao.readAddressById(address.getId());
+        Address readAddress = addressDao.readById(address.getId());
         assert readAddress != null;
         assert address.getId().equals(readAddress.getId());
         assert 300L == readAddress.getPersonId();
@@ -60,8 +60,8 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         address.setCity("San Francisco");
         address.setStateProvince("CA");
         address.setPostalCode("92111");
-        address = addressDao.maintainAddress(address);
-        readAddress = addressDao.readAddressById(address.getId());
+        address = addressDao.maintainEntity(address);
+        readAddress = addressDao.readById(address.getId());
         assert readAddress.getId() > 0;
         assert "1234 Fake Dr".equals(readAddress.getAddressLine1());
         assert "San Francisco".equals(readAddress.getCity());
@@ -88,7 +88,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadAddress" })
     public void testReadAddress() throws Exception {
-        Address address = addressDao.readAddressById(100L);
+        Address address = addressDao.readById(100L);
         assert address != null;
         assert 100L == address.getId();
         assert "3726 THIRD ST".equals(address.getAddressLine1());
@@ -115,7 +115,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadAddress" })
     public void testReadAddressesByConstituentId() throws Exception {
-        List<Address> addresses = addressDao.readAddressesByConstituentId(100L); 
+        List<Address> addresses = addressDao.readByConstituentId(100L); 
         assert addresses != null && addresses.size() == 4;
         for (Address address : addresses) {
             if (address.getId() >= 100L && address.getId() <= 400L) {
@@ -163,16 +163,16 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
             }
         }
         
-        addresses = addressDao.readAddressesByConstituentId(200L);
+        addresses = addressDao.readByConstituentId(200L);
         assert addresses != null && addresses.size() == 3;
     }
     
     @Test(groups = { "testReadAddress" })
     public void testReadActiveAddresssByConstituentId() throws Exception {
-        List<Address> addresses = addressDao.readActiveAddressesByConstituentId(0L);
+        List<Address> addresses = addressDao.readActiveByConstituentId(0L);
         assert addresses != null && addresses.isEmpty();
         
-        addresses = addressDao.readActiveAddressesByConstituentId(100L);
+        addresses = addressDao.readActiveByConstituentId(100L);
         assert addresses != null && addresses.size() == 2;
         for (Address address : addresses) {
             if (address.getId() >= 100L && address.getId() <= 400L) {
@@ -214,10 +214,10 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         Date d = sdf.parse("01/01/1990");
         address.setTemporaryEndDate(d);
         
-        address = addressDao.maintainAddress(address);
+        address = addressDao.maintainEntity(address);
         assert address.getId() > 0;
         
-        Address readAddress = addressDao.readAddressById(address.getId());
+        Address readAddress = addressDao.readById(address.getId());
         assert readAddress != null;
         assert address.getId().equals(readAddress.getId());
         assert ActivationType.temporary.equals(readAddress.getActivationStatus());
@@ -226,9 +226,9 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "1 Main Street".equals(readAddress.getAddressLine1());
         assert 300L == readAddress.getPersonId();
         
-        addressDao.inactivateAddresses();
+        addressDao.inactivateEntities();
         
-        readAddress = addressDao.readAddressById(address.getId());
+        readAddress = addressDao.readById(address.getId());
         assert readAddress != null;
         assert address.getId().equals(readAddress.getId());
         assert ActivationType.temporary.equals(readAddress.getActivationStatus());

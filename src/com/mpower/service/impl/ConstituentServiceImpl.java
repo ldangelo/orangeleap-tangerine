@@ -96,9 +96,9 @@ public class ConstituentServiceImpl implements ConstituentService {
         }
         Person constituent = constituentDao.readConstituentById(id);
         if (constituent != null) {
-            constituent.setAddresses(addressService.readAddressesByConstituentId(constituent.getId()));
-            constituent.setPhones(phoneService.readPhonesByConstituentId(constituent.getId()));
-            constituent.setEmails(emailService.readEmailsByConstituentId(constituent.getId()));
+            constituent.setAddresses(addressService.readByConstituentId(constituent.getId()));
+            constituent.setPhones(phoneService.readByConstituentId(constituent.getId()));
+            constituent.setEmails(emailService.readByConstituentId(constituent.getId()));
         }
         return constituent;
     }

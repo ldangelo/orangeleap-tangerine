@@ -134,13 +134,13 @@ public class CommitmentServiceImpl implements CommitmentService {
             commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
         }
         if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
-            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
+            commitment.setAddress(addressService.save(commitment.getAddress()));
         }
         if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
-            commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
+            commitment.setPhone(phoneService.save(commitment.getPhone()));
         }
         if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
-            commitment.setEmail(emailService.saveEmail(commitment.getEmail()));
+            commitment.setEmail(emailService.save(commitment.getEmail()));
         }
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
@@ -159,13 +159,13 @@ public class CommitmentServiceImpl implements CommitmentService {
             commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
         }
         if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
-            commitment.setAddress(addressService.saveAddress(commitment.getAddress()));
+            commitment.setAddress(addressService.save(commitment.getAddress()));
         }
         if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
-            commitment.setPhone(phoneService.savePhone(commitment.getPhone()));
+            commitment.setPhone(phoneService.save(commitment.getPhone()));
         }
         if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
-            commitment.setEmail(emailService.saveEmail(commitment.getEmail()));
+            commitment.setEmail(emailService.save(commitment.getEmail()));
         }
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));

@@ -1,6 +1,5 @@
 package com.mpower.controller.email;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
             email = new Email(super.getConstituentId(request));
         }
         else {
-            email = emailService.readEmail(Long.valueOf(emailId));
+            email = emailService.read(Long.valueOf(emailId));
         }
         return email;
     }
@@ -38,11 +37,11 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Email> emails = emailService.readEmailsByConstituentId(super.getConstituentId(request));
+        List<Email> emails = emailService.readByConstituentId(super.getConstituentId(request));
         refData.put("emails", emails);
-        List<Email> currentEmails = emailService.readCurrentEmails(super.getConstituentId(request), Calendar.getInstance(), false);
+        List<Email> currentEmails = emailService.readCurrent(super.getConstituentId(request), false);
         refData.put("currentEmails", currentEmails);
-        List<Email> currentCorrespondenceEmails = emailService.readCurrentEmails(super.getConstituentId(request), Calendar.getInstance(), true);
+        List<Email> currentCorrespondenceEmails = emailService.readCurrent(super.getConstituentId(request), true);
         refData.put("currentCorrespondenceEmails", currentCorrespondenceEmails);
 
         if (logger.isDebugEnabled()) {
@@ -55,7 +54,7 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        emailService.saveEmail((Email) command);
+        emailService.save((Email) command);
         return super.onSubmit(request, response, command, errors);
     }
 }

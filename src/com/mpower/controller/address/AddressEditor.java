@@ -31,7 +31,7 @@ public class AddressEditor extends RequiresConstituentEditor {
     public void setAsText(String text) throws IllegalArgumentException {
         if (NumberUtils.isDigits(text)) {
             Long addressId = NumberUtils.createLong(text);
-            Address a = addressService.readAddress(addressId);
+            Address a = addressService.read(addressId);
             setValue(a);
         }
         else if ("new".equals(text)){

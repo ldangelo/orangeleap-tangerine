@@ -26,44 +26,44 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
     }
     
     @Override
-    public Phone maintainPhone(Phone phone) {
+    public Phone maintainEntity(Phone phone) {
         if (logger.isDebugEnabled()) {
-            logger.debug("maintainPhone: phone = " + phone);
+            logger.debug("maintainEntity: phone = " + phone);
         }
         return (Phone)insertOrUpdate(phone, "PHONE");
     }
 
     @Override
-    public Phone readPhoneById(Long phoneId) {
+    public Phone readById(Long phoneId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readPhoneById: phoneId = " + phoneId);
+            logger.debug("readById: phoneId = " + phoneId);
         }
         return (Phone)getSqlMapClientTemplate().queryForObject("SELECT_PHONE_BY_PHONE_ID", phoneId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Phone> readPhonesByConstituentId(Long constituentId) {
+    public List<Phone> readByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readPhonesByConstituentId: constituentId = " + constituentId);
+            logger.debug("readByConstituentId: constituentId = " + constituentId);
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_PHONES_BY_CONSTITUENT_ID", constituentId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Phone> readActivePhonesByConstituentId(Long constituentId) {
+    public List<Phone> readActiveByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readActivePhonesByConstituentId: constituentId = " + constituentId);
+            logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID", constituentId);
     }
     
     @Override
-    public void inactivatePhones() {
+    public void inactivateEntities() {
         int rows = getSqlMapClientTemplate().update("INACTIVATE_PHONES");
         if (logger.isInfoEnabled()) {
-            logger.info("inactivatePhones: number of phones marked inactive = " + rows);
+            logger.info("inactivateEntities: number of phones marked inactive = " + rows);
         }
     }
 }

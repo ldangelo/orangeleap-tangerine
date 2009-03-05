@@ -31,9 +31,9 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         // Insert
         Email email = new Email(300L, "bow@wow.com");
         email.setEffectiveDate(new Date());
-        email = emailDao.maintainEmail(email);
+        email = emailDao.maintainEntity(email);
         assert email.getId() > 0;
-        Email readEmail = emailDao.readEmailById(email.getId());
+        Email readEmail = emailDao.readById(email.getId());
         assert readEmail != null;
         assert email.getId().equals(readEmail.getId());
         assert 300L == readEmail.getPersonId();
@@ -58,8 +58,8 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         email.setTemporaryStartDate(new Date());
         email.setTemporaryEndDate(new Date());
         email.setEffectiveDate(null);
-        email = emailDao.maintainEmail(email);
-        readEmail = emailDao.readEmailById(email.getId());
+        email = emailDao.maintainEntity(email);
+        readEmail = emailDao.readById(email.getId());
         assert readEmail != null;
         assert "trash".equals(readEmail.getEmailType());
         assert ActivationType.temporary.equals(readEmail.getActivationStatus());
@@ -82,7 +82,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadEmail" })
     public void testReadEmail() throws Exception {
-        Email email = emailDao.readEmailById(300L);
+        Email email = emailDao.readById(300L);
         assert email != null;
         assert 300L == email.getId();
         assert "brown@aol.com".equals(email.getEmailAddress());
@@ -104,7 +104,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadEmail" })
     public void testReadEmailsByConstituentId() throws Exception {
-        List<Email> emails = emailDao.readEmailsByConstituentId(100L); 
+        List<Email> emails = emailDao.readByConstituentId(100L); 
         assert emails != null && emails.size() == 3;
         for (Email email : emails) {
             if (email.getId() >= 100L && email.getId() <= 300L) {
@@ -135,13 +135,13 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
             }
         }
         
-        emails = emailDao.readEmailsByConstituentId(200L);
+        emails = emailDao.readByConstituentId(200L);
         assert emails != null && emails.isEmpty();
     }
     
     @Test(groups = { "testReadEmail" })
     public void testReadActiveEmailsByConstituentId() throws Exception {
-        List<Email> emails = emailDao.readActiveEmailsByConstituentId(100L);
+        List<Email> emails = emailDao.readActiveByConstituentId(100L);
         assert emails != null && emails.size() == 2;
         for (Email email : emails) {
             if (email.getId() >= 100L && email.getId() <= 200L) {
@@ -177,10 +177,10 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         Date d = sdf.parse("01/01/1990");
         email.setTemporaryEndDate(d);
         
-        email = emailDao.maintainEmail(email);
+        email = emailDao.maintainEntity(email);
         assert email.getId() > 0;
         
-        Email readEmail = emailDao.readEmailById(email.getId());
+        Email readEmail = emailDao.readById(email.getId());
         assert readEmail != null;
         assert email.getId().equals(readEmail.getId());
         assert ActivationType.temporary.equals(readEmail.getActivationStatus());
@@ -189,9 +189,9 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert "jow@jow.com".equals(readEmail.getEmailAddress());
         assert 300L == readEmail.getPersonId();
         
-        emailDao.inactivateEmails();
+        emailDao.inactivateEntities();
         
-        readEmail = emailDao.readEmailById(email.getId());
+        readEmail = emailDao.readById(email.getId());
         assert readEmail != null;
         assert email.getId().equals(readEmail.getId());
         assert ActivationType.temporary.equals(readEmail.getActivationStatus());

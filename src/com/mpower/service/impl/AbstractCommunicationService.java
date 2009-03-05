@@ -10,24 +10,162 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mpower.dao.interfaces.CommunicationDao;
+import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.domain.util.SeasonalDateSpan;
+import com.mpower.service.AuditService;
+import com.mpower.service.CloneService;
+import com.mpower.service.CommunicationService;
+import com.mpower.service.InactivateService;
 import com.mpower.type.ActivationType;
 
-public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> {
+public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> implements CommunicationService<T>, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Resource(name = "auditService")
+    private AuditService auditService;
 
+    protected abstract CommunicationDao<T> getDao();
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public T save(T entity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("save: entity = " + entity);
+        }
+        boolean found = false;
+        if (entity.getId() == null) {
+            List<T> entityList = readByConstituentId(entity.getPersonId());
+            for (T a : entityList) {
+                if (entity.equals(a)) {
+                    found = true;
+                    Long id = a.getId();
+                    try {
+                        BeanUtils.copyProperties(a, entity);
+                        a.setId(id);
+                    } 
+                    catch (Exception e) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Exception copying properties", e);
+                        }
+                    }
+                    entity = a;
+                }
+            }
+        }
+        if (!found) {
+            entity = getDao().maintainEntity(entity);
+            if (entity.isInactive()) {
+                auditService.auditObjectInactive(entity);
+            } 
+            else {
+                auditService.auditObject(entity);
+            }
+        }
+        return entity;
+    }
+
+    @Override
+    public List<T> readByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readByConstituentId: constituentId = " + constituentId);
+        }
+        return getDao().readByConstituentId(constituentId);
+    }
+
+    @Override
+    public List<T> filterValid(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("filterValid: constituentId = " + constituentId);
+        }
+        return filterValidEntities(readByConstituentId(constituentId));
+    }
+
+    @Override
+    public T read(Long entityId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("read: entityId = " + entityId);
+        }
+        return getDao().readById(entityId);
+    }
+
+    @Override
+    public List<T> readCurrent(Long constituentId, boolean mailOnly) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readCurrent: constituentId = " + constituentId + " mailOnly = " + mailOnly);
+        }
+        return filterByActivationType(getDao().readActiveByConstituentId(constituentId), mailOnly);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void inactivateEntities() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate:");
+        }
+        getDao().inactivateEntities();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void inactivate(Long id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("inactivate: id = " + id);
+        }
+        T entity = read(id);
+        entity.setInactive(true);
+        this.save(entity);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public AbstractEntity clone(AbstractEntity oldEntity) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("clone: oldEntity = " + oldEntity);
+        }
+        T entity = (T) oldEntity;
+        if (entity.getId() != null) {
+            T original = this.read(entity.getId());
+
+            try {
+                entity = (T)BeanUtils.cloneBean(original);
+                entity.setId(null);
+            }
+            catch (Exception e) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("clone: Exception occurred", e);
+                }
+            }
+        }
+        return entity;
+    }
+   
     /**
      * Method that can be overridden in unit tests
      * @return today's date
      */
     protected Date getNowDate() {
         return Calendar.getInstance().getTime();
+    }
+    
+    protected List<T> filterValidEntities(final List<T> entities) {
+        List<T> filteredEntities = new ArrayList<T>();
+        for (T entity : entities) {
+            if (entity.isValid()) {
+                filteredEntities.add(entity);
+            }
+        }
+        return filteredEntities;
     }
     
     protected List<T> filterByActivationType(final List<T> entities, final boolean mailOnly) {

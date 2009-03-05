@@ -59,39 +59,6 @@
 		and addr.INACTIVE = false
 		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS
 	</select>
-
-<!-- 
-    <select id="SELECT_BY_CURRENT_ADDRESS" resultMap="ADDRESS_RESULT" parameterClass="map">
-        <include refid="SELECT_ADDRESS_FRAGMENT"/>
-        where CONSTITUENT_ID = #personId#
-        and RECEIVE_CORRESPONDENCE = #mailOnly#
-        and INACTIVE = false
-        and ACTIVATION_STATUS = 'temporary'
-        and TEMPORARY_START_DATE &lt;= #effectiveDate#
-        and TEMPORARY_END_DATE &gt;= #effectiveDate#
-        UNION
-        <include refid="SELECT_ADDRESS_FRAGMENT"/>
-        where CONSTITUENT_ID = #personId#
-        and RECEIVE_CORRESPONDENCE = #mailOnly#
-        and INACTIVE = false
-        and ACTIVATION_STATUS = 'seasonal'
-        and ((year(seasonal_start_date) &lt; year(seasonal_end_date)
-            and( (dayofyear(#effectiveDate#) &gt;= dayofyear(seasonal_start_date)
-                    and dayofyear(#effectiveDate#) &lt;= dayofyear(seasonal_end_date)+365)
-                or( dayofyear(#effectiveDate#) + 365 &gt;= dayofyear(seasonal_start_date)
-                    and dayofyear(#effectiveDate#) + 365 &lt;= dayofyear(seasonal_end_date)+365)))
-        or (year(seasonal_end_date) = year(seasonal_end_date)
-            and dayofyear(#effectiveDate#) &gt;= dayofyear(seasonal_start_date)
-            and dayofyear(#effectiveDate#) &lt;= dayofyear(seasonal_end_date)))
-        UNION
-        <include refid="SELECT_ADDRESS_FRAGMENT"/>
-        where CONSTITUENT_ID = #personId#
-        and RECEIVE_CORRESPONDENCE = #mailOnly#
-        and INACTIVE = false
-        and ACTIVATION_STATUS = 'permanent'
-        and EFFECTIVE_DATE &lt;= #effectiveDate#
-    </select>
- -->
  
     <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,

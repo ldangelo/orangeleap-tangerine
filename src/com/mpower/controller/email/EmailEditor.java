@@ -31,7 +31,7 @@ public class EmailEditor extends RequiresConstituentEditor {
     public void setAsText(String text) throws IllegalArgumentException {
         if (NumberUtils.isDigits(text)) {
             Long emailId = NumberUtils.createLong(text);
-            Email a = emailService.readEmail(emailId);
+            Email a = emailService.read(emailId);
             setValue(a);
         }
         else if ("new".equals(text)) {

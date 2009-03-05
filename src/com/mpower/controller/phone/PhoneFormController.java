@@ -1,6 +1,5 @@
 package com.mpower.controller.phone;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +25,11 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Phone> phones = phoneService.readPhonesByConstituentId(super.getConstituentId(request));
+        List<Phone> phones = phoneService.readByConstituentId(super.getConstituentId(request));
         refData.put("phones", phones);
-        List<Phone> currentPhones = phoneService.readCurrentPhones(super.getConstituentId(request), Calendar.getInstance(), false);
+        List<Phone> currentPhones = phoneService.readCurrent(super.getConstituentId(request), false);
         refData.put("currentPhones", currentPhones);
-        List<Phone> currentCorrespondencePhones = phoneService.readCurrentPhones(super.getConstituentId(request), Calendar.getInstance(), true);
+        List<Phone> currentCorrespondencePhones = phoneService.readCurrent(super.getConstituentId(request), true);
         refData.put("currentCorrespondencePhones", currentCorrespondencePhones);
 
         if (logger.isDebugEnabled()) {
@@ -49,14 +48,14 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
             phone = new Phone(super.getConstituent(request).getId());
         }
         else {
-            phone = phoneService.readPhone(Long.valueOf(phoneId));
+            phone = phoneService.read(Long.valueOf(phoneId));
         }
         return phone;
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        phoneService.savePhone((Phone)command);
+        phoneService.save((Phone)command);
         return super.onSubmit(request, response, command, errors);
     }
 }

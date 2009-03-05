@@ -221,15 +221,15 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
         }
         if (bindAddress) {
-            List<Address> addresses = addressService.filterValidAddresses(this.getConstituentId(request));
+            List<Address> addresses = addressService.filterValid(this.getConstituentId(request));
             refData.put(StringConstants.ADDRESSES, addresses);
         }
         if (bindPhone) {
-            List<Phone> phones = phoneService.filterValidPhones(this.getConstituentId(request));
+            List<Phone> phones = phoneService.filterValid(this.getConstituentId(request));
             refData.put(StringConstants.PHONES, phones);
         }
         if (bindEmail) {
-            List<Email> emails = emailService.filterValidEmails(this.getConstituentId(request));
+            List<Email> emails = emailService.filterValid(this.getConstituentId(request));
             refData.put(StringConstants.EMAILS, emails);
         }
         return refData;

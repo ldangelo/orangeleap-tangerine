@@ -32,7 +32,7 @@ public class PhoneEditor extends RequiresConstituentEditor {
     public void setAsText(String text) throws IllegalArgumentException {
         if (NumberUtils.isDigits(text)) {
             Long phoneId = NumberUtils.createLong(text);
-            Phone a = phoneService.readPhone(phoneId);
+            Phone a = phoneService.read(phoneId);
             setValue(a);
         }
         else if (StringConstants.NEW.equals(text)){

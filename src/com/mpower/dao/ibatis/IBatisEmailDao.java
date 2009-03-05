@@ -26,44 +26,44 @@ public class IBatisEmailDao extends AbstractIBatisDao implements EmailDao {
     }
 
     @Override
-    public Email maintainEmail(Email email) {
+    public Email maintainEntity(Email email) {
         if (logger.isDebugEnabled()) {
-            logger.debug("maintainEmail: email = " + email);
+            logger.debug("maintainEntity: email = " + email);
         }
         return (Email)insertOrUpdate(email, "EMAIL");
     }
 
     @Override
-    public Email readEmailById(Long emailId) {
+    public Email readById(Long emailId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readEmailById: emailId = " + emailId);
+            logger.debug("readById: emailId = " + emailId);
         }
         return (Email)getSqlMapClientTemplate().queryForObject("SELECT_EMAIL_BY_EMAIL_ID", emailId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Email> readEmailsByConstituentId(Long constituentId) {
+    public List<Email> readByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readEmailsByConstituentId: constituentId = " + constituentId);
+            logger.debug("readByConstituentId: constituentId = " + constituentId);
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_EMAILS_BY_CONSTITUENT_ID", constituentId);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Email> readActiveEmailsByConstituentId(Long constituentId) {
+    public List<Email> readActiveByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readActiveEmailsByConstituentId: constituentId = " + constituentId);
+            logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_EMAILS_BY_CONSTITUENT_ID", constituentId);
     }
 
     @Override
-    public void inactivateEmails() {
+    public void inactivateEntities() {
         int rows = getSqlMapClientTemplate().update("INACTIVATE_EMAILS");
         if (logger.isInfoEnabled()) {
-            logger.info("inactivateEmails: number of emails marked inactive = " + rows);
+            logger.info("inactivateEntities: number of emails marked inactive = " + rows);
         }
     }
 }

@@ -39,13 +39,13 @@ public class AddressTest extends BaseTest {
         person.setSite(site);
         em.persist(person);
         personId = person.getId();
-        int begin = addressService.readAddressesByConstituentId(person.getId()).size();
+        int begin = addressService.readByConstituentId(person.getId()).size();
         for (Address address : addresses) {
             address.setPersonId(person.getId());
-            address = addressService.saveAddress(address);
+            address = addressService.save(address);
             addressIds.add(address.getId());
         }
-        int end = addressService.readAddressesByConstituentId(person.getId()).size();
+        int end = addressService.readByConstituentId(person.getId()).size();
         logger.debug("change = " + (end - begin));
         assert (end - begin) == addresses.size();
         em.getTransaction().commit();
@@ -63,7 +63,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("1-temporary-addressLine1");
         address1StringList.add("2-temporary-addressLine1");
         address1StringList.add("3-temporary-addressLine1");
-        List<Address> addresses = addressService.readAddressesByConstituentId(personId);
+        List<Address> addresses = addressService.readByConstituentId(personId);
         assert addresses.size() == 9;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -78,7 +78,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-temporary-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 9, 15);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
+        List<Address> addresses = addressService.readCurrent(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -93,7 +93,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-seasonal-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 10, 15);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
+        List<Address> addresses = addressService.readCurrent(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             logger.debug("address: " + a.getActivationStatus() + ", effective=" + a.getEffectiveDate() + ", season start=" + a.getSeasonalStartDate() + ", season end=" + a.getSeasonalEndDate() + ", temp start=" + a.getTemporaryStartDate() + ", temp end=" + a.getTemporaryEndDate());
@@ -102,7 +102,7 @@ public class AddressTest extends BaseTest {
 
         cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 2, 15);
-        addresses = addressService.readCurrentAddresses(personId, false);
+        addresses = addressService.readCurrent(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());
@@ -117,7 +117,7 @@ public class AddressTest extends BaseTest {
         address1StringList.add("3-permanent-addressLine1");
         Calendar cal = CalendarUtils.getToday(false);
         cal.set(cal.get(Calendar.YEAR), 3, 1);
-        List<Address> addresses = addressService.readCurrentAddresses(personId, false);
+        List<Address> addresses = addressService.readCurrent(personId, false);
         assert addresses.size() == 3;
         for (Address a : addresses) {
             assert address1StringList.contains(a.getAddressLine1());

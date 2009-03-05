@@ -30,9 +30,9 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
     public void testMaintainPhone() throws Exception {
         // Insert
         Phone phone = new Phone(300L, "911-911-9110");
-        phone = phoneDao.maintainPhone(phone);
+        phone = phoneDao.maintainEntity(phone);
         assert phone.getId() > 0;
-        Phone readPhone = phoneDao.readPhoneById(phone.getId());
+        Phone readPhone = phoneDao.readById(phone.getId());
         assert readPhone != null;
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
@@ -54,8 +54,8 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         
         // Update
         phone.setNumber("000-000-0000");
-        phone = phoneDao.maintainPhone(phone);
-        readPhone = phoneDao.readPhoneById(phone.getId());
+        phone = phoneDao.maintainEntity(phone);
+        readPhone = phoneDao.readById(phone.getId());
         assert "000-000-0000".equals(readPhone.getNumber());
         assert readPhone.getId() > 0;
         assert phone.getId().equals(readPhone.getId());
@@ -78,7 +78,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadPhone" })
     public void testReadPhone() throws Exception {
-        Phone phone = phoneDao.readPhoneById(100L);
+        Phone phone = phoneDao.readById(100L);
         assert phone != null;
         assert 100L == phone.getId();
         assert "214-443-6829".equals(phone.getNumber());
@@ -101,7 +101,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadPhone" })
     public void testReadPhonesByConstituentId() throws Exception {
-        List<Phone> phones = phoneDao.readPhonesByConstituentId(100L); 
+        List<Phone> phones = phoneDao.readByConstituentId(100L); 
         assert phones != null && phones.size() == 6;
         for (Phone phone : phones) {
             if (phone.getId() >= 100L && phone.getId() <= 600L) {
@@ -142,13 +142,13 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             }
         }
         
-        phones = phoneDao.readPhonesByConstituentId(200L);
+        phones = phoneDao.readByConstituentId(200L);
         assert phones != null && phones.size() == 2;
     }
     
     @Test(groups = { "testReadPhone" })
     public void testReadActivePhonesByConstituentId() throws Exception {
-        List<Phone> phones = phoneDao.readActivePhonesByConstituentId(200L);
+        List<Phone> phones = phoneDao.readActiveByConstituentId(200L);
         assert phones != null && phones.size() == 1;
         for (Phone phone : phones) {
             assert 700L == phone.getId();
@@ -172,10 +172,10 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         Date d = sdf.parse("01/01/1990");
         phone.setTemporaryEndDate(d);
         
-        phone = phoneDao.maintainPhone(phone);
+        phone = phoneDao.maintainEntity(phone);
         assert phone.getId() > 0;
         
-        Phone readPhone = phoneDao.readPhoneById(phone.getId());
+        Phone readPhone = phoneDao.readById(phone.getId());
         assert readPhone != null;
         assert phone.getId().equals(readPhone.getId());
         assert ActivationType.temporary.equals(readPhone.getActivationStatus());
@@ -184,9 +184,9 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert "123-123-1234".equals(readPhone.getNumber());
         assert 300L == readPhone.getPersonId();
         
-        phoneDao.inactivatePhones();
+        phoneDao.inactivateEntities();
         
-        readPhone = phoneDao.readPhoneById(phone.getId());
+        readPhone = phoneDao.readById(phone.getId());
         assert readPhone != null;
         assert phone.getId().equals(readPhone.getId());
         assert ActivationType.temporary.equals(readPhone.getActivationStatus());

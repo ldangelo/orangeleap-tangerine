@@ -29,7 +29,7 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
             address = new Address(super.getConstituentId(request));
         }
         else {
-            address = addressService.readAddress(Long.valueOf(addressId));
+            address = addressService.read(Long.valueOf(addressId));
         }
         return address;
     }
@@ -38,11 +38,11 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Address> addresses = addressService.readAddressesByConstituentId(super.getConstituentId(request));
+        List<Address> addresses = addressService.readByConstituentId(super.getConstituentId(request));
         refData.put("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), false);
+        List<Address> currentAddresses = addressService.readCurrent(super.getConstituentId(request), false);
         refData.put("currentAddresses", currentAddresses);
-        List<Address> currentCorrespondenceAddresses = addressService.readCurrentAddresses(super.getConstituentId(request), true);
+        List<Address> currentCorrespondenceAddresses = addressService.readCurrent(super.getConstituentId(request), true);
         refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
 
         if (logger.isDebugEnabled()) {
@@ -55,7 +55,7 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        addressService.saveAddress((Address)command);
+        addressService.save((Address)command);
         return super.onSubmit(request, response, command, errors);
     }
 }

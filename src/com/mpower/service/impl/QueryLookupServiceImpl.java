@@ -20,7 +20,7 @@ import com.mpower.service.QueryLookupService;
 
 @Service("queryLookupService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class QueryLookupServiceImpl implements QueryLookupService {
+public class QueryLookupServiceImpl extends AbstractTangerineService implements QueryLookupService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

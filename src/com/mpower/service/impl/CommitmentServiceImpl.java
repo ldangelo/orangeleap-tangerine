@@ -44,7 +44,7 @@ import com.mpower.type.EntityType;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CommitmentServiceImpl implements CommitmentService {
+public class CommitmentServiceImpl extends AbstractTangerineService implements CommitmentService {
 
     /** Logger for this class and subclasses */
     protected final static Log logger = LogFactory.getLog(CommitmentServiceImpl.class);

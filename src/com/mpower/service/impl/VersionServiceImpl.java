@@ -10,7 +10,7 @@ import com.mpower.dao.interfaces.VersionDao;
 import com.mpower.service.VersionService;
 
 @Service("versionService")
-public class VersionServiceImpl implements VersionService {
+public class VersionServiceImpl extends AbstractTangerineService implements VersionService {
 
 	// Increment this value when the tangerine.ddl has an incompatible change for a release.
 	public final static int ORANGE_SCHEMA_MAJOR_VERSION = 1;

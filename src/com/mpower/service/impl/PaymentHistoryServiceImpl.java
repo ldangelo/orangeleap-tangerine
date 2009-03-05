@@ -16,7 +16,7 @@ import com.mpower.service.PaymentHistoryService;
 
 @Service("paymentHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PaymentHistoryServiceImpl implements PaymentHistoryService {
+public class PaymentHistoryServiceImpl extends AbstractTangerineService implements PaymentHistoryService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

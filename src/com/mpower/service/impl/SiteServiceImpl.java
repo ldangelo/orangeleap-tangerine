@@ -42,7 +42,7 @@ import com.mpower.type.MessageResourceType;
 import com.mpower.type.PageType;
 
 @Service("siteService")
-public class SiteServiceImpl implements SiteService {
+public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

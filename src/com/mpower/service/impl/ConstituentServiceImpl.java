@@ -32,7 +32,7 @@ import com.mpower.type.EntityType;
 import com.mpower.util.TangerineUserHelper;
 
 @Service("constituentService")
-public class ConstituentServiceImpl implements ConstituentService {
+public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

@@ -24,7 +24,7 @@ import com.mpower.type.GiftEntryType;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class RecurringGiftServiceImpl implements RecurringGiftService {
+public class RecurringGiftServiceImpl extends AbstractTangerineService implements RecurringGiftService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

@@ -33,7 +33,11 @@
     where NAME = #name#
     and SITE_NAME = #siteName#
   </select>
-	
+  <select id="SELECT_GENERIC_CODE_TYPES" resultMap="CODE_TYPE_RESULT" parameterClass="map" >
+	select ID, LABEL, NAME, SITE_NAME
+	from CODE_TYPE
+    where SITE_NAME is null
+  </select>
 	
 	
   <insert id="INSERT_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
@@ -67,6 +71,13 @@
     where c.CODE_TYPE_ID = ct.ID
     and c.CODE_ID = #id#
     and ct.SITE_NAME = #siteName#
+  </select>
+  <select id="SELECT_GENERIC_CODES" resultMap="CODE_RESULT" parameterClass="map" >
+    select CODE_ID, CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID
+    from CODE c, CODE_TYPE ct
+    where c.CODE_TYPE_ID = ct.ID
+    and c.CODE_ID = #id#
+    and ct.SITE_NAME is null
   </select>
   <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
     insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)

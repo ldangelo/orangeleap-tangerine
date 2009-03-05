@@ -41,7 +41,7 @@ import com.mpower.util.TangerineUserHelper;
 @Service("auditService")
 @Transactional(propagation = Propagation.REQUIRED)
 // TODO: FIX FOR IBatis!!!
-public class AuditServiceImpl implements AuditService {
+public class AuditServiceImpl extends AbstractTangerineService implements AuditService {
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 

@@ -11,7 +11,7 @@ import com.mpower.service.CreditCardService;
 
 @Service("creditCardService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CreditCardServiceImpl implements CreditCardService {
+public class CreditCardServiceImpl extends AbstractTangerineService implements CreditCardService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

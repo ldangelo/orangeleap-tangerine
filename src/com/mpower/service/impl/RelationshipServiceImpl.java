@@ -29,7 +29,7 @@ import com.mpower.type.RelationshipType;
 
 @Service("relationshipService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class RelationshipServiceImpl implements RelationshipService {
+public class RelationshipServiceImpl extends AbstractTangerineService implements RelationshipService {
 	
 	public static final int MAX_TREE_DEPTH = 200;
  

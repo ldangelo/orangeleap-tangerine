@@ -23,7 +23,7 @@ import com.mpower.service.PhoneService;
 
 @Service("paymentSourceService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PaymentSourceServiceImpl implements PaymentSourceService, InactivateService {
+public class PaymentSourceServiceImpl extends AbstractTangerineService implements PaymentSourceService, InactivateService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

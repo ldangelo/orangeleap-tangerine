@@ -20,7 +20,7 @@ import com.mpower.service.relationship.DateRangedValue;
 
 @Service("effectiveDateService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class EffectiveDateServiceImpl implements EffectiveDateService {
+public class EffectiveDateServiceImpl extends AbstractTangerineService implements EffectiveDateService {
 	
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

@@ -13,14 +13,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.interfaces.CodeDao;
+import com.mpower.domain.model.Site;
 import com.mpower.domain.model.customization.Code;
 import com.mpower.domain.model.customization.CodeType;
 import com.mpower.service.AuditService;
 import com.mpower.service.CodeService;
+import com.mpower.util.TangerineUserHelper;
 
 @Service("codeService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CodeServiceImpl implements CodeService {
+public class CodeServiceImpl extends AbstractTangerineService implements CodeService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -83,7 +85,33 @@ public class CodeServiceImpl implements CodeService {
 
 	@Override
 	public List<String> listCodeTypes() {
+		List<String> result = codeDao.listCodeTypes();
+		if (result.size() == 0) {
+			result = copyGenericCodesToSite();
+		}
+		return result;
+	}
+	
+	// Copy the template CodeTypes with null site names and their Codes to this site name.
+	private List<String> copyGenericCodesToSite() {
+		
+		List<CodeType> codeTypes = codeDao.listGenericCodeTypes();
+		List<Code> codes = codeDao.listGenericCodes();
+		for (CodeType codeType : codeTypes) {
+			Long origId = codeType.getId();
+			codeType.setSite(new Site(getSiteName())); 
+			codeType.setId(null);
+			Long newId = codeDao.maintainCodeType(codeType).getId();
+			for (Code code : codes) {
+				if (origId.equals(code.getCodeTypeId())) {
+					code.setId(null);
+					code.setCodeType(newId);
+					codeDao.maintainCode(code);
+				}
+			}
+		}
 		return codeDao.listCodeTypes();
+		
 	}
 
 	@Override

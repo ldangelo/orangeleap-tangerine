@@ -28,7 +28,7 @@ import com.mpower.service.CommunicationService;
 import com.mpower.service.InactivateService;
 import com.mpower.type.ActivationType;
 
-public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> implements CommunicationService<T>, InactivateService, CloneService {
+public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> extends AbstractTangerineService implements CommunicationService<T>, InactivateService, CloneService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

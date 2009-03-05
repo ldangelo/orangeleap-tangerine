@@ -15,7 +15,7 @@ import com.mpower.util.TangerineUserHelper;
 
 @Component("sessionService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class SessionServiceImpl implements SessionService {
+public class SessionServiceImpl extends AbstractTangerineService implements SessionService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

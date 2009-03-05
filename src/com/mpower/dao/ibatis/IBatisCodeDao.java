@@ -29,6 +29,34 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
     
 /// Code Types    
     
+	@Override
+	public CodeType maintainCodeType(CodeType codetype) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("maintainCode: codetype = " + codetype);
+        }
+		return (CodeType)insertOrUpdate(codetype, "CODE_TYPE");
+	}
+    
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<CodeType> listGenericCodeTypes() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("listGenericCodeTypes:");
+        }
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("SELECT_GENERIC_CODE_TYPES", params);
+	}
+
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<Code> listGenericCodes() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("listGenericCodes:");
+        }
+        Map<String, Object> params = setupParams();
+        return getSqlMapClientTemplate().queryForList("SELECT_GENERIC_CODES", params);
+	}
+
     @SuppressWarnings("unchecked")
 	@Override
 	public List<String> listCodeTypes() {

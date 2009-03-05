@@ -26,7 +26,7 @@ import java.net.MalformedURLException;
  * @version 1.0
  */
 @Service("checkService")
-public class CheckServiceImpl implements CheckService {
+public class CheckServiceImpl extends AbstractTangerineService implements CheckService {
 
     private URL echexUrl;
 

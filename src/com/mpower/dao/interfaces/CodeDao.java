@@ -6,7 +6,13 @@ import com.mpower.domain.model.customization.Code;
 import com.mpower.domain.model.customization.CodeType;
 
 public interface CodeDao {
-	
+
+	public CodeType maintainCodeType(CodeType codetype);
+
+	public List<CodeType> listGenericCodeTypes();
+
+	public List<Code> listGenericCodes();
+
 	public List<String> listCodeTypes();
 
 	public List<Code> readCodes(String codeType);

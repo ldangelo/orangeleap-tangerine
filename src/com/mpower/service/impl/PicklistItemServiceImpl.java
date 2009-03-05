@@ -25,7 +25,7 @@ import com.mpower.service.PicklistItemService;
  */
 @Service("picklistItemService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PicklistItemServiceImpl implements PicklistItemService {
+public class PicklistItemServiceImpl extends AbstractTangerineService implements PicklistItemService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

@@ -52,7 +52,7 @@ import com.mpower.type.PaymentHistoryType;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class GiftServiceImpl implements GiftService, ApplicationContextAware {
+public class GiftServiceImpl extends AbstractTangerineService implements GiftService, ApplicationContextAware {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

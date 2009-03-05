@@ -20,7 +20,7 @@ import com.mpower.service.ConstituentService;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CommunicationHistoryServiceImpl implements CommunicationHistoryService {
+public class CommunicationHistoryServiceImpl extends AbstractTangerineService implements CommunicationHistoryService {
 
 	/** Logger for this class and subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());

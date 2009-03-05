@@ -1,52 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
-<sqlMap namespace="AUDIT" >
+<sqlMap namespace="AUDIT">
 
+	<resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" groupBy="id">
+		<result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
+		<result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
+		<result property="date" column="DATE" jdbcType="TIMESTAMP" />
+		<result property="description" column="DESCRIPTION" jdbcType="VARCHAR" />
+		<result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
+		<result property="objectId" column="OBJECT_ID" jdbcType="BIGINT" />
+		<result property="user" column="USER" jdbcType="VARCHAR" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="AUDIT_COLS_FRAGMENT">
+		a.AUDIT_ID, a.AUDIT_TYPE, a.DATE, a.DESCRIPTION, a.ENTITY_TYPE, a.OBJECT_ID, a.USER, a.SITE_NAME
+	</sql>
+	
+	<sql id="SELECT_AUDIT_FRAGMENT">
+		select 
+		<include refid="AUDIT_COLS_FRAGMENT"/>,
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/>
+		from AUDIT a
+		left outer join CONSTITUENT p on a.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where a.SITE_NAME = #siteName#
+	</sql>
 
-  <resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" groupBy="id">
-    <result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
-    <result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
-    <result property="date" column="DATE" jdbcType="TIMESTAMP" />
-    <result property="description" column="DESCRIPTION" jdbcType="VARCHAR" />
-    <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
-    <result property="objectId" column="OBJECT_ID" jdbcType="BIGINT" />
-    <result property="user" column="USER" jdbcType="VARCHAR" />
-	<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" /> 
-    <result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
-  </resultMap>
-  
-  <select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="map" >
-    select *
-    from AUDIT a
-	left outer join CONSTITUENT p on a.CONSTITUENT_ID = p.CONSTITUENT_ID
-    where a.SITE_NAME = #siteName#
-  </select>
-  
-  <select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="map" >
-    select *
-    from AUDIT a
-	left outer join CONSTITUENT p on a.CONSTITUENT_ID = p.CONSTITUENT_ID
-    where ENTITY_TYPE = #entityType# and OBJECT_ID = #objectId# 
-    and SITE_NAME = #siteName#
-  </select>
-  
-  <select id="AUDIT_HISTORY_FOR_CONSTITUENT" resultMap="AUDIT_RESULT" parameterClass="map" >
-    select *
-    from AUDIT a
-	left outer join CONSTITUENT p on a.CONSTITUENT_ID = p.CONSTITUENT_ID
-    where CONSTITUENT_ID = #constituentId#
-    and SITE_NAME = #siteName#
-  </select>
-  
-  <insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit" >
-    insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER,
-      CONSTITUENT_ID, SITE_NAME)
-    values (#auditType#, #date#, #description#,
-      #entityType#, #objectId#, #user#, #person.id#,
-      #siteName#)
-      <selectKey keyProperty="id" resultClass="long">
+	<select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+	</select>
+
+	<select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		and a.ENTITY_TYPE = #entityType# 
+		and a.OBJECT_ID = #objectId#
+	</select>
+
+	<select id="AUDIT_HISTORY_FOR_CONSTITUENT" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		and a.CONSTITUENT_ID = #constituentId#
+	</select>
+
+	<insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit">
+		insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, CONSTITUENT_ID, SITE_NAME)
+		values (#auditType#, #date#, #description#,	#entityType#, #objectId#, #user#, #person.id#, #siteName#)
+		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
-	  </selectKey>
-  </insert>
-  
+		</selectKey>
+	</insert>
+
 </sqlMap>

@@ -33,6 +33,7 @@ import com.mpower.security.MpowerAuthenticationToken;
 import com.mpower.security.MpowerLdapAuthoritiesPopulator;
 import com.mpower.service.ConstituentService;
 import com.mpower.service.SiteService;
+import com.mpower.service.VersionService;
 import com.mpower.service.customization.FieldService;
 import com.mpower.service.customization.MessageService;
 import com.mpower.service.customization.PageCustomizationService;
@@ -61,12 +62,18 @@ public class SiteServiceImpl implements SiteService {
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
+    @Resource(name = "versionService")
+    private VersionService versionService;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public synchronized Site createSiteAndUserIfNotExist(String siteName) {
     	if (logger.isDebugEnabled()) {
     	    logger.debug("createSiteAndUserIfNotExist: siteName = " + siteName);
     	}
+    	
+    	versionService.checkOrangeLeapSchemaCompatible();
+    	
         Site site = siteDao.readSite(siteName);
         if (site == null) {
             site = siteDao.createSite(new Site(siteName));

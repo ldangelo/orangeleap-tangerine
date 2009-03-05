@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="VERSION" >
+
+
+  <resultMap id="VERSION_RESULT" class="com.mpower.domain.model.Version" >
+    <result property="id" column="COMPONENT_ID" jdbcType="VARCHAR" />
+    <result property="description" column="COMPONENT_DESC" jdbcType="VARCHAR" />
+    <result property="majorVersion" column="SCHEMA_MAJOR_VERSION" jdbcType="INTEGER" />
+	<result property="minorVersion" column="SCHEMA_MINOR_VERSION" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="SELECT_VERSION_BY_ID" resultMap="VERSION_RESULT" parameterClass="map">
+	select COMPONENT_ID, COMPONENT_DESC, SCHEMA_MAJOR_VERSION, SCHEMA_MINOR_VERSION
+	from VERSION
+    where COMPONENT_ID = #id#
+  </select>
+  
+  
+</sqlMap>

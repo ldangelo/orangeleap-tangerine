@@ -743,3 +743,24 @@ CREATE TABLE `DISTRO_LINE` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+
+# VERSION of components.  
+# Used to check if the program and database are the same database schema versions
+# This script is also used to set the version number of this schema in the database.  
+# Update the Major version when an incompatible change is made (requires a db conversion script).
+# Update the Minor version when a compatible change is made (new program can run with old schema, and old program can run with new schema).
+# The Major number should then also be updated in VersionServiceImpl.java.
+# -------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `VERSION`;
+
+CREATE TABLE `VERSION` (
+  `COMPONENT_ID` varchar(255) NOT NULL,
+  `COMPONENT_DESC` varchar(255) NOT NULL,
+  `SCHEMA_MAJOR_VERSION` bigint(20) default 0,
+  `SCHEMA_MINOR_VERSION` bigint(20) default 0,
+  PRIMARY KEY  (`COMPONENT_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO VERSION (COMPONENT_ID, COMPONENT_DESC, SCHEMA_MAJOR_VERSION, SCHEMA_MINOR_VERSION) VALUES ('ORANGE', 'Orange Leap', 1, 0);
+
+

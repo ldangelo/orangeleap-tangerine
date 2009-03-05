@@ -83,7 +83,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getLegalName() == null;
         assert readConstituent.getLoginId() == null;
         assert readConstituent.isMajorDonor() == false;
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readConstituent.getMaritalStatus());
+        assert "Unknown".equals(readConstituent.getMaritalStatus());
         assert readConstituent.getMiddleName() == null;
         assert readConstituent.getNcaisCode() == null;
         assert readConstituent.getOrganizationName() == null;
@@ -112,7 +112,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert StringConstants.EMPTY.equals(readConstituent.getConstituentOrganizationRoles());
         assert readConstituent.getLegalName() == null;
         assert readConstituent.isMajorDonor() == false;
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readConstituent.getMaritalStatus());
+        assert "Unknown".equals(readConstituent.getMaritalStatus());
         assert readConstituent.getMiddleName() == null;
         assert readConstituent.getOrganizationName() == null;
         assert readConstituent.getPreferredPhoneType() == null;

@@ -3,6 +3,7 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
 
 /**
@@ -11,7 +12,7 @@ import com.mpower.domain.model.customization.FieldDefinition;
  * @version 1.0
  */
 @SuppressWarnings("serial")
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements GeneratedId, Serializable {
 
     protected Long id = null;
     protected Map<String, String> fieldLabelMap = null;

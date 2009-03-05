@@ -42,24 +42,6 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
         return params;
     }
 
-    protected GeneratedId insertOrUpdate(final GeneratedId o, final String table) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
-        }
-        if (o.getId() == null || o.getId() <= 0) {
-            String insertId = "INSERT_" + table;
-            Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
-            if (logger.isDebugEnabled()) {
-                logger.debug("insert: generatedId = " + generatedId + " for o = " + o + " table = " + table);
-            }
-            o.setId(generatedId);
-        }
-        else {
-            getSqlMapClientTemplate().update("UPDATE_" + table, o);
-        }
-        return o;
-    }
-
     /**
      * Update if exists, otherwise insert. Useful for maintain* methods.
      * Sets the generated IDs for inserts.
@@ -67,31 +49,23 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
      * @param table
      * @return object inserted or updated
      */
-    protected Object insertOrUpdate(final AbstractEntity o, final String table) {
+    protected GeneratedId insertOrUpdate(final GeneratedId o, final String table) {
         if (logger.isDebugEnabled()) {
             logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
         }
-        o.prePersist();
-
-    	Long id = o.getId();
-    	if (id == null || id <= 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("insert " + table);
-            }
-        	String insertId = "INSERT_" + table;
-        	Long generatedId = (Long)getSqlMapClientTemplate().insert(insertId, o);
+        if (o instanceof AbstractEntity) {
+            ((AbstractEntity)o).prePersist();
+        }
+        if (o.getId() == null || o.getId() <= 0) {
+            Long generatedId = (Long)getSqlMapClientTemplate().insert("INSERT_" + table, o);
             if (logger.isDebugEnabled()) {
                 logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
             }
-    	    o.setId(generatedId);
-    	}
-    	else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("update " + table + ", id=" + id);
-            }
-        	String updateId = "UPDATE_" + table;
-            getSqlMapClientTemplate().update(updateId, o);
-    	}
+            o.setId(generatedId);
+        }
+        else {
+            getSqlMapClientTemplate().update("UPDATE_" + table, o);
+        }
         return o;
     }
 

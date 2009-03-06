@@ -1,6 +1,5 @@
-package com.mpower.controller.address;
+package com.mpower.controller.communication.address;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,32 +23,14 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         String addressId = request.getParameter(StringConstants.ADDRESS_ID);
-        Address address = null;
-        if (addressId == null) {
-            address = new Address(super.getConstituentId(request));
-        }
-        else {
-            address = addressService.read(Long.valueOf(addressId));
-        }
-        return address;
+        return addressService.readByIdCreateIfNull(addressId, getConstituentId(request));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Address> addresses = addressService.readByConstituentId(super.getConstituentId(request));
-        refData.put("addresses", addresses);
-        List<Address> currentAddresses = addressService.readCurrent(super.getConstituentId(request), false);
-        refData.put("currentAddresses", currentAddresses);
-        List<Address> currentCorrespondenceAddresses = addressService.readCurrent(super.getConstituentId(request), true);
-        refData.put("currentCorrespondenceAddresses", currentCorrespondenceAddresses);
-
-        if (logger.isDebugEnabled()) {
-            for (Address a : addresses) {
-                logger.debug("addRefData: address = " + a.getAddressLine1() + ", " + a.getCity() + ", " + a.getStateProvince() + ", " + a.getPostalCode());
-            }
-        }
+        addressService.findReferenceDataByConstituentId(refData, getConstituentId(request), "addresses", "currentAddresses", "currentCorrespondenceAddresses");
         return refData;
     }
 

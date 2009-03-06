@@ -1,6 +1,5 @@
-package com.mpower.controller.email;
+package com.mpower.controller.communication.email;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.communication.Email;
+import com.mpower.util.StringConstants;
 
 public class EmailFormController extends TangerineConstituentAttributesFormController {
 
@@ -22,33 +22,15 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        String emailId = request.getParameter("emailId");
-        Email email = null;
-        if (emailId == null) {
-            email = new Email(super.getConstituentId(request));
-        }
-        else {
-            email = emailService.read(Long.valueOf(emailId));
-        }
-        return email;
+        String emailId = request.getParameter(StringConstants.EMAIL_ID);
+        return emailService.readByIdCreateIfNull(emailId, getConstituentId(request));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Email> emails = emailService.readByConstituentId(super.getConstituentId(request));
-        refData.put("emails", emails);
-        List<Email> currentEmails = emailService.readCurrent(super.getConstituentId(request), false);
-        refData.put("currentEmails", currentEmails);
-        List<Email> currentCorrespondenceEmails = emailService.readCurrent(super.getConstituentId(request), true);
-        refData.put("currentCorrespondenceEmails", currentCorrespondenceEmails);
-
-        if (logger.isDebugEnabled()) {
-            for (Email e : emails) {
-                logger.debug("referenceData: email = " + e.getEmailAddress());
-            }
-        }
+        emailService.findReferenceDataByConstituentId(refData, getConstituentId(request), "emails", "currentEmails", "currentCorrespondenceEmails");
         return refData;
     }
 

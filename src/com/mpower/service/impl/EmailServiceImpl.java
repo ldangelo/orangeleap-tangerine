@@ -27,4 +27,9 @@ public class EmailServiceImpl extends AbstractCommunicationService<Email> implem
     protected CommunicationDao<Email> getDao() {
         return emailDao;
     }
+
+    @Override
+    protected Email createEntity(Long constituentId) {
+        return new Email(constituentId);
+    }
 }

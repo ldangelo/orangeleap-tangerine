@@ -1,6 +1,5 @@
-package com.mpower.controller.phone;
+package com.mpower.controller.communication.phone;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,36 +20,18 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Override
+    protected AbstractEntity findEntity(HttpServletRequest request) {
+        String phoneId = request.getParameter(StringConstants.PHONE_ID);
+        return phoneService.readByIdCreateIfNull(phoneId, getConstituentId(request));
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request) throws Exception {
         Map refData = super.referenceData(request);
-        List<Phone> phones = phoneService.readByConstituentId(super.getConstituentId(request));
-        refData.put("phones", phones);
-        List<Phone> currentPhones = phoneService.readCurrent(super.getConstituentId(request), false);
-        refData.put("currentPhones", currentPhones);
-        List<Phone> currentCorrespondencePhones = phoneService.readCurrent(super.getConstituentId(request), true);
-        refData.put("currentCorrespondencePhones", currentCorrespondencePhones);
-
-        if (logger.isDebugEnabled()) {
-            for (Phone p : phones) {
-                logger.debug("addRefData: phone = " + p.getNumber());
-            }
-        }
+        phoneService.findReferenceDataByConstituentId(refData, getConstituentId(request), "phones", "currentPhones", "currentCorrespondencePhones");
         return refData;
-    }
-
-    @Override
-    protected AbstractEntity findEntity(HttpServletRequest request) {
-        String phoneId = request.getParameter(StringConstants.PHONE_ID);
-        Phone phone = null;
-        if (phoneId == null) {
-            phone = new Phone(super.getConstituent(request).getId());
-        }
-        else {
-            phone = phoneService.read(Long.valueOf(phoneId));
-        }
-        return phone;
     }
 
     @Override

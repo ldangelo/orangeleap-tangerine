@@ -27,4 +27,9 @@ public class AddressServiceImpl extends AbstractCommunicationService<Address> im
     protected CommunicationDao<Address> getDao() {
         return addressDao;
     }
+
+    @Override
+    protected Address createEntity(Long constituentId) {
+        return new Address(constituentId);
+    }
 }

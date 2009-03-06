@@ -13,10 +13,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
-import com.mpower.controller.address.AddressEditor;
-import com.mpower.controller.email.EmailEditor;
+import com.mpower.controller.communication.address.AddressEditor;
+import com.mpower.controller.communication.email.EmailEditor;
+import com.mpower.controller.communication.phone.PhoneEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
-import com.mpower.controller.phone.PhoneEditor;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.AddressAware;
 import com.mpower.domain.model.EmailAware;

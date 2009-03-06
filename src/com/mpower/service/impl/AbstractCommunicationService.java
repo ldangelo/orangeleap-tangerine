@@ -12,23 +12,20 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.interfaces.CommunicationDao;
-import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.domain.util.SeasonalDateSpan;
 import com.mpower.service.AuditService;
-import com.mpower.service.CloneService;
 import com.mpower.service.CommunicationService;
 import com.mpower.service.InactivateService;
 import com.mpower.type.ActivationType;
 
-public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> extends AbstractTangerineService implements CommunicationService<T>, InactivateService, CloneService {
+public abstract class AbstractCommunicationService<T extends AbstractCommunicationEntity> extends AbstractTangerineService implements CommunicationService<T>, InactivateService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -37,6 +34,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     private AuditService auditService;
 
     protected abstract CommunicationDao<T> getDao();
+    protected abstract T createEntity(Long constituentId);
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -44,34 +42,12 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isDebugEnabled()) {
             logger.debug("save: entity = " + entity);
         }
-        boolean found = false;
-        if (entity.getId() == null) {
-            List<T> entityList = readByConstituentId(entity.getPersonId());
-            for (T a : entityList) {
-                if (entity.equals(a)) {
-                    found = true;
-                    Long id = a.getId();
-                    try {
-                        BeanUtils.copyProperties(a, entity);
-                        a.setId(id);
-                    } 
-                    catch (Exception e) {
-                        if (logger.isWarnEnabled()) {
-                            logger.warn("Exception copying properties", e);
-                        }
-                    }
-                    entity = a;
-                }
-            }
-        }
-        if (!found) {
-            entity = getDao().maintainEntity(entity);
-            if (entity.isInactive()) {
-                auditService.auditObjectInactive(entity);
-            } 
-            else {
-                auditService.auditObject(entity);
-            }
+        entity = getDao().maintainEntity(entity);
+        if (entity.isInactive()) {
+            auditService.auditObjectInactive(entity);
+        } 
+        else {
+            auditService.auditObject(entity);
         }
         return entity;
     }
@@ -93,25 +69,54 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     }
 
     @Override
-    public T read(Long entityId) {
+    public T readById(Long entityId) {
         if (logger.isDebugEnabled()) {
             logger.debug("read: entityId = " + entityId);
         }
         return getDao().readById(entityId);
     }
+    
+    @Override
+    public void findReferenceDataByConstituentId(Map<String, Object> refData, Long constituentId, String entitiesKey, String activeEntitiesKey, String activeMailEntitiesKey) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findReferenceDataByConstituentId: constituentId = " + constituentId + " entitiesKey = " + entitiesKey + " activeEntitiesKey = " + 
+                    activeEntitiesKey + " activeMailEntitiesKey = " + activeMailEntitiesKey);
+        }
+        List<T> entities = readByConstituentId(constituentId);
+        List<T> activeEntities = new ArrayList<T>();
+        
+        for (T entity : entities) {
+            if (entity.isInactive() == false) {
+                activeEntities.add(entity);
+            }
+        }
+        activeEntities = filterByActivationType(activeEntities, false);
+        List<T> mailOnlyEntities = filterByActivationType(activeEntities, true);
+        
+        refData.put(entitiesKey, entities);
+        refData.put(activeEntitiesKey, activeEntities);
+        refData.put(activeMailEntitiesKey, mailOnlyEntities);
+    }
 
     @Override
-    public List<T> readCurrent(Long constituentId, boolean mailOnly) {
+    public T readByIdCreateIfNull(String entityId, Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCurrent: constituentId = " + constituentId + " mailOnly = " + mailOnly);
+            logger.debug("readByIdCreateIfNull: entityId = " + entityId + " constituentId = " + constituentId);
         }
-        return filterByActivationType(getDao().readActiveByConstituentId(constituentId), mailOnly);
+        T entity;
+        if (entityId == null) {
+            entity = createEntity(constituentId);
+        }
+        else {
+            entity = getDao().readById(new Long(entityId));
+        }
+        return entity;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivateEntities() {
         if (logger.isDebugEnabled()) {
-            logger.debug("inactivate:");
+            logger.debug("inactivateEntities:");
         }
         getDao().inactivateEntities();
     }
@@ -122,32 +127,9 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isDebugEnabled()) {
             logger.debug("inactivate: id = " + id);
         }
-        T entity = read(id);
+        T entity = readById(id);
         entity.setInactive(true);
         this.save(entity);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public AbstractEntity clone(AbstractEntity oldEntity) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("clone: oldEntity = " + oldEntity);
-        }
-        T entity = (T) oldEntity;
-        if (entity.getId() != null) {
-            T original = this.read(entity.getId());
-
-            try {
-                entity = (T)BeanUtils.cloneBean(original);
-                entity.resetIdToNull();
-            }
-            catch (Exception e) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("clone: Exception occurred", e);
-                }
-            }
-        }
-        return entity;
     }
    
     /**

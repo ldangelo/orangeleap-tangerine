@@ -132,6 +132,11 @@ public class AbstractCommunicationServiceTest extends BaseTest {
         }
 
         @Override
+        protected Address createEntity(Long constituentId) {
+            return null;
+        }
+
+        @Override
         public Date getNowDate() {
             final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             Date d = null;

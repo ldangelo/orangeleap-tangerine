@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="phoneManager" class="com.mpower.controller.phone.PhoneFormController" parent="tangerineConstituentAttributesFormController">
+	<bean id="phoneManager" class="com.mpower.controller.communication.phone.PhoneFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="phone" />
     	<property name="commandClass" value="com.mpower.domain.model.communication.Phone" />
         <property name="bindAddress" value="false"/>
@@ -24,7 +24,7 @@
     	<property name="successView" value="redirect:/phoneManager.htm"/>
     </bean>
 
-    <bean id="phoneManagerEdit" class="com.mpower.controller.phone.PhoneManagerEditFormController" parent="phoneManager">
+    <bean id="phoneManagerEdit" class="com.mpower.controller.communication.phone.PhoneFormController" parent="phoneManager">
     	<property name="formView" value="phone/phoneManagerEdit" />
     </bean>
         

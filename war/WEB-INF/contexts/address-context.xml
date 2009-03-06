@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
  
-   	<bean id="addressManager" class="com.mpower.controller.address.AddressFormController" parent="tangerineConstituentAttributesFormController">
+   	<bean id="addressManager" class="com.mpower.controller.communication.address.AddressFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="address"/>
     	<property name="commandClass" value="com.mpower.domain.model.communication.Address"/>
         <property name="bindAddress" value="false"/>
@@ -25,7 +25,7 @@
     	<property name="successView" value="redirect:/addressManager.htm"/>
     </bean>
 
-    <bean id="addressManagerEdit" class="com.mpower.controller.address.AddressManagerEditFormController" parent="addressManager">
+    <bean id="addressManagerEdit" class="com.mpower.controller.communication.address.AddressFormController" parent="addressManager">
     	<property name="formView" value="address/addressManagerEdit"/>
     </bean>
 

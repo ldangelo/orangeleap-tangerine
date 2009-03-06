@@ -27,4 +27,9 @@ public class PhoneServiceImpl extends AbstractCommunicationService<Phone> implem
     protected CommunicationDao<Phone> getDao() {
         return phoneDao;
     }
+
+    @Override
+    protected Phone createEntity(Long constituentId) {
+        return new Phone(constituentId);
+    }
 }

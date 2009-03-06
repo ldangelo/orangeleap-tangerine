@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="emailManager" class="com.mpower.controller.email.EmailFormController" parent="tangerineConstituentAttributesFormController">
+	<bean id="emailManager" class="com.mpower.controller.communication.email.EmailFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="email" />
     	<property name="commandClass" value="com.mpower.domain.model.communication.Email" />
         <property name="bindAddress" value="false"/>
@@ -24,7 +24,7 @@
     	<property name="successView" value="redirect:/emailManager.htm"/>
     </bean>
 
-    <bean id="emailManagerEdit" class="com.mpower.controller.email.EmailManagerEditFormController" parent="emailManager">
+    <bean id="emailManagerEdit" class="com.mpower.controller.communication.email.EmailFormController" parent="emailManager">
     	<property name="formView" value="email/emailManagerEdit"/>
     </bean>
     

@@ -83,8 +83,8 @@ public class CodeServiceImpl extends AbstractTangerineService implements CodeSer
     }
 
 	@Override
-	public List<String> listCodeTypes() {
-		List<String> result = codeDao.listCodeTypes();
+	public List<CodeType> listCodeTypes() {
+		List<CodeType> result = codeDao.listCodeTypes();
 		if (result.size() == 0) {
 			result = copyGenericCodesToSite();
 		}
@@ -92,7 +92,7 @@ public class CodeServiceImpl extends AbstractTangerineService implements CodeSer
 	}
 	
 	// Copy the template CodeTypes with null site names and their Codes to this site name.
-	private List<String> copyGenericCodesToSite() {
+	private List<CodeType> copyGenericCodesToSite() {
 		
 		List<CodeType> codeTypes = codeDao.listGenericCodeTypes();
 		List<Code> codes = codeDao.listGenericCodes();
@@ -100,11 +100,11 @@ public class CodeServiceImpl extends AbstractTangerineService implements CodeSer
 			Long origId = codeType.getId();
 			codeType.setSite(new Site(getSiteName())); 
 			codeType.setId(null);
-			Long newId = codeDao.maintainCodeType(codeType).getId();
+			codeType = codeDao.maintainCodeType(codeType);
 			for (Code code : codes) {
-				if (origId.equals(code.getCodeTypeId())) {
+				if (origId.equals(code.getCodeType().getId())) {
 					code.resetIdToNull();
-					code.setCodeType(newId);
+					code.setCodeType(codeType);
 					codeDao.maintainCode(code);
 				}
 			}

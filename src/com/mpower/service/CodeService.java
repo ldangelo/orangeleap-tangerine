@@ -7,7 +7,7 @@ import com.mpower.domain.model.customization.CodeType;
 
 public interface CodeService {
 	
-	public List<String> listCodeTypes();
+	public List<CodeType> listCodeTypes();
 
 	public List<Code> readCodes(String codeType);
 	

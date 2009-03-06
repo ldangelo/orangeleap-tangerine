@@ -27,7 +27,7 @@ public class CodeFormController extends SimpleFormController {
         String codeType = request.getParameter("codeType");
         if (codeId == null) {
             Code code = new Code();
-            code.setCodeType(codeService.readCodeTypeByName(codeType).getId());
+            code.setCodeType(codeService.readCodeTypeByName(codeType));
             return code;
         } else {
             return codeService.readCodeById(new Long(codeId));
@@ -37,7 +37,7 @@ public class CodeFormController extends SimpleFormController {
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Code code = (Code) command;
-//        code.setCodeType(codeService.readCodeTypeByName(code.getCodeType())); TODO: this needs to be fixed to get code type name
+        code.setCodeType(codeService.readCodeTypeByName(code.getCodeType().getName())); 
         Code newCode = codeService.maintainCode(code);
 
         ModelAndView mav = new ModelAndView(getSuccessView());

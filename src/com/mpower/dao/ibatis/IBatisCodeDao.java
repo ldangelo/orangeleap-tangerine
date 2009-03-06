@@ -59,7 +59,7 @@ public class IBatisCodeDao extends AbstractIBatisDao implements CodeDao {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<String> listCodeTypes() {
+	public List<CodeType> listCodeTypes() {
         if (logger.isDebugEnabled()) {
             logger.debug("listCodeTypes:");
         }

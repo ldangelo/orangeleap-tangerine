@@ -13,7 +13,7 @@ public interface CodeDao {
 
 	public List<Code> listGenericCodes();
 
-	public List<String> listCodeTypes();
+	public List<CodeType> listCodeTypes();
 
 	public List<Code> readCodes(String codeType);
 

@@ -9,7 +9,7 @@ public class Code extends AbstractEntity implements Auditable, Inactivatible {
 
     private static final long serialVersionUID = 1L;
 
-    private Long codeTypeId;
+    private CodeType codeType;
 
     private String value;
 
@@ -55,12 +55,12 @@ public class Code extends AbstractEntity implements Auditable, Inactivatible {
         this.originalObject = originalObject;
     }
 
-    public Long getCodeTypeId() {
-        return codeTypeId;
+    public CodeType getCodeType() {
+        return codeType;
     }
 
-    public void setCodeType(Long codeTypeId) {
-        this.codeTypeId = codeTypeId;
+    public void setCodeType(CodeType codeType) {
+        this.codeType = codeType;
     }
 
     @Override

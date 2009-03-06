@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
+import com.mpower.domain.model.customization.CodeType;
 import com.mpower.service.CodeService;
 
 public class CodeManageController extends ParameterizableViewController {
@@ -24,7 +25,7 @@ public class CodeManageController extends ParameterizableViewController {
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView mav = new ModelAndView(super.getViewName());
-        List<String> codeTypes = codeService.listCodeTypes();
+        List<CodeType> codeTypes = codeService.listCodeTypes();
         mav.addObject("codeTypes", codeTypes);
         return mav;
     }

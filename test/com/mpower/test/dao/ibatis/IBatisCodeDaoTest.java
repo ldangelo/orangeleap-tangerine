@@ -27,7 +27,7 @@ public class IBatisCodeDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testListCodeTypes" })
     public void testListCodeTypes() throws Exception {
-    	List<String> list  = codeDao.listCodeTypes();
+    	List<CodeType> list  = codeDao.listCodeTypes();
     	assert list.size() > 0;
     } 
 
@@ -65,7 +65,9 @@ public class IBatisCodeDaoTest extends AbstractIBatisTest {
         String testCodeValue = "X"+(""+Math.random()).substring(3,8);
 
         Code code = new Code();
-    	code.setCodeType(new Long(1));
+        CodeType codeType = new CodeType();
+        codeType.setId(new Long(1));
+    	code.setCodeType(codeType);
     	code.setDescription("original desc");
     	code.setInactive(false);
     	code.setValue(testCodeValue);

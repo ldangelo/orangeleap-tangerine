@@ -27,11 +27,11 @@
     where ct.SITE_NAME = #siteName#
     and ct.ID = #id#
   </select>
-  <select id="SELECT_CODE_TYPE_DISTINCT" resultClass="java.lang.String" parameterClass="map">
-    SELECT DISTINCT ct.NAME as NAME 
-    from CODE c, CODE_TYPE ct
-    where c.CODE_TYPE_ID = ct.ID
-    and ct.SITE_NAME = #siteName#
+  <select id="SELECT_CODE_TYPE_DISTINCT" resultMap="CODE_TYPE_RESULT" parameterClass="map">
+    SELECT  
+	<include refid="CODE_TYPE_COLS_FRAGMENT"/>
+    from CODE_TYPE ct
+    where ct.SITE_NAME = #siteName#
   </select>
   <select id="SELECT_CODE_TYPE_BY_NAME" resultMap="CODE_TYPE_RESULT" parameterClass="map">
 	select 
@@ -70,7 +70,7 @@
     <result property="description" column="CODE_DESCRIPTION" jdbcType="VARCHAR" />
     <result property="inactive" column="INACTIVE" jdbcType="CHAR" />
     <result property="value" column="CODE_VALUE" jdbcType="VARCHAR" />
-	<result property="codeTypeId" column="CODE_TYPE_ID" jdbcType="BIGINT" />
+	<result property="codeType" resultMap="CODE.CODE_TYPE_RESULT" />
   </resultMap>
   
   <sql id="CODE_COLS_FRAGMENT">
@@ -162,7 +162,7 @@
   
   <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
     insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
-    values (#description#, #inactive#, #value#, #codeTypeId#)
+    values (#description#, #inactive#, #value#, #codeType.id#)
     <selectKey keyProperty="id" resultClass="long">
 		SELECT LAST_INSERT_ID() AS value
 	</selectKey>
@@ -173,7 +173,7 @@
     set CODE_DESCRIPTION = #description#,
       INACTIVE = #inactive#,
       CODE_VALUE = #value#,
-      CODE_TYPE_ID = #codeTypeId#
+      CODE_TYPE_ID = #codeType.id#
     where CODE_ID = #id#
   </update>
   

@@ -51,7 +51,7 @@
 			<h4>Add a Code</h4>
 			<table class="tablesorter">
 			<tr>
-				<jsp:include page="/code.htm?codeType=${currentCodeType}&view=newInPlace" />
+				<jsp:include page="/code.htm?codeTypeName=${currentCodeType}&view=newInPlace" />
 				</tr>
 				</table>
 			</div>

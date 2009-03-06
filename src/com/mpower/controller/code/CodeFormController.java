@@ -23,21 +23,21 @@ public class CodeFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        String codeId = request.getParameter("codeId");
-        String codeType = request.getParameter("codeType");
+        String codeId = request.getParameter("id");
+        String codeTypeName = request.getParameter("codeTypeName");
         if (codeId == null) {
             Code code = new Code();
-            code.setCodeType(codeService.readCodeTypeByName(codeType));
+            code.setCodeType(codeService.readCodeTypeByName(codeTypeName));
             return code;
         } else {
-            return codeService.readCodeById(new Long(codeId));
+        	Code code = codeService.readCodeById(new Long(codeId));
+        	return code;
         }
     }
 
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
         Code code = (Code) command;
-        code.setCodeType(codeService.readCodeTypeByName(code.getCodeType().getName())); 
         Code newCode = codeService.maintainCode(code);
 
         ModelAndView mav = new ModelAndView(getSuccessView());

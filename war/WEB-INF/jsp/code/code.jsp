@@ -5,7 +5,7 @@
 		<c:if test="${code.id!=null}">
 			<input type="hidden" name="id" value="<c:out value='${code.id}'/>" />
 		</c:if>
-		<input type="hidden" name="codeType" value="<c:out value='${code.codeType.name}'/>" />
+		<input type="hidden" name="codeTypeName" value="<c:out value='${code.codeType.name}'/>" />
 		</td>
 		<td>
 		<input name="value" size="16" value="<c:out value='${code.value}'/>" />
@@ -22,7 +22,7 @@
 		<c:if test="${code.id!=null}">
 			<input type="hidden" name="id" value="<c:out value='${code.id}'/>" />
 		</c:if>
-		<input type="hidden" name="codeType" value="<c:out value='${code.codeType.name}'/>" />
+		<input type="hidden" name="codeTypeName" value="<c:out value='${code.codeType.name}'/>" />
 		</td>
 		<td class="codeValue">
 		<input name="value" size="16" value="<c:out value='${code.value}'/>" />
@@ -32,7 +32,7 @@
 		<td><input name="inactive" value="true" type="checkbox" ${code.inactive?'checked':''}/></td>
 </c:when>
 <c:otherwise>
-	<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="code.htm?codeId=${code.id}&view=inPlace">Edit</a>
+	<td class="action"><a class="editInPlace" onclick="return editInPlace(this);" href="code.htm?id=${code.id}&view=inPlace">Edit</a>
 	<td class="codeValue"><c:out value='${code.value}'/></td>
 	<td class="codeDescription"><c:out value='${code.description}'/></td>
 	<td><input disabled="disabled" name="inactive" type="checkbox" ${code.inactive?'checked':''}/></td>

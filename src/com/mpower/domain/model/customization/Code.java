@@ -1,9 +1,9 @@
 package com.mpower.domain.model.customization;
 
-import com.mpower.domain.Auditable;
+import com.mpower.domain.model.Auditable;
 import com.mpower.domain.Inactivatible;
-import com.mpower.domain.Person;
 import com.mpower.domain.model.AbstractEntity;
+import com.mpower.domain.model.Person;
 
 public class Code extends AbstractEntity implements Auditable, Inactivatible {
 

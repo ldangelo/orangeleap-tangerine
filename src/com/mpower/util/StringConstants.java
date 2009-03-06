@@ -14,6 +14,9 @@ public final class StringConstants {
     public static final String ADDRESS_ID = "addressId";
     public static final String SELECTED_ADDRESS = "selectedAddress";
 
+    public static final String CONSTITUENT = "constituent";
+    public static final String CONSTITUENT_ID = "constituentId";
+    
     public static final String PERSON = "person";
     public static final String PERSON_ID = "personId";
 

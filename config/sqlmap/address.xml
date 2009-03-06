@@ -41,21 +41,23 @@
         select 
         <include refid="ADDRESS_COLS_FRAGMENT"/>
         from ADDRESS addr 
+        inner join CONSTITUENT p ON addr.CONSTITUENT_ID = p.CONSTITUENT_ID 
+        where p.SITE_NAME = #siteName# 
     </sql>
 
-    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
+    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT" parameterClass="map">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
-        where addr.ADDRESS_ID = #value#
+        and addr.ADDRESS_ID = #addressId#
     </select>
 
-    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
+    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
-        where addr.CONSTITUENT_ID = #value#
+        and addr.CONSTITUENT_ID = #constituentId#
     </select>
 	
-	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="long">
+	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map">
 		<include refid="SELECT_ADDRESS_FRAGMENT"/>
-		where addr.CONSTITUENT_ID = #id#
+		and addr.CONSTITUENT_ID = #constituentId#
 		and addr.INACTIVE = false
 		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS
 	</select>

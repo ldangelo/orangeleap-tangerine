@@ -37,21 +37,23 @@
 		select 
         <include refid="PHONE_COLS_FRAGMENT"/>
 		from PHONE ph
+        inner join CONSTITUENT p ON ph.CONSTITUENT_ID = p.CONSTITUENT_ID 
+        where p.SITE_NAME = #siteName# 
 	</sql>
 
-	<select id="SELECT_PHONE_BY_PHONE_ID" resultMap="PHONE_RESULT" parameterClass="long">
+	<select id="SELECT_PHONE_BY_PHONE_ID" resultMap="PHONE_RESULT" parameterClass="map">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
-		where ph.PHONE_ID = #id#
+		and ph.PHONE_ID = #phoneId#
 	</select>
 
-	<select id="SELECT_ALL_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
+	<select id="SELECT_ALL_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="map">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
-		where ph.CONSTITUENT_ID = #id#
+		and ph.CONSTITUENT_ID = #constituentId#
 	</select>
 	
-	<select id="SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="long">
+	<select id="SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="map">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
-		where ph.CONSTITUENT_ID = #id#
+		and ph.CONSTITUENT_ID = #constituentId#
 		and ph.INACTIVE = false
 		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS
 	</select>

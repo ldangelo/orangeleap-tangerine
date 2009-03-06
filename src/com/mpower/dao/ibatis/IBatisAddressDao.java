@@ -1,6 +1,7 @@
 package com.mpower.dao.ibatis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.AddressDao;
 import com.mpower.domain.model.communication.Address;
+import com.mpower.util.StringConstants;
 
 /**
  * iBatis version of the AddressDao
@@ -34,21 +36,25 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         return (Address) insertOrUpdate(address, "ADDRESS");
     }
 
+    @Override
+    public Address readById(Long addressId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readById: addressId = " + addressId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.ADDRESS_ID, addressId);
+        return (Address) getSqlMapClientTemplate().queryForObject("SELECT_ADDRESS_BY_ID", params);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Address> readByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readByConstituentId: constituentId = " + constituentId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID", constituentId);
-    }
-
-    @Override
-    public Address readById(Long addressId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readById: addressId = " + addressId);
-        }
-        return (Address) getSqlMapClientTemplate().queryForObject("SELECT_ADDRESS_BY_ID", addressId);
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +63,9 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID", constituentId);
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID", params);
     }
 
     @Override

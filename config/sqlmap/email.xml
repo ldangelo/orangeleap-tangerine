@@ -33,21 +33,23 @@
 		select 
         <include refid="EMAIL_COLS_FRAGMENT"/>
 		from EMAIL e
+        inner join CONSTITUENT p ON e.CONSTITUENT_ID = p.CONSTITUENT_ID 
+        where p.SITE_NAME = #siteName# 
 	</sql>
 	
-	<select id="SELECT_EMAIL_BY_EMAIL_ID" resultMap="EMAIL_RESULT"	parameterClass="long">
+	<select id="SELECT_EMAIL_BY_EMAIL_ID" resultMap="EMAIL_RESULT"	parameterClass="map">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
-		where e.EMAIL_ID = #id#
+		and e.EMAIL_ID = #emailId#
 	</select>
 	
-	<select id="SELECT_ALL_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="long">
+	<select id="SELECT_ALL_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="map">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
-		where e.CONSTITUENT_ID = #id#
+		and e.CONSTITUENT_ID = #constituentId#
 	</select>
 
-	<select id="SELECT_ACTIVE_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="long">
+	<select id="SELECT_ACTIVE_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="map">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
-		where e.CONSTITUENT_ID = #id#
+		and e.CONSTITUENT_ID = #constituentId#
 		and e.INACTIVE = false
 		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS
 	</select>

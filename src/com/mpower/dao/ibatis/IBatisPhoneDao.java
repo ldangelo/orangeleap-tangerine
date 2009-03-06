@@ -1,6 +1,7 @@
 package com.mpower.dao.ibatis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.PhoneDao;
 import com.mpower.domain.model.communication.Phone;
+import com.mpower.util.StringConstants;
 
 /** 
  * Corresponds to the PHONE table
@@ -38,7 +40,9 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readById: phoneId = " + phoneId);
         }
-        return (Phone)getSqlMapClientTemplate().queryForObject("SELECT_PHONE_BY_PHONE_ID", phoneId);
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.PHONE_ID, phoneId);
+        return (Phone)getSqlMapClientTemplate().queryForObject("SELECT_PHONE_BY_PHONE_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -47,7 +51,9 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readByConstituentId: constituentId = " + constituentId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ALL_PHONES_BY_CONSTITUENT_ID", constituentId);
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_PHONES_BY_CONSTITUENT_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,7 +62,9 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID", constituentId);
+        Map<String, Object> params = setupParams();
+        params.put(StringConstants.CONSTITUENT_ID, constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID", params);
     }
     
     @Override

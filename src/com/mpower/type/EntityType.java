@@ -13,5 +13,8 @@ public enum EntityType {
     commitment,
     paymentSource,
     paymentHistory,
-    communicationHistory
+    communicationHistory,
+    selectedAddress,
+    selectedEmail,
+    selectedPhone
 }

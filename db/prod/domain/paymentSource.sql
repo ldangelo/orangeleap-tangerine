@@ -39,7 +39,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.address.postalCodeReadOnly', 'paymentSource', 'address', 'Zip/Postal Code', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.address.countryReadOnly', 'paymentSource', 'address', 'Country', 'READ_ONLY_TEXT');
 
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.phone.numberReadOnly', 'paymentSource', 'phone', 'Default Billing Phone', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.selectedPhone.numberReadOnly', 'paymentSource', 'selectedPhone', 'Default Billing Phone', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.creditCardHolderNameReadOnly', 'paymentSource', 'creditCardHolderName', 'Cardholder Name', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.creditCardTypeReadOnly', 'paymentSource', 'creditCardType', 'Credit Card', 'READ_ONLY_TEXT');
@@ -53,7 +53,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.creditCardNumberDisplay', 'paymentSource', 'creditCardNumberDisplay', 'Number', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.achAccountNumberDisplay', 'paymentSource', 'achAccountNumberDisplay', 'Account Number', 'TEXT');
 
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.address.shortAddressReadOnly', 'paymentSource', 'address', 'Default Billing Address', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('paymentSource.selectedAddress.shortAddressReadOnly', 'paymentSource', 'selectedAddress', 'Default Billing Address', 'READ_ONLY_TEXT');
 
 
 

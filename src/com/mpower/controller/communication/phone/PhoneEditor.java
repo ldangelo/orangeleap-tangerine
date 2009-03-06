@@ -16,8 +16,9 @@ public class PhoneEditor extends CommunicationEditor<Phone> {
         super();
     }
 
-    public PhoneEditor(String constituentId) {
+    public PhoneEditor(PhoneService phoneService, String constituentId) {
         super(constituentId);
+        this.phoneService = phoneService;
     }
 
     @Override

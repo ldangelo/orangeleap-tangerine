@@ -90,7 +90,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${addresses}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.address.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/></option>
+							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/></option>
 						</c:forEach>
 						<c:if test="${not empty addresses}">
 							</optgroup>
@@ -117,7 +117,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${phones}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.phone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/></option>
+							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/></option>
 						</c:forEach>
 						<c:if test="${not empty phones}">
 							</optgroup>

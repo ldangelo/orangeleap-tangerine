@@ -5,16 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
 
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Phone;
+import com.mpower.type.FormBeanType;
 import com.mpower.util.AES;
 
-public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {//SiteAware, AddressAware, PhoneAware, ConstituentInfo TODO: put back for IBatis
+public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {//SiteAware, ConstituentInfo TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -22,11 +23,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     public static final String CASH = "Cash";
     public static final String CHECK = "Check";
 
-    private Person person;
-    private Address address = new Address();
-    private Phone phone = new Phone();
     private String profile;
-    private String paymentType = CREDIT_CARD;
+    private String paymentType = CREDIT_CARD; // TODO: use PaymentType enum
     private String creditCardHolderName;
     private String creditCardType;
     @NotAuditable
@@ -48,8 +46,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     private String creditCardSecurityCode;
     @NotAuditable
     private String achAccountNumber;
-    private Address selectedAddress = new Address();
-    private Phone selectedPhone = new Phone();
+
+    private FormBeanType addressType;
+    private FormBeanType phoneType;
+    private Person person;
+    private Address address = new Address(); // Created only because spring binds to it
+    private Phone phone = new Phone(); // Created only because spring binds to it
+    private Address selectedAddress = new Address(); // Created only because spring binds to it
+    private Phone selectedPhone = new Phone(); // Created only because spring binds to it
     private boolean userCreated = false;
   
     public PaymentSource() {
@@ -60,16 +64,18 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         this.person = person;
     }
 
-//    @Override
-// TODO: for Ibatis    
     public Person getPerson() {
         return person;
     }
 
-//    @Override
- // TODO: for Ibatis    
     public void setPerson(Person person) {
         this.person = person;
+        if (address != null && person != null) {
+            address.setPersonId(person.getId());
+        }
+        if (phone != null && person != null) {
+            phone.setPersonId(person.getId());
+        }
     }
 
     @Override
@@ -306,7 +312,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         this.creditCardSecurityCode = creditCardSecurityCode;
     }
 
-//    @Override
     public Site getSite() {
         return person != null ? person.getSite() : null;
     }
@@ -332,24 +337,44 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         return yearList;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public Address getSelectedAddress() {
         return selectedAddress;
     }
 
+    @Override
     public void setSelectedAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
 
-//    @Override
- // TODO: for Ibatis    
+    @Override
     public Phone getSelectedPhone() {
         return selectedPhone;
     }
 
+    @Override
     public void setSelectedPhone(Phone selectedPhone) {
         this.selectedPhone = selectedPhone;
+    }
+
+    @Override
+    public FormBeanType getAddressType() {
+        return this.addressType;
+    }
+
+    @Override
+    public void setAddressType(FormBeanType type) {
+        this.addressType = type;
+    }
+
+    @Override
+    public FormBeanType getPhoneType() {
+        return this.phoneType;
+    }
+
+    @Override
+    public void setPhoneType(FormBeanType type) {
+        this.phoneType = type;
     }
 
     public boolean isUserCreated() {
@@ -410,15 +435,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
      */
     public boolean isValid() {
         if (ACH.equals(paymentType)) {
-            return org.springframework.util.StringUtils.hasText(achHolderName) &&
-            org.springframework.util.StringUtils.hasText(achAccountNumber) &&
-            org.springframework.util.StringUtils.hasText(achRoutingNumber);
+            return StringUtils.hasText(achHolderName) &&
+                StringUtils.hasText(achAccountNumber) &&
+                StringUtils.hasText(achRoutingNumber);
         }
         else if (CREDIT_CARD.equals(paymentType)) {
-            return org.springframework.util.StringUtils.hasText(creditCardHolderName) &&
-            org.springframework.util.StringUtils.hasText(creditCardType) &&
-            org.springframework.util.StringUtils.hasText(creditCardNumber);
-
+            return StringUtils.hasText(creditCardHolderName) &&
+                StringUtils.hasText(creditCardType) &&
+                StringUtils.hasText(creditCardNumber);
         }
         else if (CASH.equals(paymentType) || CHECK.equals(paymentType)) {
             return true; // TODO: what are the validity constraints for CASH and CHECK?
@@ -426,35 +450,35 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         return false;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof PaymentSource)) {
-            return false;
-        }
-        PaymentSource ps = (PaymentSource) obj;
-        EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getType(), ps.getType());
-        if (ACH.equals(getType())) {
-            eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
-        } 
-        else if (CREDIT_CARD.equals(getType())) {
-            eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
-        }
-        return eb.isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getType());
-        if (ACH.equals(getType())) {
-            hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
-        } 
-        else if (CREDIT_CARD.equals(getType())) {
-            hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
-        }
-        return hcb.hashCode();
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (!(obj instanceof PaymentSource)) {
+//            return false;
+//        }
+//        PaymentSource ps = (PaymentSource) obj;
+//        EqualsBuilder eb = new EqualsBuilder();
+//        eb.append(getType(), ps.getType());
+//        if (ACH.equals(getType())) {
+//            eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
+//        } 
+//        else if (CREDIT_CARD.equals(getType())) {
+//            eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
+//        }
+//        return eb.isEquals();
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        HashCodeBuilder hcb = new HashCodeBuilder();
+//        hcb.append(getType());
+//        if (ACH.equals(getType())) {
+//            hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
+//        } 
+//        else if (CREDIT_CARD.equals(getType())) {
+//            hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
+//        }
+//        return hcb.hashCode();
+//    }
 
     @Override
     public void prePersist() {
@@ -485,5 +509,13 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         setAchHolderName(null);
         setAchAccountNumber(null);
         setAchRoutingNumber(null);
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("profile", profile).append("paymentType", paymentType).append(creditCardHolderName, "creditCardHolderName").
+            append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", person).
+            append("userCreated", userCreated).append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).
+            toString();
     }
 }

@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import com.mpower.controller.constituent.RequiresConstituentEditor;
 import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.service.CommunicationService;
-import com.mpower.util.StringConstants;
 
 public abstract class CommunicationEditor<T extends AbstractCommunicationEntity> extends RequiresConstituentEditor {
 
@@ -32,10 +31,10 @@ public abstract class CommunicationEditor<T extends AbstractCommunicationEntity>
             T entity = getCommunicationService().readById(id);
             setValue(entity);
         }
-        else if (StringConstants.NEW.equals(text)){
-            T entity = createEntity(getPerson().getId());
-            entity.setUserCreated(true);
-            setValue(entity);
-        }
+//        else if (StringConstants.NEW.equals(text)){
+//            T entity = createEntity(getPerson().getId());
+//            entity.setUserCreated(true);
+//            setValue(entity);
+//        }
     }
 }

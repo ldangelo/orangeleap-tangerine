@@ -32,7 +32,8 @@ public class AddressValidator implements Validator {
         String inPath = errors.getNestedPath();
         if (target instanceof Address) {
             address = (Address) target;
-        } else if (target instanceof AddressAware) {
+        } 
+        else if (target instanceof AddressAware) {
             address = ((AddressAware) target).getAddress();
             errors.setNestedPath("address");
         }

@@ -1,7 +1,5 @@
 package com.mpower.controller.communication.email;
 
-import javax.annotation.Resource;
-
 import com.mpower.controller.communication.CommunicationEditor;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.service.CommunicationService;
@@ -9,15 +7,15 @@ import com.mpower.service.EmailService;
 
 public class EmailEditor extends CommunicationEditor<Email> {
 
-    @Resource(name="emailService")
     private EmailService emailService;
 
     public EmailEditor() {
         super();
     }
 
-    public EmailEditor(String constituentId) {
+    public EmailEditor(EmailService emailService, String constituentId) {
         super(constituentId);
+        this.emailService = emailService;
     }
 
     @Override

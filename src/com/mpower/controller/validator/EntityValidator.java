@@ -36,6 +36,7 @@ import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.SiteService;
 import com.mpower.type.CommitmentType;
+import com.mpower.type.FormBeanType;
 import com.mpower.type.PageType;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
@@ -79,36 +80,42 @@ public class EntityValidator implements Validator {
         if (!(target instanceof Commitment) || !CommitmentType.PLEDGE.equals(((Commitment) target).getCommitmentType())) {
             if (target instanceof PaymentSourceAware) {
                 PaymentSourceAware obj = (PaymentSourceAware) target;
-                PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
-                if (selectedPaymentSource != null && selectedPaymentSource.getId() != null) {
+                if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
                     PaymentSourceValidator.validatePaymentSource(target, errors);
                 }
+                else if (FormBeanType.EXISTING.equals(obj.getPaymentSourceType())) {
+                    // TODO: validate ID > 0
+                }
             }
-
             if (target instanceof AddressAware) {
                 AddressAware obj = (AddressAware) target;
-                Address selectedAddress = obj.getSelectedAddress();
-                if (selectedAddress != null && selectedAddress.getId() != null) {
+                if (FormBeanType.NEW.equals(obj.getAddressType())) {
                     AddressValidator.validateAddress(target, errors);
+                }
+                else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
+                    // TODO: validate ID > 0
                 }
             }
 
             if (target instanceof PhoneAware) {
                 PhoneAware obj = (PhoneAware) target;
-                Phone selectedPhone = obj.getSelectedPhone();
-                if (selectedPhone != null && selectedPhone.getId() != null) {
+                if (FormBeanType.NEW.equals(obj.getPhoneType())) {
                     PhoneValidator.validatePhone(target, errors);
+                }
+                else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
+                    // TODO: validate ID > 0
                 }
             }
 
             if (target instanceof EmailAware) {
                 EmailAware obj = (EmailAware) target;
-                Email selectedEmail = obj.getSelectedEmail();
-                if (selectedEmail != null && selectedEmail.getId() != null) {
+                if (FormBeanType.NEW.equals(obj.getEmailType())) {
                     EmailValidator.validateEMail(target, errors);
                 }
+                else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
+                    // TODO: validate ID > 0
+                }
             }
-
         }
 
         Set<String> errorSet = new HashSet<String>();

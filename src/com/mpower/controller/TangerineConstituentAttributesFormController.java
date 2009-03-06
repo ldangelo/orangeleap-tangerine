@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -17,7 +16,6 @@ import com.mpower.controller.communication.address.AddressEditor;
 import com.mpower.controller.communication.email.EmailEditor;
 import com.mpower.controller.communication.phone.PhoneEditor;
 import com.mpower.controller.payment.PaymentSourceEditor;
-import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.AddressAware;
 import com.mpower.domain.model.EmailAware;
 import com.mpower.domain.model.PaymentSource;
@@ -31,6 +29,7 @@ import com.mpower.service.AddressService;
 import com.mpower.service.EmailService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
+import com.mpower.type.FormBeanType;
 import com.mpower.util.StringConstants;
 
 public abstract class TangerineConstituentAttributesFormController extends TangerineFormController {
@@ -89,10 +88,14 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     
     protected Person getConstituent(HttpServletRequest request) {
         Long constituentId = getConstituentId(request);
+        Person constituent = null;
         if (constituentId != null) {
-            return constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
+            constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
         }
-        return null;
+        if (constituent == null) {
+            throw new IllegalArgumentException("The constituent ID was not found");
+        }
+        return constituent;
     }
 
     @SuppressWarnings("unchecked")
@@ -107,107 +110,36 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
         if (bindPaymentSource) {
-            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(this.getConstituentIdString(request)));
+            binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, this.getConstituentIdString(request)));
         }
         if (bindAddress) {
-            binder.registerCustomEditor(Address.class, new AddressEditor(this.getConstituentIdString(request)));
+            binder.registerCustomEditor(Address.class, new AddressEditor(addressService, this.getConstituentIdString(request)));
         }
         if (bindPhone) {
-            binder.registerCustomEditor(Phone.class, new PhoneEditor(this.getConstituentIdString(request)));
+            binder.registerCustomEditor(Phone.class, new PhoneEditor(phoneService, this.getConstituentIdString(request)));
         }
         if (bindEmail) {
-            binder.registerCustomEditor(Email.class, new EmailEditor(this.getConstituentIdString(request)));
-        }
-    }
-
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        AbstractEntity entity = (AbstractEntity)super.formBackingObject(request);        
-        if (isFormSubmission(request)) {
-            userCreateNew(request, entity);
-        }
-        return entity;
-    }
-    
-    protected void userCreateNew(HttpServletRequest request, AbstractEntity entity) {
-        if (bindAddress && entity instanceof AddressAware) {
-            this.userCreateNewAddress(request, (AddressAware)entity);
-        }
-        if (bindPhone && entity instanceof PhoneAware) {
-            this.userCreateNewPhone(request, (PhoneAware)entity);
-        }
-        if (bindEmail && entity instanceof EmailAware) {
-            this.userCreateNewEmail(request, (EmailAware)entity);
-        }
-        if (bindPaymentSource && entity instanceof PaymentSourceAware) {
-            this.userCreateNewPaymentSource(request, (PaymentSourceAware)entity);
+            binder.registerCustomEditor(Email.class, new EmailEditor(emailService, this.getConstituentIdString(request)));
         }
     }
 
     @Override
     protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (bindPaymentSource && command instanceof PaymentSourceAware) {
-            PaymentSourceAware obj = (PaymentSourceAware)command;
-            PaymentSource selectedPaymentSource = obj.getSelectedPaymentSource();
-            if (selectedPaymentSource != null) {
-                if (selectedPaymentSource.getId() != null) {
-                    obj.setPaymentSource(selectedPaymentSource);
-                    obj.setPaymentType(selectedPaymentSource.getType());
-                }
-                else {
-                    // new payment source, set the type
-                    obj.getPaymentSource().setPaymentType(obj.getPaymentType());                    
-                }
-            }
-        }
-
-        if (bindAddress && command instanceof AddressAware) {
-            AddressAware obj = (AddressAware) command;
-            Address selectedAddress = obj.getSelectedAddress();
-            if (selectedAddress != null && selectedAddress.getId() != null) {
-                obj.setAddress(selectedAddress);
-            }
-        }
-
-        if (bindPhone && command instanceof PhoneAware) {
-            PhoneAware obj = (PhoneAware) command;
-            Phone selectedPhone = obj.getSelectedPhone();
-            if (selectedPhone != null && selectedPhone.getId() != null) {
-                obj.setPhone(selectedPhone);
-            }
-        }
-
-        if (bindEmail && command instanceof EmailAware) {
-            EmailAware obj = (EmailAware) command;
-            Email selectedEmail = obj.getSelectedEmail();
-            if (selectedEmail != null && selectedEmail.getId() != null) {
-                obj.setEmail(selectedEmail);
-            }
-        }
-        super.onBind(request, command, errors);
-    }
-
-    @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBindAndValidate(request, command, errors);
-
-        /**
-         * If NO address/phone/etc is requested, this must be done AFTER binding and validation
-         */
-        if (!errors.hasErrors() && isFormSubmission(request)) {
+        if (isFormSubmission(request)) {
             if (bindAddress && command instanceof AddressAware) {
-                this.setAddressToNone(request, (AddressAware)command);
+                this.bindAddress(request, (AddressAware)command);
             }
             if (bindPhone && command instanceof PhoneAware) {
-                this.setPhoneToNone(request, (PhoneAware)command);
+                this.bindPhone(request, (PhoneAware)command);
             }
             if (bindEmail && command instanceof EmailAware) {
-                this.setEmailToNone(request, (EmailAware)command);
+                this.bindEmail(request, (EmailAware)command);
             }
             if (bindPaymentSource && command instanceof PaymentSourceAware) {
-                this.setPaymentSourceToNone(request, (PaymentSourceAware)command);
+                this.bindPaymentSource(request, (PaymentSourceAware)command);
             }
         }        
+        super.onBind(request, command, errors);
     }
 
     @SuppressWarnings("unchecked")
@@ -235,58 +167,59 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         return refData;
     }
 
-    protected void userCreateNewAddress(HttpServletRequest request, AddressAware addressAware) {
-        if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
-            Address addr = new Address(this.getConstituentId(request));
-            addr.setUserCreated(true);
-            addressAware.setAddress(addr);
+    protected void bindAddress(HttpServletRequest request, AddressAware addressAware) {
+        String selectedAddress = request.getParameter(StringConstants.SELECTED_ADDRESS);
+        if (StringConstants.NEW.equals(selectedAddress)) {
+            addressAware.setAddressType(FormBeanType.NEW);
+            addressAware.getAddress().setUserCreated(true);
+        }
+        else if (StringConstants.NONE.equals(selectedAddress)) {
+            addressAware.setAddressType(FormBeanType.NONE);
+        }
+        else {
+            addressAware.setAddressType(FormBeanType.EXISTING);
         }
     }
 
-    protected void userCreateNewPhone(HttpServletRequest request, PhoneAware phoneAware) {
-        if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_PHONE))) {
-            Phone phone = new Phone(this.getConstituentId(request));
-            phone.setUserCreated(true);
-            phoneAware.setPhone(phone);
+    protected void bindPhone(HttpServletRequest request, PhoneAware phoneAware) {
+        String selectedPhone = request.getParameter(StringConstants.SELECTED_PHONE);
+        if (StringConstants.NEW.equals(selectedPhone)) {
+            phoneAware.setPhoneType(FormBeanType.NEW);
+            phoneAware.getPhone().setUserCreated(true);
+        }
+        else if (StringConstants.NONE.equals(selectedPhone)) {
+            phoneAware.setPhoneType(FormBeanType.NONE);
+        }
+        else {
+            phoneAware.setPhoneType(FormBeanType.EXISTING);
         }
     }
 
-    protected void userCreateNewEmail(HttpServletRequest request, EmailAware emailAware) {
-        if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_EMAIL))) {
-            Email email = new Email(this.getConstituentId(request));
-            email.setUserCreated(true);
-            emailAware.setEmail(email);
+    protected void bindEmail(HttpServletRequest request, EmailAware emailAware) {
+        String selectedEmail = request.getParameter(StringConstants.SELECTED_EMAIL);
+        if (StringConstants.NEW.equals(selectedEmail)) {
+            emailAware.setEmailType(FormBeanType.NEW);
+            emailAware.getEmail().setUserCreated(true);
         }
-    }
-
-    protected void userCreateNewPaymentSource(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
-        if (StringConstants.NEW.equals(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
-            PaymentSource source = new PaymentSource(this.getConstituent(request));
-            source.setUserCreated(true);
-            paymentSourceAware.setPaymentSource(source);
+        else if (StringConstants.NONE.equals(selectedEmail)) {
+            emailAware.setEmailType(FormBeanType.NONE);
+        }
+        else {
+            emailAware.setEmailType(FormBeanType.EXISTING);
         }
     }
     
-    protected void setAddressToNone(HttpServletRequest request, AddressAware addressAware) {
-        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_ADDRESS))) {
-            addressAware.setAddress(new Address(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
+    protected void bindPaymentSource(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
+        String selectedPaymentSource = request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE);
+        if (StringConstants.NEW.equals(selectedPaymentSource)) {
+            paymentSourceAware.setPaymentSourceType(FormBeanType.NEW);
+            paymentSourceAware.getPaymentSource().setUserCreated(true);
         }
-    }
-    protected void setPhoneToNone(HttpServletRequest request, PhoneAware phoneAware) {
-        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PHONE))) {
-            phoneAware.setPhone(new Phone(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
+        else if (StringConstants.NONE.equals(selectedPaymentSource)) {
+            paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
         }
-    }
-
-    protected void setEmailToNone(HttpServletRequest request, EmailAware emailAware) {
-        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_EMAIL))) {
-            emailAware.setEmail(new Email(this.getConstituentId(request))); // this is equivalent to setting it to the dummy (empty) value
-        }
-    }
-
-    protected void setPaymentSourceToNone(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
-        if (StringConstants.NONE.equals(request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE))) {
-            paymentSourceAware.setPaymentSource(new PaymentSource(this.getConstituent(request))); // this is equivalent to setting it to the dummy (empty) value
+        else {
+            paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
         }
     }
 }

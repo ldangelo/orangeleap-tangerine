@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import com.mpower.type.GiftEntryType;
 import com.mpower.util.StringConstants;
 
-public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, PaymentSourceAware, AddressAware, PhoneAware, EmailAware, Customizable, Viewable TODO: for IBatis 
+public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, Customizable, Viewable TODO: for IBatis 
 
     private static final long serialVersionUID = 1L;
     private Long commitmentId;
@@ -182,7 +182,8 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, P
         }
     }
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return ""  + getAmount();
 	}
 	

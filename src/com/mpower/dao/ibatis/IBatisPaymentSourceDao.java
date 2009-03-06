@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,9 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentSourceById: paymentSourceId = " + paymentSourceId);
         }
-        return (PaymentSource)getSqlMapClientTemplate().queryForObject("SELECT_PAYMENT_SOURCE_BY_ID", paymentSourceId);
+        Map<String, Object> params = setupParams();
+        params.put("paymentSourceId", paymentSourceId);
+        return (PaymentSource)getSqlMapClientTemplate().queryForObject("SELECT_PAYMENT_SOURCE_BY_ID", params);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentSourceByProfile: constituentId = " + constituentId + " profile = " + profile);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
+        Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
         params.put("profile", profile);
         return (PaymentSource)getSqlMapClientTemplate().queryForObject("SELECT_PAYMENT_SOURCE_BY_CONSTITUENT_ID_PROFILE", params);
@@ -60,7 +61,9 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSources: constituentId = " + constituentId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID", constituentId);
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +72,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
         }
-        Map<String, Object> params = new HashMap<String, Object>(2);
+        Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
         params.put("paymentTypes", paymentTypes);
         return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES", params);

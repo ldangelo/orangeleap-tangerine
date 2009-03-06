@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -15,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
+import com.mpower.domain.model.communication.Address;
+import com.mpower.domain.model.communication.Phone;
 import com.mpower.service.AddressService;
 import com.mpower.service.AuditService;
 import com.mpower.service.InactivateService;
 import com.mpower.service.PaymentSourceService;
 import com.mpower.service.PhoneService;
+import com.mpower.type.FormBeanType;
 
 @Service("paymentSourceService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -46,29 +48,28 @@ public class PaymentSourceServiceImpl extends AbstractTangerineService implement
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPaymentSource: paymentSource = " + paymentSource);
         }
-        if (paymentSource.getId() == null) {
-            List<PaymentSource> paymentSourceList = readPaymentSources(paymentSource.getPerson().getId());
-            for (PaymentSource a : paymentSourceList) {
-                if (paymentSource.equals(a)) {
-                    Long id = a.getId();
-                    try {
-                        BeanUtils.copyProperties(a, paymentSource);
-                        a.setId(id);
-                    } catch (Exception e) {
-                        logger.debug(e.getMessage(), e);
-                    }
-                    paymentSource = a;
-                }
-            }
-        }
 
-        // Payment source is editable in place in the database, unlike address, email and phone, so always save to avoid a transient error.
-        if (paymentSource.getAddress() != null && paymentSource.getAddress().getId() == null) {
-            paymentSource.setAddress(addressService.save(paymentSource.getAddress()));
+        if (FormBeanType.NEW.equals(paymentSource.getAddressType())) {
+            Address newAddress = paymentSource.getAddress();
+            newAddress.setPersonId(paymentSource.getPerson().getId());
+            paymentSource.setAddress(addressService.save(newAddress));
+            paymentSource.setSelectedAddress(paymentSource.getAddress());
         }
-        if (paymentSource.getPhone() != null && paymentSource.getPhone().getId() == null) {
-            paymentSource.setPhone(phoneService.save(paymentSource.getPhone()));
+        else if (FormBeanType.NONE.equals(paymentSource.getAddressType())) {
+            paymentSource.setSelectedAddress(null);
+            paymentSource.setAddress(null);
         }
+        if (FormBeanType.NEW.equals(paymentSource.getPhoneType())) {
+            Phone newPhone = paymentSource.getPhone();
+            newPhone.setPersonId(paymentSource.getPerson().getId());
+            paymentSource.setPhone(phoneService.save(newPhone));
+            paymentSource.setSelectedPhone(paymentSource.getPhone());
+        }
+        else if (FormBeanType.NONE.equals(paymentSource.getPhoneType())) {
+            paymentSource.setSelectedPhone(null);
+            paymentSource.setPhone(null);
+        }
+        
         paymentSource.createDefaultProfileName();
 
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);

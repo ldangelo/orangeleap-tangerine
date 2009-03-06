@@ -32,7 +32,8 @@ public class PhoneValidator implements Validator {
         String inPath = errors.getNestedPath();
         if (target instanceof Phone) {
             phone = (Phone) target;
-        } else if (target instanceof PhoneAware) {
+        } 
+        else if (target instanceof PhoneAware) {
             phone = ((PhoneAware) target).getPhone();
             errors.setNestedPath("phone");
         }

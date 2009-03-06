@@ -16,6 +16,7 @@ import com.mpower.domain.model.Site;
 import com.mpower.domain.model.communication.Address;
 import com.mpower.domain.model.communication.Email;
 import com.mpower.domain.model.communication.Phone;
+import com.mpower.type.FormBeanType;
 import com.mpower.util.StringConstants;
 
 @SuppressWarnings("serial")
@@ -30,6 +31,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     
     protected Person person;
     protected List<DistributionLine> distributionLines;
+
+    private FormBeanType addressType;
+    private FormBeanType phoneType;
+    private FormBeanType emailType;
+    private FormBeanType paymentSourceType;
 
     protected Address address = new Address();
     protected Phone phone = new Phone();
@@ -147,6 +153,46 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         if (!hasValid) {
             getDistributionLines().get(0); // Default create one Distribution Line object if necessary
         }
+    }
+
+    @Override
+    public FormBeanType getAddressType() {
+        return this.addressType;
+    }
+
+    @Override
+    public void setAddressType(FormBeanType type) {
+        this.addressType = type;
+    }
+
+    @Override
+    public FormBeanType getPhoneType() {
+        return this.phoneType;
+    }
+
+    @Override
+    public void setPhoneType(FormBeanType type) {
+        this.phoneType = type;
+    }
+
+    @Override
+    public FormBeanType getEmailType() {
+        return this.emailType;
+    }
+
+    @Override
+    public void setEmailType(FormBeanType type) {
+        this.emailType = type;
+    }
+
+    @Override
+    public FormBeanType getPaymentSourceType() {
+        return this.paymentSourceType;
+    }
+
+    @Override
+    public void setPaymentSourceType(FormBeanType type) {
+        this.paymentSourceType = type;
     }
 
     @Override

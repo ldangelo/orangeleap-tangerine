@@ -30,9 +30,7 @@
 			</c:forEach>
 		</c:forEach>
 	</c:when>
-	<c:when test="${paymentSources ne null}">
-		<p style="margin:8px 0 6px 0;"><spring:message code='noPaymentMethods'/></p>
-	</c:when>
 	<c:otherwise>
+		<p style="margin:8px 0 6px 0;"><spring:message code='noPaymentMethods'/></p>
 	</c:otherwise>
 </c:choose>

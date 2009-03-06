@@ -2,11 +2,12 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
-import com.mpower.domain.Auditable;
+import com.mpower.domain.model.Auditable;
+import com.mpower.domain.model.Person;
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Site;
 
-public class PicklistItem implements GeneratedId, Serializable {
+public class PicklistItem implements Auditable, GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -96,5 +97,10 @@ public class PicklistItem implements GeneratedId, Serializable {
 
 	public String getSuppressReferenceValue() {
 		return suppressReferenceValue;
+	}
+
+	@Override
+	public Person getPerson() {
+		return null;
 	}
 }

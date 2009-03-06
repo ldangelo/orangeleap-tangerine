@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.interfaces.AuditDao;
 import com.mpower.dao.interfaces.ConstituentDao;
-import com.mpower.domain.Auditable;
+import com.mpower.domain.model.Auditable;
 import com.mpower.domain.annotation.NotAuditable;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.Audit;

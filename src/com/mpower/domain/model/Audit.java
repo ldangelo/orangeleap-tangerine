@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.Person;
+import com.mpower.domain.model.Person;
 import com.mpower.type.AuditType;
 
 public class Audit implements GeneratedId, Serializable {

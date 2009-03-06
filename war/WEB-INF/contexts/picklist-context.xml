@@ -15,7 +15,7 @@
 
 	<bean id="picklistItem" class="com.mpower.controller.picklist.PicklistItemFormController">
         <property name="commandName" value="picklistItem"/>
-        <property name="commandClass" value="com.mpower.domain.model.customization.Picklist"/>
+        <property name="commandClass" value="com.mpower.domain.model.customization.PicklistItem"/>
         <property name="formView" value="picklist/picklistItem" />
         <property name="successView" value="picklist/picklistItem" />
     </bean>

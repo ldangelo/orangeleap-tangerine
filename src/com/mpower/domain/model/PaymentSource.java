@@ -339,6 +339,9 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 
     @Override
     public Address getSelectedAddress() {
+        if (selectedAddress == null) {
+            selectedAddress = new Address(); // created only because spring needs to bind to it
+        }
         return selectedAddress;
     }
 
@@ -349,6 +352,9 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 
     @Override
     public Phone getSelectedPhone() {
+        if (selectedPhone == null) {
+            selectedPhone = new Phone(); // created only because spring needs to bind to it
+        }
         return selectedPhone;
     }
 

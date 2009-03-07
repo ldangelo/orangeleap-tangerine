@@ -81,17 +81,32 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         return getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_BY_SITE_NAME", getSiteName());
     }
 
-    @Override
+	@Override
     public Picklist readPicklistByFieldName(String fieldName, EntityType entityType) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistByFieldName: fieldName = " + fieldName + " entityType = " + entityType);
         }
+        Picklist picklist = getPicklist(fieldName, entityType, false);
+        if (picklist != null) return picklist;
+        return getPicklist(fieldName, entityType, true);
+    }
+
+    @SuppressWarnings("unchecked")
+	private Picklist getPicklist(String fieldName, EntityType entityType, boolean useDefault) {
         Map<String, Object> params = setupParams();
         params.put("fieldName", fieldName);
         params.put("entityType", entityType);
-        return (Picklist) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME", params);
+        List<Picklist> picklists = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME", params);
+        for (Picklist picklist: picklists) {
+        	if (picklist.getSite() == null) {
+        		if (useDefault) return picklist;
+        	} else {
+        		if (!useDefault && picklist.getSite().getName().equals(getSiteName())) return picklist;
+        	}
+        }
+        return null;
     }
-
+    
     @Override
     public PicklistItem readPicklistItemById(Long picklistItemId) {
         if (logger.isDebugEnabled()) {

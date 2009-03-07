@@ -6,6 +6,8 @@
         <flushInterval hours="24"/>
         <flushOnExecute statement="UPDATE_PICKLIST"/>
         <flushOnExecute statement="UPDATE_PICKLIST_ITEM"/>
+        <flushOnExecute statement="INSERT_PICKLIST"/>
+        <flushOnExecute statement="INSERT_PICKLIST_ITEM"/>
         <property name="size" value="1000" />
     </cacheModel>
 
@@ -20,6 +22,7 @@
 
     <resultMap id="PICKLIST_ITEM_RESULT" class="com.mpower.domain.model.customization.PicklistItem">
         <result property="id" column="PICKLIST_ITEM_ID" jdbcType="BIGINT"/>
+        <result property="picklistId" column="PICKLIST_ID" jdbcType="BIGINT"/>
         <result property="defaultDisplayValue" column="DEFAULT_DISPLAY_VALUE" jdbcType="VARCHAR"/>
 		<result property="inactive" column="INACTIVE" jdbcType="CHAR" />
         <result property="itemName" column="ITEM_NAME" jdbcType="VARCHAR"/>
@@ -27,6 +30,7 @@
         <result property="referenceValue" column="REFERENCE_VALUE" jdbcType="VARCHAR"/>
         <result property="suppressReferenceValue" column="SUPPRESS_REFERENCE_VALUE" jdbcType="VARCHAR"/>
     </resultMap>
+
 
     <sql id="SELECT_PICKLIST_FRAGMENT">
         select P.PICKLIST_ID, P.ENTITY_TYPE, P.MULTISELECT, P.PICKLIST_NAME, P.SITE_NAME,
@@ -56,18 +60,20 @@
     </select>
 
     <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="long" cacheModel="picklist-cache">
-        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER, REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER, REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE, PICKLIST_ID
         from PICKLIST_ITEM
         where PICKLIST_ITEM_ID = #id#
     </select>
     
     <update id="UPDATE_PICKLIST" parameterClass="com.mpower.domain.model.customization.Picklist">
         update PICKLIST 
-        set SITE_NAME = #site.name#,
+        set 
         ENTITY_TYPE = #entityType#,
         MULTISELECT = #multiselect#,
         PICKLIST_NAME = #picklistName#
-        where PICKLIST_ID = #id#
+        where 
+        SITE_NAME = #site.name#
+        and PICKLIST_ID = #id#
     </update>
 
     <update id="UPDATE_PICKLIST_ITEM" parameterClass="com.mpower.domain.model.customization.PicklistItem">
@@ -78,8 +84,39 @@
         ITEM_ORDER = #itemOrder#,
         REFERENCE_VALUE = #referenceValue#,
         SUPPRESS_REFERENCE_VALUE = #suppressReferenceValue#,
-        PICKLIST_ID = #picklist.id#
+        PICKLIST_ID = #picklistId#
         where PICKLIST_ITEM_ID = #id#
     </update>
+    
+    
+    <insert id="INSERT_PICKLIST" parameterClass="com.mpower.domain.model.customization.Picklist">
+    insert into PICKLIST (PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME)
+    values (#id#, #entityType#, #multiselect#, #picklistName#, #site.name#)
+	</insert>
+
+    <insert id="INSERT_PICKLIST_ITEM" parameterClass="com.mpower.domain.model.customization.PicklistItem">
+		    insert into PICKLIST_ITEM (
+		        DEFAULT_DISPLAY_VALUE,
+		        INACTIVE,
+		        ITEM_NAME, 
+		        ITEM_ORDER,
+		        REFERENCE_VALUE, 
+		        SUPPRESS_REFERENCE_VALUE,
+		        PICKLIST_ID 
+		    )
+		    values (
+		        #defaultDisplayValue#,
+		        #inactive#,
+		        #itemName#,
+		        #itemOrder#,
+		        #referenceValue#,
+		        #suppressReferenceValue#,
+		        #picklistId#
+		    )
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+    
 
 </sqlMap>

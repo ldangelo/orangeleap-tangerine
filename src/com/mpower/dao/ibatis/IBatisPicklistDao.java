@@ -1,18 +1,16 @@
 package com.mpower.dao.ibatis;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.mpower.dao.interfaces.PicklistDao;
+import com.mpower.domain.model.Site;
 import com.mpower.domain.model.customization.Picklist;
 import com.mpower.domain.model.customization.PicklistItem;
 import com.mpower.type.EntityType;
@@ -41,25 +39,34 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
     }
 
     @Override
-    public Picklist maintainPicklist(final Picklist picklist) {
-        if (logger.isDebugEnabled()) {
+    public Picklist maintainPicklist(Picklist picklist) {
+       
+    	if (logger.isDebugEnabled()) {
             logger.debug("maintainPicklist: picklist = " + picklist);
         }
-        getSqlMapClientTemplate().update("UPDATE_PICKLIST", picklist);
-
-        final List<PicklistItem> items = picklist.getPicklistItems();
-        if (items != null && !items.isEmpty()) {
-            getSqlMapClientTemplate().execute(new SqlMapClientCallback() {
-                public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
-                    executor.startBatch();
-                    for (PicklistItem item : items) {
-                        item.setPicklist(picklist);
-                        executor.update("UPDATE_PICKLIST_ITEM", item);
-                    }
-                    executor.executeBatch();
-                    return null;
-                }
-            });
+        
+        // Sanity check
+        Picklist dbPicklist = readPicklistById(picklist.getId());
+        if (dbPicklist != null && !dbPicklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot modify default picklist.");
+        
+        if (dbPicklist == null) {
+        	// New picklist
+            picklist.setSite(new Site(getSiteName()));
+            getSqlMapClientTemplate().insert("INSERT_PICKLIST", picklist);
+        } else {
+        	// Existing picklist
+	        Map<String, Object> params = setupParams();
+	        params.put("picklistId", picklist.getId());
+	        getSqlMapClientTemplate().update("UPDATE_PICKLIST", picklist);
+        }
+        
+        for (PicklistItem item : picklist.getPicklistItems()) {
+        	item.setPicklistId(picklist.getId());
+        	if (item.getId() == null) {
+                getSqlMapClientTemplate().insert("INSERT_PICKLIST_ITEM", item);
+        	} else {
+                getSqlMapClientTemplate().update("UPDATE_PICKLIST_ITEM", item);
+        	}
         }
 
         return picklist;
@@ -98,7 +105,11 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPicklistItem: picklistItem = " + picklistItem);
         }
-        getSqlMapClientTemplate().update("UPDATE_PICKLIST_ITEM", picklistItem);
+    	if (picklistItem.getId() == null) {
+            getSqlMapClientTemplate().insert("INSERT_PICKLIST_ITEM", picklistItem);
+    	} else {
+            getSqlMapClientTemplate().update("UPDATE_PICKLIST_ITEM", picklistItem);
+    	}
         return picklistItem;
     }
 }

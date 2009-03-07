@@ -77,7 +77,7 @@ public class Picklist implements Serializable {
     }
 
     public boolean isPersisted() {
-    	return picklistItems != null && picklistItems.size() > 0 && picklistItems.get(0).getId() > 0;
+    	return picklistItems != null && picklistItems.size() > 0 && picklistItems.get(0).getId() != null;
     }
 
     public List<PicklistItem> getActivePicklistItems() {

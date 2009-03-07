@@ -2,10 +2,9 @@ package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
 
+import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Auditable;
 import com.mpower.domain.model.Person;
-import com.mpower.domain.GeneratedId;
-import com.mpower.domain.model.Site;
 
 public class PicklistItem implements Auditable, GeneratedId, Serializable {
 
@@ -18,7 +17,7 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
     private String suppressReferenceValue;
     private Integer itemOrder;
     private boolean inactive = false;
-    private Picklist picklist;
+    private String picklistId;
     private Auditable originalObject;
 
     @Override
@@ -63,12 +62,12 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
         this.itemOrder = position;
     }
 
-    public Picklist getPicklist() {
-        return picklist;
+    public String getPicklistId() {
+        return picklistId;
     }
 
-    public void setPicklist(Picklist picklist) {
-        this.picklist = picklist;
+    public void setPicklistId(String picklistId) {
+        this.picklistId = picklistId;
     }
 
 	public void setOriginalObject(Auditable originalObject) {
@@ -77,10 +76,6 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
 
 	public Auditable getOriginalObject() {
 		return originalObject;
-	}
-
-	public Site getSite() {
-		return picklist.getSite();
 	}
 
 	public void setInactive(boolean inactive) {

@@ -5,8 +5,7 @@
 	<tiles:putAttribute name="secondaryNav" value="Codes" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-		
-		
+	
 		<c:set var="currentPicklistId" value="${param.picklistId!=null?param.picklistId:''}" />
 		<div class="simplebox">
 		<form method="get" action="picklistItems.htm">

@@ -5,7 +5,7 @@
 		<c:if test="${picklistItem.id!=null}">
 			<input type="hidden" name="picklistItemId" value="<c:out value='${picklistItem.id}'/>" />
 		</c:if>
-		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklist.id}'/>" />
+		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklistId}'/>" />
 		</td>
 		<td>
 		<input name="itemName" size="16" value="<c:out value='${picklistItem.itemName}'/>" />
@@ -22,7 +22,7 @@
 		<c:if test="${picklistItem.id!=null}">
 			<input type="hidden" name="picklistItemId" value="<c:out value='${picklistItem.id}'/>" />
 		</c:if>
-		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklist.id}'/>" />
+		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklistId}'/>" />
 		</td>
 		<td class="codeValue">
 		<input name="itemName" size="16" value="<c:out value='${picklistItem.itemName}'/>" />
@@ -33,7 +33,7 @@
 </c:when>
 <c:otherwise>
     <c:url var="picklistItemUrl" value="picklistItem.htm">
-      <c:param name="picklistId" value="${picklistItem.picklist.id}" />
+      <c:param name="picklistId" value="${picklistItem.picklistId}" />
       <c:param name="picklistItemId" value="${picklistItem.id}" />
       <c:param name="itemName" value="${picklistItemName}" />
       <c:param name="view" value="inPlace" />

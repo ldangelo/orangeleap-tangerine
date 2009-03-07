@@ -7,7 +7,7 @@
 					<c:forEach items="${picklistItems}" var="picklistItem">
 						<tr>
  							   <c:url var="picklistItemUrl" value="picklistItem.htm">
- 							     <c:param name="picklistId" value="${picklistItem.picklist.id}" />
+ 							     <c:param name="picklistId" value="${picklistItem.picklistId}" />
  							     <c:param name="picklistItemId" value="${picklistItem.id}" />
  							     <c:param name="itemName" value="${picklistItemName}" />
 							      <c:param name="view" value="inPlace" />

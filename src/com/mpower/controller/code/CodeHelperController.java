@@ -66,7 +66,7 @@ public class CodeHelperController extends ParameterizableViewController {
             codes = codeService.readCodes(codeType, searchString, description, showInactive);
         } 
         else {
-            codes = codeService.readCodes(codeType, searchString);
+            codes = codeService.readCodes(codeType, searchString, "", showInactive);
         }
         String view = super.getViewName();
         if ("table".equals(request.getParameter(VIEW))) {

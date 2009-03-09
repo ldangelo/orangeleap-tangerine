@@ -14,7 +14,7 @@
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
 		<property name="mysql.db.classpath" value="${target.tomcat.dir}/lib/mysql-connector-java-5.0.8-bin.jar" />
 
-		<exec executable="bash -c 'cd /opt/mpower;/opt/mpower/run.sh stop ${instance}'" spawn="true" />
+		<exec dir="/opt/mpower" executable="/opt/mpower/run.sh stop ${instance}'" spawn="true" />
 		<sleep seconds="30" />
 
 		<!-- Reset schema -->
@@ -43,9 +43,9 @@
 		<delete dir="${target.tomcat.dir}/temp" />
 		<delete dir="${target.tomcat.dir}/webapps/mpower" />
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
-		<exec executable="chown -R tomcat.tomcat ${target.tomcat.dir}/webapps" />
+		<exec dir="/opt/mpower" executable="chown -R tomcat.tomcat ${target.tomcat.dir}/webapps" />
 
-		<exec executable="su - tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh start ${instance}'" spawn="true" />
+		<exec dir="/opt/mpower" executable="su - tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh start ${instance}'" spawn="true" />
 		
 		
     </target> 

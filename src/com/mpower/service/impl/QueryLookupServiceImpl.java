@@ -1,6 +1,7 @@
 package com.mpower.service.impl;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,11 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mpower.dao.interfaces.CommitmentDao;
+import com.mpower.dao.interfaces.ConstituentDao;
+import com.mpower.dao.interfaces.GiftDao;
 import com.mpower.dao.interfaces.QueryLookupDao;
-import com.mpower.dao.interfaces.QueryLookupExecutorDao;
+import com.mpower.domain.model.Person;
 import com.mpower.domain.model.QueryLookup;
 import com.mpower.domain.model.QueryLookupParam;
+import com.mpower.domain.model.paymentInfo.Commitment;
+import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.QueryLookupService;
+import com.mpower.type.CommitmentType;
+import com.mpower.type.EntityType;
 
 @Service("queryLookupService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -28,9 +36,16 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
     @Resource(name = "queryLookupDAO")
     private QueryLookupDao queryLookupDao;
     
-    @Resource(name = "queryLookupExecutorDAO")
-    private QueryLookupExecutorDao queryLookupExecutorDao;
-
+    @Resource(name = "constituentDAO")
+    private ConstituentDao constituentDao;
+    
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
+    
+    @Resource(name = "commitmentDAO")
+    private CommitmentDao commitmentDao;
+    
+    
     @Override
     public QueryLookup readQueryLookup(String fieldDefinitionId) {
         if (logger.isDebugEnabled()) {
@@ -44,29 +59,50 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
         if (logger.isDebugEnabled()) {
             logger.debug("executeQueryLookup: fieldDefinitionId = " + fieldDefinitionId + " params = " + params);
         }
+        
+        String searchOption = params.get("searchOption");
+        String searchValue = params.get(searchOption);
+        
+        Map<String, Object> filterparms = new HashMap<String, Object>();
+        filterparms.put("siteName", getSiteName());
+        
+        // Check request is a valid lookup field for lookup screen
         QueryLookup ql = readQueryLookup(fieldDefinitionId);
-        List<Object> objects = null;
         if (ql != null) {
-            StringBuilder query = new StringBuilder(ql.getSqlQuery());
-            LinkedHashMap<String, String> paramsMap = new LinkedHashMap<String, String>();
             List<QueryLookupParam> lookupParams = ql.getQueryLookupParams();
             if (lookupParams != null) {
                 for (QueryLookupParam qlp : lookupParams) {
                     String key = qlp.getName();
-                    if (params.get(key) != null) {
-                        query.append(" AND ");
-                        query.append(key);
-                        query.append(" LIKE :");
-                        query.append(key.replace('.', '_')); // TODO: fix for JDBCTemplate
-                        paramsMap.put(key.replace('.', '_'), params.get(key) + "%"); // TODO: fix for JDBCTemplate
+                    if (key.equals(searchOption)) {
+                        filterparms.put(searchOption, searchValue);
                     }
                 }
             }
-
-            if (ql != null) {
-                objects = queryLookupExecutorDao.executeQueryLookup(query.toString(), paramsMap);
-            }
         }
-        return objects;
+        
+        EntityType entityType = ql.getEntityType();
+    	List<Object> result = new ArrayList<Object>();
+        
+        if (entityType == EntityType.person) {
+            String where = ql.getSqlWhere();
+            if (where != null && where.trim().length() > 0) filterparms.put("additionalWhere", where);
+        	List<Person> persons = constituentDao.searchConstituents(filterparms, null);
+        	result.addAll(persons);
+        	
+        }
+        
+        if (entityType == EntityType.gift) {
+            List<Gift> gifts = giftDao.searchGifts(filterparms);
+        	result.addAll(gifts);
+        }
+        
+        if (entityType == EntityType.commitment) {
+        	CommitmentType commitmentType = CommitmentType.RECURRING_GIFT;
+            List<Commitment> commitments = commitmentDao.searchCommitments(commitmentType, filterparms);
+        	result.addAll(commitments);
+        }
+        
+        return result;
+        
     }
 }

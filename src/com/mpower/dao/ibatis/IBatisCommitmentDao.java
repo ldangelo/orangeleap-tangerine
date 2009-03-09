@@ -1,6 +1,5 @@
 package com.mpower.dao.ibatis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +11,11 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.dao.util.QueryUtil;
+import com.mpower.dao.util.search.SearchFieldMapperFactory;
 import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.type.CommitmentType;
+import com.mpower.type.EntityType;
 
 @Repository("commitmentDAO")
 public class IBatisCommitmentDao extends AbstractIBatisDao implements CommitmentDao {
@@ -76,29 +77,11 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 			Map<String, Object> searchparams) {
 		Map<String, Object> params = setupParams();
 		QueryUtil.translateSearchParamsToIBatisParams(searchparams, params,
-				fieldMap);
+				new SearchFieldMapperFactory().getMapper(EntityType.commitment).getMap());
 
 		List<Commitment> commitments = getSqlMapClientTemplate().queryForList(
 				"SELECT_COMMITMENT_BY_SEARCH_TERMS", params);
 		return commitments;
 	}
 
-	// These are the fields we support for searching.
-	private Map<String, String> fieldMap = new HashMap<String, String>();
-	{
-
-		// Constituent
-		fieldMap.put("person.accountNumber", "CONSTITUENT_ID");
-		fieldMap.put("person.firstName", "FIRST_NAME");
-		fieldMap.put("person.lastName", "LAST_NAME");
-		fieldMap.put("person.organizationName", "ORGANIZATION_NAME");
-
-		// Address
-		fieldMap.put("postalCode", "POSTAL_CODE");
-
-		// Commitment
-		fieldMap.put("referenceNumber", "COMMITMENT_ID");
-		fieldMap.put("amountPerGift", "AMOUNT_PER_GIFT");
-		fieldMap.put("amountTotal", "AMOUNT_TOTAL");
-	}
 }

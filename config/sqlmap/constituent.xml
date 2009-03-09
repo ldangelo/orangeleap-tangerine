@@ -162,6 +162,9 @@
 		    </iterate>
 		   )
 		</isNotNull>
+		<isNotNull property="additionalWhere"> 
+			and $additionalWhere$
+		</isNotNull>
 		
 		
 	</statement>

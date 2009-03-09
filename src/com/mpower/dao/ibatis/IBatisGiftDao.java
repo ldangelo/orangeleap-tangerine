@@ -2,7 +2,6 @@ package com.mpower.dao.ibatis;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +13,11 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.GiftDao;
 import com.mpower.dao.util.QueryUtil;
+import com.mpower.dao.util.search.SearchFieldMapperFactory;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.domain.model.paymentInfo.Gift;
+import com.mpower.type.EntityType;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
@@ -76,30 +77,12 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
     public List<Gift> searchGifts(Map<String, Object> searchparams)
     {
     	Map<String, Object> params = setupParams();
-    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, fieldMap);
+    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.gift).getMap());
     	
     	List<Gift> gifts = getSqlMapClientTemplate().queryForList("SELECT_GIFT_BY_SEARCH_TERMS", params);
     	return gifts;
     }
     
-    // These are the fields we support for searching.
-    private Map<String, String> fieldMap = new HashMap<String, String>();
-    {
-    	
-    	// Constituent
-    	fieldMap.put("person.accountNumber", "CONSTITUENT_ID");
-    	fieldMap.put("person.firstName", "FIRST_NAME");
-    	fieldMap.put("person.lastName", "LAST_NAME");
-    	fieldMap.put("person.organizationName", "ORGANIZATION_NAME");
-
-    	// Address
-    	fieldMap.put("postalCode", "POSTAL_CODE");
-    	
-    	// Gift
-    	fieldMap.put("referenceNumber", "GIFT_ID");
-    	fieldMap.put("amount", "AMOUNT");
-
-    }
 
     @Override
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {

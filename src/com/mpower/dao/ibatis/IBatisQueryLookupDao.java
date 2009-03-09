@@ -1,5 +1,6 @@
 package com.mpower.dao.ibatis;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -25,13 +26,22 @@ public class IBatisQueryLookupDao extends AbstractIBatisDao implements QueryLook
         super(sqlMapClient);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public QueryLookup readQueryLookup(String fieldDefinitionId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
         }
         Map<String, Object> params = setupParams();
         params.put("fieldDefinitionId", fieldDefinitionId);
-        return (QueryLookup)getSqlMapClientTemplate().queryForObject("SELECT_QUERY_LOOKUP_BY_SITE_FLD_DEF_ID", params);
+        // There should only be 0, 1, or 2 records (one this site and one null site) returned from this query.
+        List<QueryLookup> list = getSqlMapClientTemplate().queryForList("SELECT_QUERY_LOOKUP_BY_SITE_FLD_DEF_ID", params);
+        if (list.size() == 0) return null;
+        for (QueryLookup ql : list) {
+        	if (ql.getSite() != null) {
+        		return ql;
+        	}
+        }
+        return list.get(0);
     }
 }

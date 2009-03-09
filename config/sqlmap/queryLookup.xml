@@ -4,7 +4,8 @@
 
 	<resultMap id="QUERY_LOOKUP_RESULT" class="com.mpower.domain.model.QueryLookup" groupBy="id">
 		<result property="id" column="QUERY_LOOKUP_ID" jdbcType="BIGINT" />
-		<result property="sqlQuery" column="SQL_QUERY" jdbcType="VARCHAR" />
+		<result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
+		<result property="sqlWhere" column="SQL_WHERE" jdbcType="VARCHAR" />
 		<result property="sectionName" column="SECTION_NAME" jdbcType="VARCHAR" />
 		<result property="fieldDefinition" resultMap="FIELD_DEFINITION.FIELD_DEFINITION_RESULT" />
 		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
@@ -12,7 +13,7 @@
 	</resultMap>
 	
 	<select id="SELECT_QUERY_LOOKUP_BY_SITE_FLD_DEF_ID" resultMap="QUERY_LOOKUP_RESULT" parameterClass="map">
-		select ql.QUERY_LOOKUP_ID, ql.SQL_QUERY, ql.SECTION_NAME, ql.SITE_NAME, 
+		select ql.QUERY_LOOKUP_ID, ql.ENTITY_TYPE, ql.SQL_WHERE, ql.SECTION_NAME, ql.SITE_NAME, 
 		<include refid="FIELD_DEF_COLS_FRAGMENT" />,
 		param.QUERY_LOOKUP_PARAM_ID, param.PARAM_NAME
 		from QUERY_LOOKUP ql 
@@ -23,8 +24,8 @@
 	</select>
 
 	<insert id="INSERT_QUERY_LOOKUP" parameterClass="com.mpower.domain.model.QueryLookup">
-		insert into QUERY_LOOKUP (SQL_QUERY, SECTION_NAME,	FIELD_DEFINITION_ID, SITE_NAME)
-		values (#sqlQuery#, #sectionName#, #fieldDefinition.id#, #site.name#)
+		insert into QUERY_LOOKUP (ENTITY_TYPE, SQL_WHERE, SECTION_NAME,	FIELD_DEFINITION_ID, SITE_NAME)
+		values (#entityType#, #sqlWhere#, #sectionName#, #fieldDefinition.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -32,7 +33,9 @@
 
 	<update id="UPDATE_QUERY_LOOKUP" parameterClass="com.mpower.domain.model.QueryLookup">
 		update QUERY_LOOKUP
-		set SQL_QUERY = #sqlQuery#,
+		set 
+		ENTITY_TYPE = #entityType#
+		SQL_WHERE = #sqlWhere#,
 		SECTION_NAME = #sectionName#,
 		FIELD_DEFINITION_ID = #fieldDefinition.id#,
 		SITE_NAME = #site.name#

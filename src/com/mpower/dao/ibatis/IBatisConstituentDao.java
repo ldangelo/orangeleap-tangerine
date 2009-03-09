@@ -1,7 +1,6 @@
 package com.mpower.dao.ibatis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.dao.util.QueryUtil;
+import com.mpower.dao.util.search.SearchFieldMapperFactory;
 import com.mpower.domain.model.Person;
+import com.mpower.type.EntityType;
 
 /** 
  * Corresponds to the CONSTITUENT tables
@@ -97,30 +98,10 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	if (ignoreIds.size() > 0) {
             params.put("ignoreIds", ignoreIds);
         }
-    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, fieldMap);
+    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.person).getMap());
     	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
     	return persons;
     }
    
-    // These are the fields we support for searching.
-    private Map<String, String> fieldMap = new HashMap<String, String>();
-    {
-    	// Constituent
-    	fieldMap.put("accountNumber", "CONSTITUENT_ID");
-    	fieldMap.put("firstName", "FIRST_NAME");
-    	fieldMap.put("lastName", "LAST_NAME");
-    	fieldMap.put("organizationName", "ORGANIZATION_NAME");
 
-    	// Email
-    	fieldMap.put("email", "EMAIL_ADDRESS");
-
-    	// Address
-    	fieldMap.put("addressLine1", "ADDRESS_LINE_1");
-    	fieldMap.put("city", "CITY");
-    	fieldMap.put("stateProvince", "STATE_PROVINCE");
-    	fieldMap.put("postalCode", "POSTAL_CODE");
-
-    	// Phone
-    	fieldMap.put("number", "NUMBER");
-    }
 }

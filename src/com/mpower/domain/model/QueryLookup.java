@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
+import com.mpower.type.EntityType;
 
 public class QueryLookup implements GeneratedId, Serializable {
 
@@ -14,7 +15,8 @@ public class QueryLookup implements GeneratedId, Serializable {
     private Site site;
     private FieldDefinition fieldDefinition;
     private String sectionName;
-    private String sqlQuery;
+    private EntityType entityType; 
+    private String sqlWhere;
     private List<QueryLookupParam> queryLookupParams;
 
     @Override
@@ -43,12 +45,12 @@ public class QueryLookup implements GeneratedId, Serializable {
         this.fieldDefinition = fieldDefinition;
     }
 
-    public String getSqlQuery() {
-        return sqlQuery;
+    public String getSqlWhere() {
+        return sqlWhere;
     }
 
-    public void setSqlQuery(String sqlQuery) {
-        this.sqlQuery = sqlQuery;
+    public void setSqlWhere(String sqlWhere) {
+        this.sqlWhere = sqlWhere;
     }
 
     public List<QueryLookupParam> getQueryLookupParams() {
@@ -65,5 +67,13 @@ public class QueryLookup implements GeneratedId, Serializable {
 
 	public void setSectionName(String sectionName) {
 		this.sectionName = sectionName;
+	}
+
+	public void setEntityType(EntityType entityType) {
+		this.entityType = entityType;
+	}
+
+	public EntityType getEntityType() {
+		return entityType;
 	}
 }

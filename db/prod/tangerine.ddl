@@ -601,7 +601,8 @@ DROP TABLE IF EXISTS `QUERY_LOOKUP`;
 
 CREATE TABLE `QUERY_LOOKUP` (
   `QUERY_LOOKUP_ID` bigint(20) NOT NULL auto_increment,
-  `SQL_QUERY` varchar(255) default NULL,
+  `ENTITY_TYPE` varchar(255) default NULL,
+  `SQL_WHERE` varchar(255) default NULL,
   `SECTION_NAME` varchar(255) default NULL,
   `FIELD_DEFINITION_ID` varchar(255) default NULL,
   `SITE_NAME` varchar(255) default NULL,

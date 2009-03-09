@@ -52,7 +52,7 @@ public class QueryLookupController extends SimpleFormController {
         
         QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
-            logger.debug("performQuery: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getSqlQuery());
+            logger.debug("performQuery: fieldDef = " + fieldDef );
         }
         List<Object> objects = executeQueryLookup(request, fieldDef);
         sortPaginate(request, objects, queryLookup);
@@ -70,7 +70,7 @@ public class QueryLookupController extends SimpleFormController {
         String fieldDef = findFieldDef(request);
         QueryLookup queryLookup = doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
-            logger.debug("showForm: fieldDef = " + fieldDef + " queryLookup = " + queryLookup.getSqlQuery());
+            logger.debug("showForm: fieldDef = " + fieldDef );
         }
         request.setAttribute("fieldDef", fieldDef);
         request.setAttribute("showOtherField", Boolean.valueOf(request.getParameter("showOtherField")));

@@ -61,3 +61,25 @@ strong {
 p.left {
     text-align: left;
 }
+
+div.ext-widget {
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+div.x-menu a.x-menu-item {
+    text-align: left;
+}
+
+div.ext-widget span.x-window-header-text {
+    text-align: left;
+}
+
+div.ext-widget span.x-panel-header-text {
+    text-align: left;
+}
+
+div.ext-widget div.x-grid3-cell-inner {
+    text-align: left;
+}

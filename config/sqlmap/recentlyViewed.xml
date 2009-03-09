@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="RECENTLY_VIEWED">
+
+    <cacheModel id="recentlyViewed-cache" type="LRU" readOnly="true">
+        <flushInterval hours="24"/>
+        <flushOnExecute statement="INSERT_RECENTLY_VIEWED"/>
+        <flushOnExecute statement="UPDATE_RECENTLY_VIEWED"/>
+        <property name="size" value="500" />
+    </cacheModel>
+
+    <resultMap id="PERSON_FLYWEIGHT" class="java.util.HashMap">
+        <result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT"/>
+        <result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR"/>
+        <result property="lastName" column="LAST_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="SELECT_RECENTLY_VIEWED" parameterClass="map" resultClass="string">
+        select RECENT_ACCOUNTS from RECENTLY_VIEWED where SITE_NAME = #siteName# and USER_NAME = #userName#
+    </select>
+    
+    <insert id="INSERT_RECENTLY_VIEWED" parameterClass="map">
+        insert into RECENTLY_VIEWED(SITE_NAME, USER_NAME, RECENT_ACCOUNTS) values(#siteName#,#userName#,#recentlyViewed#)
+        on duplicate key update RECENT_ACCOUNTS=#recentlyViewed#
+    </insert>
+
+    <select id="SELECT_PERSON_FLYWEIGHT" resultMap="PERSON_FLYWEIGHT" parameterClass="map">
+        select CONSTITUENT_ID, FIRST_NAME, LAST_NAME
+        from CONSTITUENT
+		where SITE_NAME = #siteName#
+        and CONSTITUENT_ID in
+        <iterate property="personIds" conjunction="," open="(" close=")">
+			#personIds[]#
+		</iterate>
+    </select>
+
+</sqlMap>

@@ -5,6 +5,7 @@
 	<sqlMap resource="sqlmap/site.xml"/>
 	<sqlMap resource="sqlmap/customField.xml"/>
 	<sqlMap resource="sqlmap/entityDefault.xml"/>
+    <sqlMap resource="sqlmap/recentlyViewed.xml"/> 
 
 	<sqlMap resource="sqlmap/fieldCondition.xml"/>
 	<sqlMap resource="sqlmap/fieldDefinition.xml"/>
@@ -34,4 +35,5 @@
 	<sqlMap resource="sqlmap/audit.xml"/>
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/paymentHistory.xml"/>
+
 </sqlMapConfig>

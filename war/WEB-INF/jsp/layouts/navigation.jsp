@@ -31,6 +31,9 @@
 			</li>
 			<li>
 				<a href="#"><spring:message code="history"/></a>
+                <ul id="bookmarkHistory">
+                    
+                </ul>
 			</li>
 			<li>
 				<a href="#"><spring:message code="bookmarks"/></a>

@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/extjs/ext-jquery-adapter.js"></script>
 <script type="text/javascript" src="js/extjs/ext-all.js"></script>
 <script type="text/javascript" src="js/sidebar.js"></script>
+<script type="text/javascript" src="js/history.js"></script>
 <script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="js/jquery.bgiframe.js"></script>
 <script type="text/javascript" src="js/jquery.hoverIntent.js"></script>

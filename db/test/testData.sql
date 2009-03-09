@@ -70,7 +70,7 @@ INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD
 INSERT INTO FIELD_RELATIONSHIP (RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES ('MANY_TO_MANY', FALSE, 'person.customFieldMap[individual.siblings]', 'person.customFieldMap[individual.siblings]', null);
 
 -- Query Lookup & Parameters
-INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, SQL_QUERY, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (100, 'SELECT constituent_id, organization_name, last_name, first_name, middle_name, suffix FROM CONSTITUENT WHERE site_name = :siteName AND constituent_type = ''individual'' AND title = ''Rev.''', 'person.customFieldMap[organization.employees]', 'person.contactInfo', 'company1');
+INSERT INTO QUERY_LOOKUP (QUERY_LOOKUP_ID, ENTITY_TYPE, SQL_WHERE, FIELD_DEFINITION_ID, SECTION_NAME, SITE_NAME) VALUES (100, 'person', 'constituent_type = ''individual'' AND title = ''Rev.''', 'person.customFieldMap[organization.employees]', 'person.contactInfo', 'company1');
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('lastName', 100);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('firstName', 100);
 INSERT INTO QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID) VALUES ('middleName', 100);

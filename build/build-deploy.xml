@@ -14,7 +14,7 @@
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
 		<property name="mysql.db.classpath" value="${target.tomcat.dir}/lib/mysql-connector-java-5.0.8-bin.jar" />
 
-		<exec executable="su - tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh stop ${instance}'" spawn="true" />
+		<exec executable="bash -c 'cd /opt/mpower;/opt/mpower/run.sh stop ${instance}'" spawn="true" />
 		<sleep seconds="30" />
 
 		<!-- Reset schema -->

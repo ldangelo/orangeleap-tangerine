@@ -6,7 +6,7 @@
 		<result property="name" column="FLD_VAL_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="FIELD_VALIDATION_RESULT" class="com.mpower.domain.model.customization.FieldValidation">
+	<resultMap id="FIELD_VALIDATION_RESULT" class="com.mpower.domain.model.customization.FieldValidation" groupBy="id">
 		<result property="id" column="VALIDATION_ID" jdbcType="BIGINT" />
 		<result property="regex" column="FLD_VAL_VALIDATION_REGEX" jdbcType="VARCHAR" />
 		<result property="sectionName" column="FLD_VAL_SECTION_NAME" jdbcType="VARCHAR" />

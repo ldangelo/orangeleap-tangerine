@@ -12,7 +12,7 @@
 		<property name="mysql.db.user" value="mpower" />
 		<property name="mysql.db.pw" value="mpower" />
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-		<property name="mysql.db.classpath" value="${target.tomcat.dir}/lib/mysql-connector-java-5.0.8-bin.jar" />
+		<property name="mysql.db.classpath" value="/opt/mpower/apache-tomcat-6.0.18/lib/mysql-connector-java-5.0.8-bin.jar" />
 
 		<exec dir="/opt/mpower" executable="/opt/mpower/run.sh" spawn="true" >
 			<arg line="stop ${instance}"/>

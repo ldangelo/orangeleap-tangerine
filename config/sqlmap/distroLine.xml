@@ -53,5 +53,15 @@
 			#lineIds[]#
 		</iterate>	    
 	</delete>
+
+	<delete id="DELETE_DISTRO_LINE_BY_GIFT_ID" parameterClass="long">
+	    delete from DISTRO_LINE
+	    where GIFT_ID = #giftId#	    
+	</delete>
+
+	<delete id="DELETE_DISTRO_LINE_BY_COMMITMENT_ID" parameterClass="long">
+	    delete from DISTRO_LINE
+	    where COMMITMENT_ID = #commitmentId#	    
+	</delete>
 	
 </sqlMap>

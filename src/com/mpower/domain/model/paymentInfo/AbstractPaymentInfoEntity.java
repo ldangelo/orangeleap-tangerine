@@ -5,6 +5,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.list.LazyList;
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.domain.model.AddressAware;
 import com.mpower.domain.model.EmailAware;
@@ -30,6 +34,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected Date acknowledgmentDate;
     
     protected Person person;
+    /** Form bean representation of the DistributionLines */
+    protected List<DistributionLine> mutableDistributionLines = null;
+    /** IBatis bean representation of the DistributionLines */
     protected List<DistributionLine> distributionLines;
 
     private FormBeanType addressType;
@@ -109,30 +116,54 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public List<DistributionLine> getDistributionLines() {
-        if (distributionLines == null) {
-            distributionLines = new ArrayList<DistributionLine>();
-        }
-    //        if (distributionLines == null) { // TODO: lazyList for IBatis?
-    //            distributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
-    //        }
         return distributionLines;
     }
 
     public void setDistributionLines(List<DistributionLine> distributionLines) {
         this.distributionLines = distributionLines;
-    //        this.distributionLines = LazyList.decorate(distributionLines, FactoryUtils.instantiateFactory(DistributionLine.class, new Class[] { Gift.class }, new Object[] { this }));
     }
 
-    public void addDistributionLine(DistributionLine distributionLine) {
-        getDistributionLines().add(distributionLine);
+    @SuppressWarnings("unchecked")
+    public List<DistributionLine> getMutableDistributionLines() {
+        if (mutableDistributionLines == null) { 
+            Factory factory = new Factory() {
+                public Object create() {
+                    return new DistributionLine();
+                }
+            };
+            mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), factory);
+        }
+        if (mutableDistributionLines.isEmpty() && distributionLines != null & distributionLines.isEmpty() == false) {
+            mutableDistributionLines.addAll(distributionLines);
+        }
+        return mutableDistributionLines;
     }
 
-    public void removeInvalidDistributionLines() {
-        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
-        while (distLineIter.hasNext()) {
-            DistributionLine line = distLineIter.next();
-            if (line == null || line.getAmount() == null) {
-                distLineIter.remove();
+    public void setMutableDistributionLines(List<DistributionLine> mutableDistributionLines) {
+        this.mutableDistributionLines = mutableDistributionLines;
+    }
+
+    public void removeEmptyDistributionLines() {
+        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
+        while (mutableLinesIter.hasNext()) {
+            DistributionLine line = mutableLinesIter.next();
+            if (line != null && line.isFieldEntered() == false) {
+                mutableLinesIter.remove();
+            }
+        }
+    }
+    
+//    public void addMutableDistributionLine(DistributionLine distributionLine) {
+//        getMutableDistributionLines().add(distributionLine);
+//    }
+
+    public void filterValidDistributionLines() {
+        distributionLines = new ArrayList<DistributionLine>();
+        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
+        while (mutableLinesIter.hasNext()) {
+            DistributionLine line = mutableLinesIter.next();
+            if (line != null && line.isValid()) {
+                distributionLines.add(line);
             }
         }
     }
@@ -140,20 +171,20 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     /**
      * Check for at least 1 valid DistributionLine; create one if not found
      */
-    public void defaultCreateDistributionLine() {
-        boolean hasValid = false;
-        Iterator<DistributionLine> distLineIter = this.distributionLines.iterator();
-        while (distLineIter.hasNext()) {
-            DistributionLine line = distLineIter.next();
-            if (line != null) {
-                hasValid = true;
-                break;
-            }
-        }
-        if (!hasValid) {
-            getDistributionLines().get(0); // Default create one Distribution Line object if necessary
-        }
-    }
+//    public void defaultCreateMutableDistributionLine() {
+//        boolean hasValid = false;
+//        Iterator<DistributionLine> distLineIter = mutableDistributionLines.iterator();
+//        while (distLineIter.hasNext()) {
+//            DistributionLine line = distLineIter.next();
+//            if (line != null && line.isValid()) {
+//                hasValid = true;
+//                break;
+//            }
+//        }
+//        if (!hasValid) {
+//            mutableDistributionLines.get(0); // Default create one Distribution Line object if necessary
+//        }
+//    }
 
     @Override
     public FormBeanType getAddressType() {
@@ -273,5 +304,16 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public Site getSite() {
         return person != null ? person.getSite() : null;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
+            append("checkNumber", checkNumber).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).append("comments", comments).
+            append("address", address).append("phone", phone).append("email", email).append("paymentSource", paymentSource).
+            append("paymentSourceType", paymentSourceType).
+            append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).append("selectedEmail", selectedEmail).append("selectedPaymentSource", selectedPaymentSource).
+            append("emailType", emailType).append("phoneType", phoneType).append("addressType", addressType).append("person", person).
+            toString();
     }
 }

@@ -14,30 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
-import com.mpower.domain.model.communication.Address;
-import com.mpower.domain.model.communication.Phone;
-import com.mpower.service.AddressService;
-import com.mpower.service.AuditService;
 import com.mpower.service.InactivateService;
 import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PhoneService;
-import com.mpower.type.FormBeanType;
 
 @Service("paymentSourceService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class PaymentSourceServiceImpl extends AbstractTangerineService implements PaymentSourceService, InactivateService {
+public class PaymentSourceServiceImpl extends AbstractPaymentService implements PaymentSourceService, InactivateService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    @Resource(name = "auditService")
-    private AuditService auditService;
-
-    @Resource(name = "addressService")
-    private AddressService addressService;
-
-    @Resource(name = "phoneService")
-    private PhoneService phoneService;
 
     @Resource(name = "paymentSourceDAO")
     private PaymentSourceDao paymentSourceDao;
@@ -48,27 +33,8 @@ public class PaymentSourceServiceImpl extends AbstractTangerineService implement
         if (logger.isDebugEnabled()) {
             logger.debug("maintainPaymentSource: paymentSource = " + paymentSource);
         }
-
-        if (FormBeanType.NEW.equals(paymentSource.getAddressType())) {
-            Address newAddress = paymentSource.getAddress();
-            newAddress.setPersonId(paymentSource.getPerson().getId());
-            paymentSource.setAddress(addressService.save(newAddress));
-            paymentSource.setSelectedAddress(paymentSource.getAddress());
-        }
-        else if (FormBeanType.NONE.equals(paymentSource.getAddressType())) {
-            paymentSource.setSelectedAddress(null);
-            paymentSource.setAddress(null);
-        }
-        if (FormBeanType.NEW.equals(paymentSource.getPhoneType())) {
-            Phone newPhone = paymentSource.getPhone();
-            newPhone.setPersonId(paymentSource.getPerson().getId());
-            paymentSource.setPhone(phoneService.save(newPhone));
-            paymentSource.setSelectedPhone(paymentSource.getPhone());
-        }
-        else if (FormBeanType.NONE.equals(paymentSource.getPhoneType())) {
-            paymentSource.setSelectedPhone(null);
-            paymentSource.setPhone(null);
-        }
+        
+        maintainEntityChildren(paymentSource, paymentSource.getPerson());
         
         paymentSource.createDefaultProfileName();
 

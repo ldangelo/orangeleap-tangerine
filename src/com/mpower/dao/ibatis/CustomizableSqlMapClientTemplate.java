@@ -1,12 +1,13 @@
 package com.mpower.dao.ibatis;
 
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.ibatis.SqlMapClientTemplate;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.domain.model.AbstractCustomizableEntity;
-
-import java.util.Map;
-import java.util.List;
 
 /**
  * Extends the base SqlMapClientTemplate to know what to do with entities
@@ -28,6 +29,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         super(sqlMapClient);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map queryForMap(String statementName, Object parameterObject, String keyProperty) throws DataAccessException {
         Map ret = super.queryForMap(statementName, parameterObject, keyProperty);
@@ -37,6 +39,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map queryForMap(String statementName, Object parameterObject, String keyProperty, String valueProperty) throws DataAccessException {
         Map ret = super.queryForMap(statementName, parameterObject, keyProperty, valueProperty);
@@ -46,6 +49,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List queryForList(String statementName, Object parameterObject, int skipResults, int maxResults) throws DataAccessException {
         List ret = super.queryForList(statementName, parameterObject, skipResults, maxResults);
@@ -55,6 +59,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List queryForList(String statementName, int skipResults, int maxResults) throws DataAccessException {
         List ret = super.queryForList(statementName, skipResults, maxResults);
@@ -64,6 +69,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List queryForList(String statementName, Object parameterObject) throws DataAccessException {
         List ret = super.queryForList(statementName, parameterObject);
@@ -73,6 +79,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List queryForList(String statementName) throws DataAccessException {
         List ret = super.queryForList(statementName);

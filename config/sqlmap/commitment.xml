@@ -28,11 +28,11 @@
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="status" column="STATUS" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="email" resultMap="EMAIL.EMAIL_RESULT" />
-		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 	
@@ -96,8 +96,8 @@
 		#frequency#, #lastEntryDate#, #notes#, #paymentType#,
 		#pledgeCancelDate#, #pledgeCancelReason#, #pledgeDate#,
 		#pledgeStatus#, #projectedDate#, #recurring#, #sendAcknowledgment#,
-		#startDate#, #status#, now(), #address.id#,
-		#email.id#, #paymentSource.id#, #person.id#, #phone.id#)
+		#startDate#, #status#, now(), #selectedAddress.id#,
+		#selectedEmail.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -128,11 +128,11 @@
 		START_DATE = #startDate#,
 		STATUS = #status#,
 		UPDATE_DATE = now(),
-		ADDRESS_ID = #address.id#,
-		EMAIL_ID = #email.id#,
-		PAYMENT_SOURCE_ID = #paymentSource.id#,
+		ADDRESS_ID = #selectedAddress.id#,
+		EMAIL_ID = #selectedEmail.id#,
+		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		CONSTITUENT_ID = #person.id#,
-		PHONE_ID = #phone.id#
+		PHONE_ID = #selectedPhone.id#
 		where COMMITMENT_ID = #id#
 	</update>
 	

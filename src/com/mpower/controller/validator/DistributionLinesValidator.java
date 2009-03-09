@@ -31,12 +31,12 @@ public class DistributionLinesValidator implements Validator {
         BigDecimal amount = null;
         if (target instanceof Gift) {
             Gift gift = (Gift)target;
-            total = getTotal(gift.getDistributionLines());
+            total = getTotal(gift.getMutableDistributionLines());
             amount = gift.getAmount();
         }
         else if (target instanceof Commitment) {
             Commitment commitment = (Commitment)target;
-            total = getTotal(commitment.getDistributionLines());
+            total = getTotal(commitment.getMutableDistributionLines());
             if (commitment.isRecurring()) {
                 amount = commitment.getAmountPerGift();
             }

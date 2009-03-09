@@ -51,11 +51,11 @@ public class PaymentSourceValidator implements Validator {
             errors.setNestedPath("paymentSource");
         }
 
-        if (PaymentSource.ACH.equals(source.getType())) {
+        if (PaymentSource.ACH.equals(source.getPaymentType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achAccountNumber", "invalidAchAccountNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "achRoutingNumber", "invalidAchRoutingNumber");
         }
-        else if (PaymentSource.CREDIT_CARD.equals(source.getType())) {
+        else if (PaymentSource.CREDIT_CARD.equals(source.getPaymentType())) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardType", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardNumber", "invalidCreditCardNumber");
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "creditCardExpiration", "invalidCreditCardExpiration");

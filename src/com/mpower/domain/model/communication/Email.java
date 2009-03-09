@@ -81,7 +81,7 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("emailAddress", emailAddress).append("emailDisplay", emailDisplay).append("emailType", emailType).toString();
+        return new ToStringCreator(this).append(super.toString()).append("emailAddress", emailAddress).append("emailDisplay", emailDisplay).append("emailType", emailType).toString();
     }
 
     @Override

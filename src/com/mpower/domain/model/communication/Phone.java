@@ -92,7 +92,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("number", number).append("provider", provider).append("sms", sms).append("phoneType", phoneType).toString();
+        return new ToStringCreator(this).append(super.toString()).append("number", number).append("provider", provider).append("sms", sms).append("phoneType", phoneType).toString();
     }
 
     @Override

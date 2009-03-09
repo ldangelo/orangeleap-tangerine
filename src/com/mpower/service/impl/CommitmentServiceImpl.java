@@ -21,48 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mpower.dao.interfaces.CommitmentDao;
 import com.mpower.dao.interfaces.GiftDao;
-import com.mpower.dao.interfaces.PaymentSourceDao;
 import com.mpower.dao.interfaces.SiteDao;
-import com.mpower.domain.model.PaymentSource;
 import com.mpower.domain.model.Person;
-import com.mpower.domain.model.communication.Address;
-import com.mpower.domain.model.communication.Email;
-import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.customization.EntityDefault;
 import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.DistributionLine;
 import com.mpower.domain.model.paymentInfo.Gift;
-import com.mpower.service.AddressService;
-import com.mpower.service.AuditService;
 import com.mpower.service.CommitmentService;
-import com.mpower.service.EmailService;
-import com.mpower.service.PaymentSourceService;
-import com.mpower.service.PhoneService;
 import com.mpower.service.RecurringGiftService;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.EntityType;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class CommitmentServiceImpl extends AbstractTangerineService implements CommitmentService {
+public class CommitmentServiceImpl extends AbstractPaymentService implements CommitmentService {
 
     /** Logger for this class and subclasses */
     protected final static Log logger = LogFactory.getLog(CommitmentServiceImpl.class);
-
-    @Resource(name = "auditService")
-    private AuditService auditService;
-
-    @Resource(name = "addressService")
-    private AddressService addressService;
-
-    @Resource(name = "phoneService")
-    private PhoneService phoneService;
-
-    @Resource(name = "emailService")
-    private EmailService emailService;
-
-    @Resource(name = "paymentSourceService")
-    private PaymentSourceService paymentSourceService;
 
     @Resource(name = "recurringGiftService")
     private RecurringGiftService recurringGiftService;
@@ -72,9 +47,6 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
-
-    @Resource(name = "paymentSourceDAO")
-    private PaymentSourceDao paymentSourceDao;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
@@ -100,48 +72,7 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
 //    	}
     	
     	
-    	
-        if (PaymentSource.CREDIT_CARD.equals(commitment.getPaymentType()) || PaymentSource.ACH.equals(commitment.getPaymentType())) {
-            commitment.getPaymentSource().setPaymentType(commitment.getPaymentType());
-            List<PaymentSource> paymentSources = paymentSourceDao.readActivePaymentSources(commitment.getPerson().getId());
-            if (paymentSources != null) {
-                for (PaymentSource paymentSource : paymentSources) {
-                    if (commitment.getPaymentSource().equals(paymentSource)) {
-                        if (PaymentSource.CREDIT_CARD.equals(commitment.getPaymentType())) {
-                            paymentSource.setCreditCardExpiration(commitment.getPaymentSource().getCreditCardExpiration());
-                        }
-                        commitment.setPaymentSource(paymentSourceDao.maintainPaymentSource(paymentSource));
-                        break;
-                    }
-                }
-            }
-        } else {
-            commitment.setPaymentSource(null);
-        }
-
-        if (logger.isDebugEnabled()) {
-            List<Calendar> giftDates = getCommitmentGiftDates(commitment);
-            if (giftDates != null) {
-                int i = 1;
-                for (Calendar cal : giftDates) {
-                    logger.debug("Gift " + (i++) + ": scheduled for " + cal.getTime());
-                }
-            }
-        }
-
-        // TODO: need to see if they exist if null id
-        if (commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == null) {
-            commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
-        }
-        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
-            commitment.setAddress(addressService.save(commitment.getAddress()));
-        }
-        if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
-            commitment.setPhone(phoneService.save(commitment.getPhone()));
-        }
-        if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
-            commitment.setEmail(emailService.save(commitment.getEmail()));
-        }
+        maintainEntityChildren(commitment, commitment.getPerson());
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -154,19 +85,7 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
         if (logger.isDebugEnabled()) {
             logger.debug("editCommitment: commitmentId = " + commitment.getId());
         }
-        // TODO: need to see if they exist if null id
-        if (commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == null) {
-            commitment.setPaymentSource(paymentSourceService.maintainPaymentSource(commitment.getPaymentSource()));
-        }
-        if (commitment.getAddress() != null && commitment.getAddress().getId() == null) {
-            commitment.setAddress(addressService.save(commitment.getAddress()));
-        }
-        if (commitment.getPhone() != null && commitment.getPhone().getId() == null) {
-            commitment.setPhone(phoneService.save(commitment.getPhone()));
-        }
-        if (commitment.getEmail() != null && commitment.getEmail().getId() == null) {
-            commitment.setEmail(emailService.save(commitment.getEmail()));
-        }
+        maintainEntityChildren(commitment, commitment.getPerson());
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -178,7 +97,8 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
         if (logger.isDebugEnabled()) {
             logger.debug("readCommitmentById: commitmentId = " + commitmentId);
         }
-        return normalize(commitmentDao.readCommitmentById(commitmentId));
+        return commitmentDao.readCommitmentById(commitmentId);
+//        return normalize(commitmentDao.readCommitmentById(commitmentId));
     }
     
     @Override
@@ -200,24 +120,24 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
     }
     
     // only needed for commitments not entered by the program and entered via sql.
-    private Commitment normalize(Commitment commitment) {
-    	if (commitment.getCommitmentType() == CommitmentType.RECURRING_GIFT) {
-	    	if (commitment.getAddress() == null) {
-	            commitment.setAddress(new Address(commitment.getPerson().getId()));
-	        }
-	    	if (commitment.getPhone() == null) {
-	            commitment.setPhone(new Phone(commitment.getPerson().getId()));
-	        }
-	        if (commitment.getEmail() == null) {
-	            commitment.setEmail(new Email(commitment.getPerson().getId()));
-	        }
-	        if (commitment.getPaymentSource() == null) {
-	            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
-	        }
-	    	commitment.getPaymentSource().setPerson(commitment.getPerson());
-    	}
-    	return commitment;
-    }
+//    private Commitment normalize(Commitment commitment) {
+//    	if (commitment.getCommitmentType() == CommitmentType.RECURRING_GIFT) {
+//	    	if (commitment.getAddress() == null) {
+//	            commitment.setAddress(new Address(commitment.getPerson().getId()));
+//	        }
+//	    	if (commitment.getPhone() == null) {
+//	            commitment.setPhone(new Phone(commitment.getPerson().getId()));
+//	        }
+//	        if (commitment.getEmail() == null) {
+//	            commitment.setEmail(new Email(commitment.getPerson().getId()));
+//	        }
+//	        if (commitment.getPaymentSource() == null) {
+//	            commitment.setPaymentSource(new PaymentSource(commitment.getPerson()));
+//	        }
+//	    	commitment.getPaymentSource().setPerson(commitment.getPerson());
+//    	}
+//    	return commitment;
+//    }
 
     @Override
     public List<Commitment> readCommitments(Person constituent, CommitmentType commitmentType) {
@@ -256,9 +176,11 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
         for (EntityDefault ed : entityDefaults) {
             personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine line = new DistributionLine();
         line.setCommitmentId(commitment.getId());
-        commitment.addDistributionLine(line);
+        lines.add(line);
+        commitment.setDistributionLines(lines);
 
         return commitment;
     }
@@ -272,6 +194,7 @@ public class CommitmentServiceImpl extends AbstractTangerineService implements C
     }
 
     @Override
+    // TODO: this method is a mess!!!
     public List<Calendar> getCommitmentGiftDates(Commitment commitment) {
         if (logger.isDebugEnabled()) {
             logger.debug("getCommitmentGiftDates: commitment = " + commitment);

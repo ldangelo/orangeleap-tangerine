@@ -32,15 +32,16 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 		if (logger.isDebugEnabled()) {
 			logger.debug("maintainCommitment: commitment = " + commitment);
 		}
-		// TODO: delete distribution lines?
-		Commitment aCommitment = (Commitment) insertOrUpdate(commitment,
-				"COMMITMENT");
-		if (commitment.getDistributionLines() != null) {
+		Commitment aCommitment = (Commitment) insertOrUpdate(commitment, "COMMITMENT");
+        
+		/* Delete DistributionLines first */
+        getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_COMMITMENT_ID", aCommitment.getId());
+
+        /* Then Insert DistributionLines */
+        if (commitment.getDistributionLines() != null) {
 			for (DistributionLine line : commitment.getDistributionLines()) {
-				if (line.getCommitmentId() == null
-						|| line.getCommitmentId() <= 0) {
-					line.setCommitmentId(commitment.getId());
-				}
+                line.resetIdToNull();
+				line.setCommitmentId(commitment.getId());
 			}
 		}
 		batchInsertOrUpdate(commitment.getDistributionLines(), "DISTRO_LINE");

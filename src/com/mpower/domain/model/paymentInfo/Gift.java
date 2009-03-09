@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.style.ToStringCreator;
 
 import com.mpower.type.GiftEntryType;
 import com.mpower.util.StringConstants;
 
-public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, Customizable, Viewable TODO: for IBatis 
+public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware TODO: for IBatis 
 
     private static final long serialVersionUID = 1L;
     private Long commitmentId;
@@ -26,6 +27,7 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, C
     private String paymentStatus;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
+    
     public Gift() { }
 
     public Gift(Commitment commitment, Date transactionDate) {
@@ -181,10 +183,17 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware, C
             deductibleAmount = amount;
         }
     }
-	
-	@Override
+    
+    @Override
     public String toString() {
-		return ""  + getAmount();
-	}
-	
+        return new ToStringCreator(this).append(super.toString()).append("commitmentId", commitmentId).append("amount", amount).
+            append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
+            append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).
+            append(super.toString()).append("authCode", authCode).append("originalGiftId", originalGiftId).
+            append(super.toString()).append("refundGiftId", refundGiftId).append("refundGiftTransactionDate", refundGiftTransactionDate).
+            append(super.toString()).append("deductible", deductible).append("txRefNum", txRefNum).
+            append(super.toString()).append("paymentStatus", paymentStatus).append("paymentMessage", paymentMessage).
+            append(super.toString()).append("entryType", entryType).
+            toString();
+    }
 }

@@ -35,12 +35,15 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
             logger.debug("maintainGift: gift = " + gift);
         }
         Gift aGift = (Gift)insertOrUpdate(gift, "GIFT");
-        // TODO: delete distribution lines?
+        
+        /* Delete DistributionLines first */
+        getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_GIFT_ID", aGift.getId());
+
+        /* Then Insert DistributionLines */
         if (gift.getDistributionLines() != null) {
             for (DistributionLine line : aGift.getDistributionLines()) {
-                if (line.getGiftId() == null || line.getGiftId() <= 0) {
-                    line.setGiftId(aGift.getId());
-                }
+                line.resetIdToNull();
+                line.setGiftId(aGift.getId());
             }
         }
         batchInsertOrUpdate(gift.getDistributionLines(), "DISTRO_LINE");

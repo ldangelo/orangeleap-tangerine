@@ -44,17 +44,17 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
     protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
         super.onBind(request, command, errors);
         Commitment commitment = (Commitment) command;
-        commitment.removeInvalidDistributionLines();
+        commitment.removeEmptyDistributionLines();
     }
     
-    @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBindAndValidate(request, command, errors);
-        if (errors.hasErrors()) {
-            Commitment commitment = (Commitment) command;
-            commitment.defaultCreateDistributionLine();
-        }
-    }
+//    @Override
+//    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+//        super.onBindAndValidate(request, command, errors);
+//        if (errors.hasErrors()) {
+//            Commitment commitment = (Commitment) command;
+//            commitment.defaultCreateMutableDistributionLine();
+//        }
+//    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {

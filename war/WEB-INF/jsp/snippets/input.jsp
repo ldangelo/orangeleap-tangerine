@@ -51,16 +51,16 @@
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${paymentSources}">
 							<c:if test="${opt.paymentType == 'ACH'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch" 
-									address="${opt.address.id}" phone="${opt.phone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
-								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch" 
+									address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
+								<c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>
 									<c:set var="selectedRef" value=".${commandObject}_editAch" scope="page"/>
 								</c:if>
 							</c:if>
 							<c:if test="${opt.paymentType == 'Credit Card'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.paymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard" 
-									address="${opt.address.id}" phone="${opt.phone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
-								<c:if test='${opt.id == fieldVO.model.paymentSource.id}'>
+								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard" 
+									address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
+								<c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>
 									<c:set var="selectedRef" value=".${commandObject}_editCreditCard" scope="page"/>
 								</c:if>
 							</c:if>
@@ -144,7 +144,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${emails}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.email.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/></option>
+							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/></option>
 						</c:forEach>
 						<c:if test="${not empty emails}">
 							</optgroup>

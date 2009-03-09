@@ -26,10 +26,10 @@
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
 		<result property="commitmentId" column="GIFT_COMMITMENT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="address" resultMap="ADDRESS.ADDRESS_RESULT" />
-		<result property="phone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="email" resultMap="EMAIL.EMAIL_RESULT" />
-		<result property="paymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 	</resultMap>
 	
 	<resultMap id="GIFT_RESULT" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
@@ -133,8 +133,8 @@
 		#originalGiftId#, #paymentMessage#, #paymentStatus#,
 		#paymentType#, #postmarkDate#, #refundGiftId#,
 		#refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
-		#txRefNum#, #address.id#, #commitmentId#, #email.id#,
-		#paymentSource.id#, #person.id#, #phone.id#)
+		#txRefNum#, #selectedAddress.id#, #commitmentId#, #selectedEmail.id#,
+		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -162,12 +162,12 @@
 		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
 		TRANSACTION_DATE = #transactionDate#,
 		PAYMENT_TXREFNUM = #txRefNum#,
-		ADDRESS_ID = #address.id#,
+		ADDRESS_ID = #selectedAddress.id#,
 		COMMITMENT_ID = #commitmentId#,
-		EMAIL_ID = #email.id#,
-		PAYMENT_SOURCE_ID = #paymentSource.id#,
+		EMAIL_ID = #selectedEmail.id#,
+		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		CONSTITUENT_ID = #person.id#,
-		PHONE_ID = #phone.id#
+		PHONE_ID = #selectedPhone.id#
 		where GIFT_ID = #id#
 	</update>
 	

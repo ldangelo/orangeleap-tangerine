@@ -3,6 +3,8 @@ package com.mpower.domain.model;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.customization.FieldDefinition;
 
@@ -146,5 +148,8 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
         // no-op in base implementation    
     }
 
-
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).toString();
+    }
 }

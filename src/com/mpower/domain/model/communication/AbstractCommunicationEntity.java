@@ -2,6 +2,8 @@ package com.mpower.domain.model.communication;
 
 import java.util.Date;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.model.AbstractCustomizableEntity;
 import com.mpower.type.ActivationType;
@@ -167,6 +169,15 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
                 setSeasonalStartDate(null);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("constituentId", personId).append("createDate", createDate).
+            append("updateDate", updateDate).append("activationStatus", activationStatus).append("receiveMail", receiveMail).append("temporaryStartDate", temporaryStartDate).
+            append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
+            append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
+            toString();
     }
     
     public abstract String getCommunicationType();

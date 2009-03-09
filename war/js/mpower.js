@@ -532,33 +532,33 @@ var Picklist = {
 			// ACH
 			var achholder = $option.attr("achholder");
 			if (achholder) {
-				$("div.gift_editAch div#paymentSource_achHolderName, div.commitment_editAch div#paymentSource_achHolderName", "form").text(achholder);
+				$("div.gift_editAch div#selectedPaymentSource_achHolderName, div.commitment_editAch div#selectedPaymentSource_achHolderName", "form").text(achholder);
 			}
 			var routing = $option.attr("routing");
 			if (routing) {
-				$("div.gift_editAch div#paymentSource_achRoutingNumberDisplay, div.commitment_editAch div#paymentSource_achRoutingNumberDisplay", "form").text(routing);
+				$("div.gift_editAch div#selectedPaymentSource_achRoutingNumberDisplay, div.commitment_editAch div#selectedPaymentSource_achRoutingNumberDisplay", "form").text(routing);
 			}
 			var acct = $option.attr("acct");
 			if (acct) {
-				$("div.gift_editAch div#paymentSource_achAccountNumberDisplay, div.commitment_editAch div#paymentSource_achAccountNumberDisplay", "form").text(acct);
+				$("div.gift_editAch div#selectedPaymentSource_achAccountNumberDisplay, div.commitment_editAch div#selectedPaymentSource_achAccountNumberDisplay", "form").text(acct);
 			}
 			
 			// Credit Card
 			var cardholder = $option.attr("cardholder");
 			if (cardholder) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardHolderName, div.commitment_editCreditCard div#paymentSource_creditCardHolderName", "form").text(cardholder);
+				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardHolderName, div.commitment_editCreditCard div#selectedPaymentSource_creditCardHolderName", "form").text(cardholder);
 			}
 			var cardType = $option.attr("cardType");
 			if (cardType) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardType, div.commitment_editCreditCard div#paymentSource_creditCardType", "form").text(cardType);
+				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardType, div.commitment_editCreditCard div#selectedPaymentSource_creditCardType", "form").text(cardType);
 			}
 			var number = $option.attr("number");
 			if (number) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#paymentSource_creditCardNumberDisplay", "form").text(number);
+				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#selectedPaymentSource_creditCardNumberDisplay", "form").text(number);
 			}
 			var exp = $option.attr("exp");
 			if (exp) {
-				$("div.gift_editCreditCard div#paymentSource_creditCardExpiration, div.commitment_editCreditCard div#paymentSource_creditCardExpiration", "form").text(exp);
+				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardExpiration, div.commitment_editCreditCard div#selectedPaymentSource_creditCardExpiration", "form").text(exp);
 			}
 		}
 		$(this).each(Picklist.togglePicklist);

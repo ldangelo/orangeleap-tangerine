@@ -2,6 +2,9 @@ package com.mpower.domain.model.paymentInfo;
 
 import java.math.BigDecimal;
 
+import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
+
 import com.mpower.domain.model.AbstractCustomizableEntity;
 
 public class DistributionLine extends AbstractCustomizableEntity { //Customizable, Viewable, TODO: for IBatis 
@@ -16,6 +19,25 @@ public class DistributionLine extends AbstractCustomizableEntity { //Customizabl
     private Long commitmentId;
 
     public DistributionLine() { }
+
+    public DistributionLine(BigDecimal amount, BigDecimal percentage, String projectCode, String motivationCode, String other_motivationCode) {
+        this();
+        this.amount = amount;
+        this.percentage = percentage;
+        this.projectCode = projectCode;
+        this.motivationCode = motivationCode;
+        this.other_motivationCode = other_motivationCode;
+    }
+    
+    public DistributionLine(DistributionLine otherLine, boolean isGiftId, Long id) {
+        this(otherLine.getAmount(), otherLine.getPercentage(), otherLine.getProjectCode(), otherLine.getMotivationCode(), otherLine.getOther_motivationCode());
+        if (isGiftId) {
+            this.giftId = id;
+        }
+        else {
+            this.commitmentId = id;
+        }
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -72,10 +94,25 @@ public class DistributionLine extends AbstractCustomizableEntity { //Customizabl
     public void setCommitmentId(Long commitmentId) {
         this.commitmentId = commitmentId;
     }
-
-//    @Override
-// TODO: for IBatis
-//    public Person getPerson() {
-//        return gift != null ? gift.getPerson() : null;
-//    }
+    
+    public boolean isValid() {
+        boolean valid = false;
+        if (amount != null) {
+            valid = true;
+        }
+        return valid;
+    }
+    
+    public boolean isFieldEntered() {
+        return amount != null || percentage != null || StringUtils.hasText(projectCode) || StringUtils.hasText(motivationCode) || StringUtils.hasText(other_motivationCode);
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("amount", amount).
+            append(super.toString()).append("percentage", percentage).append("projectCode", projectCode).
+            append(super.toString()).append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).
+            append(super.toString()).append("giftId", giftId).append("commitmentId", commitmentId).
+            toString();
+    }
 }

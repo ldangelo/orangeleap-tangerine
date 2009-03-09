@@ -114,6 +114,7 @@ public class Address extends AbstractCommunicationEntity {
      * Check if this is a dummy object; This is not a dummy object all required fields (addressLine1, city, stateProvince, postalCode, country) are populated
      * @return true if this Address has all required fields populated
      */
+    @Override
     public boolean isValid() {
         return (StringUtils.hasText(addressLine1) &&
                 StringUtils.hasText(city) &&
@@ -143,7 +144,7 @@ public class Address extends AbstractCommunicationEntity {
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("addressLine1", addressLine1).append("addressLine2", addressLine2).append("addressLine3", addressLine3).append("city", city).
+        return new ToStringCreator(this).append(super.toString()).append("addressLine1", addressLine1).append("addressLine2", addressLine2).append("addressLine3", addressLine3).append("city", city).
             append("stateProvince", stateProvince).append("postalCode", postalCode).append("country", country).append("addressType", addressType).toString();
     }
 

@@ -64,7 +64,7 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
     	commitment.setRecurring(false);
     	Email email = new Email();
     	email.setId(100L);
-    	commitment.setEmail(email);
+    	commitment.setSelectedEmail(email);
         Site site = new Site("company1");
     	Person person = new Person();
         person.setId(100L);
@@ -85,7 +85,7 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert 150 == readCommitment.getAmountTotal().intValue();
         assert CommitmentType.PLEDGE.equals(readCommitment.getCommitmentType());
         
-        assert readCommitment.getEmail() != null && readCommitment.getEmail().getId() == 100L;
+        assert readCommitment.getSelectedEmail() != null && readCommitment.getSelectedEmail().getId() == 100L;
         assert readCommitment.getPerson() != null && readCommitment.getPerson().getId() == 100L;
         assert readCommitment.getDistributionLines() != null && readCommitment.getDistributionLines().size() == 2;
         for (DistributionLine line : readCommitment.getDistributionLines()) {
@@ -107,9 +107,9 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert readCommitment.getAddress() == null;
-        assert readCommitment.getPhone() == null;
-        assert readCommitment.getPaymentSource() == null;
+        assert readCommitment.getSelectedAddress() == null;
+        assert readCommitment.getSelectedPhone() == null;
+        assert readCommitment.getSelectedPaymentSource() == null;
         assert readCommitment.getGifts() != null && readCommitment.getGifts().isEmpty();
         assert BigDecimal.ZERO.equals(readCommitment.getAmountPaid());
         assert 150 == readCommitment.getAmountRemaining().intValue();
@@ -142,7 +142,7 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         commitment.setCommitmentType(CommitmentType.RECURRING_GIFT);
         commitment.setRecurring(true);
         commitment.setPhone(null);
-        commitment.setEmail(null);
+        commitment.setSelectedEmail(null);
         
         commitment = commitmentDao.maintainCommitment(commitment);
         readCommitment = commitmentDao.readCommitmentById(commitment.getId());
@@ -159,12 +159,12 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert readCommitment.getAcknowledgmentDate() != null;
         assert readCommitment.isRecurring();
 
-        assert readCommitment.getPhone() == null;
-        assert readCommitment.getEmail() == null;
+        assert readCommitment.getSelectedPhone() == null;
+        assert readCommitment.getSelectedEmail() == null;
         assert readCommitment.getPerson() != null && readCommitment.getPerson().getId() == 100L;
-//        assert readCommitment.getDistributionLines() != null && readCommitment.getDistributionLines().size() == 2;
-        assert readCommitment.getAddress() == null;
-        assert readCommitment.getPaymentSource() == null;
+        assert readCommitment.getDistributionLines() != null && readCommitment.getDistributionLines().size() == 2;
+        assert readCommitment.getSelectedAddress() == null;
+        assert readCommitment.getSelectedPaymentSource() == null;
         assert readCommitment.getGifts() != null && readCommitment.getGifts().isEmpty();
         assert BigDecimal.ZERO.equals(readCommitment.getAmountPaid());
         assert readCommitment.getAmountRemaining() == null;
@@ -193,25 +193,25 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert Boolean.TRUE.equals(commitment.isAutoPay());
         assert Commitment.STATUS_ACTIVE.equals(commitment.getStatus());
 
-        assert commitment.getEmail() != null && commitment.getEmail().getId() == 100L;
-        assert "hobo@gmail.com".equals(commitment.getEmail().getEmailAddress());
-        assert "home".equals(commitment.getEmail().getEmailType());
-        assert commitment.getEmail().isInactive() == false;
+        assert commitment.getSelectedEmail() != null && commitment.getSelectedEmail().getId() == 100L;
+        assert "hobo@gmail.com".equals(commitment.getSelectedEmail().getEmailAddress());
+        assert "home".equals(commitment.getSelectedEmail().getEmailType());
+        assert commitment.getSelectedEmail().isInactive() == false;
 
-        assert commitment.getPaymentSource() != null && commitment.getPaymentSource().getId() == 100L;
-        assert "000001".equals(commitment.getPaymentSource().getAchAccountNumber());
-        assert "Joe Blow".equals(commitment.getPaymentSource().getAchHolderName());
-        assert "1234".equals(commitment.getPaymentSource().getAchRoutingNumber());
-        assert commitment.getPaymentSource().isInactive();
-        assert "Joe ACH".equals(commitment.getPaymentSource().getProfile());
+        assert commitment.getSelectedPaymentSource() != null && commitment.getSelectedPaymentSource().getId() == 100L;
+        assert "000001".equals(commitment.getSelectedPaymentSource().getAchAccountNumber());
+        assert "Joe Blow".equals(commitment.getSelectedPaymentSource().getAchHolderName());
+        assert "1234".equals(commitment.getSelectedPaymentSource().getAchRoutingNumber());
+        assert commitment.getSelectedPaymentSource().isInactive();
+        assert "Joe ACH".equals(commitment.getSelectedPaymentSource().getProfile());
 
         assert commitment.getPerson() != null && commitment.getPerson().getId() == 100L;
         assert "Billy Graham Ministries".equals(commitment.getPerson().getOrganizationName());
         assert "Graham".equals(commitment.getPerson().getLastName());
         assert "Billy".equals(commitment.getPerson().getFirstName());
 
-        assert commitment.getAddress() == null;
-        assert commitment.getPhone() == null;
+        assert commitment.getSelectedAddress() == null;
+        assert commitment.getSelectedPhone() == null;
         assert commitment.getGifts() != null && commitment.getGifts().isEmpty();
         assert commitment.getAmountTotal() == null;
         assert BigDecimal.ZERO.equals(commitment.getAmountPaid());
@@ -271,22 +271,22 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert "Doody".equals(commitment.getPerson().getLastName());
         assert "Howdy".equals(commitment.getPerson().getFirstName());
 
-        assert commitment.getAddress() != null && commitment.getAddress().getId() == 100L;
-        assert "3726 THIRD ST".equals(commitment.getAddress().getAddressLine1());
-        assert "home".equals(commitment.getAddress().getAddressType());
-        assert "Dallas".equals(commitment.getAddress().getCity());
-        assert "TX".equals(commitment.getAddress().getStateProvince());
-        assert "75554".equals(commitment.getAddress().getPostalCode());
-        assert "US".equals(commitment.getAddress().getCountry());
-        assert commitment.getAddress().getAddressLine2() == null;
-        assert commitment.getAddress().getAddressLine3() == null;
+        assert commitment.getSelectedAddress() != null && commitment.getSelectedAddress().getId() == 100L;
+        assert "3726 THIRD ST".equals(commitment.getSelectedAddress().getAddressLine1());
+        assert "home".equals(commitment.getSelectedAddress().getAddressType());
+        assert "Dallas".equals(commitment.getSelectedAddress().getCity());
+        assert "TX".equals(commitment.getSelectedAddress().getStateProvince());
+        assert "75554".equals(commitment.getSelectedAddress().getPostalCode());
+        assert "US".equals(commitment.getSelectedAddress().getCountry());
+        assert commitment.getSelectedAddress().getAddressLine2() == null;
+        assert commitment.getSelectedAddress().getAddressLine3() == null;
         
-        assert commitment.getPhone() != null && commitment.getPhone().getId() == 100L;
-        assert "214-443-6829".equals(commitment.getPhone().getNumber());
-        assert "home".equals(commitment.getPhone().getPhoneType());
-        assert commitment.getPhone().getCreateDate() != null;
-        assert commitment.getPhone().getUpdateDate() != null;
-        assert 100L == commitment.getPhone().getPersonId();
+        assert commitment.getSelectedPhone() != null && commitment.getSelectedPhone().getId() == 100L;
+        assert "214-443-6829".equals(commitment.getSelectedPhone().getNumber());
+        assert "home".equals(commitment.getSelectedPhone().getPhoneType());
+        assert commitment.getSelectedPhone().getCreateDate() != null;
+        assert commitment.getSelectedPhone().getUpdateDate() != null;
+        assert 100L == commitment.getSelectedPhone().getPersonId();
 
         assert commitment.getDistributionLines() != null && commitment.getDistributionLines().size() == 2;
         for (DistributionLine line : commitment.getDistributionLines()) {
@@ -313,8 +313,8 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert commitment.getEmail() == null;
-        assert commitment.getPaymentSource() == null;
+        assert commitment.getSelectedEmail() == null;
+        assert commitment.getSelectedPaymentSource() == null;
         assert commitment.getGifts() != null && commitment.getGifts().isEmpty();
         assert commitment.getAmountPerGift() == null;
         assert BigDecimal.ZERO.equals(commitment.getAmountPaid());

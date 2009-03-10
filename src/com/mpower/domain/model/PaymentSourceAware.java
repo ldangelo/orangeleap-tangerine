@@ -19,4 +19,8 @@ public interface PaymentSourceAware {
     public void setPaymentSourceType(FormBeanType type);
     
     public FormBeanType getPaymentSourceType();
+    
+    public void setPaymentSourcePaymentType();
+    
+    public void setPaymentSourceAwarePaymentType();
 }

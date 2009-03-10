@@ -214,12 +214,14 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         if (StringConstants.NEW.equals(selectedPaymentSource)) {
             paymentSourceAware.setPaymentSourceType(FormBeanType.NEW);
             paymentSourceAware.getPaymentSource().setUserCreated(true);
+            paymentSourceAware.setPaymentSourcePaymentType();
         }
         else if (StringConstants.NONE.equals(selectedPaymentSource)) {
             paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
         }
         else {
             paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
+            paymentSourceAware.setPaymentSourceAwarePaymentType();
         }
     }
 }

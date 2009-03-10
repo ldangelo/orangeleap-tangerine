@@ -463,11 +463,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 //        }
 //        PaymentSource ps = (PaymentSource) obj;
 //        EqualsBuilder eb = new EqualsBuilder();
-//        eb.append(getType(), ps.getType());
-//        if (ACH.equals(getType())) {
+//        eb.append(getPaymentType(), ps.getPaymentType());
+//        if (ACH.equals(getPaymentType())) {
 //            eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
 //        } 
-//        else if (CREDIT_CARD.equals(getType())) {
+//        else if (CREDIT_CARD.equals(getPaymentType())) {
 //            eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
 //        }
 //        return eb.isEquals();
@@ -476,11 +476,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 //    @Override
 //    public int hashCode() {
 //        HashCodeBuilder hcb = new HashCodeBuilder();
-//        hcb.append(getType());
-//        if (ACH.equals(getType())) {
+//        hcb.append(getPaymentType());
+//        if (ACH.equals(getPaymentType())) {
 //            hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
 //        } 
-//        else if (CREDIT_CARD.equals(getType())) {
+//        else if (CREDIT_CARD.equals(getPaymentType())) {
 //            hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
 //        }
 //        return hcb.hashCode();
@@ -490,13 +490,13 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     public void prePersist() {
         super.prePersist();
         if (paymentType != null) {
-            if (ACH.equals(getType())) {
+            if (ACH.equals(paymentType)) {
                 clearCredit();
             }
-            else if (CREDIT_CARD.equals(getType())) {
+            else if (CREDIT_CARD.equals(paymentType)) {
                 clearACH();
             }
-            else if (CHECK.equals(getType()) || CASH.equals(getType())) {
+            else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
                 clearCredit();
                 clearACH();
             }

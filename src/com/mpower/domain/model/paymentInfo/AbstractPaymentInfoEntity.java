@@ -60,6 +60,14 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public void setPerson(Person person) {
         this.person = person;
+        if (person != null) {
+            if (paymentSource != null) {
+                paymentSource.setPerson(person);
+            }
+            if (selectedPaymentSource != null) {
+                selectedPaymentSource.setPerson(person);
+            }
+        }
     }
 
     public String getComments() {
@@ -144,7 +152,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public void removeEmptyDistributionLines() {
-        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
+        Iterator<DistributionLine> mutableLinesIter = getMutableDistributionLines().iterator();
         while (mutableLinesIter.hasNext()) {
             DistributionLine line = mutableLinesIter.next();
             if (line != null && line.isFieldEntered() == false) {
@@ -159,7 +167,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public void filterValidDistributionLines() {
         distributionLines = new ArrayList<DistributionLine>();
-        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
+        Iterator<DistributionLine> mutableLinesIter = getMutableDistributionLines().iterator();
         while (mutableLinesIter.hasNext()) {
             DistributionLine line = mutableLinesIter.next();
             if (line != null && line.isValid()) {
@@ -306,6 +314,20 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         return person != null ? person.getSite() : null;
     }
 
+    @Override
+    public void setPaymentSourcePaymentType() {
+        if (paymentSource != null) {
+            paymentSource.setPaymentType(getPaymentType());
+        }
+    }
+    
+    @Override
+    public void setPaymentSourceAwarePaymentType() {
+        if (selectedPaymentSource != null) {
+            setPaymentType(selectedPaymentSource.getPaymentType());
+        }
+    }
+    
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).

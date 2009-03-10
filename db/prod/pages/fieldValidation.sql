@@ -18,13 +18,18 @@ INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DE
 INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, FIELD_REQUIRED_ID, VALIDATION_ID) VALUES ('person.constituentType', 'organization', 300, null);
 
 -- Add email syntax validation 
-INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (null, 'person.contactInfo', 'person.emailMap[home]', 'email.emailAddress', 'extensions:isEmail');
+INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (1000, null, 'person.contactInfo', 'person.emailMap[home]', 'email.emailAddress', 'extensions:isEmail');
 
 -- Add credit card number validation 
 -- A test credit card number is Visa 4111111111111111
-INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (null, 'gift.creditCard', 'gift.paymentSource.creditCardNumber', 'paymentSource.creditCardNumber', 'extensions:isCreditCard');
-INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (null, 'commitment.creditCard', 'commitment.paymentSource.creditCardNumber', 'paymentSource.creditCardNumber', 'extensions:isCreditCard');
-INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (null, 'paymentSource.creditCard', 'paymentSource.creditCardNumber', null, 'extensions:isCreditCard');
+INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (2000, null, 'gift.creditCard', 'gift.paymentSource.creditCardNumber', 'paymentSource.creditCardNumber', 'extensions:isCreditCard');
+INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES ('gift.paymentType', 'Credit Card', 2000);
+INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES ('gift.paymentSource.creditCardNumber', 'paymentSource.userCreated', 'true', 2000);
+INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (3000, null, 'commitment.creditCard', 'commitment.paymentSource.creditCardNumber', 'paymentSource.creditCardNumber', 'extensions:isCreditCard');
+INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES ('commitment.paymentType', 'Credit Card', 3000);
+INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES ('commitment.paymentSource.creditCardNumber', 'paymentSource.userCreated', 'true', 3000);
+INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (4000, null, 'paymentSource.creditCard', 'paymentSource.creditCardNumber', null, 'extensions:isCreditCard');
+INSERT INTO FIELD_CONDITION (DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_VALUE, VALIDATION_ID) VALUES ('paymentSource.paymentType', 'Credit Card', 4000);
 
 -- Gift Value messages
 INSERT INTO MESSAGE_RESOURCE (LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE, MESSAGE_VALUE, SITE_NAME) values ('en_US', 'fieldRequiredFailure.gift.amount', 'FIELD_VALIDATION', 'Amount is required', null);

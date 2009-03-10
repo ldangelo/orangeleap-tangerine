@@ -30,10 +30,13 @@ import com.mpower.domain.model.communication.AbstractCommunicatorEntity;
 public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
 	protected ApplicationContext applicationContext;
-	
-    public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient, ApplicationContext applicationContext) {
+    
+    public void setApplicationContext(ApplicationContext applicationContext) {
+    	this.applicationContext = applicationContext;
+    }
+
+    public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
-        this.applicationContext = applicationContext;
     }
 
     @SuppressWarnings("unchecked")

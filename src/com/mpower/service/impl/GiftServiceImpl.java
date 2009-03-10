@@ -41,6 +41,7 @@ import com.mpower.service.CommitmentService;
 import com.mpower.service.GiftService;
 import com.mpower.service.PaymentHistoryService;
 import com.mpower.type.EntityType;
+import com.mpower.type.FormBeanType;
 import com.mpower.type.GiftEntryType;
 import com.mpower.type.PaymentHistoryType;
 
@@ -154,46 +155,47 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
     
     private String getGiftDescription(Gift gift) {
-    	
     	StringBuilder sb = new StringBuilder();
-    	
+
+    	// TODO: localize
     	if (PaymentSource.ACH.equals(gift.getPaymentType())) {
-    	    sb.append("ACH Number: "+gift.getPaymentSource().getAchAccountNumberDisplay());
+    	    sb.append("ACH Number: ").append(gift.getSelectedPaymentSource().getAchAccountNumberDisplay());
     	}
     	if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType())) {
-    		sb.append("Credit Card Number: "+gift.getPaymentSource().getCreditCardType()+" "+gift.getPaymentSource().getCreditCardNumberDisplay());
+    		sb.append("Credit Card Number: ").append(gift.getSelectedPaymentSource().getCreditCardType()).append(" ").append(gift.getSelectedPaymentSource().getCreditCardNumberDisplay());
     		sb.append(" ");
-    		sb.append(gift.getPaymentSource().getCreditCardExpirationMonth());
+    		sb.append(gift.getSelectedPaymentSource().getCreditCardExpirationMonth());
     		sb.append(" / ");
-    		sb.append(gift.getPaymentSource().getCreditCardExpirationYear());
+    		sb.append(gift.getSelectedPaymentSource().getCreditCardExpirationYear());
     		sb.append(" ");
-    		sb.append(gift.getPaymentSource().getCreditCardHolderName());
+    		sb.append(gift.getSelectedPaymentSource().getCreditCardHolderName());
     	}
     	if (PaymentSource.CHECK.equals(gift.getPaymentType())) {
     		sb.append("\nCheck Number: ");
     		sb.append(gift.getCheckNumber());
     	}
-    	Address address = gift.getAddress();
-    	if (address != null) {
-        	sb.append("\nAddress: ");
-        	String state = StringUtils.trimToEmpty(address.getStateProvince());
-    		sb.append(StringUtils.trimToEmpty(address.getAddressLine1()) 
-    				+ " " + StringUtils.trimToEmpty(address.getAddressLine2()) 
-    				+ " " + StringUtils.trimToEmpty(address.getAddressLine3()) 
-    				+ " " + StringUtils.trimToEmpty(address.getCity()) 
-    				+ (state.length() == 0  ? "" : (", " + state))
-    				+ " " + StringUtils.trimToEmpty(address.getCountry()) 
-    				+ " " + StringUtils.trimToEmpty(address.getPostalCode())
-    				);
+    	if (FormBeanType.NONE.equals(gift.getAddressType()) == false) {
+        	Address address = gift.getSelectedAddress();
+        	if (address != null) {
+            	sb.append("\nAddress: ");
+        		sb.append(StringUtils.trimToEmpty(address.getAddressLine1())); 
+        		sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine2()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine3()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getCity()));
+                String state = StringUtils.trimToEmpty(address.getStateProvince());
+                sb.append((state.length() == 0  ? "" : (", " + state))).append(" ");
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getCountry()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getPostalCode()));
+        	}
     	}
-    	Phone phone = gift.getPhone();
-    	if (phone != null) {
-        	sb.append("\nPhone: ");
-    		sb.append(StringUtils.trimToEmpty(phone.getNumber()));
-    	}
-    	    	
+        if (FormBeanType.NONE.equals(gift.getPhoneType()) == false) {
+        	Phone phone = gift.getSelectedPhone();
+        	if (phone != null) {
+            	sb.append("\nPhone: ");
+        		sb.append(StringUtils.trimToEmpty(phone.getNumber()));
+        	}
+        }
     	return sb.toString();
-    	
     }
 
     @Override

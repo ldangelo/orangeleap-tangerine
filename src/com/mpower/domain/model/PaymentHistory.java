@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.springframework.core.style.ToStringCreator;
+
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.PaymentSource;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.type.PaymentHistoryType;
 import com.mpower.util.StringConstants;
@@ -34,14 +35,12 @@ public class PaymentHistory implements GeneratedId, Serializable {
         this.person = person;
     }
 
-	public Site getSite() {
-		return person.getSite();
-	}
-
+	@Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -117,4 +116,18 @@ public class PaymentHistory implements GeneratedId, Serializable {
 	public PaymentHistoryType getPaymentHistoryType() {
 		return paymentHistoryType;
 	}
+
+    public Site getSite() {
+        return person.getSite();
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", id).append("paymentHistoryType", paymentHistoryType).
+            append(super.toString()).append("transactionId", transactionId).append("transactionDate", transactionDate).
+            append(super.toString()).append("amount", amount).append("currencyCode", currencyCode).
+            append(super.toString()).append("paymentType", paymentType).append("description", description).
+            append(super.toString()).append("person", person).append("gift", gift).
+            toString();
+    }
 }

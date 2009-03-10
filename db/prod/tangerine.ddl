@@ -579,7 +579,7 @@ CREATE TABLE `PAYMENT_HISTORY` (
   `PAYMENT_HISTORY_ID` bigint(20) NOT NULL auto_increment,
   `AMOUNT` decimal(19,2) default NULL,
   `CURRENCY_CODE` varchar(255) default NULL,
-  `PAYMENT_DESC` varchar(255) default NULL,
+  `PAYMENT_DESC` text,
   `PAYMENT_HISTORY_TYPE` varchar(255) default NULL,
   `PAYMENT_TYPE` varchar(255) default NULL,
   `TRANSACTION_DATE` datetime default NULL,

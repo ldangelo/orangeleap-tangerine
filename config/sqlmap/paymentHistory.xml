@@ -6,7 +6,7 @@
 		<result property="id" column="PAYMENT_HISTORY_ID" jdbcType="BIGINT" />
 		<result property="amount" column="AMOUNT" jdbcType="DECIMAL" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
-		<result property="description" column="PAYMENT_DESC" jdbcType="VARCHAR" />
+		<result property="description" column="PAYMENT_DESC" jdbcType="LONGVARCHAR" />
 		<result property="paymentHistoryType" column="PAYMENT_HISTORY_TYPE"	jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="transactionDate" column="TRANSACTION_DATE" jdbcType="TIMESTAMP" />

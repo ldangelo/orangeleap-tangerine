@@ -26,18 +26,22 @@
 			<li>
 				<a href="welcome.htm" class="${primaryNav=='Welcome'?'active':''}"><div class="homeIcon">&nbsp;</div></a>
 			</li>
+			<!--
 			<li>
 				<a href="#"><spring:message code="myWork"/></a>
 			</li>
+			-->
 			<li>
 				<a href="#"><spring:message code="history"/></a>
                 <ul id="bookmarkHistory">
                     
                 </ul>
 			</li>
-			<li>
+			<!--
+            <li>
 				<a href="#"><spring:message code="bookmarks"/></a>
 			</li>
+			-->
 			<li>
 				<a href="#"><spring:message code="menuCreateNew"/></a>
 				<ul>

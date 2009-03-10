@@ -14,8 +14,8 @@
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
 		<property name="mysql.db.classpath" value="/opt/mpower/apache-tomcat-6.0.18/lib/mysql-connector-java-5.0.8-bin.jar" />
 
-		<exec dir="/opt/mpower" executable="/opt/mpower/run.sh" spawn="true" >
-			<arg line="stop ${instance}"/>
+		<exec dir="/opt/mpower" executable="su" spawn="true">
+			<arg line="- tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh stop ${instance}'"/>
 	    </exec>
 		<sleep seconds="30" />
 

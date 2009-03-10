@@ -83,19 +83,40 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
                     activeEntitiesKey + " activeMailEntitiesKey = " + activeMailEntitiesKey);
         }
         List<T> entities = readByConstituentId(constituentId);
-        List<T> activeEntities = new ArrayList<T>();
         
-        for (T entity : entities) {
-            if (entity.isInactive() == false) {
-                activeEntities.add(entity);
-            }
-        }
+        List<T> activeEntities = filterByActive(entities);
         activeEntities = filterByActivationType(activeEntities, false);
         List<T> mailOnlyEntities = filterByActivationType(activeEntities, true);
         
         refData.put(entitiesKey, entities);
         refData.put(activeEntitiesKey, activeEntities);
         refData.put(activeMailEntitiesKey, mailOnlyEntities);
+    }
+    
+    @Override
+    public T getPrimary(Long constituentId) {
+        List<T> entities = readByConstituentId(constituentId);
+        List<T> activeEntities = filterByActive(entities);
+        
+        for (T entity : activeEntities) {
+            if (entity.isPrimary() == true) {
+                return entity;
+            }
+        }
+        
+        // An inactive entity cannot be a primary, so return a blank one.
+        return createEntity(constituentId);        
+    }
+    
+    protected List<T> filterByActive(List<T> entities)
+    {
+        List<T> activeEntities = new ArrayList<T>();
+        for (T entity : entities) {
+            if (entity.isInactive() == false) {
+                activeEntities.add(entity);
+            }
+        }
+        return activeEntities;
     }
 
     @Override

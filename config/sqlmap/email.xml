@@ -45,13 +45,14 @@
 	<select id="SELECT_ALL_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="map">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
 		and e.CONSTITUENT_ID = #constituentId#
+		order by e.CREATE_DATE
 	</select>
 
 	<select id="SELECT_ACTIVE_EMAILS_BY_CONSTITUENT_ID" resultMap="EMAIL_RESULT" parameterClass="map">
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
 		and e.CONSTITUENT_ID = #constituentId#
 		and e.INACTIVE = false
-		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS
+		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
 	</select>
 
 	<insert id="INSERT_EMAIL" parameterClass="com.mpower.domain.model.communication.Email">

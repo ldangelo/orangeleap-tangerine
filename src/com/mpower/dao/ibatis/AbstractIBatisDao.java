@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
@@ -20,7 +22,7 @@ import com.mpower.domain.model.AbstractEntity;
 import com.mpower.util.StringConstants;
 import com.mpower.util.TangerineUserHelper;
 
-public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
+public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implements ApplicationContextAware {
 
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
@@ -31,9 +33,15 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport {
     protected String getSiteName() {
         return tangerineUserHelper.lookupUserSiteName();
     }
+    
+    protected ApplicationContext applicationContext;
+    
+    public void setApplicationContext(ApplicationContext applicationContext) {
+    	this.applicationContext = applicationContext;
+    }
 
     protected AbstractIBatisDao(SqlMapClient sqlMapClient) {
-        setSqlMapClientTemplate( new CustomizableSqlMapClientTemplate(sqlMapClient));
+       setSqlMapClientTemplate(new CustomizableSqlMapClientTemplate(sqlMapClient, applicationContext));
     }
 
     protected Map<String, Object> setupParams() {

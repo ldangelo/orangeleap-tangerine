@@ -49,13 +49,14 @@
 	<select id="SELECT_ALL_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="map">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
 		and ph.CONSTITUENT_ID = #constituentId#
+		order by ph.CREATE_DATE
 	</select>
 	
 	<select id="SELECT_ACTIVE_PHONES_BY_CONSTITUENT_ID" resultMap="PHONE_RESULT" parameterClass="map">
 		<include refid="SELECT_PHONE_FRAGMENT"/>
 		and ph.CONSTITUENT_ID = #constituentId#
 		and ph.INACTIVE = false
-		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS
+		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS, ph.CREATE_DATE
 	</select>
 
 	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">

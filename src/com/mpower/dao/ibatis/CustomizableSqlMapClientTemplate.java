@@ -3,11 +3,13 @@ package com.mpower.dao.ibatis;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.mpower.domain.model.AbstractCustomizableEntity;
+import com.mpower.domain.model.communication.AbstractCommunicatorEntity;
 
 /**
  * Extends the base SqlMapClientTemplate to know what to do with entities
@@ -23,10 +25,15 @@ import com.mpower.domain.model.AbstractCustomizableEntity;
  *
  * @version 1.0
  */
+
+
 public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
-    public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient) {
+	protected ApplicationContext applicationContext;
+	
+    public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient, ApplicationContext applicationContext) {
         super(sqlMapClient);
+        this.applicationContext = applicationContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -159,6 +166,11 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
             IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
 
             custom.setCustomFieldMap(helper.readCustomFields(custom.getId(), custom.getType()));
+        }
+        
+        if (entity != null && entity instanceof AbstractCommunicatorEntity) {
+        	AbstractCommunicatorEntity comm = (AbstractCommunicatorEntity) entity;
+            comm.setCommunicationFields(applicationContext);
         }
     }
 

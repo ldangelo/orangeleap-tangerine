@@ -53,13 +53,14 @@
     <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map">
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         and addr.CONSTITUENT_ID = #constituentId#
+        order by addr.CREATE_DATE
     </select>
 	
 	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map">
 		<include refid="SELECT_ADDRESS_FRAGMENT"/>
 		and addr.CONSTITUENT_ID = #constituentId#
 		and addr.INACTIVE = false
-		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS
+		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
 	</select>
  
     <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">

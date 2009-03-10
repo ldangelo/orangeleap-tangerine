@@ -57,6 +57,17 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
 
     @SuppressWarnings("unchecked")
     @Override
+    public List<PaymentSource> readAllPaymentSources(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllPaymentSources: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_PAYMENT_SOURCES_BY_CONSTITUENT_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public List<PaymentSource> readActivePaymentSources(Long constituentId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSources: constituentId = " + constituentId);

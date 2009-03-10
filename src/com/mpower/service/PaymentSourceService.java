@@ -19,6 +19,8 @@ public interface PaymentSourceService {
 
     public PaymentSource findPaymentSourceProfile(Long constituentId, String profile);
 
+    public List<PaymentSource> readAllPaymentSourcesACHCreditCard(Long constituentId);
+    
     public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId);
 
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);

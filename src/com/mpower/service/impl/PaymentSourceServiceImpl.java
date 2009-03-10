@@ -73,6 +73,21 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
 
     @Override
+    public List<PaymentSource> readAllPaymentSourcesACHCreditCard(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllPaymentSourcesACHCreditCard: constituentId = " + constituentId);
+        }
+        List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(constituentId);
+        List<PaymentSource> filteredSources = new ArrayList<PaymentSource>(); 
+        for (PaymentSource src : sources) {
+            if (PaymentSource.ACH.equals(src.getPaymentType()) || PaymentSource.CREDIT_CARD.equals(src.getPaymentType())) {
+                filteredSources.add(src);
+            }
+        }
+        return filteredSources;
+    }
+
+    @Override
     public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readActivePaymentSourcesACHCreditCard: constituentId = " + constituentId);

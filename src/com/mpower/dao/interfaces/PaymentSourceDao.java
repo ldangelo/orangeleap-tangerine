@@ -10,6 +10,8 @@ public interface PaymentSourceDao {
 
     public PaymentSource readPaymentSourceByProfile(Long constituentId, String profile);
 
+    public List<PaymentSource> readAllPaymentSources(Long constituentId);
+    
     public List<PaymentSource> readActivePaymentSources(Long constituentId);
 
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);

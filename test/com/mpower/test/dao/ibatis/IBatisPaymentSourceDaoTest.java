@@ -139,6 +139,18 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         assert source.getAchAccountNumber() == null;
         assert source.getAchRoutingNumber() == null;
     }
+
+    @Test(groups = { "testReadPaymentSource" })
+    public void testReadAllPaymentSources() throws Exception {
+        List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(100L);
+        assert sources != null && sources.size() == 5;
+        for (int i = 0; i < 3; i++) {
+            assert sources.get(i).isInactive() == false;
+        }
+        for (int i = 3; i < 5; i++) {
+            assert sources.get(i).isInactive() == true;
+        }
+    }
     
     @Test(groups = { "testReadPaymentSource" })
     public void testReadActivePaymentSources() throws Exception {

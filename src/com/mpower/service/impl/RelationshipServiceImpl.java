@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.dao.interfaces.ConstituentDao;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.customization.CustomField;
@@ -39,6 +40,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     @Resource(name = "constituentDAO")
     private ConstituentDao constituentDao;
 
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
     public Person maintainRelationships(Person constituent) throws ConstituentValidationException {
@@ -64,8 +68,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     		if (isReferenceTypeField && fd.isCustom()) {
     			
     			// Determine if there is a relationship defined with another field.
-    			List<FieldRelationship> masters = new ArrayList<FieldRelationship>(); //fd.getSiteMasterFieldRelationships(person.getSite().getName()); TODO: fix for IBatis
-    			List<FieldRelationship> details = new ArrayList<FieldRelationship>(); //fd.getSiteDetailFieldRelationships(person.getSite().getName()); TODO: fix for IBatis
+    			List<FieldRelationship> masters = getSiteMasterFieldRelationships(fd.getId()); 
+    			List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId()); 
     			if (masters.size() == 0 && details.size() == 0) {
                     continue;
                 }
@@ -119,6 +123,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         }
     	
 	    if (logger.isDebugEnabled() && lastRecursiveParentCustomFieldName != null) {
+	        // TODO Turn off in production since getting the whole tree could be expensive.
 	    	debugPrintTree(constituent, lastRecursiveParentCustomFieldName);
 	    }
 			
@@ -134,7 +139,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
-    			List<FieldRelationship> details = new ArrayList<FieldRelationship>(); //fd.getSiteDetailFieldRelationships(person.getSite().getName());  TODO: fix for IBatis
+    			List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId());  
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
@@ -147,7 +152,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	return null;
 	}
 
-    // TODO Turn off in production since getting the whole tree could be expensive.
     private void debugPrintTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
     	try {
     		PersonTreeNode tree = getTree(person, parentCustomFieldName, false, true);
@@ -464,4 +468,56 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		return fieldRelationshipType.equals(RelationshipType.MANY_TO_MANY) ||
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
 	}
+	
+
+	
+	  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
+	  // There should only be one master field relationship active per FieldDefinition (for a particular site).
+
+	   private List<FieldRelationship> getSiteDetailFieldRelationships(String fieldDefinitionId) {
+		   return getSiteFieldRelationships(fieldDao.readDetailFieldRelationships(fieldDefinitionId));
+	   }
+	   
+	   private List<FieldRelationship> getSiteMasterFieldRelationships(String fieldDefinitionId) {
+		   return getSiteFieldRelationships(fieldDao.readMasterFieldRelationships(fieldDefinitionId));
+	   }
+		
+		// Filter for this site.
+	    private List<FieldRelationship> getSiteFieldRelationships(List<FieldRelationship> list) {
+	    	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
+			for (FieldRelationship fr : list) {
+				if (fr.getSite() == null) {
+	                continue;
+	            }
+				if (fr.getSite().getName().equals(getSiteName())) {
+	                result.add(fr);
+	            }
+			}
+			// If no site specific relationships exist for this field, the default relationships apply.
+			if (result.size() == 0) {
+	            for (FieldRelationship fr : list) {
+	            	if (fr.getSite() == null) {
+	                    result.add(fr);
+	                }
+	            }
+	        }
+			return result;
+	    }
+	    
+	    public boolean isTree(FieldDefinition fd) {
+	    	// This must be the parent reference field on the detail record.
+	    	List<FieldRelationship> list = getSiteDetailFieldRelationships(fd.getId());
+	    	for (FieldRelationship fr : list) {
+	    		if (fr.isRecursive()) {
+	    			return true;
+	    		}
+	    	}
+	    	return false;
+	    }
+	    
+	    public boolean isRelationship(FieldDefinition fd) {
+	    	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
+	    }
+
+	
 }

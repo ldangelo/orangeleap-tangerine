@@ -27,16 +27,19 @@
 		from FIELD_RELATIONSHIP fr
 		LEFT OUTER JOIN FIELD_DEFINITION master ON fr.MASTER_FIELD_DEFINITION_ID = master.FIELD_DEFINITION_ID
 		LEFT OUTER JOIN FIELD_DEFINITION detail ON fr.DETAIL_FIELD_DEFINITION_ID = detail.FIELD_DEFINITION_ID
+		where 
+		(master.SITE_NAME = #siteName# or master.SITE_NAME is null)
+		and (detail.SITE_NAME = #siteName# or detail.SITE_NAME is null)
 	</sql>
 	
-	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="string">
+	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
-		where fr.MASTER_FIELD_DEFINITION_ID = #value#		
+		and master.FIELD_DEFINITION_ID = #id#	
 	</select>
 	
-	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="string">
+	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
-		where fr.DETAIL_FIELD_DEFINITION_ID = #value#		
+		and detail.FIELD_DEFINITION_ID = #id#		
 	</select>
 	
 	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.customization.FieldRelationship">

@@ -1,6 +1,8 @@
 package com.mpower.domain.model.customization;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.core.style.ToStringCreator;
 
@@ -121,76 +123,4 @@ public class FieldDefinition implements Serializable {
                 append("entityType", entityType).append("referenceType", referenceType).append("entityAttributes", entityAttributes).append("site", site).toString();
     }
 
-    // TODO: move below to RelationshipService
-//  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
-//  private List<FieldRelationship> masterFieldRelationships;
-//
-//  // There should only be one master field relationship active per FieldDefinition (for a particular site).
-//  private List<FieldRelationship> detailFieldRelationships;
-
-//    public void setMasterFieldRelationships(List<FieldRelationship> masterFieldRelationships) {
-//        this.masterFieldRelationships = masterFieldRelationships;
-//    }
-//
-//    public List<FieldRelationship> getMasterFieldRelationships() {
-//        return masterFieldRelationships;
-//    }
-//
-//    public void setDetailFieldRelationships(List<FieldRelationship> detailFieldRelationships) {
-//        this.detailFieldRelationships = detailFieldRelationships;
-//    }
-//
-//    public List<FieldRelationship> getDetailFieldRelationships() {
-//        return detailFieldRelationships;
-//    }
-
-	// Returns master fields for this site.
-	// There should usually only be one master field relationship per site for this field.
-//	public List<FieldRelationship> getSiteMasterFieldRelationships(String siteName) {
-//		List<FieldRelationship> list = getMasterFieldRelationships();
-//		return getSiteFieldRelationships(siteName, list);
-//	}
-	
-	// Returns detail fields for this site.
-//	public List<FieldRelationship> getSiteDetailFieldRelationships(String siteName) {
-//		List<FieldRelationship> list = getDetailFieldRelationships();
-//		return getSiteFieldRelationships(siteName, list);
-//	}
-	
-	// Filter for this site.
-//    private List<FieldRelationship> getSiteFieldRelationships(String siteName, List<FieldRelationship> list) {
-//    	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
-//		for (FieldRelationship fr : list) {
-//			if (fr.getSite() == null) {
-//                continue;
-//            }
-//			if (fr.getSite().getName().equals(siteName)) {
-//                result.add(fr);
-//            }
-//		}
-//		// If no site specific relationships exist for this field, the default relationships apply.
-//		if (result.size() == 0) {
-//            for (FieldRelationship fr : list) {
-//            	if (fr.getSite() == null) {
-//                    result.add(fr);
-//                }
-//            }
-//        }
-//		return result;
-//    }
-//    
-//    public boolean isTree(String siteName) {
-//    	// This must be the parent reference field on the detail record.
-//    	List<FieldRelationship> list = getSiteDetailFieldRelationships(siteName);
-//    	for (FieldRelationship fr : list) {
-//    		if (fr.isRecursive()) {
-//    			return true;
-//    		}
-//    	}
-//    	return false;
-//    }
-//    
-//    public boolean isRelationship(String siteName) {
-//    	return (getSiteMasterFieldRelationships(siteName).size() > 0 || getSiteDetailFieldRelationships(siteName).size() > 0) ;
-//    }
 }

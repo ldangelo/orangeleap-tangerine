@@ -61,7 +61,9 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readMasterFieldRelationships: masterFieldDefId = " + masterFieldDefId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID", masterFieldDefId);
+        Map<String, Object> params = setupParams();
+        params.put("id", masterFieldDefId);
+        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID", params);
     }
 
     @SuppressWarnings("unchecked")
@@ -70,6 +72,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         if (logger.isDebugEnabled()) {
             logger.debug("readDetailFieldRelationships: detailFieldDefId = " + detailFieldDefId);
         }
-        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID", detailFieldDefId);
+        Map<String, Object> params = setupParams();
+        params.put("id", detailFieldDefId);
+        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID", params);
     }
 }

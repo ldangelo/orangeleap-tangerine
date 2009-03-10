@@ -220,7 +220,7 @@ var Distribution = {
 			});		
 			
 			$row.find("input.code").each(function(){
-//				Lookup.codeAutoComplete($(this)); // TODO: add back
+				Lookup.codeAutoComplete($(this));
 			});
 			$row.removeClass("focused");
 		});

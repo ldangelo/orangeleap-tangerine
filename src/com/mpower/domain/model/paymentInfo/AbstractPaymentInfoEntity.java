@@ -149,12 +149,17 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         distributionLines = new ArrayList<DistributionLine>();
         while (mutableLinesIter.hasNext()) {
             DistributionLine line = mutableLinesIter.next();
-            if (line != null && line.isFieldEntered() == false) {
-                mutableLinesIter.remove();
+            if (line != null) {
+                if (line.isFieldEntered() == false) {
+                    mutableLinesIter.remove();
+                }
+                else {
+                    distributionLines.add(line);
+                }
             }
-            else {
-                distributionLines.add(line);
-            }
+        }
+        if (distributionLines.isEmpty()) {
+            distributionLines.add(new DistributionLine());
         }
     }
 

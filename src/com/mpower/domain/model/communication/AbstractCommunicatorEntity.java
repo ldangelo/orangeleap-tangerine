@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 import com.mpower.domain.model.AbstractCustomizableEntity;
@@ -41,10 +42,17 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     	
     	if (applicationContext == null) return;
     	
-    	AddressService addressService = (AddressService)applicationContext.getBean("addressService");
-    	EmailService emailService = (EmailService)applicationContext.getBean("emailService");
-    	PhoneService phoneService = (PhoneService)applicationContext.getBean("phoneService");
-   
+    	AddressService addressService;
+    	EmailService emailService;
+    	PhoneService phoneService;
+    	try {
+	    	addressService = (AddressService)applicationContext.getBean("addressService");
+	    	emailService = (EmailService)applicationContext.getBean("emailService");
+	    	phoneService = (PhoneService)applicationContext.getBean("phoneService");
+    	} catch (NoSuchBeanDefinitionException e) {
+    		return;
+    	}
+
     	primaryAddress = addressService.getPrimary(getId());
     	primaryEmail = emailService.getPrimary(getId());
     	primaryPhone = phoneService.getPrimary(getId());

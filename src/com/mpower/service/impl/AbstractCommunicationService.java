@@ -44,10 +44,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         entity = getDao().maintainEntity(entity);
         if (entity.isInactive()) {
-            auditService.auditObjectInactive(entity);
+            auditService.auditObjectInactive(entity, entity.getPersonId());
         } 
         else {
-            auditService.auditObject(entity);
+            auditService.auditObject(entity, entity.getPersonId());
         }
         return entity;
     }

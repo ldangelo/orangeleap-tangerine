@@ -85,7 +85,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	
         constituent = constituentDao.maintainConstituent(constituent);
         relationshipService.maintainRelationships(constituent);
-        auditService.auditObject(constituent);
+        auditService.auditObject(constituent, constituent);
         return constituent;
     }
 

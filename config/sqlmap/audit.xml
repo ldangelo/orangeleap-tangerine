@@ -10,20 +10,18 @@
 		<result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
 		<result property="objectId" column="OBJECT_ID" jdbcType="BIGINT" />
 		<result property="user" column="USER" jdbcType="VARCHAR" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituentId" column="AUDIT_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<sql id="AUDIT_COLS_FRAGMENT">
-		a.AUDIT_ID, a.AUDIT_TYPE, a.DATE, a.DESCRIPTION, a.ENTITY_TYPE, a.OBJECT_ID, a.USER, a.SITE_NAME
+		a.AUDIT_ID, a.AUDIT_TYPE, a.DATE, a.DESCRIPTION, a.ENTITY_TYPE, a.OBJECT_ID, a.USER, a.SITE_NAME, a.CONSTITUENT_ID as AUDIT_CONSTITUENT_ID
 	</sql>
 	
 	<sql id="SELECT_AUDIT_FRAGMENT">
 		select 
-		<include refid="AUDIT_COLS_FRAGMENT"/>,
-		<include refid="CONSTITUENT_COLS_FRAGMENT"/>
+		<include refid="AUDIT_COLS_FRAGMENT"/>
 		from AUDIT a
-		left outer join CONSTITUENT p on a.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where a.SITE_NAME = #siteName#
 	</sql>
 
@@ -44,7 +42,7 @@
 
 	<insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit">
 		insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, CONSTITUENT_ID, SITE_NAME)
-		values (#auditType#, #date#, #description#,	#entityType#, #objectId#, #user#, #person.id#, #siteName#)
+		values (#auditType#, #date#, #description#,	#entityType#, #objectId#, #user#, #constituentId#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

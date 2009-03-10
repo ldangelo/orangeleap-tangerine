@@ -1,9 +1,8 @@
 package com.mpower.domain.model.customization;
 
-import com.mpower.domain.model.Auditable;
 import com.mpower.domain.Inactivatible;
 import com.mpower.domain.model.AbstractEntity;
-import com.mpower.domain.model.Person;
+import com.mpower.domain.model.Auditable;
 
 public class Code extends AbstractEntity implements Auditable, Inactivatible {
 
@@ -62,10 +61,4 @@ public class Code extends AbstractEntity implements Auditable, Inactivatible {
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
     }
-
-    @Override
-    public Person getPerson() {
-        return null;
-    }
-
 }

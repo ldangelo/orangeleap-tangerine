@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.mpower.domain.GeneratedId;
 import com.mpower.domain.model.Auditable;
-import com.mpower.domain.model.Person;
 
 public class PicklistItem implements Auditable, GeneratedId, Serializable {
 
@@ -92,10 +91,5 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
 
 	public String getSuppressReferenceValue() {
 		return suppressReferenceValue;
-	}
-
-	@Override
-	public Person getPerson() {
-		return null;
 	}
 }

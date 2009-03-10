@@ -12,6 +12,4 @@ public interface Auditable {
     public void setOriginalObject(Auditable auditable);
 
     public Long getId();
-
-    public Person getPerson();
 }

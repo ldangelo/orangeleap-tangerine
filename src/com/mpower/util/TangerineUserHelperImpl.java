@@ -17,33 +17,54 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
+    private MpowerAuthenticationToken getToken() {
+        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication instanceof MpowerAuthenticationToken) {
+            return (MpowerAuthenticationToken)authentication;
+        }
+        return null;
+    }
+    
     /* (non-Javadoc)
-     * @see com.mpower.security.TangerineUserHelper#lookupUserSiteName()
+     * @see com.mpower.util.TangerineUserHelper#lookupUserSiteName()
      */
+    @Override
     public final String lookupUserSiteName() {
-        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication instanceof MpowerAuthenticationToken ? ((MpowerAuthenticationToken)authentication).getSite() : null;
+        MpowerAuthenticationToken token = getToken();
+        return token == null ? null : token.getSite();
     }
 
     /* (non-Javadoc)
-     * @see com.mpower.security.TangerineUserHelper#lookupUserName()
+     * @see com.mpower.util.TangerineUserHelper#lookupUserName()
      */
+    @Override
     public final String lookupUserName() {
-        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication instanceof MpowerAuthenticationToken ? ((MpowerAuthenticationToken)authentication).getName() : null;
+        MpowerAuthenticationToken token = getToken();
+        return token == null ? null : token.getName();
     }
 
     /* (non-Javadoc)
-     * @see com.mpower.security.TangerineUserHelper#lookupUserPassword()
+     * @see com.mpower.util.TangerineUserHelper#lookupUserPassword()
      */
+    @Override
     public final String lookupUserPassword() {
-        AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication instanceof MpowerAuthenticationToken ? (String)((MpowerAuthenticationToken)authentication).getCredentials() : null;
+        MpowerAuthenticationToken token = getToken();
+        return token == null ? null : (String)token.getCredentials();
+    }
+    
+    /* (non-Javadoc)
+     * @see com.mpower.util.TangerineUserHelper#lookupUserId()
+     */
+    @Override
+    public final Long lookupUserId() {
+        MpowerAuthenticationToken token = getToken();
+        return token == null ? null : token.getPersonId();
     }
 
     /* (non-Javadoc)
      * @see com.mpower.security.TangerineUserHelper#lookupUserRoles()
      */
+    @Override
     public final List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         RoleType greatestRoleType = null;

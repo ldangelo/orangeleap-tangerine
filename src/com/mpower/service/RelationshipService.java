@@ -1,6 +1,7 @@
 package com.mpower.service;
 
 import com.mpower.domain.model.Person;
+import com.mpower.domain.model.customization.FieldDefinition;
 import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.service.relationship.PersonTreeNode;
 
@@ -10,4 +11,5 @@ public interface RelationshipService {
 	
 	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException;
 
+	public boolean isRelationship(FieldDefinition fd);
 }

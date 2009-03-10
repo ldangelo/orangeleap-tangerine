@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.dao.interfaces.ConstituentDao;
+import com.mpower.dao.interfaces.FieldDao;
 import com.mpower.domain.model.Person;
 import com.mpower.domain.model.customization.CustomField;
 import com.mpower.domain.model.customization.FieldDefinition;
@@ -471,53 +471,52 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	
 
 	
-	  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
-	  // There should only be one master field relationship active per FieldDefinition (for a particular site).
+  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
+  // There should only be one master field relationship active per FieldDefinition (for a particular site).
 
-	   private List<FieldRelationship> getSiteDetailFieldRelationships(String fieldDefinitionId) {
-		   return getSiteFieldRelationships(fieldDao.readDetailFieldRelationships(fieldDefinitionId));
-	   }
-	   
-	   private List<FieldRelationship> getSiteMasterFieldRelationships(String fieldDefinitionId) {
-		   return getSiteFieldRelationships(fieldDao.readMasterFieldRelationships(fieldDefinitionId));
-	   }
-		
-		// Filter for this site.
-	    private List<FieldRelationship> getSiteFieldRelationships(List<FieldRelationship> list) {
-	    	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
-			for (FieldRelationship fr : list) {
-				if (fr.getSite() == null) {
-	                continue;
-	            }
-				if (fr.getSite().getName().equals(getSiteName())) {
-	                result.add(fr);
-	            }
-			}
-			// If no site specific relationships exist for this field, the default relationships apply.
-			if (result.size() == 0) {
-	            for (FieldRelationship fr : list) {
-	            	if (fr.getSite() == null) {
-	                    result.add(fr);
-	                }
-	            }
-	        }
-			return result;
-	    }
-	    
-	    public boolean isTree(FieldDefinition fd) {
-	    	// This must be the parent reference field on the detail record.
-	    	List<FieldRelationship> list = getSiteDetailFieldRelationships(fd.getId());
-	    	for (FieldRelationship fr : list) {
-	    		if (fr.isRecursive()) {
-	    			return true;
-	    		}
-	    	}
-	    	return false;
-	    }
-	    
-	    public boolean isRelationship(FieldDefinition fd) {
-	    	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
-	    }
-
+   private List<FieldRelationship> getSiteDetailFieldRelationships(String fieldDefinitionId) {
+	   return getSiteFieldRelationships(fieldDao.readDetailFieldRelationships(fieldDefinitionId));
+   }
+   
+   private List<FieldRelationship> getSiteMasterFieldRelationships(String fieldDefinitionId) {
+	   return getSiteFieldRelationships(fieldDao.readMasterFieldRelationships(fieldDefinitionId));
+   }
 	
+	// Filter for this site.
+    private List<FieldRelationship> getSiteFieldRelationships(List<FieldRelationship> list) {
+    	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
+		for (FieldRelationship fr : list) {
+			if (fr.getSite() == null) {
+                continue;
+            }
+			if (fr.getSite().getName().equals(getSiteName())) {
+                result.add(fr);
+            }
+		}
+		// If no site specific relationships exist for this field, the default relationships apply.
+		if (result.size() == 0) {
+            for (FieldRelationship fr : list) {
+            	if (fr.getSite() == null) {
+                    result.add(fr);
+                }
+            }
+        }
+		return result;
+    }
+    
+    public boolean isTree(FieldDefinition fd) {
+    	// This must be the parent reference field on the detail record.
+    	List<FieldRelationship> list = getSiteDetailFieldRelationships(fd.getId());
+    	for (FieldRelationship fr : list) {
+    		if (fr.isRecursive()) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    @Override
+    public boolean isRelationship(FieldDefinition fd) {
+    	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
+    }
 }

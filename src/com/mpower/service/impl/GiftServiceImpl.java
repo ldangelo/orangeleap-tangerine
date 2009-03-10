@@ -78,15 +78,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("maintainGift: gift = " + gift);
         }
         maintainEntityChildren(gift, gift.getPerson());
-
         routeGift(gift);
-
         setDefaultDates(gift);
         gift.filterValidDistributionLines();
         gift = giftDao.maintainGift(gift);
         paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
-        
-        auditService.auditObject(gift);
+        auditService.auditObject(gift, gift.getPerson());
 
         return gift;
     }
@@ -114,12 +111,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("editGift: giftId = " + gift.getId());
         }
         maintainEntityChildren(gift, gift.getPerson());
-
         gift = giftDao.maintainGift(gift);
-
         routeGift(gift);
-        
-        auditService.auditObject(gift);
+        auditService.auditObject(gift, gift.getPerson());
 
         return gift;
     }
@@ -366,7 +360,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             originalGift.setRefundGiftId(refundGift.getId());
             originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
             maintainGift(originalGift);
-            auditService.auditObject(refundGift);
+            auditService.auditObject(refundGift, refundGift.getPerson());
             return refundGift;
         } catch (IllegalAccessException e) {
             throw new IllegalStateException();

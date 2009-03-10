@@ -11,4 +11,6 @@ public interface TangerineUserHelper {
     public String lookupUserPassword();
 
     public List<String> lookupUserRoles();
+    
+    public Long lookupUserId();
 }

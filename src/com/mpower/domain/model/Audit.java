@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.mpower.domain.GeneratedId;
-import com.mpower.domain.model.Person;
 import com.mpower.type.AuditType;
 
 public class Audit implements GeneratedId, Serializable {
@@ -15,7 +14,7 @@ public class Audit implements GeneratedId, Serializable {
     private Date date;
     private String user;
     private String description;
-    private Person person;
+    private Long constituentId;
     private String siteName;
     private String entityType;
     private Long objectId;
@@ -24,7 +23,7 @@ public class Audit implements GeneratedId, Serializable {
         super();
     }
 
-    public Audit(AuditType auditType, String user, Date date, String description, String siteName, String entityType, Long objectId, Person constituent) {
+    public Audit(AuditType auditType, String user, Date date, String description, String siteName, String entityType, Long objectId, Long constituentId) {
         this.auditType = auditType;
         this.user = user;
         this.date = date;
@@ -32,7 +31,7 @@ public class Audit implements GeneratedId, Serializable {
         this.siteName = siteName;
         this.entityType = entityType;
         this.objectId = objectId;
-        this.person = constituent;
+        this.constituentId = constituentId;
     }
 
     @Override
@@ -77,12 +76,12 @@ public class Audit implements GeneratedId, Serializable {
         this.description = description;
     }
 
-    public Person getPerson() {
-        return person;
+    public Long getConstituentId() {
+        return constituentId;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setConstituentId(Long constituentId) {
+        this.constituentId = constituentId;
     }
 
     public String getSiteName() {

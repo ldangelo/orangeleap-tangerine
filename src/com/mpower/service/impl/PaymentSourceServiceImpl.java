@@ -41,10 +41,10 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
 
         if (paymentSource.isInactive()) {
-            auditService.auditObjectInactive(paymentSource);
+            auditService.auditObjectInactive(paymentSource, paymentSource.getPerson());
         }
         else {
-            auditService.auditObject(paymentSource);
+            auditService.auditObject(paymentSource, paymentSource.getPerson());
         }
         return paymentSource;
     }

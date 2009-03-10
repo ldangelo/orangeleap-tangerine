@@ -89,7 +89,7 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
         maintainEntityChildren(commitment, commitment.getPerson());
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
-        auditService.auditObject(commitment);
+        auditService.auditObject(commitment, commitment.getPerson());
         return commitment;
     }
 

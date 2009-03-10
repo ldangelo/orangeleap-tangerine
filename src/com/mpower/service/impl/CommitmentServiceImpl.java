@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import com.mpower.service.CommitmentService;
 import com.mpower.service.RecurringGiftService;
 import com.mpower.type.CommitmentType;
 import com.mpower.type.EntityType;
+import com.mpower.util.StringConstants;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -70,13 +72,7 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
 //    			}
 //    		}
 //    	}
-    	
-    	
-        maintainEntityChildren(commitment, commitment.getPerson());
-        commitment = commitmentDao.maintainCommitment(commitment);
-        commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
-        auditService.auditObject(commitment);
-        return commitment;
+        return save(commitment);
     }
 
     @Override
@@ -85,7 +81,12 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
         if (logger.isDebugEnabled()) {
             logger.debug("editCommitment: commitmentId = " + commitment.getId());
         }
+        return save(commitment);
+    }
+    
+    private Commitment save(Commitment commitment) {
         maintainEntityChildren(commitment, commitment.getPerson());
+        commitment.filterValidDistributionLines();
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);
@@ -170,13 +171,13 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
         }
         // get initial commitment with built-in defaults
         Commitment commitment = new Commitment(commitmentType);
-        BeanWrapper personBeanWrapper = new BeanWrapperImpl(commitment);
+        BeanWrapper commitmentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
 
         List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.commitment }));
         for (EntityDefault ed : entityDefaults) {
-            personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
+            commitmentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
-        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
         DistributionLine line = new DistributionLine();
         line.setCommitmentId(commitment.getId());
         lines.add(line);
@@ -192,9 +193,27 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
         }
         return giftDao.readGiftsReceivedSumByCommitmentId(commitmentId);
     }
+    
+    @Override
+    public void findGiftSum(Map<String, Object> refData, Commitment commitment) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findGiftSum: refData = " + refData + " commitment = " + commitment);
+        }
+        if (commitment != null) {
+            List<Gift> gifts = getCommitmentGifts(commitment);
+            refData.put(StringConstants.GIFTS, gifts);
+            Iterator<Gift> giftIter = gifts.iterator();
+            BigDecimal giftSum = new BigDecimal(0);
+            while (giftIter.hasNext()) {
+                giftSum = giftSum.add(giftIter.next().getAmount());
+            }
+            refData.put("giftSum", giftSum);
+            refData.put("giftsReceivedSum", getAmountReceived(commitment.getId()));
+        }
+    }
 
     @Override
-    // TODO: this method is a mess!!!
+    // TODO: refactor; this method is a mess!!!
     public List<Calendar> getCommitmentGiftDates(Commitment commitment) {
         if (logger.isDebugEnabled()) {
             logger.debug("getCommitmentGiftDates: commitment = " + commitment);

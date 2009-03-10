@@ -33,4 +33,6 @@ public interface CommitmentService {
     public List<Gift> getCommitmentGifts(Commitment commitment);
 
     public BigDecimal getAmountReceived(Long commitmentId);
+    
+    public void findGiftSum(Map<String, Object> refData, Commitment commitment);
 }

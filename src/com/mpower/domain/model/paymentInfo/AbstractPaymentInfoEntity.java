@@ -36,7 +36,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected Person person;
     /** Form bean representation of the DistributionLines */
     protected List<DistributionLine> mutableDistributionLines = null;
-    /** IBatis bean representation of the DistributionLines */
+    /** Domain object representation of the DistributionLines */
     protected List<DistributionLine> distributionLines;
 
     private FormBeanType addressType;

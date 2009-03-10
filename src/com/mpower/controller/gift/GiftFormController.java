@@ -36,15 +36,6 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         gift.removeEmptyDistributionLines();
     }
 
-//    @Override
-//    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-//        super.onBindAndValidate(request, command, errors);
-//        if (errors.hasErrors()) {
-//            Gift gift = (Gift) command;
-//            gift.defaultCreateMutableDistributionLine();
-//        }
-//    }
-
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Gift gift = (Gift) command;

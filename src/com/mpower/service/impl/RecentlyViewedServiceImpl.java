@@ -1,14 +1,16 @@
 package com.mpower.service.impl;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
-import com.mpower.service.RecentlyViewedService;
-import com.mpower.dao.interfaces.RecentlyViewedDao;
-
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mpower.dao.interfaces.RecentlyViewedDao;
+import com.mpower.service.RecentlyViewedService;
 
 /**
  * @version 1.0
@@ -26,6 +28,7 @@ public class RecentlyViewedServiceImpl extends AbstractTangerineService implemen
         this.maxRows = maxRows;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Map> addRecentlyViewed(Long acctNumber) {
@@ -34,6 +37,7 @@ public class RecentlyViewedServiceImpl extends AbstractTangerineService implemen
         return recentlyViewedDao.addRecentlyViewed(userName, acctNumber, maxRows);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Map> getRecentlyViewed() {

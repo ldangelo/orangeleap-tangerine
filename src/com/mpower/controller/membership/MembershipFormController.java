@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -69,7 +70,7 @@ public class MembershipFormController extends SimpleFormController {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = new HashMap();
         String personIdString = request.getParameter("personId");
         Long personId = null;

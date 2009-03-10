@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.mpower.controller.communication.address.AddressEditor;
@@ -142,9 +143,10 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         super.onBind(request, command, errors);
     }
 
+    
     @SuppressWarnings("unchecked")
     @Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = new HashMap();
         this.addConstituentToReferenceData(request, refData);
 

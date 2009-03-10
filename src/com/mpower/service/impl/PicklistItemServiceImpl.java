@@ -1,6 +1,5 @@
 package com.mpower.service.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,11 +43,15 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     
 	// The unique key for PICKLIST is just id, not site + id, so id's have to be kept unique
 	public static String addSiteToId(String siteName, String picklistId) {
-		if (picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		if (picklistId.contains("-")) {
+            throw new RuntimeException("Invalid picklistId character.");
+        }
 		return siteName + "-" + picklistId;
 	}
 	public static String removeSiteFromId(String picklistId) {
-		if (!picklistId.contains("-")) throw new RuntimeException("Invalid picklistId character.");
+		if (!picklistId.contains("-")) {
+            throw new RuntimeException("Invalid picklistId character.");
+        }
 		return picklistId.substring(picklistId.indexOf("-") + 1);
 	}
 	
@@ -68,13 +71,17 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklist(String picklistId) {
 		
-		if (picklistId == null || picklistId.length() == 0) return null;
+		if (picklistId == null || picklistId.length() == 0) {
+            return null;
+        }
 		
 		Picklist picklist = picklistDao.readPicklistById(picklistId);
 		if (picklist == null) {
 			picklist = picklistDao.readPicklistById(removeSiteFromId(picklistId));
 		}
-		if (picklist == null) return null;
+		if (picklist == null) {
+            return null;
+        }
 		
 		if (picklist.getSite() == null) {
 			picklist = createCopy(picklist);
@@ -95,7 +102,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		List<Picklist> list = picklistDao.listPicklists();
 		Iterator<Picklist> it = list.iterator();
 		while (it.hasNext()) {
-			if (exclude(it.next())) it.remove();
+			if (exclude(it.next())) {
+                it.remove();
+            }
 		}
 		
 		// Overridden, site-specific picklists
@@ -110,7 +119,11 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		for (Picklist picklist : list) {
 			if (picklist.getSite() == null) {
 				boolean found = false;
-				for (Picklist apicklist : result) if (apicklist.getPicklistName().equals(picklist.getPicklistName())) found = true;
+				for (Picklist apicklist : result) {
+                    if (apicklist.getPicklistName().equals(picklist.getPicklistName())) {
+                        found = true;
+                    }
+                }
 				if (!found) {
 					result.add(createCopy(picklist));
 				}
@@ -147,7 +160,11 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	private Site getSite(String siteName) {
 		List<Site> sites = siteService.readSites();
-	    for (Site site: sites) if (site.getName().equals(siteName)) return site;
+	    for (Site site: sites) {
+            if (site.getName().equals(siteName)) {
+                return site;
+            }
+        }
 	    throw new RuntimeException("Invalid site name: " + siteName);
 	}
 	
@@ -155,7 +172,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
     	while (it.hasNext()) {
     		PicklistItem item = it.next();
-    		if (item.getItemName() == null || item.getItemName().length() == 0) it.remove();
+    		if (item.getItemName() == null || item.getItemName().length() == 0) {
+                it.remove();
+            }
     	}
 	}
 	
@@ -193,19 +212,23 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 
 		boolean found = false;
 		Long id = picklistItem.getId();
-    	if (id != null) for (PicklistItem apicklistItem : picklist.getPicklistItems()) {
-    	    if (picklistItem.getItemName().equals(apicklistItem.getItemName())) {
-    	    	found = true;
-                try {
-                	Long origid = apicklistItem.getId();
-					BeanUtils.copyProperties(apicklistItem, picklistItem);
-					apicklistItem.setId(origid);
-				} catch (Exception e) {
-				}
-                break;
-    	    }
-    	}
-    	if (!found) picklist.getPicklistItems().add(picklistItem);
+    	if (id != null) {
+            for (PicklistItem apicklistItem : picklist.getPicklistItems()) {
+                if (picklistItem.getItemName().equals(apicklistItem.getItemName())) {
+                	found = true;
+                    try {
+                    	Long origid = apicklistItem.getId();
+            			BeanUtils.copyProperties(apicklistItem, picklistItem);
+            			apicklistItem.setId(origid);
+            		} catch (Exception e) {
+            		}
+                    break;
+                }
+            }
+        }
+    	if (!found) {
+            picklist.getPicklistItems().add(picklistItem);
+        }
 
     	// Set order and reset item ids.
     	for (int i = 0; i < picklist.getPicklistItems().size(); i++) {

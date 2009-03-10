@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
@@ -28,8 +29,8 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
-        Map refData = super.referenceData(request);
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+        Map refData = super.referenceData(request, command, errors);
         addressService.findReferenceDataByConstituentId(refData, getConstituentId(request), "addresses", "currentAddresses", "currentCorrespondenceAddresses");
         return refData;
     }

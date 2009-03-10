@@ -1,8 +1,5 @@
 package com.mpower.controller.commitment;
 
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.paymentInfo.Commitment;
-import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.service.CommitmentService;
 import com.mpower.type.CommitmentType;
 import com.mpower.util.StringConstants;
@@ -46,15 +43,6 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
         Commitment commitment = (Commitment) command;
         commitment.removeEmptyDistributionLines();
     }
-    
-//    @Override
-//    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-//        super.onBindAndValidate(request, command, errors);
-//        if (errors.hasErrors()) {
-//            Commitment commitment = (Commitment) command;
-//            commitment.defaultCreateMutableDistributionLine();
-//        }
-//    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -67,23 +55,9 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map referenceData(HttpServletRequest request) throws Exception {
-        Map refData = super.referenceData(request);
-        String commitmentId = request.getParameter(StringConstants.COMMITMENT_ID);
-        if (commitmentId != null) {
-            Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
-            if (commitment != null) {
-                List<Gift> gifts = commitmentService.getCommitmentGifts(commitment);
-                refData.put(StringConstants.GIFTS, gifts);
-                Iterator<Gift> giftIter = gifts.iterator();
-                BigDecimal giftSum = new BigDecimal(0);
-                while (giftIter.hasNext()) {
-                    giftSum = giftSum.add(giftIter.next().getAmount());
-                }
-                refData.put("giftSum", giftSum);
-                refData.put("giftsReceivedSum", commitmentService.getAmountReceived(commitment.getId()));
-            }
-        }
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+        Map refData = super.referenceData(request, command, errors);
+        commitmentService.findGiftSum(refData, (Commitment)command);
         return refData;
     }
 

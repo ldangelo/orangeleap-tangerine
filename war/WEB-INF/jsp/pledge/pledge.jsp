@@ -25,7 +25,7 @@
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
 				<c:set var="gridCollectionName" value="mutableDistributionLines" />
-				<c:set var="gridCollection" value="${commitment.mutableDistributionLines}" />
+				<c:set var="gridCollection" value="${commitment.distributionLines}" />
 				<c:set var="paymentSource" value="${commitment.paymentSource}" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">

@@ -30,10 +30,12 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     }
 
     @Override
-    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBind(request, command, errors);
-        Gift gift = (Gift) command;
-        gift.removeEmptyDistributionLines();
+    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        if (isFormSubmission(request) && errors.hasErrors()) {
+            Gift gift = (Gift) command;
+            gift.removeEmptyMutableDistributionLines();
+        }
+        super.onBindAndValidate(request, command, errors);
     }
 
     @Override

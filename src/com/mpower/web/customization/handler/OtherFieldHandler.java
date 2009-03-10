@@ -11,13 +11,17 @@ public class OtherFieldHandler {
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(model);
         
         String fieldName = fieldVO.getFieldName();
-        Object propertyValue = bw.getPropertyValue(fieldName);
-        
-        /* If the property value and ID are not defined, see if the 'other' field is populated and use that value instead */
-        if (fieldVO.getId() == null && propertyValue == null) {
-            Object otherFieldValue = bw.getPropertyValue(fieldVO.getOtherFieldName());
-            if (otherFieldValue != null) {
-                fieldVO.setDisplayValue(otherFieldValue);
+        if (bw.isReadableProperty(fieldName)) {
+            Object propertyValue = bw.getPropertyValue(fieldName);
+            
+            /* If the property value and ID are not defined, see if the 'other' field is populated and use that value instead */
+            if (fieldVO.getId() == null && propertyValue == null) {
+                if (bw.isReadableProperty(fieldVO.getOtherFieldName())) {
+                    Object otherFieldValue = bw.getPropertyValue(fieldVO.getOtherFieldName());
+                    if (otherFieldValue != null) {
+                        fieldVO.setDisplayValue(otherFieldValue);
+                    }
+                }
             }
         }
     }

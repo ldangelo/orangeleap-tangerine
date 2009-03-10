@@ -30,19 +30,11 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     }
 
     /**
-     * Sets the ID to the specified non-negative Long value.
-     * If the id is negative or null, the internal value will
-     * not be changed and an IllegalArgumentException will be thrown.
-     * <strong>NOTE:</strong> If you want to reset the ID to null, use {@link #resetIdToNull()}
+     * Sets the ID to the specified value.
      * @param id the ID of the Entity
      */
     public void setId(Long id) {
-        if (id != null && id > 0) {
-            this.id = id;
-        }
-        else {
-            throw new IllegalArgumentException("Id is invalid");
-        }
+        this.id = id;
     }
     
     /**

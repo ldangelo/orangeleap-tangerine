@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.NullValueInNestedPathException;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
@@ -61,13 +60,8 @@ public class GenericFieldHandler implements FieldHandler {
         BeanWrapper modelBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(model);
         String fieldProperty = fieldVO.getFieldName();
         Object propertyValue = null;
-        try {
+        if (modelBeanWrapper.isReadableProperty(fieldProperty)) {
             propertyValue = modelBeanWrapper.getPropertyValue(fieldProperty);
-        }
-        catch (NullValueInNestedPathException ne) { // TODO: remove this catch
-            if (logger.isWarnEnabled()) {
-                logger.warn("Exception resolving " + fieldProperty, ne);
-            }
         }
         return propertyValue;
     }

@@ -32,7 +32,7 @@ public class DistributionLinesValidatorTest extends BaseTest {
         DistributionLine aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(13.5));
         lines.add(aLine);
-        gift.setDistributionLines(lines);
+        gift.setMutableDistributionLines(lines);
         gift.setAmount(new BigDecimal(16));
         
         validator.validate(gift, errors);
@@ -43,7 +43,7 @@ public class DistributionLinesValidatorTest extends BaseTest {
         aLine.setAmount(new BigDecimal(2.5));
         lines.add(aLine);
         gift = new Gift();
-        gift.setDistributionLines(lines);
+        gift.setMutableDistributionLines(lines);
         gift.setAmount(new BigDecimal(16));
         validator.validate(gift, errors);
         assert errors.hasErrors() == false;
@@ -57,7 +57,7 @@ public class DistributionLinesValidatorTest extends BaseTest {
         DistributionLine aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(13.5));
         lines.add(aLine);
-        commitment.setDistributionLines(lines);
+        commitment.setMutableDistributionLines(lines);
         commitment.setRecurring(true);
         commitment.setAmountPerGift(new BigDecimal(16));
         
@@ -69,7 +69,7 @@ public class DistributionLinesValidatorTest extends BaseTest {
         aLine.setAmount(new BigDecimal(2.5));
         lines.add(aLine);
         commitment = new Commitment();
-        commitment.setDistributionLines(lines);
+        commitment.setMutableDistributionLines(lines);
         commitment.setRecurring(true);
         commitment.setAmountPerGift(new BigDecimal(16));
         validator.validate(commitment, errors);
@@ -84,7 +84,7 @@ public class DistributionLinesValidatorTest extends BaseTest {
         DistributionLine aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(13.5));
         lines.add(aLine);
-        commitment.setDistributionLines(lines);
+        commitment.setMutableDistributionLines(lines);
         commitment.setRecurring(false);
         commitment.setAmountTotal(new BigDecimal(13.5));
         
@@ -96,8 +96,8 @@ public class DistributionLinesValidatorTest extends BaseTest {
         aLine.setAmount(new BigDecimal(2.5));
         lines.add(aLine);
         commitment = new Commitment();
-        commitment.setDistributionLines(lines);
-        commitment.setDistributionLines(lines);
+        commitment.setMutableDistributionLines(lines);
+        commitment.setMutableDistributionLines(lines);
         commitment.setRecurring(false);
         commitment.setAmountTotal(new BigDecimal(13.5));
         validator.validate(commitment, errors);

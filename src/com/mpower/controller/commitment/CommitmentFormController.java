@@ -38,10 +38,12 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
     }
 
     @Override
-    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBind(request, command, errors);
-        Commitment commitment = (Commitment) command;
-        commitment.removeEmptyDistributionLines();
+    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
+        if (isFormSubmission(request) && errors.hasErrors()) {
+            Commitment commitment = (Commitment) command;
+            commitment.removeEmptyMutableDistributionLines();
+        }
+        super.onBindAndValidate(request, command, errors);
     }
 
     @Override

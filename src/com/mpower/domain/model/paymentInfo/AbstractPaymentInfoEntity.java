@@ -23,7 +23,7 @@ import com.mpower.domain.model.communication.Phone;
 import com.mpower.type.FormBeanType;
 import com.mpower.util.StringConstants;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unchecked" })
 public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, EmailAware  {
 
     protected String comments;
@@ -35,7 +35,12 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     
     protected Person person;
     /** Form bean representation of the DistributionLines */
-    protected List<DistributionLine> mutableDistributionLines = null;
+    protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
+        public Object create() {
+            return new DistributionLine();
+        }
+    });
+    
     /** Domain object representation of the DistributionLines */
     protected List<DistributionLine> distributionLines;
 
@@ -131,19 +136,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.distributionLines = distributionLines;
     }
 
-    @SuppressWarnings("unchecked")
     public List<DistributionLine> getMutableDistributionLines() {
-        if (mutableDistributionLines == null) { 
-            Factory factory = new Factory() {
-                public Object create() {
-                    return new DistributionLine();
-                }
-            };
-            mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), factory);
-        }
-        if (mutableDistributionLines.isEmpty() && distributionLines != null & distributionLines.isEmpty() == false) {
-            mutableDistributionLines.addAll(distributionLines);
-        }
         return mutableDistributionLines;
     }
 
@@ -151,23 +144,23 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         this.mutableDistributionLines = mutableDistributionLines;
     }
 
-    public void removeEmptyDistributionLines() {
-        Iterator<DistributionLine> mutableLinesIter = getMutableDistributionLines().iterator();
+    public void removeEmptyMutableDistributionLines() {
+        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
+        distributionLines = new ArrayList<DistributionLine>();
         while (mutableLinesIter.hasNext()) {
             DistributionLine line = mutableLinesIter.next();
             if (line != null && line.isFieldEntered() == false) {
                 mutableLinesIter.remove();
             }
+            else {
+                distributionLines.add(line);
+            }
         }
     }
-    
-//    public void addMutableDistributionLine(DistributionLine distributionLine) {
-//        getMutableDistributionLines().add(distributionLine);
-//    }
 
     public void filterValidDistributionLines() {
         distributionLines = new ArrayList<DistributionLine>();
-        Iterator<DistributionLine> mutableLinesIter = getMutableDistributionLines().iterator();
+        Iterator<DistributionLine> mutableLinesIter = mutableDistributionLines.iterator();
         while (mutableLinesIter.hasNext()) {
             DistributionLine line = mutableLinesIter.next();
             if (line != null && line.isValid()) {
@@ -175,24 +168,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             }
         }
     }
-
-    /**
-     * Check for at least 1 valid DistributionLine; create one if not found
-     */
-//    public void defaultCreateMutableDistributionLine() {
-//        boolean hasValid = false;
-//        Iterator<DistributionLine> distLineIter = mutableDistributionLines.iterator();
-//        while (distLineIter.hasNext()) {
-//            DistributionLine line = distLineIter.next();
-//            if (line != null && line.isValid()) {
-//                hasValid = true;
-//                break;
-//            }
-//        }
-//        if (!hasValid) {
-//            mutableDistributionLines.get(0); // Default create one Distribution Line object if necessary
-//        }
-//    }
 
     @Override
     public FormBeanType getAddressType() {

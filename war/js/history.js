@@ -20,7 +20,9 @@ var loadMRU = function(arr) {
     if (pId) {
         var addIt = true;
         for (var i = 0; i < arr.length; i++) {
-            if (arr[i].id === pId) {
+            // explicit == test. pId will have a String, while arr.id is a number
+            // so let it do the autocast
+            if (arr[i].id == pId[1]) {
                 addIt = false;
                 break;
             }

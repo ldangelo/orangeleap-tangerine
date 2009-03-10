@@ -47,7 +47,7 @@
 		<copy file="${build.output.dir}/mpower.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 		
 		<exec dir="/opt/mpower" executable="chown" >
-			<arg line="tomcat.tomcat ${target.tomcat.dir}/webapps"/>
+			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/webapps"/>
 	    </exec>
 
 		<exec dir="/opt/mpower" executable="su" spawn="true">

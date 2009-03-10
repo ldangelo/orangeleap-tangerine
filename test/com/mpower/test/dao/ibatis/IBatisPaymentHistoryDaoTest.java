@@ -94,10 +94,10 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
                     assert "123456789".equals(history.getTransactionId());
                     assert history.getGift() != null && history.getGift().getId() == 600L;
                     assert history.getGift().getPerson() != null && history.getGift().getPerson().getId() == 300L;
-                    assert history.getGift().getSelectedEmail() == null;
-                    assert history.getGift().getSelectedAddress() == null;
-                    assert history.getGift().getSelectedPhone() == null;
-                    assert history.getGift().getSelectedPaymentSource() == null;
+                    assert history.getGift().getSelectedAddress() != null && history.getGift().getSelectedAddress().getId() == null;
+                    assert history.getGift().getSelectedPhone() != null && history.getGift().getSelectedPhone().getId() == null;
+                    assert history.getGift().getSelectedEmail() != null && history.getGift().getSelectedEmail().getId() == null;
+                    assert history.getGift().getSelectedPaymentSource() != null && history.getGift().getSelectedPaymentSource().getId() == null;
                     assert history.getPerson() != null && history.getPerson().getId() == 300L;
                     IBatisConstituentDaoTest.testConstituentId300(history.getPerson());
                     break;

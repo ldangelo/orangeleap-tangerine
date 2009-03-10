@@ -276,6 +276,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     @Override
     public PaymentSource getSelectedPaymentSource() {
+        if (selectedPaymentSource == null) {
+            selectedPaymentSource = new PaymentSource(); // created only because spring needs to bind to it
+        }
         return selectedPaymentSource;
     }
 
@@ -285,6 +288,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     @Override
     public Address getSelectedAddress() {
+        if (selectedAddress == null) {
+            selectedAddress = new Address(); // created only because spring needs to bind to it
+        }
         return selectedAddress;
     }
 
@@ -294,6 +300,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     @Override
     public Phone getSelectedPhone() {
+        if (selectedPhone == null) {
+            selectedPhone = new Phone(); // created only because spring needs to bind to it
+        }
         return selectedPhone;
     }
 
@@ -303,6 +312,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     @Override
     public Email getSelectedEmail() {
+        if (selectedEmail == null) {
+            selectedEmail = new Email(); // created only because spring needs to bind to it
+        }
         return selectedEmail;
     }
 

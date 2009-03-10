@@ -109,10 +109,10 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
                     assert 10 == commitment.getAmountPerGift().intValue();
                     assert commitment.isRecurring();
                     assert Commitment.STATUS_ACTIVE.equals(commitment.getStatus());
-                    assert commitment.getSelectedAddress() == null;
-                    assert commitment.getSelectedPhone() == null;
-                    assert commitment.getSelectedEmail() == null;
-                    assert commitment.getSelectedPaymentSource() == null;
+                    assert commitment.getSelectedAddress() != null && commitment.getSelectedAddress().getId() == null;
+                    assert commitment.getSelectedPhone() != null && commitment.getSelectedPhone().getId() == null;
+                    assert commitment.getSelectedEmail() != null && commitment.getSelectedEmail().getId() == null;
+                    assert commitment.getSelectedPaymentSource() != null && commitment.getSelectedPaymentSource().getId() == null;
                     assert commitment.getPerson() != null && commitment.getPerson().getId() == 200L;
                     IBatisConstituentDaoTest.testConstituentId200(commitment.getPerson());
                     break;

@@ -107,9 +107,9 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert readCommitment.getSelectedAddress() == null;
-        assert readCommitment.getSelectedPhone() == null;
-        assert readCommitment.getSelectedPaymentSource() == null;
+        assert readCommitment.getSelectedAddress() != null && readCommitment.getSelectedAddress().getId() == null;
+        assert readCommitment.getSelectedPhone() != null && readCommitment.getSelectedPhone().getId() == null;
+        assert readCommitment.getSelectedPaymentSource() != null && readCommitment.getSelectedPaymentSource().getId() == null;
         assert readCommitment.getGifts() != null && readCommitment.getGifts().isEmpty();
         assert BigDecimal.ZERO.equals(readCommitment.getAmountPaid());
         assert 150 == readCommitment.getAmountRemaining().intValue();
@@ -159,12 +159,12 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert readCommitment.getAcknowledgmentDate() != null;
         assert readCommitment.isRecurring();
 
-        assert readCommitment.getSelectedPhone() == null;
-        assert readCommitment.getSelectedEmail() == null;
+        assert readCommitment.getSelectedPhone() != null && readCommitment.getSelectedPhone().getId() == null;
+        assert readCommitment.getSelectedEmail() != null && readCommitment.getSelectedEmail().getId() == null;
         assert readCommitment.getPerson() != null && readCommitment.getPerson().getId() == 100L;
         assert readCommitment.getDistributionLines() != null && readCommitment.getDistributionLines().size() == 2;
-        assert readCommitment.getSelectedAddress() == null;
-        assert readCommitment.getSelectedPaymentSource() == null;
+        assert readCommitment.getSelectedAddress() != null && readCommitment.getSelectedAddress().getId() == null;
+        assert readCommitment.getSelectedPaymentSource() != null && readCommitment.getSelectedPaymentSource().getId() == null;
         assert readCommitment.getGifts() != null && readCommitment.getGifts().isEmpty();
         assert BigDecimal.ZERO.equals(readCommitment.getAmountPaid());
         assert readCommitment.getAmountRemaining() == null;
@@ -210,8 +210,8 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         assert "Graham".equals(commitment.getPerson().getLastName());
         assert "Billy".equals(commitment.getPerson().getFirstName());
 
-        assert commitment.getSelectedAddress() == null;
-        assert commitment.getSelectedPhone() == null;
+        assert commitment.getSelectedAddress() != null && commitment.getSelectedAddress().getId() == null;
+        assert commitment.getSelectedPhone() != null && commitment.getSelectedPhone().getId() == null;
         assert commitment.getGifts() != null && commitment.getGifts().isEmpty();
         assert commitment.getAmountTotal() == null;
         assert BigDecimal.ZERO.equals(commitment.getAmountPaid());
@@ -313,8 +313,8 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert commitment.getSelectedEmail() == null;
-        assert commitment.getSelectedPaymentSource() == null;
+        assert commitment.getSelectedEmail() != null && commitment.getSelectedEmail().getId() == null;
+        assert commitment.getSelectedPaymentSource() != null && commitment.getSelectedPaymentSource().getId() == null;
         assert commitment.getGifts() != null && commitment.getGifts().isEmpty();
         assert commitment.getAmountPerGift() == null;
         assert BigDecimal.ZERO.equals(commitment.getAmountPaid());

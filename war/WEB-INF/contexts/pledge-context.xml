@@ -29,6 +29,15 @@
     <bean id="pledgeViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="pledgeFormController">
         <property name="formView" value="pledge/pledgeView" />
         <property name="successView" value="redirect:/pledgeView.htm" />
+        <property name="validators">
+			<list>
+	            <ref bean="commitmentValidator"/>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="pledge"/>
+	            </bean>
+	            <ref bean="codeValidator"/>	            
+			</list>
+        </property>
     </bean>
 
     <bean id="pledgeSearchController" class="com.mpower.controller.commitment.pledge.PledgeSearchFormController">

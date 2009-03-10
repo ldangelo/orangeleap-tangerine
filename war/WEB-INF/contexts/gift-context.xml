@@ -24,6 +24,14 @@
     <bean id="giftViewController" class="com.mpower.controller.gift.GiftViewController" parent="giftFormController">
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="gift"/>
+	            </bean>
+	            <ref bean="codeValidator"/>	            
+	        </list>
+        </property>
     </bean>
 
     <bean id="giftRefundController" class="com.mpower.controller.gift.GiftRefundController">

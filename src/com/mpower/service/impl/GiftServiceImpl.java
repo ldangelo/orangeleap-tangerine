@@ -114,7 +114,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         maintainEntityChildren(gift, gift.getPerson());
 
-        gift.filterValidDistributionLines();
         gift = giftDao.maintainGift(gift);
 
         routeGift(gift);

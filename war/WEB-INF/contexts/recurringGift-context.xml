@@ -26,6 +26,15 @@
     <bean id="recurringGiftViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="recurringGiftFormController">
         <property name="formView" value="gift/recurringGiftView" />
         <property name="successView" value="redirect:/recurringGiftView.htm" />
+		<property name="validators">
+			<list>
+	            <ref bean="commitmentValidator"/>
+	            <bean class="com.mpower.controller.validator.EntityValidator">
+			        <property name="pageType" value="recurringGift"/>
+	            </bean>
+	            <ref bean="codeValidator"/>	            
+			</list>
+        </property>
     </bean>
 
     <bean id="recurringGiftSearchController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftSearchFormController">

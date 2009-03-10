@@ -72,6 +72,7 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
 //    			}
 //    		}
 //    	}
+        commitment.filterValidDistributionLines();
         return save(commitment);
     }
 
@@ -86,7 +87,6 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
     
     private Commitment save(Commitment commitment) {
         maintainEntityChildren(commitment, commitment.getPerson());
-        commitment.filterValidDistributionLines();
         commitment = commitmentDao.maintainCommitment(commitment);
         commitment.setRecurringGift(recurringGiftService.maintainRecurringGift(commitment));
         auditService.auditObject(commitment);

@@ -8,8 +8,10 @@
     <bean id="commitmentFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="tangerineConstituentAttributesFormController" abstract="true">
         <property name="commandName" value="commitment"/>
         <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
+    	<property name="handleEmptyDistributionLines" value="true"/>
     </bean>
 
     <bean id="commitmentViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="commitmentFormController" abstract="true">
+    	<property name="handleEmptyDistributionLines" value="false"/>
     </bean>
 </beans>

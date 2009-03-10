@@ -28,6 +28,7 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
     protected CommitmentService commitmentService;
     protected CommitmentType commitmentType;
     protected String formUrl;
+    protected boolean handleEmptyDistributionLines = true;
 
     public void setCommitmentType(CommitmentType commitmentType) {
         this.commitmentType = commitmentType;
@@ -37,9 +38,13 @@ public class CommitmentFormController extends TangerineConstituentAttributesForm
         this.formUrl = formUrl;
     }
 
+    public void setHandleEmptyDistributionLines(boolean handleEmptyDistributionLines) {
+        this.handleEmptyDistributionLines = handleEmptyDistributionLines;
+    }
+
     @Override
     protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && errors.hasErrors()) {
+        if (handleEmptyDistributionLines && isFormSubmission(request) && errors.hasErrors()) {
             Commitment commitment = (Commitment) command;
             commitment.removeEmptyMutableDistributionLines();
         }

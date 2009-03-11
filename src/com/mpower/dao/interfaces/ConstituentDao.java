@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import com.mpower.domain.model.Person;
+import com.mpower.web.common.Sort;
 
 public interface ConstituentDao {
 
     public Person readConstituentById(Long id);
 
     public List<Person> readAllConstituentsBySite();
+
+    public List<Person> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit);
+
+    public int getConstituentCountBySite();
 
     public Person readConstituentByLoginId(String loginId);
 

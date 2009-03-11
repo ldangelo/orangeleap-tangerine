@@ -49,8 +49,20 @@
 	</select>
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
-		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
+
 	</select>
+
+    <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+        <include refid="SELECT_CONSTITUENT_FRAGMENT"/>
+        order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+    </select>
+
+    <select id="SELECT_CONSTITUENT_COUNT_BY_SITE" parameterClass="string" resultClass="int">
+        select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
+    </select>
+
 
 	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 

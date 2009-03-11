@@ -31,6 +31,10 @@
     <bean id="personView" class="com.mpower.controller.constituent.PersonViewController">
         <property name="viewName" value="constituent/personView"/>
     </bean>
+
+    <bean id="personList" class="com.mpower.controller.constituent.PersonListController">
+        <property name="viewName" value="constituent/personList"/>
+    </bean>
     
     <bean id="personUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
@@ -38,6 +42,7 @@
 		        <prop key="/person.htm">person</prop>
 		        <prop key="/personSearch.htm">personSearch</prop>
 		        <prop key="/personView.htm">personView</prop>
+                <prop key="/personList.htm">personList</prop>
 			</props>
 		</property>
 	</bean>

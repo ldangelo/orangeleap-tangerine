@@ -15,6 +15,7 @@ import com.mpower.dao.util.QueryUtil;
 import com.mpower.dao.util.search.SearchFieldMapperFactory;
 import com.mpower.domain.model.Person;
 import com.mpower.type.EntityType;
+import com.mpower.web.common.Sort;
 
 /** 
  * Corresponds to the CONSTITUENT tables
@@ -69,6 +70,33 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_CONSTITUENTS_BY_SITE", getSiteName());
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Person> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllConstituentsBySite:");
+        }
+
+        Map<String,Object> params = setupParams();
+        params.put("sortColumn", sortColumn);
+        params.put("sortDir", dir);
+        params.put("offset", start);
+        params.put("limit", limit);
+
+        return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
+    }
+
+    @Override
+    public int getConstituentCountBySite() {
+
+        String site = getSiteName();
+
+        return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_COUNT_BY_SITE", site);
+    }
+
+
 
     @Override
     public Person readConstituentByLoginId(String loginId) {

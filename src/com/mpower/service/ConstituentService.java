@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.mpower.domain.model.Person;
 import com.mpower.service.exception.ConstituentValidationException;
+import com.mpower.web.common.SortInfo;
 
 public interface ConstituentService {
 
@@ -26,4 +27,8 @@ public interface ConstituentService {
     public void setLapsedDonor(Long constituentId);
 
     public List<Person> readAllConstituentsBySite();
+
+    public List<Person> readAllConstituentsBySite(SortInfo sort);
+
+    public int getConstituentCountBySite();
 }

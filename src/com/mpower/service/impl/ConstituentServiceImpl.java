@@ -30,6 +30,7 @@ import com.mpower.service.RelationshipService;
 import com.mpower.service.exception.ConstituentValidationException;
 import com.mpower.type.EntityType;
 import com.mpower.util.TangerineUserHelper;
+import com.mpower.web.common.SortInfo;
 
 @Service("constituentService")
 public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService {
@@ -171,4 +172,21 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.readAllConstituentsBySite();
 	}
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<Person> readAllConstituentsBySite(SortInfo sort) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllConstituentsBySite:" + sort);
+        }
+
+        return constituentDao.readAllConstituentsBySite(sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public int getConstituentCountBySite() {
+
+        return constituentDao.getConstituentCountBySite();
+    }
 }

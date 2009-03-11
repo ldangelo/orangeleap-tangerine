@@ -42,6 +42,19 @@
 				<a href="#"><spring:message code="bookmarks"/></a>
 			</li>
 			-->
+            <li>
+                <a href="#"><spring:message code="viewMenu"/></a>
+                <ul>
+                <li><a href="personList.htm"><spring:message code="viewMenu.personList"/></a></li>
+                <c:if test="${viewingPerson}">
+                    <li><a href="giftList.htm?personId=${person.id}"><spring:message code="viewMenu.gifts"/></a></li>
+                    <li><a href="pledgeList.htm?personId=${person.id}&type=pledge"><spring:message code="viewMenu.pledges"/></a></li>
+                    <li><a href="recurringGiftList.htm?personId=${person.id}&type=recurringGift"><spring:message code="viewMenu.recurringGifts"/></a></li>
+                    <li><a href="paymentHistory.htm?personId=${person.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
+                    <li><a href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
+                </c:if>
+                </ul>
+            </li>
 			<li>
 				<a href="#"><spring:message code="menuCreateNew"/></a>
 				<ul>

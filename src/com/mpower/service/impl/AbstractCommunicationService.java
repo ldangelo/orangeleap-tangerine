@@ -64,7 +64,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     	for (T item : list) {
     		if (!item.getId().equals(entity.getId()) && item.isPrimary()) {
     			item.setPrimary(false);
-    			save(item);
+    			getDao().maintainEntity(item);
     		}
     	}
     }

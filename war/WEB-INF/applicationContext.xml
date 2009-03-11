@@ -54,7 +54,7 @@
 	</bean>
 	
 	<bean id="staticMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
- 		<property name="basename" value="messages" />
+ 		<property name="basename" value="tangerine-messages" />
 		<property name="useCodeAsDefaultMessage" value="false" />
 	</bean>
 

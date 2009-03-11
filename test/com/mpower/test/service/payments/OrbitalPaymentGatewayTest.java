@@ -17,7 +17,6 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 
 	 private OrbitalPaymentGateway paymentGateway;
 	 
-	 @Override
     @BeforeClass
 	 public void setup() {
 		 paymentGateway = new OrbitalPaymentGateway();

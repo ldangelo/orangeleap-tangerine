@@ -122,11 +122,11 @@
 	<target name="copy-orangeleap.properties">
 		<!-- Only copy if orangeleap.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
-		<available file="${deploy.lib.dir}/mpower.properties" property="orangeleap.properties.present"/>
+		<available file="${deploy.lib.dir}/orangeleap.properties" property="orangeleap.properties.present"/>
 		<if>
 			<equals arg1="${orangeleap.properties.present}" arg2="true" />
 			<else>
-				<copy todir="${deploy.lib.dir}" file="${basedir}/mpower.properties" />
+				<copy todir="${deploy.lib.dir}" file="${basedir}/orangeleap.properties" />
 				<echo message="Copied mpower.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>

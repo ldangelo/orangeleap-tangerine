@@ -14,8 +14,8 @@
 
 	<dependencies>
 		<!-- MPower -->
-		<dependency org="com.mpower" name="mpwidgets" transitive="true" rev="latest.integration" conf="compile->compile; war->war; test->test; sources->sources">
-			<artifact name="mpwidgets" type="jar" />
+		<dependency org="com.orangeleap" name="satsuma" transitive="true" rev="latest.integration" conf="compile->compile; war->war; test->test; sources->sources">
+			<artifact name="satsuma" type="jar" />
 		</dependency>
 
         <!-- Custom JsonView -->

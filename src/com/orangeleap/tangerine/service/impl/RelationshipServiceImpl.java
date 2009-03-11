@@ -12,6 +12,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.FieldDao;
@@ -222,70 +223,71 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         Long thisId = person.getId();
 		String otherfieldname = otherField.getCustomFieldName();  
 		
-		List<Person> otherPersons = constituentDao.readConstituentsByIds(allids);
-		for (Person otherPerson : otherPersons) {
-			
-			Long otherId = otherPerson.getId();
-
-			if (newIds.contains(otherId)) {
-			
-				// Self reference
-				if (thisId.equals(otherId)) {
-					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
-					continue;
-				}
-	
-				// Check for recursion loops
-				if (fieldRelationship.isRecursive()) {
-					if (thisCanBeMultiValued) {
-						// Attempt to add an ancestor as a child
-						List<Long> descendants = new ArrayList<Long>();
-						getDescendantIds(descendants, otherPerson, customFieldName, 0);
-						if (descendants.contains(thisId)) {
-							ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
-							continue;
-						}
-					} else {
-						// Attempt to set parent to a descendant
-						if (checkDescendents.contains(otherId)) {
-							ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
-							continue;
-						}
-					}
-				}
-			
-			}
-			
-			// Check for additions or deletions
-			CustomField otherCustomField = otherPerson.getCustomFieldMap().get(otherfieldname);
-			String otherCustomFieldValue = otherCustomField.getValue();
-			List<Long> otherFieldIds = RelationshipUtil.getIds(otherCustomFieldValue);
-			boolean found = otherFieldIds.contains(thisId);
-			boolean shouldBeFound = newIds.contains(otherId);
-			
-			// Maintain reverse references
-			boolean needToPersist = false;
-			if (found && !shouldBeFound) {
-				otherFieldIds.remove(thisId);
-				needToPersist = true;
-			} else if (!found && shouldBeFound) {
-				if (!otherCanBeMultiValued) {
-                    otherFieldIds.clear();
-                }
-				otherFieldIds.add(thisId);
-				needToPersist = true;
-				ensureOtherPersonAttributeIsSet(otherField, otherPerson);
-			}
-			
-			if (needToPersist) {
-				String newOtherFieldValue = RelationshipUtil.getIdString(otherFieldIds);
-				logger.debug("Updating related field "+otherCustomField.getName()+" value on "+otherPerson.getDisplayValue() + " to " + newOtherFieldValue);
-				otherCustomField.setValue(newOtherFieldValue);
-				constituentDao.maintainConstituent(otherPerson); 
-			}
-			
+		if (allids.isEmpty() == false) {
+    		List<Person> otherPersons = constituentDao.readConstituentsByIds(allids);
+    		for (Person otherPerson : otherPersons) {
+    			
+    			Long otherId = otherPerson.getId();
+    
+    			if (newIds.contains(otherId)) {
+    			
+    				// Self reference
+    				if (thisId.equals(otherId)) {
+    					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
+    					continue;
+    				}
+    	
+    				// Check for recursion loops
+    				if (fieldRelationship.isRecursive()) {
+    					if (thisCanBeMultiValued) {
+    						// Attempt to add an ancestor as a child
+    						List<Long> descendants = new ArrayList<Long>();
+    						getDescendantIds(descendants, otherPerson, customFieldName, 0);
+    						if (descendants.contains(thisId)) {
+    							ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
+    							continue;
+    						}
+    					} else {
+    						// Attempt to set parent to a descendant
+    						if (checkDescendents.contains(otherId)) {
+    							ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
+    							continue;
+    						}
+    					}
+    				}
+    			
+    			}
+    			
+    			// Check for additions or deletions
+    			CustomField otherCustomField = otherPerson.getCustomFieldMap().get(otherfieldname);
+    			String otherCustomFieldValue = otherCustomField.getValue();
+    			List<Long> otherFieldIds = RelationshipUtil.getIds(otherCustomFieldValue);
+    			boolean found = otherFieldIds.contains(thisId);
+    			boolean shouldBeFound = newIds.contains(otherId);
+    			
+    			// Maintain reverse references
+    			boolean needToPersist = false;
+    			if (found && !shouldBeFound) {
+    				otherFieldIds.remove(thisId);
+    				needToPersist = true;
+    			} else if (!found && shouldBeFound) {
+    				if (!otherCanBeMultiValued) {
+                        otherFieldIds.clear();
+                    }
+    				otherFieldIds.add(thisId);
+    				needToPersist = true;
+    				ensureOtherPersonAttributeIsSet(otherField, otherPerson);
+    			}
+    			
+    			if (needToPersist) {
+    				String newOtherFieldValue = RelationshipUtil.getIdString(otherFieldIds);
+    				logger.debug("Updating related field "+otherCustomField.getName()+" value on "+otherPerson.getDisplayValue() + " to " + newOtherFieldValue);
+    				otherCustomField.setValue(newOtherFieldValue);
+    				constituentDao.maintainConstituent(otherPerson); 
+    			}
+    			
+    		}
 		}
-
 	}
 	
 	private void ensureOtherPersonAttributeIsSet(FieldDefinition otherFieldDefinition, Person otherPerson) {
@@ -335,10 +337,14 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	
 	// Returns list of Person objects referenced by the custom field
 	private List<Person> getPersons(Person person, String customFieldName) {
-		
-		List<Person> persons = constituentDao.readConstituentsByIds(getIdList(person, customFieldName));
+	    List<Person> persons = new ArrayList<Person>();
+		if (StringUtils.hasText(customFieldName)) {
+    	    List<Long> ids = getIdList(person, customFieldName);
+    	    if (ids != null && ids.isEmpty() == false) {
+    	        persons = constituentDao.readConstituentsByIds(ids);
+    	    }
+		}
 		return persons;
-		
 	}
 	
 	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.

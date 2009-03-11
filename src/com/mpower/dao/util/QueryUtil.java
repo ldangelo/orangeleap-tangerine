@@ -33,7 +33,7 @@ public class QueryUtil {
 
                 boolean isString = true;
                 if (value instanceof String) {
-                    if (GenericValidator.isBlankOrNull((String) value)) {
+                    if (GenericValidator.isBlankOrNull((String) value) || value.equals("null")) {
                         continue;
                     }
                 } 
@@ -43,7 +43,16 @@ public class QueryUtil {
                     }
                     isString = false;
                 }
-                if (key.startsWith("addressMap[")) {
+                if (key.startsWith("primaryAddress")) {
+                	addressParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                }
+                else if (key.startsWith("primaryPhone")) {
+                	phoneParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                }
+                else if (key.startsWith("primaryEmail")) {
+                	emailParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                }
+                else if (key.startsWith("addressMap[")) {
                     addressParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
                 } 
                 else if (key.startsWith("phoneMap[")) {

@@ -13,6 +13,7 @@ public class PersonSearchFieldMapper extends SearchFieldMapper {
     private static final Map<String, String> MAP = new HashMap<String, String>();
     static {
     	// Constituent
+    	MAP.put("id", "CONSTITUENT_ID");
     	MAP.put("accountNumber", "CONSTITUENT_ID");
     	MAP.put("firstName", "FIRST_NAME");
     	MAP.put("lastName", "LAST_NAME");

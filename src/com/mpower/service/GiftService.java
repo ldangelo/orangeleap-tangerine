@@ -23,7 +23,7 @@ public interface GiftService {
 
     public List<Gift> readGifts(Long constituentId);
 
-    public List<Gift> readGifts(Map<String, Object> params);
+    public List<Gift> searchGifts(Map<String, Object> params);
 
     public Gift createDefaultGift(Person constituent);
 

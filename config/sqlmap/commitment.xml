@@ -148,6 +148,11 @@
 		   c.$nonStringParams[].key$ = #nonStringParams[].value#
 		   </iterate>
 		</isNotNull>
+		<isNotNull property="refConstituentParams"> 
+		   <iterate property="refConstituentParams" conjunction="and" open="and" close="">
+		   p.$refConstituentParams[].key$ like #refConstituentParams[].value#
+		   </iterate>
+		</isNotNull>
 		<isNotNull property="phoneParams"> 
 		   and exists (
 		    select * from PHONE sph where 
@@ -184,6 +189,7 @@
 		    </iterate>
 		   )
 		</isNotNull>
+		limit 200
 		
 		
 	</statement>

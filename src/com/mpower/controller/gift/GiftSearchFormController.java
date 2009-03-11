@@ -68,7 +68,7 @@ public class GiftSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Gift> giftList = giftService.readGifts(params);
+        List<Gift> giftList = giftService.searchGifts(params);
         String sort = request.getParameter("sort");
         String ascending = request.getParameter("ascending");
         Boolean sortAscending;

@@ -263,12 +263,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public List<Gift> readGifts(Map<String, Object> params) {
+    public List<Gift> searchGifts(Map<String, Object> params) {
         if (logger.isDebugEnabled()) {
             logger.debug("readGifts: params = " + params);
         }
-//        return giftDao.readGifts(params);//TODO fix for Search
-        return null;
+        return giftDao.searchGifts(params);
     }
 
     @Override

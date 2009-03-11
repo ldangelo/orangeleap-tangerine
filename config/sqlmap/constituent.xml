@@ -116,9 +116,7 @@
 	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select
 		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
-<!-- 	, <include refid="ADDRESS_COLS_FRAGMENT"/>  -->
 		from CONSTITUENT p
-<!--		left outer join ADDRESS addr on (p.CONSTITUENT_ID = addr.CONSTITUENT_ID and addr.IS_PRIMARY = '1') -->
 		where 
 		p.SITE_NAME = #siteName#
 		<isNotNull property="ignoreIds"> 
@@ -177,6 +175,7 @@
 		<isNotNull property="additionalWhere"> 
 			and $additionalWhere$
 		</isNotNull>
+		limit 200
 		
 		
 	</statement>

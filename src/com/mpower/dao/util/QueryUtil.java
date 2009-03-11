@@ -19,6 +19,7 @@ public class QueryUtil {
     }
 
     public static Map<String, Object> translateSearchParamsToIBatisParams(Map<String, Object> searchparams, Map<String, Object> fieldparams, Map<String, String> fieldMap) {
+        Map<String, Object> refConstituentParams = new HashMap<String, Object>();
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
         Map<String, Object> emailParams = new HashMap<String, Object>();
@@ -43,7 +44,17 @@ public class QueryUtil {
                     }
                     isString = false;
                 }
-                if (key.startsWith("primaryAddress")) {
+                
+                if (key.startsWith("person.") && key.contains("[")) {
+                	key = key.substring(key.indexOf('.') + 1);
+                }
+
+                
+                
+                if (key.startsWith("person.")) {
+                	refConstituentParams.put(key, "%" + value + "%");
+                }
+                else if (key.startsWith("primaryAddress")) {
                 	addressParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
                 }
                 else if (key.startsWith("primaryPhone")) {
@@ -76,12 +87,14 @@ public class QueryUtil {
             }
         }
         
+        mapParmsToColumns(refConstituentParams, fieldMap);
         mapParmsToColumns(addressParams, fieldMap);
         mapParmsToColumns(phoneParams, fieldMap);
         mapParmsToColumns(emailParams, fieldMap);
         mapParmsToColumns(stringParams, fieldMap);
         mapParmsToColumns(nonStringParams, fieldMap);
         
+        if (refConstituentParams.size() > 0) fieldparams.put("refConstituentParams", refConstituentParams.entrySet().toArray());
         if (addressParams.size() > 0) fieldparams.put("addressParams", addressParams.entrySet().toArray());
         if (phoneParams.size() > 0) fieldparams.put("phoneParams", phoneParams.entrySet().toArray());
         if (emailParams.size() > 0) fieldparams.put("emailParams", emailParams.entrySet().toArray());

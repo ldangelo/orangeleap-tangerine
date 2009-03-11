@@ -42,6 +42,11 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isDebugEnabled()) {
             logger.debug("save: entity = " + entity);
         }
+        if (entity.isPrimary()) {
+        	checkIfOtherPrimariesExist(entity);
+        } else {
+        	checkIfOnlyOneActive(entity);
+        }
         entity = getDao().maintainEntity(entity);
         if (entity.isInactive()) {
             auditService.auditObjectInactive(entity, entity.getPersonId());
@@ -50,6 +55,25 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
             auditService.auditObject(entity, entity.getPersonId());
         }
         return entity;
+    }
+    
+    protected void checkIfOtherPrimariesExist(T entity) {
+    	Long constituentId = entity.getPersonId();
+    	List<T> list = readByConstituentId(constituentId);
+    	for (T item : list) {
+    		if (!item.getId().equals(entity.getId()) && item.isPrimary()) {
+    			item.setPrimary(false);
+    			save(item);
+    		}
+    	}
+    }
+    
+    protected void checkIfOnlyOneActive(T entity) {
+    	Long constituentId = entity.getPersonId();
+    	List<T> list = filterValid(constituentId);
+    	if (list.size() == 0 || list.get(0).getId().equals(entity.getId())) {
+    		entity.setPrimary(true);
+    	}
     }
 
     @Override
@@ -156,6 +180,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         T entity = readById(id);
         entity.setInactive(true);
+        entity.setPrimary(false);
+        entity.setReceiveMail(false);
         this.save(entity);
     }
    

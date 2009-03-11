@@ -1,6 +1,5 @@
 package com.mpower.controller.payment;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mpower.controller.TangerineConstituentAttributesFormController;
 import com.mpower.domain.model.AbstractEntity;
 import com.mpower.domain.model.PaymentSource;
-import com.mpower.domain.model.communication.Address;
-import com.mpower.domain.model.communication.Phone;
 import com.mpower.util.StringConstants;
 
 public class PaymentManagerFormController extends TangerineConstituentAttributesFormController {
@@ -27,20 +24,9 @@ public class PaymentManagerFormController extends TangerineConstituentAttributes
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
-        Map refData = new HashMap();
-        this.addConstituentToReferenceData(request, refData);
-
+    protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
         List<PaymentSource> paymentSources = paymentSourceService.readAllPaymentSourcesACHCreditCard(this.getConstituentId(request));
         refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
-
-        List<Address> addresses = addressService.filterValid(this.getConstituentId(request));
-        refData.put(StringConstants.ADDRESSES, addresses);
-
-        List<Phone> phones = phoneService.filterValid(this.getConstituentId(request));
-        refData.put(StringConstants.PHONES, phones);
-
-        return refData;
     }
 
     @Override

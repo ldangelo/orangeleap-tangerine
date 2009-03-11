@@ -150,25 +150,45 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         Map refData = new HashMap();
         this.addConstituentToReferenceData(request, refData);
 
+        refDataPaymentSources(request, command, errors, refData);
+        refDataAddresses(request, command, errors, refData);
+        refDataPhones(request, command, errors, refData);
+        refDataEmails(request, command, errors, refData);
+        return refData;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindPaymentSource) {
             List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(this.getConstituentId(request));
             refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void refDataAddresses(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindAddress) {
             List<Address> addresses = addressService.filterValid(this.getConstituentId(request));
             refData.put(StringConstants.ADDRESSES, addresses);
         }
-        if (bindPhone) {
-            List<Phone> phones = phoneService.filterValid(this.getConstituentId(request));
-            refData.put(StringConstants.PHONES, phones);
-        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void refDataEmails(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindEmail) {
             List<Email> emails = emailService.filterValid(this.getConstituentId(request));
             refData.put(StringConstants.EMAILS, emails);
         }
-        return refData;
     }
 
+    @SuppressWarnings("unchecked")
+    protected void refDataPhones(HttpServletRequest request, Object command, Errors errors, Map refData) {
+        if (bindPhone) {
+            List<Phone> phones = phoneService.filterValid(this.getConstituentId(request));
+            refData.put(StringConstants.PHONES, phones);
+        }
+    }
+    
     protected void bindAddress(HttpServletRequest request, AddressAware addressAware) {
         String selectedAddress = request.getParameter(StringConstants.SELECTED_ADDRESS);
         if (StringConstants.NEW.equals(selectedAddress)) {

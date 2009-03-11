@@ -92,10 +92,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         refData.put(activeEntitiesKey, activeEntities);
         refData.put(activeMailEntitiesKey, mailOnlyEntities);
     }
-    
+
     @Override
-    public T getPrimary(Long constituentId) {
-        List<T> entities = readByConstituentId(constituentId);
+    public T filterByPrimary(List<T> entities, Long constituentId) {
+    	
         List<T> activeEntities = filterByActive(entities);
         
         for (T entity : activeEntities) {
@@ -103,9 +103,15 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
                 return entity;
             }
         }
-        
         // An inactive entity cannot be a primary, so return a blank one.
         return createEntity(constituentId);        
+
+    }
+
+    @Override
+    public T getPrimary(Long constituentId) {
+        List<T> entities = readByConstituentId(constituentId);
+        return filterByPrimary(entities, constituentId);
     }
     
     protected List<T> filterByActive(List<T> entities)

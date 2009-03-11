@@ -32,9 +32,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     private Map<String, Address> addressMap = null;
     private Map<String, Email> emailMap = null;
     private Map<String, Phone> phoneMap = null;
-//    private Map<String, List<Address>> addressMap = null;
-//    private Map<String, List<Email>> emailMap = null;
-//    private Map<String, List<Phone>> phoneMap = null;
     
     
     // Called by CustomizableSqlMapClientTemplate when object is loaded.
@@ -53,15 +50,14 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     		return;
     	}
 
-    	primaryAddress = addressService.getPrimary(getId());
-    	primaryEmail = emailService.getPrimary(getId());
-    	primaryPhone = phoneService.getPrimary(getId());
-    
     	addresses = addressService.filterValid(getId());
     	emails = emailService.filterValid(getId());
     	phones = phoneService.filterValid(getId());
-    	
-    	// TODO populate other maps here if needed....
+
+    	primaryAddress = addressService.filterByPrimary(addresses, getId());
+    	primaryEmail = emailService.filterByPrimary(emails, getId());
+    	primaryPhone = phoneService.filterByPrimary(phones, getId());
+    
     }
 
     public List<Address> getAddresses() {
@@ -76,7 +72,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     }
 
     public Map<String, Address> getAddressMap() {
-//        public Map<String, List<Address>> getAddressMap() {
         if (addressMap == null) {
             addressMap = buildMap(getAddresses());
         }
@@ -95,7 +90,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     }
 
     public Map<String, Email> getEmailMap() {
-//        public Map<String, List<Email>> getEmailMap() {
         if (emailMap == null) {
             emailMap = buildMap(getEmails());
         }
@@ -114,7 +108,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     }
 
     public Map<String, Phone> getPhoneMap() {
-//        public Map<String, List<Phone>> getPhoneMap() {
         if (phoneMap == null) {
             phoneMap = buildMap(getPhones());
         }
@@ -131,21 +124,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
         }
         return map;
     }
-//    private static <T extends AbstractCommunicationEntity> Map<String, List<T>> buildMap(List<T> masterList) {
-//        Map<String, List<T>> map = new HashMap<String, List<T>>();
-//        for (AbstractCommunicationEntity entity : masterList) {
-//            List<T> typedList = null; 
-//            if (map.containsKey(entity.getCommunicationType())) {
-//                typedList = map.get(entity.getCommunicationType());
-//            }
-//            else {
-//                typedList = new ArrayList<T>();
-//                map.put(entity.getCommunicationType(), typedList);
-//            }
-//            typedList.add((T) entity);
-//        }
-//        return map;
-//    }
 
 	public void setPrimaryAddress(Address primaryAddress) {
 		this.primaryAddress = primaryAddress;

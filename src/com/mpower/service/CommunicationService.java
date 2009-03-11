@@ -19,6 +19,8 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
 
     public void findReferenceDataByConstituentId(Map<String, Object> refData, Long constituentId, String entitiesKey, String activeEntitiesKey, String activeMailEntitiesKey);
 
+    public T filterByPrimary(List<T> entities, Long constituentId);
+
     public T getPrimary(Long constituentId);
 
     public void inactivateEntities();

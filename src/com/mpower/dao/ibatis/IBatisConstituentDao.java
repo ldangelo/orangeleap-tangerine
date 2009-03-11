@@ -15,7 +15,6 @@ import com.mpower.dao.util.QueryUtil;
 import com.mpower.dao.util.search.SearchFieldMapperFactory;
 import com.mpower.domain.model.Person;
 import com.mpower.type.EntityType;
-import com.mpower.web.common.Sort;
 
 /** 
  * Corresponds to the CONSTITUENT tables

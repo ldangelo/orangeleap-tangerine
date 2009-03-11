@@ -1,16 +1,9 @@
 package com.mpower.domain.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.mpower.domain.model.communication.AbstractCommunicationEntity;
 import com.mpower.domain.model.communication.AbstractCommunicatorEntity;
-import com.mpower.domain.model.communication.Address;
-import com.mpower.domain.model.communication.Email;
-import com.mpower.domain.model.communication.Phone;
 import com.mpower.domain.model.paymentInfo.Commitment;
 import com.mpower.domain.model.paymentInfo.Gift;
 import com.mpower.util.StringConstants;

@@ -5,7 +5,7 @@
 package com.mpower.domain.model.communication;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +21,13 @@ import com.mpower.service.PhoneService;
 public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEntity {
 	
 	
-    private Address primaryAddress;
-    private Email primaryEmail;
-    private Phone primaryPhone;
+    private Address primaryAddress = new Address();
+    private Email primaryEmail = new Email();
+    private Phone primaryPhone = new Phone();
 
-    private List<Address> addresses;
-    private List<Email> emails;
-    private List<Phone> phones;
+    private List<Address> addresses = new ArrayList<Address>();
+    private List<Email> emails = new ArrayList<Email>();
+    private List<Phone> phones = new ArrayList<Phone>();
 
     private Map<String, Address> addressMap = null;
     private Map<String, Email> emailMap = null;
@@ -73,7 +73,7 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
 
     public Map<String, Address> getAddressMap() {
         if (addressMap == null) {
-            addressMap = buildMap(getAddresses());
+            addressMap = buildMap(getAddresses(), Address.class);
         }
         return addressMap;
     }
@@ -91,7 +91,7 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
 
     public Map<String, Email> getEmailMap() {
         if (emailMap == null) {
-            emailMap = buildMap(getEmails());
+            emailMap = buildMap(getEmails(), Email.class);
         }
         return emailMap;
     }
@@ -109,14 +109,32 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
 
     public Map<String, Phone> getPhoneMap() {
         if (phoneMap == null) {
-            phoneMap = buildMap(getPhones());
+            phoneMap = buildMap(getPhones(), Phone.class);
         }
         return phoneMap;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends AbstractCommunicationEntity> Map<String, T> buildMap(List<T> masterList) {
-        Map<String, T> map = new HashMap<String, T>();
+    private static <T extends AbstractCommunicationEntity> Map<String, T> buildMap(List<T> masterList, final Class clazz) {
+        
+    	Map<String, T> map = new LinkedHashMap<String, T>() {
+        	  public T get(Object key) {
+        	        T o = super.get(key);
+        	        if (o == null) {
+        	            o = getNew();
+        	            super.put((String)key, o);
+        	        }
+        	        return o;
+        	  }
+        	  private T getNew() {
+        		  try {
+        			  return (T)clazz.newInstance();
+        		  } catch (Exception e) {
+        			  return null;
+        		  }
+        	  }
+        };
+        
         if (masterList != null) {
             for (AbstractCommunicationEntity entity : masterList) {
                 map.put(entity.getCommunicationType(), (T) entity);

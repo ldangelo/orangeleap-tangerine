@@ -38,7 +38,7 @@
 		<div class="formButtonFooter personFormButtons">
 			<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 			<c:if test="${phone.id != null}">
-				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="MPower.gotoUrl('phoneManager.htm?personId=${person.id}')"/>
+				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('phoneManager.htm?personId=${person.id}')"/>
 			</c:if>
 		</div>
 

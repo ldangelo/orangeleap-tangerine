@@ -122,14 +122,19 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
+					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}&type=recurringGift')"/>
+					</c:if>
+				</div>
 
 <%-- TODO: put back below
 				<div class="formButtonFooter">
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='viewRecurringGiftHistory'/>" class="saveButton" onclick="MPower.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='viewRecurringGiftHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
 					</c:if>
-					<input type="button" value="<spring:message code='enterNewRecurringGift'/>" class="saveButton" onclick="MPower.gotoUrl('recurringGift.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='enterNewRecurringGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGift.htm?personId=${person.id}')"/>
 				</div>
 --%>				
 			</form:form>

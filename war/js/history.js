@@ -1,5 +1,5 @@
 // JavaScript logic for loading the history list
-//Ext.namespace('MPower','MPower.history');
+//Ext.namespace('OrangeLeap','OrangeLeap.history');
 
 Ext.onReady(function() {
 

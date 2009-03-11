@@ -140,7 +140,12 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
+					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
+					</c:if>
+				</div>
 			</form:form>
 		</div>
 	</tiles:putAttribute>
@@ -212,11 +217,11 @@
 
 				<div class="formButtonFooter">
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='viewGiftHistory'/>" class="saveButton" onclick="MPower.gotoUrl('giftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='viewGiftHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
 					</c:if>
-					<input type="button" value="<spring:message code='enterNewGift'/>" class="saveButton" onclick="MPower.gotoUrl('gift.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='enterNewGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}')"/>
 					<c:if test="${gift.originalGiftId == null && gift.refundGiftId == null}">
-						<input type="button" value="<spring:message code='refundGift'/>" class="saveButton" onclick="MPower.confirmGoToUrl('giftRefund.htm?giftId=${gift.id}', '<spring:message code='confirmRefundGift'/>')"/>
+						<input type="button" value="<spring:message code='refundGift'/>" class="saveButton" onclick="OrangeLeap.confirmGoToUrl('giftRefund.htm?giftId=${gift.id}', '<spring:message code='confirmRefundGift'/>')"/>
 					</c:if>
 				</div>
 			</form:form>

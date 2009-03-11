@@ -120,16 +120,21 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" />
+		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}&type=pledge')"/>
+					</c:if>
+				</div>
 				
 				
 <%-- TODO: put back below
 				<div class="formButtonFooter">
-					<input type="button" value="<spring:message code='receiveGift'/>" class="saveButton" onclick="MPower.gotoUrl('gift.htm?personId=${person.id}&commitmentId=${commitment.id}')"/>
+					<input type="button" value="<spring:message code='receiveGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&commitmentId=${commitment.id}')"/>
 					<c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='viewPledgeHistory'/>" class="saveButton" onclick="MPower.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='viewPledgeHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
 					</c:if>
-					<input type="button" value="<spring:message code='enterNewPledge'/>" class="saveButton" onclick="MPower.gotoUrl('pledge.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='enterNewPledge'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledge.htm?personId=${person.id}')"/>
 				</div>
 --%>				
 			</form:form>

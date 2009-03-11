@@ -1,14 +1,7 @@
 $(document).ready(function() {
-//	console.profile("docReady");
 	(function() {
-//		console.profile("buildTree");
-//		console.time("buildTree");
 		$("li.side:has(.picklist), li.side:has(.multiPicklist)", "ul").each(Picklist.buildPicklistTree);
-//		console.timeEnd("buildTree");
-//		console.profileEnd();
-//		console.time("cascade");
 		Picklist.cascadeElementsRoot();
-//		console.timeEnd("cascade");
 	})();
 	$(".picklist:not(.paymentSourcePicklist)", "form").bind("change", Picklist.togglePicklist);
 	$(".paymentSourcePicklist", "form").bind("change", Picklist.populatePaymentSourceAttributes);	
@@ -84,7 +77,7 @@ $(document).ready(function() {
 
 	$("input.number, input.percentage").numeric();
 
-	$('#dialog').jqm({overlay: 50, onShow: MPower.centerDialog}).jqDrag('.dragHandle');
+	$('#dialog').jqm({overlay: 50, onShow: OrangeLeap.centerDialog}).jqDrag('.dragHandle');
 
 	$(".filters :input").bind("keyup change",function(){
 		var queryString = $(".filters :input").serialize();
@@ -126,8 +119,6 @@ $(document).ready(function() {
 		}
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
-//	console.profileEnd();
-	
 });
 
 function formatItem(row) {
@@ -570,7 +561,7 @@ var Picklist = {
 		}
 	}
 }
-var MPower = {
+var OrangeLeap = {
 	gotoUrl: function(url) {
 		window.location.href = url;
 	},

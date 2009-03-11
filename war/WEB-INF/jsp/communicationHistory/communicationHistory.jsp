@@ -127,7 +127,10 @@
 					</table>
 				</c:forEach>
 
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitCommunicationHistory'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitCommunicationHistory'/>" class="saveButton" />
+					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('communicationHistoryList.htm?personId=${person.id}')"/>
+				</div>
 			</form:form>
 		</div>
 	</tiles:putAttribute>

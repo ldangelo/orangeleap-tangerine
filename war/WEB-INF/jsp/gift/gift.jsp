@@ -143,7 +143,12 @@
 					</div>
 				</c:forEach>
 
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
+					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
+					</c:if>
+				</div>
 			</form:form>
 		</div>
 		<script type="text/javascript" src="js/gift/distribution.js"></script>

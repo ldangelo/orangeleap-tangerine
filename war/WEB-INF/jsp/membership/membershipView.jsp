@@ -36,9 +36,9 @@
 
 			<div class="formButtonFooter">
 				<c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
-					<input type="button" value="<spring:message code='viewMembershipHistory'/>" class="saveButton" onclick="MPower.gotoUrl('membershipList.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='viewMembershipHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membershipList.htm?personId=${person.id}')"/>
 				</c:if>
-				<input type="button" value="<spring:message code='enterNewMembership'/>" class="saveButton" onclick="MPower.gotoUrl('membership.htm?personId=${person.id}')"/>
+				<input type="button" value="<spring:message code='enterNewMembership'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membership.htm?personId=${person.id}')"/>
 			</div>
 			<c:forEach var="gift" items="${gifts}">
 			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />

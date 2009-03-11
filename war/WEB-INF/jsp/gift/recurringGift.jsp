@@ -139,7 +139,12 @@
 						<div class="value" id="subTotal">0</div>
 					</div>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" /></div>
+				<div class="formButtonFooter personFormButtons">
+					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
+					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}&type=recurringGift')"/>
+					</c:if>
+				</div>
 			</form:form>
 		</div>
 		<script type="text/javascript" src="js/gift/distribution.js"></script>

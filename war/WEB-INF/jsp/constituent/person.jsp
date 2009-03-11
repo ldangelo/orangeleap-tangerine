@@ -2,6 +2,26 @@
 <tiles:insertDefinition name="base">
     <tiles:putAttribute name="customHeaderContent" type="string">
         <script type="text/javascript" src="js/contactinfo.js"></script>
+        
+        <%-- Temporary fix below for TANGERINE-130; TODO: remove when we implement Ext JS components --%>
+        <script type="text/javascript">
+        	function showHideDemographics($elem) {
+				if ($elem.val() == "organization") {
+					$("#h4-person_demographics").hide();
+				}
+				else {
+					$("#h4-person_demographics").show();
+				}
+        	}
+        	
+        	$(document).ready(function() {
+				showHideDemographics($("#constituentType"));
+				
+    			$("#constituentType").bind("change", function() {
+    				showHideDemographics($(this));
+        		});	
+        	});
+        </script>
     </tiles:putAttribute>
     
 	<tiles:putAttribute name="browserTitle" value="Constituent Profile" />
@@ -30,7 +50,7 @@
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 			   	<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
-					<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+					<h4 class="formSectionHeader" id="h4-<c:out value='${sectionDefinition.sectionHtmlName}'/>"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 					<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">

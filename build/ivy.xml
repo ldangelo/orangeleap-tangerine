@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ivy-module version="2.0">
-	<info organisation="com.orangeleap.tangerine" module="orangeleap" status="integration" />
+	<info organisation="com.orangeleap" module="orangeleap" status="integration" />
 	<configurations>
 		<conf name="sources"/>
 		<conf name="compile"/>
@@ -13,7 +13,7 @@
 	</publications>
 
 	<dependencies>
-		<!-- MPower -->
+		<!-- Orange Leap -->
 		<dependency org="com.orangeleap" name="satsuma" transitive="true" rev="latest.integration" conf="compile->compile; war->war; test->test; sources->sources">
 			<artifact name="satsuma" type="jar" />
 		</dependency>
@@ -129,37 +129,9 @@
 			<artifact name="dom4j" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
-		<!-- JPA / Hibernate -->
-		<dependency org="org.hibernate" name="ejb3-persistence" transitive="false" rev="3.3.2.Beta1"> <!-- TODO: change to 3.0? -->
-			<artifact name="ejb3-persistence" type="jar" />
-		</dependency>
-		
-		<dependency org="org.hibernate" name="hibernate" transitive="false" rev="3.2.6.ga"> <!-- TODO: change to 3.0? -->
-			<artifact name="hibernate" type="jar" />
-			<artifact name="hibernate" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-		
-		<dependency org="org.hibernate" name="hibernate-annotations" transitive="false" rev="3.4.0.GA"> 
-			<artifact name="hibernate-annotations" type="jar" />
-			<artifact name="hibernate-annotations" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-		
-		<dependency org="org.hibernate" name="hibernate-entitymanager" transitive="false" rev="3.3.2.GA"> 
-			<artifact name="hibernate-entitymanager" type="jar" />
-		</dependency>
-		
-		<dependency org="org.hibernate" name="hibernate-commons-annotations" transitive="false" rev="3.3.0.ga">  <!-- TODO: change to 3.1.0? -->
-			<artifact name="hibernate-commons-annotations" type="jar" />
-			<artifact name="hibernate-commons-annotations" type="source" ext="jar" classifier="sources" conf="sources"/>
-		</dependency>
-		
 		<!-- JDBC / MySQL / DB-->
 		<dependency org="mysql" name="mysql-connector-java" rev="5.0.8" transitive="false" conf="compile->default"> 
 			<artifact name="mysql-connector-java" type="jar" />
-		</dependency>
-		
-		<dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" transitive="false" conf="test->default"> 
-			<artifact name="hsqldb"  type="jar" ext="jar" />
 		</dependency>
 		
 		<dependency org="javax.transaction" name="jta" transitive="false" rev="1.2"> 

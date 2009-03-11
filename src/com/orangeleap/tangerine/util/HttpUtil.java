@@ -28,14 +28,14 @@ public class HttpUtil {
     public static void setCookie(String name, String value, int maxAge, HttpServletResponse response) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
-        cookie.setPath("/mpower");
+        cookie.setPath("/orangeleap");
         response.addCookie(cookie);
     }
 
     public static void removeCookie(String name, HttpServletResponse response) {
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
-        cookie.setPath("/mpower");
+        cookie.setPath("/orangeleap");
         response.addCookie(cookie);
     }
 

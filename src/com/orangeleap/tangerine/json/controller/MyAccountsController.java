@@ -44,9 +44,9 @@ public class MyAccountsController {
 
         List<Map> response = new ArrayList<Map>();
 
-        TangerineAuthenticationToken mPowerAuthenticationToken = (TangerineAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
-        siteService.createSiteAndUserIfNotExist(mPowerAuthenticationToken.getSite());
-        Person constituent = constituentService.readConstituentById(mPowerAuthenticationToken.getPersonId());
+        TangerineAuthenticationToken tangerineAuthenticationToken = (TangerineAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
+        siteService.createSiteAndUserIfNotExist(tangerineAuthenticationToken.getSite());
+        Person constituent = constituentService.readConstituentById(tangerineAuthenticationToken.getPersonId());
         if (constituent == null) {
             return new ModelMap();
         }

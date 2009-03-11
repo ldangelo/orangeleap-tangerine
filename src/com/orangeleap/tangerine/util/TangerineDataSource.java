@@ -17,7 +17,7 @@ public class TangerineDataSource implements DataSource {
 
 	
 	// The default schema should have no tables. Change to this first so in case something goes wrong, we don't want to still be pointing to the old database.
-	private static final String MPOWER_DEFAULT_SCHEMA = "mpoweropen";
+	private static final String TANGERINE_DEFAULT_SCHEMA = "mpoweropen";
 	private static final String USE_SQL = "USE ";
 	
 	private boolean splitDatabases = true;
@@ -46,7 +46,7 @@ public class TangerineDataSource implements DataSource {
 
 			// This default schema must exist, and should have no tables in it.
 			// Want to remain here if error occurs setting schema to site schema.
-			changeSchema(conn, MPOWER_DEFAULT_SCHEMA);  
+			changeSchema(conn, TANGERINE_DEFAULT_SCHEMA);  
 			
 			if (!hasSite) {
 				// This path is used by container when initializing a pool connection outside of a site context.

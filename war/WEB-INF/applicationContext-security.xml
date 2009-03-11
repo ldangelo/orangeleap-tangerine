@@ -45,7 +45,7 @@
         <sec:custom-filter position="LOGOUT_FILTER"/>
     </bean>
 
-    <bean id="mpowerAuthenticationProcessingFilter" class="com.orangeleap.tangerine.security.TangerineAuthenticationProcessingFilter">
+    <bean id="tangerineAuthenticationProcessingFilter" class="com.orangeleap.tangerine.security.TangerineAuthenticationProcessingFilter">
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
         <property name="defaultTargetUrl" value="/index.jsp"/>
@@ -68,7 +68,7 @@
     <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
         <property name="providers">
             <list>
-                <ref local="mpowerAuthenticationProvider"/>
+                <ref local="tangerineAuthenticationProvider"/>
                 <ref local="anonymousAuthenticationProvider"/>
             </list>
         </property>
@@ -81,7 +81,7 @@
     	<property name="password" value="${ldap.password}"/>
 	</bean>
 
-    <bean id="mpowerAuthenticationProvider" class="com.orangeleap.tangerine.security.TangerineAuthenticationProvider">
+    <bean id="tangerineAuthenticationProvider" class="com.orangeleap.tangerine.security.TangerineAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
         <sec:custom-authentication-provider/>

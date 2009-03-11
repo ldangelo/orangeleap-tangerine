@@ -25,7 +25,7 @@
   </beans:bean>
 
   <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
-    <beans:constructor-arg value="queue.mpower.gift"/>
+    <beans:constructor-arg value="queue.tangerine.gift"/>
   </beans:bean>
   
   <gateway id="newGift" service-interface="com.orangeleap.tangerine.integration.NewGift"/>

@@ -111,7 +111,7 @@
 			<property name="brokerURL" value="tcp://localhost:61616" /> 
 		</bean> 
 		<bean	id="testDestination"	class="org.apache.activemq.command.ActiveMQQueue"> 
-			<constructor-arg index="0" value="test.mpower.queue" /> 
+			<constructor-arg index="0" value="test.orangeleap.queue" /> 
 		</bean> 
 		
 		<bean id="jmsTemplate"	class="org.springframework.jms.core.JmsTemplate"> 

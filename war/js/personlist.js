@@ -1,10 +1,10 @@
-Ext.namespace('MPower.person');
+Ext.namespace('OrangeLeap.person');
 
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-     MPower.person.store = new Ext.data.JsonStore({
+     OrangeLeap.person.store = new Ext.data.JsonStore({
     	url: 'personList.json',
         totalProperty: 'totalRows',
     	root: 'rows',
@@ -20,26 +20,26 @@ Ext.onReady(function(){
          remoteSort: true
     });
 
-    MPower.person.pagingBar = new Ext.PagingToolbar({
+    OrangeLeap.person.pagingBar = new Ext.PagingToolbar({
         pageSize: 100,
-        store: MPower.person.store,
+        store: OrangeLeap.person.store,
         displayInfo: true,
         displayMsg: 'Displaying constituents {0} - {1} of {2}',
         emptyMsg: "No constituents to display"
     });
 
 
-    MPower.person.grid = new Ext.grid.GridPanel({
+    OrangeLeap.person.grid = new Ext.grid.GridPanel({
 
-        store: MPower.person.store,
+        store: OrangeLeap.person.store,
         columns: [
-            {header: 'View', width: 40, sortable: false, menuDisabled: true, fixed: true, renderer: MPower.person.personViewRenderer},
+            {header: 'View', width: 40, sortable: false, menuDisabled: true, fixed: true, renderer: OrangeLeap.person.personViewRenderer},
             {header: 'ID', width: 40, dataIndex: 'id', sortable: true, align: 'right'},
             {header: 'First Name', widht: 90, dataIndex: 'first', sortable: true},
             {header: 'Last Name', width: 90, dataIndex: 'last', sortable: true},
             {header: 'Organization', width: 120, dataIndex: 'organization', sortable: true},
-            {header: 'Major', tooltip: 'Major Donors', width: 45, align: 'center', dataIndex: 'majorDonor', sortable: true, renderer: MPower.person.majorDonorRenderer},
-            {header: 'Lapsed', tooltip: 'Lapsed Donors',width: 45, align: 'center', dataIndex: 'lapsedDonor', sortable: true, renderer: MPower.person.lapsedDonorRenderer}
+            {header: 'Major', tooltip: 'Major Donors', width: 45, align: 'center', dataIndex: 'majorDonor', sortable: true, renderer: OrangeLeap.person.majorDonorRenderer},
+            {header: 'Lapsed', tooltip: 'Lapsed Donors',width: 45, align: 'center', dataIndex: 'lapsedDonor', sortable: true, renderer: OrangeLeap.person.lapsedDonorRenderer}
         ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: {
@@ -59,28 +59,28 @@ Ext.onReady(function(){
                 window.location.href = "person.htm?personId=" + rec.data.id;
             }
         },
-        bbar: MPower.person.pagingBar,
+        bbar: OrangeLeap.person.pagingBar,
 		renderTo: 'personListGrid'
-	    //tools: [{id: 'refresh', qtip: 'Refresh list', handler: function(){MPower.person.store.reload();}}]
+	    //tools: [{id: 'refresh', qtip: 'Refresh list', handler: function(){OrangeLeap.person.store.reload();}}]
     });
 
-    MPower.person.store.load({params: {start: 0, limit: 100}});
+    OrangeLeap.person.store.load({params: {start: 0, limit: 100}});
 
 });
 
-MPower.person.personViewRenderer = function(val, meta, record) {
-    return '<a href="javascript:MPower.person.navigate(' + record.data.id + ')" title="View Person">View</a>';
+OrangeLeap.person.personViewRenderer = function(val, meta, record) {
+    return '<a href="javascript:OrangeLeap.person.navigate(' + record.data.id + ')" title="View Person">View</a>';
 //    return '<a href="person.htm?personId=' + record.data.id + '">View</a>';
 };
 
-MPower.person.navigate = function(id) {
-    var rec = MPower.person.grid.getSelectionModel().getSelected();
+OrangeLeap.person.navigate = function(id) {
+    var rec = OrangeLeap.person.grid.getSelectionModel().getSelected();
     Ext.get(document.body).mask('Loading ' + rec.data.first + ' ' + rec.data.last);
     window.location.href = "person.htm?personId=" + id;
     return false;
 }
 
-MPower.person.majorDonorRenderer = function(val, meta, record) {
+OrangeLeap.person.majorDonorRenderer = function(val, meta, record) {
 
     if (record.data.majorDonor) {
         meta.css = 'green-dot';
@@ -91,7 +91,7 @@ MPower.person.majorDonorRenderer = function(val, meta, record) {
     }
 };
 
-MPower.person.lapsedDonorRenderer = function(val, meta, record) {
+OrangeLeap.person.lapsedDonorRenderer = function(val, meta, record) {
 
     if (record.data.lapsedDonor) {
         meta.css = 'red-dot';

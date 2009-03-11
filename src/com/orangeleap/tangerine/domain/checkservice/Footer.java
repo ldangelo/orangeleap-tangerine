@@ -1,11 +1,12 @@
 package com.orangeleap.tangerine.domain.checkservice;
 
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Represents the Footer section of the XML payload for Paperless Payment. The XML
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat;
    &lt;Footer&gt;
      &lt;type&gt;F&lt;/type&gt;
 	 &lt;FileNbr&gt;000001&lt;/FileNbr&gt;
-	 &lt;CoName&gt;MPower&lt;/CoName&gt;
+	 &lt;CoName&gt;OrangeLeap&lt;/CoName&gt;
 	 &lt;Date&gt;02/19/2009&lt;/Date&gt;
 	 &lt;Site&gt;853&lt;/Site&gt;
 	 &lt;MID&gt;0001&lt;/MID&gt;

@@ -17,7 +17,7 @@
 		<property name="order" value="1" />
 		<property name="locations">
 			<list>
-				<value>classpath:mpower.properties</value>
+				<value>classpath:orangeleap.properties</value>
 			</list>
 		</property>
 	</bean>

@@ -42,11 +42,12 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isDebugEnabled()) {
             logger.debug("save: entity = " + entity);
         }
-        if (entity.isPrimary()) {
-        	checkIfOtherPrimariesExist(entity);
-        } else {
+        if (!entity.isPrimary()) {
         	checkIfOnlyOneActive(entity);
         }
+        if (entity.isPrimary()) {
+        	checkIfOtherPrimariesExist(entity);
+        } 
         entity = getDao().maintainEntity(entity);
         if (entity.isInactive()) {
             auditService.auditObjectInactive(entity, entity.getPersonId());

@@ -1,19 +1,15 @@
 package com.mpower.dao.ibatis;
 
-import com.mpower.dao.interfaces.RecentlyViewedDao;
-import com.ibatis.sqlmap.client.SqlMapClient;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
-import org.springframework.util.StringUtils;
-import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.mpower.dao.interfaces.RecentlyViewedDao;
 
 /**
  * @version 1.0
@@ -30,6 +26,7 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
         super(sqlMapClient);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Map> addRecentlyViewed(String userName, Long acctNumber, int max) {
         // get the current MRU list
@@ -68,6 +65,7 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
         return getRecentlyViewedNames(personIds, userName);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Map> getRecentlyViewed(String userName) {
 

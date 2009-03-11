@@ -18,6 +18,7 @@ public interface RecentlyViewedDao {
      * @param max the maximum size of the list
      * @return the list of MRU account numbers
      */
+    @SuppressWarnings("unchecked")
     public List<Map> addRecentlyViewed(String userName, Long acctNumber, int max);
 
     /**
@@ -25,6 +26,7 @@ public interface RecentlyViewedDao {
      * @param userName the user name to get the list for
      * @return the MRU list of account numbers
      */
+    @SuppressWarnings("unchecked")
     public List<Map> getRecentlyViewed(String userName);
 
 

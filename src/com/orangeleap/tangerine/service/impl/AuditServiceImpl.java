@@ -230,14 +230,20 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         if (logger.isDebugEnabled()) {
             logger.debug("dereference: siteName = " + siteName + " fieldValue = " + fieldValue);
         }
-    	List<Long> list = RelationshipUtil.getIds(fieldValue);
-		List<Person> constituents = constituentDao.readConstituentsByIds(list);
-    	List<String> displayValues = new ArrayList<String>();
-    	// first name last name, without commas
-    	for (Person constituent : constituents) {
-            displayValues.add(constituent.getFullName());
-        } 
-    	return StringUtils.join(displayValues, ", ");
+        String names = null;
+        if (org.springframework.util.StringUtils.hasText(fieldValue)) {
+        	List<Long> list = RelationshipUtil.getIds(fieldValue);
+        	if (list != null && list.isEmpty() == false) {
+        		List<Person> constituents = constituentDao.readConstituentsByIds(list);
+            	List<String> displayValues = new ArrayList<String>();
+            	// first name last name, without commas
+            	for (Person constituent : constituents) {
+                    displayValues.add(constituent.getFullName());
+                } 
+            	names = StringUtils.join(displayValues, ", ");
+        	}
+        }
+    	return names;
     }
 
     private List<Audit> auditAuditable(Auditable auditable, Long userId) {

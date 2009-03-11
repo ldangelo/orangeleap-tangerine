@@ -1,11 +1,11 @@
-Ext.namespace('MPower');
+Ext.namespace('Sidebar');
 
 Ext.onReady(function() {
 
     Ext.BLANK_IMAGE_URL = 'js/extjs/resources/images/default/s.gif';
     Ext.QuickTips.init();
 
-    MPower.accountStore = new Ext.data.JsonStore({
+    Sidebar.accountStore = new Ext.data.JsonStore({
         fields:[
             {name: 'id', type: 'int'},
             {name: 'first', type: 'string'},
@@ -21,22 +21,22 @@ Ext.onReady(function() {
         root: 'data'
     });
 
-    MPower.accountStore.addListener('load', function() {
-        Ext.get('sbAllAccounts').update('(' + MPower.accountStore.getCount() +')');
+    Sidebar.accountStore.addListener('load', function() {
+        Ext.get('sbAllAccounts').update('(' + Sidebar.accountStore.getCount() +')');
 
     });
 
 
-    MPower.accountGrid = new Ext.grid.GridPanel({
+    Sidebar.accountGrid = new Ext.grid.GridPanel({
         header: false,
-        store: MPower.accountStore,
+        store: Sidebar.accountStore,
         columns:[
             {id: 'nameColumn', header: 'First', width: 100, sortable: true, dataIndex: 'first', align: 'left'},
             {header: 'Last', width: 100, sortable: true, dataIndex: 'last', align: 'left'},
             {header: 'Organization', width: 100, sortable: true, dataIndex: 'orgName', align: 'left'},
             {header: 'Gifts', width: 55, sortable: true, dataIndex: 'gifts', align: 'right'},
             {header: 'Total', width: 80, sortable: true, dataIndex: 'amount', align: 'right', renderer: Ext.util.Format.usMoney},
-            {header: 'Major', width: 65, sortable: true, dataIndex: 'majorDonor', renderer: MPower.majorDonorRenderer}            
+            {header: 'Major', width: 65, sortable: true, dataIndex: 'majorDonor', renderer: Sidebar.majorDonorRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         autoExpandColumn: "nameColumn",
@@ -45,7 +45,7 @@ Ext.onReady(function() {
         listeners: {
             rowdblclick: function(grid, row, evt) {
                 var rec = grid.getSelectionModel().getSelected();
-                MPower.win.hide();
+                Sidebar.win.hide();
                 Ext.get(document.body).mask('Loading ' + rec.data.first + ' ' + rec.data.last);
                 window.location.href = "person.htm?personId=" + rec.data.id;
             }
@@ -53,26 +53,26 @@ Ext.onReady(function() {
         bbar: ['Double click a row to view details']
     });
 
-    MPower.win = new Ext.Window({
+    Sidebar.win = new Ext.Window({
         title: 'My Accounts',
         layout: 'fit',
         width: 540,
         height: 400,
-        buttons: [{text: 'Close', handler: function() {MPower.win.hide();}}],
+        buttons: [{text: 'Close', handler: function() {Sidebar.win.hide();}}],
         buttonAlign: 'center',
         modal: true,
         closeAction: 'hide'
     });
 
-    MPower.win.add(MPower.accountGrid);
+    Sidebar.win.add(Sidebar.accountGrid);
 
-    Ext.get('sbAllAccountsLink').on('click', function(){MPower.win.show(this)});
+    Ext.get('sbAllAccountsLink').on('click', function(){Sidebar.win.show(this);});
 
-    MPower.accountStore.load();
+    Sidebar.accountStore.load();
 
 });
 
-MPower.majorDonorRenderer = function(val, meta, record) {
+Sidebar.majorDonorRenderer = function(val, meta, record) {
 
     if (record.data.majorDonor) {
         meta.css = 'green-dot';
@@ -83,7 +83,7 @@ MPower.majorDonorRenderer = function(val, meta, record) {
     }
 };
 
-MPower.lapsedDonorRenderer = function(val, meta, record) {
+Sidebar.lapsedDonorRenderer = function(val, meta, record) {
 
     if (record.data.lapsedDonor) {
         meta.css = 'red-dot';

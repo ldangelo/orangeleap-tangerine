@@ -45,10 +45,10 @@ public class QueryUtil {
                     isString = false;
                 }
                 
-                if (key.startsWith("person.") && key.contains("[")) {
+                // Constituent fields not including nested fields.
+                if (key.startsWith("person.") && (key.contains("[") || key.indexOf("") != key.lastIndexOf("."))) {
                 	key = key.substring(key.indexOf('.') + 1);
                 }
-
                 
                 
                 if (key.startsWith("person.")) {

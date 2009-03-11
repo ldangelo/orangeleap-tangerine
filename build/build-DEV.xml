@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower" basedir=".." default="deploy">
+<project name="orangeleap" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
 	<property name="target.tomcat.dir" value="/opt/mpower/instance_DEV" />

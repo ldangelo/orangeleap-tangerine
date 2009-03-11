@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower" basedir=".." default="8. Redeploy and Restart Tomcat">
+<project name="orangeleap" basedir=".." default="8. Redeploy and Restart Tomcat">
 	
-	<property name="internal.build.file" value="${basedir}/build/mpower-build.xml" />
+	<property name="internal.build.file" value="${basedir}/build/tangerine-build.xml" />
 	<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
 	
 	<property file="${basedir}/build/build.properties" />

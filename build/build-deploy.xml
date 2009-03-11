@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower" basedir=".." default="deploy">
+<project name="orangeleap" basedir=".." default="deploy">
 
 	<target name="deploy" description="Deploy build output and populate database" >
 

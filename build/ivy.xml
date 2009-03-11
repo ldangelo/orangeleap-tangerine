@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ivy-module version="2.0">
-	<info organisation="com.mpower" module="mpower" status="integration" />
+	<info organisation="com.mpower" module="orangeleap" status="integration" />
 	<configurations>
 		<conf name="sources"/>
 		<conf name="compile"/>
@@ -9,7 +9,7 @@
 	</configurations>
 	
 	<publications>
-		<artifact name="mpower" type="war" conf="war" ext="war" />
+		<artifact name="orangeleap" type="war" conf="war" ext="war" />
 	</publications>
 
 	<dependencies>

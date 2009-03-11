@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="mpower-unittests" default="runall" basedir="..">
+<project name="orangeleap-unittests" default="runall" basedir="..">
 	<description>
-    	MPower Test Execution File
+    	Orange Leap Test Execution File
     </description>
 
 	<property file="${basedir}/build/build.properties" />
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 
-	<import file="${build.dir}/mpower-build.xml"/>
+	<import file="${build.dir}/tangerine-build.xml"/>
 	<property name="build.env" value="unit-test"/>
 
 	<target name="init" depends="resolve">
@@ -68,7 +68,7 @@
 			</fileset>
 		</copy>
 
-		<jar destfile="${stage.dir}/mpower-tests.jar" basedir="${stage.dir}/test-folder">
+		<jar destfile="${stage.dir}/orangeleap-tests.jar" basedir="${stage.dir}/test-folder">
 			<include name="**/*.*"/>
 		</jar>
 		

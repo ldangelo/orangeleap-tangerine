@@ -119,25 +119,25 @@
 		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="copy-orangeleap.properties">
+	<target name="copy-tangerine.properties">
 		<!-- Only copy if orangeleap.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
-		<available file="${deploy.lib.dir}/orangeleap.properties" property="orangeleap.properties.present"/>
+		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
-			<equals arg1="${orangeleap.properties.present}" arg2="true" />
+			<equals arg1="${tangerine.properties.present}" arg2="true" />
 			<else>
-				<copy todir="${deploy.lib.dir}" file="${basedir}/orangeleap.properties" />
-				<echo message="Copied orangeleap.properties to ${deploy.lib.dir}"/>
+				<copy todir="${deploy.lib.dir}" file="${basedir}/tangerine.properties" />
+				<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>
 	
 	</target>
 	
-	<target name="deploy-integrated-war" depends="build-integrated-war, copy-orangeleap.properties">
+	<target name="deploy-integrated-war" depends="build-integrated-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}" file="${stage.dir}/${app.name}.war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="build-exploded-war, copy-orangeleap.properties">
+	<target name="deploy-exploded-war" depends="build-exploded-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}/${app.name}">
 			<fileset dir="${stage.dir}/${app.name}.war" />
 		</copy>
@@ -200,7 +200,7 @@
 	</target>
 
 	<target name="usage">
-		<echo>This is the internal build file for Orangeleap.</echo>
+		<echo>This is the internal build file for Tangerine.</echo>
 		<echo>Please use build.xml</echo>
 	</target>
 

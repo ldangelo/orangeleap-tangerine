@@ -127,7 +127,7 @@
 			<equals arg1="${orangeleap.properties.present}" arg2="true" />
 			<else>
 				<copy todir="${deploy.lib.dir}" file="${basedir}/orangeleap.properties" />
-				<echo message="Copied mpower.properties to ${deploy.lib.dir}"/>
+				<echo message="Copied orangeleap.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>
 	
@@ -163,7 +163,7 @@
 			<fileset refid="war.path" /> <!-- war.path from ivyBuild.xml -->
 		</path>
 
-		<javadoc packagenames="com.mpower.*" destdir="${stage.dir}/javadocs" classpathref="compile-lib" useexternalfile="true">
+		<javadoc packagenames="com.orangeleap.*" destdir="${stage.dir}/javadocs" classpathref="compile-lib" useexternalfile="true">
 			<fileset dir="${src.dir}">
 				<include name="**/*.java" />
 			</fileset>
@@ -200,7 +200,7 @@
 	</target>
 
 	<target name="usage">
-		<echo>This is the internal build file for MPowerOpen.</echo>
+		<echo>This is the internal build file for Orangeleap.</echo>
 		<echo>Please use build.xml</echo>
 	</target>
 

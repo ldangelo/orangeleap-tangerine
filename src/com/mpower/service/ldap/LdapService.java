@@ -1,6 +1,6 @@
 package com.mpower.service.ldap;
 
-import java.util.Calendar;
+import java.util.Date;
 
 public interface LdapService {
 
@@ -8,7 +8,7 @@ public interface LdapService {
 
     public boolean isPasswordChangeRequired(int days);
 
-    public Calendar getLastLogin();
+    public Date getLastLogin();
 
     public void setLastLogin();
 }

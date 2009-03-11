@@ -1,9 +1,11 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <div id="footer">
 	<div class="container">
-		<p class="legal">
-			<spring:message code="lastLogin"/> <fmt:formatDate value="${lastLoginDate}" pattern="h:mm a z, EEEE, MMMM d, yyyy"/>
-		</p>
+		<c:if test="${not empty lastLoginDate}">
+			<p class="legal">
+				<spring:message code="lastLogin"/> <fmt:formatDate value="${lastLoginDate}" pattern="h:mm a z, EEEE, MMMM d, yyyy"/>
+			</p>
+		</c:if>
 		<c:set var="copyrightStart" value="2008" />
 		<fmt:formatDate var="copyrightEnd" value="${currentDate}" pattern="yyyy"  />
 		<c:choose>

@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.mpower.util.TangerineUserHelper;
 
@@ -58,6 +59,7 @@ public class LdapServiceImpl implements LdapService {
         return dn;
     }
 
+    @Override
     public void changePassword(String oldpw, String newpw) {
         ModificationItem[] modificationItemArray = new ModificationItem[2];
         String newpassword = null;
@@ -80,6 +82,7 @@ public class LdapServiceImpl implements LdapService {
         ldapTemplate.modifyAttributes(getDN(), modificationItemArray);
     }
 
+    @Override
     public boolean isPasswordChangeRequired(int days) {
         boolean required = true;
         Calendar today = Calendar.getInstance();
@@ -110,22 +113,27 @@ public class LdapServiceImpl implements LdapService {
         return last;
     }
 
-    public Calendar getLastLogin() {
+    @Override
+    public Date getLastLogin() {
         DirContextOperations dco = ldapTemplate.lookupContext(getDN());
         Object lastLogin = dco.getObjectAttribute(LDAP_LAST_LOGIN);
-        Calendar last = null;
+        Date lastDate = null;
         try {
-            Date lastLoginDate = getFormat().parse((String) lastLogin);
-            last = new GregorianCalendar();
-            last.setTimeInMillis(lastLoginDate.getTime());
-            last = convertFromUtc(last);
+            if (lastLogin != null && StringUtils.hasText(((String)lastLogin))) {
+                Date lastLoginDate = getFormat().parse((String) lastLogin);
+                Calendar last = new GregorianCalendar();
+                last.setTimeInMillis(lastLoginDate.getTime());
+                last = convertFromUtc(last);
+                lastDate = last.getTime();
+            }
         } catch (ParseException e1) {
             // the previous login couldn't be parsed so return null Calendar
         }
-        logger.debug("getLastLogin() = " + (last != null ? last.getTime() : "null"));
-        return last;
+        logger.debug("getLastLogin: lastDate = " + (lastDate != null ? lastDate : "null"));
+        return lastDate;
     }
 
+    @Override
     public void setLastLogin() {
         ModificationItem[] modificationItemArray = new ModificationItem[1];
         Calendar utc = convertToUtc(null);

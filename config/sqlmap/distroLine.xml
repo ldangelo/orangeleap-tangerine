@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="DISTRO_LINE">
 
-	<resultMap id="DISTRO_LINE_RESULT" class="com.mpower.domain.model.paymentInfo.DistributionLine">
+	<resultMap id="DISTRO_LINE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
 		<result property="id" column="DISTRO_LINE_ID" jdbcType="BIGINT" />
 		<result property="amount" column="DISTRO_LINE_AMOUNT" jdbcType="DECIMAL" />
 		<result property="percentage" column="DISTRO_LINE_PERCENTAGE" jdbcType="DECIMAL" />
@@ -26,7 +26,7 @@
 		where dl.DISTRO_LINE_ID = #id#
 	</select>
 
-	<insert id="INSERT_DISTRO_LINE" parameterClass="com.mpower.domain.model.paymentInfo.DistributionLine">
+	<insert id="INSERT_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
 		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, COMMITMENT_ID, GIFT_ID)
 		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #commitmentId#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -34,7 +34,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_DISTRO_LINE" parameterClass="com.mpower.domain.model.paymentInfo.DistributionLine">
+	<update id="UPDATE_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
 		update DISTRO_LINE
 		set AMOUNT = #amount#,
 		PERCENTAGE = #percentage#,

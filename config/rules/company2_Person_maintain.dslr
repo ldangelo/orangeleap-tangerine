@@ -1,9 +1,9 @@
-package com.mpower.rules
+package com.orangeleap.tangerine.rules
 
-import com.mpower.domain.Person;
-import com.mpower.service.PersonService;
-import com.mpower.service.GiftService;
-import com.mpower.domain.Gift;
+import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.service.PersonService;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.domain.Gift;
 import java.util.Calendar;
 import java.util.Date;
 

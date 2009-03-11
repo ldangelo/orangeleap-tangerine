@@ -5,20 +5,20 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-    <bean id="codeHelper" class="com.mpower.controller.code.CodeHelperController">
+    <bean id="codeHelper" class="com.orangeleap.tangerine.controller.code.CodeHelperController">
         <property name="viewName" value="code/codeHelper"/>
         <property name="resultsOnlyView" value="code/codeHelperResults"/>
         <property name="tableView" value="code/codeTable"/>
         <property name="autoCompleteView" value="code/codeAutoComplete"/>
     </bean>
 
-    <bean id="codes" class="com.mpower.controller.code.CodeManageController">
+    <bean id="codes" class="com.orangeleap.tangerine.controller.code.CodeManageController">
         <property name="viewName" value="code/codes"/>
     </bean>
 
-	<bean id="code" class="com.mpower.controller.code.CodeFormController">
+	<bean id="code" class="com.orangeleap.tangerine.controller.code.CodeFormController">
         <property name="commandName" value="code"/>
-        <property name="commandClass" value="com.mpower.domain.model.customization.Code"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.customization.Code"/>
         <property name="formView" value="code/code" />
         <property name="successView" value="code/code" />
     </bean>

@@ -3,7 +3,7 @@
 <sqlMap namespace="VERSION" >
 
 
-  <resultMap id="VERSION_RESULT" class="com.mpower.domain.model.Version" >
+  <resultMap id="VERSION_RESULT" class="com.orangeleap.tangerine.domain.Version" >
     <result property="id" column="COMPONENT_ID" jdbcType="VARCHAR" />
     <result property="description" column="COMPONENT_DESC" jdbcType="VARCHAR" />
     <result property="majorVersion" column="SCHEMA_MAJOR_VERSION" jdbcType="INTEGER" />

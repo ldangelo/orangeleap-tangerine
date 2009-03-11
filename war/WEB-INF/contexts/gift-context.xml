@@ -5,12 +5,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <!-- Gift -->
-	<bean id="giftFormController" class="com.mpower.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
+	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Gift"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
 		<property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="gift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>	            
@@ -21,12 +21,12 @@
         <property name="successView" value="redirect:/giftView.htm" />
     </bean>
 
-    <bean id="giftViewController" class="com.mpower.controller.gift.GiftViewController" parent="giftFormController">
+    <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="giftFormController">
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
 		<property name="validators">
 			<list>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="gift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>	            
@@ -34,18 +34,18 @@
         </property>
     </bean>
 
-    <bean id="giftRefundController" class="com.mpower.controller.gift.GiftRefundController">
+    <bean id="giftRefundController" class="com.orangeleap.tangerine.controller.gift.GiftRefundController">
         <property name="viewName" value="redirect:/giftView.htm" />
     </bean>
 
-    <bean id="giftSearchController" class="com.mpower.controller.gift.GiftSearchFormController">
+    <bean id="giftSearchController" class="com.orangeleap.tangerine.controller.gift.GiftSearchFormController">
         <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Gift"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
         <property name="formView" value="gift/giftSearch"/>
         <property name="successView" value="gift/giftSearch"/>
     </bean>
 
-    <bean id="giftListController" class="com.mpower.controller.gift.GiftListController">
+    <bean id="giftListController" class="com.orangeleap.tangerine.controller.gift.GiftListController">
         <property name="viewName" value="gift/giftList"/>
     </bean>
     

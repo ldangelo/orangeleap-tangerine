@@ -3,7 +3,7 @@
 <sqlMap namespace="ENTITY_DEFAULT">
 
 	<!-- ResultMaps -->
-	<resultMap id="ENTITY_DEFAULT" class="com.mpower.domain.model.customization.EntityDefault">
+	<resultMap id="ENTITY_DEFAULT" class="com.orangeleap.tangerine.domain.customization.EntityDefault">
 		<result property="id" column="ENTITY_DEFAULT_ID" jdbcType="BIGINT" />
 		<result property="defaultValue" column="DEFAULT_VALUE" jdbcType="VARCHAR" />
 		<result property="entityFieldName" column="ENTITY_FIELD_NAME" jdbcType="VARCHAR" />
@@ -25,7 +25,7 @@
 	</select>
 
 	<!-- Inserts -->
-	<insert id="INSERT_ENTITY_DEFAULT" parameterClass="com.mpower.domain.model.customization.EntityDefault">
+	<insert id="INSERT_ENTITY_DEFAULT" parameterClass="com.orangeleap.tangerine.domain.customization.EntityDefault">
 		insert into ENTITY_DEFAULT (DEFAULT_VALUE, ENTITY_FIELD_NAME, ENTITY_TYPE, SITE_NAME)
 		values (#defaultValue#, #entityFieldName#, #entityType#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -34,7 +34,7 @@
 	</insert>
 
 
-	<update id="UPDATE_ENTITY_DEFAULT" parameterClass="com.mpower.domain.model.customization.EntityDefault">
+	<update id="UPDATE_ENTITY_DEFAULT" parameterClass="com.orangeleap.tangerine.domain.customization.EntityDefault">
 		update ENTITY_DEFAULT 
 		SET 
 		DEFAULT_VALUE = #defaultValue#,

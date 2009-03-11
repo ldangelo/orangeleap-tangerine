@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ADDRESS">
 
-    <resultMap id="ADDRESS_RESULT" class="com.mpower.domain.model.communication.Address">
+    <resultMap id="ADDRESS_RESULT" class="com.orangeleap.tangerine.domain.communication.Address">
         <result property="id" column="ADDRESS_ID" jdbcType="BIGINT"/>
         <result property="activationStatus" column="ADDRESS_ACTIVATION_STATUS" jdbcType="VARCHAR"/>
         <result property="addressLine1" column="ADDRESS_LINE_1" jdbcType="VARCHAR"/>
@@ -63,7 +63,7 @@
 		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
 	</select>
  
-    <insert id="INSERT_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
+    <insert id="INSERT_ADDRESS" parameterClass="com.orangeleap.tangerine.domain.communication.Address">
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
@@ -80,7 +80,7 @@
         </selectKey>
     </insert>
 
-    <update id="UPDATE_ADDRESS" parameterClass="com.mpower.domain.model.communication.Address">
+    <update id="UPDATE_ADDRESS" parameterClass="com.orangeleap.tangerine.domain.communication.Address">
         update ADDRESS
         SET UPDATE_DATE = now(),
         ACTIVATION_STATUS = #activationStatus#,

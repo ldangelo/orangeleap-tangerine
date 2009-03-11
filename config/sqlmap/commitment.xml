@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="COMMITMENT">
 
-	<resultMap id="COMMITMENT_RESULT" class="com.mpower.domain.model.paymentInfo.Commitment" groupBy="id">
+	<resultMap id="COMMITMENT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Commitment" groupBy="id">
 		<result property="id" column="COMMITMENT_ID" jdbcType="BIGINT" />
 		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
@@ -84,7 +84,7 @@
 		$sql$
 	</statement>
 
-	<insert id="INSERT_COMMITMENT" parameterClass="com.mpower.domain.model.paymentInfo.Commitment">
+	<insert id="INSERT_COMMITMENT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Commitment">
 		insert into COMMITMENT (ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL,
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, COMMITMENT_TYPE, CREATE_DATE, CURRENCY_CODE,
 		END_DATE, FREQUENCY, LAST_ENTRY_DATE, NOTES, PAYMENT_TYPE, PLEDGE_CANCEL_DATE,
@@ -103,7 +103,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_COMMITMENT" parameterClass="com.mpower.domain.model.paymentInfo.Commitment">
+	<update id="UPDATE_COMMITMENT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Commitment">
 		update COMMITMENT
 		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		AMOUNT_PER_GIFT = #amountPerGift#,

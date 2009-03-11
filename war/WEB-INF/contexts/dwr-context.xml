@@ -12,7 +12,7 @@
 
 	<dwr:configuration />
 
-	<bean id="echo" class="com.mpower.web.remote.HelloImpl">
+	<bean id="echo" class="com.orangeleap.tangerine.web.remote.HelloImpl">
         <dwr:remote javascript="Hello">
             <dwr:include method="greet" />
         </dwr:remote>

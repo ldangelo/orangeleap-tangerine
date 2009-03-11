@@ -103,15 +103,15 @@
 	</target>
 
 	<target name="build-integrated-war" depends="setup-war">
-		<war destfile="${stage.dir}/${app.name}.war" basedir="${stage.dir}/war">
+		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
 		</war>
 		<delete dir="${stage.dir}/war" />
 	</target>
 
 	<target name="build-exploded-war" depends="setup-war">
-		<mkdir dir="${stage.dir}/${app.name}.war" />
-		<copy todir="${stage.dir}/${app.name}.war">
+		<mkdir dir="${stage.dir}/${war.name}.war" />
+		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
 				<include name="**/*.*" />
 			</fileset>
@@ -120,7 +120,7 @@
 	</target>
 
 	<target name="copy-tangerine.properties">
-		<!-- Only copy if orangeleap.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
+		<!-- Only copy if tangerine.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
 		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
@@ -134,23 +134,23 @@
 	</target>
 	
 	<target name="deploy-integrated-war" depends="build-integrated-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}" file="${stage.dir}/${app.name}.war" />
+		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
 
 	<target name="deploy-exploded-war" depends="build-exploded-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}/${app.name}">
-			<fileset dir="${stage.dir}/${app.name}.war" />
+		<copy todir="${deploy.path}/${war.name}">
+			<fileset dir="${stage.dir}/${war.name}.war" />
 		</copy>
-		<delete dir="${stage.dir}/${app.name}.war" quiet="true" />
+		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
 
 	<target name="undeploy-war">
-		<delete dir="${deploy.path}/${app.name}.war" />
+		<delete dir="${deploy.path}/${war.name}.war" />
 		<delete dir="${deploy.path}/${app.name}" />
 		<delete dir="${deploy.path}/../work" quiet="true" />
 		<delete dir="${deploy.path}/../temp" quiet="true" />
 		<delete>
-			<fileset dir="${deploy.path}" includes="${app.name}.war" />
+			<fileset dir="${deploy.path}" includes="${war.name}.war" />
 			<fileset dir="${deploy.path}" includes="${app.name}" />
 		</delete>
 	</target>

@@ -5,22 +5,22 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="addressValidator" class="com.mpower.controller.validator.AddressValidator" />
+	<bean id="addressValidator" class="com.orangeleap.tangerine.controller.validator.AddressValidator" />
 
-	<bean id="phoneValidator" class="com.mpower.controller.validator.PhoneValidator" />
+	<bean id="phoneValidator" class="com.orangeleap.tangerine.controller.validator.PhoneValidator" />
 
-	<bean id="emailValidator" class="com.mpower.controller.validator.EmailValidator" />
+	<bean id="emailValidator" class="com.orangeleap.tangerine.controller.validator.EmailValidator" />
 
-	<bean id="commitmentValidator" class="com.mpower.controller.validator.CommitmentValidator" />
+	<bean id="commitmentValidator" class="com.orangeleap.tangerine.controller.validator.CommitmentValidator" />
 
-	<bean id="distributionLinesValidator" class="com.mpower.controller.validator.DistributionLinesValidator" />
+	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.DistributionLinesValidator" />
 
-	<bean id="codeValidator" class="com.mpower.controller.validator.CodeValidator">
+	<bean id="codeValidator" class="com.orangeleap.tangerine.controller.validator.CodeValidator">
         <property name="codeService" ref="codeService" />
         <property name="tangerineUserHelper" ref="tangerineUserHelper" />
 	</bean>
 
-	<bean id="paymentSourceValidator" class="com.mpower.controller.validator.PaymentSourceValidator">
+	<bean id="paymentSourceValidator" class="com.orangeleap.tangerine.controller.validator.PaymentSourceValidator">
         <property name="paymentSourceService" ref="paymentSourceService" />
 	</bean>
 

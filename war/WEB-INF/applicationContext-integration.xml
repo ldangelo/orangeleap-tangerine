@@ -28,9 +28,9 @@
     <beans:constructor-arg value="queue.mpower.gift"/>
   </beans:bean>
   
-  <gateway id="newGift" service-interface="com.mpower.integration.NewGift"/>
-<!--  <gateway id="newConstituent" service-interface="com.mpower.integration.NewConstituent"/>
-  <gateway id="newAddress" service-interface="com.mpower.integration.NewAddress"/> -->
+  <gateway id="newGift" service-interface="com.orangeleap.tangerine.integration.NewGift"/>
+<!--  <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
+  <gateway id="newAddress" service-interface="com.orangeleap.tangerine.integration.NewAddress"/> -->
 
   <channel id="newGiftChannel"/>
   <channel id="newConstituentChannel"/>
@@ -54,11 +54,11 @@
     </beans:property>
   </beans:bean>
 
-  <beans:bean id="GiftDrools" class="com.mpower.service.rule.GiftRulesInterceptor">
+  <beans:bean id="GiftDrools" class="com.orangeleap.tangerine.service.rule.GiftRulesInterceptor">
     <beans:property name="ruleFlowName" value="GiftDonatedRuleflow"/>
   </beans:bean>
 
-  <beans:bean id="PaymentDrools" class="com.mpower.service.rule.PaymentRulesInterceptor">
+  <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor">
     <beans:property name="ruleFlowName" value="processpayment"/>
   </beans:bean>
 

@@ -5,11 +5,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">       
 
-    <bean id="siteAudit" class="com.mpower.controller.audit.AuditViewController">
+    <bean id="siteAudit" class="com.orangeleap.tangerine.controller.audit.AuditViewController">
 		<property name="viewName" value="audit/siteAudit"/>
     </bean>
 
-    <bean id="audit" class="com.mpower.controller.audit.AuditViewController">
+    <bean id="audit" class="com.orangeleap.tangerine.controller.audit.AuditViewController">
 		<property name="viewName" value="audit/audit"/>
     </bean>
     

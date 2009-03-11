@@ -5,18 +5,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-	<bean id="multiPicklistController" class="com.mpower.controller.lookup.MultiPicklistController">
+	<bean id="multiPicklistController" class="com.orangeleap.tangerine.controller.lookup.MultiPicklistController">
 		<property name="viewName" value="lookup/multiPicklist"/>
 	</bean>  
        
 	<!-- Query Lookup -->
-    <bean id="queryLookupController" class="com.mpower.controller.lookup.QueryLookupController">
+    <bean id="queryLookupController" class="com.orangeleap.tangerine.controller.lookup.QueryLookupController">
         <property name="formView" value="lookup/queryLookup"/>
         <property name="successView" value="lookup/queryLookupResults"/>
     </bean>
 
 	<!-- Multi-Query Lookup -->
-    <bean id="multiQueryLookupController" class="com.mpower.controller.lookup.MultiQueryLookupController" parent="queryLookupController">
+    <bean id="multiQueryLookupController" class="com.orangeleap.tangerine.controller.lookup.MultiQueryLookupController" parent="queryLookupController">
         <property name="formView" value="lookup/multiQueryLookup"/>
         <property name="successView" value="lookup/multiQueryLookupResults"/>
     </bean>

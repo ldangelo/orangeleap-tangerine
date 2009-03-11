@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="GIFT">
 
-	<resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id">
+	<resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id">
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="acknowledgmentDate" column="GIFT_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
@@ -32,7 +32,7 @@
 		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 	</resultMap>
 	
-	<resultMap id="GIFT_RESULT" class="com.mpower.domain.model.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
+	<resultMap id="GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
@@ -118,7 +118,7 @@
 		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
 	</select>
 
-	<insert id="INSERT_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.Gift">
+	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		insert into GIFT (ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
 		CHECK_NUMBER, COMMENTS,
 		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
@@ -140,7 +140,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="UPDATE_GIFT" parameterClass="com.mpower.domain.model.paymentInfo.Gift">
+	<update id="UPDATE_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		update GIFT
 		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		AMOUNT = #amount#,

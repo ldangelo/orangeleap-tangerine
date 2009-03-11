@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_RELATIONSHIP">
 	
-	<resultMap id="FIELD_RELATIONSHIP_RESULT" class="com.mpower.domain.model.customization.FieldRelationship">
+	<resultMap id="FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldRelationship">
 		<result property="id" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
 		<result property="recursive" column="CHECK_RECURSION" jdbcType="CHAR" />
 		<result property="relationshipType" column="RELATIONSHIP_TYPE" jdbcType="VARCHAR" />
@@ -42,7 +42,7 @@
 		and detail.FIELD_DEFINITION_ID = #id#		
 	</select>
 	
-	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.customization.FieldRelationship">
+	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRelationship">
 		insert into FIELD_RELATIONSHIP (CHECK_RECURSION, RELATIONSHIP_TYPE, DETAIL_FIELD_DEFINITION_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME)
 		values (#recursive#, #relationshipType#, #detailRecordField.id#, #masterRecordField.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -50,7 +50,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_FIELD_RELATIONSHIP" parameterClass="com.mpower.domain.model.customization.FieldRelationship">
+	<update id="UPDATE_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRelationship">
 		update FIELD_RELATIONSHIP
 		set CHECK_RECURSION = #recursive#,
 		RELATIONSHIP_TYPE = #relationshipType#,

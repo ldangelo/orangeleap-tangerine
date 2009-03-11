@@ -22,16 +22,16 @@
 	</bean>
 
     <!--  Page accessible by admins only that allows the selection of import and export options -->
-    <bean id="importexportController" class="com.mpower.controller.importexport.ImportExportController">
+    <bean id="importexportController" class="com.orangeleap.tangerine.controller.importexport.ImportExportController">
     	<property name="viewName" value="importexport/importexport"/>
     </bean>
 	
 	<!-- Csv file download  -->
-    <bean id="exportController" class="com.mpower.controller.importexport.CsvExportController"/>
+    <bean id="exportController" class="com.orangeleap.tangerine.controller.importexport.CsvExportController"/>
 	
 	<!-- Csv file upload  -->
-	 <bean id="importController" class="com.mpower.controller.importexport.CsvImportController">
-        <property name="commandClass" value="com.mpower.controller.importexport.FileUploadBean"/>
+	 <bean id="importController" class="com.orangeleap.tangerine.controller.importexport.CsvImportController">
+        <property name="commandClass" value="com.orangeleap.tangerine.controller.importexport.FileUploadBean"/>
     	<property name="successView" value="redirect:/importexport.htm"/>
     </bean>
        

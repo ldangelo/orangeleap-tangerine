@@ -2,11 +2,11 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_VALIDATION">
 
-	<resultMap id="FLD_VAL_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="FLD_VAL_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="FLD_VAL_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="FIELD_VALIDATION_RESULT" class="com.mpower.domain.model.customization.FieldValidation" groupBy="id">
+	<resultMap id="FIELD_VALIDATION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldValidation" groupBy="id">
 		<result property="id" column="VALIDATION_ID" jdbcType="BIGINT" />
 		<result property="regex" column="FLD_VAL_VALIDATION_REGEX" jdbcType="VARCHAR" />
 		<result property="sectionName" column="FLD_VAL_SECTION_NAME" jdbcType="VARCHAR" />
@@ -43,7 +43,7 @@
 	    </isNull>
 	</select>
 
-	<insert id="INSERT_FIELD_VALIDATION" parameterClass="com.mpower.domain.model.customization.FieldValidation">
+	<insert id="INSERT_FIELD_VALIDATION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldValidation">
 		insert into FIELD_VALIDATION (VALIDATION_REGEX, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
 		values (#regex#, #sectionName#, #site.name#, #fieldDefinition.id#, #secondaryFieldDefinition.id#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -51,7 +51,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_FIELD_VALIDATION" parameterClass="com.mpower.domain.model.customization.FieldValidation">
+	<update id="UPDATE_FIELD_VALIDATION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldValidation">
 		update FIELD_VALIDATION
 		set VALIDATION_REGEX = #regex#,
 		SECTION_NAME = #sectionName#,

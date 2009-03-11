@@ -6,7 +6,7 @@
          
    <!-- The following listener and context-param are used to bootstrap our
         Spring Application Contexts.  The web application context is loaded
-        via the mpower servlet defined below -->
+        via the tangerine servlet defined below -->
    <listener>
       <listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
    </listener>
@@ -38,7 +38,7 @@
         controller) in our Spring MVC framework and it also loads our web
         application context. -->
 	<servlet>
-		<servlet-name>mpower</servlet-name>
+		<servlet-name>orangeleap</servlet-name>
 		<servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 		    <param-name>contextConfigLocation</param-name>
@@ -59,12 +59,12 @@
 
 
 	<servlet-mapping>
-		<servlet-name>mpower</servlet-name>
+		<servlet-name>orangeleap</servlet-name>
 		<url-pattern>*.htm</url-pattern>
 	</servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>mpower</servlet-name>
+        <servlet-name>orangeleap</servlet-name>
         <url-pattern>/dwr/*</url-pattern>
     </servlet-mapping>
 
@@ -79,16 +79,8 @@
 
 	<jsp-config>
 		<taglib>
-			<taglib-uri>/spring</taglib-uri>
-			<taglib-location>/WEB-INF/tld/spring.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>/spring-form</taglib-uri>
-			<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>/mpower</taglib-uri>
-			<taglib-location>/WEB-INF/tld/mpower.tld</taglib-location>
+			<taglib-uri>/tangerine</taglib-uri>
+			<taglib-location>/WEB-INF/tld/tangerine.tld</taglib-location>
 		</taglib>
 	</jsp-config>
 

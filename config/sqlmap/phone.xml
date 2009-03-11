@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PHONE">
 
-	<resultMap id="PHONE_RESULT" class="com.mpower.domain.model.communication.Phone">
+	<resultMap id="PHONE_RESULT" class="com.orangeleap.tangerine.domain.communication.Phone">
 		<result property="id" column="PHONE_ID" jdbcType="BIGINT" />
 		<result property="activationStatus" column="PHONE_ACTIVATION_STATUS" jdbcType="VARCHAR" />
 		<result property="comments" column="PHONE_COMMENT" jdbcType="VARCHAR" />
@@ -59,7 +59,7 @@
 		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS, ph.CREATE_DATE
 	</select>
 
-	<insert id="INSERT_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">
+	<insert id="INSERT_PHONE" parameterClass="com.orangeleap.tangerine.domain.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
 		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
@@ -73,7 +73,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_PHONE" parameterClass="com.mpower.domain.model.communication.Phone">
+	<update id="UPDATE_PHONE" parameterClass="com.orangeleap.tangerine.domain.communication.Phone">
 		update PHONE
 		set ACTIVATION_STATUS = #activationStatus#,
 		COMMENT = #comments#,

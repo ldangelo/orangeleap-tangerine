@@ -2,11 +2,11 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="SECTION_DEFINITION">
 
-	<resultMap id="SEC_DEF_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="SEC_DEF_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SEC_DEF_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="SECTION_DEFINITION_RESULT" class="com.mpower.domain.model.customization.SectionDefinition">
+	<resultMap id="SECTION_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.SectionDefinition">
 		<result property="id" column="SECTION_DEFINITION_ID" jdbcType="BIGINT" />
 		<result property="defaultLabel" column="SEC_DEF_DEFAULT_LABEL" jdbcType="VARCHAR" />
 		<result property="layoutType" column="SEC_DEF_LAYOUT_TYPE" jdbcType="VARCHAR" />
@@ -38,7 +38,7 @@
 		)
 	</select>
 
-	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.mpower.domain.model.customization.SectionDefinition">
+	<insert id="INSERT_SECTION_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.SectionDefinition">
 		insert into SECTION_DEFINITION (DEFAULT_LABEL, LAYOUT_TYPE, PAGE_TYPE,
 		ROLE, SECTION_NAME, SECTION_ORDER, SITE_NAME)
 		values (#defaultLabel#, #layoutType#,
@@ -48,7 +48,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_SECTION_DEFINITION" parameterClass="com.mpower.domain.model.customization.SectionDefinition">
+	<update id="UPDATE_SECTION_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.SectionDefinition">
 		update SECTION_DEFINITION
 		set DEFAULT_LABEL = #defaultLabel#,
 		LAYOUT_TYPE = #layoutType#,

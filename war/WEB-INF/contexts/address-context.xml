@@ -5,9 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
  
-   	<bean id="addressManager" class="com.mpower.controller.communication.address.AddressFormController" parent="tangerineConstituentAttributesFormController">
+   	<bean id="addressManager" class="com.orangeleap.tangerine.controller.communication.address.AddressFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="address"/>
-    	<property name="commandClass" value="com.mpower.domain.model.communication.Address"/>
+    	<property name="commandClass" value="com.orangeleap.tangerine.domain.communication.Address"/>
         <property name="bindAddress" value="false"/>
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>
@@ -16,7 +16,7 @@
 		<property name="validators">
 			<list>
 	            <ref bean="addressValidator"/>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="addressManager"/>
 	            </bean>
 			</list>
@@ -25,11 +25,11 @@
     	<property name="successView" value="redirect:/addressManager.htm"/>
     </bean>
 
-    <bean id="addressManagerEdit" class="com.mpower.controller.communication.address.AddressFormController" parent="addressManager">
+    <bean id="addressManagerEdit" class="com.orangeleap.tangerine.controller.communication.address.AddressFormController" parent="addressManager">
     	<property name="formView" value="address/addressManagerEdit"/>
     </bean>
 
-    <bean id="addressDelete" class="com.mpower.controller.TangerineDeleteController">
+    <bean id="addressDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
     	<property name="service" ref="addressService"/>
     	<property name="idParameterName" value="addressId"/>
     	<property name="viewName" value="redirect:/addressManager.htm"/>

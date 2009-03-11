@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PAYMENT_HISTORY">
 
-	<resultMap id="PAYMENT_HISTORY_RESULT" class="com.mpower.domain.model.PaymentHistory" groupBy="id">
+	<resultMap id="PAYMENT_HISTORY_RESULT" class="com.orangeleap.tangerine.domain.PaymentHistory" groupBy="id">
 		<result property="id" column="PAYMENT_HISTORY_ID" jdbcType="BIGINT" />
 		<result property="amount" column="AMOUNT" jdbcType="DECIMAL" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
@@ -49,7 +49,7 @@
 		order by phis.TRANSACTION_DATE desc
 	</select>
 
-	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.mpower.domain.model.PaymentHistory">
+	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.orangeleap.tangerine.domain.PaymentHistory">
 		insert into PAYMENT_HISTORY (AMOUNT, CURRENCY_CODE, PAYMENT_DESC,
 		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, CONSTITUENT_ID)
 		values (#amount#, #currencyCode#, #description#,

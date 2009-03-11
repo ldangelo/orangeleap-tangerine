@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="AUDIT">
 
-	<resultMap id="AUDIT_RESULT" class="com.mpower.domain.model.Audit" groupBy="id">
+	<resultMap id="AUDIT_RESULT" class="com.orangeleap.tangerine.domain.Audit" groupBy="id">
 		<result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
 		<result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
 		<result property="date" column="DATE" jdbcType="TIMESTAMP" />
@@ -40,7 +40,7 @@
 		and a.CONSTITUENT_ID = #constituentId#
 	</select>
 
-	<insert id="INSERT_AUDIT" parameterClass="com.mpower.domain.model.Audit">
+	<insert id="INSERT_AUDIT" parameterClass="com.orangeleap.tangerine.domain.Audit">
 		insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, CONSTITUENT_ID, SITE_NAME)
 		values (#auditType#, #date#, #description#,	#entityType#, #objectId#, #user#, #constituentId#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">

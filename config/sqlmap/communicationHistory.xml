@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="COMMUNICATION_HISTORY">
 
-	<resultMap id="COMMUNICATION_HISTORY_RESULT" class="com.mpower.domain.model.CommunicationHistory" groupBy="id">
+	<resultMap id="COMMUNICATION_HISTORY_RESULT" class="com.orangeleap.tangerine.domain.CommunicationHistory" groupBy="id">
 		<result property="id" column="COMMUNICATION_HISTORY_ID"	jdbcType="BIGINT" />
 		<result property="communicationHistoryType" column="COMMUNICATION_TYPE"	jdbcType="INTEGER" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -38,7 +38,7 @@
 		and ch.CONSTITUENT_ID = #constituentId#
 	</select>
 
-	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory">
+	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, CREATE_DATE,
 		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID,	CONSTITUENT_ID, COMMENTS)
 		values (#communicationHistoryType#, now(),
@@ -49,7 +49,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_COMMUNICATION_HISTORY" parameterClass="com.mpower.domain.model.CommunicationHistory">
+	<update id="UPDATE_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		update COMMUNICATION_HISTORY
 		set COMMUNICATION_TYPE = #communicationHistoryType:VARCHAR#,
 		RECORD_DATE = #recordDate#,

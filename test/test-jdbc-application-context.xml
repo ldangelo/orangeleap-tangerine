@@ -14,7 +14,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:component-scan base-package="com.mpower.dao.jdbc"/>
+	<context:component-scan base-package="com.orangeleap.tangerine.dao.jdbc"/>
 
 	<aop:config>
 		<aop:advisor pointcut="execution(* *..*Jdbc*Dao.*(..))" advice-ref="txAdvice" />		
@@ -39,6 +39,6 @@
 		<property name="password" value="mpower"/>
 	</bean>
 
-	<bean id="tangerineUserHelper" class="com.mpower.test.dataprovider.MockTangerineUserHelperProvider" factory-method="createMockUserHelper" />
+	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.test.dataprovider.MockTangerineUserHelperProvider" factory-method="createMockUserHelper" />
 
 </beans>

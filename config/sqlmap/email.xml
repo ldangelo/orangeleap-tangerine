@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="EMAIL">
 
-	<resultMap id="EMAIL_RESULT" class="com.mpower.domain.model.communication.Email">
+	<resultMap id="EMAIL_RESULT" class="com.orangeleap.tangerine.domain.communication.Email">
 		<result property="id" column="EMAIL_ID" jdbcType="BIGINT" />
 		<result property="activationStatus" column="EMAIL_ACTIVATION_STATUS" jdbcType="VARCHAR" />
 		<result property="comments" column="EMAIL_COMMENT" jdbcType="VARCHAR" />
@@ -55,7 +55,7 @@
 		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
 	</select>
 
-	<insert id="INSERT_EMAIL" parameterClass="com.mpower.domain.model.communication.Email">
+	<insert id="INSERT_EMAIL" parameterClass="com.orangeleap.tangerine.domain.communication.Email">
 		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
 		EMAIL_ADDRESS, EMAIL_DISPLAY, EMAIL_TYPE, INACTIVE, RECEIVE_CORRESPONDENCE,
 		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
@@ -68,7 +68,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_EMAIL" parameterClass="com.mpower.domain.model.communication.Email">
+	<update id="UPDATE_EMAIL" parameterClass="com.orangeleap.tangerine.domain.communication.Email">
 		update EMAIL
 		set ACTIVATION_STATUS = #activationStatus#,
 		COMMENT = #comments#,

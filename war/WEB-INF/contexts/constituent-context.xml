@@ -6,9 +6,9 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-    <bean id="personSearch" class="com.mpower.controller.constituent.PersonSearchFormController">
+    <bean id="personSearch" class="com.orangeleap.tangerine.controller.constituent.PersonSearchFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.model.Person"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.Person"/>
 <!--        <property name="validator">-->
 <!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
 <!--        </property>-->
@@ -16,11 +16,11 @@
         <property name="successView" value="constituent/personSearch"/>
     </bean>
 
-    <bean id="person" class="com.mpower.controller.constituent.PersonFormController" parent="tangerineFormController">
+    <bean id="person" class="com.orangeleap.tangerine.controller.constituent.PersonFormController" parent="tangerineFormController">
         <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.mpower.domain.model.Person"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.Person"/>
         <property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
+            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 		        <property name="pageType" value="person"/>
             </bean>
         </property>
@@ -28,11 +28,11 @@
         <property name="successView" value="redirect:/person.htm" />
     </bean>
 
-    <bean id="personView" class="com.mpower.controller.constituent.PersonViewController">
+    <bean id="personView" class="com.orangeleap.tangerine.controller.constituent.PersonViewController">
         <property name="viewName" value="constituent/personView"/>
     </bean>
 
-    <bean id="personList" class="com.mpower.controller.constituent.PersonListController">
+    <bean id="personList" class="com.orangeleap.tangerine.controller.constituent.PersonListController">
         <property name="viewName" value="constituent/personList"/>
     </bean>
     

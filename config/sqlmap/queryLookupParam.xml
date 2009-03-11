@@ -2,13 +2,13 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="QUERY_LOOKUP_PARAM">
 
-	<resultMap id="QUERY_LOOKUP_PARAM_RESULT" class="com.mpower.domain.model.QueryLookupParam">
+	<resultMap id="QUERY_LOOKUP_PARAM_RESULT" class="com.orangeleap.tangerine.domain.QueryLookupParam">
 		<result property="id" column="QUERY_LOOKUP_PARAM_ID" jdbcType="BIGINT" />
 		<result property="name" column="PARAM_NAME" jdbcType="VARCHAR" />
 		<result property="queryLookupId" column="QUERY_LOOKUP_ID" jdbcType="BIGINT" />
 	</resultMap>
 
-	<insert id="INSERT_QUERY_LOOKUP_PARAM" parameterClass="com.mpower.domain.model.QueryLookupParam">
+	<insert id="INSERT_QUERY_LOOKUP_PARAM" parameterClass="com.orangeleap.tangerine.domain.QueryLookupParam">
 		insert into QUERY_LOOKUP_PARAM (PARAM_NAME, QUERY_LOOKUP_ID)
 		values (#name#, #queryLookupId#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -16,7 +16,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="UPDATE_QUERY_LOOKUP_PARAM" parameterClass="com.mpower.domain.model.QueryLookupParam">
+	<update id="UPDATE_QUERY_LOOKUP_PARAM" parameterClass="com.orangeleap.tangerine.domain.QueryLookupParam">
 		update QUERY_LOOKUP_PARAM
 		set PARAM_NAME = #name#,
 		QUERY_LOOKUP_ID = #queryLookupId#

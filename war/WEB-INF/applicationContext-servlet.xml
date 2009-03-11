@@ -30,18 +30,18 @@
 	<import resource="contexts/recurringGift-context.xml"/>
 	<import resource="contexts/validator-context.xml"/>
 
-    <context:component-scan base-package="com.mpower.controller"/>
+    <context:component-scan base-package="com.orangeleap.tangerine.controller"/>
 
 	<!-- Abstract Controllers for Tangerine -->
-	<bean id="tangerineFormController" class="com.mpower.controller.TangerineFormController" abstract="true"/>
+	<bean id="tangerineFormController" class="com.orangeleap.tangerine.controller.TangerineFormController" abstract="true"/>
 
-	<bean id="tangerineConstituentAttributesFormController" class="com.mpower.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController"/>
+	<bean id="tangerineConstituentAttributesFormController" class="com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController"/>
 
-    <bean id="account" class="com.mpower.controller.AccountFormController">
+    <bean id="account" class="com.orangeleap.tangerine.controller.AccountFormController">
         <property name="commandName" value="user"/>
-        <property name="commandClass" value="com.mpower.domain.PasswordChange"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.PasswordChange"/>
         <property name="validator">
-            <bean class="com.mpower.controller.validator.PasswordChangeValidator"/>
+            <bean class="com.orangeleap.tangerine.controller.validator.PasswordChangeValidator"/>
         </property>
         <property name="formView" value="account" />
         <property name="successView" value="account" />
@@ -71,7 +71,7 @@
 	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
 		<property name="definitions">
 			<list>
-				<value>/WEB-INF/mpower-tiles.xml</value>
+				<value>/WEB-INF/tangerine-tiles.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -86,8 +86,8 @@
 	<bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
 		<property name="customEditors">
 	    	<map>
-	      		<entry key="com.mpower.domain.PaymentSource">
-	        		<bean id="paymentSourceEditor" class="com.mpower.controller.payment.PaymentSourceEditor">
+	      		<entry key="com.orangeleap.tangerine.domain.PaymentSource">
+	        		<bean id="paymentSourceEditor" class="com.orangeleap.tangerine.controller.payment.PaymentSourceEditor">
 				    	<property name="paymentSourceService" ref="paymentSourceService" />
 				    </bean>
 				</entry>

@@ -2,11 +2,11 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_DEFINITION">
 
-	<resultMap id="FLD_DEF_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="FLD_DEF_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="FLD_DEF_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
+	<resultMap id="FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 		<result property="defaultLabel" column="FLD_DEF_DEFAULT_LABEL" jdbcType="VARCHAR" />
 		<result property="entityAttributes" column="FLD_DEF_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
@@ -18,11 +18,11 @@
 		<result property="site" resultMap="FIELD_DEFINITION.FLD_DEF_SITE_NAME_RESULT" />
 	</resultMap>	
 	
-	<resultMap id="SECONDARY_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="SECONDARY_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SECONDARY_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="SECONDARY_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
+	<resultMap id="SECONDARY_FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="SECONDARY_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 		<result property="defaultLabel" column="SECONDARY_DEFAULT_LABEL" jdbcType="VARCHAR" />
 		<result property="entityAttributes" column="SECONDARY_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
@@ -54,7 +54,7 @@
 		secCondFd.FIELD_DEFINITION_ID as FLD_CON_SEC_DEP_FIELD_DEFINITION_ID, secCondFd.FIELD_NAME as FLD_CON_SEC_DEP_FIELD_NAME
 	</sql>
 	
-	<insert id="INSERT_FIELD_DEF" parameterClass="com.mpower.domain.model.customization.FieldDefinition">
+	<insert id="INSERT_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		insert into FIELD_DEFINITION (DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
 		values (#defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -62,7 +62,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="UPDATE_FIELD_DEF" parameterClass="com.mpower.domain.model.customization.FieldDefinition">
+	<update id="UPDATE_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		update FIELD_DEFINITION
 		set DEFAULT_LABEL = #defaultLabel#,
 		ENTITY_ATTRIBUTES = #entityAttributes#,

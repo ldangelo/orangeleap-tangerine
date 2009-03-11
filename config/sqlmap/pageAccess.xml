@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="PAGE_ACCESS">
 	
-	<resultMap id="PAGE_ACCESS_RESULT" class="com.mpower.domain.model.customization.PageAccess">
+	<resultMap id="PAGE_ACCESS_RESULT" class="com.orangeleap.tangerine.domain.customization.PageAccess">
 		<result property="id" column="PAGE_ACCESS_ID" jdbcType="BIGINT" />
 		<result property="accessType" column="ACCESS_TYPE" jdbcType="VARCHAR" />
 		<result property="pageType" column="PAGE_TYPE" jdbcType="VARCHAR" />

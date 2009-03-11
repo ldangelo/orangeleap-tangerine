@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PAYMENT_SOURCE">
 
-	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.mpower.domain.model.PaymentSource">
+	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource">
 		<result property="id" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" />
 		<result property="achAccountNumber" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
 		<result property="achHolderName" column="PAYMENT_SRC_ACH_HOLDER_NAME" jdbcType="VARCHAR" />
@@ -76,7 +76,7 @@
 		order by PAYMENT_SRC_TYPE
 	</select>
 
-	<insert id="INSERT_PAYMENT_SOURCE" parameterClass="com.mpower.domain.model.PaymentSource">
+	<insert id="INSERT_PAYMENT_SOURCE" parameterClass="com.orangeleap.tangerine.domain.PaymentSource">
 		insert into PAYMENT_SOURCE (ACH_ACCOUNT_NUMBER,
 		ACH_HOLDER_NAME,
 		ACH_ROUTING_NUMBER, CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER,
@@ -92,7 +92,7 @@
         </selectKey>
 	</insert>
 
-	<update id="UPDATE_PAYMENT_SOURCE" parameterClass="com.mpower.domain.model.PaymentSource">
+	<update id="UPDATE_PAYMENT_SOURCE" parameterClass="com.orangeleap.tangerine.domain.PaymentSource">
 		update PAYMENT_SOURCE
 		set ACH_ACCOUNT_NUMBER = #achAccountNumber#,
 		ACH_HOLDER_NAME = #achHolderName#,

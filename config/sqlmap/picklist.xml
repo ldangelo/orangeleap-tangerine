@@ -11,7 +11,7 @@
         <property name="size" value="1000" />
     </cacheModel>
 
-    <resultMap id="PICKLIST_RESULT" class="com.mpower.domain.model.customization.Picklist" groupBy="id">
+    <resultMap id="PICKLIST_RESULT" class="com.orangeleap.tangerine.domain.customization.Picklist" groupBy="id">
         <result property="id" column="PICKLIST_ID" jdbcType="VARCHAR"/>
         <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR"/>
         <result property="multiselect" column="MULTISELECT" jdbcType="CHAR"/>
@@ -20,7 +20,7 @@
         <result property="picklistItems" resultMap="PICKLIST.PICKLIST_ITEM_RESULT" />
     </resultMap>
 
-    <resultMap id="PICKLIST_ITEM_RESULT" class="com.mpower.domain.model.customization.PicklistItem">
+    <resultMap id="PICKLIST_ITEM_RESULT" class="com.orangeleap.tangerine.domain.customization.PicklistItem">
         <result property="id" column="PICKLIST_ITEM_ID" jdbcType="BIGINT"/>
         <result property="picklistId" column="PICKLIST_ID" jdbcType="BIGINT"/>
         <result property="defaultDisplayValue" column="DEFAULT_DISPLAY_VALUE" jdbcType="VARCHAR"/>
@@ -65,7 +65,7 @@
         where PICKLIST_ITEM_ID = #id#
     </select>
     
-    <update id="UPDATE_PICKLIST" parameterClass="com.mpower.domain.model.customization.Picklist">
+    <update id="UPDATE_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">
         update PICKLIST 
         set 
         ENTITY_TYPE = #entityType#,
@@ -76,7 +76,7 @@
         and PICKLIST_ID = #id#
     </update>
 
-    <update id="UPDATE_PICKLIST_ITEM" parameterClass="com.mpower.domain.model.customization.PicklistItem">
+    <update id="UPDATE_PICKLIST_ITEM" parameterClass="com.orangeleap.tangerine.domain.customization.PicklistItem">
         update PICKLIST_ITEM
         set DEFAULT_DISPLAY_VALUE = #defaultDisplayValue#,
         INACTIVE = #inactive#,
@@ -89,12 +89,12 @@
     </update>
     
     
-    <insert id="INSERT_PICKLIST" parameterClass="com.mpower.domain.model.customization.Picklist">
+    <insert id="INSERT_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">
     insert into PICKLIST (PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME)
     values (#id#, #entityType#, #multiselect#, #picklistName#, #site.name#)
 	</insert>
 
-    <insert id="INSERT_PICKLIST_ITEM" parameterClass="com.mpower.domain.model.customization.PicklistItem">
+    <insert id="INSERT_PICKLIST_ITEM" parameterClass="com.orangeleap.tangerine.domain.customization.PicklistItem">
 		    insert into PICKLIST_ITEM (
 		        DEFAULT_DISPLAY_VALUE,
 		        INACTIVE,

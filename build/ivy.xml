@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ivy-module version="2.0">
-	<info organisation="com.mpower" module="orangeleap" status="integration" />
+	<info organisation="com.orangeleap.tangerine" module="orangeleap" status="integration" />
 	<configurations>
 		<conf name="sources"/>
 		<conf name="compile"/>

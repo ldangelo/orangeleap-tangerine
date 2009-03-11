@@ -5,17 +5,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-    <bean id="picklistItemHelper" class="com.mpower.controller.picklist.PicklistItemHelperController">
+    <bean id="picklistItemHelper" class="com.orangeleap.tangerine.controller.picklist.PicklistItemHelperController">
         <property name="viewName" value="picklist/picklistItemHelper"/>
     </bean>
 
-    <bean id="picklistItems" class="com.mpower.controller.picklist.PicklistItemManageController">
+    <bean id="picklistItems" class="com.orangeleap.tangerine.controller.picklist.PicklistItemManageController">
         <property name="viewName" value="picklist/picklistItems"/>
     </bean>
 
-	<bean id="picklistItem" class="com.mpower.controller.picklist.PicklistItemFormController">
+	<bean id="picklistItem" class="com.orangeleap.tangerine.controller.picklist.PicklistItemFormController">
         <property name="commandName" value="picklistItem"/>
-        <property name="commandClass" value="com.mpower.domain.model.customization.PicklistItem"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.customization.PicklistItem"/>
         <property name="formView" value="picklist/picklistItem" />
         <property name="successView" value="picklist/picklistItem" />
     </bean>

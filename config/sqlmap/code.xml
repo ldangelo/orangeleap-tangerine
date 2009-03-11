@@ -3,11 +3,11 @@
 <sqlMap namespace="CODE" >
 
 
-  <resultMap id="CODE_TYPE_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+  <resultMap id="CODE_TYPE_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
   </resultMap>
 
-  <resultMap id="CODE_TYPE_RESULT" class="com.mpower.domain.model.customization.CodeType" >
+  <resultMap id="CODE_TYPE_RESULT" class="com.orangeleap.tangerine.domain.customization.CodeType" >
     <result property="id" column="ID" jdbcType="BIGINT" />
     <result property="label" column="LABEL" jdbcType="VARCHAR" />
     <result property="name" column="NAME" jdbcType="VARCHAR" />
@@ -48,7 +48,7 @@
   </select>
 	
 	
-  <insert id="INSERT_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
+  <insert id="INSERT_CODE_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.CodeType" >
      insert into CODE_TYPE (LABEL, NAME, SITE_NAME)
      values (#label#, #name#, #siteName#)
      <selectKey keyProperty="id" resultClass="long">
@@ -56,7 +56,7 @@
 	 </selectKey>
   </insert>
 
-  <update id="UPDATE_CODE_TYPE" parameterClass="com.mpower.domain.model.customization.CodeType" >
+  <update id="UPDATE_CODE_TYPE" parameterClass="com.orangeleap.tangerine.domain.customization.CodeType" >
      update CODE_TYPE
      set LABEL = #label#,
        NAME = #name#,
@@ -65,7 +65,7 @@
   </update>
 
  
-  <resultMap id="CODE_RESULT" class="com.mpower.domain.model.customization.Code" >
+  <resultMap id="CODE_RESULT" class="com.orangeleap.tangerine.domain.customization.Code" >
     <result property="id" column="CODE_ID" jdbcType="BIGINT" />
     <result property="description" column="CODE_DESCRIPTION" jdbcType="VARCHAR" />
     <result property="inactive" column="INACTIVE" jdbcType="CHAR" />
@@ -160,7 +160,7 @@
   </select>
   
   
-  <insert id="INSERT_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+  <insert id="INSERT_CODE" parameterClass="com.orangeleap.tangerine.domain.customization.Code" >
     insert into CODE (CODE_DESCRIPTION, INACTIVE, CODE_VALUE, CODE_TYPE_ID)
     values (#description#, #inactive#, #value#, #codeType.id#)
     <selectKey keyProperty="id" resultClass="long">
@@ -168,7 +168,7 @@
 	</selectKey>
   </insert>
   
-  <update id="UPDATE_CODE" parameterClass="com.mpower.domain.model.customization.Code" >
+  <update id="UPDATE_CODE" parameterClass="com.orangeleap.tangerine.domain.customization.Code" >
     update CODE
     set CODE_DESCRIPTION = #description#,
       INACTIVE = #inactive#,

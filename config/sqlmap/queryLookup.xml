@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="QUERY_LOOKUP">
 
-	<resultMap id="QUERY_LOOKUP_RESULT" class="com.mpower.domain.model.QueryLookup" groupBy="id">
+	<resultMap id="QUERY_LOOKUP_RESULT" class="com.orangeleap.tangerine.domain.QueryLookup" groupBy="id">
 		<result property="id" column="QUERY_LOOKUP_ID" jdbcType="BIGINT" />
 		<result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
 		<result property="sqlWhere" column="SQL_WHERE" jdbcType="VARCHAR" />
@@ -23,7 +23,7 @@
 		and ql.FIELD_DEFINITION_ID = #fieldDefinitionId#
 	</select>
 
-	<insert id="INSERT_QUERY_LOOKUP" parameterClass="com.mpower.domain.model.QueryLookup">
+	<insert id="INSERT_QUERY_LOOKUP" parameterClass="com.orangeleap.tangerine.domain.QueryLookup">
 		insert into QUERY_LOOKUP (ENTITY_TYPE, SQL_WHERE, SECTION_NAME,	FIELD_DEFINITION_ID, SITE_NAME)
 		values (#entityType#, #sqlWhere#, #sectionName#, #fieldDefinition.id#, #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -31,7 +31,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_QUERY_LOOKUP" parameterClass="com.mpower.domain.model.QueryLookup">
+	<update id="UPDATE_QUERY_LOOKUP" parameterClass="com.orangeleap.tangerine.domain.QueryLookup">
 		update QUERY_LOOKUP
 		set 
 		ENTITY_TYPE = #entityType#

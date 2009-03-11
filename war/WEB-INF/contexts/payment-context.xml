@@ -5,14 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="paymentManager" class="com.mpower.controller.payment.PaymentManagerFormController" parent="tangerineConstituentAttributesFormController">
+	<bean id="paymentManager" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController" parent="tangerineConstituentAttributesFormController">
     	<property name="commandName" value="paymentSource" />
-    	<property name="commandClass" value="com.mpower.domain.model.PaymentSource" />
+    	<property name="commandClass" value="com.orangeleap.tangerine.domain.PaymentSource" />
         <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <ref bean="paymentSourceValidator"/>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="paymentManager"/>
 	            </bean>
 			</list>
@@ -22,12 +22,12 @@
    		<property name="pageType" value="paymentManager"/>
    	</bean>
 
-    <bean id="paymentManagerEdit" class="com.mpower.controller.payment.PaymentManagerFormController" parent="paymentManager">
+    <bean id="paymentManagerEdit" class="com.orangeleap.tangerine.controller.payment.PaymentManagerFormController" parent="paymentManager">
     	<property name="formView" value="payment/paymentManagerEdit" />
    		<property name="pageType" value="paymentManagerEdit"/>
     </bean>
         
-    <bean id="paymentSourceDelete" class="com.mpower.controller.TangerineDeleteController">
+    <bean id="paymentSourceDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
     	<property name="service" ref="paymentSourceService"/>
     	<property name="idParameterName" value="paymentSourceId"/>
     	<property name="viewName" value="redirect:/paymentManager.htm"/>

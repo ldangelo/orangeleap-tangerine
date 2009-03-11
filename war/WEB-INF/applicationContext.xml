@@ -17,7 +17,7 @@
 		<property name="order" value="1" />
 		<property name="locations">
 			<list>
-				<value>classpath:orangeleap.properties</value>
+				<value>classpath:tangerine.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -36,7 +36,7 @@
 	    <property name="arguments"><list><value>drools.port</value><value>${drools.port}</value></list></property>
 	</bean>
 
-	<context:component-scan base-package="com.mpower">
+	<context:component-scan base-package="com.orangeleap.tangerine">
 		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
 	</context:component-scan>
 
@@ -48,7 +48,7 @@
 	<!--
 	- The message source for this context, loaded from localized message files in the classpath (first) and then the database 
 	-->
-    <bean id="messageSource" class="com.mpower.controller.validator.MpowerMessageSource">
+    <bean id="messageSource" class="com.orangeleap.tangerine.controller.validator.TangerineMessageSource">
         <property name="messageService" ref="messageService"/>
         <property name="staticMessageSource" ref="staticMessageSource"/>
 	</bean>
@@ -69,7 +69,7 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<bean id="dataSource" class="com.mpower.util.MpowerDataSource">
+	<bean id="dataSource" class="com.orangeleap.tangerine.util.TangerineDataSource">
 		<property name="dataSource" ref="dataSource-pooled" />
 		<property name="tangerineUserHelper" ref="tangerineUserHelper" />
 		<property name="splitDatabases" value="false" />
@@ -97,7 +97,7 @@
 		</property>
 	</bean>
 
-	<bean id="tangerineUserHelper" class="com.mpower.util.TangerineUserHelperImpl"/>
+	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
 
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
@@ -120,14 +120,14 @@
 			<property	name="messageConverter" ref="giftConverter" /> 
 		</bean> 
 
-		<bean	id="giftConverter"	class="com.mpower.service.jms.GiftMessageConverter"> 
+		<bean	id="giftConverter"	class="com.orangeleap.tangerine.service.jms.GiftMessageConverter"> 
 		</bean> 
 
-		<bean	id="creditGateway"	class="com.mpower.service.jms.MPowerCreditGatewayImpl"> 
+		<bean	id="creditGateway"	class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl"> 
 			<property	name="jmsTemplate" ref="jmsTemplate" /> 
 		</bean>
 -->
-		<bean id="paymentGateway" class="com.mpower.service.payments.OrbitalPaymentGateway">
+		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
 			<property name="configFile" value="/usr/local/paymentech/config/linehandler.properties"/>
 		</bean>
 

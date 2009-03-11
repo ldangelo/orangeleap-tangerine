@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="CONSTITUENT">
 
-	<resultMap id="CONSTITUENT_RESULT" class="com.mpower.domain.model.Person" groupBy="id">
+	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Person" groupBy="id">
 		<result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="constituentIndividualRoles" column="CONSTITUENT_INDIVIDUAL_ROLES" jdbcType="VARCHAR" />
 		<result property="constituentOrganizationRoles" column="CONSTITUENT_ORGANIZATION_ROLES" jdbcType="VARCHAR" />
@@ -69,7 +69,7 @@
 		and p.LOGIN_ID = #loginId#
 	</select>
 
-	<insert id="INSERT_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
+	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
 		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
 		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
@@ -83,7 +83,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_CONSTITUENT" parameterClass="com.mpower.domain.model.Person">
+	<update id="UPDATE_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
 		update CONSTITUENT
 		set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#,
 		CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,

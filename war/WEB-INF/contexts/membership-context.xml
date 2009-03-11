@@ -5,14 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="membership" class="com.mpower.controller.membership.MembershipFormController">
+    <bean id="membership" class="com.orangeleap.tangerine.controller.membership.MembershipFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Commitment"/>
         <property name="pageType" value="membership"/>
 		<property name="validators">
 			<list>
 	            <ref bean="commitmentValidator"/>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="membership"/>
 	            </bean>
 			</list>
@@ -21,22 +21,22 @@
         <property name="successView" value="membership/membershipView" />
     </bean>
 
-    <bean id="membershipSearch" class="com.mpower.controller.membership.MembershipSearchFormController">
+    <bean id="membershipSearch" class="com.orangeleap.tangerine.controller.membership.MembershipSearchFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Commitment"/>
         <property name="formView" value="membership/membershipSearch"/>
         <property name="successView" value="membership/membershipSearch"/>
     </bean>
 
-    <bean id="membershipList" class="com.mpower.controller.membership.MembershipListController">
+    <bean id="membershipList" class="com.orangeleap.tangerine.controller.membership.MembershipListController">
         <property name="viewName" value="membership/membershipList"/>
     </bean>
 
-    <bean id="membershipView" class="com.mpower.controller.membership.MembershipFormController">
+    <bean id="membershipView" class="com.orangeleap.tangerine.controller.membership.MembershipFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Commitment"/>
 		<property name="validator">
-            <bean class="com.mpower.controller.validator.EntityValidator">
+            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 		        <property name="pageType" value="membershipView"/>
             </bean>
         </property>

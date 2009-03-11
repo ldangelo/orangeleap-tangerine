@@ -2,17 +2,17 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_CONDITION">
 
-	<resultMap id="FLD_CON_DEP_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
+	<resultMap id="FLD_CON_DEP_FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="FLD_CON_DEP_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 		<result property="fieldName" column="FLD_CON_DEP_FIELD_NAME" jdbcType="VARCHAR" />
 	</resultMap>	
 	
-	<resultMap id="FLD_CON_SEC_DEP_FIELD_DEFINITION_RESULT" class="com.mpower.domain.model.customization.FieldDefinition">
+	<resultMap id="FLD_CON_SEC_DEP_FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="FLD_CON_SEC_DEP_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 		<result property="fieldName" column="FLD_CON_SEC_DEP_FIELD_NAME" jdbcType="VARCHAR" />
 	</resultMap>	
 	
-	<resultMap id="FIELD_CONDITION_RESULT" class="com.mpower.domain.model.customization.FieldCondition">
+	<resultMap id="FIELD_CONDITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldCondition">
 		<result property="id" column="CONDITION_ID" jdbcType="BIGINT" />
 		<result property="value" column="FLD_CON_DEPENDENT_VALUE" jdbcType="VARCHAR" />
 		<result property="dependentFieldDefinition" resultMap="FIELD_CONDITION.FLD_CON_DEP_FIELD_DEFINITION_RESULT" />
@@ -27,7 +27,7 @@
 		fc.FIELD_REQUIRED_ID as FLD_CON_FIELD_REQUIRED_ID, fc.VALIDATION_ID as FLD_CON_VALIDATION_ID
     </sql>
 	
-	<insert id="INSERT_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">
+	<insert id="INSERT_FIELD_CONDITION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldCondition">
 		insert into FIELD_CONDITION (DEPENDENT_VALUE,	DEPENDENT_FIELD_DEFINITION_ID, DEPENDENT_SECONDARY_FIELD_DEFINITION_ID, FIELD_REQUIRED_ID,	VALIDATION_ID)
 		values (#value#, #dependentFieldDefinition.id#, #dependentSecondaryFieldDefinition.id#, #fieldRequiredId#, #validationId#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -35,7 +35,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_FIELD_CONDITION" parameterClass="com.mpower.domain.model.customization.FieldCondition">
+	<update id="UPDATE_FIELD_CONDITION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldCondition">
 		update FIELD_CONDITION
 		set DEPENDENT_VALUE = #value#,
 		DEPENDENT_FIELD_DEFINITION_ID = #dependentFieldDefinition.id#,

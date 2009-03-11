@@ -8,7 +8,7 @@
 
 	<sec:global-method-security secured-annotations="enabled"/>
 
-	<bean id="accessDecisionManager" class="com.mpower.security.MpowerAffirmativeBased">
+	<bean id="accessDecisionManager" class="com.orangeleap.tangerine.security.TangerineAffirmativeBased">
 		<property name="allowIfAllAbstainDecisions" value="false"/>
 		<property name="decisionVoters">
 			<list>
@@ -45,7 +45,7 @@
         <sec:custom-filter position="LOGOUT_FILTER"/>
     </bean>
 
-    <bean id="mpowerAuthenticationProcessingFilter" class="com.mpower.security.MpowerAuthenticationProcessingFilter">
+    <bean id="mpowerAuthenticationProcessingFilter" class="com.orangeleap.tangerine.security.TangerineAuthenticationProcessingFilter">
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
         <property name="defaultTargetUrl" value="/index.jsp"/>
@@ -81,7 +81,7 @@
     	<property name="password" value="${ldap.password}"/>
 	</bean>
 
-    <bean id="mpowerAuthenticationProvider" class="com.mpower.security.MpowerAuthenticationProvider">
+    <bean id="mpowerAuthenticationProvider" class="com.orangeleap.tangerine.security.TangerineAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
         <sec:custom-authentication-provider/>
@@ -91,18 +91,18 @@
         <property name="key" value="anonymous"/>
     </bean>
 
-	<bean id="ldapUserSearch" class="com.mpower.security.MpowerLdapUserSearch">
+	<bean id="ldapUserSearch" class="com.orangeleap.tangerine.security.TangerineLdapUserSearch">
 	  <constructor-arg index="0" value=""/>
 	  <constructor-arg index="1" value="(uid={0})"/>
 	  <constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
 	</bean>
 
-	<bean id="bindAuthenticator" class="com.mpower.security.MpowerBindAuthenticator">
+	<bean id="bindAuthenticator" class="com.orangeleap.tangerine.security.TangerineBindAuthenticator">
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<property name="userSearch" ref="ldapUserSearch"/>
 	</bean>
 
-	<bean id="defaultLdapAuthoritiesPopulator" class="com.mpower.security.MpowerLdapAuthoritiesPopulator">
+	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator">
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
     	<constructor-arg value="ou=roles"/>
     	<property name="searchSubtree" value="true"/>
@@ -132,7 +132,7 @@
     	<constructor-arg ref="defaultSpringSecurityContextSource"/>
 	</bean>
 
-    <bean id="ldapService" class="com.mpower.service.ldap.LdapServiceImpl">
+    <bean id="ldapService" class="com.orangeleap.tangerine.service.ldap.LdapServiceImpl">
     	<property name="ldapTemplate" ref="ldapTemplate"/>
 	</bean>
 

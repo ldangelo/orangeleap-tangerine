@@ -5,13 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="recurringGiftFormController" class="com.mpower.controller.commitment.CommitmentFormController" parent="commitmentFormController">
+    <bean id="recurringGiftFormController" class="com.orangeleap.tangerine.controller.commitment.CommitmentFormController" parent="commitmentFormController">
         <property name="pageType" value="recurringGift"/>
         <property name="commitmentType" value="RECURRING_GIFT"/>
 		<property name="validators">
 			<list>
 	            <ref bean="commitmentValidator"/>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="recurringGift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>	            
@@ -23,13 +23,13 @@
         <property name="formUrl" value="redirect:/recurringGift.htm" />
     </bean>
 
-    <bean id="recurringGiftViewController" class="com.mpower.controller.commitment.CommitmentViewController" parent="recurringGiftFormController">
+    <bean id="recurringGiftViewController" class="com.orangeleap.tangerine.controller.commitment.CommitmentViewController" parent="recurringGiftFormController">
         <property name="formView" value="gift/recurringGiftView" />
         <property name="successView" value="redirect:/recurringGiftView.htm" />
 		<property name="validators">
 			<list>
 	            <ref bean="commitmentValidator"/>
-	            <bean class="com.mpower.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="recurringGift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>	            
@@ -37,14 +37,14 @@
         </property>
     </bean>
 
-    <bean id="recurringGiftSearchController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftSearchFormController">
+    <bean id="recurringGiftSearchController" class="com.orangeleap.tangerine.controller.commitment.recurringGift.RecurringGiftSearchFormController">
         <property name="commandName" value="commitment"/>
-        <property name="commandClass" value="com.mpower.domain.model.paymentInfo.Commitment"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Commitment"/>
         <property name="formView" value="gift/recurringGiftSearch"/>
         <property name="successView" value="gift/recurringGiftSearch"/>
     </bean>
 
-    <bean id="recurringGiftListController" class="com.mpower.controller.commitment.recurringGift.RecurringGiftListController">
+    <bean id="recurringGiftListController" class="com.orangeleap.tangerine.controller.commitment.recurringGift.RecurringGiftListController">
         <property name="viewName" value="gift/recurringGiftList"/>
     </bean>
     

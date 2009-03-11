@@ -2,11 +2,11 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="FIELD_REQUIRED">
 
-	<resultMap id="FLD_REQ_SITE_NAME_RESULT" class="com.mpower.domain.model.Site">
+	<resultMap id="FLD_REQ_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="FLD_REQ_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
 	
-	<resultMap id="FIELD_REQUIRED_RESULT" class="com.mpower.domain.model.customization.FieldRequired" groupBy="id">
+	<resultMap id="FIELD_REQUIRED_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldRequired" groupBy="id">
 		<result property="id" column="FIELD_REQUIRED_ID" jdbcType="BIGINT" />
 		<result property="required" column="FLD_REQ_REQUIRED" jdbcType="CHAR" />
 		<result property="sectionName" column="FLD_REQ_SECTION_NAME" jdbcType="VARCHAR" />
@@ -43,7 +43,7 @@
 	    </isNull>
 	</select>
 	
-	<insert id="INSERT_FIELD_REQUIRED" parameterClass="com.mpower.domain.model.customization.FieldRequired">
+	<insert id="INSERT_FIELD_REQUIRED" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRequired">
 	    insert into FIELD_REQUIRED (REQUIRED, SECTION_NAME, SITE_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID)
 	    values (#required#, #sectionName#, #site.name#, #fieldDefinition.id#, #secondaryFieldDefinition.id#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -51,7 +51,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="UPDATE_FIELD_REQUIRED" parameterClass="com.mpower.domain.model.customization.FieldRequired">
+	<update id="UPDATE_FIELD_REQUIRED" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRequired">
 		update FIELD_REQUIRED
 		set REQUIRED = #required#,
 		SECTION_NAME = #sectionName#,

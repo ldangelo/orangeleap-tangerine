@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.GeneratedId;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -61,6 +63,8 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         if (logger.isDebugEnabled()) {
             logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
         }
+    	setSite(o);
+
         if (o instanceof AbstractEntity) {
             ((AbstractEntity)o).prePersist();
         }
@@ -94,6 +98,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
                 public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
                     executor.startBatch();
                     for (AbstractEntity entity : entities) {
+                    	setSite(entity);
                         entity.prePersist();
 
                         if (entity.getId() == null || entity.getId() <= 0) {
@@ -109,6 +114,20 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
             });
         }
         return entities;
+    }
+    
+    // For security, set site before persisting
+    private void setSite(Object o) { 
+    	for (Method m : o.getClass().getDeclaredMethods()) {
+    		if (m.getName().equals("setSite")) {
+    			try {
+    			   m.invoke(o, new Object[]{new Site(getSiteName())});
+    			} catch (Exception e) {
+    				logger.error("Unable to set site");
+    				throw new RuntimeException(e);
+    			}
+    		}
+    	}
     }
 
     /**

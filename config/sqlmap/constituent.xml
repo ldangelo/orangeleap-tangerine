@@ -102,9 +102,8 @@
 		RECOGNITION_NAME = #recognitionName#,
 		SUFFIX = #suffix#,
 		TITLE = #title#,
-		UPDATE_DATE = now(),
-		SITE_NAME = #site.name#
-		where CONSTITUENT_ID = #id#
+		UPDATE_DATE = now()
+		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#
 	</update>
 
 	<update id="SET_LAPSED_DONOR" parameterClass="long">

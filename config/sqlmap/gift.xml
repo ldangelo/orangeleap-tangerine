@@ -141,34 +141,37 @@
 	</insert>
 	
 	<update id="UPDATE_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
-		update GIFT
-		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
-		AMOUNT = #amount#,
-		AUTH_CODE = #authCode#,
-		CHECK_NUMBER = #checkNumber#,
-		COMMENTS = #comments#,
-		CURRENCY_CODE = #currencyCode#,
-		DEDUCTIBLE = #deductible#,
-		DEDUCTIBLE_AMOUNT = #deductibleAmount#,
-		DONATION_DATE = #donationDate#,
-		ENTRY_TYPE = #entryType#,
-		ORIGINAL_GIFT_ID = #originalGiftId#,
-		PAYMENT_MESSAGE = #paymentMessage#,
-		PAYMENT_STATUS = #paymentStatus#,
-		PAYMENT_TYPE = #paymentType#,
-		POSTMARK_DATE = #postmarkDate#,
-		REFUND_GIFT_ID = #refundGiftId#,
-		REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
-		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
-		TRANSACTION_DATE = #transactionDate#,
-		PAYMENT_TXREFNUM = #txRefNum#,
-		ADDRESS_ID = #selectedAddress.id#,
-		COMMITMENT_ID = #commitmentId#,
-		EMAIL_ID = #selectedEmail.id#,
-		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
-		CONSTITUENT_ID = #person.id#,
-		PHONE_ID = #selectedPhone.id#
-		where GIFT_ID = #id#
+		update GIFT g, CONSTITUENT p
+		set g.ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		g.AMOUNT = #amount#,
+		g.AUTH_CODE = #authCode#,
+		g.CHECK_NUMBER = #checkNumber#,
+		g.COMMENTS = #comments#,
+		g.CURRENCY_CODE = #currencyCode#,
+		g.DEDUCTIBLE = #deductible#,
+		g.DEDUCTIBLE_AMOUNT = #deductibleAmount#,
+		g.DONATION_DATE = #donationDate#,
+		g.ENTRY_TYPE = #entryType#,
+		g.ORIGINAL_GIFT_ID = #originalGiftId#,
+		g.PAYMENT_MESSAGE = #paymentMessage#,
+		g.PAYMENT_STATUS = #paymentStatus#,
+		g.PAYMENT_TYPE = #paymentType#,
+		g.POSTMARK_DATE = #postmarkDate#,
+		g.REFUND_GIFT_ID = #refundGiftId#,
+		g.REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
+		g.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+		g.TRANSACTION_DATE = #transactionDate#,
+		g.PAYMENT_TXREFNUM = #txRefNum#,
+		g.ADDRESS_ID = #selectedAddress.id#,
+		g.COMMITMENT_ID = #commitmentId#,
+		g.EMAIL_ID = #selectedEmail.id#,
+		g.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
+		g.CONSTITUENT_ID = #person.id#,
+		g.PHONE_ID = #selectedPhone.id#
+		where 
+		p.CONSTITUENT_ID = g.CONSTITUENT_ID
+		and p.SITE_NAME = #site.name#
+		and g.GIFT_ID = #id#
 	</update>
 	
 	

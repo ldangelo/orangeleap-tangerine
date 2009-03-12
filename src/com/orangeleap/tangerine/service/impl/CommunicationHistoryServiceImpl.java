@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -27,9 +25,9 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 
 	@Resource(name = "communicationHistoryDAO")
 	private CommunicationHistoryDao communicationHistoryDao;
-
-	@Resource(name = "constituentService")
-	private ConstituentService constituentService;
+	
+	@Resource(name = "tangerineUserHelper")
+	private TangerineUserHelper tangerineUserHelper;
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
@@ -39,9 +37,7 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 		if (communicationHistory.getPerson() == null) {
             return null;
         }
-        TangerineAuthenticationToken authentication = (TangerineAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Person constituent = constituentService.readConstituentById(authentication.getPersonId());
-        communicationHistory.setCustomFieldValue("recordedBy", constituent.getId().toString());
+        communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());
 		return communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
 	}
 

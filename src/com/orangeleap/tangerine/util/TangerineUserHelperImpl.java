@@ -17,7 +17,8 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
-    private TangerineAuthenticationToken getToken() {
+    @Override
+    public TangerineAuthenticationToken getToken() {
         AbstractAuthenticationToken authentication = (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication instanceof TangerineAuthenticationToken) {
             return (TangerineAuthenticationToken)authentication;

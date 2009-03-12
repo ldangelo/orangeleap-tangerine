@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +39,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("siteService")
 public class SiteServiceImpl extends AbstractTangerineService implements SiteService {
@@ -64,6 +64,9 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 
     @Resource(name = "versionService")
     private VersionService versionService;
+    
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -79,10 +82,10 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
             site = siteDao.createSite(new Site(siteName));
         }
 
-        TangerineAuthenticationToken authentication = (TangerineAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-  	    Long constituentId = authentication.getPersonId();
-  	    if (constituentId == null) {
-          	Person constituent = constituentService.readConstituentByLoginId(authentication.getName());
+        TangerineAuthenticationToken authentication = tangerineUserHelper.getToken();
+        
+  	    if (tangerineUserHelper.lookupUserId() == null) {
+          	Person constituent = constituentService.readConstituentByLoginId(tangerineUserHelper.lookupUserName());
           	if (constituent == null) {
           	    try {
 					constituent = createPerson(authentication, siteName);

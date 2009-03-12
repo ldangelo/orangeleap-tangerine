@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyAccessorUtils;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,10 +105,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         Date date = new Date();
         BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
         if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
-            String name = null;
-            if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
-                name = SecurityContextHolder.getContext().getAuthentication().getName();
-            }
+            String name = tangerineUserHelper.lookupUserName();
             audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(entity) + " " + entity.getId(), siteName, getClassName(entity), entity.getId(), userId));
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(entity) + " " + entity.getId());
@@ -151,14 +147,14 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                         continue;
                     } 
                     else if (originalBeanProperty == null && beanProperty != null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
                         }
                     } 
                     else if (originalBeanProperty != null && beanProperty == null) {
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
@@ -181,7 +177,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                             }
                         }
 
-                        audits.add(new Audit(AuditType.UPDATE, SecurityContextHolder.getContext().getAuthentication().getName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
@@ -251,20 +247,16 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
             logger.debug("auditAuditable: userId = " + userId + " auditable = " + auditable);
         }
     	String siteName = tangerineUserHelper.lookupUserSiteName();
-    	String authName = SecurityContextHolder.getContext().getAuthentication().getName();
+    	String authName = tangerineUserHelper.lookupUserName();
     	
         List<Audit> audits = new ArrayList<Audit>();
         Date date = new Date();
         Auditable originalObject = auditable.getOriginalObject();
         if (originalObject == null || originalObject.getId() == null) {
-            String name = null;
-            if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
-                name = SecurityContextHolder.getContext().getAuthentication().getName();
-            }
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(auditable) + " " + auditable.getId());
             }
-            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId));
+            audits.add(new Audit(AuditType.CREATE, authName, date, "Added " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId));
         } 
         else {
             BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(auditable);
@@ -356,12 +348,12 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         Date date = new Date();
         if (object instanceof AbstractEntity) {
             AbstractEntity entity = (AbstractEntity) object;
-            String user = SecurityContextHolder.getContext().getAuthentication() == null ? "" : SecurityContextHolder.getContext().getAuthentication().getName();
+            String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(entity) + " " + entity.getId(), siteName, getClassName(entity), entity.getId(), userId);
         } 
         else if (object instanceof Auditable) {
             Auditable auditable = (Auditable) object;
-            String user = SecurityContextHolder.getContext().getAuthentication() == null ? "" : SecurityContextHolder.getContext().getAuthentication().getName();
+            String user = tangerineUserHelper.lookupUserName();
             audit = new Audit(AuditType.UPDATE, user, date, "Inactivated " + getClassName(auditable) + " " + auditable.getId(), siteName, getClassName(auditable), auditable.getId(), userId);
         } 
         else {

@@ -9,17 +9,16 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 /**
  * Controller used by the sidebar to get the accounts for
@@ -37,6 +36,9 @@ public class MyAccountsController {
 
     @Resource(name="giftService")
     private GiftService giftService;
+    
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
 
     @SuppressWarnings("unchecked")
 	@RequestMapping("/myAccounts.json")
@@ -44,9 +46,8 @@ public class MyAccountsController {
 
         List<Map> response = new ArrayList<Map>();
 
-        TangerineAuthenticationToken tangerineAuthenticationToken = (TangerineAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
-        siteService.createSiteAndUserIfNotExist(tangerineAuthenticationToken.getSite());
-        Person constituent = constituentService.readConstituentById(tangerineAuthenticationToken.getPersonId());
+        siteService.createSiteAndUserIfNotExist(tangerineUserHelper.lookupUserSiteName());
+        Person constituent = constituentService.readConstituentById(tangerineUserHelper.lookupUserId());
         if (constituent == null) {
             return new ModelMap();
         }

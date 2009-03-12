@@ -18,7 +18,7 @@
 			<tbody>
 				<c:forEach items="${pagedListHolder.pageList}" var="row">
 					<tr>
-						<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}">View</a></td>
+						<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>
 				</c:forEach>
@@ -28,7 +28,7 @@
 
 </c:when>
 <c:when test="${communicationHistoryList ne null}">
-	<p style="margin:8px 0 6px 0;">Your search returned no results.</p>
+	<p style="margin:8px 0 6px 0;"><spring:message code='searchNoResults'/></p>
 </c:when>
 <c:otherwise>
 </c:otherwise>

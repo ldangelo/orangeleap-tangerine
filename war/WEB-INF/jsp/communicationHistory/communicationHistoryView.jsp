@@ -125,7 +125,7 @@
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">
 					<input type="button" value="<spring:message code='viewCommunicationHistoryList'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('communicationHistoryList.htm?personId=${person.id}')"/>
-					<a class="newAccountButton" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterNewJournal'/></a>
+					<a class="newAccountButton" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterANewCommunicationHistoryEntry'/></a>
 				</div>
 			</form:form>
 		</div>

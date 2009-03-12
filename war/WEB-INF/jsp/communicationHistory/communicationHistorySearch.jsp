@@ -4,8 +4,9 @@
 <jsp:include page="communicationHistorySearchResults.jsp"/>
 </c:when>
 <c:otherwise>
+<spring:message code="searchTouchPointEntries" var="titleText"/>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Search Journal Entries" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="mainContent" type="string">

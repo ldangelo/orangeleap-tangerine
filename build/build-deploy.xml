@@ -18,7 +18,6 @@
 		<property name="mysql.user" value="orangeleap" />
 		<property name="mysql.pw" value="orangeleap" />
 		<property name="mysql.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-		<property name="mysql.classpath" value="orangeleap" />
 
 		
 		
@@ -35,7 +34,7 @@
 		          userid="${mysql.user}"
 		          password="${mysql.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.classpath}"
+		          classpath="${mysql.db.classpath}"
  	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>

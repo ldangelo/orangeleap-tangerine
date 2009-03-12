@@ -146,12 +146,12 @@
 
 	<target name="undeploy-war">
 		<delete dir="${deploy.path}/${war.name}.war" />
-		<delete dir="${deploy.path}/${app.name}" />
+		<delete dir="${deploy.path}/${war.name}" />
 		<delete dir="${deploy.path}/../work" quiet="true" />
 		<delete dir="${deploy.path}/../temp" quiet="true" />
 		<delete>
 			<fileset dir="${deploy.path}" includes="${war.name}.war" />
-			<fileset dir="${deploy.path}" includes="${app.name}" />
+			<fileset dir="${deploy.path}" includes="${war.name}" />
 		</delete>
 	</target>
 

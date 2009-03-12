@@ -13,12 +13,12 @@
 		<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
 
 		
-		<property name="mysql.db.driver" value="com.mysql.jdbc.Driver" />
-		<property name="mysql.db.url" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
-		<property name="mysql.db.user" value="orangeleap" />
-		<property name="mysql.db.pw" value="orangeleap" />
-		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-		<property name="mysql.db.classpath" value="orangeleap" />
+		<property name="mysql.driver" value="com.mysql.jdbc.Driver" />
+		<property name="mysql.url" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="mysql.user" value="orangeleap" />
+		<property name="mysql.pw" value="orangeleap" />
+		<property name="mysql.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+		<property name="mysql.classpath" value="orangeleap" />
 
 		
 		
@@ -26,14 +26,16 @@
 			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh stop ${instance}'"/>
 	    </exec>
 		<sleep seconds="30" />
+		
+		<echo message="Populating database ${mysql.url}"/>
 
 		<!-- Reset schema -->
-	     <sql driver="${mysql.db.driver}"
-		          url="${mysql.db.url}"
-		          userid="${mysql.db.user}"
-		          password="${mysql.db.pw}"
+	     <sql driver="${mysql.driver}"
+		          url="${mysql.url}"
+		          userid="${mysql.user}"
+		          password="${mysql.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${mysql.classpath}"
  	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>

@@ -27,7 +27,7 @@
 							<th>Description</th>
 							<th>Object Type</th>
 							<th>Object ID</th>
-							<th>Link</th>
+							<th><spring:message code='currentRecord'/></th>
 						</tr>
 					</thead>
 					<tbody>

@@ -27,17 +27,20 @@
 
 	<select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		order by DATE desc
 	</select>
 
 	<select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		and a.ENTITY_TYPE = #entityType# 
 		and a.OBJECT_ID = #objectId#
+		order by DATE desc
 	</select>
 
 	<select id="AUDIT_HISTORY_FOR_CONSTITUENT" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		and a.CONSTITUENT_ID = #constituentId#
+		order by DATE desc
 	</select>
 
 	<insert id="INSERT_AUDIT" parameterClass="com.orangeleap.tangerine.domain.Audit">

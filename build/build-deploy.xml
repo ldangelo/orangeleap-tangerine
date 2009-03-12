@@ -13,11 +13,10 @@
 		<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
 
 		
-		<property name="mysql.driver" value="com.mysql.jdbc.Driver" />
-		<property name="mysql.url" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
-		<property name="mysql.user" value="orangeleap" />
-		<property name="mysql.pw" value="orangeleap" />
-		<property name="mysql.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl);
+        ]]> </script>
 
 		
 		
@@ -26,13 +25,13 @@
 	    </exec>
 		<sleep seconds="30" />
 		
-		<echo message="Populating database ${mysql.url}"/>
+		<echo message="Populating database ${mysql.db.url}"/>
 
 		<!-- Reset schema -->
-	     <sql driver="${mysql.driver}"
-		          url="${mysql.url}"
-		          userid="${mysql.user}"
-		          password="${mysql.pw}"
+	     <sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
 		          classpath="${mysql.db.classpath}"
  	              delimiter=";"

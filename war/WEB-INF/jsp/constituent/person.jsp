@@ -55,7 +55,7 @@
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
-					<a class="newAccountButton" href="person.htm">Add New Constituent » </a>
+					<a class="newAccountButton" href="person.htm"><spring:message code='enterNewConstituent'/></a>
 				</div>
 			</form:form>
 		</div>

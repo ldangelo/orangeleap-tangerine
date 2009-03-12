@@ -6,7 +6,6 @@ import java.util.Locale;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.support.AbstractMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
@@ -20,13 +19,13 @@ import com.orangeleap.tangerine.type.MessageResourceType;
 public class TangerineMessageSource extends AbstractMessageSource implements ResourceLoaderAware {
 
     private MessageService messageService;
-    private ResourceBundleMessageSource staticMessageSource;
+    private AbstractMessageSource staticMessageSource;
 
     public void setMessageService(MessageService messageService) {
         this.messageService = messageService;
     }
 
-    public void setStaticMessageSource(ResourceBundleMessageSource staticMessageSource) {
+    public void setStaticMessageSource(AbstractMessageSource staticMessageSource) {
         this.staticMessageSource = staticMessageSource;
     }
 

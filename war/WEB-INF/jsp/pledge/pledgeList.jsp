@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
+<spring:message code='pledges' var="titleText" />
+
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Pledges" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Pledges" />
@@ -13,13 +15,13 @@
 		<div class="content760 mainForm">
 
 		<jsp:include page="../snippets/personHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="Pledges" />
+			<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 		</jsp:include>
 
 		<c:choose>
 			<c:when test="${!empty commitmentList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults">Pledges <strong>1 - ${commitmentListSize}</strong> of <strong>${commitmentListSize}</strong></h4>
+					<h4 class="searchResults"><c:out value='${titleText}'/> <strong>1 - ${commitmentListSize}</strong> <spring:message code='of'/> <strong>${commitmentListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='pledgeList' />
@@ -53,11 +55,11 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="pledge.htm?personId=${person.id}">Enter a New Pledge » </a></p>
+				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="pledge.htm?personId=${person.id}"><spring:message code='enterNewPledge'/></a></p>
 			</c:when>
 			<c:when test="${commitmentList ne null}">
-				<p style="margin:8px 0 6px 0;">No pledges have been entered for this person.</p>
-				<p>Would you like to <a href="pledge.htm?personId=${person.id}">create a new pledge</a>?</p>
+				<p style="margin:8px 0 6px 0;"><spring:message code='noPledgesEntered'/></p>
+				<p><spring:message code='wouldYouLikeTo'/> <a href="pledge.htm?personId=${person.id}"> <spring:message code='createNewPledge'/></a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

@@ -12,14 +12,15 @@
 		</c:if>
 		<div class="content760 mainForm">
 
+		<spring:message code='journalEntries' var="titleText" />
 		<jsp:include page="../snippets/personHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="Journal Entry" />
+			<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 		</jsp:include>
 			
 		<c:choose>
 			<c:when test="${!empty communicationHistoryList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults">Journal Entries <strong>1 - ${communicationHistoryListSize}</strong> of <strong>${communicationHistoryListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='journalEntries'/> <strong>1 - ${communicationHistoryListSize}</strong> <spring:message code='of'/> <strong>${communicationHistoryListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='communicationHistoryList' />
@@ -36,18 +37,18 @@
 						<tbody>
 							<c:forEach items="${communicationHistoryList}" var="row">
 								<tr>
-									<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}">View</a></td>
+									<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
 				</c:forEach>
-				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="communicationHistory.htm?personId=${person.id}">Enter a New Journal Entry » </a></p>
+				<p class="enterNew"><a class="newLink" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterNewJournal'/></a></p>
 			</c:when>
 			<c:when test="${communicationHistoryList ne null}">
-				<p style="margin:8px 0 6px 0;">No journal entries have been created for this person.</p>
-				<p>Would you like to <a href="communicationHistory.htm?personId=${person.id}">create a new journal entry</a>?</p>
+				<p style="margin:8px 0 6px 0;"><spring:message code='noJournalEntriesEntered'/></p>
+				<p><spring:message code='wouldYouLikeTo'/> <a href="communicationHistory.htm?personId=${person.id}"><spring:message code='createNewJournalEntry'/></a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

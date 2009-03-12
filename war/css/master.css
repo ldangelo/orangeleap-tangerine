@@ -112,4 +112,7 @@ img {
 .noDisplay {
 	display: none !important;
 }
+p.enterNew {
+	padding-top:12px; text-align:right;
+}
 /* input field borders are #7f9db9 by default in firefox */

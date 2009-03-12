@@ -125,6 +125,7 @@
 		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}&type=pledge')"/>
 					</c:if>
+					<a class="newAccountButton" href="pledgeList.htm?personId=${person.id}"><spring:message code='enterNewPledge'/></a>
 				</div>
 				
 				

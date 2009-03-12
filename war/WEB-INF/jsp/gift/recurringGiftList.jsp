@@ -12,14 +12,15 @@
 		</c:if>
 		<div class="content760 mainForm">
 
+		<spring:message code='recurringGifts' var="titleText" />
 		<jsp:include page="../snippets/personHeader.jsp">
-			<jsp:param name="currentFunctionTitleText" value="Recurring Gifts" />
+			<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 		</jsp:include>
 
 		<c:choose>
 			<c:when test="${!empty commitmentList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults">Recurring Gifts <strong>1 - ${commitmentListSize}</strong> of <strong>${commitmentListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='recurringGifts'/> <strong>1 - ${commitmentListSize}</strong> <spring:message code='of'/> <strong>${commitmentListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='recurringGiftList' />
@@ -53,7 +54,7 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/> » </a></p>
+				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a></p>
 			</c:when>
 			<c:when test="${commitmentList ne null}">
 				<p style="margin:8px 0 6px 0;"><spring:message code='noRecurringGiftsEntered'/></p>

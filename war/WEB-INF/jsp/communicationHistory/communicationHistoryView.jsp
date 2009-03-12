@@ -21,7 +21,6 @@
 				<spring:message code='submitCommunicationHistory' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -126,6 +125,7 @@
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">
 					<input type="button" value="<spring:message code='viewCommunicationHistoryList'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('communicationHistoryList.htm?personId=${person.id}')"/>
+					<a class="newAccountButton" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterNewJournal'/></a>
 				</div>
 			</form:form>
 		</div>

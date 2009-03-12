@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
+<spring:message code='enterPledge' var="titleText" />
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="New Pledge" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="New Pledge" />
@@ -15,7 +16,6 @@
 			<form:form method="post" commandName="commitment">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 
-				<spring:message code='enterPledge' var="titleText" />
 				<spring:message code='submitPledge' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />

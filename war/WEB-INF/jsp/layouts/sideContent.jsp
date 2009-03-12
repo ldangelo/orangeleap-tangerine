@@ -53,8 +53,8 @@
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="journal"/></a>
 						<span class="secondary ${sidebarNav == 'Journal' ? 'active' : ''}">
-				            <a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistory.htm?personId=${person.id}"><spring:message code="enterNewCommunicationHistory"/></a>
-			            	<a class="${sidebarNav=='communicationHistoryView'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewCommunicationHistoryList"/></a>
+				            <a class="${sidebarNav=='communicationHistory'?'active':''}" href="communicationHistory.htm?personId=${person.id}"><spring:message code="enterNewCommunicationHistory"/></a>
+			            	<a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewCommunicationHistoryList"/></a>
 						</span>
 					</div>					
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>

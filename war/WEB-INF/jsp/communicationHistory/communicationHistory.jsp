@@ -8,7 +8,7 @@
 	<tiles:putAttribute name="browserTitle" value="New Journal Entry" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
-	<tiles:putAttribute name="sidebarNav" value="New Journal Entry" />
+	<tiles:putAttribute name="sidebarNav" value="communicationHistory" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='communicationHistory' />

@@ -17,6 +17,7 @@ import com.orangeleap.tangerine.dao.CommitmentDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.QueryLookupDao;
+import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
@@ -85,7 +86,7 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
         
         if (entityType == EntityType.person) {
             String where = ql.getSqlWhere();
-            if (where != null && where.trim().length() > 0) filterparms.put("additionalWhere", where);
+            if (where != null && where.trim().length() > 0) filterparms.put(QueryUtil.ADDITIONAL_WHERE, where);
         	List<Person> persons = constituentDao.searchConstituents(filterparms, null);
         	result.addAll(persons);
         	

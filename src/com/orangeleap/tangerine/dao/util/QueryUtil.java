@@ -18,6 +18,8 @@ public class QueryUtil {
     private QueryUtil() {
     }
 
+    public static final String ADDITIONAL_WHERE = "additionalWhere";
+    
     public static Map<String, Object> translateSearchParamsToIBatisParams(Map<String, Object> searchparams, Map<String, Object> fieldparams, Map<String, String> fieldMap) {
         Map<String, Object> refConstituentParams = new HashMap<String, Object>();
         Map<String, Object> addressParams = new HashMap<String, Object>();
@@ -101,6 +103,9 @@ public class QueryUtil {
         if (customParams.size() > 0) fieldparams.put("customParams", customParams.entrySet().toArray());
         if (stringParams.size() > 0) fieldparams.put("stringParams", stringParams.entrySet().toArray());
         if (nonStringParams.size() > 0) fieldparams.put("nonStringParams", nonStringParams.entrySet().toArray());
+        
+        String where = (String)searchparams.get(ADDITIONAL_WHERE);
+        if (where != null) fieldparams.put(ADDITIONAL_WHERE, where);
 	
         return fieldparams;
     }

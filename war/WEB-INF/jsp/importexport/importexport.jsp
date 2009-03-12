@@ -9,12 +9,12 @@
 			
 			<h1>Export a CSV file</h1>
 	        <form method="post" action="export.htm" >
-		        <select name="entity">
+		        <select id="entity" name="entity">
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
 		          <option value="gift">Gifts</option> 
 		        </select>            
-		        <input type="submit" value="Export" />
+		        <input type="submit" value="Export" onclick="if ( $('#entity').val() == '' ) return false; else return true; "/>
 	        </form>
 	        <br/>
 	
@@ -26,7 +26,7 @@
  		          <option value="gift">Gifts: Cash and Checks</option> 
 		        </select>            
 	            <input type="file" name="file"/>
-	            <input type="submit" value="Import" />
+	            <input type="submit" value="Import"  />
 	        </form>
         	
             <c:forEach var="line" items="${importResult}">

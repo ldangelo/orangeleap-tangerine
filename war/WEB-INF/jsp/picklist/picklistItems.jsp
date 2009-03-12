@@ -24,8 +24,8 @@
 				<table>
 					<tr>
 						<td class="action">&nbsp;</td>
-						<td class="codeValue">Short Description</td>
-						<td class="codeDescription">Long Description</td>
+						<td class="codeValue"><span class="required">*</span>Short Description</td>
+						<td class="codeDescription"><span class="required">*</span>Long Description</td>
 					 	<td class="inactive">Inactive</td>  
 					</tr>
 					<tr>

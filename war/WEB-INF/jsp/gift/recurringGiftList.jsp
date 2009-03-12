@@ -20,7 +20,7 @@
 		<c:choose>
 			<c:when test="${!empty commitmentList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults"><spring:message code='recurringGifts'/> <strong>1 - ${commitmentListSize}</strong> <spring:message code='of'/> <strong>${commitmentListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='recurringGifts'/>&nbsp;<strong>1 - ${commitmentListSize}</strong>&nbsp;<spring:message code='of'/>&nbsp;<strong>${commitmentListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='recurringGiftList' />

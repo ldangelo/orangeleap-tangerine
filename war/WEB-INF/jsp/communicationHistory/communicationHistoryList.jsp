@@ -20,7 +20,7 @@
 		<c:choose>
 			<c:when test="${!empty communicationHistoryList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults"><spring:message code='journalEntries'/> <strong>1 - ${communicationHistoryListSize}</strong> <spring:message code='of'/> <strong>${communicationHistoryListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='journalEntries'/>&nbsp;<strong>1 - ${communicationHistoryListSize}</strong>&nbsp;<spring:message code='of'/>&nbsp;<strong>${communicationHistoryListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='communicationHistoryList' />

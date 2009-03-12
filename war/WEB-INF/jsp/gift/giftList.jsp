@@ -20,7 +20,7 @@
 		<c:choose>
 			<c:when test="${!empty giftList}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults"><spring:message code='gifts'/> <strong>1 - ${giftListSize}</strong> <spring:message code='of'/> <strong>${giftListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='gifts'/>&nbsp;<strong>1 - ${giftListSize}</strong>&nbsp;<spring:message code='of'/>&nbsp;<strong>${giftListSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='giftList' />

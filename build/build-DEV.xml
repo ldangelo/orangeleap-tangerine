@@ -2,7 +2,7 @@
 <project name="orangeleap" basedir=".." default="deploy">
 
 	<property name="build.output.dir" value="/root/.hudson/jobs/tangerine/workspace/tangerine/build/stage" />
-	<property name="target.tomcat.dir" value="/opt/mpower/instance_DEV" />
+	<property name="target.tomcat.dir" value="/opt/orangeleap/instance_DEV" />
 	<property name="mysql.port" value="10006" />
 	<property name="build.deploy.file" value="${basedir}/build/build-deploy.xml" />
 	<property name="instance" value="DEV" />

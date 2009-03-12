@@ -17,7 +17,7 @@ public class TangerineDataSource implements DataSource {
 
 	
 	// The default schema should have no tables. Change to this first so in case something goes wrong, we don't want to still be pointing to the old database.
-	private static final String TANGERINE_DEFAULT_SCHEMA = "mpoweropen";
+	private static final String TANGERINE_DEFAULT_SCHEMA = "orangeleap";
 	private static final String USE_SQL = "USE ";
 	
 	private boolean splitDatabases = true;

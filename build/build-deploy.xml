@@ -8,14 +8,14 @@
 
 		
 		<property name="mysql.db.driver" value="com.mysql.jdbc.Driver" />
-		<property name="mysql.db.url" value="jdbc:mysql://localhost:${mysql.port}/mpoweropen?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
-		<property name="mysql.db.user" value="mpower" />
-		<property name="mysql.db.pw" value="mpower" />
+		<property name="mysql.db.url" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="mysql.db.user" value="orangeleap" />
+		<property name="mysql.db.pw" value="orangeleap" />
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
-		<property name="mysql.db.classpath" value="/opt/mpower/apache-tomcat-6.0.18/lib/mysql-connector-java-5.0.8-bin.jar" />
+		<property name="mysql.db.classpath" value="orangeleap" />
 
-		<exec dir="/opt/mpower" executable="su" spawn="true">
-			<arg line="- tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh stop ${instance}'"/>
+		<exec dir="/opt/orangeleap" executable="su" spawn="true">
+			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh stop ${instance}'"/>
 	    </exec>
 		<sleep seconds="30" />
 
@@ -43,15 +43,15 @@
 		
 		<delete dir="${target.tomcat.dir}/work" />
 		<delete dir="${target.tomcat.dir}/temp" />
-		<delete dir="${target.tomcat.dir}/webapps/mpower" />
+		<delete dir="${target.tomcat.dir}/webapps/orangeleap" />
 		<copy file="${build.output.dir}/orangeleap.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
 		
-		<exec dir="/opt/mpower" executable="chown" >
+		<exec dir="/opt/orangeleap" executable="chown" >
 			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/webapps"/>
 	    </exec>
 
-		<exec dir="/opt/mpower" executable="su" spawn="true">
-			<arg line="- tomcat -c 'cd /opt/mpower;/opt/mpower/run.sh start ${instance}'"/>
+		<exec dir="/opt/orangeleap" executable="su" spawn="true">
+			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh start ${instance}'"/>
 	    </exec>
 		
 		

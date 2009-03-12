@@ -41,6 +41,7 @@
 	    <isNull property="secondaryFieldDefinitionId">
 	    	and fr.SECONDARY_FIELD_DEFINITION_ID is NULL
 	    </isNull>
+	    order by fr.SITE_NAME
 	</select>
 	
 	<insert id="INSERT_FIELD_REQUIRED" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRequired">

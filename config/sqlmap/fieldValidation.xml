@@ -41,6 +41,7 @@
 	    <isNull property="secondaryFieldDefinitionId">
 	    	and fv.SECONDARY_FIELD_DEFINITION_ID is NULL
 	    </isNull>
+	    order by fv.SITE_NAME 
 	</select>
 
 	<insert id="INSERT_FIELD_VALIDATION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldValidation">

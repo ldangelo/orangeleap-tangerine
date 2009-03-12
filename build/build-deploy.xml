@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="orangeleap" basedir=".." default="deploy">
+	
+	<property file="${basedir}/build/build.properties" />
+    <property file="${commonBuild.dir}/commonBuild.properties"/>
+	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 
-	<target name="deploy" description="Deploy build output and populate database" >
+	<target name="deploy" description="Deploy build output and populate database" depends="resolve"  >
+
+		
 
 		<property name="dev.build.file" value="${basedir}/build/build.xml" />
 		<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
@@ -14,6 +20,8 @@
 		<property name="mysql.db.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
 		<property name="mysql.db.classpath" value="orangeleap" />
 
+		
+		
 		<exec dir="/opt/orangeleap" executable="su" spawn="true">
 			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh stop ${instance}'"/>
 	    </exec>

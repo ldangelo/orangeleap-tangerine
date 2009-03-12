@@ -172,27 +172,27 @@
 
 	<target name="app.synch">
 		<echo>Synchronizing App</echo>
-		<sync todir="${deploy.path}/${app.name}/css">
+		<sync todir="${deploy.path}/${war.name}/css">
 			<fileset dir="${war.dir}/css">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
-		<sync todir="${deploy.path}/${app.name}/js">
+		<sync todir="${deploy.path}/${war.name}/js">
 			<fileset dir="${war.dir}/js">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
-		<sync todir="${deploy.path}/${app.name}/images">
+		<sync todir="${deploy.path}/${war.name}/images">
 			<fileset dir="${war.dir}/images">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
-		<sync todir="${deploy.path}/${app.name}/WEB-INF/jsp">
+		<sync todir="${deploy.path}/${war.name}/WEB-INF/jsp">
 			<fileset dir="${war.dir}/WEB-INF/jsp">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
-		<copy todir="${deploy.path}/${app.name}">
+		<copy todir="${deploy.path}/${war.name}">
 			<fileset dir="${war.dir}">
 				<include name="*.jsp"/>
 			</fileset>

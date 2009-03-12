@@ -10,11 +10,16 @@
 	<tiles:putAttribute name="secondaryNav" value="Payment History" />
 	<tiles:putAttribute name="sidebarNav" value="Payment History"/>
 	<tiles:putAttribute name="mainContent" type="string">
+		<mp:page pageName='paymentHistory'/>
+		<c:set var="person" value="${person}" scope="request" />
+		<c:if test="${person.id!=null}">
+			<c:set var="viewingPerson" value="true" scope="request" />
+		</c:if>
 		<div class="content760 mainForm">
-			<c:set var="person" value="${person}" scope="request" />
-			<c:if test="${person.id!=null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
-			</c:if>
+			<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:param name="currentFunctionTitleText" value="Payment History" />
+			</jsp:include>
+				
 			<div id="searchResults">
                <jsp:include page="paymentHistoryResults.jsp"/>
 			</div>

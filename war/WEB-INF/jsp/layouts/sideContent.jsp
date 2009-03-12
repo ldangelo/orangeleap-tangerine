@@ -54,7 +54,7 @@
 						<a class="groupHeader" href="#" onclick="this.blur();return false;"><spring:message code="touchPoints"/></a>
 						<span class="secondary ${sidebarNav == 'Journal' ? 'active' : ''}">
 				            <a class="${sidebarNav=='communicationHistory'?'active':''}" href="communicationHistory.htm?personId=${person.id}"><spring:message code="enterNewCommunicationHistory"/></a>
-			            	<a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewCommunicationHistoryList"/></a>
+			            	<a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="communicationHistoryEntries"/></a>
 						</span>
 					</div>					
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>

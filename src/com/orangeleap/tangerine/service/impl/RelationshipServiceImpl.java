@@ -83,6 +83,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
        			String newFieldValue = getNewFieldValue(constituent, key);  
        		    List<Long> oldids = RelationshipUtil.getIds(oldFieldValue);
     			List<Long> newids = RelationshipUtil.getIds(newFieldValue);
+    			validateIds(customFieldName, newids);
     			
     			if (!oldFieldValue.equals(newFieldValue)) {
  
@@ -125,10 +126,18 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	
 	    if (logger.isDebugEnabled() && lastRecursiveParentCustomFieldName != null) {
 	        // TODO Turn off in production since getting the whole tree could be expensive.
-	    	debugPrintTree(constituent, lastRecursiveParentCustomFieldName);
+	    	// debugPrintTree(constituent, lastRecursiveParentCustomFieldName);
 	    }
 			
         return constituent;
+    }
+    
+    // Validate id list for import.  They must exist and be on same site.
+    private void validateIds(String customFieldName, List<Long> ids) {
+    	for (Long id : ids) {
+    		Person person = constituentDao.readConstituentById(id);
+    		if (person == null || !person.getSite().getName().equals(getSiteName())) throw new RuntimeException("Invalid id "+id+" for "+customFieldName);
+    	}
     }
     
     // Return the tree reachable from Person, using the "parent" field name (e.g. "organization.parent")

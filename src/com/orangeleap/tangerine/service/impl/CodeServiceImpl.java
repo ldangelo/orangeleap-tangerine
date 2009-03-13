@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,9 @@ public class CodeServiceImpl extends AbstractTangerineService implements CodeSer
         if (logger.isDebugEnabled()) {
             logger.debug("maintainCode: code = " + code);
         }
+        
+    	if (StringUtils.trimToNull(code.getValue()) == null || StringUtils.trimToNull(code.getDescription()) == null) throw new RuntimeException("Blank values not allowed");
+
         Code oldCode = null;
         if (code.getId() != null) {
             Code dbCode = codeDao.readCodeById(code.getId());

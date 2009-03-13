@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -203,6 +204,8 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
+    	
+    	if (StringUtils.trimToNull(picklistItem.getItemName()) == null || StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
     	
     	checkNotDefault(picklistItem);
 

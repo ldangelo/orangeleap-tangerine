@@ -16,7 +16,7 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware TO
     private BigDecimal amount;
     private BigDecimal deductibleAmount;
     private Date transactionDate;
-    private Date donationDate;
+    private Date donationDate = new Date();
     private Date postmarkDate;
     private String authCode = StringConstants.EMPTY;
     private Long originalGiftId;
@@ -70,9 +70,6 @@ public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware TO
     }
 
     public Date getDonationDate() {
-        if (donationDate == null) {
-            donationDate = new Date();
-        }
         return donationDate;
     }
 

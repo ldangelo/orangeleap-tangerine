@@ -48,7 +48,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.isDeductible() == true;
         assert GiftEntryType.MANUAL.equals(gift.getEntryType());
         assert gift.getCommitmentId() == null;
-        assert gift.getDonationDate() != null;
+        assert gift.getDonationDate() == null;
         assert gift.getPostmarkDate() == null;
         assert gift.getAuthCode() == null;
         assert gift.getOriginalGiftId() == null;
@@ -293,7 +293,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
                     assert gift.getCommitmentId() == 300L;
-                    assert gift.getDonationDate() != null;
+                    assert gift.getDonationDate() == null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
                     assert gift.getOriginalGiftId() == null;
@@ -368,7 +368,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
                     assert gift.getCommitmentId() == 300L;
-                    assert gift.getDonationDate() != null;
+                    assert gift.getDonationDate() == null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
                     assert gift.getOriginalGiftId() == null;

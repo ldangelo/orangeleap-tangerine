@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.controller.importexport.exporters;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -134,10 +137,11 @@ public abstract class EntityExporter {
 				;
 	}
 
-	private static final String MIDNITE = " 00:00:00.0";
-	
 	@SuppressWarnings("unchecked")
 	private String getFieldValue(Object o, FieldDescriptor fd) {
+		
+		FieldType fieldType = fd.getFieldDefinition().getFieldType();
+		
 		String result = "";
 		try {
 			String name = fd.getName();
@@ -148,7 +152,7 @@ public abstract class EntityExporter {
 				Method m = o.getClass().getMethod("get"+fd.getMapType()+"Map");
 				Map map = (Map)m.invoke(o);
 				Object so = map.get(fd.getKey());
-				result = BeanUtils.getProperty(so, fd.getSubField());
+				result = getProperty(so, fd.getSubField(), fieldType);
 			} else if (fd.isDependentField()) {
 				String depobject = fd.getDependentObject();
 				Method m = o.getClass().getMethod("get"+FieldDescriptor.toInitialUpperCase(depobject));
@@ -156,9 +160,9 @@ public abstract class EntityExporter {
 				if (so == null) {
                     return "";
                 }
-				result = BeanUtils.getProperty(so, fd.getDependentField());
+				result = getProperty(so, fd.getDependentField(), fieldType);
 			} else {
-				result = BeanUtils.getProperty(o, name);
+				result = getProperty(o, name, fieldType);
 			}
 		} catch (Exception e) {
 			// Some screen fields are not entity properties
@@ -168,12 +172,23 @@ public abstract class EntityExporter {
             result = "";
         }
 		
-		if (fd.getFieldDefinition().getFieldType() == FieldType.DATE && result.endsWith(MIDNITE)) {
-			result = result.substring(0,result.length()-MIDNITE.length());
-		}
 		return result;
 	}
 	
+	private String getProperty(Object o, String field, FieldType fieldType) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		if (fieldType == FieldType.DATE) {
+			Method m = o.getClass().getMethod("get"+StringUtils.capitalize(field), new Class[0]);
+			Object result = m.invoke(o, new Object[0]);
+			if (result instanceof java.util.Date) {
+				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+				return sdf.format((java.util.Date)result);
+			} else {
+				if (result == null) return ""; else return result.toString();
+			}
+		} else {
+			return BeanUtils.getProperty(o, field);
+		}
+	}
 
 
 	

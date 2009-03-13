@@ -25,6 +25,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 
+@SuppressWarnings("deprecation")
 public class CsvExportController extends SimpleFormController {
 
     protected final Log logger = LogFactory.getLog(getClass());

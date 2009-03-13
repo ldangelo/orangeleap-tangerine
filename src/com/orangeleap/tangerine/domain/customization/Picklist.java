@@ -130,4 +130,8 @@ public class Picklist implements Serializable {
 	public String getPicklistDesc() {
 		return picklistDesc;
 	}
+	
+	public String toString() {
+	   return getPicklistDesc();
+	}
 }

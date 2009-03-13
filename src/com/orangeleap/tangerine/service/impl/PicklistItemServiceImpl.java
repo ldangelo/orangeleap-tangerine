@@ -120,7 +120,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 			if (picklist.getSite() == null) {
 				boolean found = false;
 				for (Picklist apicklist : result) {
-                    if (apicklist.getPicklistName().equals(picklist.getPicklistName())) {
+                    if (apicklist.getPicklistDesc().equals(picklist.getPicklistDesc())) {
                         found = true;
                     }
                 }

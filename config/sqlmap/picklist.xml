@@ -49,7 +49,7 @@
     <select id="SELECT_PICKLIST_BY_SITE_NAME" resultMap="PICKLIST_RESULT" parameterClass="string" cacheModel="picklist-cache">
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         where ((P.SITE_NAME = #value#) or (P.SITE_NAME is NULL))
-        order by SITE_NAME, ENTITY_TYPE
+        order by SITE_NAME, ENTITY_TYPE, P.PICKLIST_DESC
     </select>
 
     <select id="SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map" cacheModel="picklist-cache">

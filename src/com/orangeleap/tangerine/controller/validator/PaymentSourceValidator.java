@@ -40,7 +40,7 @@ public class PaymentSourceValidator implements Validator {
         validatePaymentSource(target, errors);
     }
 
-    public static void validatePaymentSource(Object target, Errors errors) {
+    public void validatePaymentSource(Object target, Errors errors) {
         PaymentSource source = null;
         String inPath = errors.getNestedPath();
         if (target instanceof PaymentSource) {

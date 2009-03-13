@@ -4,13 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.type.ActivationType;
 
-public class PhoneValidator implements Validator {
+public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -27,7 +25,7 @@ public class PhoneValidator implements Validator {
         validatePhone(target, errors);
     }
 
-    public static void validatePhone(Object target, Errors errors) {
+    public void validatePhone(Object target, Errors errors) {
         Phone phone = null;
         String inPath = errors.getNestedPath();
         if (target instanceof Phone) {
@@ -39,26 +37,7 @@ public class PhoneValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");
-        if (ActivationType.seasonal.equals(phone.getActivationStatus())) {
-            if (phone.getSeasonalStartDate() == null) {
-                errors.rejectValue("seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required");
-            }
-            if (phone.getSeasonalEndDate() == null) {
-                errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required");
-            }
-            if (phone.getSeasonalStartDate() != null && phone.getSeasonalEndDate() != null) {
-                if (!phone.getSeasonalEndDate().after(phone.getSeasonalStartDate())) {
-                    errors.rejectValue("seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "Seasonal End Date must be after Seasonal Start Date");
-                }
-            }
-        } else if (ActivationType.temporary.equals(phone.getActivationStatus())) {
-            if (phone.getTemporaryStartDate() == null) {
-                errors.rejectValue("temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required");
-            }
-            if (phone.getTemporaryEndDate() == null) {
-                errors.rejectValue("temporaryEndDate", "invalidTemporaryEndDate", "Temporary End Date is required");
-            }
-        }
+        validateDates(phone, errors);
         errors.setNestedPath(inPath);
     }
 }

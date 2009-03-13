@@ -49,6 +49,18 @@ public class EntityValidator implements Validator {
     @Resource(name="tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
     
+    @Resource(name="addressValidator")
+    private AddressValidator addressValidator;
+    
+    @Resource(name="phoneValidator")
+    private PhoneValidator phoneValidator;
+    
+    @Resource(name="emailValidator")
+    private EmailValidator emailValidator;
+    
+    @Resource(name="paymentSourceValidator")
+    private PaymentSourceValidator paymentSourceValidator;
+    
     @Resource(name="siteService")
     private SiteService siteService;
 
@@ -81,7 +93,7 @@ public class EntityValidator implements Validator {
             if (target instanceof PaymentSourceAware) {
                 PaymentSourceAware obj = (PaymentSourceAware) target;
                 if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
-                    PaymentSourceValidator.validatePaymentSource(target, errors);
+                    paymentSourceValidator.validatePaymentSource(target, errors);
                 }
                 else if (FormBeanType.EXISTING.equals(obj.getPaymentSourceType())) {
                     // TODO: validate ID > 0
@@ -90,7 +102,7 @@ public class EntityValidator implements Validator {
             if (target instanceof AddressAware) {
                 AddressAware obj = (AddressAware) target;
                 if (FormBeanType.NEW.equals(obj.getAddressType())) {
-                    AddressValidator.validateAddress(target, errors);
+                    addressValidator.validateAddress(target, errors);
                 }
                 else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
                     // TODO: validate ID > 0
@@ -100,7 +112,7 @@ public class EntityValidator implements Validator {
             if (target instanceof PhoneAware) {
                 PhoneAware obj = (PhoneAware) target;
                 if (FormBeanType.NEW.equals(obj.getPhoneType())) {
-                    PhoneValidator.validatePhone(target, errors);
+                    phoneValidator.validatePhone(target, errors);
                 }
                 else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
                     // TODO: validate ID > 0
@@ -110,7 +122,7 @@ public class EntityValidator implements Validator {
             if (target instanceof EmailAware) {
                 EmailAware obj = (EmailAware) target;
                 if (FormBeanType.NEW.equals(obj.getEmailType())) {
-                    EmailValidator.validateEMail(target, errors);
+                    emailValidator.validateEMail(target, errors);
                 }
                 else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
                     // TODO: validate ID > 0

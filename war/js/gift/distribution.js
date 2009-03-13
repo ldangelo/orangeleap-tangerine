@@ -173,27 +173,20 @@ var Distribution = {
 	},
 	
 	displayError: function(subTotal, pctTotal) {
-
+        var v = null;
         var rec = $('#recurring');
-
-        // determine if we're playing with a Pledge or a Gift
-        if(rec.length > 0) {
-            // have a pledge, so figure out if it is recurring or one-time
-            var opt = $('#recurring option:selected').text();
-            if(opt === 'Yes') {
-                var v = $('#amountPerGift');
-            } else {
-                v = $('#amountTotal');
-            }
-        } else {
-            // we've got a gift
-            v = $('#amount');
+        if (rec.length) {
+	        v = (rec.val() == "true" ? $('#amountPerGift') : $('#amountTotal'));
+        }
+        else {
+        	v = $('#amount');
         }
 
-        if(subTotal === parseFloat(v.val()) && pctTotal === 100) {
+        if (subTotal === parseFloat(v.val()) && pctTotal === 100) {
             $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
-        } else {
+        } 
+        else {
             $("#totalText").addClass("warning");
 			$("#amountsErrorSpan").show();
         }

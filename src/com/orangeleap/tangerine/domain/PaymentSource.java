@@ -335,6 +335,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         }
         return yearList;
     }
+    
+    public void setFromAddressAware(AddressAware addressAware) {
+        setSelectedAddress(addressAware.getSelectedAddress());
+        setAddress(addressAware.getSelectedAddress());
+        setAddressType(addressAware.getAddressType());
+    }
 
     @Override
     public Address getSelectedAddress() {
@@ -347,6 +353,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     @Override
     public void setSelectedAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
+    }
+    
+    public void setFromPhoneAware(PhoneAware phoneAware) {
+        setSelectedPhone(phoneAware.getSelectedPhone());
+        setPhone(phoneAware.getSelectedPhone());
+        setPhoneType(phoneAware.getPhoneType());
     }
 
     @Override

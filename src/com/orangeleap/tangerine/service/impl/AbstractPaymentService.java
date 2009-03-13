@@ -56,8 +56,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             maintainEmailChild(emailAware, constituent);
         }
         if (entity instanceof PaymentSourceAware) {
-            PaymentSourceAware paymentSourceAware = (PaymentSourceAware)entity;
-            maintainPaymentSourceChild(paymentSourceAware, constituent);
+            maintainPaymentSourceChild(entity, constituent);
         }
     }
 
@@ -100,7 +99,8 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
     
-    private void maintainPaymentSourceChild(PaymentSourceAware paymentSourceAware, Person constituent) {
+    private void maintainPaymentSourceChild(AbstractEntity entity, Person constituent) {
+        PaymentSourceAware paymentSourceAware = (PaymentSourceAware)entity;
         if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) || 
             PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType()) || 
             FormBeanType.NONE.equals(paymentSourceAware.getPaymentSourceType())) {
@@ -112,6 +112,14 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
             PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
             newPaymentSource.setPerson(constituent);
+            
+            if (entity instanceof AddressAware && FormBeanType.NONE.equals(((AddressAware)entity).getAddressType()) == false) {
+                newPaymentSource.setFromAddressAware((AddressAware)entity);
+            }
+            if (entity instanceof PhoneAware && FormBeanType.NONE.equals(((PhoneAware)entity).getPhoneType()) == false) { 
+                newPaymentSource.setFromPhoneAware((PhoneAware)entity);
+            }
+
             paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
             paymentSourceAware.setSelectedPaymentSource(paymentSourceAware.getPaymentSource());
         }

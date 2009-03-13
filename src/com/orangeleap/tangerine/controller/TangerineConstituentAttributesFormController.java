@@ -197,9 +197,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         }
         else if (StringConstants.NONE.equals(selectedAddress)) {
             addressAware.setAddressType(FormBeanType.NONE);
+            addressAware.getAddress().setUserCreated(false);
         }
         else {
             addressAware.setAddressType(FormBeanType.EXISTING);
+            addressAware.getAddress().setUserCreated(false);
         }
     }
 
@@ -211,9 +213,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         }
         else if (StringConstants.NONE.equals(selectedPhone)) {
             phoneAware.setPhoneType(FormBeanType.NONE);
+            phoneAware.getPhone().setUserCreated(false);
         }
         else {
             phoneAware.setPhoneType(FormBeanType.EXISTING);
+            phoneAware.getPhone().setUserCreated(false);
         }
     }
 
@@ -225,9 +229,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         }
         else if (StringConstants.NONE.equals(selectedEmail)) {
             emailAware.setEmailType(FormBeanType.NONE);
+            emailAware.getEmail().setUserCreated(false);
         }
         else {
             emailAware.setEmailType(FormBeanType.EXISTING);
+            emailAware.getEmail().setUserCreated(false);
         }
     }
     
@@ -242,9 +248,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
             }
             else if (StringConstants.NONE.equals(selectedPaymentSource)) {
                 paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
+                paymentSourceAware.getPaymentSource().setUserCreated(false);
             }
             else {
                 paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
+                paymentSourceAware.getPaymentSource().setUserCreated(false);
                 paymentSourceAware.setPaymentSourceAwarePaymentType();
             }
         }

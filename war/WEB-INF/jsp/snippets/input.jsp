@@ -48,7 +48,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" items="${paymentSources['ACH']}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.paymentSource.userCreated && opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>
 								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" achholder="<c:out value='${opt.achHolderName}'/>" 
 								routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
 						</c:forEach>
@@ -66,7 +66,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" items="${paymentSources['Credit Card']}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>  
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.paymentSource.userCreated && opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>  
 								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" 
 								cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" 
 								exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
@@ -91,7 +91,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${addresses}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.address.userCreated && opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/></option>
 						</c:forEach>
 						<c:if test="${not empty addresses}">
 							</optgroup>
@@ -118,7 +118,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${phones}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.phone.userCreated && opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/></option>
 						</c:forEach>
 						<c:if test="${not empty phones}">
 							</optgroup>

@@ -4,7 +4,7 @@
     
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
-		<title>Orange Leap - <tiles:getAsString name="browserTitle"/></title>
+		<title><tiles:getAsString name="browserTitle"/> - Orange Leap</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <tiles:insertAttribute name="headContent"/>
         <tiles:insertAttribute name="customHeaderContent" ignore="true"/>

@@ -23,13 +23,13 @@
 		        
 		        <div id="dateRange">
 		         <div class="lookupWrapper">
-					  From date: <input id="fromDate" name="fromDate" size="16" maxlength="10" cssClass="text date dp-applied" cssErrorClass="textError date" /><a href="#" class="dp-choose-date" title="Choose date">Choose date</a>
+					  From date: <input id="fromDate" name="fromDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
 		         <div class="lookupWrapper">
-					  &nbsp;&nbsp;&nbsp;To date: <input id="toDate" name="toDate" size="16" maxlength="10" cssClass="text date dp-applied" cssErrorClass="textError date" /><a href="#" class="dp-choose-date" title="Choose date">Choose date</a>
+					  &nbsp;&nbsp;&nbsp;To date: <input id="toDate" name="toDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
 		        </div>
-		        <script>$('#dateRange').hide();</script>
+		        <script type="text/javascript">$('#dateRange').hide();</script>
 		        
 	        </form>
 	        

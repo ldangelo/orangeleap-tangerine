@@ -40,6 +40,8 @@ public final class StringConstants {
     public static final String COMMUNICATION_HISTORY_ID = "communicationHistoryId";
     public static final String SELECTED_COMMUNICATION_HISTORY = "selectedcommunicationHistory";
 
+    public static final String PAYMENT_TYPE = "paymentType";
+    
     public static final String PAYMENT_SOURCE = "paymentSource";
     public static final String PAYMENT_SOURCES = "paymentSources";
     public static final String PAYMENT_SOURCE_ID = "paymentSourceId";

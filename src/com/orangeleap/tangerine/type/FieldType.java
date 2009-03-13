@@ -7,6 +7,7 @@ public enum FieldType {
     TEXT,
     PERCENTAGE,
     READ_ONLY_TEXT,
+    PAYMENT_TYPE_READ_ONLY_TEXT,
     LOOKUP,
     CODE,
     CODE_OTHER,

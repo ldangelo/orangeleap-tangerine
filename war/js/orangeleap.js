@@ -3,8 +3,7 @@ $(document).ready(function() {
 		$("li.side:has(.picklist), li.side:has(.multiPicklist)", "ul").each(Picklist.buildPicklistTree);
 		Picklist.cascadeElementsRoot();
 	})();
-	$(".picklist:not(.paymentSourcePicklist)", "form").bind("change", Picklist.togglePicklist);
-	$(".paymentSourcePicklist", "form").bind("change", Picklist.populatePaymentSourceAttributes);	
+	$(".picklist", "form").bind("change", Picklist.togglePicklist);
 	
 	$("table.tablesorter tbody td input").focus(function() {
 		$(this).parents("tr:first").addClass("focused");
@@ -509,56 +508,6 @@ var Picklist = {
 			}
 		});	
 		return $select;
-	},
-	
-	populatePaymentSourceAttributes: function() {
-		var $option = $(this).find("option:selected");
-		if ($option.length && isNaN(parseInt($option.val(), 10)) == false) {
-			var addressId = $option.attr("address");
-			var phoneId = $option.attr("phone");
-			
-			var $selectAddress = Picklist.setSelectedAddressPhoneByValue($("select#selectedAddress", "form"), addressId);
-			var $selectPhone = Picklist.setSelectedAddressPhoneByValue($("select#selectedPhone", "form"), phoneId);
-			
-			// ACH
-			var achholder = $option.attr("achholder");
-			if (achholder) {
-				$("div.gift_editAch div#selectedPaymentSource_achHolderName, div.commitment_editAch div#selectedPaymentSource_achHolderName", "form").text(achholder);
-			}
-			var routing = $option.attr("routing");
-			if (routing) {
-				$("div.gift_editAch div#selectedPaymentSource_achRoutingNumberDisplay, div.commitment_editAch div#selectedPaymentSource_achRoutingNumberDisplay", "form").text(routing);
-			}
-			var acct = $option.attr("acct");
-			if (acct) {
-				$("div.gift_editAch div#selectedPaymentSource_achAccountNumberDisplay, div.commitment_editAch div#selectedPaymentSource_achAccountNumberDisplay", "form").text(acct);
-			}
-			
-			// Credit Card
-			var cardholder = $option.attr("cardholder");
-			if (cardholder) {
-				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardHolderName, div.commitment_editCreditCard div#selectedPaymentSource_creditCardHolderName", "form").text(cardholder);
-			}
-			var cardType = $option.attr("cardType");
-			if (cardType) {
-				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardType, div.commitment_editCreditCard div#selectedPaymentSource_creditCardType", "form").text(cardType);
-			}
-			var number = $option.attr("number");
-			if (number) {
-				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardNumberDisplay, div.commitment_editCreditCard div#selectedPaymentSource_creditCardNumberDisplay", "form").text(number);
-			}
-			var exp = $option.attr("exp");
-			if (exp) {
-				$("div.gift_editCreditCard div#selectedPaymentSource_creditCardExpiration, div.commitment_editCreditCard div#selectedPaymentSource_creditCardExpiration", "form").text(exp);
-			}
-		}
-		$(this).each(Picklist.togglePicklist);
-		if ($selectAddress) {
-			$selectAddress.each(Picklist.togglePicklist);
-		}
-		if ($selectPhone) {
-			$selectPhone.each(Picklist.togglePicklist);
-		}
 	}
 }
 var OrangeLeap = {

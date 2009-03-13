@@ -36,44 +36,45 @@
 					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist paymentSourcePicklist <c:out value='${fieldVO.entityAttributes}'/>" 
-						references="li:has(#paymentType),.<c:out value='${commandObject}'/>_editAch,.<c:out value='${commandObject}'/>_editCreditCard">
-						<c:set var="selectedRef" value="" scope="page"/>
+					<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.model.selectedPaymentSource.id}'/>"/>
+					<script type="text/javascript" src="js/payment/paymentEditable.js"></script>
+					<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${commandObject}"/>';</script>
+					<select name="ach-<c:out value='${fieldVO.fieldName}'/>" id="ach-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>">
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<option value="new" reference="li:has(#paymentType)" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
-						<c:if test='${fieldVO.model.paymentSource.userCreated}'>
-							<c:set var="selectedRef" value="li:has(#paymentType)" scope="page"/>
-						</c:if>
-						<c:if test="${not empty paymentSources}">
+						<option value="new" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+						<c:if test="${not empty paymentSources['ACH']}">
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
-						<c:forEach var="opt" varStatus="status" items="${paymentSources}">
-							<c:if test="${opt.paymentType == 'ACH'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editAch" 
-									address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" achholder="<c:out value='${opt.achHolderName}'/>" routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
-								<c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>
-									<c:set var="selectedRef" value=".${commandObject}_editAch" scope="page"/>
-								</c:if>
-							</c:if>
-							<c:if test="${opt.paymentType == 'Credit Card'}">
-								<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if> reference=".<c:out value='${commandObject}'/>_editCreditCard" 
-									address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
-								<c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>
-									<c:set var="selectedRef" value=".${commandObject}_editCreditCard" scope="page"/>
-								</c:if>
-							</c:if>
+						<c:forEach var="opt" items="${paymentSources['ACH']}">
+							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>
+								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" achholder="<c:out value='${opt.achHolderName}'/>" 
+								routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
 						</c:forEach>
-						<c:if test="${not empty paymentSources}">
+						<c:if test="${not empty paymentSources['ACH']}">
 							</optgroup>
 						</c:if>
 					</select>
-					<c:if test="${fieldVO.required && selectedRef eq ''}">
-						<%--Default select to the reference to 'create new' if required and nothing previously selected --%>
-						<c:set var="selectedRef" value="li:has(#paymentType)" scope="page"/>
-					</c:if>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
+										
+					<select name="creditCard-<c:out value='${fieldVO.fieldName}'/>" id="creditCard-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>">
+						<c:if test="${fieldVO.required != 'true'}">
+							<option value="none"><spring:message code="none"/></option>
+						</c:if>
+						<option value="new" <c:if test='${fieldVO.model.paymentSource.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+						<c:if test="${not empty paymentSources['Credit Card']}">
+							<optgroup label="<spring:message code='orChoose'/>">
+						</c:if>
+						<c:forEach var="opt" items="${paymentSources['Credit Card']}">
+							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>  
+								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" 
+								cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" 
+								exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
+						</c:forEach>
+						<c:if test="${not empty paymentSources['Credit Card']}">
+							</optgroup>
+						</c:if>
+					</select>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
@@ -386,7 +387,11 @@
 		                   <c:if test="${fieldVO.fieldValue}">checked</c:if> 
 		            />
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT'}">
+				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
+					<c:if test="${fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
+						<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
+						<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${commandObject}"/>';</script>
+					</c:if>
 					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'TEXT'}">

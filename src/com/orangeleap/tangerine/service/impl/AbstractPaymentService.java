@@ -101,15 +101,19 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     }
     
     private void maintainPaymentSourceChild(PaymentSourceAware paymentSourceAware, Person constituent) {
-        if (FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
+        if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) || 
+            PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType()) || 
+            FormBeanType.NONE.equals(paymentSourceAware.getPaymentSourceType())) {
+            paymentSourceAware.setSelectedPaymentSource(null);
+            paymentSourceAware.setPaymentSource(null);
+        }
+        else if ((PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) || 
+                PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) && 
+                FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
             PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
             newPaymentSource.setPerson(constituent);
             paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
             paymentSourceAware.setSelectedPaymentSource(paymentSourceAware.getPaymentSource());
-        }
-        else if (FormBeanType.NONE.equals(paymentSourceAware.getPaymentSourceType())) {
-            paymentSourceAware.setSelectedPaymentSource(null);
-            paymentSourceAware.setPaymentSource(null);
         }
     }
 }

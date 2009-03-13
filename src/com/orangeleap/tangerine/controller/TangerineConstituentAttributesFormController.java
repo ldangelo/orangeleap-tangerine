@@ -160,7 +160,7 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     @SuppressWarnings("unchecked")
     protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindPaymentSource) {
-            List<PaymentSource> paymentSources = paymentSourceService.readActivePaymentSourcesACHCreditCard(this.getConstituentId(request));
+            Map<String, List<PaymentSource>> paymentSources = paymentSourceService.groupActivePaymentSourcesACHCreditCard(this.getConstituentId(request));
             refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
         }
     }
@@ -232,18 +232,21 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     }
     
     protected void bindPaymentSource(HttpServletRequest request, PaymentSourceAware paymentSourceAware) {
-        String selectedPaymentSource = request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE);
-        if (StringConstants.NEW.equals(selectedPaymentSource)) {
-            paymentSourceAware.setPaymentSourceType(FormBeanType.NEW);
-            paymentSourceAware.getPaymentSource().setUserCreated(true);
-            paymentSourceAware.setPaymentSourcePaymentType();
-        }
-        else if (StringConstants.NONE.equals(selectedPaymentSource)) {
-            paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
-        }
-        else {
-            paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
-            paymentSourceAware.setPaymentSourceAwarePaymentType();
+        String paymentType = request.getParameter(StringConstants.PAYMENT_TYPE);
+        if (PaymentSource.ACH.equals(paymentType) || PaymentSource.CREDIT_CARD.equals(paymentType)) {
+            String selectedPaymentSource = request.getParameter(StringConstants.SELECTED_PAYMENT_SOURCE);
+            if (StringConstants.NEW.equals(selectedPaymentSource)) {
+                paymentSourceAware.setPaymentSourceType(FormBeanType.NEW);
+                paymentSourceAware.getPaymentSource().setUserCreated(true);
+                paymentSourceAware.setPaymentSourcePaymentType();
+            }
+            else if (StringConstants.NONE.equals(selectedPaymentSource)) {
+                paymentSourceAware.setPaymentSourceType(FormBeanType.NONE);
+            }
+            else {
+                paymentSourceAware.setPaymentSourceType(FormBeanType.EXISTING);
+                paymentSourceAware.setPaymentSourceAwarePaymentType();
+            }
         }
     }
 }

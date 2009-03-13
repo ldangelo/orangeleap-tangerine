@@ -3,9 +3,10 @@
 
 <%-- THIS IS POORLY DONE; TODO: redo --%>
 
+<spring:message code='enterGift' var="titleText" />
 
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="New Gift" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="New Gift" />
@@ -20,7 +21,6 @@
 			<form:form method="post" commandName="gift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 			
-				<spring:message code='enterGift' var="titleText" />
 				<spring:message code='submitGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />

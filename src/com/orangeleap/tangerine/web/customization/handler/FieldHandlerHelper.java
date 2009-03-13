@@ -37,6 +37,7 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.DATE_DISPLAY, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.READ_ONLY_TEXT, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.PAYMENT_TYPE_READ_ONLY_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LONG_TEXT, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.LOOKUP, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.DATE_TIME, genericFieldHandler);

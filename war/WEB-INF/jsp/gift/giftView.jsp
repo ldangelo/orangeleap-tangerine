@@ -2,8 +2,9 @@
 
 <%-- THIS IS POORLY DONE; TODO: redo --%>
 
+<spring:message code='viewGift' var="titleText" />
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="View Gift" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
@@ -17,7 +18,6 @@
 			</c:if>
 						
 			<form:form method="post" commandName="gift">
-				<spring:message code='viewGift' var="titleText" />
 				<spring:message code='submitGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />

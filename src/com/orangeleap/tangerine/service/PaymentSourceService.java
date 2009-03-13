@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Person;
@@ -24,4 +25,6 @@ public interface PaymentSourceService {
     public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId);
 
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);
+
+    Map<String, List<PaymentSource>> groupActivePaymentSourcesACHCreditCard(Long constituentId);
 }

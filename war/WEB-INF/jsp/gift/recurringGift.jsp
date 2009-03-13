@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
+<spring:message code='enterRecurringGift' var="titleText" />
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="New Recurring Gift" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="New Recurring Gift" />
@@ -16,7 +17,6 @@
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 				<input type="hidden" name="recurring" id="recurring" value="true"/>
 
-				<spring:message code='enterRecurringGift' var="titleText" />
 				<spring:message code='submitRecurringGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />

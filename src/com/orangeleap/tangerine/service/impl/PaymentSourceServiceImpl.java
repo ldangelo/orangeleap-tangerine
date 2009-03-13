@@ -1,7 +1,9 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -85,6 +87,26 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
             }
         }
         return filteredSources;
+    }
+    
+    @Override
+    public Map<String, List<PaymentSource>> groupActivePaymentSourcesACHCreditCard(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("groupActivePaymentSourcesACHCreditCard: constituentId = " + constituentId);
+        }
+        Map<String, List<PaymentSource>> groupedSources = new HashMap<String, List<PaymentSource>>();
+        List<PaymentSource> sources = readActivePaymentSourcesACHCreditCard(constituentId);
+        if (sources != null) { 
+            for (PaymentSource src : sources) {
+                List<PaymentSource> list = groupedSources.get(src.getPaymentType());
+                if (list == null) {
+                    list = new ArrayList<PaymentSource>();
+                    groupedSources.put(src.getPaymentType(), list);
+                }
+                list.add(src);
+            }
+        }
+        return groupedSources;
     }
 
     @Override

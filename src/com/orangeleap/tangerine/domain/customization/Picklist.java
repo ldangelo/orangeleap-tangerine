@@ -13,6 +13,7 @@ public class Picklist implements Serializable {
 
     private String id;
     private String picklistName;
+    private String picklistDesc;
     private EntityType entityType;
     private Site site;
     private boolean multiselect;
@@ -121,4 +122,12 @@ public class Picklist implements Serializable {
     public void setSite(Site site) {
         this.site = site;
     }
+
+	public void setPicklistDesc(String picklistDesc) {
+		this.picklistDesc = picklistDesc;
+	}
+
+	public String getPicklistDesc() {
+		return picklistDesc;
+	}
 }

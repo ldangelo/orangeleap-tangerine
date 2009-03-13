@@ -13,6 +13,7 @@
 
     <resultMap id="PICKLIST_RESULT" class="com.orangeleap.tangerine.domain.customization.Picklist" groupBy="id">
         <result property="id" column="PICKLIST_ID" jdbcType="VARCHAR"/>
+        <result property="picklistDesc" column="PICKLIST_DESC" jdbcType="VARCHAR"/>
         <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR"/>
         <result property="multiselect" column="MULTISELECT" jdbcType="CHAR"/>
         <result property="picklistName" column="PICKLIST_NAME" jdbcType="VARCHAR"/>
@@ -33,7 +34,7 @@
 
 
     <sql id="SELECT_PICKLIST_FRAGMENT">
-        select P.PICKLIST_ID, P.ENTITY_TYPE, P.MULTISELECT, P.PICKLIST_NAME, P.SITE_NAME,
+        select P.PICKLIST_ID, P.PICKLIST_DESC, P.ENTITY_TYPE, P.MULTISELECT, P.PICKLIST_NAME, P.SITE_NAME,
         I.PICKLIST_ITEM_ID, I.DEFAULT_DISPLAY_VALUE, I.INACTIVE, I.ITEM_NAME, I.ITEM_ORDER,
         I.REFERENCE_VALUE, I.SUPPRESS_REFERENCE_VALUE
         from PICKLIST P 
@@ -70,7 +71,8 @@
         set 
         ENTITY_TYPE = #entityType#,
         MULTISELECT = #multiselect#,
-        PICKLIST_NAME = #picklistName#
+        PICKLIST_NAME = #picklistName#,
+        PICKLIST_DESC = #picklistDesc#
         where 
         SITE_NAME = #site.name#
         and PICKLIST_ID = #id#
@@ -90,8 +92,8 @@
     
     
     <insert id="INSERT_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">
-    insert into PICKLIST (PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, SITE_NAME)
-    values (#id#, #entityType#, #multiselect#, #picklistName#, #site.name#)
+    insert into PICKLIST (PICKLIST_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, PICKLIST_DESC, SITE_NAME)
+    values (#id#, #entityType#, #multiselect#, #picklistName#, #picklistDesc#, #site.name#)
 	</insert>
 
     <insert id="INSERT_PICKLIST_ITEM" parameterClass="com.orangeleap.tangerine.domain.customization.PicklistItem">

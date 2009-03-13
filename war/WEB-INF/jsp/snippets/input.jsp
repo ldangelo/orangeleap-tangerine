@@ -145,7 +145,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${emails}">
-							<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.email.userCreated && opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/></option>
 						</c:forEach>
 						<c:if test="${not empty emails}">
 							</optgroup>

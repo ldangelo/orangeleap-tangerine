@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.type.PageType;
 
@@ -16,8 +17,8 @@ public class PersonExporter extends EntityExporter {
     
     private ConstituentService constituentService;
 
-	public PersonExporter(String entity, ApplicationContext applicationContext) {
-		super(entity, applicationContext);
+	public PersonExporter(ExportRequest er, ApplicationContext applicationContext) {
+		super(er, applicationContext);
 		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 	}
 	

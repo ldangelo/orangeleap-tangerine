@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
@@ -39,7 +40,9 @@ public abstract class EntityImporter {
 		this.entity = entity;
 		this.applicationContext = applicationContext;
 		siteservice = (SiteService)applicationContext.getBean("siteService");
-		entityexporter = new EntityExporterFactory().getEntityExporter(entity, applicationContext);
+		ExportRequest er = new ExportRequest();
+		er.setEntity(entity);
+		entityexporter = new EntityExporterFactory().getEntityExporter(er, applicationContext);
 		fieldDescriptors = entityexporter.getExportFieldDescriptors();
 		for (FieldDescriptor fd : fieldDescriptors) {
             fieldDescriptorMap.put(fd.getName(), fd);

@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.FieldType;
@@ -26,13 +27,13 @@ public abstract class EntityExporter {
 	protected abstract List readAll();
 	protected abstract PageType getPageType();
 	
-	protected String entity;
+	protected ExportRequest er;
 	protected ApplicationContext applicationContext;
 	protected SiteService siteservice;
 	protected TangerineUserHelper tangerineUserHelper;
 	
-	protected EntityExporter(String entity, ApplicationContext applicationContext) {
-		this.entity = entity;
+	protected EntityExporter(ExportRequest er, ApplicationContext applicationContext) {
+		this.er = er;
 		this.applicationContext = applicationContext;
 		siteservice = (SiteService)applicationContext.getBean("siteService");
 		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");

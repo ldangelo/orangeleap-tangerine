@@ -9,16 +9,36 @@
 			
 			<h1>Export a CSV file</h1>
 	        <form method="post" action="export.htm" >
-		        <select id="entity" name="entity">
+	        
+		        <select id="entity" name="entity"  onchange="if ( $('#entity').val() === 'gift' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }"  >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
 		          <option value="gift">Gifts</option> 
-		        </select>            
-		        <input type="submit" value="Export" onclick="if ( $('#entity').val() == '' ) return false; else return true; "/>
+		        </select>    
+		                
+		        <input type="submit" value="Export" onclick="if ( $('#entity').val() === '' ) return false; else return true; "/>
+
+		        <br/>
+		        <br/>
+		        
+		        <div id="dateRange">
+		         <div class="lookupWrapper">
+					  From date: <input id="fromDate" name="fromDate" size="16" maxlength="10" cssClass="text date dp-applied" cssErrorClass="textError date" /><a href="#" class="dp-choose-date" title="Choose date">Choose date</a>
+		         </div>
+		         <div class="lookupWrapper">
+					  &nbsp;&nbsp;&nbsp;To date: <input id="toDate" name="toDate" size="16" maxlength="10" cssClass="text date dp-applied" cssErrorClass="textError date" /><a href="#" class="dp-choose-date" title="Choose date">Choose date</a>
+		         </div>
+		        </div>
+		        <script>$('#dateRange').hide();</script>
+		        
 	        </form>
+	        
+	        <br/>
+	        <br/>
 	        <br/>
 	
 			<h1>Import a CSV file</h1>
+			
 	        <form method="post" action="import.htm" enctype="multipart/form-data">
 		        <select name="entity">
 		          <option value="">Select...</option>

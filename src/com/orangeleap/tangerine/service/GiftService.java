@@ -40,4 +40,7 @@ public interface GiftService {
     public List<Gift> readGiftsByCommitment(Commitment commitment);
 
 	public List<Gift> readAllGiftsBySiteName();
+	
+	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
+	
 }

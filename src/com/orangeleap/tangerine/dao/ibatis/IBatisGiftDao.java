@@ -121,6 +121,19 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         Map<String, Object> params = setupParams();
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_SITE", params);
 	}
+    
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllGiftsByDateRange:");
+        }
+        Map<String, Object> params = setupParams();
+        params.put("fromDate", fromDate);
+        params.put("toDate", toDate);
+        return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_DATE_RANGE", params);
+	}
+
 
     @SuppressWarnings("unchecked")
     @Override

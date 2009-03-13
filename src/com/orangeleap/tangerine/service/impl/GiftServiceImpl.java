@@ -398,6 +398,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
 	@Override
+	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllGiftsByDateRange:");
+        }
+        return giftDao.readAllGiftsByDateRange(fromDate, toDate);
+	}
+
+	@Override
 	public List<Gift> readAllGiftsBySiteName() {
         if (logger.isDebugEnabled()) {
             logger.debug("readAllGiftsBySiteName:");

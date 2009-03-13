@@ -79,6 +79,12 @@
 	<select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
 	</select>
+	
+	<select id="SELECT_ALL_GIFTS_BY_DATE_RANGE" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.TRANSACTION_DATE between #fromDate# and #toDate# 
+		order by g.TRANSACTION_DATE desc
+	</select>
 
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />

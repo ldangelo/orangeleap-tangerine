@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -19,15 +20,15 @@ public class GiftExporter extends EntityExporter {
     
     private GiftService giftservice;
 
-	public GiftExporter(String entity, ApplicationContext applicationContext) {
-		super(entity, applicationContext);
+	public GiftExporter(ExportRequest er, ApplicationContext applicationContext) {
+		super(er, applicationContext);
 		giftservice = (GiftService)applicationContext.getBean("giftService");
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List readAll() {
-		return giftservice.readAllGiftsBySiteName();
+		return giftservice.readAllGiftsByDateRange(er.getFromDate(), er.getToDate());
 	}
 
 	@Override

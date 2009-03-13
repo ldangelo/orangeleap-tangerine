@@ -23,6 +23,8 @@ public interface GiftDao {
     public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId);
 
 	public List<Gift> readAllGiftsBySite();
+	
+	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
 
 	public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 

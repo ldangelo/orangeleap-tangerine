@@ -138,6 +138,10 @@
 			<artifact name="jta" type="jar" />
 		</dependency>
 		
+		<dependency org="javax.persistence" name="persistence-api" transitive="false" rev="1.0"> 
+			<artifact name="persistence-api" type="jar" />
+		</dependency>
+
 		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" transitive="false" rev="2.3.4.726"> 
 			<artifact name="ibatis-sqlmap" type="jar" />
 			<artifact name="ibatis-sqlmap" type="source" ext="jar" classifier="sources" conf="sources"/>

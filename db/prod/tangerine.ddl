@@ -77,6 +77,7 @@ DROP TABLE IF EXISTS `PICKLIST`;
 
 CREATE TABLE `PICKLIST` (
   `PICKLIST_ID` varchar(255) NOT NULL,
+  `PICKLIST_DESC` varchar(255) NOT NULL,
   `ENTITY_TYPE` varchar(255) default NULL,
   `MULTISELECT` char(1) NOT NULL default '0',
   `PICKLIST_NAME` varchar(255) default NULL,

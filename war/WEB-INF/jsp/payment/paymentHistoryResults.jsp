@@ -29,7 +29,7 @@
 		</c:forEach>
 	</c:when>
 	<c:when test="${paymentHistoryList ne null}">
-		<p style="margin:8px 0 6px 0;">No payments have been entered for this person.</p>
+		<p style="margin:8px 0 6px 0;"><spring:message code='noPayments'/></p>
 	</c:when>
 	<c:otherwise>
 	</c:otherwise>

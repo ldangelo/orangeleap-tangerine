@@ -5,7 +5,7 @@
 <c:choose>
 	<c:when test="${!empty phones}">
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Phones</h4>
+			<h4 class="searchResults"><spring:message code='phones'/></h4>
 		</div>
 		<mp:page pageName='phone' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -32,25 +32,24 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}"">Edit</a>
-				<a onclick="return(confirm('Are you sure you want to remove this phone?'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}"">Remove</a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a onclick="return(confirm('<spring:message code="confirmRemovePhone"/>'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Phones</h4>
+			<h4 class="searchResults"><spring:message code='phones'/></h4>
 		</div>
-		<p style="margin: 8px 0 6px 0;">No phones have been entered for
-		this person.</p>
+		<p style="margin: 8px 0 6px 0;"><spring:message code='noPhonesEntered'/></p>
 	</c:otherwise>
 </c:choose>
 
 <c:choose>
 	<c:when test="${!empty currentPhones}">
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Current Phones</h4>
+			<h4 class="searchResults"><spring:message code='currentPhones'/></h4>
 		</div>
 		<mp:page pageName='phone' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -77,24 +76,24 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}"">Edit</a>
-				<a onclick="return(confirm('Are you sure you want to remove this phone?'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}"">Remove</a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a onclick="return(confirm('<spring:message code="confirmRemovePhone"/>'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Current Phones</h4>
+			<h4 class="searchResults"><spring:message code='currentPhones'/></h4>
 		</div>
-		<p style="margin: 8px 0 6px 0;">There are no current phones for this person.</p>
+		<p style="margin: 8px 0 6px 0;"><spring:message code='noCurrentPhonesEntered'/></p>
 	</c:otherwise>
 </c:choose>
 
 <c:choose>
 	<c:when test="${!empty currentCorrespondencePhones}">
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Current Correspondence Phones</h4>
+			<h4 class="searchResults"><spring:message code='currentCorrespondencePhones'/></h4>
 		</div>
 		<mp:page pageName='phone' />
 		<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
@@ -121,16 +120,16 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}"">Edit</a>
-				<a onclick="return(confirm('Are you sure you want to remove this phone?'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}"">Remove</a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a onclick="return(confirm('<spring:message code="confirmRemovePhone"/>'));" href="phoneDelete.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
 	</c:when>
 	<c:otherwise>
 		<div class="searchResultsHeader">
-			<h4 class="searchResults">Current Correspondence Phones</h4>
+			<h4 class="searchResults"><spring:message code='currentCorrespondencePhones'/></h4>
 		</div>
-		<p style="margin: 8px 0 6px 0;">There are no current correspondence phones for this person.</p>
+		<p style="margin: 8px 0 6px 0;"><spring:message code='noCurrentCorrespondencePhonesEntered'/></p>
 	</c:otherwise>
 </c:choose>

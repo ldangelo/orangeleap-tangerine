@@ -28,7 +28,7 @@
 
 </c:when>
 <c:when test="${giftList ne null}">
-	<p style="margin:8px 0 6px 0;">Your search returned no results.</p>
+	<p style="margin:8px 0 6px 0;"><spring:message code='searchNoResults'/></p>
 </c:when>
 <c:otherwise>
 </c:otherwise>

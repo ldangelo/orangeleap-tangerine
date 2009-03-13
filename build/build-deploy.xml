@@ -19,12 +19,10 @@
         ]]> </script>
 
 		
-<!--		
 		<exec dir="/opt/orangeleap" executable="su" spawn="true">
 			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh stop ${instance}'"/>
 	    </exec>
 		<sleep seconds="30" />
--->
 		
 		<echo message="Populating database ${mysql.db.url}"/>
 
@@ -59,11 +57,9 @@
 			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/webapps"/>
 	    </exec>
 
-<!--		
 		<exec dir="/opt/orangeleap" executable="su" spawn="true">
 			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh start ${instance}'"/>
 	    </exec>
--->
 		
 		
     </target> 

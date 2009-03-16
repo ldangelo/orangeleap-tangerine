@@ -14,7 +14,7 @@
 			<option value="" ${currentPicklistId==''?'selected':''}>Select...</option>
 			<c:forEach var="picklist" items="${picklists}">
 			  <c:set var="edited" value="${picklist.persisted}" />
-			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.picklistDesc} ${edited?"*":""}'/></option>
+			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.picklistDesc}'/></option>
 			</c:forEach>
 			</select>
 		</form>

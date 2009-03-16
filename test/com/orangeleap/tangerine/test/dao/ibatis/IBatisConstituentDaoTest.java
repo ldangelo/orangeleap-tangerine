@@ -88,7 +88,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getNcaisCode() == null;
         assert readConstituent.getOrganizationName() == null;
         assert readConstituent.getPreferredPhoneType() == null;
-        assert readConstituent.getRecognitionName() == null;
+        assert readConstituent.getRecognitionName() != null;
         assert readConstituent.getSuffix() == null;
         assert readConstituent.getCreateDate() != null;
         assert readConstituent.getUpdateDate() != null;
@@ -116,7 +116,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getMiddleName() == null;
         assert readConstituent.getOrganizationName() == null;
         assert readConstituent.getPreferredPhoneType() == null;
-        assert readConstituent.getRecognitionName() == null;
+        assert readConstituent.getRecognitionName() != null;
         assert readConstituent.getSuffix() == null;
         assert readConstituent.getCreateDate() != null;
         assert readConstituent.getUpdateDate() != null;      

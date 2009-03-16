@@ -42,6 +42,7 @@ public class IBatisCustomFieldHelper {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityId", entityId);
         params.put("entityType", entityType);
+        params.put("asOfDate", new java.util.Date());
 
         List<Map> customFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
 

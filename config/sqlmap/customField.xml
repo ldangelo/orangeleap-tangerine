@@ -15,6 +15,9 @@
         from CUSTOM_FIELD
         where ENTITY_ID = #entityId#
         and ENTITY_TYPE = #entityType#
+		<isNotNull property="asOfDate"> 
+        and #asOfDate# between START_DATE and END_DATE
+        </isNotNull>
         order by FIELD_NAME asc, SEQUENCE_NUM asc
     </select>
 

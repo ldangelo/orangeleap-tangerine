@@ -79,9 +79,6 @@
 			<li>
 				<a href="#"><spring:message code="menuGoTo"/></a>
 				<ul>
-					<li>
-						<a href="codes.htm"><spring:message code="manageCodes"/></a>
-					</li>
 			  		<li>
 						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 					</li> 

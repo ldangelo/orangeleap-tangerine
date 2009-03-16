@@ -8,12 +8,20 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[other_reference]', 'commitment', 'person', 'customFieldMap[other_reference]', ' ', 'HIDDEN');
 
 
+
 // Pledge-specific
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.pledgeStatus', 'commitment', 'pledgeStatus', 'Status', 'PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.pledgeDate', 'commitment', 'pledgeDate', 'Pledge Date', 'DATE');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.pledgeCancelDate', 'commitment', 'pledgeCancelDate', 'Pledge Cancel Date', 'DATE');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.pledgeCancelReason', 'commitment', 'pledgeCancelReason', 'Pledge Cancel Reason', 'LONG_TEXT');
 
+// Commitment-specific
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[recurringGiftStatus]', 'commitment', 'customFieldMap[recurringGiftStatus]', 'Status', 'PICKLIST');
+
+
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[initialReminder]', 'commitment', 'customFieldMap[initialReminder]', 'Initial Reminder (days)', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[numberOfReminders]', 'commitment', 'customFieldMap[numberOfReminders]', 'Number of Reminders', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[reminderInterval]', 'commitment', 'customFieldMap[reminderInterval]', 'Reminder interval (days)', 'NUMBER');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.amountPerGiftReadOnly', 'commitment', 'amountPerGift', 'Amount Per Gift', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.frequencyReadOnly', 'commitment', 'frequency', 'Frequency', 'READ_ONLY_TEXT');

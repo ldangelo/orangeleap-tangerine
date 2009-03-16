@@ -19,4 +19,7 @@ public interface PicklistDao {
     public PicklistItem readPicklistItemById(Long picklistItemId);
 
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem);
+	
+	public PicklistItem readPicklistItemByName(String picklistId, String picklistItemName);
+	
 }

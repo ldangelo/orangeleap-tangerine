@@ -7,20 +7,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.orangeleap.tangerine.domain.customization.Code;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.service.CodeService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
 public class CodeFieldHandler extends GenericFieldHandler {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    private final CodeService codeService;
+    private final PicklistItemService picklistItemService;
 
     public CodeFieldHandler(ApplicationContext appContext) {
         super(appContext);
-        codeService = (CodeService)appContext.getBean("codeService");
+        picklistItemService = (PicklistItemService)appContext.getBean("picklistItemService");
     }
 
     @Override
@@ -31,14 +31,14 @@ public class CodeFieldHandler extends GenericFieldHandler {
         return fieldVO;
     }
     
-    private String resolve(String codeType, String codeValue) {
+    private String resolve(String picklistId, String itemName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("resolve: codeValue = " + codeValue);
+            logger.debug("resolve: itemName = " + itemName);
         }
-        String val = codeValue;
-        Code code = codeService.readCodeBySiteTypeValue(codeType, codeValue);
+        String val = itemName;
+        PicklistItem code = picklistItemService.getPicklistItem(picklistId, itemName);
         if (code != null) {
-            val = code.getDisplayValue();
+            val = code.getDefaultDisplayValue();
         }
         return val;
     }

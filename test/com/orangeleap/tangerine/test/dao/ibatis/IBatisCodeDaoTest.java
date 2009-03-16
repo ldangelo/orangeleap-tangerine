@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.orangeleap.tangerine.dao.CodeDao;
+//import com.orangeleap.tangerine.dao.CodeDao;
 import com.orangeleap.tangerine.domain.customization.Code;
 import com.orangeleap.tangerine.domain.customization.CodeType;
 
@@ -15,7 +15,7 @@ public class IBatisCodeDaoTest extends AbstractIBatisTest {
     
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    
+  /*  
     private CodeDao codeDao;
 
     @BeforeMethod
@@ -98,7 +98,7 @@ public class IBatisCodeDaoTest extends AbstractIBatisTest {
     
     
     
-    
+    */
     
     
     

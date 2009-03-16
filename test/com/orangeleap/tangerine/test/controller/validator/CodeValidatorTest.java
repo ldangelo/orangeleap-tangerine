@@ -16,9 +16,10 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.Code;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.CodeService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -30,38 +31,38 @@ public class CodeValidatorTest extends BaseTest {
     private Gift gift;
     private BindException errors;
     private Mockery mockery;
-    private Code projCode;
-    private Code motivationCode;
-    private Code currencyCode;
+    private PicklistItem projCode;
+    private PicklistItem motivationCode;
+    private PicklistItem currencyCode;
     private Site site;
     private Person person;
 
     @SuppressWarnings("unchecked")
     @BeforeMethod
     public void setupMocks() {
-        projCode = new Code();
-        projCode.setValue("001000");
-        motivationCode = new Code();
-        motivationCode.setValue("XYZ");
-        currencyCode = new Code();
-        currencyCode.setValue("USD");
+        projCode = new PicklistItem();
+        projCode.setItemName("001000");
+        motivationCode = new PicklistItem();
+        motivationCode.setItemName("0201");
+        currencyCode = new PicklistItem();
+        currencyCode.setItemName("USD");
         validator = new CodeValidator();
         mockery = new Mockery();
-        final CodeService codeService = mockery.mock(CodeService.class);
+        final PicklistItemService picklistItemService = mockery.mock(PicklistItemService.class);
         final TangerineUserHelper tangerineUserHelper = mockery.mock(TangerineUserHelper.class);
-        validator.setCodeService(codeService);
+        validator.setPicklistItemService(picklistItemService);
         validator.setTangerineUserHelper(tangerineUserHelper);
 
         mockery.checking(new Expectations() {{
-            allowing (codeService).readCodeBySiteTypeValue("currencyCode", "USD"); will(returnValue(currencyCode));
-            allowing (codeService).readCodeBySiteTypeValue("currencyCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("currencyCode", " "); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("projectCode", "001000"); will(returnValue(projCode));
-            allowing (codeService).readCodeBySiteTypeValue("projectCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("projectCode", " "); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("motivationCode", "XYZ"); will(returnValue(motivationCode));
-            allowing (codeService).readCodeBySiteTypeValue("motivationCode", "foo"); will(returnValue(null));
-            allowing (codeService).readCodeBySiteTypeValue("motivationCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("currencyCode", "USD"); will(returnValue(currencyCode));
+            allowing (picklistItemService).getPicklistItem("currencyCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("currencyCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("projectCode", "001000"); will(returnValue(projCode));
+            allowing (picklistItemService).getPicklistItem("projectCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("projectCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("motivationCode", "0201"); will(returnValue(motivationCode));
+            allowing (picklistItemService).getPicklistItem("motivationCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItem("motivationCode", " "); will(returnValue(null));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
         }});
 
@@ -161,7 +162,7 @@ public class CodeValidatorTest extends BaseTest {
     @Test(groups = { "validateCodeOther" })
     public void testValidCodeOther() throws Exception {
         errors = new BindException(gift, "gift");
-        gift.getDistributionLines().get(0).setMotivationCode("XYZ");
+        gift.getDistributionLines().get(0).setMotivationCode("0201");
         validator.validate(gift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;

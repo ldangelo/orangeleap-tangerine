@@ -94,6 +94,36 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		}
 		
 	}
+	
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
+	public
+	PicklistItem getPicklistItem(String picklistId, String picklistItemName) {
+		PicklistItem picklistitem = picklistDao.readPicklistItemByName(addSiteToId(getSiteName(), picklistId), picklistItemName);
+		if (picklistitem == null) {
+			picklistitem = picklistDao.readPicklistItemByName(picklistId, picklistItemName);
+		}
+		return picklistitem;
+	}
+	
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
+	public List<PicklistItem> getPicklistItems(String picklistId, String picklistItemName, String description, Boolean showInactive) {
+		Picklist picklist = getPicklist(addSiteToId(getSiteName(), picklistId));
+		List<PicklistItem> result = new ArrayList<PicklistItem>();
+		for (PicklistItem item : picklist.getPicklistItems()) {
+			if (description.length() > 0) {
+				if (item.getDefaultDisplayValue().contains(description)) {
+					result.add(item);
+				}
+			} else {
+				if (item.getItemName().contains(picklistItemName)) {
+					result.add(item);
+				}
+			}
+		}
+		return result;
+	}
 
     
 	@Override

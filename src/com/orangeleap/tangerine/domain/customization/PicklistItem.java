@@ -92,4 +92,17 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
 	public String getSuppressReferenceValue() {
 		return suppressReferenceValue;
 	}
+
+	public String getValue() {
+        return itemName;
+    }
+	
+    public String getDisplayValue() {
+        return defaultDisplayValue;
+    }
+    
+    public String getDescription() {
+        return defaultDisplayValue;
+    }
+	
 }

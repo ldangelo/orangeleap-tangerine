@@ -13,8 +13,8 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.orangeleap.tangerine.domain.customization.Code;
-import com.orangeleap.tangerine.service.CodeService;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
+import com.orangeleap.tangerine.service.PicklistItemService;
 
 public class CodeHelperController extends ParameterizableViewController {
 
@@ -22,8 +22,8 @@ public class CodeHelperController extends ParameterizableViewController {
     protected final Log logger = LogFactory.getLog(getClass());
     public static final String VIEW = "view";
 
-    @Resource(name="codeService")
-    private CodeService codeService;
+    @Resource(name="picklistItemService")
+    private PicklistItemService picklistItemService;
     private String tableView;
     private String autoCompleteView;
     private String resultsOnlyView;
@@ -61,12 +61,12 @@ public class CodeHelperController extends ParameterizableViewController {
         if (logger.isDebugEnabled()) {
             logger.debug("handleRequestInternal: searchString = " + searchString + " showInactive = " + showInactive + " description = " + description + " codeType = " + codeType);
         }
-        List<Code> codes;
+        List<PicklistItem> items;
         if (description != null) {
-            codes = codeService.readCodes(codeType, searchString, description, showInactive);
+        	items = picklistItemService.getPicklistItems(codeType, searchString, description, showInactive);
         } 
         else {
-            codes = codeService.readCodes(codeType, searchString, "", showInactive);
+        	items = picklistItemService.getPicklistItems(codeType, searchString, "", showInactive);
         }
         String view = super.getViewName();
         if ("table".equals(request.getParameter(VIEW))) {
@@ -78,7 +78,7 @@ public class CodeHelperController extends ParameterizableViewController {
         if ("resultsOnly".equals(request.getParameter(VIEW))) {
             view = this.resultsOnlyView;
         }
-        return new ModelAndView(view, "codes", codes);
+        return new ModelAndView(view, "codes", items);
     }
 
 }

@@ -11,10 +11,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.customization.Code;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.service.CodeService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.customization.FieldVO;
@@ -23,14 +23,14 @@ public class CodeValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    private CodeService codeService;
+    private PicklistItemService picklistItemService;
     private TangerineUserHelper tangerineUserHelper;
     public static final String PROJECT_CODE = "projectCode";
     public static final String MOTIVATION_CODE = "motivationCode";
     public static final String DISTRIBUTION_LINES = "distributionLines";
    
-    public void setCodeService(CodeService codeService) {
-        this.codeService = codeService;
+    public void setPicklistItemService(PicklistItemService picklistItemService) {
+        this.picklistItemService = picklistItemService;
     }
 
     public void setTangerineUserHelper(TangerineUserHelper tangerineUserHelper) {
@@ -109,8 +109,8 @@ public class CodeValidator implements Validator {
         
         if (propertyValue != null) {
             String codeValue = (String)propertyValue;
-            Code code = codeService.readCodeBySiteTypeValue(key, codeValue);
-            if (code != null && codeValue.equals(code.getValue())) {
+            PicklistItem item = picklistItemService.getPicklistItem(key, codeValue);
+            if (item != null && codeValue.equals(item.getItemName())) {
                 isValid = true;
             }
         }

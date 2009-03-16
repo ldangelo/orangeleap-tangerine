@@ -188,9 +188,8 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadPicklist" })
     public void testListPicklists() throws Exception {
         List<Picklist> lists = picklistDao.listPicklists();
-        assert lists != null && lists.size() == 2;
+        assert lists != null && lists.size() > 0;
         for (Picklist picklist : lists) {
-            assert "creditCardType".equals(picklist.getId()) || "constituentIndividualRoles".equals(picklist.getId());
             if ("creditCardType".equals(picklist.getId())) {
                 assert picklist.getPicklistItems() != null && picklist.getPicklistItems().size() == 4;
             }

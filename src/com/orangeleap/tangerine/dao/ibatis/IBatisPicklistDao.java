@@ -114,6 +114,15 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         }
         return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_ID", picklistItemId);
     }
+    
+    @Override
+    public PicklistItem readPicklistItemByName(String picklistId, String picklistItemName) {
+        Map<String, Object> params = setupParams();
+        params.put("picklistId", picklistId);
+        params.put("picklistItemName", picklistItemName);
+        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_PICKLIST_ID_AND_ITEM_NAME", params);
+    }
+	
 
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {

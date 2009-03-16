@@ -12,23 +12,10 @@
         <property name="autoCompleteView" value="code/codeAutoComplete"/>
     </bean>
 
-    <bean id="codes" class="com.orangeleap.tangerine.controller.code.CodeManageController">
-        <property name="viewName" value="code/codes"/>
-    </bean>
-
-	<bean id="code" class="com.orangeleap.tangerine.controller.code.CodeFormController">
-        <property name="commandName" value="code"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.customization.Code"/>
-        <property name="formView" value="code/code" />
-        <property name="successView" value="code/code" />
-    </bean>
-
     <bean id="codeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/codeHelper.htm">codeHelper</prop>
-                <prop key="/code.htm">code</prop>
-                <prop key="/codes.htm">codes</prop>
 			</props>
 		</property>
 	</bean>

@@ -40,7 +40,15 @@ var loadMRU = function(arr) {
     }
 
     // the template to render with the person name
-    var template = new Ext.Template('<li><a href="person.htm?personId={id}">{firstName} {lastName}</a></li>');
+    var template = new Ext.XTemplate(
+            '<li><a href="person.htm?personId={id}">',
+            '<tpl if="firstName.length == 0 && lastName.length == 0">',
+                '{orgName}',
+            '</tpl>',
+            '<tpl if="firstName.length &gt; 0 || lastName.length &gt; 0">',
+                '{firstName} {lastName}',
+            '</tpl>',
+            '</a></li>');
 
     var maxWidth = 0;
     var tm = Ext.util.TextMetrics.createInstance('bookmarkHistory');

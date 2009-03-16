@@ -13,6 +13,7 @@
         <result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT"/>
         <result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR"/>
         <result property="lastName" column="LAST_NAME" jdbcType="VARCHAR"/>
+        <result property="orgName" column="ORGANIZATION_NAME" jdbcType="VARCHAR"/>
     </resultMap>
 
     <select id="SELECT_RECENTLY_VIEWED" parameterClass="map" resultClass="string">
@@ -25,7 +26,7 @@
     </insert>
 
     <select id="SELECT_PERSON_FLYWEIGHT" resultMap="PERSON_FLYWEIGHT" parameterClass="map">
-        select CONSTITUENT_ID, FIRST_NAME, LAST_NAME
+        select CONSTITUENT_ID, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME
         from CONSTITUENT
 		where SITE_NAME = #siteName#
         and CONSTITUENT_ID in

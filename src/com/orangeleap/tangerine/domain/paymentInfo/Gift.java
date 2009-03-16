@@ -9,7 +9,7 @@ import org.springframework.core.style.ToStringCreator;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.util.StringConstants;
 
-public class Gift extends AbstractPaymentInfoEntity { // implements SiteAware TODO: for IBatis 
+public class Gift extends AbstractPaymentInfoEntity { 
 
     private static final long serialVersionUID = 1L;
     private Long commitmentId;

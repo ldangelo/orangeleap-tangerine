@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="GIFT_IN_KIND">
+
+	<resultMap id="GIFT_IN_KIND_RESULT_NO_DETAILS" class="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind" groupBy="id">
+		<result property="id" column="GIFT_IN_KIND_ID" jdbcType="BIGINT" />
+		<result property="fairMarketValue" column="GIFT_IN_KIND_FAIR_MARKET_VALUE" jdbcType="DECIMAL" />
+		<result property="currencyCode" column="GIFT_IN_KIND_CURRENCY_CODE" jdbcType="VARCHAR" />
+		<result property="donationDate" column="GIFT_IN_KIND_DONATION_DATE" jdbcType="TIMESTAMP" />
+		<result property="motivationCode" column="GIFT_IN_KIND_MOTIVATION_CODE" jdbcType="VARCHAR" />
+		<result property="anonymous" column="GIFT_IN_KIND_ANONYMOUS" jdbcType="CHAR" />
+		<result property="recognitionName" column="GIFT_IN_KIND_RECOGNITION_NAME" jdbcType="VARCHAR" />
+		<result property="sendAcknowledgment" column="GIFT_IN_KIND_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
+		<result property="acknowledgmentDate" column="GIFT_IN_KIND_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+	</resultMap>
+	
+	<resultMap id="GIFT_IN_KIND_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind" groupBy="id" extends="GIFT_IN_KIND_RESULT_NO_DETAILS">
+		<result property="details" resultMap="GIFT_IN_KIND_DETAIL.GIFT_IN_KIND_DETAIL_RESULT" />
+	</resultMap>
+
+	<sql id="GIFT_IN_KIND_COLS_FRAGMENT">
+		gik.GIFT_IN_KIND_ID, gik.FAIR_MARKET_VALUE as GIFT_IN_KIND_FAIR_MARKET_VALUE, gik.CURRENCY_CODE as GIFT_IN_KIND_CURRENCY_CODE,
+		gik.DONATION_DATE as GIFT_IN_KIND_DONATION_DATE, gik.MOTIVATION_CODE as GIFT_IN_KIND_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
+		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.SEND_ACKNOWLEDGMENT as GIFT_IN_KIND_SEND_ACKNOWLEDGMENT, 
+		gik.ACKNOWLEDGMENT_DATE as GIFT_IN_KIND_ACKNOWLEDGMENT_DATE
+	</sql>
+	
+	<sql id="GIFT_IN_KIND_QUERY_FRAGMENT">
+		select
+		<include refid="GIFT_IN_KIND_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="GIFT_IN_KIND_DETAIL_COLS_FRAGMENT" />
+		from GIFT_IN_KIND gik
+		inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on gik.EMAIL_ID = e.EMAIL_ID
+		left outer join GIFT_IN_KIND_DETAIL gikd on gik.GIFT_IN_KIND_ID = gikd.GIFT_IN_KIND_ID
+		where p.SITE_NAME = #siteName#
+	</sql>
+
+	<select id="SELECT_GIFT_IN_KIND_BY_ID" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
+		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
+		and gik.GIFT_IN_KIND_ID = #id#
+	</select>
+
+	<select id="SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
+		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
+		and gik.CONSTITUENT_ID = #constituentId#
+		order by gik.DONATION_DATE desc
+	</select>
+
+<!-- 
+	<select id="SELECT_ALL_GIFTS_BY_SITE" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+	</select>
+	
+	<select id="SELECT_ALL_GIFTS_BY_DATE_RANGE" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.TRANSACTION_DATE between #fromDate# and #toDate# 
+		order by g.TRANSACTION_DATE desc
+	</select>
+
+	<select id="SELECT_GIFTS_BY_COMMITMENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.COMMITMENT_ID = #commitmentId#
+		order by g.TRANSACTION_DATE desc
+	</select>
+
+	<select id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID" parameterClass="map" resultClass="decimal">
+		select SUM(g.AMOUNT)
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+		and g.COMMITMENT_ID = #commitmentId#
+	</select>
+
+	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
+		select SUM(g.AMOUNT)
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+		and g.CONSTITUENT_ID = #constituentId#
+		and g.TRANSACTION_DATE between #beginDate# and #currentDate#
+	</select>
+
+	<select id="ANALYZE_FOR_LAPSED_DONOR" parameterClass="map" resultMap="CONSTITUENT.CONSTITUENT_RESULT">
+		select 
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
+		from CONSTITUENT p 
+		inner join GIFT g on p.CONSTITUENT_ID = g.CONSTITUENT_ID
+		where g.AMOUNT > 0 
+		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
+	</select>
+ -->
+	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
+		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, 
+		ANONYMOUS, RECOGNITION_NAME, SEND_ACKNOWLEDGMENT, ACKNOWLEDGMENT_DATE, CONSTITUENT_ID, EMAIL_ID)
+		values (#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#,
+		#anonymous#, #recognitionName#, #sendAcknowledgment#, #acknowledgmentDate#, #person.id#, #selectedEmail.id#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+	
+	<update id="UPDATE_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
+		update GIFT_IN_KIND gik, CONSTITUENT p
+		set gik.FAIR_MARKET_VALUE = #fairMarketValue#,
+		gik.CURRENCY_CODE = #currencyCode#,
+		gik.DONATION_DATE = #donationDate#,
+		gik.MOTIVATION_CODE = #motivationCode#,
+		gik.ANONYMOUS = #anonymous#,
+		gik.RECOGNITION_NAME = #recognitionName#,
+		gik.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+		gik.ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		gik.CONSTITUENT_ID = #person.id#,
+		gik.EMAIL_ID = #selectedEmail.id#
+		where 
+		p.CONSTITUENT_ID = gik.CONSTITUENT_ID
+		and p.SITE_NAME = #site.name#
+		and gik.GIFT_IN_KIND_ID = #id#
+	</update>
+
+</sqlMap>

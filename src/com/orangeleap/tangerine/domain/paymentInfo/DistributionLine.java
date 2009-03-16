@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 
-public class DistributionLine extends AbstractCustomizableEntity { //Customizable, Viewable, TODO: for IBatis 
+public class DistributionLine extends AbstractCustomizableEntity {  
  
     private static final long serialVersionUID = 1L;
     private BigDecimal amount;

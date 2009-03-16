@@ -43,10 +43,15 @@ public class Person extends AbstractCommunicatorEntity {
     
     private List<Gift> gifts;
     private List<Commitment> commitments;
-    
 
     public Person() { }
 
+    public Person(Long id, Site site) { 
+        this();
+        this.id = id;
+        this.site = site;
+    }
+    
     @Override
     public String toString() {
         return getDisplayValue();

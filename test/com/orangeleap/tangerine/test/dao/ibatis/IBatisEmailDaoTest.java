@@ -26,6 +26,38 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         emailDao = (EmailDao)super.applicationContext.getBean("emailDAO");
     }
     
+    public static void testEmailId100(Email email) {
+        assert email != null;
+        assert email.getUpdateDate() != null;
+        assert email.getCreateDate() != null;
+        assert 100L == email.getPersonId();
+        assert email.isReceiveMail() == false;
+        assert ActivationType.permanent.equals(email.getActivationStatus());
+        assert "hobo@gmail.com".equals(email.getEmailAddress());
+        assert "home".equals(email.getEmailType());
+        assert email.isInactive() == false;
+    }
+    
+    public static void testEmailId300(Email email) {
+        assert email != null;
+        assert 300L == email.getId();
+        assert "brown@aol.com".equals(email.getEmailAddress());
+        assert "other".equals(email.getEmailType());
+        assert email.getEmailDisplay() == null;
+        assert email.getCreateDate() != null;
+        assert email.getUpdateDate() != null;
+        assert 100L == email.getPersonId();
+        assert email.isReceiveMail() == false;
+        assert ActivationType.permanent.equals(email.getActivationStatus());
+        assert email.isInactive();
+        assert email.getComments() == null;
+        assert email.getEffectiveDate() == null;
+        assert email.getSeasonalStartDate() == null;
+        assert email.getSeasonalEndDate() == null;
+        assert email.getTemporaryStartDate() == null;
+        assert email.getTemporaryEndDate() == null;        
+    }
+    
     @Test(groups = { "testMaintainEmail" }, dependsOnGroups = { "testReadEmail" })
     public void testMaintainEmail() throws Exception {
         // Insert
@@ -83,23 +115,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadEmail" })
     public void testReadEmail() throws Exception {
         Email email = emailDao.readById(300L);
-        assert email != null;
-        assert 300L == email.getId();
-        assert "brown@aol.com".equals(email.getEmailAddress());
-        assert "other".equals(email.getEmailType());
-        assert email.getEmailDisplay() == null;
-        assert email.getCreateDate() != null;
-        assert email.getUpdateDate() != null;
-        assert 100L == email.getPersonId();
-        assert email.isReceiveMail() == false;
-        assert ActivationType.permanent.equals(email.getActivationStatus());
-        assert email.isInactive();
-        assert email.getComments() == null;
-        assert email.getEffectiveDate() == null;
-        assert email.getSeasonalStartDate() == null;
-        assert email.getSeasonalEndDate() == null;
-        assert email.getTemporaryStartDate() == null;
-        assert email.getTemporaryEndDate() == null;
+        testEmailId300(email);
     } 
 
     @Test(groups = { "testReadEmail" })

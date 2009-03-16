@@ -23,8 +23,9 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, EmailAware  {
+    private static final long serialVersionUID = 1L;
 
     protected String comments;
     protected String currencyCode = StringConstants.USD;

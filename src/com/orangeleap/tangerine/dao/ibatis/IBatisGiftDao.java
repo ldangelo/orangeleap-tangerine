@@ -41,13 +41,13 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_GIFT_ID", aGift.getId());
 
         /* Then Insert DistributionLines */
-        if (gift.getDistributionLines() != null) {
+        if (aGift.getDistributionLines() != null) {
             for (DistributionLine line : aGift.getDistributionLines()) {
                 line.resetIdToNull();
                 line.setGiftId(aGift.getId());
             }
         }
-        batchInsertOrUpdate(gift.getDistributionLines(), "DISTRO_LINE");
+        batchInsertOrUpdate(aGift.getDistributionLines(), "DISTRO_LINE");
         return aGift;
     }
 

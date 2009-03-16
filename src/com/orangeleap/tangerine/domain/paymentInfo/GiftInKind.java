@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.Factory;
@@ -177,6 +178,36 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
 
     public void setMutableDetails(List<GiftInKindDetail> mutableDetails) {
         this.mutableDetails = mutableDetails;
+    }
+    
+    public void removeEmptyMutableDetails() {
+        Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
+        mutableDetails = new ArrayList<GiftInKindDetail>();
+        while (mutableDetailsIter.hasNext()) {
+            GiftInKindDetail detail = mutableDetailsIter.next();
+            if (detail != null) {
+                if (detail.isFieldEntered() == false) {
+                    mutableDetailsIter.remove();
+                }
+                else {
+                    mutableDetails.add(detail);
+                }
+            }
+        }
+        if (mutableDetails.isEmpty()) {
+            mutableDetails.add(new GiftInKindDetail());
+        }
+    }
+
+    public void filterValidDetails() {
+        mutableDetails = new ArrayList<GiftInKindDetail>();
+        Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
+        while (mutableDetailsIter.hasNext()) {
+            GiftInKindDetail detail = mutableDetailsIter.next();
+            if (detail != null && detail.isValid()) {
+                mutableDetails.add(detail);
+            }
+        }
     }
 
     public Site getSite() {

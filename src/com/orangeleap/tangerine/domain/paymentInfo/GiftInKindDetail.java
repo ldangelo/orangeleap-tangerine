@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 import java.math.BigDecimal;
 
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 
@@ -82,5 +83,17 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("description", description).append("fairMarketValue", fairMarketValue).
             append("fmvMethod", fmvMethod).append("quantity", quantity).append("taxDeductible", taxDeductible).append("giftInKindId", giftInKindId).toString();
+    }
+
+    public boolean isFieldEntered() {
+        return fairMarketValue != null || quantity != null || StringUtils.hasText(description) || StringUtils.hasText(fmvMethod);
+    }
+
+    public boolean isValid() {
+        boolean valid = false;
+        if (fairMarketValue != null) {
+            valid = true;
+        }
+        return valid;
     }
 }

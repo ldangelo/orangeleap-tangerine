@@ -77,9 +77,8 @@
 	          encoding="UTF-8"
 	          classpath="${mysql.db.classpath}">
 	     	<!-- Add development data -->
+	     	<!-- TODO add sample project codes -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
-	     	<transaction src="${basedir}/db/dev/devSetup/codeType.sql"/>
-	     	<transaction src="${basedir}/db/dev/devSetup/code.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/personSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/addressSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/emailSetup.sql"/>

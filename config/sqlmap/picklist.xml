@@ -40,6 +40,11 @@
         from PICKLIST P 
         left outer join PICKLIST_ITEM I on P.PICKLIST_ID = I.PICKLIST_ID
     </sql>
+    
+    <sql id="SELECT_PICKLIST_ITEM_FRAGMENT">
+        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER, REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE, PICKLIST_ID
+        from PICKLIST_ITEM
+    </sql>
 
     <select id="SELECT_BY_PICKLIST_ID" resultMap="PICKLIST_RESULT" parameterClass="string" cacheModel="picklist-cache">
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
@@ -61,9 +66,14 @@
     </select>
 
     <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="long" cacheModel="picklist-cache">
-        select PICKLIST_ITEM_ID, DEFAULT_DISPLAY_VALUE, INACTIVE, ITEM_NAME, ITEM_ORDER, REFERENCE_VALUE, SUPPRESS_REFERENCE_VALUE, PICKLIST_ID
-        from PICKLIST_ITEM
+        <include refid="SELECT_PICKLIST_ITEM_FRAGMENT"/>
         where PICKLIST_ITEM_ID = #id#
+    </select>
+
+    <select id="SELECT_PICKLIST_ITEM_BY_PICKLIST_ID_AND_ITEM_NAME" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" cacheModel="picklist-cache">
+        <include refid="SELECT_PICKLIST_ITEM_FRAGMENT"/>
+        where PICKLIST_ID = #picklistId#
+        and ITEM_NAME = #picklistItemName#
     </select>
     
     <update id="UPDATE_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">

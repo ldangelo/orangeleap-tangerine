@@ -19,7 +19,6 @@
 	<sqlMap resource="sqlmap/queryLookupParam.xml"/>
 	<sqlMap resource="sqlmap/messageResource.xml"/>
 	<sqlMap resource="sqlmap/pageAccess.xml"/>
-	<sqlMap resource="sqlmap/code.xml"/>
 	<sqlMap resource="sqlmap/picklist.xml"/>
 
 	<sqlMap resource="sqlmap/address.xml"/>

@@ -29,8 +29,8 @@ CREATE TABLE `CUSTOM_FIELD` (
   `ENTITY_TYPE` varchar(255) default NULL,
   `ENTITY_ID` bigint(20) default NULL,
   `SEQUENCE_NUM` int default 0,
-  `START_DATE` date default '1900-01-01',
-  `END_DATE` date default '3000-01-01',
+  `START_DATE` datetime default '1900-01-01',
+  `END_DATE` datetime default '3000-01-01',
   PRIMARY KEY  (`CUSTOM_FIELD_ID`),
   INDEX `CUSTOM_FIELD_ENTITY_IDX` (`ENTITY_ID`,`ENTITY_TYPE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

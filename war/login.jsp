@@ -49,7 +49,10 @@
     	Release: ${build.version} <!-- ${build.time}  -->
 	</div>
 </div>
-<script>
+<script type="text/javascript">
+
+$('#j_fullname').focus();    
+
 function splitLoginName() {
 
 	var fullname = $('#j_fullname').val();

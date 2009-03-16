@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -73,17 +72,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
             throw new ConstituentValidationException(); 
-        }
-    	if (constituent.getConstituentType().equals(Person.ORGANIZATION) && StringUtils.isBlank(constituent.getLegalName())) {
-    		constituent.setLegalName(constituent.getOrganizationName());
-    	}
-    	if (constituent.getConstituentType().equals(Person.INDIVIDUAL) && StringUtils.isBlank(constituent.getRecognitionName())) {
-    		constituent.setRecognitionName(constituent.createName(false));
-    	}
-    	constituent.setConstituentType(StringUtils.trimToEmpty(constituent.getConstituentType()).toLowerCase());
-    	constituent.setConstituentIndividualRoles(StringUtils.trimToEmpty(constituent.getConstituentIndividualRoles()).toLowerCase());
-    	constituent.setConstituentOrganizationRoles(StringUtils.trimToEmpty(constituent.getConstituentOrganizationRoles()).toLowerCase());
-    	
+        }    	
         constituent = constituentDao.maintainConstituent(constituent);
         relationshipService.maintainRelationships(constituent);
         auditService.auditObject(constituent, constituent);

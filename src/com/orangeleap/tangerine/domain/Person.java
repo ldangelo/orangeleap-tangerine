@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.domain;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -14,6 +16,9 @@ public class Person extends AbstractCommunicatorEntity {
 
     public static final String INDIVIDUAL = "individual";
     public static final String ORGANIZATION = "organization";
+    public static final String FORMAL_SALUTATION = "formalSalutation";
+    public static final String INFORMAL_SALUTATION = "informalSalutation";
+    public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
 
     private Site site;
     private String constituentType = INDIVIDUAL;
@@ -51,10 +56,6 @@ public class Person extends AbstractCommunicatorEntity {
     // TODO: remove this overridden method when this class is renamed to "Constituent"
     public String getType() {
         return "person";
-    }
-
-    public boolean isOrganization() {
-        return getConstituentType().equals(ORGANIZATION);
     }
 
     public String getDisplayValue() {
@@ -340,5 +341,50 @@ public class Person extends AbstractCommunicatorEntity {
     public String getLoginId() {
         return loginId;
     }
-    
- }
+
+    public boolean isOrganization() {
+        return ORGANIZATION.equals(getConstituentType());
+    }
+
+    public boolean isIndividual() {
+        return INDIVIDUAL.equals(getConstituentType());
+    }
+
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if (isOrganization() && StringUtils.isBlank(getLegalName())) {
+            setLegalName(getOrganizationName());
+        }
+        if (isIndividual() && StringUtils.isBlank(getRecognitionName())) {
+            setRecognitionName(createName(false));
+        }
+        if (StringUtils.isBlank(getCustomFieldValue(FORMAL_SALUTATION))) {
+            if (isOrganization()) {
+                setCustomFieldValue(FORMAL_SALUTATION, legalName);
+            }
+            else if (isIndividual()) {
+                StringBuilder sb = new StringBuilder();
+                if (StringUtils.isBlank(title) == false) {
+                    sb.append(title).append(" ");
+                }
+                sb.append(getFirstLast());
+                setCustomFieldValue(FORMAL_SALUTATION, sb.toString());
+            }
+        }
+        if (StringUtils.isBlank(getCustomFieldValue(INFORMAL_SALUTATION))) {
+            if (isOrganization()) {
+                setCustomFieldValue(INFORMAL_SALUTATION, organizationName);
+            }
+            else if (isIndividual()) {
+                setCustomFieldValue(INFORMAL_SALUTATION, getFirstLast());
+            }
+        }
+        if (isIndividual() && StringUtils.isBlank(getCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION))) {
+            setCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION, getFirstLast());
+        }
+        setConstituentType(StringUtils.trimToEmpty(getConstituentType()).toLowerCase());
+        setConstituentIndividualRoles(StringUtils.trimToEmpty(getConstituentIndividualRoles()).toLowerCase());
+        setConstituentOrganizationRoles(StringUtils.trimToEmpty(getConstituentOrganizationRoles()).toLowerCase());
+    }
+}

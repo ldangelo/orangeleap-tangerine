@@ -747,6 +747,46 @@ CREATE TABLE `DISTRO_LINE` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+# Dump of table GIFT_IN_KIND
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `GIFT_IN_KIND`;
+
+CREATE TABLE `GIFT_IN_KIND` (
+  `GIFT_IN_KIND_ID` bigint(20) NOT NULL auto_increment,
+  `FAIR_MARKET_VALUE` decimal(19,2) default NULL,
+  `CURRENCY_CODE` varchar(255) default NULL,
+  `DONATION_DATE` datetime default NULL,
+  `MOTIVATION_CODE` varchar(255) default NULL,
+  `ANONYMOUS` char(1) NOT NULL default '0',
+  `RECOGNITION_NAME` varchar(255) default NULL,
+  `EMAIL_ID` bigint(20) default NULL,
+  `SEND_ACKNOWLEDGMENT` char(1) NOT NULL default '0',
+  `ACKNOWLEDGMENT_DATE` datetime default NULL,
+  PRIMARY KEY  (`GIFT_IN_KIND_ID`),
+  KEY `FK_GIFT_IN_KIND_EMAIL` (`EMAIL_ID`),
+  CONSTRAINT `FK_GIFT_IN_KIND_EMAIL` FOREIGN KEY (`EMAIL_ID`) REFERENCES `EMAIL` (`EMAIL_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+# Dump of table GIFT_IN_KIND_DETAILS
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `GIFT_IN_KIND_DETAILS`;
+
+CREATE TABLE `GIFT_IN_KIND_DETAILS` (
+  `GIK_DETAILS_ID` bigint(20) NOT NULL auto_increment,
+  `DESCRIPTION` varchar(255) default NULL,
+  `FAIR_MARKET_VALUE` decimal(19,2) default NULL,
+  `FMV_METHOD` varchar(255) default NULL,
+  `QUANTITY` int(11) default NULL,
+  `TAX_DEDUCTIBLE` char(1) NOT NULL default '0',
+  `GIFT_IN_KIND_ID` bigint(20) default NULL,
+  PRIMARY KEY  (`GIK_DETAILS_ID`),
+  KEY `FK_GIK_DETAILS_GIFT_IN_KIND` (`GIFT_IN_KIND_ID`),
+  CONSTRAINT `FK_GIK_DETAILS_GIFT_IN_KIND` FOREIGN KEY (`GIFT_IN_KIND_ID`) REFERENCES `GIFT_IN_KIND` (`GIFT_IN_KIND_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 # VERSION of components.  
 # Used to check if the program and database are the same database schema versions

@@ -8,6 +8,7 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
 
 public interface GiftService {
 
@@ -35,7 +36,7 @@ public interface GiftService {
 
 //    public List<Gift> readAllGifts();
 
-    public Gift createGift(Commitment commitment, GiftEntryType giftEntryType);
+    public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType);
 
     public List<Gift> readGiftsByCommitment(Commitment commitment);
 

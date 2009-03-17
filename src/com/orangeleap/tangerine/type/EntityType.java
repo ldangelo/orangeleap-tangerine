@@ -11,6 +11,7 @@ public enum EntityType {
     gift,
     giftInKind,
     code,
+    picklist,
     commitment,
     paymentSource,
     paymentHistory,

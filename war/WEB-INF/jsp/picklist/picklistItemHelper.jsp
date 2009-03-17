@@ -16,6 +16,13 @@
 							<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
 							<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
 						 	<td class="inactive"><input disabled="disabled" name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 
+ 							   <c:url var="picklistItemCustomizeUrl" value="picklistItemCustomize.htm">
+ 							     <c:param name="picklistId" value="${picklistItem.picklistId}" />
+ 							     <c:param name="picklistItemId" value="${picklistItem.id}" />
+ 							     <c:param name="itemName" value="${picklistItemName}" />
+							      <c:param name="view" value="customize" />
+							    </c:url>
+							<td class="action"><a class="editInPlace" href="${picklistItemCustomizeUrl}">+</a></td>
 						</tr>
 					</c:forEach>
 				</table>

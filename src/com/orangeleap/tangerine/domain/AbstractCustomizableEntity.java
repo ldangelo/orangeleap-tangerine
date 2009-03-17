@@ -1,9 +1,9 @@
 package com.orangeleap.tangerine.domain;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.util.CustomFieldMap;
 
 /**
  * Extends AbstractEntity to include methods needed on Entites which
@@ -19,8 +19,23 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
      * Static method to return a CustomFieldMap implementation
      * @return CustomFieldMap
      */
-    public static Map<String, CustomField> createCustomFieldMap() {
-        return new CustomFieldMap<String, CustomField>();
+    public static Map<String, CustomField> createCustomFieldMap(final Long entityId, final String entityType) {
+    	
+        return new TreeMap<String, CustomField>() {
+        	@Override
+        	public CustomField get(Object key) {
+            	CustomField field = super.get(key);
+                if (field == null) {
+                	field = new CustomField((String) key);
+                    field.setEntityId(entityId);
+                    field.setEntityType(entityType);
+
+                    super.put((String) key, field);
+                }
+                return field;
+            }
+        };
+        
     }
     
     /**
@@ -31,7 +46,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
      */
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = createCustomFieldMap();
+            customFieldMap = createCustomFieldMap(this.getId(), this.getType());
         }
 
         for(String key : customFieldMap.keySet()) {

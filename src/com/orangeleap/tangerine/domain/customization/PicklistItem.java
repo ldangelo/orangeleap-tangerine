@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Auditable;
@@ -94,5 +95,6 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     public String getDescription() {
         return defaultDisplayValue;
     }
+    
 	
 }

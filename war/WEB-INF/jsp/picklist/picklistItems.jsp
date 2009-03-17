@@ -27,6 +27,7 @@
 						<td class="codeValue"><span class="required">*</span>Short Description</td>
 						<td class="codeDescription"><span class="required">*</span>Long Description</td>
 					 	<td class="inactive">Inactive</td>  
+					 	<td class="customize">&nbsp;Customize</td>  
 					</tr>
 					<tr>
 						<td><h4 style="margin:0;">Filters</h4></td>
@@ -37,6 +38,7 @@
 						  <option value="true">Only Inactive</option>
 						  <option value="false">Only Active</option>
 						</select></td> 
+						<td></td>
 					</tr>
 				</table>
 			</div>

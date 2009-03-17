@@ -16,6 +16,7 @@
         <input type="hidden" name="_inactive" value="visible" />
 		<input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/>
 		</td> 
+		<td></td>
 </c:when>
 <c:when test="${param.view=='newInPlace'}">
 		<td class="action"><a href="#" class="saveInPlace" onclick="return newInPlace(this,'picklistItem.htm');">Save</a>
@@ -30,6 +31,7 @@
 		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
 		</td>
 		<td><input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td>
+		<td></td>
 </c:when>
 <c:otherwise>
     <c:url var="picklistItemUrl" value="picklistItem.htm">
@@ -42,5 +44,6 @@
 	<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
 	<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
     <td><input disabled="disabled" name="inactive" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 
+	<td></td>
 </c:otherwise>
 </c:choose>

@@ -38,7 +38,7 @@ public class IBatisCustomFieldHelper {
      */
     @SuppressWarnings("unchecked")
     public Map<String, CustomField> readCustomFields(Long entityId, String entityType) {
-        Map<String, CustomField> ret = AbstractCustomizableEntity.createCustomFieldMap();
+        Map<String, CustomField> ret = AbstractCustomizableEntity.createCustomFieldMap(entityId, entityType);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityId", entityId);
         params.put("entityType", entityType);

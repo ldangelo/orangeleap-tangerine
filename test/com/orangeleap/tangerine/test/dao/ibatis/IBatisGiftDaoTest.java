@@ -23,6 +23,7 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisGiftDaoTest extends AbstractIBatisTest {
@@ -61,6 +62,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getCheckNumber() == null;
         assert gift.isSendAcknowledgment() == false;
         assert gift.getAcknowledgmentDate() == null;
+        assert GiftType.MONETARY_GIFT.equals(gift.getGiftType());
         
         assert gift.getPerson() != null && gift.getPerson().getId() == 100L;
         assert "Billy Graham Ministries".equals(gift.getPerson().getOrganizationName());
@@ -122,6 +124,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         gift.setCurrencyCode("JPY");
         gift.setComments("foobar!!");
         gift.setTxRefNum("0101010101");
+        gift.setGiftType(GiftType.MONETARY_GIFT);
         Address addr = new Address();
         addr.setId(100L);
         gift.setSelectedAddress(addr);
@@ -148,6 +151,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert "JPY".equals(readGift.getCurrencyCode());
         assert "foobar!!".equals(readGift.getComments());
         assert "0101010101".equals(readGift.getTxRefNum());
+        assert GiftType.MONETARY_GIFT.equals(readGift.getGiftType());
         assert readGift.getSelectedAddress() != null && 100L == readGift.getSelectedAddress().getId();
         assert readGift.getSelectedPhone() != null && readGift.getSelectedPhone().getId() == null;
         assert readGift.getSelectedEmail() != null && readGift.getSelectedEmail().getId() == null;
@@ -212,6 +216,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getAcknowledgmentDate() == null;
         assert sdf.parse("10/31/1999").equals(readGift.getDonationDate());
         assert GiftEntryType.MANUAL.equals(readGift.getEntryType());
+        assert GiftType.MONETARY_GIFT.equals(readGift.getGiftType());
         assert 125.5 == readGift.getAmount().floatValue();
         assert "USD".equals(readGift.getCurrencyCode());
         assert "foobar!!".equals(readGift.getComments());
@@ -282,6 +287,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
             assert gift.getPerson().getMiddleName() == null;
             assert "Sr".equals(gift.getPerson().getSuffix());
             assert "company1".equals(gift.getPerson().getSite().getName());
+            assert GiftType.MONETARY_GIFT.equals(gift.getGiftType());
 
             switch (gift.getId().intValue()) {
                 case 300: 

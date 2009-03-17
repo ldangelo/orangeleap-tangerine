@@ -7,11 +7,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class Gift extends AbstractPaymentInfoEntity { 
 
     private static final long serialVersionUID = 1L;
+    private GiftType giftType;
     private Long commitmentId;
     private BigDecimal amount;
     private BigDecimal deductibleAmount;
@@ -35,6 +37,14 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.person = commitment.getPerson();
         this.transactionDate = transactionDate;
         this.amount = commitment.getAmountPerGift();
+    }
+
+    public GiftType getGiftType() {
+        return giftType;
+    }
+
+    public void setGiftType(GiftType giftType) {
+        this.giftType = giftType;
     }
 
     public Long getCommitmentId() {
@@ -183,7 +193,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("commitmentId", commitmentId).append("amount", amount).
+        return new ToStringCreator(this).append(super.toString()).append("giftType", giftType).append("commitmentId", commitmentId).append("amount", amount).
             append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
             append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).
             append(super.toString()).append("authCode", authCode).append("originalGiftId", originalGiftId).

@@ -43,6 +43,7 @@ import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 
 @Service("giftService")
@@ -215,7 +216,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                     logger.error("readGiftByIdCreateIfNull: commitment not found for commitmentId = " + commitmentId);
                     return gift;
                 }
-                gift = this.createGift(commitment, GiftEntryType.MANUAL);
+                gift = this.createGift(commitment, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
                 gift.setPerson(commitment.getPerson());
             }
             if (gift == null) {
@@ -295,9 +296,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift createGift(Commitment commitment, GiftEntryType giftEntryType) {
+    public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType) {
         if (logger.isDebugEnabled()) {
-            logger.debug("createGift: commitment = " + commitment + " giftEntryType = " + giftEntryType);
+            logger.debug("createGift: commitment = " + commitment + " giftType = " + giftType + " giftEntryType = " + giftEntryType);
         }
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
@@ -306,6 +307,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
         gift.setPaymentSource(commitment.getPaymentSource());
+        gift.setGiftType(giftType);
         gift.setEntryType(giftEntryType);
         if (commitment.getDistributionLines() != null) {
             List<DistributionLine> list = new ArrayList<DistributionLine>();

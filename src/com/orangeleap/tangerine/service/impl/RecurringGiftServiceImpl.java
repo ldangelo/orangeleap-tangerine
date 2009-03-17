@@ -21,6 +21,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.GiftEntryType;
+import com.orangeleap.tangerine.type.GiftType;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -96,7 +97,7 @@ public class RecurringGiftServiceImpl extends AbstractTangerineService implement
     }
 
     private void createAutoGift(Commitment commitment) {
-        Gift gift = giftService.createGift(commitment, GiftEntryType.AUTO);
+        Gift gift = giftService.createGift(commitment, GiftType.MONETARY_GIFT, GiftEntryType.AUTO);
         gift = giftService.maintainGift(gift);
         commitment.setLastEntryDate(gift.getTransactionDate());
     }

@@ -31,6 +31,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     private boolean sendAcknowledgment = false;
     private Date acknowledgmentDate;
    
+    private Long giftId;
     private Person person;
 
     private FormBeanType emailType;
@@ -127,6 +128,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
 
     public void setAcknowledgmentDate(Date acknowledgmentDate) {
         this.acknowledgmentDate = acknowledgmentDate;
+    }
+
+    public Long getGiftId() {
+        return giftId;
+    }
+
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
     }
 
     public Person getPerson() {

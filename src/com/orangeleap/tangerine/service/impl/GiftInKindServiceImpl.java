@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,7 +12,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.GiftInKindDao;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
 
 @Service("giftInKindService")
@@ -52,5 +55,31 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
             logger.debug("readGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         return giftInKindDao.readGiftsInKindByConstituentId(constituentId);
+    }
+    
+    public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Person constituent) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftInKindByIdCreateIfNull: giftInKindId = " + giftInKindId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+        }
+        GiftInKind giftInKind = null;
+        if (giftInKindId == null) {
+            
+        }
+        else {
+            giftInKind = readGiftInKindById(Long.valueOf(giftInKindId));
+        }
+        return giftInKind;
+    }
+    
+    private GiftInKind createDefaultGiftInKind(Person constituent) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createDefaultGiftInKind: constituent = " + (constituent == null ? null : constituent.getId()));
+        }
+        GiftInKind giftInKind = new GiftInKind();
+        List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>(1);
+        GiftInKindDetail detail = new GiftInKindDetail();
+        details.add(detail);
+        giftInKind.setDetails(details);
+        return giftInKind;
     }
 }

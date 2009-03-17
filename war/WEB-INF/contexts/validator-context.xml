@@ -15,6 +15,8 @@
 
 	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.DistributionLinesValidator" />
 
+	<bean id="giftInKindDetailsValidator" class="com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator" />
+
 	<bean id="codeValidator" class="com.orangeleap.tangerine.controller.validator.CodeValidator">
         <property name="picklistItemService" ref="picklistItemService" />
         <property name="tangerineUserHelper" ref="tangerineUserHelper" />

@@ -14,7 +14,7 @@
 			        <property name="pageType" value="giftInKind"/>
 	            </bean>
 	            <ref bean="codeValidator"/>	            
-<!-- 	            <ref bean="distributionLinesValidator"/> -->	            
+ 	            <ref bean="giftInKindDetailsValidator"/>	            
 	        </list>
         </property>
         <property name="formView" value="giftInKind/giftInKind" />

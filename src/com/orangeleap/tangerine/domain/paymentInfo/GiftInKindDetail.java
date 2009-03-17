@@ -13,6 +13,7 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
     private String description;
     private BigDecimal fairMarketValue;
     private String fmvMethod;
+    private String gikCategory;
     private Integer quantity;
     private boolean taxDeductible = false;
     private Long giftInKindId;
@@ -21,11 +22,12 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
         super();
     }
 
-    public GiftInKindDetail(String description, BigDecimal fairMarketValue, String fmvMethod, Integer quantity, boolean taxDeductible, Long giftInKindId) {
+    public GiftInKindDetail(String description, BigDecimal fairMarketValue, String fmvMethod, String gikCategory, Integer quantity, boolean taxDeductible, Long giftInKindId) {
         super();
         this.description = description;
         this.fairMarketValue = fairMarketValue;
         this.fmvMethod = fmvMethod;
+        this.gikCategory = gikCategory;
         this.quantity = quantity;
         this.taxDeductible = taxDeductible;
         this.giftInKindId = giftInKindId;
@@ -55,6 +57,14 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
         this.fmvMethod = fmvMethod;
     }
     
+    public String getGikCategory() {
+        return gikCategory;
+    }
+
+    public void setGikCategory(String gikCategory) {
+        this.gikCategory = gikCategory;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -78,12 +88,6 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
     public void setGiftInKindId(Long giftInKindId) {
         this.giftInKindId = giftInKindId;
     }
-    
-    @Override
-    public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("description", description).append("fairMarketValue", fairMarketValue).
-            append("fmvMethod", fmvMethod).append("quantity", quantity).append("taxDeductible", taxDeductible).append("giftInKindId", giftInKindId).toString();
-    }
 
     public boolean isFieldEntered() {
         return fairMarketValue != null || quantity != null || StringUtils.hasText(description) || StringUtils.hasText(fmvMethod);
@@ -95,5 +99,11 @@ public class GiftInKindDetail extends AbstractCustomizableEntity {
             valid = true;
         }
         return valid;
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append(super.toString()).append("description", description).append("fairMarketValue", fairMarketValue).
+            append("fmvMethod", fmvMethod).append("gikCategory", gikCategory).append("quantity", quantity).append("taxDeductible", taxDeductible).append("giftInKindId", giftInKindId).toString();
     }
 }

@@ -114,13 +114,15 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		Picklist picklist = getPicklist(addSiteToId(getSiteName(), picklistId));
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
 		for (PicklistItem item : picklist.getPicklistItems()) {
-			if (description.length() > 0) {
-				if (item.getDefaultDisplayValue().contains(description)) {
-					result.add(item);
-				}
-			} else {
-				if (item.getItemName().contains(picklistItemName)) {
-					result.add(item);
+			if (showInactive || !item.isInactive()) {
+				if (description.length() > 0) {
+					if (item.getDefaultDisplayValue().contains(description)) {
+						result.add(item);
+					}
+				} else {
+					if (item.getItemName().contains(picklistItemName)) {
+						result.add(item);
+					}
 				}
 			}
 		}

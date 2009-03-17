@@ -45,6 +45,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert readGiftInKind.isAnonymous() == false;
         assert "Hi mom".equals(readGiftInKind.getRecognitionName());
         assert readGiftInKind.isSendAcknowledgment() == false;
+        assert readGiftInKind.getGiftId() == null;
         assert readGiftInKind.getAcknowledgmentDate() == null;
         assert readGiftInKind.getSelectedEmail() != null && readGiftInKind.getSelectedEmail().getId() == null;
         assert readGiftInKind.getPerson() != null && readGiftInKind.getPerson().getId() == 200L;
@@ -73,6 +74,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert readGiftInKind.getDonationDate() == null;
         assert "999".equals(readGiftInKind.getMotivationCode());
         assert readGiftInKind.isAnonymous();
+        assert readGiftInKind.getGiftId() == null;
         assert readGiftInKind.getRecognitionName() == null;
         assert readGiftInKind.isSendAcknowledgment() == false;
         assert readGiftInKind.getAcknowledgmentDate() == null;
@@ -100,6 +102,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert giftInKind != null;
         assert 100L == giftInKind.getId();
         assert 15.59 == giftInKind.getFairMarketValue().doubleValue();
+        assert giftInKind.getGiftId() == null;
         assert "USD".equals(giftInKind.getCurrencyCode());
         assert giftInKind.getDonationDate() != null;
         assert "1234".equals(giftInKind.getMotivationCode());
@@ -130,9 +133,11 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
             switch (gik.getId().intValue()) {
                 case 200:
                     assert gik.getDetails() != null && gik.getDetails().isEmpty();
+                    assert gik.getGiftId() == 100L;
                     break;
                 case 300:
                     assert gik.getDetails() != null && gik.getDetails().size() == 2;
+                    assert gik.getGiftId() == null;
                     for (GiftInKindDetail detail : gik.getDetails()) {
                         assert "foo".equals(detail.getDescription()) || "bar".equals(detail.getDescription());
                         assert 10 == detail.getFairMarketValue().intValue() || 40 == detail.getFairMarketValue().intValue();

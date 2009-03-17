@@ -228,7 +228,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
             append("donationDate", donationDate).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).
             append("motivationCode", motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
-            append("constituent", person).append("selectedEmail", selectedEmail).
+            append("constituent", person).append("selectedEmail", selectedEmail).append("giftId", giftId).
             toString();
     }
 }

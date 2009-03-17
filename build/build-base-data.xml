@@ -20,6 +20,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/giftInKind.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
@@ -39,6 +40,8 @@
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftInKind.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/giftInKindList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/recurringGift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/recurringGiftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/recurringGiftList.sql"/>

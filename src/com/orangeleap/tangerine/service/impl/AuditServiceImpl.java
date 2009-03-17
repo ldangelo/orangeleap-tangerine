@@ -35,6 +35,8 @@ import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.type.AuditType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 @Service("auditService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -313,6 +315,16 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     @Override
+    public PaginatedResult allAuditHistoryForSite(SortInfo sortInfo) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("allAuditHistoryForSite:");
+        }
+        return auditDao.allAuditHistoryForSite(sortInfo.getSort(), sortInfo.getDir(),
+                sortInfo.getStart(), sortInfo.getLimit());
+    }
+
+    @Override
     public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
         if (logger.isDebugEnabled()) {
             logger.debug("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
@@ -321,11 +333,29 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     @Override
+    public PaginatedResult auditHistoryForEntity(String entityTypeDisplay, Long objectId, SortInfo sortInfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        }
+        return auditDao.auditHistoryForEntity(entityTypeDisplay, objectId, sortInfo.getSort(), sortInfo.getDir(),
+                sortInfo.getStart(), sortInfo.getLimit());
+    }
+
+    @Override
     public List<Audit> auditHistoryForConstituent(Long constituentId) {
         if (logger.isDebugEnabled()) {
             logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
         }
         return auditDao.auditHistoryForConstituent(constituentId);
+    }
+
+    @Override
+    public PaginatedResult auditHistoryForConstituent(Long constituentId, SortInfo sortInfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
+        }
+        return auditDao.auditHistoryForConstituent(constituentId, sortInfo.getSort(), sortInfo.getDir(),
+                sortInfo.getStart(), sortInfo.getLimit());
     }
 
     @Override

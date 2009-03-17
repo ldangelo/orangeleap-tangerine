@@ -8,6 +8,11 @@ import java.util.Set;
  */
 public class SortInfo {
 
+    /**
+     * Minimum size of the SQL 'LIMIT' option, currently
+     * set to 10 rows minimum
+     */
+    public final static int MIN_ROWS = 10;
     private String sort = null;
     private String sortDir = "ASC";
     private int limit = 100; // default is to return 100 rows at a time
@@ -40,7 +45,7 @@ public class SortInfo {
     }
 
     public void setLimit(int limit) {
-        if(limit > 0) {
+        if(limit >= MIN_ROWS) {
             this.limit = limit;
         }
     }

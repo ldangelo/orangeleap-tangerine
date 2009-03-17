@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.AuditDao;
 import com.orangeleap.tangerine.domain.Audit;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 /** 
  * Corresponds to the AUDIT table
@@ -36,6 +37,29 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 	}
 
     @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult allAuditHistoryForSite(String sortColumn, String dir, int start, int limit) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAuditHistoryForSite:");
+        }
+
+        Map<String, Object> params = setupParams();
+        params.put("sortColumn", sortColumn);
+        params.put("sortDir", dir);
+        params.put("offset", start);
+        params.put("limit", limit);
+
+        List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_SITE_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_SITE_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
         if (logger.isDebugEnabled()) {
@@ -48,6 +72,32 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
 	}
 
     @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult auditHistoryForEntity(String entityTypeDisplay, Long objectId,
+                                             String sortColumn, String dir, int start, int limit) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        }
+
+        Map<String, Object> params = setupParams();
+        params.put("entityType", entityTypeDisplay);
+        params.put("objectId", objectId);
+        params.put("sortColumn", sortColumn);
+        params.put("sortDir", dir);
+        params.put("offset", start);
+        params.put("limit", limit);
+
+        List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_ENTITY_PAGINATED", params);
+        Long count = (Long) getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_ENTITY_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
+
+    @SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> auditHistoryForConstituent(Long constituentId) {
         if (logger.isDebugEnabled()) {
@@ -57,6 +107,31 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
         params.put("constituentId", constituentId);
         return getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_CONSTITUENT", params);
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult auditHistoryForConstituent(Long constituentId,
+                                                  String sortColumn, String dir, int start, int limit) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("sortColumn", sortColumn);
+        params.put("sortDir", dir);
+        params.put("offset", start);
+        params.put("limit", limit);
+
+        List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED", params);
+        Long count = (Long) getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_CONSTITUENT_ROWCOUNT", params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
+
 
 	@Override
 	public Audit auditObject(Audit audit) {

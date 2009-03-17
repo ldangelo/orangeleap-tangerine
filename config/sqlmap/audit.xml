@@ -25,10 +25,27 @@
 		where a.SITE_NAME = #siteName#
 	</sql>
 
+    <sql id="AUDIT_ROWCOUNT_FRAGMENT">
+        select count(a.AUDIT_ID)
+        from AUDIT a
+        where a.SITE_NAME = #siteName#
+    </sql>
+
 	<select id="AUDIT_HISTORY_FOR_SITE" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		order by DATE desc
 	</select>
+
+    <select id="AUDIT_HISTORY_FOR_SITE_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+
+    <select id="AUDIT_HISTORY_FOR_SITE_ROWCOUNT" resultClass="long" parameterClass="map">
+        <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
+    </select>
+
 
 	<select id="AUDIT_HISTORY_FOR_ENTITY" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
@@ -37,11 +54,39 @@
 		order by DATE desc
 	</select>
 
+    <select id="AUDIT_HISTORY_FOR_ENTITY_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		and a.ENTITY_TYPE = #entityType#
+		and a.OBJECT_ID = #objectId#
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+
+    <select id="AUDIT_HISTORY_FOR_ENTITY_ROWCOUNT" resultClass="long" parameterClass="map">
+        <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
+        and a.ENTITY_TYPE = #entityType#
+		and a.OBJECT_ID = #objectId#
+    </select>
+
+
 	<select id="AUDIT_HISTORY_FOR_CONSTITUENT" resultMap="AUDIT_RESULT" parameterClass="map">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		and a.CONSTITUENT_ID = #constituentId#
 		order by DATE desc
 	</select>
+
+    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+		<include refid="SELECT_AUDIT_FRAGMENT"/>
+		and a.CONSTITUENT_ID = #constituentId#
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+
+    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_ROWCOUNT" resultClass="long" parameterClass="map">
+        <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
+        and a.CONSTITUENT_ID = #constituentId#
+    </select>
+
 
 	<insert id="INSERT_AUDIT" parameterClass="com.orangeleap.tangerine.domain.Audit">
 		insert into AUDIT (AUDIT_TYPE, DATE, DESCRIPTION, ENTITY_TYPE, OBJECT_ID, USER, CONSTITUENT_ID, SITE_NAME)

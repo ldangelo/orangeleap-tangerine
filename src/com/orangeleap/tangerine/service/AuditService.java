@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.web.common.SortInfo;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
 
 public interface AuditService {
     public List<Audit> auditObject(Object object);
@@ -14,9 +16,15 @@ public interface AuditService {
 
     public List<Audit> allAuditHistoryForSite();
 
+    public PaginatedResult allAuditHistoryForSite(SortInfo sortInfo);
+
     public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId);
 
+    public PaginatedResult auditHistoryForEntity(String entityTypeDisplay, Long objectId, SortInfo sortInfo);
+
     public List<Audit> auditHistoryForConstituent(Long constituentId);
+
+    public PaginatedResult auditHistoryForConstituent(Long constituentId, SortInfo sortInfo);
 
     public Audit auditObjectInactive(Object object);
 

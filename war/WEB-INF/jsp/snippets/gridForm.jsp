@@ -39,6 +39,26 @@
 								alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 						</div>
 					</c:when>
+					<c:when test="${fieldVO.fieldType == 'PICKLIST'}">
+						<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" 
+							id="<c:out value='${fieldVO.fieldId}'/>">
+							<option value="none"><spring:message code="none"/></option>
+							<c:forEach var="code" varStatus="status" items="${fieldVO.augmentedCodes}">
+								<option value="<c:out value='${code}'/>" 
+									<c:if test="${fieldVO.fieldValue eq code}">selected="selected"</c:if>>
+									<c:out value='${fieldVO.displayValues[status.index]}'/>
+								</option>
+							</c:forEach>
+						</select>
+					</c:when>
+					<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
+			            <input type="hidden" name="_<c:out value="${fieldVO.fieldName}"/>" value="visible" />
+			            <input type="checkbox" value="true" 
+			                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
+			                   name="<c:out value='${fieldVO.fieldName}'/>" 
+			                   id="<c:out value='${fieldVO.fieldId}'/>"  
+			                   <c:if test="${fieldVO.fieldValue}">checked="checked"</c:if>/>
+					</c:when>
 					<c:otherwise>
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> <c:if test="${fieldVO.fieldType == 'NUMBER'}"> number</c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}"> percentage</c:if>" 
 							type="text" 

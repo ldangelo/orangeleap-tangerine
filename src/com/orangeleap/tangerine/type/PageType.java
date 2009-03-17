@@ -32,6 +32,8 @@ public enum PageType {
     membershipSearch("/membershipSearch.htm"),
     membershipSearchResults("/membershipSearchResults.htm"),
     membershipView("/membershipView.htm"),
+    giftInKind("/giftInKind.htm"),
+    giftInKindList("/giftInKindList.htm"),
     emailManager("/emailManager.htm"),
     emailManagerEdit("/emailManagerEdit.htm"),
     email("/email.htm"),

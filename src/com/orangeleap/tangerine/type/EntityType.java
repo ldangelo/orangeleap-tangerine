@@ -9,6 +9,7 @@ public enum EntityType {
     email,
     phone,
     gift,
+    giftInKind,
     code,
     commitment,
     paymentSource,

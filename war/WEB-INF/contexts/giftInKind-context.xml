@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+	<bean id="giftInKindFormController" class="com.orangeleap.tangerine.controller.giftInKind.GiftInKindFormController" parent="tangerineConstituentAttributesFormController">
+        <property name="commandName" value="giftInKind"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind"/>
+		<property name="validators">
+			<list>
+	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+			        <property name="pageType" value="giftInKind"/>
+	            </bean>
+	            <ref bean="codeValidator"/>	            
+<!-- 	            <ref bean="distributionLinesValidator"/> -->	            
+	        </list>
+        </property>
+        <property name="formView" value="giftInKind/giftInKind" />
+        <property name="successView" value="redirect:/giftInKind.htm" />
+    </bean>
+
+    <bean id="giftInKindListController" class="com.orangeleap.tangerine.controller.giftInKind.GiftInKindListController">
+        <property name="viewName" value="giftInKind/giftInKindList"/>
+    </bean>
+    
+    <bean id="giftInKindUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+		        <prop key="/giftInKind.htm">giftInKindFormController</prop>
+		        <prop key="/giftInKindList.htm">giftInKindListController</prop>
+			</props>
+		</property>
+	</bean>
+       
+</beans>

@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.type.FormBeanType;
@@ -78,6 +79,7 @@ public class EntityValidator implements Validator {
         || Gift.class.equals(clazz) 
         || CommunicationHistory.class.equals(clazz) 
         || Commitment.class.equals(clazz) 
+        || GiftInKind.class.equals(clazz) 
         || Address.class.equals(clazz) 
         || Email.class.equals(clazz) 
         || Phone.class.equals(clazz) 

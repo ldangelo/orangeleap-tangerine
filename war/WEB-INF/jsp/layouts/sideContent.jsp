@@ -41,6 +41,10 @@
 								<a class="${sidebarNav=='Memberships'?'active':''}" href="membershipList.htm?personId=${person.id}&type=membership"><spring:message code="memberships"/></a>
 				            </c:if>
 				            --%>
+							<a class="${sidebarNav=='New Gift-In-Kind'?'active':''}" href="giftInKind.htm?personId=${person.id}"><spring:message code="newGiftInKind"/></a>
+				            <c:if test="${pageAccess['/giftInKindList.htm']!='DENIED'}">
+								<a class="${sidebarNav=='Gifts-In-Kind'?'active':''}" href="giftInKindList.htm?personId=${person.id}"><spring:message code="giftsInKind"/></a>
+				            </c:if>
 			            </span>
 		            </div>
 					<div class="navGroup">

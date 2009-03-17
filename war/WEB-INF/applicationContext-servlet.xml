@@ -18,6 +18,7 @@
 	<import resource="contexts/dwr-context.xml"/>
 	<import resource="contexts/email-context.xml"/>
 	<import resource="contexts/gift-context.xml"/>
+	<import resource="contexts/giftInKind-context.xml"/>
 	<import resource="contexts/import-export-context.xml"/>
 	<import resource="contexts/lookup-context.xml"/>
 	<import resource="contexts/membership-context.xml"/>
@@ -36,6 +37,8 @@
 	<bean id="tangerineFormController" class="com.orangeleap.tangerine.controller.TangerineFormController" abstract="true"/>
 
 	<bean id="tangerineConstituentAttributesFormController" class="com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController" abstract="true" parent="tangerineFormController"/>
+
+	<bean id="tangerineListController" class="com.orangeleap.tangerine.controller.TangerineListController" abstract="true"/>
 
     <bean id="account" class="com.orangeleap.tangerine.controller.AccountFormController">
         <property name="commandName" value="user"/>

@@ -213,10 +213,10 @@ values (300, 50, 'USD', '2009-02-01 00:00:00', '4321',
 false, null, true, '2009-03-05 12:00:00', 300, 400);
 
 -- Gift In Kind Details
-insert into GIFT_IN_KIND_DETAIL (DESCRIPTION, FAIR_MARKET_VALUE, FMV_METHOD, QUANTITY, TAX_DEDUCTIBLE, GIFT_IN_KIND_ID)
-values ('foo', 10, null, 1, true, 300);
+insert into GIFT_IN_KIND_DETAIL (DESCRIPTION, FAIR_MARKET_VALUE, FMV_METHOD, CATEGORY, QUANTITY, TAX_DEDUCTIBLE, GIFT_IN_KIND_ID)
+values ('foo', 10, null, 'bo', 1, true, 300);
 
-insert into GIFT_IN_KIND_DETAIL (DESCRIPTION, FAIR_MARKET_VALUE, FMV_METHOD, QUANTITY, TAX_DEDUCTIBLE, GIFT_IN_KIND_ID)
-values ('bar', 40, 'risk analysis', 2, false, 300);
+insert into GIFT_IN_KIND_DETAIL (DESCRIPTION, FAIR_MARKET_VALUE, FMV_METHOD, CATEGORY, QUANTITY, TAX_DEDUCTIBLE, GIFT_IN_KIND_ID)
+values ('bar', 40, 'risk analysis', 'jackson', 2, false, 300);
 
 

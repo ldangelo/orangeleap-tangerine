@@ -753,6 +753,7 @@ CREATE TABLE `GIFT_IN_KIND_DETAIL` (
   `DESCRIPTION` varchar(255) default NULL,
   `FAIR_MARKET_VALUE` decimal(19,2) default NULL,
   `FMV_METHOD` varchar(255) default NULL,
+  `CATEGORY` varchar(255) default NULL,
   `QUANTITY` int(11) default NULL,
   `TAX_DEDUCTIBLE` char(1) NOT NULL default '0',
   `GIFT_IN_KIND_ID` bigint(20) default NULL,

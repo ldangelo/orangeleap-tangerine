@@ -61,7 +61,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         email.setId(100L);
         giftInKind.setSelectedEmail(email);
         
-        GiftInKindDetail detail = new GiftInKindDetail("my description", new BigDecimal(.50), null, new Integer(3), false, giftInKind.getId()); 
+        GiftInKindDetail detail = new GiftInKindDetail("my description", new BigDecimal(.50), null, "joe", new Integer(3), false, giftInKind.getId()); 
         List<GiftInKindDetail> list = new ArrayList<GiftInKindDetail>();
         list.add(detail);
         giftInKind.setDetails(list);
@@ -87,6 +87,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
             assert "my description".equals(readDetail.getDescription());
             assert .50d == readDetail.getFairMarketValue().doubleValue();
             assert readDetail.getFmvMethod() == null;
+            assert "joe".equals(readDetail.getGikCategory());
             assert 3 == readDetail.getQuantity();
             assert readDetail.isTaxDeductible() == false;
             assert readGiftInKind.getId().equals(readDetail.getGiftInKindId());
@@ -142,6 +143,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
                         assert "foo".equals(detail.getDescription()) || "bar".equals(detail.getDescription());
                         assert 10 == detail.getFairMarketValue().intValue() || 40 == detail.getFairMarketValue().intValue();
                         assert null == detail.getFmvMethod() || "risk analysis".equals(detail.getFmvMethod());
+                        assert "bo".equals(detail.getGikCategory()) || "jackson".equals(detail.getGikCategory());
                         assert 1 == detail.getQuantity() || 2 == detail.getQuantity();
                         assert 300L == detail.getGiftInKindId();
                     }

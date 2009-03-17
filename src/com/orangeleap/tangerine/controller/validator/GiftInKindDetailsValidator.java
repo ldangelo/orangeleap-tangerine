@@ -19,7 +19,7 @@ public class GiftInKindDetailsValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return GiftInKindDetail.class.equals(clazz);
+        return GiftInKind.class.equals(clazz);
     }
 
     @Override

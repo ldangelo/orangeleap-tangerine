@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -160,6 +162,13 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 				}
 			}
 		}
+		
+		Collections.sort(result, new Comparator<Picklist>() {
+			@Override
+			public int compare(Picklist o1, Picklist o2) {
+				return o1.getPicklistDesc().compareTo(o2.getPicklistDesc());
+			}
+		});
 		
 		return result;
 	}

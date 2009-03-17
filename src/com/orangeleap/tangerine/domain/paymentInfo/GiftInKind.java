@@ -30,6 +30,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     private String recognitionName;
     private boolean sendAcknowledgment = false;
     private Date acknowledgmentDate;
+    private Date transactionDate;
    
     private Long giftId;
     private Person person;
@@ -138,6 +139,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
         this.giftId = giftId;
     }
 
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
     public Person getPerson() {
         return person;
     }
@@ -228,7 +237,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
             append("donationDate", donationDate).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).
             append("motivationCode", motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
-            append("constituent", person).append("selectedEmail", selectedEmail).append("giftId", giftId).
+            append("constituent", person).append("selectedEmail", selectedEmail).append("giftId", giftId).append("transactionDate", transactionDate).
             toString();
     }
 }

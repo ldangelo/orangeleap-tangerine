@@ -729,6 +729,7 @@ CREATE TABLE `GIFT_IN_KIND` (
   `RECOGNITION_NAME` varchar(255) default NULL,
   `SEND_ACKNOWLEDGMENT` char(1) NOT NULL default '0',
   `ACKNOWLEDGMENT_DATE` datetime default NULL,
+  `TRANSACTION_DATE` datetime default NULL,
   `GIFT_ID` bigint(20) default NULL,
   `CONSTITUENT_ID` bigint(20) default NULL,
   `EMAIL_ID` bigint(20) default NULL,

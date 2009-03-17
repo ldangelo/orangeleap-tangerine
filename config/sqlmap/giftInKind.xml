@@ -12,6 +12,7 @@
 		<result property="recognitionName" column="GIFT_IN_KIND_RECOGNITION_NAME" jdbcType="VARCHAR" />
 		<result property="sendAcknowledgment" column="GIFT_IN_KIND_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="acknowledgmentDate" column="GIFT_IN_KIND_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="transactionDate" column="GIFT_IN_KIND_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="giftId" column="GIFT_IN_KIND_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
@@ -25,7 +26,7 @@
 		gik.GIFT_IN_KIND_ID, gik.FAIR_MARKET_VALUE as GIFT_IN_KIND_FAIR_MARKET_VALUE, gik.CURRENCY_CODE as GIFT_IN_KIND_CURRENCY_CODE,
 		gik.DONATION_DATE as GIFT_IN_KIND_DONATION_DATE, gik.MOTIVATION_CODE as GIFT_IN_KIND_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
 		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.SEND_ACKNOWLEDGMENT as GIFT_IN_KIND_SEND_ACKNOWLEDGMENT, 
-		gik.ACKNOWLEDGMENT_DATE as GIFT_IN_KIND_ACKNOWLEDGMENT_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID
+		gik.ACKNOWLEDGMENT_DATE as GIFT_IN_KIND_ACKNOWLEDGMENT_DATE, gik.TRANSACTION_DATE as GIFT_IN_KIND_TRANSACTION_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID
 	</sql>
 	
 	<sql id="GIFT_IN_KIND_QUERY_FRAGMENT">
@@ -54,9 +55,9 @@
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
 		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, 
-		ANONYMOUS, RECOGNITION_NAME, SEND_ACKNOWLEDGMENT, ACKNOWLEDGMENT_DATE, CONSTITUENT_ID, EMAIL_ID, GIFT_ID)
+		ANONYMOUS, RECOGNITION_NAME, SEND_ACKNOWLEDGMENT, ACKNOWLEDGMENT_DATE, TRANSACTION_DATE, CONSTITUENT_ID, EMAIL_ID, GIFT_ID)
 		values (#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#,
-		#anonymous#, #recognitionName#, #sendAcknowledgment#, #acknowledgmentDate#, #person.id#, #selectedEmail.id#, #giftId#)
+		#anonymous#, #recognitionName#, #sendAcknowledgment#, #acknowledgmentDate#, #transactionDate#, #person.id#, #selectedEmail.id#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -72,6 +73,7 @@
 		gik.RECOGNITION_NAME = #recognitionName#,
 		gik.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
 		gik.ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		gik.TRANSACTION_DATE = #transactionDate#,
 		gik.CONSTITUENT_ID = #person.id#,
 		gik.EMAIL_ID = #selectedEmail.id#,
 		gik.GIFT_ID = #giftId#

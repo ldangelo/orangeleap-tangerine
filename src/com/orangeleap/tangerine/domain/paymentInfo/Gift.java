@@ -38,6 +38,17 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.transactionDate = transactionDate;
         this.amount = commitment.getAmountPerGift();
     }
+    
+    public Gift(GiftInKind giftInKind) {
+        this.giftType = GiftType.GIFT_IN_KIND;
+        this.currencyCode = giftInKind.getCurrencyCode();
+        this.donationDate = giftInKind.getDonationDate();
+        this.sendAcknowledgment = giftInKind.isSendAcknowledgment();
+        this.acknowledgmentDate = giftInKind.getAcknowledgmentDate();
+        this.transactionDate = giftInKind.getTransactionDate();
+        this.person = giftInKind.getPerson();
+        this.selectedEmail = giftInKind.getSelectedEmail();
+    }
 
     public GiftType getGiftType() {
         return giftType;

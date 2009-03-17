@@ -198,7 +198,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (logger.isDebugEnabled()) {
             logger.debug("readGiftById: giftId = " + giftId);
         }
-//        return normalize(giftDao.readGiftById(giftId));
         return giftDao.readGiftById(giftId);
     }
 
@@ -222,7 +221,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             if (gift == null) {
                 if (constituent != null) {
                     gift = this.createDefaultGift(constituent);
-                    gift.setPerson(constituent);
                 }
             }
         }
@@ -231,24 +229,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return gift;
     }
-
-    // only needed for gifts not entered by the program and entered via sql.
-//    private Gift normalize(Gift gift) {
-//        if (gift.getAddress() == null) {
-//            gift.setAddress(new Address(gift.getPerson().getId()));
-//        }
-//        if (gift.getPhone() == null) {
-//            gift.setPhone(new Phone(gift.getPerson().getId()));
-//        }
-//        if (gift.getEmail() == null) {
-//            gift.setEmail(new Email(gift.getPerson().getId()));
-//        }
-//        if (gift.getPaymentSource() == null) {
-//            gift.setPaymentSource(new PaymentSource(gift.getPerson()));
-//        }
-//        gift.getPaymentSource().setPerson(gift.getPerson());
-//        return gift;
-//    }
 
     @Override
     public List<Gift> readGifts(Person constituent) {
@@ -284,7 +264,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         for (EntityDefault ed : entityDefaults) {
             giftBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
-
+        gift.setPerson(constituent);
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
         DistributionLine line = new DistributionLine();
         line.setGiftId(gift.getId());

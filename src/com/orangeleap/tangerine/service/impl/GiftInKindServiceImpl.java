@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
@@ -26,6 +29,9 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
 
     @Resource(name = "giftInKindDAO")
     private GiftInKindDao giftInKindDao;
+    
+    @Resource(name = "giftDAO")
+    private GiftDao giftDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -34,6 +40,8 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
             logger.debug("maintainGiftInKind: giftInKind = " + giftInKind);
         }
         maintainEntityChildren(giftInKind, giftInKind.getPerson());
+        giftInKind.setTransactionDate(Calendar.getInstance().getTime());
+        giftDao.maintainGift(createGiftForGiftInKind(giftInKind)); // save a row in the gift table
         giftInKind.filterValidDetails();
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
         auditService.auditObject(giftInKind, giftInKind.getPerson());
@@ -57,13 +65,14 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         return giftInKindDao.readGiftsInKindByConstituentId(constituentId);
     }
     
+    @Override
     public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Person constituent) {
         if (logger.isDebugEnabled()) {
             logger.debug("readGiftInKindByIdCreateIfNull: giftInKindId = " + giftInKindId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         GiftInKind giftInKind = null;
         if (giftInKindId == null) {
-            
+            giftInKind = createDefaultGiftInKind(constituent); 
         }
         else {
             giftInKind = readGiftInKindById(Long.valueOf(giftInKindId));
@@ -76,10 +85,15 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
             logger.debug("createDefaultGiftInKind: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         GiftInKind giftInKind = new GiftInKind();
+        giftInKind.setPerson(constituent);
         List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>(1);
         GiftInKindDetail detail = new GiftInKindDetail();
         details.add(detail);
         giftInKind.setDetails(details);
         return giftInKind;
+    }
+    
+    private Gift createGiftForGiftInKind(GiftInKind giftInKind) {
+        return new Gift(giftInKind);
     }
 }

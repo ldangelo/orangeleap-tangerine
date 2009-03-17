@@ -41,7 +41,9 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         }
         maintainEntityChildren(giftInKind, giftInKind.getPerson());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
-        giftDao.maintainGift(createGiftForGiftInKind(giftInKind)); // save a row in the gift table
+        Gift gift = createGiftForGiftInKind(giftInKind);
+        gift = giftDao.maintainGift(createGiftForGiftInKind(giftInKind)); // save a row in the gift table
+        giftInKind.setGiftId(gift.getId());
         giftInKind.filterValidDetails();
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
         auditService.auditObject(giftInKind, giftInKind.getPerson());

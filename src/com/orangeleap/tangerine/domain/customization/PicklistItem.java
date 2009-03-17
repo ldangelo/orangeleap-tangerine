@@ -2,14 +2,14 @@ package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
 
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Auditable;
 import com.orangeleap.tangerine.domain.GeneratedId;
 
-public class PicklistItem implements Auditable, GeneratedId, Serializable {
+public class PicklistItem extends AbstractCustomizableEntity implements Auditable, GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
     private String itemName;
     private String defaultDisplayValue;
     private String referenceValue;
@@ -18,16 +18,6 @@ public class PicklistItem implements Auditable, GeneratedId, Serializable {
     private boolean inactive = false;
     private String picklistId;
     private Auditable originalObject;
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getItemName() {
         return itemName;

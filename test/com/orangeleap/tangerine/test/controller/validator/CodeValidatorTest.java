@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.customization.Code;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;

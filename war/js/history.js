@@ -54,8 +54,14 @@ var loadMRU = function(arr) {
     var tm = Ext.util.TextMetrics.createInstance('bookmarkHistory');
     for (var j = 0; j < arr.length; j++) {
         historyList.append(template.apply(arr[j]));
-        var w = tm.getWidth(arr[j].firstName + " " + arr[j].lastName);
-        if (w > maxWidth) maxWidth = w;
+        var newWidth = 0;
+        if(arr[j].firstName.length == 0 && arr[j].lastName.length == 0) {
+            newWidth = tm.getWidth(arr[j].orgName);
+        } else {
+            newWidth = tm.getWidth(arr[j].firstName + " " + arr[j].lastName); 
+        }
+
+        if (newWidth > maxWidth) maxWidth = newWidth;
     }
 
     $('#bookmarkHistory').width(maxWidth + 20);

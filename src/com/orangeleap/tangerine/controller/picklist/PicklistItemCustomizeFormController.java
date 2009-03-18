@@ -37,10 +37,22 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         String picklistItemId = request.getParameter("picklistItemId");
         PicklistItem item = getPicklistItem(picklistId, picklistItemId);
         Map<String, String> map = getMap(item.getCustomFieldMap());
-		if (map.size() == 0) map.put("", "");
+		if (map.size() == 0) {
+	        if (item.getPicklistId().endsWith("projectCode")) {
+	        	addDefaultGLCodes(map);
+	        } else {
+	        	map.put("", "");
+	        }
+		}
         request.setAttribute("map", map);
         request.setAttribute("picklistItem", item);
         return super.showForm(request, response, errors, controlModel);
+    }
+    
+    private void addDefaultGLCodes(Map<String, String> map) {
+    	for (int i = 1; i <= 10; i++) {
+    		map.put("GL"+i, "");
+    	}
     }
 
     @Override

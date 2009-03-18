@@ -38,7 +38,7 @@ public class CodeFieldHandler extends GenericFieldHandler {
         String val = itemName;
         PicklistItem code = picklistItemService.getPicklistItem(picklistId, itemName);
         if (code != null) {
-            val = code.getDefaultDisplayValue();
+            val = new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString();
         }
         return val;
     }

@@ -21,7 +21,10 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -34,6 +37,15 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Resource(name="constituentService")
     protected ConstituentService constituentService;
+
+    @Resource(name="addressService")
+    protected AddressService addressService;
+
+    @Resource(name="phoneService")
+    protected PhoneService phoneService;
+
+    @Resource(name="emailService")
+    protected EmailService emailService;
 
     @Resource(name="siteService")
     protected SiteService siteService;    

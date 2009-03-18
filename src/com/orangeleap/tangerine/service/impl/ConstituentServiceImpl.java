@@ -19,6 +19,9 @@ import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
@@ -74,6 +77,24 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             throw new ConstituentValidationException(); 
         }    	
         constituent = constituentDao.maintainConstituent(constituent);
+        
+        Address address = constituent.getPrimaryAddress();
+        Phone phone = constituent.getPrimaryPhone();
+        Email email = constituent.getPrimaryEmail();
+        
+        if (address != null) {
+        	address.setPersonId(constituent.getId());
+        	addressService.save(address);
+        }
+        if (phone != null) {
+        	phone.setPersonId(constituent.getId());
+        	phoneService.save(phone);
+        }
+        if (email != null) {
+        	email.setPersonId(constituent.getId());
+        	emailService.save(email);
+        }
+
         relationshipService.maintainRelationships(constituent);
         auditService.auditObject(constituent, constituent);
         return constituent;

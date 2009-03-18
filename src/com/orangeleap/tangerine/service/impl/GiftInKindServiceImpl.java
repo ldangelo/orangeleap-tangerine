@@ -42,7 +42,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         maintainEntityChildren(giftInKind, giftInKind.getPerson());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
         Gift gift = createGiftForGiftInKind(giftInKind);
-        gift = giftDao.maintainGift(createGiftForGiftInKind(giftInKind)); // save a row in the gift table
+        gift = giftDao.maintainGift(gift); // save a row in the gift table
         giftInKind.setGiftId(gift.getId());
         giftInKind.filterValidDetails();
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
@@ -96,6 +96,14 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     }
     
     private Gift createGiftForGiftInKind(GiftInKind giftInKind) {
-        return new Gift(giftInKind);
+        Gift gift = null;
+        if (giftInKind.getGiftId() == null || giftInKind.getGiftId() <= 0) {
+            gift = new Gift(giftInKind);
+        }
+        else {
+            gift = giftDao.readGiftById(giftInKind.getGiftId());
+            gift.setGiftForGiftInKind(giftInKind);
+        }
+        return gift;
     }
 }

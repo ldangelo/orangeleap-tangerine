@@ -40,14 +40,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     }
     
     public Gift(GiftInKind giftInKind) {
-        this.giftType = GiftType.GIFT_IN_KIND;
-        this.currencyCode = giftInKind.getCurrencyCode();
-        this.donationDate = giftInKind.getDonationDate();
-        this.sendAcknowledgment = giftInKind.isSendAcknowledgment();
-        this.acknowledgmentDate = giftInKind.getAcknowledgmentDate();
-        this.transactionDate = giftInKind.getTransactionDate();
-        this.person = giftInKind.getPerson();
-        this.selectedEmail = giftInKind.getSelectedEmail();
+        setGiftForGiftInKind(giftInKind);
     }
 
     public GiftType getGiftType() {
@@ -192,6 +185,17 @@ public class Gift extends AbstractPaymentInfoEntity {
 	
 	public Boolean getIsDeclined() {
 		return StringUtils.trimToEmpty(paymentStatus).equals("");
+	}
+	
+	public void setGiftForGiftInKind(GiftInKind giftInKind) {
+        this.giftType = GiftType.GIFT_IN_KIND;
+        this.currencyCode = giftInKind.getCurrencyCode();
+        this.donationDate = giftInKind.getDonationDate();
+        this.sendAcknowledgment = giftInKind.isSendAcknowledgment();
+        this.acknowledgmentDate = giftInKind.getAcknowledgmentDate();
+        this.transactionDate = giftInKind.getTransactionDate();
+        this.person = giftInKind.getPerson();
+        this.selectedEmail = giftInKind.getSelectedEmail();
 	}
 	
 	@Override

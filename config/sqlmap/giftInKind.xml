@@ -8,6 +8,7 @@
 		<result property="currencyCode" column="GIFT_IN_KIND_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="donationDate" column="GIFT_IN_KIND_DONATION_DATE" jdbcType="TIMESTAMP" />
 		<result property="motivationCode" column="GIFT_IN_KIND_MOTIVATION_CODE" jdbcType="VARCHAR" />
+		<result property="other_motivationCode" column="GIFT_IN_KIND_OTHER_MOTIVATION_CODE" jdbcType="VARCHAR" />
 		<result property="anonymous" column="GIFT_IN_KIND_ANONYMOUS" jdbcType="CHAR" />
 		<result property="recognitionName" column="GIFT_IN_KIND_RECOGNITION_NAME" jdbcType="VARCHAR" />
 		<result property="sendAcknowledgment" column="GIFT_IN_KIND_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
@@ -24,7 +25,8 @@
 
 	<sql id="GIFT_IN_KIND_COLS_FRAGMENT">
 		gik.GIFT_IN_KIND_ID, gik.FAIR_MARKET_VALUE as GIFT_IN_KIND_FAIR_MARKET_VALUE, gik.CURRENCY_CODE as GIFT_IN_KIND_CURRENCY_CODE,
-		gik.DONATION_DATE as GIFT_IN_KIND_DONATION_DATE, gik.MOTIVATION_CODE as GIFT_IN_KIND_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
+		gik.DONATION_DATE as GIFT_IN_KIND_DONATION_DATE, gik.MOTIVATION_CODE as GIFT_IN_KIND_MOTIVATION_CODE, 
+		gik.OTHER_MOTIVATION as GIFT_IN_KIND_OTHER_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
 		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.SEND_ACKNOWLEDGMENT as GIFT_IN_KIND_SEND_ACKNOWLEDGMENT, 
 		gik.ACKNOWLEDGMENT_DATE as GIFT_IN_KIND_ACKNOWLEDGMENT_DATE, gik.TRANSACTION_DATE as GIFT_IN_KIND_TRANSACTION_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID
 	</sql>
@@ -54,9 +56,9 @@
 	</select>
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
-		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, 
+		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, OTHER_MOTIVATION, 
 		ANONYMOUS, RECOGNITION_NAME, SEND_ACKNOWLEDGMENT, ACKNOWLEDGMENT_DATE, TRANSACTION_DATE, CONSTITUENT_ID, EMAIL_ID, GIFT_ID)
-		values (#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#,
+		values (#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#, #other_motivationCode#, 
 		#anonymous#, #recognitionName#, #sendAcknowledgment#, #acknowledgmentDate#, #transactionDate#, #person.id#, #selectedEmail.id#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -69,6 +71,7 @@
 		gik.CURRENCY_CODE = #currencyCode#,
 		gik.DONATION_DATE = #donationDate#,
 		gik.MOTIVATION_CODE = #motivationCode#,
+		gik.OTHER_MOTIVATION = #other_motivationCode#,
 		gik.ANONYMOUS = #anonymous#,
 		gik.RECOGNITION_NAME = #recognitionName#,
 		gik.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,

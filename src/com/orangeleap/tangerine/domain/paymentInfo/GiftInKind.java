@@ -26,6 +26,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     private String currencyCode = StringConstants.USD;
     private Date donationDate = new Date();
     private String motivationCode;
+    private String other_motivationCode;
     private boolean anonymous = false;
     private String recognitionName;
     private boolean sendAcknowledgment = false;
@@ -53,13 +54,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
         super();
     }
 
-    public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, boolean anonymous, 
-                        String recognitionName, boolean sendAcknowledgment, Date acknowledgmentDate, FormBeanType emailType) {
+    public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode, 
+                        boolean anonymous, String recognitionName, boolean sendAcknowledgment, Date acknowledgmentDate, FormBeanType emailType) {
         super();
         this.fairMarketValue = fairMarketValue;
         this.currencyCode = currencyCode;
         this.donationDate = donationDate;
         this.motivationCode = motivationCode;
+        this.other_motivationCode = other_motivationCode;
         this.anonymous = anonymous;
         this.recognitionName = recognitionName;
         this.sendAcknowledgment = sendAcknowledgment;
@@ -97,6 +99,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
 
     public void setMotivationCode(String motivationCode) {
         this.motivationCode = motivationCode;
+    }
+
+    public String getOther_motivationCode() {
+        return other_motivationCode;
+    }
+
+    public void setOther_motivationCode(String other_motivationCode) {
+        this.other_motivationCode = other_motivationCode;
     }
 
     public boolean isAnonymous() {
@@ -228,6 +238,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
         }
     }
 
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if (this.anonymous) {
+            setRecognitionName(null);
+        }
+    }
+
     public Site getSite() {
         return person != null ? person.getSite() : null;
     }
@@ -236,7 +254,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
             append("donationDate", donationDate).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).
-            append("motivationCode", motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
+            append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
             append("constituent", person).append("selectedEmail", selectedEmail).append("giftId", giftId).append("transactionDate", transactionDate).
             toString();
     }

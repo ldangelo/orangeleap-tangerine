@@ -725,6 +725,7 @@ CREATE TABLE `GIFT_IN_KIND` (
   `CURRENCY_CODE` varchar(255) default NULL,
   `DONATION_DATE` datetime default NULL,
   `MOTIVATION_CODE` varchar(255) default NULL,
+  `OTHER_MOTIVATION` varchar(255) default NULL,
   `ANONYMOUS` char(1) NOT NULL default '0',
   `RECOGNITION_NAME` varchar(255) default NULL,
   `SEND_ACKNOWLEDGMENT` char(1) NOT NULL default '0',

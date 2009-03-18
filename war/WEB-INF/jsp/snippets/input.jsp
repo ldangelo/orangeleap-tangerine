@@ -370,12 +370,25 @@
 						</c:forEach>
 					</select>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'CODE'}">
+				<c:when test="${fieldVO.fieldType == 'CODE' || fieldVO.fieldType == 'CODE_OTHER'}">
 					<div class="lookupWrapper">
-						<input value="<c:out value='${fieldVO.displayValue}'/>" class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
+						<input value="<c:out value='${fieldVO.displayValue}'/>" 
+							<c:if test="${fieldVO.fieldType == 'CODE_OTHER'}">
+								otherFieldId="<c:out value='${fieldVO.otherFieldId}'/>"
+							</c:if> 
+							class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
 							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldId}'/>" />
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="hidden-<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
-						<a class="lookupLink" href="javascript:void(0)" onclick="Lookup.loadCodePopup(this)" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+						<a class="lookupLink" href="javascript:void(0)" 
+							<c:choose>
+								<c:when test="${fieldVO.fieldType == 'CODE_OTHER'}">
+									onclick="Lookup.loadCodePopup(this, true)" 
+								</c:when>
+								<c:otherwise>
+									onclick="Lookup.loadCodePopup(this)" 
+								</c:otherwise>
+							</c:choose> 
+							alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					</div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">

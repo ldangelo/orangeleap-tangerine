@@ -29,7 +29,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
     public void testMaintainGiftInKind() throws Exception {
         // Insert
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        GiftInKind giftInKind = new GiftInKind(new BigDecimal(4.45), "USD", sdf.parse("02/01/2008"), "999", false, "Hi mom", false, null, FormBeanType.NONE);
+        GiftInKind giftInKind = new GiftInKind(new BigDecimal(4.45), "USD", sdf.parse("02/01/2008"), "999", null, false, "Hi mom", false, null, FormBeanType.NONE);
         giftInKind.setPerson(new Person(200L, new Site("company1")));
         
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
@@ -42,6 +42,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert "USD".equals(readGiftInKind.getCurrencyCode());
         assert sdf.parse("02/01/2008").equals(readGiftInKind.getDonationDate());
         assert "999".equals(readGiftInKind.getMotivationCode());
+        assert readGiftInKind.getOther_motivationCode() == null;
         assert readGiftInKind.isAnonymous() == false;
         assert "Hi mom".equals(readGiftInKind.getRecognitionName());
         assert readGiftInKind.isSendAcknowledgment() == false;
@@ -54,6 +55,8 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         
         // Update
         giftInKind = readGiftInKind;
+        giftInKind.setMotivationCode(null);
+        giftInKind.setOther_motivationCode("bits");
         giftInKind.setDonationDate(null);
         giftInKind.setAnonymous(true);
         giftInKind.setRecognitionName(null);
@@ -72,7 +75,8 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert 4.45d == readGiftInKind.getFairMarketValue().doubleValue();
         assert "USD".equals(readGiftInKind.getCurrencyCode());
         assert readGiftInKind.getDonationDate() == null;
-        assert "999".equals(readGiftInKind.getMotivationCode());
+        assert readGiftInKind.getMotivationCode() == null;
+        assert "bits".equals(readGiftInKind.getOther_motivationCode());
         assert readGiftInKind.isAnonymous();
         assert readGiftInKind.getGiftId() == null;
         assert readGiftInKind.getRecognitionName() == null;
@@ -107,6 +111,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert "USD".equals(giftInKind.getCurrencyCode());
         assert giftInKind.getDonationDate() != null;
         assert "1234".equals(giftInKind.getMotivationCode());
+        assert giftInKind.getOther_motivationCode() == null;
         assert giftInKind.isAnonymous();
         assert giftInKind.getRecognitionName() == null;
         assert giftInKind.isSendAcknowledgment() == false;
@@ -134,11 +139,15 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
             switch (gik.getId().intValue()) {
                 case 200:
                     assert gik.getDetails() != null && gik.getDetails().isEmpty();
+                    assert gik.getMotivationCode() == null;
+                    assert "blarg".equals(gik.getOther_motivationCode());
                     assert gik.getGiftId() == 100L;
                     break;
                 case 300:
                     assert gik.getDetails() != null && gik.getDetails().size() == 2;
                     assert gik.getGiftId() == null;
+                    assert "4321".equals(gik.getMotivationCode());
+                    assert gik.getOther_motivationCode() == null;
                     for (GiftInKindDetail detail : gik.getDetails()) {
                         assert "foo".equals(detail.getDescription()) || "bar".equals(detail.getDescription());
                         assert 10 == detail.getDetailFairMarketValue().intValue() || 40 == detail.getDetailFairMarketValue().intValue();

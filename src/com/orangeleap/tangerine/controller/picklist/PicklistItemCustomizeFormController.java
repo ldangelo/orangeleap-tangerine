@@ -28,7 +28,7 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
     @Resource(name="picklistItemService")
     private PicklistItemService picklistItemService;
     
-	
+	public final static String GLCODE = "GLCode";
 	
     @SuppressWarnings("unchecked")
     @Override
@@ -37,21 +37,26 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         String picklistItemId = request.getParameter("picklistItemId");
         PicklistItem item = getPicklistItem(picklistId, picklistItemId);
         Map<String, String> map = getMap(item.getCustomFieldMap());
-		if (map.size() == 0) {
-	        if (item.getPicklistId().endsWith("projectCode")) {
+		if (map.size() < 2) {
+	        if (isGLCode(item)) {
 	        	addDefaultGLCodes(map);
-	        } else {
-	        	map.put("", "");
-	        }
+	        } 
 		}
+		if (map.size() == 0) map.put("", "");
         request.setAttribute("map", map);
         request.setAttribute("picklistItem", item);
         return super.showForm(request, response, errors, controlModel);
     }
     
+    private boolean isGLCode(PicklistItem item) {
+    	return item.getPicklistId().endsWith("projectCode");
+    }
+    
     private void addDefaultGLCodes(Map<String, String> map) {
     	for (int i = 1; i <= 10; i++) {
-    		map.put("GL"+i, "");
+    		String s = "" + i;
+    		while (s.length() < 2) s = "0" + s;
+    		map.put("GL"+s, "");
     	}
     }
 
@@ -89,8 +94,13 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
         PicklistItem item = getPicklistItem(picklistId, picklistItemId);
+     
+        Map<String, String> stringmap = getMap(request);
+        if (isGLCode(item)) {
+        	stringmap.put(GLCODE, getGLCode(stringmap));
+        }
         
-        updateCustomFieldMap(getMap(request), item);
+        updateCustomFieldMap(stringmap, item);
          
     	item = picklistItemService.maintainPicklistItem(item);
         
@@ -102,6 +112,17 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         return mav;
         
     }
+	
+	private String getGLCode(Map<String, String> map) {
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<String, String> e : map.entrySet()) {
+			if (e.getKey().matches("^GL\\d+$") && e.getValue().trim().length() > 0) {
+				if (sb.length() > 0) sb.append("-");
+				sb.append(e.getValue());
+			}
+		}
+		return sb.toString();
+	}
 	
 	@SuppressWarnings("unchecked")
 	private Map<String, String> getMap(HttpServletRequest request) {

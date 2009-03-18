@@ -125,6 +125,9 @@ Audit.navigate = function(id) {
         case 'pledge':
             window.location.href='pledgeList.htm?personId=' + rec.data.personId + '&type=pledge';
             break;
+        case 'giftinkind':
+            window.location.href= 'giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
+            break;
         default:
             window.location.href= 'person.htm?personid=' + rec.data.personId;
     }

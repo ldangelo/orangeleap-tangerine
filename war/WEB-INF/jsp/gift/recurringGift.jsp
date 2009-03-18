@@ -154,6 +154,9 @@
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}&type=recurringGift')"/>
 					</c:if>
+					<c:if test="${param.commitmentId > 0}">
+						<a class="newAccountButton" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a>
+					</c:if>
 				</div>
 			</form:form>
 		</div>

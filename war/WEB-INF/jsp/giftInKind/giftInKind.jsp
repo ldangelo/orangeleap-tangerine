@@ -19,7 +19,6 @@
 			</c:if>
 						
 			<form:form method="post" commandName="giftInKind">
-				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 			
 				<spring:message code='submitGiftInKind' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
@@ -127,6 +126,9 @@
 					<input type="submit" value="<spring:message code='submitGiftInKind'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftInKindList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftInKindList.htm?personId=${person.id}')"/>
+					</c:if>
+					<c:if test="${param.giftInKindId > 0}">
+						<a class="newAccountButton" href="giftInKind.htm?personId=${person.id}"><spring:message code='enterNewGiftInKind'/></a>
 					</c:if>
 				</div>
 			</form:form>

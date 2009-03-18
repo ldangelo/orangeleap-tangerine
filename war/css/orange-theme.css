@@ -3,7 +3,8 @@
    theme as a base */
 
 .x-grid3-row-selected {
-	background: #FFB660 !important;
+	/* background: #FFB660 !important; */
+    background: #F9EE8F  !important; 
 	border:1px dotted #757679;
 }
 

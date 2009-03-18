@@ -33,7 +33,9 @@
         delete from CUSTOM_FIELD
         where ENTITY_TYPE = #entityType#
         and ENTITY_ID = #entityId#
+		<isNotNull property="fieldName"> 
         and FIELD_NAME = #fieldName#
+        </isNotNull>
     </delete>
 
 </sqlMap>

@@ -168,7 +168,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
             IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
 
-            custom.setCustomFieldMap(helper.readCustomFields(custom.getId(), custom.getType()));
+            custom.setCustomFieldMap(helper.readCustomFields(custom));
         }
         
         if (entity != null && entity instanceof AbstractCommunicatorEntity) {

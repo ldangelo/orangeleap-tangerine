@@ -19,7 +19,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
      * Static method to return a CustomFieldMap implementation
      * @return CustomFieldMap
      */
-    public static Map<String, CustomField> createCustomFieldMap(final Long entityId, final String entityType) {
+    public static Map<String, CustomField> createCustomFieldMap(final AbstractCustomizableEntity entity) {
     	
         return new TreeMap<String, CustomField>() {
         	@Override
@@ -27,8 +27,8 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             	CustomField field = super.get(key);
                 if (field == null) {
                 	field = new CustomField((String) key);
-                    field.setEntityId(entityId);
-                    field.setEntityType(entityType);
+                    field.setEntityId(entity.getId());
+                    field.setEntityType(entity.getType());
 
                     super.put((String) key, field);
                 }
@@ -46,7 +46,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
      */
     public Map<String, CustomField> getCustomFieldMap() {
         if (customFieldMap == null) {
-            customFieldMap = createCustomFieldMap(this.getId(), this.getType());
+            customFieldMap = createCustomFieldMap(this);
         }
 
         for(String key : customFieldMap.keySet()) {

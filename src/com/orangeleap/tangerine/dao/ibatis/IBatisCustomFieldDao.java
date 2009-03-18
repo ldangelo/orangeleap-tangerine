@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.CustomFieldDao;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 
 /**
@@ -33,10 +34,10 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
      * @return the Map of CustomFields, keyed by name
      */
     @Override
-    public Map<String, CustomField> readCustomFields(Long entityId, String entityType) {
+    public Map<String, CustomField> readCustomFields(AbstractCustomizableEntity entity) {
 
         IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(getSqlMapClientTemplate());
-        return helper.readCustomFields(entityId, entityType);
+        return helper.readCustomFields(entity);
     }
 
     @Override

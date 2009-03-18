@@ -37,11 +37,11 @@ public class IBatisCustomFieldHelper {
      * @return the Map of CustomFields, keyed by name
      */
     @SuppressWarnings("unchecked")
-    public Map<String, CustomField> readCustomFields(Long entityId, String entityType) {
-        Map<String, CustomField> ret = AbstractCustomizableEntity.createCustomFieldMap(entityId, entityType);
+    public Map<String, CustomField> readCustomFields(AbstractCustomizableEntity entity) {
+        Map<String, CustomField> ret = AbstractCustomizableEntity.createCustomFieldMap(entity);
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("entityId", entityId);
-        params.put("entityType", entityType);
+        params.put("entityId", entity.getId());
+        params.put("entityType", entity.getType());
         params.put("asOfDate", new java.util.Date());
 
         List<Map> customFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
@@ -97,17 +97,12 @@ public class IBatisCustomFieldHelper {
     }
 
     public void maintainCustomFields(Map<String, CustomField> customFields) {
+    	
+    	deleteAllCustomFields(customFields);
 
         for (String key : customFields.keySet()) {
 
             CustomField customField = customFields.get(key);
-
-            // clear out the old values if we're doing an update. Not
-            // very elegant but provides a simple solution rather than trying
-            // match up rows that have changed
-            if (customField.getId() != null && customField.getId() > 0) {
-                deleteCustomField(customField);
-            }
 
             String value = customField.getValue();
 
@@ -160,6 +155,22 @@ public class IBatisCustomFieldHelper {
                 deleteCustomField(customField);
             }
         }
+    }
+
+    private void deleteAllCustomFields(Map<String, CustomField> customFields) {
+    	
+    	// Utilize map's object factory to get entity type and id.
+    	CustomField customField = customFields.get("");
+    	String entityType = customField.getEntityType();
+    	Long entityId = customField.getEntityId();
+    	customFields.remove("");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("entityType", entityType);
+        params.put("entityId", entityId);
+
+        template.delete("DELETE_CUSTOM_FIELD", params);
+        
     }
 
 

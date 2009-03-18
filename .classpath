@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="src" path="config"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=build%2Fivy.xml&amp;confs=*&amp;ivySettingsPath=file%3A%2FUsers%2Falexlo%2FDocuments%2Fworkspace%2FcommonBuild%2Fivysettings.xml&amp;acceptedTypes=jar%2Cbundle%2Cejb%2Cmaven-plugin&amp;sourceTypes=source&amp;javadocTypes=javadoc&amp;sourceSuffixes=-source%2C-sources%2C-src&amp;javadocSuffixes=-javadoc%2C-javadocs%2C-doc%2C-docs&amp;alphaOrder=false&amp;resolveInWorkspace=false"/>
-	<classpathentry kind="output" path="bin"/>
+    <classpathentry kind="src" path="config" />
+    <classpathentry kind="src" path="src" />
+    <classpathentry kind="src" path="test" />
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+    <classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1" exported="true" />
+    <classpathentry kind="var" path="APPLICATION_HOME_DIR/lib/javaee.jar" />
+    <classpathentry kind="lib" path="C:/Users/Tim/.ivy2/cache/com.mpower/JsonView/jars/JsonView-1.0.jar" sourcepath="C:/Users/Tim/.ivy2/cache/cglib/cglib/sources/cglib-2.1_3-sources.jar" />
+    <classpathentry kind="lib" path="C:/Users/Tim/.ivy2/cache/com.orangeleap/satsuma/jars/satsuma-1.0-local-20090313110113.jar" sourcepath="C:/Users/Tim/.ivy2/cache/cglib/cglib/sources/cglib-2.1_3-sources.jar" />
+    <classpathentry kind="lib" path="C:/Users/Tim/.ivy2/cache/com.orangeleap/satsuma/jars/satsuma-1.0-local-20090313110113.jar" sourcepath="C:/Users/Tim/.ivy2/cache/cglib/cglib/sources/cglib-2.1_3-sources.jar" />
+    <classpathentry kind="output" path="bin" />
 </classpath>
+

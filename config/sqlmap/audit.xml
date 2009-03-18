@@ -2,6 +2,12 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="AUDIT">
 
+    <cacheModel id="auditList-cache" type="LRU" readOnly="true">
+        <flushInterval hours="24"/>
+        <flushOnExecute statement="INSERT_AUDIT"/>
+        <property name="size" value="1000" />
+    </cacheModel>
+
 	<resultMap id="AUDIT_RESULT" class="com.orangeleap.tangerine.domain.Audit" groupBy="id">
 		<result property="id" column="AUDIT_ID" jdbcType="BIGINT" />
 		<result property="auditType" column="AUDIT_TYPE" jdbcType="VARCHAR" />
@@ -36,13 +42,13 @@
 		order by DATE desc
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_SITE_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_SITE_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map" cacheModel="auditList-cache">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		order by $sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_SITE_ROWCOUNT" resultClass="long" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_SITE_ROWCOUNT" resultClass="long" parameterClass="map" cacheModel="auditList-cache">
         <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
     </select>
 
@@ -54,7 +60,7 @@
 		order by DATE desc
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_ENTITY_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_ENTITY_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map" cacheModel="auditList-cache">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		and a.ENTITY_TYPE = #entityType#
 		and a.OBJECT_ID = #objectId#
@@ -62,7 +68,7 @@
         limit $offset$,$limit$
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_ENTITY_ROWCOUNT" resultClass="long" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_ENTITY_ROWCOUNT" resultClass="long" parameterClass="map" cacheModel="auditList-cache">
         <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
         and a.ENTITY_TYPE = #entityType#
 		and a.OBJECT_ID = #objectId#
@@ -75,14 +81,14 @@
 		order by DATE desc
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED" resultMap="AUDIT_RESULT" parameterClass="map" cacheModel="auditList-cache">
 		<include refid="SELECT_AUDIT_FRAGMENT"/>
 		and a.CONSTITUENT_ID = #constituentId#
 		order by $sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 
-    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_ROWCOUNT" resultClass="long" parameterClass="map">
+    <select id="AUDIT_HISTORY_FOR_CONSTITUENT_ROWCOUNT" resultClass="long" parameterClass="map" cacheModel="auditList-cache">
         <include refid="AUDIT_ROWCOUNT_FRAGMENT"/>
         and a.CONSTITUENT_ID = #constituentId#
     </select>

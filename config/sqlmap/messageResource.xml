@@ -2,6 +2,14 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="MESSAGE" >
 
+  <cacheModel id="messageResource-cache" type="LRU" readOnly="true">
+        <flushInterval hours="24"/>
+        <flushOnExecute statement="INSERT_MESSAGE"/>
+        <flushOnExecute statement="UPDATE_MESSSAGE"/>
+        <property name="size" value="1000" />
+  </cacheModel>
+
+
   <resultMap id="MESSAGE_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SITE_NAME" jdbcType="VARCHAR" />
   </resultMap>
@@ -16,14 +24,14 @@
   </resultMap>
   
   
-  <select id="READ_MESSAGE_BY_ID" resultMap="MESSAGE" parameterClass="map" >
+  <select id="READ_MESSAGE_BY_ID" resultMap="MESSAGE" parameterClass="map" cacheModel="messageResource-cache" >
     select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE,
       MESSAGE_VALUE, SITE_NAME
     from MESSAGE_RESOURCE
     where MESSAGE_RESOURCE_ID = #messageResourceId#
   </select>
 
-  <select id="READ_MESSAGE_BY_KEY" resultMap="MESSAGE" parameterClass="map" >
+  <select id="READ_MESSAGE_BY_KEY" resultMap="MESSAGE" parameterClass="map" cacheModel="messageResource-cache">
     select MESSAGE_RESOURCE_ID, LANGUAGE_ABBREVIATION, MESSAGE_KEY, MESSAGE_RESOURCE_TYPE,
       MESSAGE_VALUE, SITE_NAME
     from MESSAGE_RESOURCE

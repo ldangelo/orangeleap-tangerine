@@ -5,7 +5,6 @@
     <cacheModel id="recentlyViewed-cache" type="LRU" readOnly="true">
         <flushInterval hours="24"/>
         <flushOnExecute statement="INSERT_RECENTLY_VIEWED"/>
-        <flushOnExecute statement="UPDATE_RECENTLY_VIEWED"/>
         <property name="size" value="500" />
     </cacheModel>
 
@@ -16,7 +15,7 @@
         <result property="orgName" column="ORGANIZATION_NAME" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <select id="SELECT_RECENTLY_VIEWED" parameterClass="map" resultClass="string">
+    <select id="SELECT_RECENTLY_VIEWED" parameterClass="map" resultClass="string" cacheModel="recentlyViewed-cache">
         select RECENT_ACCOUNTS from RECENTLY_VIEWED where SITE_NAME = #siteName# and USER_NAME = #userName#
     </select>
     
@@ -25,7 +24,7 @@
         on duplicate key update RECENT_ACCOUNTS=#recentlyViewed#
     </insert>
 
-    <select id="SELECT_PERSON_FLYWEIGHT" resultMap="PERSON_FLYWEIGHT" parameterClass="map">
+    <select id="SELECT_PERSON_FLYWEIGHT" resultMap="PERSON_FLYWEIGHT" parameterClass="map" cacheModel="recentlyViewed-cache">
         select CONSTITUENT_ID, FIRST_NAME, LAST_NAME, ORGANIZATION_NAME
         from CONSTITUENT
 		where SITE_NAME = #siteName#

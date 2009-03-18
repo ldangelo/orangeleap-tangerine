@@ -2,6 +2,13 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="SECTION_DEFINITION">
 
+    <cacheModel id="sectionDefinition-cache" type="LRU" readOnly="true">
+        <flushInterval hours="24"/>
+        <flushOnExecute statement="INSERT_SECTION_DEFINITION"/>
+        <flushOnExecute statement="UPDATE_SECTION_DEFINITION"/>
+        <property name="size" value="500" />
+    </cacheModel>
+
 	<resultMap id="SEC_DEF_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SEC_DEF_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
@@ -24,7 +31,7 @@
 		sd.SECTION_ORDER as SEC_DEF_SECTION_ORDER, sd.SITE_NAME as SEC_DEF_SITE_NAME
 	</sql>
 	
-	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map">
+	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" cacheModel="sectionDefinition-cache">
 		select 
 		<include refid="SECTION_DEF_COLS_FRAGMENT"/>
 		from SECTION_DEFINITION sd

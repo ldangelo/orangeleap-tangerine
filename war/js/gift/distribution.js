@@ -42,7 +42,7 @@ var Distribution = {
 			/* Done on load for previously entered distributionLines */
 			var val = $elem.val();
 			if (isNaN(parseFloat(val)) == false) {
-				Distribution.enteredAmt = Distribution.truncateFloat(parseFloat(val));
+				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
 				Distribution.addNewRow();
 				
 				$("table.distributionLines input.amount", "form").each(function() {
@@ -51,10 +51,10 @@ var Distribution = {
 					var rowId = $amtElem.attr('id').replace('-amount', '');
 					
 					var amtVal = parseFloat($amtElem.val());
-					var thisAmt = isNaN(amtVal) ? 0 : Distribution.truncateFloat(amtVal);
+					var thisAmt = isNaN(amtVal) ? 0 : OrangeLeap.truncateFloat(amtVal);
 					
 					var pctVal = parseFloat($pctElem.val());
-					var thisPct = isNaN(pctVal) ? 0 : Distribution.truncateFloat(pctVal);
+					var thisPct = isNaN(pctVal) ? 0 : OrangeLeap.truncateFloat(pctVal);
 					
 					var map = Distribution.getMap(rowId);
 					map.amount = thisAmt;
@@ -63,27 +63,6 @@ var Distribution = {
 				Distribution.updateTotals();
 			}
 		}
-	},
-	
-	isFloat: function(value){
-	   if (isNaN(value) || value.toString().indexOf(".") < 0){
-		   return false;
-	   }
-	   else {
-	      if (parseFloat(value)) {
-	    	  return true;
-	      } 
-	      else {
-	    	  return false;
-	      }
-	   }
-	},
-	
-	truncateFloat: function(val) {
-		if (Distribution.isFloat(val)) {
-			val = val.toFixed(2);
-		}
-		return val;
 	},
 	
 	recalculatePcts: function() {
@@ -115,8 +94,8 @@ var Distribution = {
 			subTotal += parseFloat(map.amount);
 			pctTotal += parseFloat(map.percent);
 		}
-		subTotal = Distribution.truncateFloat(subTotal);
-		pctTotal = Distribution.truncateFloat(pctTotal);
+		subTotal = OrangeLeap.truncateFloat(subTotal);
+		pctTotal = OrangeLeap.truncateFloat(pctTotal);
 		
 		$("#subTotal").html(subTotal.toString());
 		
@@ -129,9 +108,9 @@ var Distribution = {
 			var rowId = $elem.attr('id').replace('-percentage', '');
 			var amtElemId = $elem.attr('id').replace('percentage', 'amount');
 			
-			thisPct = Distribution.truncateFloat(parseFloat(thisPct));
+			thisPct = OrangeLeap.truncateFloat(parseFloat(thisPct));
 			
-			var thisAmt = Distribution.truncateFloat(parseFloat(Distribution.enteredAmt * (thisPct / 100)));
+			var thisAmt = OrangeLeap.truncateFloat(parseFloat(Distribution.enteredAmt * (thisPct / 100)));
 			
 			var map = Distribution.getMap(rowId);
 			map.amount = thisAmt;
@@ -147,12 +126,12 @@ var Distribution = {
 			var rowId = $elem.attr('id').replace('-amount', '');
 			var pctElemId = $elem.attr('id').replace('amount', 'percentage');
 			
-			thisAmt = Distribution.truncateFloat(parseFloat(thisAmt));
+			thisAmt = OrangeLeap.truncateFloat(parseFloat(thisAmt));
 			
 			var thisPct = 0;
 			
 			if (thisAmt != 0 && Distribution.enteredAmt != 0) {
-				thisPct = Distribution.truncateFloat(parseFloat((thisAmt / Distribution.enteredAmt) * 100));
+				thisPct = OrangeLeap.truncateFloat(parseFloat((thisAmt / Distribution.enteredAmt) * 100));
 			}
 			
 			var map = Distribution.getMap(rowId);

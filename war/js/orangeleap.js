@@ -528,6 +528,27 @@ var OrangeLeap = {
 		$dialog.css("margin-left", x);
 		$dialog.css("margin-top", y);
 		$dialog.show();
+	},
+	
+	isFloat: function(value) {
+	   if (isNaN(value) || value.toString().indexOf(".") < 0) {
+		   return false;
+	   }
+	   else {
+	      if (parseFloat(value)) {
+	    	  return true;
+	      } 
+	      else {
+	    	  return false;
+	      }
+	   }
+	},
+	
+	truncateFloat: function(val) {
+		if (OrangeLeap.isFloat(val)) {
+			val = val.toFixed(2);
+		}
+		return val;
 	}	
 }
 

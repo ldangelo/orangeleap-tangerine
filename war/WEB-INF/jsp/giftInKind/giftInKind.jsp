@@ -87,14 +87,14 @@
 						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 					</c:if>
 					
-					<table class="tablesorter" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
-						<!-- 
-						<col class="number"/>
+					<table class="tablesorter giftInKindDetails" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
+						<col class=""/>
 						<col class="number"/> 
-						<col class="code"/>
-						<col class="code"/> 
+						<col class=""/>
+						<col class=""/> 
+						<col class="number"/>
+						<col class=""/> 
 						<col class="button"/>
-						 --> 
 						<thead> 
 							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 								<tr>
@@ -117,7 +117,7 @@
 					<div class="gridActions">
 						<div id="totalText">
 							<spring:message code='total'/>&nbsp;
-							<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchFairMarketValue'/></span> 
+							<span class="warningText" id="valueErrorSpan"><spring:message code='mustMatchFairMarketValue'/></span> 
 						</div>
 						<div class="value" id="subTotal">0</div>
 					</div>
@@ -131,5 +131,6 @@
 				</div>
 			</form:form>
 		</div>
+		<script type="text/javascript" src="js/gift/giftInKindDetails.js"></script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -62,7 +62,7 @@
         where P.PICKLIST_NAME = #fieldName#
         and ((P.SITE_NAME = #siteName#) or (P.SITE_NAME is NULL))
         and ((P.ENTITY_TYPE = #entityType#) or (P.ENTITY_TYPE is NULL)) 
-        order by SITE_NAME, ENTITY_TYPE
+        order by SITE_NAME, ENTITY_TYPE, ITEM_ORDER
     </select>
 
     <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="long" cacheModel="picklist-cache">

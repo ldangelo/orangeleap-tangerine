@@ -95,5 +95,9 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
         return defaultDisplayValue;
     }
     
+    public String toString() {
+    	return this.itemName + ":" + this.itemOrder;
+    }
+    
 	
 }

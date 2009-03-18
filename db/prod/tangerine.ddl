@@ -191,7 +191,7 @@ CREATE TABLE `AUDIT` (
   `AUDIT_ID` bigint(20) NOT NULL auto_increment,
   `AUDIT_TYPE` varchar(255) NOT NULL,
   `DATE` datetime NOT NULL,
-  `DESCRIPTION` varchar(255) NOT NULL,
+  `DESCRIPTION` text NOT NULL,
   `ENTITY_TYPE` varchar(255) NOT NULL,
   `OBJECT_ID` bigint(20) NOT NULL,
   `USER` varchar(255) default NULL,

@@ -1,0 +1,57 @@
+/* This CSS specifies theme customizations to ExtJS to
+   make it more Orange. It should be used with the ExtJS Gray
+   theme as a base */
+
+.x-grid3-row-selected {
+	background: #FFB660 !important;
+	border:1px dotted #757679;
+}
+
+.x-border-layout-ct {
+    background-color: #757679;
+}
+
+.x-toolbar {
+    /*background-color: #eee;*/
+    /* border */
+}
+
+.x-panel-header {
+
+    /*background-color: #eee;*/
+    /* background */
+}
+
+.x-panel-header-text {
+    /*color: #333;*/
+
+}
+
+.x-panel-body {
+    /*border-width: 0*/
+}
+
+.x-panel {
+    /*border: 1px solid #ccc;*/
+}
+
+.x-menu-item-active {
+
+}
+
+.x-menu-item active a.x-menu-item {
+    /* hover effect for menu */
+}
+
+/* Window */
+.x-window-header {
+    /* padding, bg-image */
+}
+
+.x-window {
+    /* border */
+}
+
+.x-panel-ghost {
+    /* background when dragging a window */
+}

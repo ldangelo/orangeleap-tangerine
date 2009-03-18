@@ -16,6 +16,13 @@ Ext.onReady(function() {
         baseParams.id = objectId[1];
     }
 
+    var header = 'Audit History';
+    var siteName = Ext.get('auditSiteName');
+    if(siteName) {
+        header = siteName.dom.innerHTML + ' ' + header;
+
+    }
+
     Audit.store = new Ext.data.JsonStore({
         url: 'auditList.json',
         totalProperty: 'totalRows',
@@ -65,7 +72,7 @@ Ext.onReady(function() {
         autoExpandColumn: 'description',
         frame: true,
         header: true,
-        title: 'Audit History',
+        title: header,
         loadMask: true,
         listeners: {
             rowdblclick: function(grid, row, evt) {

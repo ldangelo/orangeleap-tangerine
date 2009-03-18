@@ -26,10 +26,7 @@ import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
-import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -40,15 +37,6 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     @Resource(name="paymentSourceService")
     protected PaymentSourceService paymentSourceService;
-    
-    @Resource(name="addressService")
-    protected AddressService addressService;
-    
-    @Resource(name="phoneService")
-    protected PhoneService phoneService;
-    
-    @Resource(name="emailService")
-    protected EmailService emailService;
     
     protected boolean bindPaymentSource = true;
     protected boolean bindAddress = true;

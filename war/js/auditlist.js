@@ -113,7 +113,7 @@ Audit.navigate = function(id) {
             window.location.href= 'phoneManager.htm?personId=' + rec.data.personId;
             break;
         case 'recurring gift':
-            window.location.href='recurringGiftList.htm?personId=' + rec.data.personId + '&type=recurringGift';
+            window.location.href='recurringGift.htm?commitmentId=' + id + '&personId=' + rec.data.personId;
             break;
         case 'pledge':
             window.location.href='pledgeList.htm?personId=' + rec.data.personId + '&type=pledge';

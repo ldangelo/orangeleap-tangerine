@@ -110,6 +110,12 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
+	public PicklistItem getPicklistItem(Long picklistItemId) {
+		return picklistDao.readPicklistItemById(picklistItemId);
+	}
+	
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
 	public List<PicklistItem> getPicklistItems(String picklistId, String picklistItemName, String description, Boolean showInactive) {
 		Picklist picklist = getPicklist(addSiteToId(getSiteName(), picklistId));
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
@@ -241,7 +247,6 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 
 	}
 
-	// Note caller must add siteName to picklist id before saving
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {

@@ -55,7 +55,7 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
 	        	if (picklistItemId != null) {
 		            for (PicklistItem item : picklist.getPicklistItems()) {
 		            	if (picklistItemId.equals(item.getId().toString())) {
-		            		return item;
+		            		return picklistItemService.getPicklistItem(item.getId());
 		            	}
 		            }
 	        	}
@@ -83,6 +83,10 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
     	item = picklistItemService.maintainPicklistItem(item);
         
         ModelAndView mav = new ModelAndView(getSuccessView());
+        Map<String, String> map = getMap(item.getCustomFieldMap());
+		if (map.size() == 0) map.put("", "");
+		mav.addObject("map", map);
+		mav.addObject("picklistItem", item);
         return mav;
         
     }

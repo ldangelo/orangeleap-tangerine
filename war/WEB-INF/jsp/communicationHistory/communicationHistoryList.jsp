@@ -19,16 +19,16 @@
 		</jsp:include>
 			
 		<c:choose>
-			<c:when test="${!empty communicationHistoryList}">
+			<c:when test="${!empty list}">
 				<div class="searchResultsHeader">
-					<h4 class="searchResults"><spring:message code='communicationHistoryEntries'/>&nbsp;<strong>1 - ${communicationHistoryListSize}</strong>&nbsp;<spring:message code='of'/>&nbsp;<strong>${communicationHistoryListSize}</strong></h4>
+					<h4 class="searchResults"><spring:message code='communicationHistoryEntries'/>&nbsp;<strong>1 - ${listSize}</strong>&nbsp;<spring:message code='of'/>&nbsp;<strong>${listSize}</strong></h4>
 				</div>
 
 				<mp:page pageName='communicationHistoryList' />
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<table id="communicationHistoryListTable" class="tablesorter" cellspacing="0" cellpadding="0">
 						<thead>
-							<c:forEach items="${communicationHistoryList}" var="row" begin="0" end="0">
+							<c:forEach items="${list}" var="row" begin="0" end="0">
 								<tr>
 									<th>&nbsp;</th>
 									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
@@ -36,7 +36,7 @@
 							</c:forEach>
 						</thead>
 						<tbody>
-							<c:forEach items="${communicationHistoryList}" var="row">
+							<c:forEach items="${list}" var="row">
 								<tr>
 									<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 									<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
@@ -47,7 +47,7 @@
 				</c:forEach>
 				<p class="enterNew"><a class="newLink" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterANewCommunicationHistoryEntry'/></a></p>
 			</c:when>
-			<c:when test="${communicationHistoryList ne null}">
+			<c:when test="${list ne null}">
 				<p style="margin:8px 0 6px 0;"><spring:message code='noCommunicationHistoryEntriesEntered'/></p>
 				<p><spring:message code='wouldYouLikeTo'/> <a href="communicationHistory.htm?personId=${person.id}"><spring:message code='createNewCommunicationHistoryEntry'/></a>?</p>
 			</c:when>

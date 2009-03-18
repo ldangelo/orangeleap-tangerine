@@ -47,8 +47,9 @@
         <property name="successView" value="pledge/pledgeSearch"/>
     </bean>
 
-    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeListController">
-        <property name="viewName" value="pledge/pledgeList"></property>
+    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.commitment.CommitmentListController">
+        <property name="viewName" value="pledge/pledgeList"/>
+        <property name="commitmentType" value="PLEDGE"/>
     </bean>
 
     <bean id="pledgeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">

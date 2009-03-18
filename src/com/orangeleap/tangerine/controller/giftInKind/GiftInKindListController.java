@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.orangeleap.tangerine.controller.TangerineListController;
-import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.GeneratedId;
 import com.orangeleap.tangerine.service.GiftInKindService;
 
 public class GiftInKindListController extends TangerineListController {
@@ -20,7 +20,7 @@ public class GiftInKindListController extends TangerineListController {
     private GiftInKindService giftInKindService;
     
     @Override
-    protected List<? extends AbstractEntity> getList(Long constituentId) {
-        return giftInKindService.readGiftsInKindByConstituentId(Long.valueOf(constituentId));
+    protected List<? extends GeneratedId> getList(Long constituentId) {
+        return giftInKindService.readGiftsInKindByConstituentId(constituentId);
     }
 }

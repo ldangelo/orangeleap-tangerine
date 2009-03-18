@@ -78,6 +78,7 @@
 		<include refid="SELECT_COMMITMENT_FRAGMENT" />
 		and c.CONSTITUENT_ID = #constituentId#
 		and c.COMMITMENT_TYPE = #commitmentType#
+		order by c.CREATE_DATE desc
 	</select>
 
 	<statement id="SELECT_COMMITMENT_BY_SQL" resultMap="COMMITMENT_RESULT">

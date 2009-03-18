@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.GeneratedId;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -31,7 +31,7 @@ public abstract class TangerineListController extends ParameterizableViewControl
         }
         Long constituentId = Long.valueOf(request.getParameter(StringConstants.PERSON_ID));
 
-        List<? extends AbstractEntity> list = getList(constituentId);
+        List<? extends GeneratedId> list = getList(constituentId);
         Person constituent = constituentService.readConstituentById(constituentId);
 
         ModelAndView mav = new ModelAndView(super.getViewName());
@@ -43,5 +43,5 @@ public abstract class TangerineListController extends ParameterizableViewControl
         return mav;
     }
     
-    protected abstract List<? extends AbstractEntity> getList(Long constituentId);
+    protected abstract List<? extends GeneratedId> getList(Long constituentId);
 }

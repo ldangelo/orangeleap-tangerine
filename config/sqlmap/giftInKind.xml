@@ -50,7 +50,7 @@
 	<select id="SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
 		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
 		and gik.CONSTITUENT_ID = #constituentId#
-		order by gik.DONATION_DATE desc
+		order by gik.TRANSACTION_DATE desc
 	</select>
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">

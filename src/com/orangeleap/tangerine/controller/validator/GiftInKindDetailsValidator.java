@@ -38,7 +38,7 @@ public class GiftInKindDetailsValidator implements Validator {
         BigDecimal total = new BigDecimal(0); 
         for (GiftInKindDetail detail : details) {
             if (detail != null) {
-                total = total.add(detail.getFairMarketValue() == null ? new BigDecimal(0) : detail.getFairMarketValue());
+                total = total.add(detail.getDetailFairMarketValue() == null ? new BigDecimal(0) : detail.getDetailFairMarketValue());
             }
         }
         return total;

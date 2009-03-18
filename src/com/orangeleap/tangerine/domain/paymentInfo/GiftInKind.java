@@ -218,12 +218,12 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     }
 
     public void filterValidDetails() {
-        mutableDetails = new ArrayList<GiftInKindDetail>();
+        details = new ArrayList<GiftInKindDetail>();
         Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
         while (mutableDetailsIter.hasNext()) {
             GiftInKindDetail detail = mutableDetailsIter.next();
             if (detail != null && detail.isValid()) {
-                mutableDetails.add(detail);
+                details.add(detail);
             }
         }
     }

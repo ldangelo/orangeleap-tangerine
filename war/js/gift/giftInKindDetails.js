@@ -16,6 +16,11 @@ $(document).ready(function() {
 		}
 		GiftInKindDetails.updateTotals();
 	});
+	
+	$("#anonymous").bind("click", function(event) {
+		GiftInKindDetails.hideShowRecognition($(this));
+	});
+	GiftInKindDetails.hideShowRecognition($("#anonymous")); // onload
 });
 
 	
@@ -38,21 +43,30 @@ var GiftInKindDetails = {
 		}
 	},
 	
+	hideShowRecognition: function($anonymousElem) {
+		if ($anonymousElem.attr("checked")) {
+			$("li:has(#recognitionName)").hide();
+		} 
+		else {
+			$("li:has(#recognitionName)").show();
+		}
+	},
+	
 	updateTotals: function() {
-		var totalValue = 0;
+		var totalValue = parseFloat(0);
 		$("table.giftInKindDetails input.detailFairMarketValue", "form").each(function() {
 			var $fmvElem = $(this);
 			
 			var fairMarketVal = parseFloat($fmvElem.val());
-			var thisFmv = isNaN(fairMarketVal) ? 0 : OrangeLeap.truncateFloat(fairMarketVal);
-			totalValue += thisFmv;
+			var thisFmv = isNaN(fairMarketVal) ? parseFloat(0) : OrangeLeap.truncateFloat(fairMarketVal);
+			totalValue = OrangeLeap.truncateFloat(parseFloat(thisFmv) + parseFloat(totalValue));
 		});
-		$("#subTotal").html(totalValue.toString());
+		$("#subTotal").html(totalValue);
 		GiftInKindDetails.displayError(totalValue);
 	},
 	
 	displayError: function(totalValue, pctTotal) {
-        if (totalValue === GiftInKindDetails.enteredFmv) {
+        if (OrangeLeap.truncateFloat(parseFloat(totalValue)) === GiftInKindDetails.enteredFmv) {
             $("#totalText").removeClass("warning");
 			$("#valueErrorSpan").hide();
         } 
@@ -94,7 +108,15 @@ var GiftInKindDetails = {
 				var $field = $(this);
 				$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
 				$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
-				$field.val("");
+				if ($field.is(":checkbox")) {
+					$field.removeAttr("checked");
+				}
+				else if ($field.is(":text") || $field.is(":hidden")) {
+					$field.val("");
+				}
+				else if ($field.is(":select")) {
+					$field.get(0).options[0].selected = true;
+				}
 				$field.removeClass("focused");
 			});
 		$("table.giftInKindDetails tr:last .deleteButton", "form").show(); // show the previous last row's delete button

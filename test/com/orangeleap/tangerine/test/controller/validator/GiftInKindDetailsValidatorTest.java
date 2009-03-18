@@ -29,7 +29,7 @@ public class GiftInKindDetailsValidatorTest extends BaseTest {
         errors = new BindException(gik, "giftInKind");
         List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>();
         GiftInKindDetail aDetail = new GiftInKindDetail();
-        aDetail.setFairMarketValue(new BigDecimal(13.5));
+        aDetail.setDetailFairMarketValue(new BigDecimal(13.5));
         details.add(aDetail);
         gik.setMutableDetails(details);
         gik.setFairMarketValue(new BigDecimal(16));
@@ -39,7 +39,7 @@ public class GiftInKindDetailsValidatorTest extends BaseTest {
         
         errors = new BindException(gik, "gift");
         aDetail = new GiftInKindDetail();
-        aDetail.setFairMarketValue(new BigDecimal(2.5));
+        aDetail.setDetailFairMarketValue(new BigDecimal(2.5));
         details.add(aDetail);
         gik = new GiftInKind();
         gik.setMutableDetails(details);

@@ -85,7 +85,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         
         for (GiftInKindDetail readDetail : readGiftInKind.getDetails()) {
             assert "my description".equals(readDetail.getDescription());
-            assert .50d == readDetail.getFairMarketValue().doubleValue();
+            assert .50d == readDetail.getDetailFairMarketValue().doubleValue();
             assert readDetail.getFmvMethod() == null;
             assert "joe".equals(readDetail.getGikCategory());
             assert 3 == readDetail.getQuantity();
@@ -141,7 +141,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
                     assert gik.getGiftId() == null;
                     for (GiftInKindDetail detail : gik.getDetails()) {
                         assert "foo".equals(detail.getDescription()) || "bar".equals(detail.getDescription());
-                        assert 10 == detail.getFairMarketValue().intValue() || 40 == detail.getFairMarketValue().intValue();
+                        assert 10 == detail.getDetailFairMarketValue().intValue() || 40 == detail.getDetailFairMarketValue().intValue();
                         assert null == detail.getFmvMethod() || "risk analysis".equals(detail.getFmvMethod());
                         assert "bo".equals(detail.getGikCategory()) || "jackson".equals(detail.getGikCategory());
                         assert 1 == detail.getQuantity() || 2 == detail.getQuantity();

@@ -5,7 +5,7 @@
 	<resultMap id="GIFT_IN_KIND_DETAIL_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail">
 		<result property="id" column="GIK_DETAIL_ID" jdbcType="BIGINT" />
 		<result property="description" column="GIK_DETAIL_DESCRIPTION" jdbcType="VARCHAR" />
-		<result property="fairMarketValue" column="GIK_DETAIL_FAIR_MARKET_VALUE" jdbcType="DECIMAL" />
+		<result property="detailFairMarketValue" column="GIK_DETAIL_FAIR_MARKET_VALUE" jdbcType="DECIMAL" />
 		<result property="fmvMethod" column="GIK_DETAIL_FMV_METHOD" jdbcType="VARCHAR" />
 		<result property="gikCategory" column="GIK_DETAIL_CATEGORY" jdbcType="VARCHAR" />
 		<result property="quantity" column="GIK_DETAIL_QUANTITY" jdbcType="BIGINT" />
@@ -22,7 +22,7 @@
 
 	<insert id="INSERT_GIFT_IN_KIND_DETAIL" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail">
 		insert into GIFT_IN_KIND_DETAIL (DESCRIPTION, FAIR_MARKET_VALUE, FMV_METHOD, CATEGORY, QUANTITY, TAX_DEDUCTIBLE, GIFT_IN_KIND_ID)
-		values (#description#, #fairMarketValue#, #fmvMethod#, #gikCategory#, #quantity#, #taxDeductible#, #giftInKindId#)
+		values (#description#, #detailFairMarketValue#, #fmvMethod#, #gikCategory#, #quantity#, #taxDeductible#, #giftInKindId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

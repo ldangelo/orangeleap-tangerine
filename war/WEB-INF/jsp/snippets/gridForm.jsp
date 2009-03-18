@@ -52,7 +52,7 @@
 						</select>
 					</c:when>
 					<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-			            <input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>]._<c:out value="${fieldVO.fieldName}"/>" value="visible" />
+			            <input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>]._<c:out value="${fieldVO.fieldName}"/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>" value="visible" />
 			            <input type="checkbox" value="true" 
 			                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
 			                   name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" 

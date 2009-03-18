@@ -38,15 +38,15 @@ Ext.onReady(function(){
             {header: 'First Name', widht: 90, dataIndex: 'first', sortable: true},
             {header: 'Last Name', width: 90, dataIndex: 'last', sortable: true},
             {header: 'Organization', width: 120, dataIndex: 'organization', sortable: true},
-            {header: 'Major', tooltip: 'Major Donors', width: 45, align: 'center', dataIndex: 'majorDonor', sortable: true, renderer: OrangeLeap.person.majorDonorRenderer},
-            {header: 'Lapsed', tooltip: 'Lapsed Donors',width: 45, align: 'center', dataIndex: 'lapsedDonor', sortable: true, renderer: OrangeLeap.person.lapsedDonorRenderer}
+            {header: 'Major', tooltip: 'Major Donors', width: 55, align: 'center', dataIndex: 'majorDonor', sortable: true, renderer: OrangeLeap.person.majorDonorRenderer},
+            {header: 'Lapsed', tooltip: 'Lapsed Donors',width: 55, align: 'center', dataIndex: 'lapsedDonor', sortable: true, renderer: OrangeLeap.person.lapsedDonorRenderer}
         ],
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
 		viewConfig: {
 			forceFit: true
         },
-        height:500,
-        width: 650,
+        height:585,
+        width: 760,
         autoExpandColumn: 'organization',
         frame: true,
 		header: true,

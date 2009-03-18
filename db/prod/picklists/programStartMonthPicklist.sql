@@ -1,0 +1,13 @@
+INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME, PICKLIST_DESC) VALUES ('customFieldMap[organization.programStartMonth]', 'customFieldMap[organization.programStartMonth]', 'Program Start Month');
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'january', 'January', 1);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'february', 'February', 2);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'march', 'March', 3);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'april', 'April', 4);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'may', 'May', 5);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'june', 'June', 6);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'july', 'July', 7);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'august', 'August', 8);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'september', 'September', 9);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'october', 'October', 10);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'november', 'November', 11);
+INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, ITEM_ORDER) VALUES ('customFieldMap[organization.programStartMonth]', 'december', 'December', 12);

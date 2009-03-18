@@ -104,12 +104,17 @@
 		    <transaction src="${basedir}/db/prod/picklists/communicationPreferencesPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/emailFormatPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/matchingPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/matchingEligibilityPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/matchingEligibleOrganizationsPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/matchingIneligibleOrganizationsPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/programStartMonthPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/journalTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/pledgeStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/recurringGiftStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/phoneProviderPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/fmvMethodPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/giftInKindCategoryPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/eligibleFundsPicklist.sql"/>
 
 			<transaction src="${basedir}/db/prod/picklists/setPicklistItemsActive.sql"/>
 	     	

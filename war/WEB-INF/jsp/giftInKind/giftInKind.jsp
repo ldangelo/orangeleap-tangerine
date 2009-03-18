@@ -88,12 +88,12 @@
 					</c:if>
 					
 					<table class="tablesorter giftInKindDetails" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
-						<col class=""/>
-						<col class="number"/> 
-						<col class=""/>
-						<col class=""/> 
 						<col class="number"/>
-						<col class=""/> 
+						<col class="text"/> 
+						<col class="picklist"/>
+						<col class="picklist"/> 
+						<col class="number"/>
+						<col class="checkbox"/> 
 						<col class="button"/>
 						<thead> 
 							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">

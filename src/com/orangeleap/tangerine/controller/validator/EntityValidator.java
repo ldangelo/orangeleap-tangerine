@@ -159,27 +159,30 @@ public class EntityValidator implements Validator {
     private void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
         if (requiredFieldMap != null) {
+            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
             for (String key : requiredFieldMap.keySet()) {
-                FieldRequired fr = requiredFieldMap.get(key);
-                List<FieldCondition> conditions = fr.getFieldConditions();
-                boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
-                if (!conditionsMet) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(key + " validation doesn't apply:  conditions not met");
+                if (bw.isReadableProperty(key)) {
+                    FieldRequired fr = requiredFieldMap.get(key);
+                    List<FieldCondition> conditions = fr.getFieldConditions();
+                    boolean conditionsMet = this.areFieldConditionsMet(conditions, key, entity, fieldValueMap);
+                    if (!conditionsMet) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(key + " validation doesn't apply:  conditions not met");
+                        }
+                        continue;
                     }
-                    continue;
-                }
-                if (errorSet.contains(key)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(key + " validation:  error already exists so don't add another one");
+                    if (errorSet.contains(key)) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(key + " validation:  error already exists so don't add another one");
+                        }
+                        continue;
                     }
-                    continue;
-                }
-                String propertyString = getPropertyString(key, entity, fieldValueMap);
-                boolean required = fr.isRequired();
-                if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
-                    errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
-                    errorSet.add(key);
+                    String propertyString = getPropertyString(key, entity, fieldValueMap);
+                    boolean required = fr.isRequired();
+                    if ((required && StringUtils.isEmpty(propertyString)) && !errorSet.contains(key)) {
+                        errors.rejectValue(key, "fieldRequiredFailure", new String[] { fieldLabelMap.get(key) }, "no message provided for the validation error: fieldRequiredFailure");
+                        errorSet.add(key);
+                    }
                 }
             }
         }
@@ -256,11 +259,13 @@ public class EntityValidator implements Validator {
         Object property = fieldValueMap.get(key);
         if (property == null) {
             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
-            property = beanWrapper.getPropertyValue(key);
-            if (property instanceof CustomField) {
-                property = ((CustomField) property).getValue();
+            if (beanWrapper.isReadableProperty(key)) {
+                property = beanWrapper.getPropertyValue(key);
+                if (property instanceof CustomField) {
+                    property = ((CustomField) property).getValue();
+                }
+                fieldValueMap.put(key, property);
             }
-            fieldValueMap.put(key, property);
         }
         return property;
     }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -32,6 +33,7 @@ public class GiftInKindDetailsValidator implements Validator {
         if (total == null || fairMarketValue == null || total.compareTo(fairMarketValue) != 0) {
             errors.reject("giftInKindFairMarketValues");
         }
+        validateDescription(gik.getMutableDetails(), errors);
     }
     
     private BigDecimal getTotal(List<GiftInKindDetail> details) {
@@ -42,5 +44,16 @@ public class GiftInKindDetailsValidator implements Validator {
             }
         }
         return total;
+    }
+    
+    private void validateDescription(List<GiftInKindDetail> details, Errors errors) {
+        for (GiftInKindDetail detail : details) {
+            if (detail != null) {
+                if (detail.getDetailFairMarketValue() != null && StringUtils.hasText(detail.getDescription()) == false) {
+                    errors.reject("giftInKindDescription");
+                    break;
+                }
+            }
+        }
     }
 }

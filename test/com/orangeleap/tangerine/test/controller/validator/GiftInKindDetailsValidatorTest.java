@@ -45,6 +45,23 @@ public class GiftInKindDetailsValidatorTest extends BaseTest {
         gik.setMutableDetails(details);
         gik.setFairMarketValue(new BigDecimal(16));        
         validator.validate(gik, errors);
+        assert errors.hasErrors() == true;
+
+        errors = new BindException(gik, "gift");
+        details = new ArrayList<GiftInKindDetail>();
+        aDetail = new GiftInKindDetail();
+        aDetail.setDetailFairMarketValue(new BigDecimal(13.5));
+        aDetail.setDescription("bark");
+        details.add(aDetail);
+        
+        aDetail = new GiftInKindDetail();
+        aDetail.setDetailFairMarketValue(new BigDecimal(2.5));
+        aDetail.setDescription("woof");
+        details.add(aDetail);
+        gik = new GiftInKind();
+        gik.setMutableDetails(details);
+        gik.setFairMarketValue(new BigDecimal(16));        
+        validator.validate(gik, errors);
         assert errors.hasErrors() == false;
     }
 }

@@ -374,8 +374,13 @@ form table.distributionLines input.amount, form table.distributionLines input.pe
 table.distributionLines { table-layout: fixed; }
 table.distributionLines col.number { width: 12%; }
 table.distributionLines col.code { width: 35%; }
-table.distributionLines col.button { width: 3%; }
+table.distributionLines col.button, table.giftInKindDetails col.button { width: 3%; }
 table.distributionLines td input.code { width:93.5%; }
+
+table.giftInKindDetails col.text { width: 30%; }
+table.giftInKindDetails col.number { width: 10%; }
+table.giftInKindDetails col.checkbox { width: 4%; }
+table.giftInKindDetails col.picklist { }
 
 form table.distributionLines thead tr th {
 	background-color:#E6EEEE;

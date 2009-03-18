@@ -210,7 +210,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     
     public void removeEmptyMutableDetails() {
         Iterator<GiftInKindDetail> mutableDetailsIter = mutableDetails.iterator();
-        mutableDetails = new ArrayList<GiftInKindDetail>();
+        details = new ArrayList<GiftInKindDetail>();
         while (mutableDetailsIter.hasNext()) {
             GiftInKindDetail detail = mutableDetailsIter.next();
             if (detail != null) {
@@ -218,12 +218,12 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
                     mutableDetailsIter.remove();
                 }
                 else {
-                    mutableDetails.add(detail);
+                    details.add(detail);
                 }
             }
         }
-        if (mutableDetails.isEmpty()) {
-            mutableDetails.add(new GiftInKindDetail());
+        if (details.isEmpty()) {
+            details.add(new GiftInKindDetail());
         }
     }
 

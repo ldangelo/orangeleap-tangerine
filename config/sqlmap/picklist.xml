@@ -27,6 +27,7 @@
         <result property="picklistId" column="PICKLIST_ID" jdbcType="BIGINT"/>
         <result property="defaultDisplayValue" column="DEFAULT_DISPLAY_VALUE" jdbcType="VARCHAR"/>
 		<result property="inactive" column="INACTIVE" jdbcType="CHAR" />
+		<result property="readOnly" column="READ_ONLY" jdbcType="CHAR" />
         <result property="itemName" column="ITEM_NAME" jdbcType="VARCHAR"/>
         <result property="itemOrder" column="ITEM_ORDER" jdbcType="INTEGER"/>
         <result property="referenceValue" column="REFERENCE_VALUE" jdbcType="VARCHAR"/>
@@ -36,7 +37,7 @@
 
     <sql id="SELECT_PICKLIST_FRAGMENT">
         select P.PICKLIST_ID, P.PICKLIST_NAME_ID, P.PICKLIST_DESC, P.ENTITY_TYPE, P.MULTISELECT, P.PICKLIST_NAME, P.SITE_NAME,
-        I.PICKLIST_ITEM_ID, I.DEFAULT_DISPLAY_VALUE, I.INACTIVE, I.ITEM_NAME, I.ITEM_ORDER,
+        I.PICKLIST_ITEM_ID, I.DEFAULT_DISPLAY_VALUE, I.INACTIVE, I.READ_ONLY, I.ITEM_NAME, I.ITEM_ORDER,
         I.REFERENCE_VALUE, I.SUPPRESS_REFERENCE_VALUE
         from PICKLIST P 
         left outer join PICKLIST_ITEM I on P.PICKLIST_ID = I.PICKLIST_ID
@@ -97,6 +98,7 @@
         set 
         DEFAULT_DISPLAY_VALUE = #defaultDisplayValue#,
         INACTIVE = #inactive#,
+        READ_ONLY = #readOnly#,
         ITEM_NAME = #itemName#,
         ITEM_ORDER = #itemOrder#,
         REFERENCE_VALUE = #referenceValue#,
@@ -118,6 +120,7 @@
 		    insert into PICKLIST_ITEM (
 		        DEFAULT_DISPLAY_VALUE,
 		        INACTIVE,
+		        READ_ONLY,
 		        ITEM_NAME, 
 		        ITEM_ORDER,
 		        REFERENCE_VALUE, 
@@ -127,6 +130,7 @@
 		    values (
 		        #defaultDisplayValue#,
 		        #inactive#,
+		        #readOnly#,
 		        #itemName#,
 		        #itemOrder#,
 		        #referenceValue#,

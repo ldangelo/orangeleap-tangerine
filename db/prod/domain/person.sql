@@ -91,11 +91,11 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.ineligibleOrganizations]', 'person', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Organizations', 'MULTI_PICKLIST', 'organization');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.procedureForRequestingMatch]', 'person', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'TEXT', 'organization');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.onlineMatchingGiftForm]', 'person', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Online Matching Gift Form', 'TEXT', 'organization');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.programStartMonth]', 'person', 'customFieldMap[organization.programStartMonth]', 'Program Start Month', 'PICKLIST', 'organization');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.programContact]', 'person', 'customFieldMap[organization.programContact]', 'Program Contact', 'QUERY_LOOKUP_OTHER', 'organization');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
+('person.customFieldMap[organization.procedureForRequestingMatch]', 'person', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'LONG_TEXT', 'organization');
 

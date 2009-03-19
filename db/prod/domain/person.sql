@@ -70,32 +70,32 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.matching]', 'person', 'customFieldMap[organization.matching]', 'Matching', 'PICKLIST', 'organization');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.percentMatch]', 'person', 'customFieldMap[organization.percentMatch]', 'Percent Match', 'PERCENTAGE', 'organization');
+('person.customFieldMap[organization.percentMatch]', 'person', 'customFieldMap[organization.percentMatch]', 'Percent Match', 'PERCENTAGE', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.maximumAnnualLimit]', 'person', 'customFieldMap[organization.maximumAnnualLimit]', 'Maximum Annual Limit', 'PERCENTAGE', 'organization');
+('person.customFieldMap[organization.maximumAnnualLimit]', 'person', 'customFieldMap[organization.maximumAnnualLimit]', 'Maximum Annual Limit', 'PERCENTAGE', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.minimumGiftMatch]', 'person', 'customFieldMap[organization.minimumGiftMatch]', 'Minimum Gift Match', 'PERCENTAGE', 'organization');
+('person.customFieldMap[organization.minimumGiftMatch]', 'person', 'customFieldMap[organization.minimumGiftMatch]', 'Minimum Gift Match', 'PERCENTAGE', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.maximumGiftMatch]', 'person', 'customFieldMap[organization.maximumGiftMatch]', 'Maximum Gift Match', 'PERCENTAGE', 'organization');
+('person.customFieldMap[organization.maximumGiftMatch]', 'person', 'customFieldMap[organization.maximumGiftMatch]', 'Maximum Gift Match', 'PERCENTAGE', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.totalPerEmployeePerYear]', 'person', 'customFieldMap[organization.totalPerEmployeePerYear]', 'Total Per Employee Per Year', 'NUMBER', 'organization');
+('person.customFieldMap[organization.totalPerEmployeePerYear]', 'person', 'customFieldMap[organization.totalPerEmployeePerYear]', 'Total Per Employee Per Year', 'NUMBER', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.eligibility]', 'person', 'customFieldMap[organization.eligibility]', 'Eligibility', 'MULTI_PICKLIST', 'organization');
+('person.customFieldMap[organization.eligibility]', 'person', 'customFieldMap[organization.eligibility]', 'Eligibility', 'MULTI_PICKLIST', 'organization,matching');
  -- TODO: MULTI
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.eligibleFields]', 'person', 'customFieldMap[organization.eligibleFields]', 'Eligible Fields', 'CODE_OTHER', 'organization');
+('person.customFieldMap[organization.eligibleFields]', 'person', 'customFieldMap[organization.eligibleFields]', 'Eligible Fields', 'CODE_OTHER', 'organization,matching');
  -- TODO: OTHER
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.eligibleOrganizations]', 'person', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Organizations', 'MULTI_PICKLIST', 'organization');
+('person.customFieldMap[organization.eligibleOrganizations]', 'person', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Organizations', 'MULTI_PICKLIST', 'organization,matching');
  -- TODO: OTHER
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.ineligibleOrganizations]', 'person', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Organizations', 'MULTI_PICKLIST', 'organization');
+('person.customFieldMap[organization.ineligibleOrganizations]', 'person', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Organizations', 'MULTI_PICKLIST', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.onlineMatchingGiftForm]', 'person', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Online Matching Gift Form', 'TEXT', 'organization');
+('person.customFieldMap[organization.onlineMatchingGiftForm]', 'person', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Online Matching Gift Form', 'TEXT', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.programStartMonth]', 'person', 'customFieldMap[organization.programStartMonth]', 'Program Start Month', 'PICKLIST', 'organization');
+('person.customFieldMap[organization.programStartMonth]', 'person', 'customFieldMap[organization.programStartMonth]', 'Program Start Month', 'PICKLIST', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.programContact]', 'person', 'customFieldMap[organization.programContact]', 'Program Contact', 'QUERY_LOOKUP_OTHER', 'organization');
+('person.customFieldMap[organization.programContact]', 'person', 'customFieldMap[organization.programContact]', 'Program Contact', 'QUERY_LOOKUP_OTHER', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.procedureForRequestingMatch]', 'person', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'LONG_TEXT', 'organization');
+('person.customFieldMap[organization.procedureForRequestingMatch]', 'person', 'customFieldMap[organization.procedureForRequestingMatch]', 'Procedure for Requesting Match', 'LONG_TEXT', 'organization,matching');
 

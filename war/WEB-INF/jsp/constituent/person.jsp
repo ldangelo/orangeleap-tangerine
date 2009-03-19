@@ -5,20 +5,22 @@
         
         <%-- Temporary fix below for TANGERINE-130; TODO: remove when we implement Ext JS components --%>
         <script type="text/javascript">
-        	function showHideDemographics($elem) {
+        	function showHideOrganization($elem) {
 				if ($elem.val() == "organization") {
 					$("#h4-person_demographics").hide();
+					$("#h4-person_matching").show();
 				}
 				else {
+					$("#h4-person_matching").hide();
 					$("#h4-person_demographics").show();
 				}
         	}
         	
         	$(document).ready(function() {
-				showHideDemographics($("#constituentType"));
+				showHideOrganization($("#constituentType"));
 				
     			$("#constituentType").bind("change", function() {
-    				showHideDemographics($(this));
+    				showHideOrganization($(this));
         		});	
         	});
         </script>

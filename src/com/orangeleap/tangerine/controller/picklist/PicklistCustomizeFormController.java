@@ -21,7 +21,14 @@ public class PicklistCustomizeFormController extends PicklistCustomizeBaseContro
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         
         Map<String, String> stringmap = getMap(picklist.getCustomFieldMap());
-		
+    	if (stringmap.size() == 0 && isGLCoded(picklist)) {
+    		stringmap.put(GL_ACCOUNT_CODE, BLANK);
+    		stringmap.put("01-GLPART1", BLANK);
+    		stringmap.put("02-GLPART2", BLANK);
+    		stringmap.put("03-GLPART3", BLANK);
+    		stringmap.put("04-GLPART4", BLANK);
+    	}
+
 		if (stringmap.size() == 0) stringmap.put("", "");
         request.setAttribute("map", stringmap);
         request.setAttribute("picklist", picklist);

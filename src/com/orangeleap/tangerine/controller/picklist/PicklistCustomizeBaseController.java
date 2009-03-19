@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.service.PicklistItemService;
 
 public class PicklistCustomizeBaseController extends SimpleFormController {
@@ -20,6 +21,10 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
+	public final static String GL_ACCOUNT_CODE = "GLAccountCode";
+	public static final String BLANK = "<blank>";
+	
+
     @Resource(name="picklistItemService")
     protected PicklistItemService picklistItemService;
     
@@ -28,6 +33,10 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
         return "";
     }
 	
+    protected boolean isGLCoded(Picklist picklist) {
+    	return picklist.getPicklistNameId().endsWith("projectCode");
+    }
+
 	protected Map<String, String> getMap(Map<String, CustomField> map) {
 		Map<String, String> result = new TreeMap<String, String>();
 		for (Map.Entry<String, CustomField> entry : map.entrySet()) {
@@ -35,7 +44,6 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
 		}
 		return result;
 	}
-
 	
 	@SuppressWarnings("unchecked")
 	protected Map<String, String> getMap(HttpServletRequest request) {

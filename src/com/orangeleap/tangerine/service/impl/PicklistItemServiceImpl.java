@@ -46,9 +46,6 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		return name == null 
 			|| name.equals("frequency")
 			|| name.equals("constituentType")
-			|| name.equals("phoneType")  // editing the default values of these person info items may cause problems, so disable editing for now
-			|| name.equals("emailType")  // editing the default values of these person info items may cause problems, so disable editing for now
-			|| name.equals("addressType")  // editing the default values of these person info items may cause problems, so disable editing for now
 		;
 	}
 

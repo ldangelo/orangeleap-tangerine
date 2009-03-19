@@ -16,6 +16,7 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     private String suppressReferenceValue;
     private Integer itemOrder;
     private boolean inactive = false;
+    private boolean readOnly = false;
     private Long picklistId;
     private Auditable originalObject;
 
@@ -98,6 +99,14 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     public String toString() {
     	return this.itemName + ":" + this.itemOrder;
     }
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
     
 	
 }

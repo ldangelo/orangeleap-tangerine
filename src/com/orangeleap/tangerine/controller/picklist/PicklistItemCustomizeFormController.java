@@ -15,12 +15,10 @@ import com.orangeleap.tangerine.domain.customization.PicklistItem;
 
 public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseController {
 
-	public final static String GLCODE = "GLCode";
+	public final static String ACCOUNT_STRING_1 = "AccountString1";
+	public final static String ACCOUNT_STRING_2 = "AccountString2";
 	
-    private boolean isGLCoded(Picklist picklist) {
-    	return picklist.getPicklistNameId().endsWith("projectCode");
-    }
-    
+	
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
@@ -51,7 +49,8 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
      
         Map<String, String> stringmap = getMap(request);
         if (isGLCoded(picklist)) {
-        	stringmap.put(GLCODE, getGLCode(stringmap));
+        	stringmap.put(ACCOUNT_STRING_1, getAccountString(stringmap, false));
+        	stringmap.put(ACCOUNT_STRING_2, getAccountString(stringmap, true));
         }
         
         updateCustomFieldMap(stringmap, item);
@@ -72,29 +71,33 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
     	for (Map.Entry<String, CustomField> e : picklist.getCustomFieldMap().entrySet()) {
     		String name = e.getValue().getName();
     		String value = e.getValue().getValue();
-    		if (value.equalsIgnoreCase("<blank>")) value = "";
+    		if (value.equalsIgnoreCase(BLANK)) value = "";
     		map.put(name, value);
     	}
     }
 
-	private PicklistItem getPicklistItem(Picklist picklist, Long picklistItemId) {
-	        if (picklist != null) {
-	        	if (picklistItemId != null) {
-		            for (PicklistItem item : picklist.getPicklistItems()) {
-		            	if (picklistItemId.equals(item.getId())) {
-		            		return picklistItemService.getPicklistItem(item.getId());
-		            	}
-		            }
-	        	}
-	        }
-        return null;
-	}
+    private PicklistItem getPicklistItem(Picklist picklist, Long picklistItemId) {
+    	if (picklist != null) {
+    		if (picklistItemId != null) {
+    			for (PicklistItem item : picklist.getPicklistItems()) {
+    				if (picklistItemId.equals(item.getId())) {
+    					return picklistItemService.getPicklistItem(item.getId());
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
 	
-	private String getGLCode(Map<String, String> map) {
+	private String getAccountString(Map<String, String> map, boolean extraDash) {
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> e : map.entrySet()) {
-			if (e.getKey().matches("^[0-9]+-.*") && e.getValue().trim().length() > 0) {
-				if (sb.length() > 0) sb.append("-");
+			if (e.getKey().matches("^[0-9]+-.*")) {
+				String value = e.getValue().trim();
+				boolean hasValue = value.length() > 0;
+				if (sb.length() > 0) {
+					if (hasValue || extraDash) sb.append("-");
+				}
 				sb.append(e.getValue());
 			}
 		}

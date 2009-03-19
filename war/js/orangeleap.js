@@ -184,6 +184,24 @@ function getPage(elem) {
 		return false;
 }
 
+var PicklistCustomizer = {	
+		addNewRow : function() {
+			var $newRow = $("table.customFields tr:last", "form").clone(false);
+			var i = $newRow.attr("rowindex");
+			var j = parseInt(i, 10) + 1;
+			$newRow.attr("rowindex", j);
+			$newRow.find("input").each(function() {
+					var $field = $(this);
+					$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
+					$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
+					$field.val("");
+					$field.attr("style", "");
+					$field.removeAttr("readonly");
+				});
+			$("table.customFields", "form").append($newRow);
+		}
+}
+
 var Picklist = {	
 	rootTrees: {},
 	

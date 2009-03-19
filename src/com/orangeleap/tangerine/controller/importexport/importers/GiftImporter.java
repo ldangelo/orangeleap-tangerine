@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.controller.importexport.importers;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -8,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -65,6 +67,11 @@ public class GiftImporter extends EntityImporter {
 		Gift gift = giftservice.readGiftByIdCreateIfNull(null, null, constituent);
 		
 		mapValuesToObject(values, gift);
+		
+		DistributionLine dl = new DistributionLine();
+		dl.setAmount(gift.getAmount());
+		dl.setPercentage(new BigDecimal(100.00));
+		gift.getMutableDistributionLines().add(dl);
 		
 		giftservice.maintainGift(gift);
 		

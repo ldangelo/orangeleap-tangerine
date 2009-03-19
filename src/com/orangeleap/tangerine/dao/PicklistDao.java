@@ -8,7 +8,9 @@ import com.orangeleap.tangerine.type.EntityType;
 
 public interface PicklistDao {
 
-    public Picklist readPicklistById(String picklistId);
+    public Picklist readPicklistById(Long picklistId);
+    
+    public Picklist readPicklistByNameId(String picklistNameId);
 
 	public Picklist maintainPicklist(Picklist picklist);
 
@@ -20,6 +22,6 @@ public interface PicklistDao {
 
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 	
-	public PicklistItem readPicklistItemByName(String picklistId, String picklistItemName);
+	public PicklistItem readPicklistItemByName(String picklistNameId, String picklistItemName);
 	
 }

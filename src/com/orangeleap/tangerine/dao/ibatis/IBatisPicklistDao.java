@@ -31,11 +31,25 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
     }
 
     @Override
-    public Picklist readPicklistById(String picklistId) {
+    public Picklist readPicklistById(Long picklistId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistById: picklistId = " + picklistId);
         }
-        return (Picklist)getSqlMapClientTemplate().queryForObject("SELECT_BY_PICKLIST_ID", picklistId);
+        Map<String, Object> params = setupParams();
+        params.put("picklistId", picklistId);
+        return (Picklist)getSqlMapClientTemplate().queryForObject("SELECT_BY_PICKLIST_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+	public Picklist readPicklistByNameId(String picklistNameId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPicklistByNameId: picklistNameId = " + picklistNameId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("picklistNameId", picklistNameId);
+        List<Picklist> list = (List<Picklist>)getSqlMapClientTemplate().queryForList("SELECT_BY_PICKLIST_NAME_ID", params);
+        if (list.size() == 0) return null;
+        return list.get(list.size()-1);
     }
 
     @Override
@@ -49,24 +63,13 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         Picklist dbPicklist = readPicklistById(picklist.getId());
         if (dbPicklist != null && !dbPicklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot modify default picklist.");
         
-        if (dbPicklist == null) {
-        	// New picklist
-            picklist.setSite(new Site(getSiteName()));
-            getSqlMapClientTemplate().insert("INSERT_PICKLIST", picklist);
-        } else {
-        	// Existing picklist
-	        Map<String, Object> params = setupParams();
-	        params.put("picklistId", picklist.getId());
-	        getSqlMapClientTemplate().update("UPDATE_PICKLIST", picklist);
-        }
+        picklist.setSite(new Site(getSiteName()));
+        insertOrUpdate(picklist, "PICKLIST");
         
+        // They can't delete picklist items currently, only inactivate them
         for (PicklistItem item : picklist.getPicklistItems()) {
         	item.setPicklistId(picklist.getId());
-        	if (item.getId() == null) {
-                getSqlMapClientTemplate().insert("INSERT_PICKLIST_ITEM", item);
-        	} else {
-                getSqlMapClientTemplate().update("UPDATE_PICKLIST_ITEM", item);
-        	}
+            insertOrUpdate(item, "PICKLIST_ITEM");
         }
 
         return picklist;
@@ -112,15 +115,21 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistItemById: picklistId = " + picklistItemId);
         }
-        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_ID", picklistItemId);
+        Map<String, Object> params = setupParams();
+        params.put("picklistItemId", picklistItemId);
+        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_ID", params);
     }
     
-    @Override
-    public PicklistItem readPicklistItemByName(String picklistId, String picklistItemName) {
+    @SuppressWarnings("unchecked")
+	@Override
+    public PicklistItem readPicklistItemByName(String picklistNameId, String picklistItemName) {
         Map<String, Object> params = setupParams();
-        params.put("picklistId", picklistId);
+        params.put("picklistNameId", picklistNameId);
         params.put("picklistItemName", picklistItemName);
-        return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_PICKLIST_ID_AND_ITEM_NAME", params);
+        List<PicklistItem> list = (List<PicklistItem>)getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME", params);
+        if (list.size() == 0) return null;
+        return list.get(list.size()-1);
+        
     }
 	
 

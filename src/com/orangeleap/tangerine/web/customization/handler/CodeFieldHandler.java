@@ -31,12 +31,12 @@ public class CodeFieldHandler extends GenericFieldHandler {
         return fieldVO;
     }
     
-    private String resolve(String picklistId, String itemName) {
+    private String resolve(String picklistNameId, String itemName) {
         if (logger.isDebugEnabled()) {
             logger.debug("resolve: itemName = " + itemName);
         }
         String val = itemName;
-        PicklistItem code = picklistItemService.getPicklistItem(picklistId, itemName);
+        PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, itemName);
         if (code != null) {
             val = new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString();
         }

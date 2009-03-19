@@ -1,25 +1,26 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Manage Codes" />
+	<tiles:putAttribute name="browserTitle" value="Manage Picklists" />
 	<tiles:putAttribute name="primaryNav" value="Administration" />
-	<tiles:putAttribute name="secondaryNav" value="Codes" />
+	<tiles:putAttribute name="secondaryNav" value="Picklists" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 	
-		<c:set var="currentPicklistId" value="${param.picklistId!=null?param.picklistId:''}" />
+		<c:set var="currentPicklistNameId" value="${param.picklistNameId!=null?param.picklistNameId:''}" />
+		<c:set var="currentPicklistId" value="${param.id!=null?param.id:''}" />
 		<div class="simplebox">
 		<form method="get" action="picklistItems.htm">
 			<h4>Picklist to Manage</h4>
-			<select id="picklistId" name="picklistId" onchange="this.form.submit()">
-			<option value="" ${currentPicklistId==''?'selected':''}>Select...</option>
-			<c:forEach var="picklist" items="${picklists}">
-			  <c:set var="edited" value="${picklist.persisted}" />
-			  <option value="<c:out value='${picklist.id}'/>" ${currentPicklistId==picklist.id?'selected':''}><c:out value='${picklist.picklistDesc}'/></option>
-			</c:forEach>
+			<select id="picklistNameId" name="picklistNameId" onchange="this.form.submit()">
+		  	  <option value="" ${currentPicklistId==''?'selected':''}>Select...</option>
+			   <c:forEach var="picklist" items="${picklists}">
+			     <option value="<c:out value='${picklist.picklistNameId}'/>" ${currentPicklistNameId==picklist.picklistNameId?'selected':''}><c:out value='${picklist.picklistDesc}'/></option>
+			   </c:forEach>
 			</select>
 		</form>
 		</div>
 			<div class="picklistItemFilters simplebox">
+				<input type="hidden" name="picklistNameId" value="<c:out value='${currentPicklistNameId}'/>" />
 				<input type="hidden" name="picklistId" value="<c:out value='${currentPicklistId}'/>" />
 				<table>
 					<tr>
@@ -54,7 +55,7 @@
 			<h4>Add a Picklist Item</h4>
 			<table class="tablesorter">
 			<tr>
-				<jsp:include page="/picklistItem.htm?picklistId=${currentPicklistId}&view=newInPlace" />
+				<jsp:include page="/picklistItem.htm?picklistNameId=${currentPicklistNameId}&view=newInPlace" />
 				</tr>
 				</table>
 			</div>

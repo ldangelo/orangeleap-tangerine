@@ -16,7 +16,7 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
     private String suppressReferenceValue;
     private Integer itemOrder;
     private boolean inactive = false;
-    private String picklistId;
+    private Long picklistId;
     private Auditable originalObject;
 
     public String getItemName() {
@@ -51,11 +51,11 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
         this.itemOrder = position;
     }
 
-    public String getPicklistId() {
+    public Long getPicklistId() {
         return picklistId;
     }
 
-    public void setPicklistId(String picklistId) {
+    public void setPicklistId(Long picklistId) {
         this.picklistId = picklistId;
     }
 

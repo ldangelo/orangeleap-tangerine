@@ -35,21 +35,52 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
-        PicklistItem item = getPicklistItem(picklistId, picklistItemId);
-        Map<String, String> map = getMap(item.getCustomFieldMap());
-		if (map.size() < 2) {
-	        if (isGLCode(item)) {
-	        	addDefaultGLCodes(map);
+
+        Picklist picklist = picklistItemService.getPicklist(picklistId);
+        PicklistItem item = getPicklistItem(picklist, picklistItemId);
+        
+        Map<String, String> stringmap = getMap(item.getCustomFieldMap());
+		if (stringmap.size() < 2) {
+	        if (isGLCoded(picklist)) {
+	        	addDefaultGLCodes(stringmap);
 	        } 
 		}
-		if (map.size() == 0) map.put("", "");
-        request.setAttribute("map", map);
+		
+		if (stringmap.size() == 0) stringmap.put("", "");
+        request.setAttribute("map", stringmap);
         request.setAttribute("picklistItem", item);
         return super.showForm(request, response, errors, controlModel);
     }
     
-    private boolean isGLCode(PicklistItem item) {
-    	return item.getPicklistId().endsWith("projectCode");
+	@Override
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+        String picklistId = request.getParameter("picklistId");
+        String picklistItemId = request.getParameter("picklistItemId");
+        
+        Picklist picklist = picklistItemService.getPicklist(picklistId);
+        PicklistItem item = getPicklistItem(picklist, picklistItemId);
+     
+        Map<String, String> stringmap = getMap(request);
+        if (isGLCoded(picklist)) {
+        	stringmap.put(GLCODE, getGLCode(stringmap));
+        }
+        
+        updateCustomFieldMap(stringmap, item);
+         
+    	item = picklistItemService.maintainPicklistItem(item);
+        
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        stringmap = getMap(item.getCustomFieldMap());
+		
+        if (stringmap.size() == 0) stringmap.put("", "");
+		mav.addObject("map", stringmap);
+		mav.addObject("picklistItem", item);
+        return mav;
+        
+    }
+	    
+    private boolean isGLCoded(Picklist picklist) {
+    	return picklist.getPicklistNameId().endsWith("projectCode");
     }
     
     private void addDefaultGLCodes(Map<String, String> map) {
@@ -65,9 +96,7 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         return "";
     }
 	
-	private PicklistItem getPicklistItem(String picklistId, String picklistItemId) {
-        if (picklistId != null) {
-	        Picklist picklist = picklistItemService.getPicklist(picklistId);
+	private PicklistItem getPicklistItem(Picklist picklist, String picklistItemId) {
 	        if (picklist != null) {
 	        	if (picklistItemId != null) {
 		            for (PicklistItem item : picklist.getPicklistItems()) {
@@ -77,7 +106,6 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
 		            }
 	        	}
 	        }
-        }
         return null;
 	}
 	
@@ -89,30 +117,6 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
 		return result;
 	}
 
-	@Override
-    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
-        String picklistId = request.getParameter("picklistId");
-        String picklistItemId = request.getParameter("picklistItemId");
-        PicklistItem item = getPicklistItem(picklistId, picklistItemId);
-     
-        Map<String, String> stringmap = getMap(request);
-        if (isGLCode(item)) {
-        	stringmap.put(GLCODE, getGLCode(stringmap));
-        }
-        
-        updateCustomFieldMap(stringmap, item);
-         
-    	item = picklistItemService.maintainPicklistItem(item);
-        
-        ModelAndView mav = new ModelAndView(getSuccessView());
-        Map<String, String> map = getMap(item.getCustomFieldMap());
-		if (map.size() == 0) map.put("", "");
-		mav.addObject("map", map);
-		mav.addObject("picklistItem", item);
-        return mav;
-        
-    }
-	
 	private String getGLCode(Map<String, String> map) {
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> e : map.entrySet()) {

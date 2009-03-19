@@ -38,26 +38,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     @Resource(name = "auditService")
     private AuditService auditService;
 
-    @Resource(name = "siteService")
-    private SiteService siteService;
-
     @Resource(name = "picklistDAO")
     private PicklistDao picklistDao;
     
-	// The unique key for PICKLIST is just id, not site + id, so id's have to be kept unique
-	public static String addSiteToId(String siteName, String picklistId) {
-		if (picklistId.contains("-")) {
-            throw new RuntimeException("Invalid picklistId character.");
-        }
-		return siteName + "-" + picklistId;
-	}
-	public static String removeSiteFromId(String picklistId) {
-		if (!picklistId.contains("-")) {
-            throw new RuntimeException("Invalid picklistId character.");
-        }
-		return picklistId.substring(picklistId.indexOf("-") + 1);
-	}
-	
 
 	private boolean exclude(Picklist picklist) {
 		String name = picklist.getPicklistName();
@@ -69,19 +52,23 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 			|| name.equals("addressType")  // editing the default values of these person info items may cause problems, so disable editing for now
 		;
 	}
+
+	@Override
+    @Transactional(propagation = Propagation.REQUIRED)
+	public Picklist getPicklistById(Long picklistId) {
+		
+		return picklistDao.readPicklistById(picklistId);
+	}
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public Picklist getPicklist(String picklistId) {
+	public Picklist getPicklist(String picklistNameId) {
 		
-		if (picklistId == null || picklistId.length() == 0) {
+		if (picklistNameId == null) {
             return null;
         }
 		
-		Picklist picklist = picklistDao.readPicklistById(picklistId);
-		if (picklist == null) {
-			picklist = picklistDao.readPicklistById(removeSiteFromId(picklistId));
-		}
+		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
 		if (picklist == null) {
             return null;
         }
@@ -100,10 +87,10 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public
-	PicklistItem getPicklistItem(String picklistId, String picklistItemName) {
-		PicklistItem picklistitem = picklistDao.readPicklistItemByName(addSiteToId(getSiteName(), picklistId), picklistItemName);
+	PicklistItem getPicklistItem(String picklistNameId, String picklistItemName) {
+		PicklistItem picklistitem = picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
 		if (picklistitem == null) {
-			picklistitem = picklistDao.readPicklistItemByName(picklistId, picklistItemName);
+			picklistitem = picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
 		}
 		return picklistitem;
 	}
@@ -116,8 +103,8 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public List<PicklistItem> getPicklistItems(String picklistId, String picklistItemName, String description, Boolean showInactive) {
-		Picklist picklist = getPicklist(addSiteToId(getSiteName(), picklistId));
+	public List<PicklistItem> getPicklistItems(String picklistNameId, String picklistItemName, String description, Boolean showInactive) {
+		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
 		for (PicklistItem item : picklist.getPicklistItems()) {
 			if (showInactive || !item.isInactive()) {
@@ -189,8 +176,8 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		Picklist result = null;
 		try {
 			result = (Picklist)BeanUtils.cloneBean(template);
-			result.setId(addSiteToId(getSiteName(), template.getId()));
-			result.setSite(getSite(getSiteName()));
+			result.setId(null);
+			result.setSite(new Site(getSiteName()));
 			result.setPicklistItems(new ArrayList<PicklistItem>());
 			List<PicklistItem> items = template.getPicklistItems();
 			for (PicklistItem item: items) {
@@ -206,56 +193,20 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		
 	}
 	
-	private Site getSite(String siteName) {
-		List<Site> sites = siteService.readSites();
-	    for (Site site: sites) {
-            if (site.getName().equals(siteName)) {
-                return site;
-            }
-        }
-	    throw new RuntimeException("Invalid site name: " + siteName);
-	}
-	
-	private void removeBlankItems(Picklist picklist) {
-    	Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
-    	while (it.hasNext()) {
-    		PicklistItem item = it.next();
-    		if (item.getItemName() == null || item.getItemName().length() == 0) {
-                it.remove();
-            }
-    	}
-	}
-	
-	private void checkNotDefault(PicklistItem picklistItem) {
-    	// Sanity checks
-    	if (picklistItem == null || picklistItem.getPicklistId() == null || picklistItem.getItemName() == null || picklistItem.getItemName().length() == 0) {
-    		throw new RuntimeException("PicklistItem is blank.");
-    	}
-    	if (!picklistItem.getPicklistId().contains("-")) {
-    		throw new RuntimeException("PicklistItem picklist id is not site-specific.");
-    	}
-
-    	Picklist dbPicklist = picklistDao.readPicklistById(picklistItem.getPicklistId());
-    	boolean objectReferencesDefaultPicklist = dbPicklist != null && dbPicklist.getSite() == null;
-    	
-    	PicklistItem dbPicklistItem = picklistDao.readPicklistItemById(picklistItem.getId());
-    	boolean picklistItemIdIsOnDefaultPicklistInDb = dbPicklistItem != null && picklistDao.readPicklistById(dbPicklistItem.getPicklistId()).getSite() == null;
-    	
-    	if (objectReferencesDefaultPicklist || picklistItemIdIsOnDefaultPicklistInDb) {
-    		throw new RuntimeException("Cannot update non-site-specific entry for PicklistItem "+picklistItem.getId());
-    	}
-
-	}
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
     	
     	if (StringUtils.trimToNull(picklistItem.getItemName()) == null || StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
     	
-    	checkNotDefault(picklistItem);
+    	// Sanity checks
+    	if (picklistItem == null || picklistItem.getPicklistId() == null || picklistItem.getItemName() == null || picklistItem.getItemName().length() == 0) {
+    		throw new RuntimeException("PicklistItem is blank.");
+    	}
 
-    	Picklist picklist = getPicklist(picklistItem.getPicklistId());
+    	Picklist picklist = picklistDao.readPicklistById(picklistItem.getPicklistId());
+    	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot update non-site-specific entry for PicklistItem "+picklistItem.getId());
+    	
     	
 		logger.info("Updating "+picklist.getSite().getName()+" site-specific copy of picklist item "+picklistItem.getItemName());
 

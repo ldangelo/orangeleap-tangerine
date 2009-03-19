@@ -23,7 +23,7 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
     public void testMaintainPicklist() throws Exception {
         Picklist picklist = picklistDao.readPicklistByFieldName("creditCardType", EntityType.paymentSource);
         assert picklist != null;
-        assert "creditCardType".equals(picklist.getId());
+        assert "creditCardType".equals(picklist.getPicklistNameId());
         assert "creditCardType".equals(picklist.getPicklistName());
         assert picklist.getSite() != null && "company1".equals(picklist.getSite().getName());
         assert picklist.isMultiselect() == true;
@@ -51,7 +51,7 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
         assert readPicklist == null;
         readPicklist = picklistDao.readPicklistByFieldName("myCreditCardType", EntityType.paymentSource);
         assert readPicklist != null;
-        assert "creditCardType".equals(readPicklist.getId());
+        assert "creditCardType".equals(readPicklist.getPicklistNameId());
         assert "myCreditCardType".equals(readPicklist.getPicklistName());
         assert readPicklist.getSite() != null && "company1".equals(readPicklist.getSite().getName());
         assert readPicklist.isMultiselect() == false;
@@ -86,9 +86,9 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadPicklist" })
     public void testReadPicklistById() throws Exception {
-        Picklist picklist = picklistDao.readPicklistById("constituentIndividualRoles");
+        Picklist picklist = picklistDao.readPicklistByNameId("constituentIndividualRoles");
         assert picklist != null;
-        assert "constituentIndividualRoles".equals(picklist.getId());
+        assert "constituentIndividualRoles".equals(picklist.getPicklistNameId());
         assert "constituentIndividualRoles".equals(picklist.getPicklistName());
         assert picklist.getSite() != null && "company1".equals(picklist.getSite().getName());
         assert picklist.isMultiselect() == false;
@@ -177,7 +177,7 @@ public class IBatisPicklistDaoTest extends AbstractIBatisTest {
         
         picklist = picklistDao.readPicklistByFieldName("creditCardType", EntityType.paymentSource);
         assert picklist != null;
-        assert "creditCardType".equals(picklist.getId());
+        assert "creditCardType".equals(picklist.getPicklistNameId());
         assert "creditCardType".equals(picklist.getPicklistName());
         assert picklist.getSite() != null && "company1".equals(picklist.getSite().getName());
         assert picklist.isMultiselect() == true;

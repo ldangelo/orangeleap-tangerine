@@ -4,14 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.type.EntityType;
 
-public class Picklist implements Serializable {
+public class Picklist extends AbstractCustomizableEntity
+implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    private String picklistNameId;
     private String picklistName;
     private String picklistDesc;
     private EntityType entityType;
@@ -19,12 +21,12 @@ public class Picklist implements Serializable {
     private boolean multiselect;
     private List<PicklistItem> picklistItems;
 
-    public String getId() {
-        return id;
+    public String getPicklistNameId() {
+        return picklistNameId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPicklistNameId(String picklistNameId) {
+        this.picklistNameId = picklistNameId;
     }
 
     public String getPicklistName() {

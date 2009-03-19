@@ -28,9 +28,9 @@ public class PicklistItemHelperController extends ParameterizableViewController 
 
 	@Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String picklistId = request.getParameter("picklistId");
+        String picklistNameId = request.getParameter("picklistNameId");
 
-        Picklist picklist = picklistItemService.getPicklist(picklistId);
+        Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         if (picklist == null) {
             return null;
         }

@@ -26,13 +26,19 @@ public class PicklistItemFormController extends SimpleFormController {
 	@Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
        
+        String picklistNameId = request.getParameter("picklistNameId");
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
         String itemName = request.getParameter("itemName");
 
         PicklistItem picklistItem = new PicklistItem();
-        if (picklistId != null) {
-	        Picklist picklist = picklistItemService.getPicklist(picklistId);
+        if (picklistNameId != null && picklistNameId.length() > 0) {
+	        Picklist picklist = picklistItemService.getPicklist(picklistNameId);
+            picklistItem.setPicklistId(picklist.getId());
+        }
+        
+        if (picklistId != null && picklistId.length() > 0) {
+	        Picklist picklist = picklistItemService.getPicklistById(new Long(picklistId));
 	        if (picklist != null) {
 	        	if (picklistItemId != null) {
 		            for (PicklistItem item : picklist.getPicklistItems()) {

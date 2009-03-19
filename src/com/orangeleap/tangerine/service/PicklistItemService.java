@@ -9,7 +9,9 @@ public interface PicklistItemService {
 
 	List<Picklist> listPicklists();
 
-	Picklist getPicklist(String picklistId);
+	Picklist getPicklist(String picklistNameId);
+
+	Picklist getPicklistById(Long picklistId);
 
 	PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
@@ -17,6 +19,6 @@ public interface PicklistItemService {
 
 	PicklistItem getPicklistItem(Long picklistItemId);
 	
-	List<PicklistItem> getPicklistItems(String picklistId, String picklistItemName, String description, Boolean showInactive);
+	List<PicklistItem> getPicklistItems(String picklistNameId, String picklistItemName, String description, Boolean showInactive);
 
 }

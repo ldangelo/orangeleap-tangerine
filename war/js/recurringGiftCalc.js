@@ -2,10 +2,17 @@ Ext.namespace('RecurringGift');
 
 Ext.onReady(function(){
 
-    // hide the total contribution label and input
-    Ext.fly('totalContributionInfo').setVisible(false,false);
-
     RecurringGift.calc = new RecurringGift.GiftCalculator();
+
+    var total = RecurringGift.calc.getTotal();
+
+    if(total > 0) {
+        Ext.fly('totalContribution').update(total);
+        Ext.fly('totalContributionInfo').setVisible(true,false);
+    } else {
+        Ext.fly('totalContributionInfo').setVisible(false,false);
+    }
+
 
     Ext.fly('amountPerGift').on('change', RecurringGift.calculateTotals );
     Ext.fly('frequency').on('change', RecurringGift.calculateTotals );

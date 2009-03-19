@@ -117,9 +117,9 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         assert 7000 == sectionFields.get(0).getFieldOrder();
         FieldDefinition fieldDef = sectionFields.get(0).getFieldDefinition();
         assert fieldDef != null;
-        assert "person.emailMap[home]".equals(fieldDef.getId());
+        assert "person.primaryEmail".equals(fieldDef.getId());
         assert EntityType.person.equals(fieldDef.getEntityType());
-        assert "emailMap[home]".equals(fieldDef.getFieldName());
+        assert "primaryEmail".equals(fieldDef.getFieldName());
         assert "Email".equals(fieldDef.getDefaultLabel());
         assert FieldType.TEXT.equals(fieldDef.getFieldType());
         assert fieldDef.getEntityAttributes() == null;

@@ -32,7 +32,6 @@ public class AddressDataProvider {
         address.setPostalCode("11111");
         address.setStateProvince("state");
         address.setActivationStatus(ActivationType.permanent);
-        address.setAddressType("home");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -42,7 +41,6 @@ public class AddressDataProvider {
         address.setPostalCode("11111");
         address.setStateProvince("state");
         address.setActivationStatus(ActivationType.permanent);
-        address.setAddressType("work");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -52,7 +50,6 @@ public class AddressDataProvider {
         address.setPostalCode("11111");
         address.setStateProvince("state");
         address.setActivationStatus(ActivationType.permanent);
-        address.setAddressType("home");
         addresses.add(address);
 
         // set seasonals to be 10/1 - 3/31
@@ -68,7 +65,6 @@ public class AddressDataProvider {
         address.setSeasonalStartDate(seasonStart.getTime());
         Calendar seasonEnd = new GregorianCalendar(today.get(Calendar.YEAR), 2, 31);
         address.setSeasonalEndDate(seasonEnd.getTime());
-        address.setAddressType("home");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -80,7 +76,6 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.seasonal);
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
-        address.setAddressType("work");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -92,7 +87,6 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.seasonal);
         address.setSeasonalStartDate(seasonStart.getTime());
         address.setSeasonalEndDate(seasonEnd.getTime());
-        address.setAddressType("home");
         addresses.add(address);
 
         // set temporary addresses for 10/15/<today's year> - 11/14/<today's year>
@@ -109,7 +103,6 @@ public class AddressDataProvider {
         Calendar tempEnd = CalendarUtils.getToday(false);
         tempEnd.set(tempEnd.get(Calendar.YEAR), 10, 14);
         address.setTemporaryEndDate(tempEnd.getTime());
-        address.setAddressType("home");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -121,7 +114,6 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.temporary);
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
-        address.setAddressType("work");
         addresses.add(address);
 
         address = new Address(person1.getId());
@@ -133,7 +125,6 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.temporary);
         address.setTemporaryStartDate(tempStart.getTime());
         address.setTemporaryEndDate(tempEnd.getTime());
-        address.setAddressType("home");
         addresses.add(address);
 
         return new Object[][] { new Object[] { site1, person1, addresses } };

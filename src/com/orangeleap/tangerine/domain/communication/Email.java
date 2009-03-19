@@ -5,13 +5,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class Email extends AbstractCommunicationEntity  { //SiteAware, ConstituentInfo { TODO: put back for IBatis
 
     private static final long serialVersionUID = 1L;
 
-    private String emailType = StringConstants.UNKNOWN_LOWER_CASE;
     private String emailAddress;
     private String emailDisplay;
 
@@ -19,21 +17,12 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
 
     public Email(Long personId) {
         this.personId = personId;
-        this.emailType = StringConstants.UNKNOWN_LOWER_CASE;  
         this.activationStatus = ActivationType.permanent;
     }
 
     public Email(Long personId, String emailAddress) {
         this(personId);
         this.emailAddress = emailAddress;
-    }
-
-    public String getEmailType() {
-        return emailType;
-    }
-
-    public void setEmailType(String emailType) {
-        this.emailType = emailType;
     }
 
     public String getEmailAddress() {
@@ -68,24 +57,20 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         }
         Email e = (Email) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getPersonId(), e.getPersonId()).append(emailType, e.getEmailType()).append(activationStatus, e.getActivationStatus()).append(emailAddress, e.getEmailAddress()).append(emailDisplay, e.getEmailDisplay());
+        eb.append(getPersonId(), e.getPersonId()).append(activationStatus, e.getActivationStatus()).append(emailAddress, e.getEmailAddress()).append(emailDisplay, e.getEmailDisplay());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getPersonId()).append(emailType).append(activationStatus).append(emailAddress).append(emailDisplay);
+        hcb.append(getPersonId()).append(activationStatus).append(emailAddress).append(emailDisplay);
         return hcb.hashCode();
     }
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("emailAddress", emailAddress).append("emailDisplay", emailDisplay).append("emailType", emailType).toString();
+        return new ToStringCreator(this).append(super.toString()).append("emailAddress", emailAddress).append("emailDisplay", emailDisplay).toString();
     }
 
-    @Override
-    public String getCommunicationType() {
-        return emailType;
-    }
 }

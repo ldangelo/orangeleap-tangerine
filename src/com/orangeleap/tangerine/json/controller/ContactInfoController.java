@@ -56,7 +56,7 @@ public class ContactInfoController {
             map.put("zip", addr.getPostalCode());
             map.put("comment", (addr.getComments() == null ? "None":addr.getComments()) );
             map.put("active", !addr.isInactive());
-            map.put("primary", false); // not defined yet in domain, so default to false
+            map.put("primary", addr.isPrimary());
             response.add(map);
         }
 
@@ -80,11 +80,12 @@ public class ContactInfoController {
 
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("id", phone.getId());
-            map.put("type", phone.getPhoneType());
             map.put("number", phone.getNumber());
             map.put("comment", (phone.getComments() == null ? "None" : phone.getComments()));
             map.put("active", !phone.isInactive());
-            map.put("primary", false); // not defined yet in domain, so default to false
+            map.put("primary", phone.isPrimary()); 
+            map.put("type", phone.getCustomFieldValue("phoneType"));
+
             response.add(map);
         }
 
@@ -108,11 +109,12 @@ public class ContactInfoController {
 
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("id", email.getId());
-            map.put("type", email.getEmailType());
             map.put("address", email.getEmailAddress());
             map.put("comment", (email.getComments() == null ? "None" : email.getComments()));
             map.put("active", !email.isInactive());
-            map.put("primary", false); // not defined yet in domain, so default to false
+            map.put("primary", email.isPrimary()); 
+            map.put("type", email.getCustomFieldValue("emailType"));
+
             response.add(map);
         }
 

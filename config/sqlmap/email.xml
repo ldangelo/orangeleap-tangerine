@@ -18,7 +18,6 @@
 		<result property="effectiveDate" column="EMAIL_EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
 		<result property="emailAddress" column="EMAIL_ADDRESS" jdbcType="VARCHAR" />
 		<result property="emailDisplay" column="EMAIL_DISPLAY" jdbcType="VARCHAR" />
-		<result property="emailType" column="EMAIL_TYPE" jdbcType="VARCHAR" />
 		<result property="inactive" column="EMAIL_INACTIVE" jdbcType="CHAR" />
 		<result property="receiveMail" column="EMAIL_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="EMAIL_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
@@ -32,7 +31,7 @@
 
     <sql id="EMAIL_COLS_FRAGMENT">
     	e.EMAIL_ID, e.ACTIVATION_STATUS as EMAIL_ACTIVATION_STATUS, e.COMMENT as EMAIL_COMMENT, e.CREATE_DATE as EMAIL_CREATE_DATE, e.EFFECTIVE_DATE as EMAIL_EFFECTIVE_DATE,
-		e.EMAIL_ADDRESS, e.EMAIL_DISPLAY, e.EMAIL_TYPE, e.INACTIVE as EMAIL_INACTIVE, e.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, e.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
+		e.EMAIL_ADDRESS, e.EMAIL_DISPLAY, e.INACTIVE as EMAIL_INACTIVE, e.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, e.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
 		e.SEASONAL_START_DATE as EMAIL_SEASONAL_START_DATE, e.TEMPORARY_END_DATE as EMAIL_TEMPORARY_END_DATE, e.TEMPORARY_START_DATE as EMAIL_TEMPORARY_START_DATE,
 		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.CONSTITUENT_ID as EMAIL_CONSTITUENT_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY
 	</sql>
@@ -60,15 +59,15 @@
 		<include refid="SELECT_EMAIL_FRAGMENT"/>
 		and e.CONSTITUENT_ID = #constituentId#
 		and e.INACTIVE = false
-		order by EMAIL_TYPE, EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
+		order by EMAIL_ACTIVATION_STATUS, e.CREATE_DATE
 	</select>
 
 	<insert id="INSERT_EMAIL" parameterClass="com.orangeleap.tangerine.domain.communication.Email">
 		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
-		EMAIL_ADDRESS, EMAIL_DISPLAY, EMAIL_TYPE, INACTIVE, RECEIVE_CORRESPONDENCE,
+		EMAIL_ADDRESS, EMAIL_DISPLAY, INACTIVE, RECEIVE_CORRESPONDENCE,
 		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
 		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
-		#emailType#, #inactive#, #receiveMail#, #seasonalEndDate#,
+		#inactive#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
 		now(), #personId#, #primary#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -83,7 +82,6 @@
 		EFFECTIVE_DATE = #effectiveDate#,
 		EMAIL_ADDRESS = #emailAddress#,
 		EMAIL_DISPLAY = #emailDisplay#,
-		EMAIL_TYPE = #emailType#,
 		INACTIVE = #inactive#,
 		RECEIVE_CORRESPONDENCE = #receiveMail#,
 		SEASONAL_END_DATE = #seasonalEndDate#,

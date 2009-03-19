@@ -12,7 +12,6 @@ public class Address extends AbstractCommunicationEntity {
     
     private static final long serialVersionUID = 1L;
 
-    private String addressType = StringConstants.UNKNOWN_LOWER_CASE;
     private String addressLine1;
     private String addressLine2;
     private String addressLine3;
@@ -25,7 +24,6 @@ public class Address extends AbstractCommunicationEntity {
 
     public Address(Long constituentId) {
         this.personId = constituentId;
-        this.addressType = StringConstants.UNKNOWN_LOWER_CASE;  // defaulting to 'home' would change the home address on the constituent whenever a new payment type is created with a new address.
         this.activationStatus = ActivationType.permanent;
     }
 
@@ -94,14 +92,6 @@ public class Address extends AbstractCommunicationEntity {
         this.postalCode = postalCode;
     }
 
-    public String getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(String addressType) {
-        this.addressType = addressType;
-    }
-
     public String getShortDisplay() {
         String shortDisplay = null;
         if (isValid()) {
@@ -130,7 +120,7 @@ public class Address extends AbstractCommunicationEntity {
         }
         Address a = (Address) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(personId, a.getPersonId()).append(addressType, a.getAddressType()).append(activationStatus, a.getActivationStatus()).append(addressLine1, a.getAddressLine1()).append(addressLine2, a.getAddressLine2()).append(addressLine3, a.getAddressLine3()).append(city, a.getCity())
+        eb.append(personId, a.getPersonId()).append(activationStatus, a.getActivationStatus()).append(addressLine1, a.getAddressLine1()).append(addressLine2, a.getAddressLine2()).append(addressLine3, a.getAddressLine3()).append(city, a.getCity())
         .append(country, a.getCountry()).append(stateProvince, a.getStateProvince()).append(postalCode, a.getPostalCode());
         return eb.isEquals();
     }
@@ -138,18 +128,14 @@ public class Address extends AbstractCommunicationEntity {
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(personId).append(addressType).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
+        hcb.append(personId).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
         return hcb.hashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("addressLine1", addressLine1).append("addressLine2", addressLine2).append("addressLine3", addressLine3).append("city", city).
-            append("stateProvince", stateProvince).append("postalCode", postalCode).append("country", country).append("addressType", addressType).toString();
+            append("stateProvince", stateProvince).append("postalCode", postalCode).append("country", country).toString();
     }
 
-    @Override
-    public String getCommunicationType() {
-        return addressType;
-    }
 }

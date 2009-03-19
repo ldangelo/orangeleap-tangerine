@@ -71,7 +71,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         
         assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;
         assert "3726 THIRD ST".equals(gift.getSelectedAddress().getAddressLine1());
-        assert "home".equals(gift.getSelectedAddress().getAddressType());
         assert "Dallas".equals(gift.getSelectedAddress().getCity());
         assert "TX".equals(gift.getSelectedAddress().getStateProvince());
         assert "75554".equals(gift.getSelectedAddress().getPostalCode());
@@ -81,14 +80,12 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         
         assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == 100L;
         assert "214-443-6829".equals(gift.getSelectedPhone().getNumber());
-        assert "home".equals(gift.getSelectedPhone().getPhoneType());
         assert gift.getSelectedPhone().getCreateDate() != null;
         assert gift.getSelectedPhone().getUpdateDate() != null;
         assert 100L == gift.getSelectedPhone().getPersonId();
         
         assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == 100L;
         assert "hobo@gmail.com".equals(gift.getSelectedEmail().getEmailAddress());
-        assert "home".equals(gift.getSelectedEmail().getEmailType());
         assert gift.getSelectedEmail().isInactive() == false;
         
         assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == null;
@@ -315,7 +312,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     
                     assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == 200L;
                     assert "samsam@yahoo.com".equals(gift.getSelectedEmail().getEmailAddress());
-                    assert "work".equals(gift.getSelectedEmail().getEmailType());
                     assert gift.getSelectedEmail().isInactive() == false;
 
                     assert gift.getDistributionLines() != null && gift.getDistributionLines().size() == 4;
@@ -390,7 +386,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     
                     assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;
                     assert "3726 THIRD ST".equals(gift.getSelectedAddress().getAddressLine1());
-                    assert "home".equals(gift.getSelectedAddress().getAddressType());
                     assert "Dallas".equals(gift.getSelectedAddress().getCity());
                     assert "TX".equals(gift.getSelectedAddress().getStateProvince());
                     assert "75554".equals(gift.getSelectedAddress().getPostalCode());

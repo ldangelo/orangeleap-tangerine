@@ -45,7 +45,6 @@ public class PersonDataProvider {
         address1.setAddressLine1("addressLine1");
         address1.setAddressLine2("addressLine2");
         address1.setAddressLine3("addressLine3");
-        address1.setAddressType("home");
         address1.setCity("city");
         address1.setCountry("US");
         address1.setPostalCode("postalCode");
@@ -55,7 +54,6 @@ public class PersonDataProvider {
         address2.setAddressLine1("addressLine1");
         address2.setAddressLine2("addressLine2");
         address2.setAddressLine3("addressLine3");
-        address2.setAddressType("secondaryAddress");
         address2.setCity("city");
         address2.setCountry("US");
         address2.setPostalCode("postalCode");
@@ -76,11 +74,9 @@ public class PersonDataProvider {
 
         Phone phone1 = new Phone(person.getId());
         phone1.setNumber("111-222-3333");
-        phone1.setPhoneType("homePhone");
 
         Phone phone2 = new Phone(person.getId());
         phone2.setNumber("111-222-3333");
-        phone2.setPhoneType("workPhone");
 
         return new Object[][] { new Object[] { site, person, phone1, phone2 } };
     }

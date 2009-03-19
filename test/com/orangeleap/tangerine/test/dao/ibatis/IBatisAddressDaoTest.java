@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.AddressDao;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisAddressDaoTest extends AbstractIBatisTest {
     
@@ -41,7 +40,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "NY".equals(readAddress.getStateProvince());
         assert "20211".equals(readAddress.getPostalCode());
         assert "USA".equals(readAddress.getCountry());
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readAddress.getAddressType());
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;
@@ -70,7 +68,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "USA".equals(readAddress.getCountry());
         assert address.getId().equals(readAddress.getId());
         assert 300L == readAddress.getPersonId();
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readAddress.getAddressType());
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;
@@ -92,7 +89,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert address != null;
         assert 100L == address.getId();
         assert "3726 THIRD ST".equals(address.getAddressLine1());
-        assert "home".equals(address.getAddressType());
         assert "Dallas".equals(address.getCity());
         assert "TX".equals(address.getStateProvince());
         assert "75554".equals(address.getPostalCode());
@@ -127,7 +123,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
                 assert "US".equals(address.getCountry());
                 assert address.getAddressLine2() == null;
                 assert address.getAddressLine3() == null;
-                assert "home".equals(address.getAddressType());
             }
             switch (address.getId().intValue()) {
                 case 100:
@@ -184,7 +179,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
                 assert "US".equals(address.getCountry());
                 assert address.getAddressLine2() == null;
                 assert address.getAddressLine3() == null;
-                assert "home".equals(address.getAddressType());
             }
             switch (address.getId().intValue()) {
                 case 100:

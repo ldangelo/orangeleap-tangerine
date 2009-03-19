@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.EmailDao;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisEmailDaoTest extends AbstractIBatisTest {
     
@@ -34,7 +33,6 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email.isReceiveMail() == false;
         assert ActivationType.permanent.equals(email.getActivationStatus());
         assert "hobo@gmail.com".equals(email.getEmailAddress());
-        assert "home".equals(email.getEmailType());
         assert email.isInactive() == false;
     }
     
@@ -42,7 +40,6 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email != null;
         assert 300L == email.getId();
         assert "brown@aol.com".equals(email.getEmailAddress());
-        assert "other".equals(email.getEmailType());
         assert email.getEmailDisplay() == null;
         assert email.getCreateDate() != null;
         assert email.getUpdateDate() != null;
@@ -70,7 +67,6 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email.getId().equals(readEmail.getId());
         assert 300L == readEmail.getPersonId();
         assert "bow@wow.com".equals(readEmail.getEmailAddress());
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readEmail.getEmailType());
         assert ActivationType.permanent.equals(readEmail.getActivationStatus());
         assert readEmail.getEmailDisplay() == null;
         assert readEmail.getCreateDate() != null;
@@ -85,7 +81,6 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert readEmail.getTemporaryEndDate() == null;
         
         // Update
-        email.setEmailType("trash");
         email.setActivationStatus(ActivationType.temporary);
         email.setTemporaryStartDate(new Date());
         email.setTemporaryEndDate(new Date());
@@ -93,7 +88,6 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         email = emailDao.maintainEntity(email);
         readEmail = emailDao.readById(email.getId());
         assert readEmail != null;
-        assert "trash".equals(readEmail.getEmailType());
         assert ActivationType.temporary.equals(readEmail.getActivationStatus());
         assert readEmail.getTemporaryStartDate() != null;
         assert readEmail.getTemporaryEndDate() != null;
@@ -133,17 +127,14 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
             switch (email.getId().intValue()) {
                 case 100:
                     assert "hobo@gmail.com".equals(email.getEmailAddress());
-                    assert "home".equals(email.getEmailType());
                     assert email.isInactive() == false;
                     break;
                 case 200:
                     assert "samsam@yahoo.com".equals(email.getEmailAddress());
-                    assert "work".equals(email.getEmailType());
                     assert email.isInactive() == false;
                     break;
                 case 300:
                     assert "brown@aol.com".equals(email.getEmailAddress());
-                    assert "other".equals(email.getEmailType());
                     assert email.isInactive() == true;
                     break;
                 default:
@@ -170,12 +161,10 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
             switch (email.getId().intValue()) {
                 case 100:
                     assert "hobo@gmail.com".equals(email.getEmailAddress());
-                    assert "home".equals(email.getEmailType());
                     assert email.isInactive() == false;
                     break;
                 case 200:
                     assert "samsam@yahoo.com".equals(email.getEmailAddress());
-                    assert "work".equals(email.getEmailType());
                     assert email.isInactive() == false;
                     break;
                 default:

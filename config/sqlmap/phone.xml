@@ -18,7 +18,6 @@
 		<result property="effectiveDate" column="PHONE_EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
 		<result property="inactive" column="PHONE_INACTIVE" jdbcType="CHAR" />
 		<result property="number" column="PHONE_NUMBER" jdbcType="VARCHAR" />
-		<result property="phoneType" column="PHONE_TYPE" jdbcType="VARCHAR" />
 		<result property="provider" column="PHONE_PROVIDER" jdbcType="VARCHAR" />
 		<result property="receiveMail" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="PHONE_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
@@ -34,7 +33,7 @@
 	<sql id="PHONE_COLS_FRAGMENT">
 		ph.PHONE_ID, ph.ACTIVATION_STATUS as PHONE_ACTIVATION_STATUS, ph.COMMENT as PHONE_COMMENT, 
 		ph.CREATE_DATE as PHONE_CREATE_DATE, ph.EFFECTIVE_DATE as PHONE_EFFECTIVE_DATE,
-		ph.INACTIVE as PHONE_INACTIVE, ph.NUMBER as PHONE_NUMBER, ph.PHONE_TYPE, ph.PROVIDER as PHONE_PROVIDER, 
+		ph.INACTIVE as PHONE_INACTIVE, ph.NUMBER as PHONE_NUMBER, ph.PROVIDER as PHONE_PROVIDER, 
 		ph.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, ph.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
 		ph.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, ph.SMS as PHONE_SMS, ph.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
 		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.CONSTITUENT_ID as PHONE_CONSTITUENT_ID,
@@ -64,15 +63,15 @@
 		<include refid="SELECT_PHONE_FRAGMENT"/>
 		and ph.CONSTITUENT_ID = #constituentId#
 		and ph.INACTIVE = false
-		order by PHONE_TYPE, PHONE_ACTIVATION_STATUS, ph.CREATE_DATE
+		order by PHONE_ACTIVATION_STATUS, ph.CREATE_DATE
 	</select>
 
 	<insert id="INSERT_PHONE" parameterClass="com.orangeleap.tangerine.domain.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
-		NUMBER, PHONE_TYPE, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
+		NUMBER, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
 		values (#activationStatus#, #comments#, now(),
-		#effectiveDate#, #inactive#, #number#, #phoneType#,
+		#effectiveDate#, #inactive#, #number#, 
 		#provider#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
 		#temporaryStartDate#, now(), #personId#, #primary#)
@@ -88,7 +87,6 @@
 		EFFECTIVE_DATE = #effectiveDate#,
 		INACTIVE = #inactive#,
 		NUMBER = #number#,
-		PHONE_TYPE = #phoneType#,
 		PROVIDER = #provider#,
 		RECEIVE_CORRESPONDENCE = #receiveMail#,
 		SEASONAL_END_DATE = #seasonalEndDate#,

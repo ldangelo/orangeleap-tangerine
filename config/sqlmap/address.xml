@@ -16,7 +16,6 @@
         <result property="addressLine1" column="ADDRESS_LINE_1" jdbcType="VARCHAR"/>
         <result property="addressLine2" column="ADDRESS_LINE_2" jdbcType="VARCHAR"/>
         <result property="addressLine3" column="ADDRESS_LINE_3" jdbcType="VARCHAR"/>
-        <result property="addressType" column="ADDRESS_TYPE" jdbcType="VARCHAR"/>
         <result property="city" column="ADDRESS_CITY" jdbcType="VARCHAR"/>
         <result property="comments" column="ADDRESS_COMMENT" jdbcType="VARCHAR"/>
         <result property="country" column="ADDRESS_COUNTRY" jdbcType="VARCHAR"/>
@@ -37,7 +36,7 @@
 
     <sql id="ADDRESS_COLS_FRAGMENT">
         addr.ADDRESS_ID, addr.ACTIVATION_STATUS as ADDRESS_ACTIVATION_STATUS, addr.ADDRESS_LINE_1, addr.ADDRESS_LINE_2, addr.ADDRESS_LINE_3,
-        addr.ADDRESS_TYPE, addr.CITY as ADDRESS_CITY, addr.COMMENT as ADDRESS_COMMENT, addr.COUNTRY as ADDRESS_COUNTRY, 
+        addr.CITY as ADDRESS_CITY, addr.COMMENT as ADDRESS_COMMENT, addr.COUNTRY as ADDRESS_COUNTRY, 
         addr.CREATE_DATE as ADDRESS_CREATE_DATE, addr.EFFECTIVE_DATE as ADDRESS_EFFECTIVE_DATE, addr.INACTIVE as ADDRESS_INACTIVE, 
         addr.POSTAL_CODE as ADDRESS_POSTAL_CODE, addr.RECEIVE_CORRESPONDENCE as ADDRESS_RECEIVE_CORRESPONDENCE, addr.SEASONAL_END_DATE as ADDRESS_SEASONAL_END_DATE, 
         addr.SEASONAL_START_DATE as ADDRESS_SEASONAL_START_DATE, addr.STATE_PROVINCE as ADDRESS_STATE_PROVINCE,
@@ -68,16 +67,16 @@
 		<include refid="SELECT_ADDRESS_FRAGMENT"/>
 		and addr.CONSTITUENT_ID = #constituentId#
 		and addr.INACTIVE = false
-		order by ADDRESS_TYPE, ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
+		order by ADDRESS_ACTIVATION_STATUS, addr.CREATE_DATE
 	</select>
  
     <insert id="INSERT_ADDRESS" parameterClass="com.orangeleap.tangerine.domain.communication.Address">
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
-        ADDRESS_LINE_3, ADDRESS_TYPE, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
+        ADDRESS_LINE_3, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
         TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
         values (#activationStatus#, #addressLine1#,
-        #addressLine2#, #addressLine3#, #addressType#, #city#,
+        #addressLine2#, #addressLine3#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
         #inactive#, #postalCode#, #receiveMail#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
@@ -95,7 +94,6 @@
         ADDRESS_LINE_1 = #addressLine1#,
         ADDRESS_LINE_2 = #addressLine2#,
         ADDRESS_LINE_3 = #addressLine3#,
-        ADDRESS_TYPE = #addressType#,
         CITY = #city#,
         COMMENT = #comments#,
         COUNTRY = #country#,

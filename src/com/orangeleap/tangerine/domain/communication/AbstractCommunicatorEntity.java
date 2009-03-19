@@ -5,7 +5,6 @@
 package com.orangeleap.tangerine.domain.communication;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,13 +70,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
         this.addresses = addresses;
     }
 
-    public Map<String, Address> getAddressMap() {
-        if (addressMap == null) {
-            addressMap = buildMap(getAddresses(), Address.class);
-        }
-        return addressMap;
-    }
-
     public List<Email> getEmails() {
         if (emails == null) {
             emails = new ArrayList<Email>();
@@ -87,13 +79,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
 
     public void setEmails(List<Email> emails) {
         this.emails = emails;
-    }
-
-    public Map<String, Email> getEmailMap() {
-        if (emailMap == null) {
-            emailMap = buildMap(getEmails(), Email.class);
-        }
-        return emailMap;
     }
 
     public List<Phone> getPhones() {
@@ -107,41 +92,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
         this.phones = phones;
     }
 
-    public Map<String, Phone> getPhoneMap() {
-        if (phoneMap == null) {
-            phoneMap = buildMap(getPhones(), Phone.class);
-        }
-        return phoneMap;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends AbstractCommunicationEntity> Map<String, T> buildMap(List<T> masterList, final Class clazz) {
-        
-    	Map<String, T> map = new LinkedHashMap<String, T>() {
-        	  public T get(Object key) {
-        	        T o = super.get(key);
-        	        if (o == null) {
-        	            o = getNew();
-        	            super.put((String)key, o);
-        	        }
-        	        return o;
-        	  }
-        	  private T getNew() {
-        		  try {
-        			  return (T)clazz.newInstance();
-        		  } catch (Exception e) {
-        			  return null;
-        		  }
-        	  }
-        };
-        
-        if (masterList != null) {
-            for (AbstractCommunicationEntity entity : masterList) {
-                map.put(entity.getCommunicationType(), (T) entity);
-            }
-        }
-        return map;
-    }
 
 	public void setPrimaryAddress(Address primaryAddress) {
 		this.primaryAddress = primaryAddress;

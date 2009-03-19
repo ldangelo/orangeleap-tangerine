@@ -195,7 +195,6 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
 
         assert commitment.getSelectedEmail() != null && commitment.getSelectedEmail().getId() == 100L;
         assert "hobo@gmail.com".equals(commitment.getSelectedEmail().getEmailAddress());
-        assert "home".equals(commitment.getSelectedEmail().getEmailType());
         assert commitment.getSelectedEmail().isInactive() == false;
 
         assert commitment.getSelectedPaymentSource() != null && commitment.getSelectedPaymentSource().getId() == 100L;
@@ -273,7 +272,6 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
 
         assert commitment.getSelectedAddress() != null && commitment.getSelectedAddress().getId() == 100L;
         assert "3726 THIRD ST".equals(commitment.getSelectedAddress().getAddressLine1());
-        assert "home".equals(commitment.getSelectedAddress().getAddressType());
         assert "Dallas".equals(commitment.getSelectedAddress().getCity());
         assert "TX".equals(commitment.getSelectedAddress().getStateProvince());
         assert "75554".equals(commitment.getSelectedAddress().getPostalCode());
@@ -283,7 +281,6 @@ public class IBatisCommitmentDaoTest extends AbstractIBatisTest {
         
         assert commitment.getSelectedPhone() != null && commitment.getSelectedPhone().getId() == 100L;
         assert "214-443-6829".equals(commitment.getSelectedPhone().getNumber());
-        assert "home".equals(commitment.getSelectedPhone().getPhoneType());
         assert commitment.getSelectedPhone().getCreateDate() != null;
         assert commitment.getSelectedPhone().getUpdateDate() != null;
         assert 100L == commitment.getSelectedPhone().getPersonId();

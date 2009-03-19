@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.PhoneDao;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisPhoneDaoTest extends AbstractIBatisTest {
     
@@ -37,7 +36,6 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
         assert "911-911-9110".equals(readPhone.getNumber());
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readPhone.getPhoneType());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
@@ -60,7 +58,6 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.getId() > 0;
         assert phone.getId().equals(readPhone.getId());
         assert 300L == readPhone.getPersonId();
-        assert StringConstants.UNKNOWN_LOWER_CASE.equals(readPhone.getPhoneType());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
@@ -82,7 +79,6 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone != null;
         assert 100L == phone.getId();
         assert "214-443-6829".equals(phone.getNumber());
-        assert "home".equals(phone.getPhoneType());
         assert phone.getCreateDate() != null;
         assert phone.getUpdateDate() != null;
         assert 100L == phone.getPersonId();
@@ -115,27 +111,21 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             switch (phone.getId().intValue()) {
                 case 100:
                     assert "214-443-6829".equals(phone.getNumber());
-                    assert "home".equals(phone.getPhoneType());
                     break;
                 case 200:
                     assert "214-105-6590".equals(phone.getNumber());
-                    assert "home".equals(phone.getPhoneType());
                     break;
                 case 300:
                     assert "214-911-6681".equals(phone.getNumber());
-                    assert "work".equals(phone.getPhoneType());
                     break;
                 case 400:
                     assert "214-129-9781".equals(phone.getNumber());
-                    assert "work".equals(phone.getPhoneType());
                     break;
                 case 500:
                     assert "214-548-0929".equals(phone.getNumber());
-                    assert "mobile".equals(phone.getPhoneType());
                     break;
                 case 600:
                     assert "214-878-1663".equals(phone.getNumber());
-                    assert "mobile".equals(phone.getPhoneType());
                     break;
                 default:
                     assert false == true;
@@ -159,7 +149,6 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             assert phone.isInactive() == false;
             assert ActivationType.permanent.equals(phone.getActivationStatus());
             assert "214-113-2542".equals(phone.getNumber());
-            assert "home".equals(phone.getPhoneType());
         }
     }
     

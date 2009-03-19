@@ -55,7 +55,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testFieldRequired" })
     public void testReadFieldRequiredHasSecondary() throws Exception {
-        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldRequired fieldReq = fieldDao.readFieldRequired("person.contactInfo", "person.primaryEmail", "email.emailAddress");
         assert fieldReq != null;
         assert fieldReq.getSite() != null && "company1".equals(fieldReq.getSite().getName());
         assert fieldReq.getFieldDefinition() != null;
@@ -63,9 +63,9 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert fieldReq.isRequired();
         assert "person.contactInfo".equals(fieldReq.getSectionName());
         
-        assert "person.emailMap[home]".equals(fieldReq.getFieldDefinition().getId());
+        assert "person.primaryEmail".equals(fieldReq.getFieldDefinition().getId());
         assert EntityType.person.equals(fieldReq.getFieldDefinition().getEntityType());
-        assert "emailMap[home]".equals(fieldReq.getFieldDefinition().getFieldName());
+        assert "primaryEmail".equals(fieldReq.getFieldDefinition().getFieldName());
         assert "Email".equals(fieldReq.getFieldDefinition().getDefaultLabel());
         assert FieldType.TEXT.equals(fieldReq.getFieldDefinition().getFieldType());
         assert fieldReq.getFieldDefinition().getEntityAttributes() == null;
@@ -112,7 +112,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testFieldCondition" })
     public void testReadFieldValidationConditions() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.primaryEmail", "email.emailAddress");
         assert fieldVal != null;
         assert fieldVal.getSite() != null && "company1".equals(fieldVal.getSite().getName());
         assert fieldVal.getFieldDefinition() != null;
@@ -123,7 +123,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert fieldVal.getFieldConditions().size() == 1;
         for (FieldCondition fieldCond : fieldVal.getFieldConditions()) {
             assert fieldCond.getDependentFieldDefinition() != null;
-            assert "person.emailMap[home]".equals(fieldCond.getDependentFieldDefinition().getId());
+            assert "person.primaryEmail".equals(fieldCond.getDependentFieldDefinition().getId());
             assert fieldCond.getDependentSecondaryFieldDefinition() != null;
             assert "email.userCreated".equals(fieldCond.getDependentSecondaryFieldDefinition().getId());
             assert "userCreated".equals(fieldCond.getDependentSecondaryFieldDefinition().getFieldName());
@@ -139,7 +139,7 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testFieldValidation" })
     public void testReadFieldValidationHasSecondary() throws Exception {
-        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.emailMap[home]", "email.emailAddress");
+        FieldValidation fieldVal = fieldDao.readFieldValidation("person.contactInfo", "person.primaryEmail", "email.emailAddress");
         assert fieldVal != null;
         assert fieldVal.getSite() != null && "company1".equals(fieldVal.getSite().getName());
         assert fieldVal.getFieldDefinition() != null;
@@ -147,9 +147,9 @@ public class IBatisFieldDaoTest extends AbstractIBatisTest {
         assert "person.contactInfo".equals(fieldVal.getSectionName());
         assert "extensions:isEmail".equals(fieldVal.getRegex());
         
-        assert "person.emailMap[home]".equals(fieldVal.getFieldDefinition().getId());
+        assert "person.primaryEmail".equals(fieldVal.getFieldDefinition().getId());
         assert EntityType.person.equals(fieldVal.getFieldDefinition().getEntityType());
-        assert "emailMap[home]".equals(fieldVal.getFieldDefinition().getFieldName());
+        assert "primaryEmail".equals(fieldVal.getFieldDefinition().getFieldName());
         assert "Email".equals(fieldVal.getFieldDefinition().getDefaultLabel());
         assert FieldType.TEXT.equals(fieldVal.getFieldDefinition().getFieldType());
         assert fieldVal.getFieldDefinition().getEntityAttributes() == null;

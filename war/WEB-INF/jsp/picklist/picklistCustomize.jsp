@@ -10,7 +10,7 @@
 	
 		<div >
 		<form:form method="post" commandName="map" >
-		    <h4>Edit default custom fields for picklist &quot;<c:out value='${picklist.picklistDesc}'/>&quot;</h4><br/>
+		    <h4>Edit custom fields for picklist &quot;<c:out value='${picklist.picklistDesc}'/>&quot;</h4><br/>
 			<table class="customFields">
 			<c:forEach var="field" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">

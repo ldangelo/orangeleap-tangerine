@@ -93,7 +93,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
 	private String getGLCode(Map<String, String> map) {
 		StringBuilder sb = new StringBuilder();
 		for (Map.Entry<String, String> e : map.entrySet()) {
-			if (e.getValue().trim().length() > 0) {
+			if (e.getKey().matches("^[0-9]+-.*") && e.getValue().trim().length() > 0) {
 				if (sb.length() > 0) sb.append("-");
 				sb.append(e.getValue());
 			}

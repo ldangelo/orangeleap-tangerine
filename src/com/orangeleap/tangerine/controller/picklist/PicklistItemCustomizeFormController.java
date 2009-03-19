@@ -70,9 +70,12 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
     private void addDefaultFields(Picklist picklist, Map<String, String> map) {
     	for (Map.Entry<String, CustomField> e : picklist.getCustomFieldMap().entrySet()) {
     		String name = e.getValue().getName();
-    		String value = e.getValue().getValue();
-    		if (value.equalsIgnoreCase(BLANK)) value = "";
-    		map.put(name, value);
+    		if (name.startsWith(ITEM_TEMPLATE)) {
+    			name = name.substring(ITEM_TEMPLATE.length());
+	    		String value = e.getValue().getValue();
+	    		if (value.equalsIgnoreCase(BLANK)) value = "";
+	    		map.put(name, value);
+    		}
     	}
     }
 

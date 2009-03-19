@@ -12,7 +12,7 @@
 			<table class="customFields">
 			<c:forEach var="field" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">
-				<td><input id="cfname-${status.count}-key" name="cfname[${status.count}]" size="16" value="<c:out value='${field.key}'/>" /></td>
+				<td><input id="cfname-${status.count}-key" name="cfname[${status.count}]" size="32" value="<c:out value='${field.key}'/>" /></td>
 				<td><input id="cfvalue-${status.count}-value" name="cfvalue[${status.count}]" size="60" value="<c:out value='${field.value}'/>"  /></td>
 			  </tr>
 			</c:forEach>

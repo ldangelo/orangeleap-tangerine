@@ -12,7 +12,7 @@
 			<table class="customFields">
 			<c:forEach var="field" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">
-				<td><input id="cfname-${status.count}-key" name="cfname[${status.count}]" size="16" value="<c:out value='${field.key}'/>" <c:if test="${fn:startsWith(field.key, 'AccountString')}">readonly style="background-color:#DDDDDD" </c:if> /></td>
+				<td><input id="cfname-${status.count}-key" name="cfname[${status.count}]" size="32" value="<c:out value='${field.key}'/>" <c:if test="${fn:startsWith(field.key, 'AccountString')}">readonly style="background-color:#DDDDDD" </c:if> /></td>
 				<td><input id="cfvalue-${status.count}-value" name="cfvalue[${status.count}]" size="60" value="<c:out value='${field.value}'/>" <c:if test="${fn:startsWith(field.key, 'AccountString')}">readonly style="background-color:#DDDDDD" </c:if> /></td>
 			  </tr>
 			</c:forEach>

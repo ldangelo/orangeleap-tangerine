@@ -21,8 +21,12 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
-	public final static String GL_ACCOUNT_CODE = "GLAccountCode";
 	public static final String BLANK = "<blank>";
+	public static final String ITEM_TEMPLATE = "item-template-";
+	public final static String GL_ACCOUNT_CODE = "GLAccountCode";
+	public static final String PARENT_LIST = "parentList";
+	public static final String PARENT_VALUE = "parentValue";
+	
 	
 
     @Resource(name="picklistItemService")

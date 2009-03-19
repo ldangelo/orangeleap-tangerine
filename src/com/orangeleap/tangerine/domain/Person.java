@@ -359,7 +359,9 @@ public class Person extends AbstractCommunicatorEntity {
     @Override
     public void setDefaults() {
         super.setDefaults();
-        setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
+        if (isOrganization()) {
+            setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
+        }
     }
 
     @Override

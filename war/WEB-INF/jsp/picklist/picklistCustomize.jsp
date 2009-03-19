@@ -5,8 +5,10 @@
 	<tiles:putAttribute name="secondaryNav" value="Codes" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-	
+
 		<div class="simplebox">
+	
+		<div >
 		<form:form method="post" commandName="map" >
 		    <h4>Edit default custom fields for picklist &quot;<c:out value='${picklist.picklistDesc}'/>&quot;</h4><br/>
 			<table class="customFields">
@@ -21,5 +23,16 @@
 			<input type="button" value="Add" class="saveButton" onclick="PicklistCustomizer.addNewRow();" />
 			<input type="submit" value="Save" class="saveButton" />
 		</form:form>
+		</div>
+		
+		<br/>
+ 		<c:url var="picklistItemUrl" value="picklistItems.htm">
+ 			<c:param name="picklistNameId" value="${picklist.picklistNameId}" />
+		</c:url>
+		<strong><a class="action" href="${picklistItemUrl}">&laquo;Back</a></strong>
+
+		</div>
+		
+		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

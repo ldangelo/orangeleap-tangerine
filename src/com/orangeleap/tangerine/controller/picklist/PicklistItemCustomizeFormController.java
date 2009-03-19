@@ -35,6 +35,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
 		
 		if (stringmap.size() == 0) stringmap.put("", "");
         request.setAttribute("map", stringmap);
+        request.setAttribute("picklist", picklist);
         request.setAttribute("picklistItem", item);
         return super.showForm(request, response, errors, controlModel);
     }
@@ -62,6 +63,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
 		
         if (stringmap.size() == 0) stringmap.put("", "");
 		mav.addObject("map", stringmap);
+		mav.addObject("picklist", picklist);
 		mav.addObject("picklistItem", item);
         return mav;
         

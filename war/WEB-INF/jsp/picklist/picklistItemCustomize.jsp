@@ -7,6 +7,8 @@
 		<div class="content760 mainForm">
 	
 		<div class="simplebox">
+
+		<div >
 		<form:form method="post" commandName="map" >
 		    <h4>Edit custom fields for picklist &quot;<c:out value='${param.picklistDesc}'/>&quot;, item name &quot;<c:out value='${picklistItem.itemName}'/>&quot;, value &quot;<c:out value='${picklistItem.defaultDisplayValue}'/>&quot;</h4><br/>
 			<table class="customFields">
@@ -21,5 +23,16 @@
 			<input type="button" value="Add" class="saveButton" onclick="PicklistCustomizer.addNewRow();" />
 			<input type="submit" value="Save" class="saveButton" />
 		</form:form>
+		</div>
+		
+		<br/>
+ 		<c:url var="picklistItemUrl" value="picklistItems.htm">
+ 			<c:param name="picklistNameId" value="${picklist.picklistNameId}" />
+		</c:url>
+		<strong><a class="action" href="${picklistItemUrl}">&laquo;Back</a></strong>
+
+		</div>
+		
+		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

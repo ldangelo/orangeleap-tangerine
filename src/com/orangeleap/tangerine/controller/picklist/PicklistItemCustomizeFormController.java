@@ -36,8 +36,8 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
 
-        Picklist picklist = picklistItemService.getPicklist(picklistId);
-        PicklistItem item = getPicklistItem(picklist, picklistItemId);
+        Picklist picklist = picklistItemService.getPicklistById(new Long(picklistId));
+        PicklistItem item = getPicklistItem(picklist, new Long(picklistItemId));
         
         Map<String, String> stringmap = getMap(item.getCustomFieldMap());
 		if (stringmap.size() < 2) {
@@ -57,8 +57,8 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
         
-        Picklist picklist = picklistItemService.getPicklist(picklistId);
-        PicklistItem item = getPicklistItem(picklist, picklistItemId);
+        Picklist picklist = picklistItemService.getPicklistById(new Long(picklistId));
+        PicklistItem item = getPicklistItem(picklist, new Long(picklistItemId));
      
         Map<String, String> stringmap = getMap(request);
         if (isGLCoded(picklist)) {
@@ -96,11 +96,11 @@ public class PicklistItemCustomizeFormController extends SimpleFormController {
         return "";
     }
 	
-	private PicklistItem getPicklistItem(Picklist picklist, String picklistItemId) {
+	private PicklistItem getPicklistItem(Picklist picklist, Long picklistItemId) {
 	        if (picklist != null) {
 	        	if (picklistItemId != null) {
 		            for (PicklistItem item : picklist.getPicklistItems()) {
-		            	if (picklistItemId.equals(item.getId().toString())) {
+		            	if (picklistItemId.equals(item.getId())) {
 		            		return picklistItemService.getPicklistItem(item.getId());
 		            	}
 		            }

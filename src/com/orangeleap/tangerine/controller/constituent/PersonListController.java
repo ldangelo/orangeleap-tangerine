@@ -1,11 +1,10 @@
 package com.orangeleap.tangerine.controller.constituent;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 /**
  * Fairly empty controller backing the page which contains the list of all

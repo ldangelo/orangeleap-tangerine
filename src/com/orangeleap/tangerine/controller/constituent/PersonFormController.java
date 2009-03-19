@@ -12,9 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.util.StringConstants;
 

@@ -22,7 +22,6 @@ import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.service.SiteService;
 
 /*
  * Manages picklist items for site.
@@ -56,7 +55,6 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklistById(Long picklistId) {
-		
 		return picklistDao.readPicklistById(picklistId);
 	}
 	
@@ -195,6 +193,17 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+	public Picklist maintainPicklist(Picklist picklist) {
+    	validate(picklist);
+    	return picklistDao.maintainPicklist(picklist);
+    }
+    
+    private void validate(Picklist picklist) {
+    	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot update non-site-specific entry for Picklist "+picklist.getId());
+    }
+	
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
     	
     	if (StringUtils.trimToNull(picklistItem.getItemName()) == null || StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
@@ -205,8 +214,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	}
 
     	Picklist picklist = picklistDao.readPicklistById(picklistItem.getPicklistId());
-    	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot update non-site-specific entry for PicklistItem "+picklistItem.getId());
-    	
+    	validate(picklist);
     	
 		logger.info("Updating "+picklist.getSite().getName()+" site-specific copy of picklist item "+picklistItem.getItemName());
 

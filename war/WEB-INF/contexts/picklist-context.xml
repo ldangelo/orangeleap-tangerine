@@ -25,12 +25,18 @@
         <property name="successView" value="picklist/picklistItemCustomize" />
     </bean>
 
+	<bean id="picklistCustomize" class="com.orangeleap.tangerine.controller.picklist.PicklistCustomizeFormController">
+        <property name="formView" value="picklist/picklistCustomize" />
+        <property name="successView" value="picklist/picklistCustomize" />
+    </bean>
+
     <bean id="picklistItemUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/picklistItemHelper.htm">picklistItemHelper</prop>
                 <prop key="/picklistItem.htm">picklistItem</prop>
                 <prop key="/picklistItems.htm">picklistItems</prop>
+                <prop key="/picklistCustomize.htm">picklistCustomize</prop>
                 <prop key="/picklistItemCustomize.htm">picklistItemCustomize</prop>
 			</props>
 		</property>

@@ -20,6 +20,7 @@
  							     <c:param name="picklistId" value="${picklistItem.picklistId}" />
  							     <c:param name="picklistItemId" value="${picklistItem.id}" />
  							     <c:param name="itemName" value="${picklistItemName}" />
+ 							     <c:param name="picklistDesc" value="${picklistDesc}" />
 							      <c:param name="view" value="customize" />
 							    </c:url>
 							<td class="action"><a class="editInPlace" href="${picklistItemCustomizeUrl}">+</a></td>

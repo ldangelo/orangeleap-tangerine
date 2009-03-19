@@ -13,6 +13,8 @@ public interface PicklistItemService {
 
 	Picklist getPicklistById(Long picklistId);
 
+	Picklist maintainPicklist(Picklist picklist);
+	
 	PicklistItem maintainPicklistItem(PicklistItem picklistItem);
 
 	PicklistItem getPicklistItem(String picklistId, String picklistItemName);

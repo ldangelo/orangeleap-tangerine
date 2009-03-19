@@ -81,6 +81,7 @@ public class PicklistItemHelperController extends ParameterizableViewController 
     	
         ModelAndView mav = new ModelAndView(super.getViewName());
         mav.addObject("picklistItems", filteredPicklistItems);
+        mav.addObject("picklistDesc", picklist.getPicklistDesc());
         return mav;
     }
 }

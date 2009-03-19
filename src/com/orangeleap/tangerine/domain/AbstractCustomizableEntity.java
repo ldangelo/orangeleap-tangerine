@@ -107,4 +107,15 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             customField.setValue(value);
         }
     }
+    
+    /**
+     * Default set the custom field to a specified value if an existing value is null.
+     * @param fieldName the name of the Custom Field
+     * @param value the value of the custom field
+     */
+    public void setDefaultCustomFieldValue(String fieldName, String value) {
+        if (getCustomFieldValue(fieldName) == null) {
+            setCustomFieldValue(fieldName, value);
+        }
+    }
 }

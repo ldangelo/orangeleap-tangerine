@@ -127,6 +127,15 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     public void prePersist() {
         // no-op in the base implementation
     }
+    
+    /**
+     * Set default values for properties.
+     * Subclasses should implement this method if they want any properties to have defaulted values 
+     * when first shown to a user
+     */
+    public void setDefaults() {
+        // no-op in the base implementation
+    }
 
     /**
      * Called after this Entity has been ready from the persistence

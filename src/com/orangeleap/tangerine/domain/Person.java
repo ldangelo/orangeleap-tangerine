@@ -19,6 +19,7 @@ public class Person extends AbstractCommunicatorEntity {
     public static final String FORMAL_SALUTATION = "formalSalutation";
     public static final String INFORMAL_SALUTATION = "informalSalutation";
     public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
+    public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
 
     private Site site;
     private String constituentType = INDIVIDUAL;
@@ -353,6 +354,12 @@ public class Person extends AbstractCommunicatorEntity {
 
     public boolean isIndividual() {
         return INDIVIDUAL.equals(getConstituentType());
+    }
+
+    @Override
+    public void setDefaults() {
+        super.setDefaults();
+        setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
     }
 
     @Override

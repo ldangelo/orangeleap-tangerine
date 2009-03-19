@@ -97,6 +97,7 @@ public abstract class TangerineFormController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         request.setAttribute(StringConstants.COMMAND_OBJECT, this.getCommandName()); // To be used by input.jsp to check for errors
         AbstractEntity entity = findEntity(request);
+        entity.setDefaults();
         this.createFieldMaps(request, entity);
         return entity;
     }

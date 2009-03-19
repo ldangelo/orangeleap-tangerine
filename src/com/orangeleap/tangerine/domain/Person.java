@@ -20,6 +20,8 @@ public class Person extends AbstractCommunicatorEntity {
     public static final String INFORMAL_SALUTATION = "informalSalutation";
     public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
     public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
+    public static final String ORGANIZATION_MINIMUM_GIFT_MATCH = "organization.minimumGiftMatch";
+    public static final String ORGANIZATION_MAXIMUM_GIFT_MATCH = "organization.maximumGiftMatch";
 
     private Site site;
     private String constituentType = INDIVIDUAL;

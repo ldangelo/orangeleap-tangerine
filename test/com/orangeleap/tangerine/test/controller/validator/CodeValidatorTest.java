@@ -36,7 +36,6 @@ public class CodeValidatorTest extends BaseTest {
     private Site site;
     private Person person;
 
-    @SuppressWarnings("unchecked")
     @BeforeMethod
     public void setupMocks() {
         projCode = new PicklistItem();

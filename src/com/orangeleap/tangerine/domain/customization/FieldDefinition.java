@@ -104,7 +104,7 @@ public class FieldDefinition implements Serializable {
         if (!isCustom()) {
             return "";
         }
-        return fieldName.substring(StringConstants.CUSTOM_FIELD_MAP.length(), fieldName.length() - 1);
+        return fieldName.substring(StringConstants.CUSTOM_FIELD_MAP_START.length(), fieldName.length() - 1);
     }
 
     public String getPropertyName() {
@@ -112,7 +112,7 @@ public class FieldDefinition implements Serializable {
     }
     
     public boolean isCustom() {
-        return (fieldName != null && fieldName.startsWith(StringConstants.CUSTOM_FIELD_MAP));
+        return (fieldName != null && fieldName.startsWith(StringConstants.CUSTOM_FIELD_MAP_START));
     }
 
     @Override

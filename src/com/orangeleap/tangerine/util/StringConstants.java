@@ -55,7 +55,8 @@ public final class StringConstants {
     public static final String COMMITMENTS = "commitments";
     public static final String COMMITMENT_ID = "commitmentId";
     
-    public static final String CUSTOM_FIELD_MAP = "customFieldMap[";
+    public static final String CUSTOM_FIELD_MAP_START = "customFieldMap[";
+    public static final String CUSTOM_FIELD_MAP_END = "].value";
     public static final String SITE_NAME = "siteName";
 
     public static final String UNKNOWN_LOWER_CASE = "unknown";

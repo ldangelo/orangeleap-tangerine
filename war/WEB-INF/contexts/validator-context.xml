@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<bean id="constituentValidator" class="com.orangeleap.tangerine.controller.validator.ConstituentValidator" />
+
 	<bean id="addressValidator" class="com.orangeleap.tangerine.controller.validator.AddressValidator" />
 
 	<bean id="phoneValidator" class="com.orangeleap.tangerine.controller.validator.PhoneValidator" />

@@ -82,7 +82,9 @@ var Fat = {
 	set_bgcolor : function (id, c)
 	{
 		var o = document.getElementById(id);
-		o.style.backgroundColor = c;
+		if (o) {
+			o.style.backgroundColor = c;
+		}
 	},
 	get_bgcolor : function (id)
 	{

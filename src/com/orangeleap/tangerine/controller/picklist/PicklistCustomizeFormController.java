@@ -22,8 +22,10 @@ public class PicklistCustomizeFormController extends PicklistCustomizeBaseContro
         
         Map<String, String> stringmap = getMap(picklist.getCustomFieldMap());
     	if (stringmap.size() == 0) {
-    		stringmap.put(PARENT_LIST, BLANK);    	
-    		stringmap.put(ITEM_TEMPLATE + PARENT_VALUE, BLANK);
+    		if (isOutOfBoxDependentPicklist(picklist)) {
+    			stringmap.put(PARENT_LIST, BLANK);    	
+    			stringmap.put(ITEM_TEMPLATE + PARENT_VALUE, BLANK);
+    		}
     		if (isGLCoded(picklist)) {
 	    		stringmap.put(ITEM_TEMPLATE + GL_ACCOUNT_CODE, BLANK);
 	    		stringmap.put(ITEM_TEMPLATE + "01-GLPART1", BLANK);
@@ -37,6 +39,10 @@ public class PicklistCustomizeFormController extends PicklistCustomizeBaseContro
         request.setAttribute("map", stringmap);
         request.setAttribute("picklist", picklist);
         return super.showForm(request, response, errors, controlModel);
+    }
+    
+    private boolean isOutOfBoxDependentPicklist(Picklist picklist) {
+    	return picklist.getPicklistName().equals("stateProvince");
     }
     
 	@Override

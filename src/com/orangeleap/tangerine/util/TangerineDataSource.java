@@ -29,8 +29,11 @@ public class TangerineDataSource implements DataSource {
 	public Connection getConnection() throws SQLException {
 		
 		Connection conn = dataSource.getConnection();
-		count++;
-		logger.debug("getConnection() called, count = " + (int)count);
+		if (logger.isDebugEnabled()) {
+			count++;
+			logger.debug("getConnection() called, count = " + (int)count);
+			//new Exception().fillInStackTrace().printStackTrace();
+		}
 		
 		
 		String siteName = tangerineUserHelper.lookupUserSiteName();

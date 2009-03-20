@@ -49,33 +49,28 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.ADDRESS_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PHONE_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.EMAIL_PICKLIST, genericFieldHandler);
-        ExpirationFieldHandler expirationFieldHandler = new ExpirationFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION, expirationFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.CC_EXPIRATION, new ExpirationFieldHandler(appContext));
 
-        PhoneFieldHandler phoneFieldHandler = new PhoneFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.PHONE, phoneFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.PHONE, new PhoneFieldHandler(appContext));
 
         PicklistFieldHandler picklistFieldHandler = new PicklistFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.PICKLIST, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PICKLIST_DISPLAY, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_DISPLAY, picklistFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL, new PicklistAdditionalFieldsHandler(appContext));
 
-        PreferredPhoneFieldHandler preferredPhoneFieldHandler = new PreferredPhoneFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.PREFERRED_PHONE_TYPES, preferredPhoneFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.PREFERRED_PHONE_TYPES, new PreferredPhoneFieldHandler(appContext));
 
         LookupFieldHandler lookupFieldHandler = new LookupFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, lookupFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, lookupFieldHandler);
 
-        LookupOtherFieldHandler lookupOtherFieldHandler = new LookupOtherFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, lookupOtherFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, new LookupOtherFieldHandler(appContext));
 
-        CodeFieldHandler codeFieldHandler = new CodeFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.CODE, codeFieldHandler); 
+        fieldTypeToHandlerMap.put(FieldType.CODE, new CodeFieldHandler(appContext)); 
 
-        CodeOtherFieldHandler codeOtherFieldHandler = new CodeOtherFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, codeOtherFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, new CodeOtherFieldHandler(appContext));
 
         fieldTypeToHandlerMap.put(FieldType.SPACER, new SpacerFieldHandler());
         initialized = true;

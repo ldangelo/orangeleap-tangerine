@@ -4,7 +4,7 @@
 	    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="hidden"/>
 	</c:when>
 	<c:otherwise>
-		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">queryLookupLi</c:if>"
+		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">queryLookupLi</c:if>"
 			id="li-<c:out value='${sectionDefinition.sectionHtmlName}'/>-<c:out value='${fieldVO.fieldId}'/>">
 			<c:remove var="errorClass" scope="page" />
 			<c:if test="${commandObject != null}">
@@ -211,7 +211,7 @@
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST'}">
+				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">
 					<div class="lookupScrollTop"></div>
 					<div class="lookupScrollContainer">
 					    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
@@ -236,15 +236,29 @@
 									</c:choose>
 								</c:if>
 							</c:forEach>
+							<c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">
+								<div id="div-additional-<c:out value='${fieldVO.fieldId}'/>" class="additionalOptions">
+									<c:forEach var="additionalValue" items="${fieldVO.additionalDisplayValues}">
+										<div class='multiPicklistOption' id=""> 
+											<span><c:out value='${additionalValue}'/></span>
+											<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+										</div>
+									</c:forEach>
+								</div>
+								<div class='multiPicklistOption noDisplay clone' id=""> 
+									<span></span>
+									<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+								</div>
+							</c:if>
 					    	<input type='hidden' name='labelText' id='<c:out value="${fieldVO.fieldId}"/>-labelText' value="<c:out value='${fieldVO.labelText}'/>"/>
 							<div class="lookupScrollRight"></div>
 					    </div>
 					    <%-- The following hidden field must not lie within the multiPicklist div above --%>
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" />
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" additionalFieldId="<c:out value='${fieldVO.additionalFieldId}'/>"/>
 					</div>
 					<div class="lookupScrollBottom"></div>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
-			        <a href="javascript:void(0)" onclick="Lookup.loadMultiPicklist(this)" class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+			        <a href="javascript:void(0)" <c:choose><c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">onclick="Lookup.loadMultiPicklist(this, true)"</c:when><c:otherwise>onclick="Lookup.loadMultiPicklist(this)"</c:otherwise></c:choose> class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP'}">
 					<div class="lookupWrapper">
@@ -262,7 +276,7 @@
 							</c:if>
 					        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					    </div>
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldId}'/>" />
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldId}'/>"/>
 						<div class="queryLookupOption noDisplay clone">
 							<a href="" target="_blank"></a>
 							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>

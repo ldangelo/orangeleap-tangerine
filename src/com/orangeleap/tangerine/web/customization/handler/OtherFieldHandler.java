@@ -5,6 +5,9 @@ import org.springframework.beans.PropertyAccessorFactory;
 
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
+/**
+ * Used only for single-valued fields (picklist, querylist, etc) where the user can type in and use a free-form value instead of an existing pre-defined one
+ */
 public class OtherFieldHandler {
 
     public static void handleOtherField(FieldVO fieldVO, Object model) {

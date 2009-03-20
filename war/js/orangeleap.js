@@ -821,13 +821,17 @@ var Lookup = {
 		return queryString;
 	},
 	
-	loadMultiPicklist: function(elem) {
-		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");//parent();
-		var queryString = this.serializeMultiPicklist(this.lookupCaller.children());
+	loadMultiPicklist: function(elem, showAdditionalField) {
+		if (!showAdditionalField) {
+			showAdditionalField = false;
+		}
+		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
+		var queryString = this.serializeMultiPicklist(this.lookupCaller.children(), showAdditionalField);
+
 		$.ajax({
 			type: "POST",
 			url: "multiPicklist.htm",
-			data: queryString,
+			data: queryString + "&showAdditionalField=" + showAdditionalField,
 			success: function(html){
 				$("#dialog").html(html);
 				Lookup.multiCommonBindings();
@@ -839,22 +843,92 @@ var Lookup = {
 				alert("The server was not available.  Please try again.");
 			}
 		});
-	},
+	},	
 	
-	/* For previously selected options, create a query string in the format 1=code1|displayValue1|reference1|selected1&2=code2|displayValue2|reference2|selected2& ... */
-	serializeMultiPicklist: function(options) {
-		var queryString = "";
-		var counter = 1;
+	/* For previously selected options, create a query string in the format selectedOptions=code1|displayValue1|reference1|selected1^code2|displayValue2|reference2|selected2^ ... */
+	serializeMultiPicklist: function(options, showAdditionalField) {
+		var queryString = "selectedOptions=";
 		$(options).each(function() {
 			var $elem = $(this);
-			if ($elem.hasClass("multiPicklistOption")) {
-				queryString += counter++ + "=" + escape($elem.attr("selectedId")) + "|" + escape($.trim($elem.text())) + "|" + escape($elem.attr("reference")) + "|" + ($elem.css("display") == "none" ? "false" : "true") + "&";
+			if ($elem.hasClass("multiPicklistOption") && $elem.hasClass("clone") == false) {
+				queryString += escape($elem.attr("selectedId")) + "|" + escape($.trim($elem.text())) + "|" + escape($elem.attr("reference")) + "|" + ($elem.css("display") == "none" ? "false" : "true") + "^";
 			}
-			else if ($elem.attr("type") == "hidden"){
-				queryString += $elem.serialize();
+			else if ($elem.attr("type") == "hidden") { // the assumption is that the hidden fields will be AFTER all the option fields
+				queryString += "&" + $elem.serialize();
 			}
 		});
+		if (showAdditionalField) {
+			var additionalFieldId = Lookup.lookupCaller.parent().children("input[type=hidden]").attr("additionalFieldId");
+			if (additionalFieldId) {
+				queryString += "&additionalFieldOptions=" + escape($("#" + additionalFieldId).val()); // TODO: escape commas?
+			}				
+		}
 		return queryString;
+	},
+	
+	multiPicklistBindings: function() {
+		$("#multiPicklistForm #doneButton").bind("click", function() {
+			var idsStr = "";
+			var selectedNames = new Object();
+			$("ul#selectedOptions li", $("#dialog")).each(function() {
+				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
+				var thisId = $chkBox.attr("id");
+				idsStr += thisId + ",";
+				selectedNames[$.trim($chkBox.attr("name"))] = true;
+			});
+			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
+
+			var $hiddenElem = Lookup.lookupCaller.parent().children("input[type=hidden]");
+			$hiddenElem.val(idsStr);
+			
+			Lookup.lookupCaller.children("div.multiPicklistOption").each(function() {
+				if (selectedNames[$.trim($(this).attr("selectedId"))] === true) {
+					$(this).css("display", "").vkfade(true);
+				}
+				else {
+					$(this).css("display", "none");
+				}
+			});
+
+			var additionalOptions = null;
+			$("#additionalOptionsText").each(function() {
+				var val = $(this).val();
+				if (jQuery.trim(val) != "") {
+					additionalOptions = val.split("\n");
+				}
+			});
+			/* Remove the old options */
+			var $additionalOptionsContainer = Lookup.lookupCaller.children("div.additionalOptions");
+			$additionalOptionsContainer.children().each(function() {
+				$(this).remove();
+			});
+			var hiddenAdditionalOptionsVal = "";
+			if (additionalOptions != null) {
+				var $cloneBase = Lookup.lookupCaller.children("div.clone").eq(0);
+				for (var z = additionalOptions.length - 1; z >= 0; z--) {
+					var newOption = jQuery.trim(additionalOptions[z]);
+					if (newOption != "") {
+						var $newClone = $cloneBase.clone(false);
+						$newClone.attr("id", "div-" + Math.floor((Math.random() * 1000) + (Math.random() * 100)));
+						$newClone.removeClass("clone").removeClass("noDisplay");
+						$newClone.removeAttr("style");
+						$newClone.find("span").text(newOption);
+						$newClone.prependTo($additionalOptionsContainer);
+						$newClone.vkfade(true);
+						hiddenAdditionalOptionsVal += newOption + ","; // TODO: escape commas
+					}
+				}
+			}
+			if (hiddenAdditionalOptionsVal.length > 0) {
+				hiddenAdditionalOptionsVal = hiddenAdditionalOptionsVal.substring(0, hiddenAdditionalOptionsVal.length - 1); // truncate the last comma
+			}
+			var additionalHiddenElemId = $hiddenElem.attr("additionalFieldId");
+			if (additionalHiddenElemId) {
+				$("#" + additionalHiddenElemId).val(hiddenAdditionalOptionsVal);
+			}
+			$(Lookup.lookupCaller).each(Picklist.togglePicklist);
+			$("#dialog").jqmHide();	
+		});			
 	},
 	
 	useQueryLookup: function() {
@@ -976,33 +1050,6 @@ var Lookup = {
 		});		
 	},
 	
-	multiPicklistBindings: function() {
-		$("#multiPicklistForm #doneButton").bind("click", function() {
-			var idsStr = "";
-			var selectedNames = new Object();
-			$("ul#selectedOptions li", $("#dialog")).each(function() {
-				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
-				var thisId = $chkBox.attr("id");
-				idsStr += thisId + ",";
-				selectedNames[$.trim($chkBox.attr("name"))] = true;
-			});
-			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
-
-			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
-			
-			Lookup.lookupCaller.children("div.multiPicklistOption").each(function() {
-				if (selectedNames[$.trim($(this).attr("selectedId"))] === true) {
-					$(this).css("display", "").vkfade(true);
-				}
-				else {
-					$(this).css("display", "none");
-				}
-			});
-			$(Lookup.lookupCaller).each(Picklist.togglePicklist);
-			$("#dialog").jqmHide();	
-		});			
-	},
-	
 	multiCommonBindings: function() {
 		$("table.multiSelect thead input[type=checkbox]", $("#dialog")).bind("click", function() {
 			var isChecked = $(this).attr("checked");
@@ -1067,6 +1114,10 @@ var Lookup = {
 				$parent.parent("div.multiPicklist").each(Picklist.togglePicklist);
 			}
 		});
+	},
+
+	deleteAdditionalOption: function(elem) {
+		
 	},
 	
 	showWaitIndicator: function() {

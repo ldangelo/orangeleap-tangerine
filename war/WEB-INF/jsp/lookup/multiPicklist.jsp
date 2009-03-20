@@ -49,6 +49,14 @@
 					</tr>
 				</tbody>
 			</table>
+	        <c:if test="${showAdditionalField}">
+		        <div class="additionalMultiOptionDiv">
+		        	<div><label for="additionalOptionsText"><spring:message code='enterMulti'/></label></div>
+		        	<div>
+						<textarea id="additionalOptionsText" name="additionalOptionsText" rows="5" cols="60"><c:forEach items="${requestScope.additionalOptions}" var="addOption"><c:out value="${addOption}"/></c:forEach></textarea>
+		        	</div>
+		        </div>
+	        </c:if>
 			<div class="buttonsDiv">
 				<input type="button" value="<spring:message code='done'/>" class="saveButton" name="doneButton" id="doneButton" />
 				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" name="cancelButton" id="cancelButton" />

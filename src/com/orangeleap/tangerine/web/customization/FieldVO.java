@@ -22,6 +22,7 @@ public class FieldVO {
     public static final String NORMAL_DELIMITER = ",";
     public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
     public static final String OTHER_PREFIX = "other_";
+    public static final String ADDITIONAL_PREFIX = "additional_";
     private static final String DOT_VALUE = ".value";
 
     private Object model;
@@ -39,6 +40,7 @@ public class FieldVO {
     private List<String> fieldValues;
     private Object displayValue;
     private List<String> displayValues;
+    private List<String> additionalDisplayValues;
     private String helpText;
     private String labelText;
     private String validationExpression;
@@ -93,6 +95,23 @@ public class FieldVO {
         return escapeChars(fieldName);
     }
     
+    public String getAdditionalFieldId() {
+        return escapeChars(getAdditionalFieldName());
+    }
+    
+    /**
+     * Get the 'other' field name, i.e, customFieldMap[reference] --> customFieldMap[additional_reference], motivationCode --> additional_reference, customFieldMap[individual.spouse] --> customFieldMap[individual.additional_spouse]
+     * @param fieldName
+     * @return
+     */
+    public String getAdditionalFieldName() {
+        return getAdditionalFieldName(fieldName);
+    }
+    
+    public static String getAdditionalFieldName(String aFieldName) {
+        return getPrefixedFieldName(ADDITIONAL_PREFIX, aFieldName);
+    }
+    
     public String getOtherFieldId() {
         return escapeChars(getOtherFieldName());
     }
@@ -107,7 +126,11 @@ public class FieldVO {
     }
     
     public static String getOtherFieldName(String aFieldName) {
-        String otherFieldName = null;
+        return getPrefixedFieldName(OTHER_PREFIX, aFieldName);
+    }
+    
+    public static String getPrefixedFieldName(String prefix, String aFieldName) {
+        String prefixedFieldName = null;
         
         boolean endsInValue = false;
         if (aFieldName.endsWith(DOT_VALUE)) {
@@ -119,19 +142,19 @@ public class FieldVO {
         if (startBracketIndex > -1) {
             int periodIndex = aFieldName.indexOf('.', startBracketIndex);
             if (periodIndex > -1) {
-                otherFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(OTHER_PREFIX).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString(); 
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, periodIndex + 1)).append(prefix).append(aFieldName.substring(periodIndex + 1, aFieldName.length())).toString(); 
             }
             else {
-                otherFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(OTHER_PREFIX).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString(); 
+                prefixedFieldName = new StringBuilder(aFieldName.substring(0, startBracketIndex + 1)).append(prefix).append(aFieldName.substring(startBracketIndex + 1, aFieldName.length())).toString(); 
             }
         }
-        if (otherFieldName == null) {
-            otherFieldName = new StringBuilder(OTHER_PREFIX).append(aFieldName).toString();
+        if (prefixedFieldName == null) {
+            prefixedFieldName = new StringBuilder(prefix).append(aFieldName).toString();
         }
         if (endsInValue) {
-            otherFieldName = otherFieldName.concat(DOT_VALUE);
+            prefixedFieldName = prefixedFieldName.concat(DOT_VALUE);
         }
-        return otherFieldName;      
+        return prefixedFieldName;      
     }
     
     public FieldType getFieldType() {
@@ -256,7 +279,6 @@ public class FieldVO {
     	String s = "" + getDisplayValue();
         return s.split("\\n");
     }
-
     
     public boolean isCascading() {
         return cascading;
@@ -316,6 +338,18 @@ public class FieldVO {
 
     public void setDisplayValues(List<String> displayValues) {
         this.displayValues = displayValues;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setAdditionalDisplayValues(String additionalDisplayValueStr) {
+        String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(additionalDisplayValueStr, NORMAL_DELIMITER);
+        if (vals != null) {
+            this.additionalDisplayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
+        }
+    }
+
+    public List<String> getAdditionalDisplayValues() {
+        return additionalDisplayValues;
     }
 
     public String getCodesString() {

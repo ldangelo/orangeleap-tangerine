@@ -84,9 +84,6 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	public
 	PicklistItem getPicklistItem(String picklistNameId, String picklistItemName) {
 		PicklistItem picklistitem = picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
-		if (picklistitem == null) {
-			picklistitem = picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
-		}
 		return picklistitem;
 	}
 	

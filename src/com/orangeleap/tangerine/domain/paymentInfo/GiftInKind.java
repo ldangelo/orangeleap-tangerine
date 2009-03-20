@@ -239,6 +239,14 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     }
 
     @Override
+    public void setDefaults() {
+        super.setDefaults();
+        if (recognitionName == null) {
+            setRecognitionName(person.getRecognitionName());
+        }
+    }
+
+    @Override
     public void prePersist() {
         super.prePersist();
         if (this.anonymous) {

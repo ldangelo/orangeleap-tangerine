@@ -176,17 +176,29 @@ public abstract class EntityExporter {
 	}
 	
 	private String getProperty(Object o, String field, FieldType fieldType) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if (fieldType == FieldType.DATE) {
-			Method m = o.getClass().getMethod("get"+StringUtils.capitalize(field), new Class[0]);
-			Object result = m.invoke(o, new Object[0]);
-			if (result instanceof java.util.Date) {
-				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-				return sdf.format((java.util.Date)result);
-			} else {
-				if (result == null) return ""; else return result.toString();
-			}
+		if (fieldType == FieldType.DATE || fieldType == FieldType.DATE_DISPLAY) {
+			Object result = getObject(o, field);
+			return formatDate(result, "MM/dd/yyyy");
+		} else if (fieldType == FieldType.CC_EXPIRATION || fieldType == FieldType.CC_EXPIRATION_DISPLAY) {
+			Object result = getObject(o, field);
+			return formatDate(result, "MM/yyyy");
 		} else {
 			return BeanUtils.getProperty(o, field);
+		}
+	}
+	
+	private Object getObject(Object o, String field) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException
+	{
+		Method m = o.getClass().getMethod("get"+StringUtils.capitalize(field), new Class[0]);
+		return m.invoke(o, new Object[0]);
+	}
+	
+	private String formatDate(Object o, String format) {
+		if (o instanceof java.util.Date) {
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			return sdf.format((java.util.Date)o);
+		} else {
+			if (o == null) return ""; else return o.toString();
 		}
 	}
 

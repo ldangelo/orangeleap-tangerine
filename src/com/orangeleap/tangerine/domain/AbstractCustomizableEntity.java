@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import com.orangeleap.tangerine.domain.customization.CustomField;
 
 /**
@@ -118,4 +120,26 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             setCustomFieldValue(fieldName, value);
         }
     }
+    
+    /**
+     * Clones custom fields as well as object.
+     */
+	public AbstractCustomizableEntity createCopy() {
+		AbstractCustomizableEntity e2;
+		try {
+			e2 = (AbstractCustomizableEntity)BeanUtils.cloneBean(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		e2.setId(null);
+		e2.setCustomFieldMap(null);
+		for (Map.Entry<String, CustomField> me : getCustomFieldMap().entrySet()) {
+			CustomField oldcf = me.getValue();
+			e2.setCustomFieldValue(oldcf.getName(), oldcf.getValue());
+		}
+		return e2;
+	}
+
+    
 }

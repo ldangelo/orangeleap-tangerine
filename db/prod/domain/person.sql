@@ -82,15 +82,15 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.other_eligibleFields]', 'person', 'customFieldMap[organization.other_eligibleFields]', ' ', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.eligibleOrganizations]', 'person', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Organizations', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
+('person.customFieldMap[organization.eligibleOrganizations]', 'person', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Orgs', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.additional_eligibleOrganizations]', 'person', 'customFieldMap[organization.additional_eligibleOrganizations]', ' ', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.ineligibleOrganizations]', 'person', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Organizations', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
+('person.customFieldMap[organization.ineligibleOrganizations]', 'person', 'customFieldMap[organization.ineligibleOrganizations]', 'Ineligible Orgs', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.additional_ineligibleOrganizations]', 'person', 'customFieldMap[organization.additional_ineligibleOrganizations]', ' ', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.onlineMatchingGiftForm]', 'person', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Online Matching Gift Form', 'TEXT', 'organization,matching');
+('person.customFieldMap[organization.onlineMatchingGiftForm]', 'person', 'customFieldMap[organization.onlineMatchingGiftForm]', 'Matching Gift Form', 'TEXT', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.programStartMonth]', 'person', 'customFieldMap[organization.programStartMonth]', 'Program Start Month', 'PICKLIST', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 

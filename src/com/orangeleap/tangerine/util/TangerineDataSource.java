@@ -23,16 +23,20 @@ public class TangerineDataSource implements DataSource {
 	private boolean splitDatabases = true;
 	private DataSource dataSource;
 	private TangerineUserHelper tangerineUserHelper;
+	double count;
 
 	@Override
 	public Connection getConnection() throws SQLException {
 		
 		Connection conn = dataSource.getConnection();
+		count++;
+		logger.debug("getConnection() called, count = " + (int)count);
+		
 		
 		String siteName = tangerineUserHelper.lookupUserSiteName();
 		boolean hasSite = siteName != null && siteName.trim().length() > 0;
 		if (hasSite) {
-			//logger.debug("getConnection() called.");
+			//logger.debug("getConnection() called for site " + siteName);
 		}
 
 		if (!splitDatabases) {

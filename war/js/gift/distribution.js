@@ -187,7 +187,12 @@ var Distribution = {
 				Distribution.deleteRow($(this).parent().parent());
 			}).show();
 			$row.find("input.number, input.percentage").numeric();
-			$row.find("input.amount, input.percentage").bind("keyup change", function(event) {
+			$row.find("input.amount, input.percentage").bind("keyup", function(event) {
+				if (event.keyCode != 9) { // ignore tab
+					Distribution.updateFields($(event.target));
+				}
+			});		
+			$row.find("input.amount, input.percentage").bind("change", function(event) {
 				Distribution.updateFields($(event.target));
 			});		
 			

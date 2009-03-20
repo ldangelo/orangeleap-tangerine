@@ -1117,7 +1117,31 @@ var Lookup = {
 	},
 
 	deleteAdditionalOption: function(elem) {
-		
+		var $elem = $(elem);
+		var optionText = jQuery.trim($elem.siblings("span").eq(0).text());
+		if (optionText) {
+			var $parentElem = $elem.parent();
+			var additionalFieldId = $parentElem.parent().parent().parent().children("input[type=hidden]").attr("additionalFieldId");
+			if (additionalFieldId) {
+				var $additionalFieldElem = $("#" + additionalFieldId);
+				var vals = $additionalFieldElem.val().split(",");
+				var valsLen = vals.length;
+				var newVals = "";
+				for (var x = 0; x < valsLen; x++) {
+					if (vals[x] != optionText) {
+						newVals += vals[x] + ",";
+					}
+				}
+				if (newVals.length > 0) {
+					newVals = newVals.substring(0, newVals.length - 1);
+				}
+				$additionalFieldElem.val(newVals);
+				
+				$parentElem.fadeOut("fast", function() {
+					$(this).remove();
+				});
+			}
+		}
 	},
 	
 	showWaitIndicator: function() {

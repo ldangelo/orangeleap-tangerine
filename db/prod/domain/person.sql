@@ -78,9 +78,9 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 ('person.customFieldMap[organization.eligibility]', 'person', 'customFieldMap[organization.eligibility]', 'Eligibility', 'MULTI_PICKLIST', 'organization,matching');
  -- TODO: MULTI
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.eligibleFields]', 'person', 'customFieldMap[organization.eligibleFields]', 'Eligible Fields', 'CODE_OTHER', 'organization,matching');
+('person.customFieldMap[organization.eligibleFunds]', 'person', 'customFieldMap[organization.eligibleFunds]', 'Eligible Funds', 'CODE_OTHER', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
-('person.customFieldMap[organization.other_eligibleFields]', 'person', 'customFieldMap[organization.other_eligibleFields]', ' ', 'HIDDEN', 'organization,matching');
+('person.customFieldMap[organization.other_eligibleFunds]', 'person', 'customFieldMap[organization.other_eligibleFunds]', ' ', 'HIDDEN', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 
 ('person.customFieldMap[organization.eligibleOrganizations]', 'person', 'customFieldMap[organization.eligibleOrganizations]', 'Eligible Orgs', 'MULTI_PICKLIST_ADDITIONAL', 'organization,matching');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) VALUES 

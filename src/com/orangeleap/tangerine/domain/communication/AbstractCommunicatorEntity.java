@@ -28,10 +28,6 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     private List<Email> emails = new ArrayList<Email>();
     private List<Phone> phones = new ArrayList<Phone>();
 
-    private Map<String, Address> addressMap = null;
-    private Map<String, Email> emailMap = null;
-    private Map<String, Phone> phoneMap = null;
-    
     
     // Called by CustomizableSqlMapClientTemplate when object is loaded.
     public void setCommunicationFields(ApplicationContext applicationContext) {
@@ -49,9 +45,9 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     		return;
     	}
 
-    	addresses = addressService.filterValid(getId());
-    	emails = emailService.filterValid(getId());
-    	phones = phoneService.filterValid(getId());
+    	addresses = addressService.readByConstituentId(getId());
+    	emails = emailService.readByConstituentId(getId());
+    	phones = phoneService.readByConstituentId(getId());
 
     	primaryAddress = addressService.filterByPrimary(addresses, getId());
     	primaryEmail = emailService.filterByPrimary(emails, getId());

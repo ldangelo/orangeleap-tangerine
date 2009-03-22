@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PaymentHistoryDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("paymentHistoryDAO")
 public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements PaymentHistoryDao {
@@ -33,22 +35,37 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PaymentHistory> readPaymentHistoryByConstituentId(Long constituentId) {
+	public PaginatedResult readPaymentHistoryByConstituentId(Long constituentId, SortInfo sortinfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
 		params.put("constituentId", constituentId);
-		return getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID", params);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("PAYMENT_HISTORY_FOR_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PaymentHistory> readPaymentHistoryBySite() {
+	public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentHistoryBySite:");
         }
         Map<String, Object> params = setupParams();
-		return getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_SITE", params);
+        sortinfo.addParams(params);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_PAYMENT_HISTORY_FOR_SITE_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("PAYMENT_HISTORY_FOR_SITE_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
 	}
 }

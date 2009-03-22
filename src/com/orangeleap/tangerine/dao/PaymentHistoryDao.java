@@ -1,15 +1,15 @@
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface PaymentHistoryDao {
 	
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory);
 	
-	public List<PaymentHistory> readPaymentHistoryByConstituentId(Long personId);
+	public PaginatedResult readPaymentHistoryByConstituentId(Long personId, SortInfo sortinfo);
 	
-	public List<PaymentHistory> readPaymentHistoryBySite();
+	public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo);
 
 }

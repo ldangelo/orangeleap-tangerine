@@ -1,15 +1,15 @@
 package com.orangeleap.tangerine.service;
 
-import java.util.List;
-
 import com.orangeleap.tangerine.domain.PaymentHistory;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface PaymentHistoryService {
 
     public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory);
 
-    public List<PaymentHistory> readPaymentHistory(Long personId);
+    public PaginatedResult readPaymentHistory(Long personId, SortInfo sortinfo);
 
-    public List<PaymentHistory> readPaymentHistoryBySite();
+    public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo);
 
 }

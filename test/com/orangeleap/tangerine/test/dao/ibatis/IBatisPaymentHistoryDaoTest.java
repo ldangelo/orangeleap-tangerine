@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +13,8 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
     
@@ -69,20 +70,25 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadPaymentHistoryEntries" }, dependsOnGroups = { "testCreatePaymentHistoryEntry" })
     public void testReadPaymentHistoryByConstituentId() throws Exception {
-        List<PaymentHistory> list = paymentHistoryDao.readPaymentHistoryByConstituentId(0L);
-        assert list != null && list.isEmpty();
+    	SortInfo sortinfo = new SortInfo();
+    	sortinfo.setSort("phis.TRANSACTION_DATE");
+        PaginatedResult pr = paymentHistoryDao.readPaymentHistoryByConstituentId(0L, sortinfo);
+        assert pr.getRowCount() == 0;
         
-    	list = paymentHistoryDao.readPaymentHistoryByConstituentId(new Long(PERSON_ID));
-        assert list != null && list.size() > 0;
-        PaymentHistory history = list.get(0);
+    	pr = paymentHistoryDao.readPaymentHistoryByConstituentId(new Long(PERSON_ID), sortinfo);
+        assert pr.getRowCount() > 0;
+        PaymentHistory history = (PaymentHistory)pr.getRows().get(0);
         testCreatedHistory(history);
     } 
 
     @Test(groups = { "testReadPaymentHistoryEntries" }, dependsOnGroups = { "testCreatePaymentHistoryEntry" })
     public void testReadPaymentHistoryBySite() throws Exception {
-        List<PaymentHistory> list = paymentHistoryDao.readPaymentHistoryBySite();
-        assert list != null && list.size() == 2;     
-        for (PaymentHistory history : list) {
+    	SortInfo sortinfo = new SortInfo();
+    	sortinfo.setSort("phis.TRANSACTION_DATE");
+    	PaginatedResult pr = paymentHistoryDao.readPaymentHistoryBySite(sortinfo);
+        assert pr.getRowCount() > 0;     
+        for (Object o : pr.getRows()) {
+        	PaymentHistory history = (PaymentHistory)o;
             switch (history.getId().intValue()) {
                 case 100:
                     assert history.getAmount().intValue() == 0;

@@ -1,30 +1,27 @@
-<%@ include file="/WEB-INF/jsp/include.jsp" %>
-<c:choose>
-<c:when test="${param.view=='ajaxResults'}">
-<jsp:include page="paymentHistoryResults.jsp"/>
-</c:when>
-<c:otherwise>
+<%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
+    <tiles:putAttribute name="customHeaderContent" type="string">
+        <script type="text/javascript" src="js/paymentHistoryList.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="browserTitle" value="Payment History" />
 	<tiles:putAttribute name="primaryNav" value="People" />
-	<tiles:putAttribute name="secondaryNav" value="Payment History" />
-	<tiles:putAttribute name="sidebarNav" value="Payment History"/>
+	<tiles:putAttribute name="secondaryNav" value="Edit" />
+	<tiles:putAttribute name="sidebarNav" value="Payment History" />
 	<tiles:putAttribute name="mainContent" type="string">
-		<mp:page pageName='paymentHistory'/>
+		<div class="content760 mainForm">
 		<c:set var="person" value="${person}" scope="request" />
 		<c:if test="${person.id!=null}">
 			<c:set var="viewingPerson" value="true" scope="request" />
 		</c:if>
-		<div class="content760 mainForm">
-			<jsp:include page="../snippets/personHeader.jsp">
-				<jsp:param name="currentFunctionTitleText" value="Payment History" />
-			</jsp:include>
-				
-			<div id="searchResults">
-               <jsp:include page="paymentHistoryResults.jsp"/>
-			</div>
-		</div>
+		<jsp:include page="../snippets/personHeader.jsp">
+			<jsp:param name="currentFunctionTitleText" value="Payment History" />
+		</jsp:include>
+		<!--<div class="searchResultsHeader">
+			<h4 class="searchResults">Payment History</h4>
+		</div>-->
+
+        <div id="paymentHistoryGrid"></div>
+        
+        </div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>
-</c:otherwise>
-</c:choose>

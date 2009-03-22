@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.PaymentHistoryDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("paymentHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -36,18 +36,18 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
 	}
 
 	@Override
-	public List<PaymentHistory> readPaymentHistory(Long constituentId) {
+	public PaginatedResult readPaymentHistory(Long constituentId, SortInfo sortinfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentHistory: constituentId = " + constituentId);
         }
-		return paymentHistoryDao.readPaymentHistoryByConstituentId(constituentId);
+		return paymentHistoryDao.readPaymentHistoryByConstituentId(constituentId, sortinfo);
 	}
 	
 	@Override
-	public List<PaymentHistory> readPaymentHistoryBySite() {
+	public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("readPaymentHistoryBySite:");
         }
-		return paymentHistoryDao.readPaymentHistoryBySite();
+		return paymentHistoryDao.readPaymentHistoryBySite(sortinfo);
 	}
 }

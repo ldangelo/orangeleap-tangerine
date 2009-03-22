@@ -69,13 +69,13 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 			try {
 				filterChain.doFilter(request, response);
 			}
-			catch (ServletException ex) {
+			catch (Throwable ex) {
 			    try {
 			    	txManager.rollback(status);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			    throw ex;
+			    throw new RuntimeException(ex);
 			}
 			
 			try {

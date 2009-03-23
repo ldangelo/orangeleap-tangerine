@@ -161,7 +161,7 @@ var Distribution = {
         	v = $('#amount');
         }
 
-        if (subTotal === parseFloat(v.val()) && pctTotal === 100) {
+        if (parseFloat(subTotal) === parseFloat(v.val()) && pctTotal === 100) {
             $("#totalText").removeClass("warning");
 			$("#amountsErrorSpan").hide();
         } 

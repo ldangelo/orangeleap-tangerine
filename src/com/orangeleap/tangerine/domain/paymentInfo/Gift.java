@@ -201,6 +201,9 @@ public class Gift extends AbstractPaymentInfoEntity {
 	@Override
     public void prePersist() {
         super.prePersist();
+        if (this.giftType == null) {
+            this.giftType = GiftType.MONETARY_GIFT;
+        }
         if (deductibleAmount == null) {
             deductibleAmount = amount;
         }

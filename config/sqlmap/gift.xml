@@ -70,6 +70,7 @@
 		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
 		where p.SITE_NAME = #siteName#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</sql>
 
 	<select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
@@ -105,6 +106,7 @@
 		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where p.SITE_NAME = #siteName#
 		and g.COMMITMENT_ID = #commitmentId#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
 
 	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
@@ -114,6 +116,7 @@
 		where p.SITE_NAME = #siteName#
 		and g.CONSTITUENT_ID = #constituentId#
 		and g.TRANSACTION_DATE between #beginDate# and #currentDate#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
 
 	<select id="ANALYZE_FOR_LAPSED_DONOR" parameterClass="map" resultMap="CONSTITUENT.CONSTITUENT_RESULT">
@@ -123,6 +126,7 @@
 		inner join GIFT g on p.CONSTITUENT_ID = g.CONSTITUENT_ID
 		where g.AMOUNT > 0 
 		and (g.TRANSACTION_DATE between #beginDate# and #currentDate#)
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">

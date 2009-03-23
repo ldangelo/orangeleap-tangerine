@@ -39,7 +39,7 @@
  */
 $.fn.jqm=function(p){
 var o = {
-zIndex: 3000,
+zIndex: 20003,
 overlay: 50,
 overlayClass: 'jqmOverlay',
 closeClass: 'jqmClose',

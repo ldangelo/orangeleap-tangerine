@@ -89,9 +89,7 @@
 					<table class="tablesorter giftInKindDetails" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
 						<col class="number"/>
 						<col class="text"/> 
-						<col class="picklist"/>
-						<col class="picklist"/> 
-						<col class="number"/>
+						<col class="code"/>
 						<col class="checkbox"/> 
 						<col class="button"/>
 						<thead> 

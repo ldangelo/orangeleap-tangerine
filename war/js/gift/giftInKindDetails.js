@@ -95,6 +95,9 @@ var GiftInKindDetails = {
 			$row.find("input.detailFairMarketValue").bind("keyup change", function(event) {
 				GiftInKindDetails.updateTotals();
 			});		
+			$row.find("input.code").each(function(){
+				Lookup.codeAutoComplete($(this));
+			});
 			$row.removeClass("focused");
 		});
 	},

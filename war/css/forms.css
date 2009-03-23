@@ -168,7 +168,7 @@ a.multiLookupLink {
 	top: 5px;
 }
 
-table.distributionLines tbody tr td a.lookupLink {
+table.tablesorter tbody tr td a.lookupLink {
 	top: 1px; right: -4px; padding: 1px;
 }
 .lookupField a.hideText, .multiLookupField a.hideText {
@@ -368,28 +368,28 @@ p.gridActions #subTotal {
 form input[type=text], form input.text {
 	height: 16px;
 }
-form table.distributionLines input.amount, form table.distributionLines input.percentage {
+form table.tablesorter input.number, form table.tablesorter input.percentage {
 	text-align:right; 
 }
+table.tablesorter col.code { width: 35%; }
+table.tablesorter col.button { width: 3%; }
+table.tablesorter td input.code { width:93.5%; }
+
 table.distributionLines { table-layout: fixed; }
 table.distributionLines col.number { width: 12%; }
-table.distributionLines col.code { width: 35%; }
-table.distributionLines col.button, table.giftInKindDetails col.button { width: 3%; }
-table.distributionLines td input.code { width:93.5%; }
 
-table.giftInKindDetails col.text { width: 30%; }
-table.giftInKindDetails col.number { width: 10%; }
-table.giftInKindDetails col.checkbox { width: 4%; }
-table.giftInKindDetails col.picklist { }
+table.giftInKindDetails col.number { width: 20%; }
+table.giftInKindDetails col.text { width: 40%; }
+table.giftInKindDetails col.checkbox { width: 3%; }
 
-form table.distributionLines thead tr th {
+form table.tablesorter thead tr th {
 	background-color:#E6EEEE;
 	color:#000;
 	font-size:11px;
 	font-weight:bold;
 	padding:2px 0px 2px 5px;
 }
-form table.distributionLines thead th.actionColumn {
+form table.tablesorter thead th.actionColumn {
 	width:19px;
 }
 .codeList {

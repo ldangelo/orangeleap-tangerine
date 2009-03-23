@@ -748,13 +748,14 @@ DROP TABLE IF EXISTS `GIFT_IN_KIND_DETAIL`;
 
 CREATE TABLE `GIFT_IN_KIND_DETAIL` (
   `GIK_DETAIL_ID` bigint(20) NOT NULL auto_increment,
-  `DESCRIPTION` varchar(255) default NULL,
   `FAIR_MARKET_VALUE` decimal(19,2) default NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  `PROJECT_CODE` varchar(255) default NULL,
+  `TAX_DEDUCTIBLE` char(1) NOT NULL default '0',
+  `GIFT_IN_KIND_ID` bigint(20) default NULL,
   `FMV_METHOD` varchar(255) default NULL,
   `CATEGORY` varchar(255) default NULL,
   `QUANTITY` int(11) default NULL,
-  `TAX_DEDUCTIBLE` char(1) NOT NULL default '0',
-  `GIFT_IN_KIND_ID` bigint(20) default NULL,
   PRIMARY KEY  (`GIK_DETAIL_ID`),
   KEY `FK_GIK_DETAIL_GIFT_IN_KIND` (`GIFT_IN_KIND_ID`),
   CONSTRAINT `FK_GIK_DETAIL_GIFT_IN_KIND` FOREIGN KEY (`GIFT_IN_KIND_ID`) REFERENCES `GIFT_IN_KIND` (`GIFT_IN_KIND_ID`)

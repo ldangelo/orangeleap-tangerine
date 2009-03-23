@@ -420,7 +420,7 @@
 								<c:forEach var="additionalValue" items="${fieldVO.additionalDisplayValues}">
 									<div class='multiCodeOption multiOption' id=""> 
 										<span><c:out value='${additionalValue}'/></span>
-										<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+										<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 									</div>
 								</c:forEach>
 							</div>
@@ -430,7 +430,7 @@
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" additionalFieldId="<c:out value='${fieldVO.additionalFieldId}'/>"/>
 						<div class='multiCodeOption multiOption noDisplay clone' id=""> 
 							<span></span>
-							<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+							<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 						</div>
 					</div>
 					<div class="lookupScrollBottom"></div>

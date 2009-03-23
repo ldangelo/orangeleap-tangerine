@@ -760,7 +760,8 @@ var Lookup = {
 		});
 		codesStr = (codesStr.length > 0 ? codesStr.substring(0, codesStr.length - 1) : codesStr); // remove the trailing comma
 
-		Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(codesStr);
+		var $hiddenElem = Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0);
+		$hiddenElem.val(codesStr);
 		
 		Lookup.lookupCaller.children("div.multiCodeOption").remove();
 		
@@ -774,6 +775,40 @@ var Lookup = {
 			$cloned.prependTo(Lookup.lookupCaller);
 			$cloned.vkfade(true);
 		} 
+		
+		/* Get the additional free-form values */
+		var $additionalOptionsContainerElem = Lookup.lookupCaller.children("div.additionalOptions");
+		if ($additionalOptionsContainerElem) {
+			$additionalOptionsContainerElem.children().remove();
+			var additionalCodesValues = null;
+			$("#additionalCodesText", $("#dialog")).each(function() {
+				var val = $(this).val();
+				if (val) {
+					additionalCodesValues = val.split("\n");
+				}
+			});
+			if (additionalCodesValues) {
+				var additionalCodesStr = "";
+				for (var x = additionalCodesValues.length - 1; x >= 0; x--) {
+					if (jQuery.trim(additionalCodesValues[x]) != "") {
+						var $cloned = $toBeCloned.clone(true);
+						$cloned.attr("id", "option-" + Math.floor((Math.random() * 1000) + (Math.random() * 100)));
+						$cloned.find("span").text(additionalCodesValues[x]);			
+						$cloned.removeClass("clone").removeClass("noDisplay");
+						$cloned.prependTo($additionalOptionsContainerElem);
+						$cloned.vkfade(true);
+						additionalCodesStr += additionalCodesValues[x] + ","; // TODO: escape commas
+					}
+				}
+				if (additionalCodesStr.length > 0) {
+					additionalCodesStr = additionalCodesStr.substring(0, additionalCodesStr.length - 1); // truncate the last comma
+				}
+				var additionalFieldId = $hiddenElem.attr("additionalFieldId");
+				if (additionalFieldId) {
+					$("#" + additionalFieldId).val(additionalCodesStr);
+				} 
+			}
+		}
 		$("#dialog").jqmHide();					
 	},
 	

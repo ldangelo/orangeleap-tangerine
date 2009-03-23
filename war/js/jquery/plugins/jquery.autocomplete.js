@@ -67,9 +67,9 @@ $.Autocompleter = function(input, options) {
 
 	// Create $ object for input element
 	var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
-	var $realValueInput = null;
+	var realValueInputId = null;
 	if (options.displayValuePrefix && options.displayValuePrefix != 'undefined') {
-		$realValueInput = $("#" + $input.attr("id").replace(options.displayValuePrefix.display, options.displayValuePrefix.hidden));
+		realValueInputId = $input.attr("id").replace(options.displayValuePrefix.display, options.displayValuePrefix.hidden);
 	}
 	
 	var timeout;
@@ -180,7 +180,7 @@ $.Autocompleter = function(input, options) {
 			hideResults();
 		}
 		if (options.displayValuePrefix && options.displayValuePrefix != 'undefined' && $input.val() === "") {
-			$realValueInput.val("");
+			$('#' + realValueInputId).val("");
 		}
 	}).click(function() {
 		// show select when clicking in a focused field
@@ -241,8 +241,8 @@ $.Autocompleter = function(input, options) {
 		}
 		
 		$input.val(v);
-		if ($realValueInput) {
-			$realValueInput.val(selected.result);
+		if (realValueInputId) {
+			$('#' + realValueInputId).val(selected.result);
 		}
 		hideResultsNow();
 		$input.trigger("result", [selected.data, selected.value]);

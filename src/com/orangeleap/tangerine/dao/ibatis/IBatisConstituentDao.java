@@ -89,13 +89,9 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
     @Override
     public int getConstituentCountBySite() {
-
         String site = getSiteName();
-
         return (Integer) getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_COUNT_BY_SITE", site);
     }
-
-
 
     @Override
     public Person readConstituentByLoginId(String loginId) {
@@ -105,14 +101,6 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         Map<String, Object> params = setupParams();
         params.put("loginId", loginId);
         return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_LOGIN_ID_SITE", params);
-    }
-
-    @Override
-    public void setLapsedDonor(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("setLapsedDonor: constituentId = " + constituentId);
-        }
-        getSqlMapClientTemplate().update("SET_LAPSED_DONOR", constituentId);
     }
     
     @SuppressWarnings("unchecked")

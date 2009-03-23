@@ -21,8 +21,6 @@ public interface ConstituentDao {
 
     public Person maintainConstituent(Person constituent);
     
-    public void setLapsedDonor(Long constituentId);
-    
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
 }

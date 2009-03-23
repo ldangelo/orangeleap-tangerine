@@ -20,6 +20,7 @@ public class Person extends AbstractCommunicatorEntity {
     public static final String INFORMAL_SALUTATION = "informalSalutation";
     public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
     public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
+    public static final String DONOR_PROFILES = "donorProfiles";
     public static final String ORGANIZATION_MINIMUM_GIFT_MATCH = "organization.minimumGiftMatch";
     public static final String ORGANIZATION_MAXIMUM_GIFT_MATCH = "organization.maximumGiftMatch";
 
@@ -36,8 +37,6 @@ public class Person extends AbstractCommunicatorEntity {
     private String ncaisCode;
     private String maritalStatus = "Unknown";
     private String preferredPhoneType;
-    private boolean majorDonor = false;
-    private boolean lapsedDonor = false;
     private String constituentIndividualRoles = StringConstants.EMPTY;
     private String constituentOrganizationRoles = StringConstants.EMPTY;
     private String loginId;
@@ -214,19 +213,20 @@ public class Person extends AbstractCommunicatorEntity {
     }
 
     public boolean isMajorDonor() {
-        return majorDonor;
-    }
-
-    public void setMajorDonor(boolean majorDonor) {
-        this.majorDonor = majorDonor;
+        return isSpecificDonor("majorDonor");
     }
 
     public boolean isLapsedDonor() {
-        return lapsedDonor;
+        return isSpecificDonor("lapsedDonor");
     }
 
-    public void setLapsedDonor(boolean lapsedDonor) {
-        this.lapsedDonor = lapsedDonor;
+    private boolean isSpecificDonor(String donorName) {
+        boolean isSpecificDonor = false;
+        String donorProfiles = getCustomFieldValue(DONOR_PROFILES);
+        if (donorProfiles != null && donorProfiles.indexOf(donorName) > -1) {
+            isSpecificDonor = true;
+        }
+        return isSpecificDonor;
     }
 
     public Date getCreateDate() {
@@ -357,13 +357,14 @@ public class Person extends AbstractCommunicatorEntity {
     public boolean isIndividual() {
         return INDIVIDUAL.equals(getConstituentType());
     }
-
+    
     @Override
     public void setDefaults() {
         super.setDefaults();
         if (isOrganization()) {
             setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
         }
+        setDefaultCustomFieldValue(DONOR_PROFILES, StringConstants.UNKNOWN_LOWER_CASE);
     }
 
     @Override

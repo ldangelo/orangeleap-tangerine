@@ -170,9 +170,7 @@ public class IBatisCustomFieldHelper {
         params.put("entityId", entityId);
 
         template.delete("DELETE_CUSTOM_FIELD", params);
-        
     }
-
 
     // Helper method to delete a single custom file
     private void deleteCustomField(CustomField customField) {

@@ -115,6 +115,7 @@
 			<transaction src="${basedir}/db/prod/picklists/fmvMethodPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/giftInKindCategoryPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/eligibleFundsPicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/donorProfilePicklist.sql"/>
 
 			<transaction src="${basedir}/db/prod/picklists/setPicklistItemsActive.sql"/>
 	     	

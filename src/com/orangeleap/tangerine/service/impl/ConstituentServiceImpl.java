@@ -171,7 +171,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isDebugEnabled()) {
             logger.debug("setLapsedDonor: constituentId = " + constituentId);
         }
-        constituentDao.setLapsedDonor(constituentId);
+        Person constituent = readConstituentById(constituentId);
+        if (constituent != null) {
+            constituent.addCustomFieldValue(Person.DONOR_PROFILES, "lapsedDonor");
+        }
+        constituentDao.maintainConstituent(constituent);
     }
 
 	@Override

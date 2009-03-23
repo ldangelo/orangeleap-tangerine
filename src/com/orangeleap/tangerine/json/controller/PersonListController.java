@@ -1,5 +1,12 @@
 package com.orangeleap.tangerine.json.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,12 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.web.common.SortInfo;
-
-import javax.annotation.Resource;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * @version 1.0
@@ -35,6 +36,7 @@ public class PersonListController {
     @Resource(name = "constituentService")
     private ConstituentService constituentService;
 
+    @SuppressWarnings("unchecked")
     @RequestMapping("/personList.json")
     public ModelMap listConstituents(SortInfo sort) {
 
@@ -63,16 +65,16 @@ public class PersonListController {
      * Utility method to map a full Person object onto a Map so we only
      * return the needed fields rather than the full person object
      */
-    private Map<String, Object> personToMap(Person person) {
+    private Map<String, Object> personToMap(Person constituent) {
 
         // keys should map with the NAME_MAP constant
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", person.getId());
-        map.put("last", person.getLastName());
-        map.put("first", person.getFirstName());
-        map.put("organization", person.getOrganizationName());
-        map.put("majorDonor", person.isMajorDonor());
-        map.put("lapsedDonor", person.isLapsedDonor());
+        map.put("id", constituent.getId());
+        map.put("last", constituent.getLastName());
+        map.put("first", constituent.getFirstName());
+        map.put("organization", constituent.getOrganizationName());
+        map.put("majorDonor", constituent.isMajorDonor());
+        map.put("lapsedDonor", constituent.isLapsedDonor());
 
         return map;
     }

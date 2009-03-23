@@ -9,11 +9,9 @@
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR" />
-		<result property="lapsedDonor" column="LAPSED_DONOR" jdbcType="CHAR" />
 		<result property="lastName" column="LAST_NAME" jdbcType="VARCHAR" />
 		<result property="legalName" column="LEGAL_NAME" jdbcType="VARCHAR" />
 		<result property="loginId" column="LOGIN_ID" jdbcType="VARCHAR" />
-		<result property="majorDonor" column="MAJOR_DONOR" jdbcType="CHAR" />
 		<result property="maritalStatus" column="MARITAL_STATUS" jdbcType="VARCHAR" />
 		<result property="middleName" column="MIDDLE_NAME" jdbcType="VARCHAR" />
 		<result property="ncaisCode" column="NCAIS_CODE" jdbcType="VARCHAR" />
@@ -28,8 +26,8 @@
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
     	p.CONSTITUENT_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
-		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAPSED_DONOR, p.LAST_NAME, p.LEGAL_NAME,
-		p.LOGIN_ID, p.MAJOR_DONOR, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
+		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
+		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
 		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME
     </sql>
     
@@ -63,7 +61,6 @@
         select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
     </select>
 
-
 	<select id="SELECT_CONSTITUENT_BY_LOGIN_ID_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
 		and p.LOGIN_ID = #loginId#
@@ -71,12 +68,12 @@
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
 		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
-		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAPSED_DONOR, LAST_NAME, LEGAL_NAME,
-		LOGIN_ID, MAJOR_DONOR, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
+		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
+		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
 		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME)
 		values (#constituentIndividualRoles#,
-		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lapsedDonor#, #lastName#, #legalName#,
-		#loginId#, #majorDonor#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
+		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lastName#, #legalName#,
+		#loginId#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
 		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -89,11 +86,9 @@
 		CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,
 		CONSTITUENT_TYPE = #constituentType#,
 		FIRST_NAME = #firstName#,
-		LAPSED_DONOR = #lapsedDonor#,
 		LAST_NAME = #lastName#,
 		LEGAL_NAME = #legalName#,
 		LOGIN_ID = #loginId#,
-		MAJOR_DONOR = #majorDonor#,
 		MARITAL_STATUS = #maritalStatus#,
 		MIDDLE_NAME = #middleName#,
 		NCAIS_CODE = #ncaisCode#,
@@ -105,13 +100,7 @@
 		UPDATE_DATE = now()
 		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#
 	</update>
-
-	<update id="SET_LAPSED_DONOR" parameterClass="long">
-		update CONSTITUENT
-		set LAPSED_DONOR = TRUE
-		where CONSTITUENT_ID = #id#
-	</update>
-	
+ 	
 	<statement id="SELECT_CONSTITUENT_BY_SEARCH_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 	    select
 		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
@@ -175,10 +164,6 @@
 			and $additionalWhere$
 		</isNotNull>
 		limit 200
-		
-		
 	</statement>
-	
-	
 
 </sqlMap>

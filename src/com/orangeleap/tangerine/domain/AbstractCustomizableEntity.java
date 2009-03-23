@@ -8,7 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 
 /**
- * Extends AbstractEntity to include methods needed on Entites which
+ * Extends AbstractEntity to include methods needed on Entities which
  * can be customized via Custom Fields.
  * @version 1.0
  */
@@ -42,7 +42,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     
     /**
      * Get the map of custom fields associated with this Entity. The returned
-     * Map points to the internal map, so modifying the returned map will chage
+     * Map points to the internal map, so modifying the returned map will change
      * the internal representation.
      * @return a Map<String,CustomField>
      */
@@ -74,10 +74,10 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     /**
      * Gets the value of a custom field for this Entity. If there is not value
      * corresponding to the fieldName, this method will return null. Note that
-     * the custom field value could containing a single value or a comma-separted
+     * the custom field value could containing a single value or a comma-separated
      * list of values, depending on the Entity type and field
      * @param fieldName the custom field name to get the value for
-     * @return the CustomField, or null if no custom field exisits with the given name
+     * @return the CustomField, or null if no custom field exists with the given name
      */
     public String getCustomFieldValue(String fieldName) {
         CustomField customField = getCustomFieldMap().get(fieldName);
@@ -89,7 +89,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
 
     /**
      * Sets the value of the custom field for this entity to the specified value.
-     * If the custom field does not already exisit in the internal map, a new
+     * If the custom field does not already exist in the internal map, a new
      * custom field with the given name will be created and all the values will
      * be set.
      * @param fieldName the name of the Custom Field
@@ -118,6 +118,22 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     public void setDefaultCustomFieldValue(String fieldName, String value) {
         if (getCustomFieldValue(fieldName) == null) {
             setCustomFieldValue(fieldName, value);
+        }
+    }
+    
+    /**
+     * Check if a value already exists for a fieldName.  If so, append to the existing value, else
+     * set the value to the specified value 
+     * @param fieldName
+     * @param value
+     */
+    public void addCustomFieldValue(String fieldName, String value) {
+        String existingValue = getCustomFieldValue(fieldName);
+        if (existingValue == null) {
+            setCustomFieldValue(fieldName, value);
+        }
+        else {
+            setCustomFieldValue(fieldName, existingValue + "," + value); 
         }
     }
     

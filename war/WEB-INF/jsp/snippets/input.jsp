@@ -410,25 +410,27 @@
 					<div class="lookupScrollContainer">
 					    <div class="multiCode multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>">
 							<div class="lookupScrollLeft"></div>
-							<c:forEach var="code" items="${fieldVO.displayValues}">
-								<div class='multiCodeOption multiOption' id="option-<c:out value='${code}'/>">
+							<c:forEach var="code" items="${fieldVO.displayValues}" varStatus="status">
+								<div class='multiCodeOption multiOption' id="option-<c:out value='${fieldVO.fieldValues[status.index]}'/>" code="<c:out value='${fieldVO.fieldValues[status.index]}'/>">
 									<span><c:out value='${code}'/></span>
 									<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 								</div>
 							</c:forEach>
 							<div id="div-additional-<c:out value='${fieldVO.fieldId}'/>" class="additionalOptions">
+								<c:set var="counter" value="0"/>
 								<c:forEach var="additionalValue" items="${fieldVO.additionalDisplayValues}">
-									<div class='multiCodeOption multiOption' id=""> 
+									<div class='multiCodeOption multiOption' id="additional-<c:out value='${counter}'/>" code="<c:out value='${additionalValue}'/>"> 
 										<span><c:out value='${additionalValue}'/></span>
 										<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 									</div>
+									<c:set var="counter" value="${counter + 1}"/>
 								</c:forEach>
 							</div>
 							<div class="lookupScrollRight"></div>
 					    </div>
 					    <%-- The following hidden field must not lie within the multiCode div above --%>
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" additionalFieldId="<c:out value='${fieldVO.additionalFieldId}'/>"/>
-						<div class='multiCodeOption multiOption noDisplay clone' id=""> 
+						<div class='multiCodeOption multiOption noDisplay clone' id="" code=""> 
 							<span></span>
 							<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 						</div>

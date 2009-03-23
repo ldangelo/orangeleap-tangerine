@@ -770,6 +770,7 @@ var Lookup = {
 		for (var x = descriptions.length - 1; x >= 0; x--) {
 			var $cloned = $toBeCloned.clone(true);
 			$cloned.attr("id", "option-" + codes[x]);
+			$cloned.attr("code", codes[x]);
 			$cloned.find("span").text(codes[x] + " - " + descriptions[x]);			
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
@@ -792,7 +793,8 @@ var Lookup = {
 				for (var x = additionalCodesValues.length - 1; x >= 0; x--) {
 					if (jQuery.trim(additionalCodesValues[x]) != "") {
 						var $cloned = $toBeCloned.clone(true);
-						$cloned.attr("id", "option-" + Math.floor((Math.random() * 1000) + (Math.random() * 100)));
+						$cloned.attr("id", "additional-" + Math.floor((Math.random() * 1000) + (Math.random() * 100)));
+						$cloned.attr("code", additionalCodesValues[x]);
 						$cloned.find("span").text(additionalCodesValues[x]);			
 						$cloned.removeClass("clone").removeClass("noDisplay");
 						$cloned.prependTo($additionalOptionsContainerElem);
@@ -810,6 +812,39 @@ var Lookup = {
 			}
 		}
 		$("#dialog").jqmHide();					
+	},
+	
+	deleteCode: function(elem) {
+		var $elem = $(elem);
+		var $parent = $(elem).parent();
+		var $hiddenElem = null;
+		if ($parent.attr("id").indexOf("additional-") == 0) {
+			var additionalFieldId = $parent.parent().parent().parent().children("input[type=hidden]").attr("additionalFieldId");
+			if (additionalFieldId) {
+				$hiddenElem = $("#" + additionalFieldId);
+			}
+		}
+		else {
+			$hiddenElem = $parent.parent().parent().children("input[type=hidden]");
+		}
+		
+		var selectedCode = $parent.attr("code");
+		$hiddenElem.each(function() {
+			var $hiddenElem = $(this);
+			var codesValues = $hiddenElem.val().split(",");
+			
+			var newCodesValues = "";
+			for (var x = 0; x < codesValues.length; x++) {
+				if (codesValues[x] != selectedCode) {
+					newCodesValues += codesValues[x] + ",";
+				}
+			}
+			$hiddenElem.val(newCodesValues.substring(0, newCodesValues.length - 1));
+		});
+		 
+		$parent.fadeOut("fast", function() {
+			$(this).remove();
+		});
 	},
 	
 	loadQueryLookup: function(elem, showOtherField) {

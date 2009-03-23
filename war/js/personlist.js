@@ -75,7 +75,7 @@ OrangeLeap.person.personViewRenderer = function(val, meta, record) {
 
 OrangeLeap.person.navigate = function(id) {
     var rec = OrangeLeap.person.grid.getSelectionModel().getSelected();
-    Ext.get(document.body).mask('Loading ' + rec.data.first + ' ' + rec.data.last);
+    OrangeLeap.person.grid.getEl().mask('Loading ' + rec.data.first + ' ' + rec.data.last);
     window.location.href = "person.htm?personId=" + id;
     return false;
 }

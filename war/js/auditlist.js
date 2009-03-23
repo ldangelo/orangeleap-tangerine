@@ -97,7 +97,7 @@ Audit.entityViewRenderer = function(val, meta, record) {
 
 Audit.navigate = function(id) {
     var rec = Audit.grid.getSelectionModel().getSelected();
-    Ext.get(document.body).mask('Loading Entity');
+    Audit.grid.getGridEl().mask('Loading Entity');
 
     switch(rec.data.objectType) {
         case 'person':

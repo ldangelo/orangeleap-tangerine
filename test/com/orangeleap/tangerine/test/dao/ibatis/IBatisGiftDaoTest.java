@@ -269,10 +269,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadGift" })
     public void testReadGiftsByConstituentId() throws Exception {
-        List<Gift> gifts = giftDao.readGiftsByConstituentId(0L);
+        List<Gift> gifts = giftDao.readMonetaryGiftsByConstituentId(0L);
         assert gifts != null && gifts.isEmpty();
         
-        gifts = giftDao.readGiftsByConstituentId(200L);
+        gifts = giftDao.readMonetaryGiftsByConstituentId(200L);
         assert gifts != null && gifts.size() == 2;
         
         for (Gift gift : gifts) {
@@ -415,9 +415,9 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadGift" })
     public void testReadAllGiftsBySite() throws Exception {
         List<Gift> gifts = giftDao.readAllGiftsBySite();
-        assert gifts != null && gifts.size() == 6;
+        assert gifts != null && gifts.size() == 7;
         for (Gift gift : gifts) {
-            assert gift.getId() >= 100L && gift.getId() <= 600L;
+            assert gift.getId() >= 100L && gift.getId() <= 700L;
         }
     }
     

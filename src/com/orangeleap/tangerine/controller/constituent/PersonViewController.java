@@ -34,7 +34,7 @@ public class PersonViewController extends ParameterizableViewController {
         Person constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
         BigDecimal totalGiving = new BigDecimal(0);
 
-        List<Gift> giftList = giftService.readGifts(Long.valueOf(constituentId));
+        List<Gift> giftList = giftService.readMonetaryGifts(Long.valueOf(constituentId));
         for (Gift gft : giftList) {
             totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
         }

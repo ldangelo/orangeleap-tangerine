@@ -21,6 +21,6 @@ public class GiftListController extends TangerineListController {
 
     @Override
     protected List<? extends GeneratedId> getList(Long constituentId) {
-        return giftService.readGifts(constituentId);
+        return giftService.readMonetaryGifts(constituentId);
     }
 }

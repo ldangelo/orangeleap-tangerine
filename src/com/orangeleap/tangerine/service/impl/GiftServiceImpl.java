@@ -231,16 +231,16 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public List<Gift> readGifts(Person constituent) {
-        return readGifts(constituent.getId());
+    public List<Gift> readMonetaryGifts(Person constituent) {
+        return readMonetaryGifts(constituent.getId());
     }
 
     @Override
-    public List<Gift> readGifts(Long constituentId) {
+    public List<Gift> readMonetaryGifts(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGifts: constituentId = " + constituentId);
+            logger.debug("readMonetaryGifts: constituentId = " + constituentId);
         }
-        return giftDao.readGiftsByConstituentId(constituentId);
+        return giftDao.readMonetaryGiftsByConstituentId(constituentId);
     }
 
     @Override
@@ -356,11 +356,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Gift> readGiftsByConstituentId(Long constituentId) {
+    public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByConstituentId: constituentId = " + constituentId);
+            logger.debug("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
-        return giftDao.readGiftsByConstituentId(constituentId);
+        return giftDao.readMonetaryGiftsByConstituentId(constituentId);
     }
 
 //    @Override

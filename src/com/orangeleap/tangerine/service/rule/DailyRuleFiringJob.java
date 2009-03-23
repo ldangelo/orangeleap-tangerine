@@ -73,7 +73,7 @@ public class DailyRuleFiringJob extends QuartzJobBean {
 
 					workingMemory.insert(p);
 
-					List<Gift> giftList = gs.readGiftsByConstituentId(p.getId());
+					List<Gift> giftList = gs.readMonetaryGiftsByConstituentId(p.getId());
 
 					for (Gift g : giftList) {
 						workingMemory.insert(g);

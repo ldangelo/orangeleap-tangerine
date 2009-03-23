@@ -96,6 +96,9 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     }
     
     private Gift createGiftForGiftInKind(GiftInKind giftInKind) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("createGiftForGiftInKind: giftInKind.giftId = " + giftInKind.getGiftId());
+        }
         Gift gift = null;
         if (giftInKind.getGiftId() == null || giftInKind.getGiftId() <= 0) {
             gift = new Gift(giftInKind);

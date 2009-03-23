@@ -63,9 +63,9 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGiftsByConstituentId(Long constituentId) {
+    public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByConstituentId: constituentId = " + constituentId);
+            logger.debug("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);

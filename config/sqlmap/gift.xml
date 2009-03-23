@@ -70,7 +70,6 @@
 		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
 		where p.SITE_NAME = #siteName#
-		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</sql>
 
 	<select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
@@ -91,6 +90,7 @@
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
 		and g.CONSTITUENT_ID = #constituentId#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 		order by g.TRANSACTION_DATE desc
 	</select>
 
@@ -186,7 +186,6 @@
 		and g.GIFT_ID = #id#
 	</update>
 	
-	
 	<statement id="SELECT_GIFT_BY_SEARCH_TERMS" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT"/>
 		<isNotNull property="stringParams"> 
@@ -241,9 +240,6 @@
 		   )
 		</isNotNull>
 		limit 200
-		
 	</statement>
-	
-	
-	
+
 </sqlMap>

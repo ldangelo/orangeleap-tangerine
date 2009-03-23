@@ -64,7 +64,7 @@ public class MyAccountsController {
 
                 BigDecimal totalGiving = new BigDecimal(0);
 
-                List<Gift> giftList = giftService.readGifts(client.getId());
+                List<Gift> giftList = giftService.readMonetaryGifts(client.getId());
                 for (Gift gft : giftList) {
                     totalGiving = totalGiving.add(gft.getAmount() == null ? BigDecimal.ZERO : gft.getAmount());
                 }

@@ -50,7 +50,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 			workingMemory.insert(gift);
 
 			try {
-				List<Gift> gifts = gs.readGiftsByConstituentId(gift.getPerson().getId());
+				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId());
 				Iterator<Gift> giftsIter = gifts.iterator();
 				while (giftsIter.hasNext()) {
 					workingMemory.insert(giftsIter.next());

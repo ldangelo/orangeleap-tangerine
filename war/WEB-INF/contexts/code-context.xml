@@ -5,17 +5,23 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-    <bean id="codeHelper" class="com.orangeleap.tangerine.controller.code.CodeHelperController">
+    <bean id="codeHelperController" class="com.orangeleap.tangerine.controller.code.CodeHelperController">
         <property name="viewName" value="code/codeHelper"/>
         <property name="resultsOnlyView" value="code/codeHelperResults"/>
         <property name="tableView" value="code/codeTable"/>
         <property name="autoCompleteView" value="code/codeAutoComplete"/>
     </bean>
 
+    <bean id="codeHelperAdditionalController" class="com.orangeleap.tangerine.controller.code.CodeAdditionalFieldsController" parent="codeHelperController">
+        <property name="additionalFieldsView" value="code/codeAdditionalFields"/>
+        <property name="resultsOnlyView" value="code/codeAdditionalFieldsResults"/>
+    </bean>
+
     <bean id="codeUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-                <prop key="/codeHelper.htm">codeHelper</prop>
+                <prop key="/codeHelper.htm">codeHelperController</prop>
+                <prop key="/codeHelperAdditional.htm">codeHelperAdditionalController</prop>
 			</props>
 		</property>
 	</bean>

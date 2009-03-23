@@ -69,8 +69,8 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, new LookupOtherFieldHandler(appContext));
 
         fieldTypeToHandlerMap.put(FieldType.CODE, new CodeFieldHandler(appContext)); 
-
         fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, new CodeOtherFieldHandler(appContext));
+        fieldTypeToHandlerMap.put(FieldType.MULTI_CODE_ADDITIONAL, new CodeAdditionalFieldsHandler(appContext));
 
         fieldTypeToHandlerMap.put(FieldType.SPACER, new SpacerFieldHandler());
         initialized = true;

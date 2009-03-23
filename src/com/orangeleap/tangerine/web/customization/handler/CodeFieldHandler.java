@@ -33,7 +33,7 @@ public class CodeFieldHandler extends GenericFieldHandler {
     
     private String resolve(String picklistNameId, String itemName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("resolve: itemName = " + itemName);
+            logger.debug("resolve: picklistNameId = " + picklistNameId + " itemName = " + itemName);
         }
         String val = itemName;
         PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, itemName);

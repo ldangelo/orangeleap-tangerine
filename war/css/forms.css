@@ -462,13 +462,12 @@ div.lookupScrollLeft, div.lookupScrollRight { height: 100%; position: absolute; 
 div.lookupScrollLeft { left:0; }
 div.lookupScrollRight { left:248px; }
 
-div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div.multiQueryLookupOption, div.lookupWrapper div.queryLookupOption { background-color: #FFF; }
+div.lookupScrollContainer div.multiOption, div.lookupWrapper div.queryLookupOption { background-color: #FFF; }
 div.lookupWrapper div.queryLookupOption { width: 98%; padding-left: 4px; }
-div.lookupScrollContainer div.multiPicklistOption, div.lookupScrollContainer div.multiQueryLookupOption { padding: 1px 22px 1px 5px; width: 90%; }
-div.lookupScrollContainer div.multiPicklistOption:hover, div.lookupScrollContainer div.multiQueryLookupOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
+div.lookupScrollContainer div.multiOption { padding: 1px 22px 1px 5px; width: 90%; }
+div.lookupScrollContainer div.multiOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
 a.deleteOption { vertical-align: bottom; margin-left: 3px; visibility: hidden; }
-div.multiPicklistOption:hover a.deleteOption, div.queryLookupOption:hover a.deleteOption, div.multiQueryLookupOption:hover a.deleteOption, 
-	div.multiPicklistOption:focus a.deleteOption, div.queryLookupOption:focus a.deleteOption, div.multiQueryLookupOption:focus a.deleteOption { visibility: visible; } 
+div.multiOption:hover a.deleteOption, div.queryLookupOption:hover a.deleteOption, div.multiOption:focus a.deleteOption, div.queryLookupOption:focus a.deleteOption { visibility: visible; } 
 a.deleteOption img { vertical-align: top; }
 
 table.alignLeft td,

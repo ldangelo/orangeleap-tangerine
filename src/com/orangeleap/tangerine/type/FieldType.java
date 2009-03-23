@@ -11,6 +11,7 @@ public enum FieldType {
     LOOKUP,
     CODE,
     CODE_OTHER,
+    MULTI_CODE_ADDITIONAL,
     PICKLIST,
     PICKLIST_DISPLAY,
     MULTI_PICKLIST,

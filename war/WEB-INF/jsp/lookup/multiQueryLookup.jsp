@@ -30,6 +30,7 @@
 			        	<input type="text" value="" id="searchText" name="searchText"/>
 			        	<input type="button" id="findButton" name="findButton" value="<spring:message code='find'/>" class="saveButton" />
 			        </div>
+			        <div id="multiQueryLookupNoResultsDiv" class="noDisplay noResults"><spring:message code="searchNoResults"/></div>
 			        <table cellspacing="0" class="multiSelect noDisplay" id="multiQueryLookupResultsTable">
 			            <thead>
 			                <tr>

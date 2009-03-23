@@ -635,8 +635,8 @@ var Lookup = {
 			success: function(html){
 				$("#dialog").html(html);
 				Lookup.singleCommonBindings();
-				Lookup.codeLookupBindings();
-				Lookup.radioClickEventHandler();
+				Lookup.singleCodeLookupBindings();
+				Lookup.clickEventHandler();
 				$("#dialog").jqmShow();
 			},
 			error: function(html) {
@@ -647,26 +647,84 @@ var Lookup = {
 		return false;
 	},
 	
-	codeLookupBindings: function() {
-		$("#codeHelperLookup #doneButton").bind("click", function() {
-			Lookup.useCode();
-			$("#dialog").jqmHide();	
-		});
-		$("#codeHelperLookup #searchText").bind("keyup", function(event){
-			if (event.keyCode == 13) { // return key
-				Lookup.doQuery(Lookup.getCodeData);
+	loadCodeAdditionalPopup: function(elem) {
+		var $elem = $(elem);
+		var lookup = $elem.attr("lookup");
+		this.lookupCaller = $elem.siblings(".lookupScrollContainer").children(".multiLookupField");		
+		var queryString = this.serializeCodeAdditional(this.lookupCaller.siblings("input[type=hidden]"));
+		$.ajax({
+			type: "GET",
+			url: "codeHelperAdditional.htm",
+			data: "type=" + lookup + "&" + queryString,
+			success: function(html){
+				$("#dialog").html(html);
+				Lookup.multiCommonBindings();
+				Lookup.multiCodeLookupBindings();
+				Lookup.clickEventHandler();
+				$("#dialog").jqmShow();
+			},
+			error: function(html) {
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
 			}
 		});
-		$("#codeHelperLookup #findButton").bind("click", function(){
-			Lookup.doQuery(Lookup.getCodeData);
+	},
+	
+	serializeCodeAdditional: function($codeElem) {
+		var queryString = "selectedCodes=" + escape($codeElem.val());
+		var additionalElemId = $codeElem.attr("additionalFieldId");
+		if (additionalElemId) {
+			queryString += "&additionalCodes=" + escape($("#" + additionalElemId).val());
+		}
+		return queryString;
+	},
+	
+	singleCodeLookupBindings: function() {
+		$("form.codeForm #doneButton", $("#dialog")).bind("click", function() {
+			Lookup.useSingleCode();
+			$("#dialog").jqmHide();	
+		});
+		$("form.codeForm #searchText", $("#dialog")).bind("keyup", function(event){
+			if (event.keyCode == 13) { // return key
+				Lookup.doQuery(Lookup.getSingleCodeData);
+			}
+		});
+		$("form.codeForm #findButton", $("#dialog")).bind("click", function(){
+			Lookup.doQuery(Lookup.getSingleCodeData);
 		});		
 	},
 	
-	getCodeData: function() {
+	multiCodeLookupBindings: function() {
+		$("form.codeForm #doneButton", $("#dialog")).bind("click", function() {
+			Lookup.useMultipleCodes();
+			$("#dialog").jqmHide();	
+		});
+		$("form.codeForm #searchText", $("#dialog")).bind("keyup", function(event){
+			if (event.keyCode == 13) { // return key
+				Lookup.doMultiQuery(Lookup.getMultiCodeData);
+			}
+		});
+		$("form.codeForm #findButton", $("#dialog")).bind("click", function(){
+			Lookup.doMultiQuery(Lookup.getMultiCodeData);
+		});		
+	},
+	
+	getSingleCodeData: function() {
 		return { view: "resultsOnly", type: $("div.modalSearch input#type").val() };
 	},
 	
-	useCode: function() {
+	getMultiCodeData: function() {
+		var selectedCodesStr = "";
+		$("ul#selectedOptions li :checkbox").each(function() {
+			selectedCodesStr += $(this).attr("id") + ",";
+		});
+		if (selectedCodesStr.length > 0) {
+			selectedCodesStr = selectedCodesStr.substring(0, selectedCodesStr.length - 1); // remove the last ','
+		}
+		return { view: "resultsOnly", type: $("div.modalSearch input#type").val(), selectedCodes: selectedCodesStr };
+	},
+	
+	useSingleCode: function() {
 		var $elem = $('#codeResultsUl input[name=option]:checked');
 		var selectedVal = $elem.val();
 		var description = $elem.attr("displayvalue");
@@ -687,6 +745,36 @@ var Lookup = {
 				Lookup.lookupCaller.vkfade(true);
 			}
 		}
+	},
+	
+	useMultipleCodes: function() {
+		var codesStr = "";
+		var descriptions = new Array();
+		var codes = new Array();
+		$("ul#selectedOptions :checkbox", $("#dialog")).each(function() {
+			var $chkboxElem = $(this);
+			var thisCode = $chkboxElem.val();
+			codesStr += thisCode + ",";
+			codes[codes.length] = thisCode;
+			descriptions[descriptions.length] = $chkboxElem.attr("displayvalue");
+		});
+		codesStr = (codesStr.length > 0 ? codesStr.substring(0, codesStr.length - 1) : codesStr); // remove the trailing comma
+
+		Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(codesStr);
+		
+		Lookup.lookupCaller.children("div.multiCodeOption").remove();
+		
+		var $toBeCloned = Lookup.lookupCaller.parent().find("div.clone");
+		
+		for (var x = descriptions.length - 1; x >= 0; x--) {
+			var $cloned = $toBeCloned.clone(true);
+			$cloned.attr("id", "option-" + codes[x]);
+			$cloned.find("span").text(codes[x] + " - " + descriptions[x]);			
+			$cloned.removeClass("clone").removeClass("noDisplay");
+			$cloned.prependTo(Lookup.lookupCaller);
+			$cloned.vkfade(true);
+		} 
+		$("#dialog").jqmHide();					
 	},
 	
 	loadQueryLookup: function(elem, showOtherField) {
@@ -759,7 +847,7 @@ var Lookup = {
 		return { view: "resultsOnly", fieldDef: $("div.modalSearch input#fieldDef").val(), searchOption: $("#searchOption").val() };
 	},
 	
-	radioClickEventHandler: function() {
+	clickEventHandler: function() {
 		var $prevElem = null;
 		$("div.modalContent ul.queryUl", $("div.modalContentWrapper")).bind("click", function(event) {
 			var $target = $(event.target);
@@ -785,7 +873,7 @@ var Lookup = {
 		Lookup.showWaitIndicator();
 		$("#queryResultsDiv").load(url + "?" + queryString, dataFunction(), function() {
 			Lookup.hideWaitIndicator();
-			Lookup.radioClickEventHandler();
+			Lookup.clickEventHandler();
 		});
 	},
 	
@@ -988,8 +1076,7 @@ var Lookup = {
 		return false;
 	},
 	
-	doMultiQuery: function() {
-		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
+	getMultiQueryData: function() {
 		var selectedIdsStr = "";
 		$("ul#selectedOptions li :checkbox").each(function() {
 			selectedIdsStr += $(this).attr("displayvalue") + "|" + $(this).attr("id") + "^";
@@ -997,22 +1084,25 @@ var Lookup = {
 		if (selectedIdsStr.length > 0) {
 			selectedIdsStr = selectedIdsStr.substring(0, selectedIdsStr.length - 1); // remove the last '^'
 		}
+		return { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() };
+	},	
+	
+	doMultiQuery: function(dataFunction) {
+		var queryString = $("#searchOption").val() + "=" + escape($("#searchText").val());
+		var url = $("div.modalContent form").attr("action");
 		Lookup.showWaitIndicator();
-		$("#availableOptions").load("multiQueryLookup.htm?" + queryString, { fieldDef: $("#fieldDef").val(), selectedIds: selectedIdsStr, searchOption: $("#searchOption").val() }, Lookup.hideWaitIndicator);
+		$("#availableOptions").load(url + "?" + queryString, dataFunction(), Lookup.hideWaitIndicator);
 	},
 	
 	multiQueryLookupBindings: function() {		
 		$("#multiQueryLookupForm #searchText").bind("keyup", function(event) {
 			if (event.keyCode == 13) { // return key
-				Lookup.doMultiQuery();
+				Lookup.doMultiQuery(Lookup.getMultiQueryData);
 			}
 		});
 		$("#multiQueryLookupForm #findButton").bind("click", function() {
-			Lookup.doMultiQuery();
+			Lookup.doMultiQuery(Lookup.getMultiQueryData);
 		});		
-		$("#multiQueryLookupForm").bind("submit", function() {
-			return false;
-		});
 		$("#multiQueryLookupForm #doneButton").bind("click", function() {
 			var idsStr = "";
 			var names = new Array();
@@ -1075,6 +1165,9 @@ var Lookup = {
 				var ulElem = $("ul#" + optionType + "Options").get(0);
 				ulElem.scrollTop = ulElem.scrollHeight - $clone.height();
 			}
+		});
+		$("div.modalContent form", $("#dialog")).bind("submit", function() {
+			return false;
 		});
 		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
 			$("#dialog").jqmHide();					

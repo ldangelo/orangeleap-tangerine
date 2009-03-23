@@ -12,7 +12,7 @@
 </div>
 <div class="modalContentWrapper">
 	<div class="modalContent">
-		<form method="POST" action="codeHelper.htm" id="codeHelperLookup">
+		<form method="POST" action="codeHelper.htm" id="codeHelperLookup" class="codeForm">
 	        <div class="modalSearch">
 	        	<label for="searchText"><spring:message code="searchBy"/></label>
 	        	<select name="searchOption" id="searchOption">

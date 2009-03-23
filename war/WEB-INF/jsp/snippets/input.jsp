@@ -4,7 +4,7 @@
 	    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="hidden"/>
 	</c:when>
 	<c:otherwise>
-		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">queryLookupLi</c:if>"
+		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_CODE_ADDITIONAL'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">queryLookupLi</c:if>"
 			id="li-<c:out value='${sectionDefinition.sectionHtmlName}'/>-<c:out value='${fieldVO.fieldId}'/>">
 			<c:remove var="errorClass" scope="page" />
 			<c:if test="${commandObject != null}">
@@ -220,7 +220,7 @@
 							<c:set var="selectedRef" value="" scope="page"/>
 							<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 								<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-								<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
+								<div class='multiPicklistOption multiOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
 									id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
 									<c:out value='${fieldVO.displayValues[status.index]}'/>
 									<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
@@ -239,13 +239,13 @@
 							<c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">
 								<div id="div-additional-<c:out value='${fieldVO.fieldId}'/>" class="additionalOptions">
 									<c:forEach var="additionalValue" items="${fieldVO.additionalDisplayValues}">
-										<div class='multiPicklistOption' id=""> 
+										<div class='multiPicklistOption multiOption' id=""> 
 											<span><c:out value='${additionalValue}'/></span>
 											<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 										</div>
 									</c:forEach>
 								</div>
-								<div class='multiPicklistOption noDisplay clone' id=""> 
+								<div class='multiPicklistOption multiOption noDisplay clone' id=""> 
 									<span></span>
 									<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 								</div>
@@ -331,7 +331,7 @@
 									</c:otherwise>
 								</c:choose>
 								<c:set var="thisVal" value="${fn:trim(val)}"/>
-								<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>">
+								<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption multiOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>">
 									<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>
 									<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 								</div>
@@ -340,7 +340,7 @@
 							<div class="lookupScrollRight"></div>
 					    </div>
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldId}'/>" />
-						<div class="multiQueryLookupOption noDisplay clone" selectedId="">
+						<div class="multiQueryLookupOption multiOption noDisplay clone" selectedId="">
 							<a href="" target="_blank"></a>
 							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 						</div>		
@@ -405,6 +405,37 @@
 							alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					</div>
 				</c:when>
+				<c:when test="${fieldVO.fieldType == 'MULTI_CODE_ADDITIONAL'}">
+					<div class="lookupScrollTop"></div>
+					<div class="lookupScrollContainer">
+					    <div class="multiCode multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>">
+							<div class="lookupScrollLeft"></div>
+							<c:forEach var="code" items="${fieldVO.displayValues}">
+								<div class='multiCodeOption multiOption' id="option-<c:out value='${code}'/>">
+									<span><c:out value='${code}'/></span>
+									<a href="javascript:void(0)" onclick="Lookup.deleteCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+								</div>
+							</c:forEach>
+							<div id="div-additional-<c:out value='${fieldVO.fieldId}'/>" class="additionalOptions">
+								<c:forEach var="additionalValue" items="${fieldVO.additionalDisplayValues}">
+									<div class='multiCodeOption multiOption' id=""> 
+										<span><c:out value='${additionalValue}'/></span>
+										<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+									</div>
+								</c:forEach>
+							</div>
+							<div class="lookupScrollRight"></div>
+					    </div>
+					    <%-- The following hidden field must not lie within the multiCode div above --%>
+						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" additionalFieldId="<c:out value='${fieldVO.additionalFieldId}'/>"/>
+						<div class='multiCodeOption multiOption noDisplay clone' id=""> 
+							<span></span>
+							<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalCode(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+						</div>
+					</div>
+					<div class="lookupScrollBottom"></div>
+			        <a href="javascript:void(0)" onclick="Lookup.loadCodeAdditionalPopup(this)" class="multiLookupLink hideText" lookup="<c:out value='${fieldVO.fieldName}'/>" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+				</c:when>
 				<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
 		            <input type="hidden" name="_<c:out value="${fieldVO.fieldName}"/>" value="visible" />
 		            <input type="checkbox" value="true" 
@@ -454,7 +485,7 @@
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
 							<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-							<div class='multiPicklistOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
+							<div class='multiPicklistOption multiOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
 								id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
 								<c:out value='${fieldVO.displayValues[status.index]}'/></a>
 							</div>

@@ -21,6 +21,7 @@ public class CodeHelperController extends ParameterizableViewController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     public static final String VIEW = "view";
+    public static final String CODES = "codes";
 
     @Resource(name="picklistItemService")
     private PicklistItemService picklistItemService;
@@ -75,10 +76,16 @@ public class CodeHelperController extends ParameterizableViewController {
         if ("autoComplete".equals(request.getParameter(VIEW))) {
             view = this.autoCompleteView;
         }
-        if ("resultsOnly".equals(request.getParameter(VIEW))) {
-            view = this.resultsOnlyView;
+        if (isResultsOnlyView(request) != null) {
+            view = isResultsOnlyView(request);
         }
-        return new ModelAndView(view, "codes", items);
+        return new ModelAndView(view, CODES, items);
     }
-
+    
+    protected String isResultsOnlyView(HttpServletRequest request) {
+        if ("resultsOnly".equals(request.getParameter(VIEW))) {
+            return this.resultsOnlyView;
+        }
+        return null;
+    }
 }

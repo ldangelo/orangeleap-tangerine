@@ -2,7 +2,7 @@
 <c:choose>
 	<c:when test="${empty requestScope.availableCodes}">
 		<script type="text/javascript">
-			$("codeNoResultsDiv").removeClass("noDisplay");
+			$("#codeNoResultsDiv").removeClass("noDisplay");
 		</script>
 	</c:when>
 	<c:otherwise>

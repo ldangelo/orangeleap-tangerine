@@ -50,18 +50,17 @@ Ext.onReady(function() {
         emptyMsg: "No audit history to display"
     });
 
-
     Audit.grid = new Ext.grid.GridPanel({
 
         store: Audit.store,
         columns: [
-            {header: 'Date', widht: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
+            {header: 'Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
             {header: 'User', width: 65, dataIndex: 'user', sortable: true},
             {header: 'Type', width: 65, dataIndex: 'type', sortable: true},
             {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: Audit.descriptionRenderer},
             {header: 'Entity Type', width: 70,  dataIndex: 'objectType', sortable: true},
             {header: 'Entity ID', width: 50, align: 'right', dataIndex: 'objectId', sortable: true},
-            {header: 'Current', width: 55, sortable: false, menuDisabled: true, fixed: true, renderer: Audit.entityViewRenderer},
+            {header: 'Current', width: 55, sortable: false, menuDisabled: true, fixed: true, renderer: Audit.entityViewRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {
@@ -89,11 +88,11 @@ Ext.onReady(function() {
 });
 
 Audit.descriptionRenderer = function(v, meta, record) {
-    return '<span ext:qtitle="Event Description" ext:qwidth="250" ext:qtip="' + v + '">' + v + '</span>';
-};
+       return '<span ext:qtitle="Event Description" ext:qwidth="250" ext:qtip="' + v + '">' + v + '</span>';
+   };
 
 Audit.entityViewRenderer = function(val, meta, record) {
-    return '<a href="javascript:Audit.navigate(' + record.data.objectId + ')" title="View">View</a>';
+   return '<a href="javascript:Audit.navigate(' + record.data.objectId + ')" title="View">View</a>';
 };
 
 Audit.navigate = function(id) {

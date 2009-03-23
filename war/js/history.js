@@ -3,13 +3,14 @@
 
 Ext.onReady(function() {
 
-    $.getJSON("mruList.json", function(json) {
-        loadMRU(json.rows);
-    });
+    Ext.Ajax.request({url: 'mruList.json',success: loadMRU});
+
 });
 
 
-var loadMRU = function(arr) {
+var loadMRU = function(resp) {
+
+    var arr = Ext.decode(resp.responseText).rows;
 
     var historyList = $('#bookmarkHistory');
     historyList.empty();
@@ -32,9 +33,11 @@ var loadMRU = function(arr) {
         // we return here so that the updated list is what gets rendered when
         // the ajax call hits this method again
         if (addIt) {
-            $.getJSON("mruUpdate.json", {accountNumber: pId[1]}, function(json) {
-                loadMRU(json.rows);
-            });
+
+            Ext.Ajax.request({url: 'mruUpdate.json',
+                params: {accountNumber: pId[1]},
+                success: loadMRU});
+           
             return;
         }
     }
@@ -50,7 +53,7 @@ var loadMRU = function(arr) {
             '</tpl>',
             '</a></li>');
 
-    var maxWidth = 0;
+    var maxWidth = 100;
     var tm = Ext.util.TextMetrics.createInstance('bookmarkHistory');
     for (var j = 0; j < arr.length; j++) {
         historyList.append(template.apply(arr[j]));
@@ -64,7 +67,7 @@ var loadMRU = function(arr) {
         if (newWidth > maxWidth) maxWidth = newWidth;
     }
 
-    $('#bookmarkHistory').width(maxWidth + 20);
+    historyList.width(maxWidth + 20);
 
 
 };

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="DASHBOARD">
+
+	<resultMap id="DASHBOARD_ITEM_RESULT" class="com.orangeleap.tangerine.domain.customization.DashboardItem" groupBy="id">
+		<result property="id" column="DASHBOARD_ITEM_ID" jdbcType="BIGINT" />
+		<result property="type" column="DASHBOARD_ITEM_TYPE" jdbcType="VARCHAR" />
+		<result property="title" column="DASHBOARD_ITEM_TITLE" jdbcType="VARCHAR" />
+		<result property="url" column="URL" jdbcType="VARCHAR" />
+		<result property="order" column="ITEM_ORDER" jdbcType="BIGINT" />
+		<result property="roles" column="ROLES"	jdbcType="VARCHAR" />
+		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+        <result property="datasets" resultMap="DASHBOARD.DASHBOARD_ITEM_DATASET_RESULT" />
+	</resultMap>
+
+	<resultMap id="DASHBOARD_ITEM_DATASET_RESULT" class="com.orangeleap.tangerine.domain.customization.DashboardItemDataset" >
+		<result property="id" column="DASHBOARD_ITEM_DATASET" jdbcType="BIGINT" />
+		<result property="itemId" column="DASHBOARD_ITEM_ID" jdbcType="BIGINT" />
+		<result property="num" column="DATASET_NUM" jdbcType="BIGINT" />
+		<result property="label" column="DATASET_LABEL" jdbcType="BIGINT" />
+		<result property="sqltext" column="SQL_TEXT" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="SELECT_DASHBOARD_ITEMS_FRAGMENT">
+		select
+		di.DASHBOARD_ITEM_ID,
+ 		di.DASHBOARD_ITEM_TYPE,
+ 		di.DASHBOARD_ITEM_TITLE,
+ 		di.URL,
+ 		di.ITEM_ORDER,
+ 		di.ROLES,
+ 		di.SITE_NAME,
+ 		did.DASHBOARD_ITEM_DATASET,
+ 		did.DASHBOARD_ITEM_ID,
+ 		did.DATASET_NUM,
+ 		did.DATASET_LABEL,
+ 		did.SQL_TEXT
+ 		from DASHBOARD_ITEM di
+		inner join DASHBOARD_ITEM_DATASET did on di.DASHBOARD_ITEM_ID = did.DASHBOARD_ITEM_ID
+ 		where 
+ 		di.SITE_NAME = #siteName#
+ 		order by di.ITEM_ORDER, did.DATASET_NUM
+ 	</sql>
+	
+</sqlMap>

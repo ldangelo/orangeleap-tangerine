@@ -368,7 +368,7 @@ p.gridActions #subTotal {
 form input[type=text], form input.text {
 	height: 16px;
 }
-form table.tablesorter input.number, form table.tablesorter input.percentage {
+form table.tablesorter input.number, form table.tablesorter input.amount, form table.tablesorter input.percentage {
 	text-align:right; 
 }
 table.tablesorter col.code { width: 35%; }

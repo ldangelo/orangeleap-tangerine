@@ -20,9 +20,9 @@ public interface GiftService {
 
     public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent);
 
-    public List<Gift> readGifts(Person constituent);
+    public List<Gift> readMonetaryGifts(Person constituent);
 
-    public List<Gift> readGifts(Long constituentId);
+    public List<Gift> readMonetaryGifts(Long constituentId);
 
     public List<Gift> searchGifts(Map<String, Object> params);
 
@@ -32,7 +32,7 @@ public interface GiftService {
 
     public Gift refundGift(Long giftId);
 
-    public List<Gift> readGiftsByConstituentId(Long constituentId);
+    public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
 //    public List<Gift> readAllGifts();
 

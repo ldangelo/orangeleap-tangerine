@@ -68,6 +68,45 @@ CREATE TABLE `CONSTITUENT` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+# Dump of table DASHBOARD_ITEM
+# Corresponds to a graph on the dashboard
+# If site is null applies to all sites.  If role is null applies to all roles.
+# Type is "Pie" (can only have one dataset), "Area", "Bar", or "Rss" (uses URL)
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `DASHBOARD_ITEM`;
+
+CREATE TABLE `DASHBOARD_ITEM` (
+  `DASHBOARD_ITEM_ID` bigint(20) NOT NULL auto_increment,
+  `DASHBOARD_ITEM_TYPE` varchar(255) NOT NULL,
+  `DASHBOARD_ITEM_TITLE` varchar(255) NOT NULL,
+  `URL` varchar(255) default NULL,
+  `ITEM_ORDER` int(11) default NULL,
+  `ROLES` varchar(255) default NULL,
+  `SITE_NAME` varchar(255) default NULL,
+  PRIMARY KEY  (`DASHBOARD_ITEM_ID`),
+  KEY `FK_DASHBOARD_ITEM` (`SITE_NAME`),
+  CONSTRAINT `FK_DASHBOARD_ITEM` FOREIGN KEY (`SITE_NAME`) REFERENCES `SITE` (`SITE_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+# Dump of table DASHBOARD_ITEM
+# SQL must return "XLABEL", "DATA_VALUE" column names in order
+# Multiple datasets for display in the same dashboard item must match lables and number of results
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `DASHBOARD_ITEM_DATASET`;
+
+CREATE TABLE `DASHBOARD_ITEM_DATASET` (
+  `DASHBOARD_ITEM_DATASET_ID` bigint(20) NOT NULL auto_increment,
+  `DASHBOARD_ITEM_ID` bigint(20) NOT NULL,
+  `DATASET_NUM` int(11) default 0,
+  `SQL` text NOT NULL,
+  PRIMARY KEY  (`DASHBOARD_ITEM_DATASET_ID`),
+  KEY `FK_DASHBOARD_ITEM_DATASET` (`DASHBOARD_ITEM_ID`),
+  CONSTRAINT `FK_DASHBOARD_ITEM_DATASET` FOREIGN KEY (`DASHBOARD_ITEM_ID`) REFERENCES `DASHBOARD_ITEM` (`DASHBOARD_ITEM_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 # Dump of table PICKLIST

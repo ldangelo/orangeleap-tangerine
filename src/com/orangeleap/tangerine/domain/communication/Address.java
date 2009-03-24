@@ -6,7 +6,6 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.type.ActivationType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class Address extends AbstractCommunicationEntity {
     
@@ -99,6 +98,11 @@ public class Address extends AbstractCommunicationEntity {
         }
         return shortDisplay;
     }
+
+    public boolean isFieldEntered() {
+        return StringUtils.hasText(addressLine1) || StringUtils.hasText(addressLine2) || StringUtils.hasText(addressLine3) || StringUtils.hasText(city) || 
+            StringUtils.hasText(stateProvince) || StringUtils.hasText(postalCode) || StringUtils.hasText(country);
+     }
 
     /**
      * Check if this is a dummy object; This is not a dummy object all required fields (addressLine1, city, stateProvince, postalCode, country) are populated

@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Email;
 
 public class EmailValidator extends AbstractCommunicationValidator<Email> {
@@ -35,6 +36,10 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
     		email = ((EmailAware) target).getEmail();
     		errors.setNestedPath("email");
     	}
+        else if (target instanceof AbstractCommunicatorEntity) {
+            email = ((AbstractCommunicatorEntity) target).getPrimaryEmail();
+            errors.setNestedPath("primaryEmail");
+        }
 
     	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
     	validateDates(email, errors);

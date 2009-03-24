@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
 
 public class AddressValidator extends AbstractCommunicationValidator<Address> {
@@ -35,11 +36,16 @@ public class AddressValidator extends AbstractCommunicationValidator<Address> {
             address = ((AddressAware) target).getAddress();
             errors.setNestedPath("address");
         }
+        else if (target instanceof AbstractCommunicatorEntity) {
+            address = ((AbstractCommunicatorEntity) target).getPrimaryAddress();
+            errors.setNestedPath("primaryAddress");
+        }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressLine1", "invalidAddressLine1", "Address Line 1 is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressLine1", "invalidAddressLine1", "Address Line 1 is required"); // TODO: why are the error codes not in the messageResource table?
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city", "invalidCity", "City is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State/Province is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Postal/Zip Code is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "country", "invalidCountry", "Country is required");
         
         validateDates(address, errors);
         errors.setNestedPath(inPath);

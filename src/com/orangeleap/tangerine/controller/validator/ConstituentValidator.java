@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.controller.validator;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +16,9 @@ public class ConstituentValidator implements Validator {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="addressValidator")
+    private AddressValidator addressValidator;
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
@@ -23,6 +28,17 @@ public class ConstituentValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Person constituent = (Person)target;
+        validateConstituentAddress(constituent, errors);
+        validateOrganization(constituent, errors);
+    }
+    
+    private void validateConstituentAddress(Person constituent, Errors errors) {
+        if (constituent.getPrimaryAddress() != null && constituent.getPrimaryAddress().isFieldEntered()) {
+            addressValidator.validateAddress(constituent, errors);
+        }
+    }
+    
+    private void validateOrganization(Person constituent, Errors errors) {
         if (constituent.isOrganization()) {
             Object minMatch = constituent.getCustomFieldValue(Person.ORGANIZATION_MINIMUM_GIFT_MATCH);
             Object maxMatch = constituent.getCustomFieldValue(Person.ORGANIZATION_MAXIMUM_GIFT_MATCH);

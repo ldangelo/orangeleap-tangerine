@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Phone;
 
 public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
@@ -34,6 +35,10 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
         else if (target instanceof PhoneAware) {
             phone = ((PhoneAware) target).getPhone();
             errors.setNestedPath("phone");
+        }
+        else if (target instanceof AbstractCommunicatorEntity) {
+            phone = ((AbstractCommunicatorEntity) target).getPrimaryPhone();
+            errors.setNestedPath("primaryPhone");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");

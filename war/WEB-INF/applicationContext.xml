@@ -72,7 +72,7 @@
 	<bean id="dataSource" class="com.orangeleap.tangerine.util.TangerineDataSource">
 		<property name="dataSource" ref="dataSource-pooled" />
 		<property name="tangerineUserHelper" ref="tangerineUserHelper" />
-		<property name="splitDatabases" value="false" />
+		<property name="splitDatabases" value="${mysql.splitDatabases}" />
 	</bean>
 	
 	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

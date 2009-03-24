@@ -26,6 +26,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentHistory.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/communicationHistory.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/dashboard.sql"/>
 	     	
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>

@@ -94,7 +94,7 @@ CREATE TABLE `DASHBOARD_ITEM` (
 
 
 # Dump of table DASHBOARD_ITEM
-# SQL must return "XLABEL", "DATA_VALUE" column names in order
+# SQL must return "LABEL", "DATA_VALUE" column names in order
 # Multiple datasets for display in the same dashboard item must match lables and number of results
 # ------------------------------------------------------------
 
@@ -104,7 +104,8 @@ CREATE TABLE `DASHBOARD_ITEM_DATASET` (
   `DASHBOARD_ITEM_DATASET_ID` bigint(20) NOT NULL auto_increment,
   `DASHBOARD_ITEM_ID` bigint(20) NOT NULL,
   `DATASET_NUM` int(11) default 0,
-  `SQL` text NOT NULL,
+  `DATASET_LABEL` varchar(255) NOT NULL,
+  `SQL_TEXT` text NOT NULL,
   PRIMARY KEY  (`DASHBOARD_ITEM_DATASET_ID`),
   KEY `FK_DASHBOARD_ITEM_DATASET` (`DASHBOARD_ITEM_ID`),
   CONSTRAINT `FK_DASHBOARD_ITEM_DATASET` FOREIGN KEY (`DASHBOARD_ITEM_ID`) REFERENCES `DASHBOARD_ITEM` (`DASHBOARD_ITEM_ID`)

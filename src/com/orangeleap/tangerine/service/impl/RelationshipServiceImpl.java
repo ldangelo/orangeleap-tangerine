@@ -65,7 +65,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		String key = e.getKey();
     		FieldDefinition fd = e.getValue();
-    		boolean isReferenceTypeField = fd.getFieldType() == FieldType.QUERY_LOOKUP || fd.getFieldType() == FieldType.MULTI_QUERY_LOOKUP;
+    		boolean isReferenceTypeField = fd.getFieldType() == FieldType.QUERY_LOOKUP || fd.getFieldType() == FieldType.MULTI_QUERY_LOOKUP || fd.getFieldType() == FieldType.QUERY_LOOKUP_OTHER;
     		if (isReferenceTypeField && fd.isCustom()) {
     			
     			// Determine if there is a relationship defined with another field.
@@ -136,7 +136,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     private void validateIds(String customFieldName, List<Long> ids) {
     	for (Long id : ids) {
     		Person person = constituentDao.readConstituentById(id);
-    		if (person == null || !person.getSite().getName().equals(getSiteName())) throw new RuntimeException("Invalid id "+id+" for "+customFieldName);
+    		if (person == null || !person.getSite().getName().equals(getSiteName())) {
+                throw new RuntimeException("Invalid id "+id+" for "+customFieldName);
+            }
     	}
     }
     

@@ -85,9 +85,8 @@
 		<property name="maxWait" value="10000"/>
 		<property name="defaultAutoCommit" value="false"/>
 
-		
 <!--		<property name="testOnBorrow"><value>true</value></property>-->
-<!--		<property name="validationQuery"><value>select * from DUAL</value></property>-->
+<!--		<property name="validationQuery"><value>select 1</value></property>-->
 <!--		<property name="testWhileIdle"><value>true</value></property>-->
 	</bean> 
 	

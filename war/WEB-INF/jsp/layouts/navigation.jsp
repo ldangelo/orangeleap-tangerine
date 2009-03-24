@@ -49,8 +49,8 @@
                 <c:if test="${viewingPerson}">
 					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${person.firstLast}"/>...</li>
                     <li><a href="giftList.htm?personId=${person.id}"><spring:message code="viewMenu.gifts"/></a></li>
-                    <li><a href="pledgeList.htm?personId=${person.id}&type=pledge"><spring:message code="viewMenu.pledges"/></a></li>
                     <li><a href="recurringGiftList.htm?personId=${person.id}&type=recurringGift"><spring:message code="viewMenu.recurringGifts"/></a></li>
+                    <li><a href="pledgeList.htm?personId=${person.id}&type=pledge"><spring:message code="viewMenu.pledges"/></a></li>
                     <li><a href="giftInKindList.htm?personId=${person.id}"><spring:message code="viewMenu.giftsInKind"/></a></li>
                     <li><a href="paymentHistory.htm?personId=${person.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
                     <li><a href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
@@ -70,7 +70,7 @@
 						<li><a href="pledge.htm?personId=${person.id}&type=pledge"><spring:message code="pledge"/></a></li>
 						<li><a href="giftInKind.htm?personId=${person.id}"><spring:message code="giftInKind"/></a></li>
 						<li><a href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethod"/></a></li>
-						<li><a href="addressManager.htm?personId=${person.id}"><spring:message code="address"/></a></li>
+                    	<li><a href="communicationHistory.htm?personId=${person.id}"><spring:message code="touchPoint"/></a></li>
 						<%-- Removed for BETA
 						<li>
 							<a href="membership.htm?personId=${person.id}&type=membership"><spring:message code="membership"/></a>

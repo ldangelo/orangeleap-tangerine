@@ -47,6 +47,7 @@
                 <ul>
                 <li><a href="personList.htm"><spring:message code="viewMenu.personList"/></a></li>
                 <c:if test="${viewingPerson}">
+					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${person.firstLast}"/>...</li>
                     <li><a href="giftList.htm?personId=${person.id}"><spring:message code="viewMenu.gifts"/></a></li>
                     <li><a href="pledgeList.htm?personId=${person.id}&type=pledge"><spring:message code="viewMenu.pledges"/></a></li>
                     <li><a href="recurringGiftList.htm?personId=${person.id}&type=recurringGift"><spring:message code="viewMenu.recurringGifts"/></a></li>

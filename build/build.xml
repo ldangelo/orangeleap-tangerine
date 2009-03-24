@@ -116,6 +116,7 @@
 	</target>
 
 	<target name="9.3 Load Schema">
+		
 		     <sql driver="${mysql.db.driver}"
 			          url="${mysql.db.url}"
 			          userid="${mysql.db.user}"
@@ -126,6 +127,17 @@
 		     	>
 			    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 		    </sql>
+		
+			<sql driver="${mysql.db.driver}"
+			          url="${mysql.db.url}"
+			          userid="${mysql.db.user}"
+			          password="${mysql.db.pw}"
+			          encoding="UTF-8"
+			          classpath="${mysql.db.classpath}"
+			     	  delimiter="$$">
+			    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
+			</sql>		
+		
 	</target>
 
 	<target name="reloadDb">

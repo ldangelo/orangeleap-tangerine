@@ -124,7 +124,6 @@
 			          classpath="${mysql.db.classpath}"
 	 	              delimiter=";"
 		     	>
-			    <transaction src="${basedir}/db/clearSchema.sql"/>
 			    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 		    </sql>
 	</target>

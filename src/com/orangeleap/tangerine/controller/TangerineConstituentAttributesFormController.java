@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -157,6 +159,13 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected void refDataAddresses(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindAddress) {
             List<Address> addresses = addressService.filterValid(this.getConstituentId(request));
+            Address selectedAddress = null;
+            if (command instanceof AddressAware) {
+                selectedAddress = ((AddressAware)command).getSelectedAddress();
+            }
+            if (addresses != null) {
+                filterInactiveNotSelected(selectedAddress, addresses);
+            }
             refData.put(StringConstants.ADDRESSES, addresses);
         }
     }
@@ -165,6 +174,13 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected void refDataEmails(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindEmail) {
             List<Email> emails = emailService.filterValid(this.getConstituentId(request));
+            Email selectedEmail = null;
+            if (command instanceof AddressAware) {
+                selectedEmail = ((EmailAware)command).getSelectedEmail();
+            }
+            if (emails != null) {
+                filterInactiveNotSelected(selectedEmail, emails);
+            }
             refData.put(StringConstants.EMAILS, emails);
         }
     }
@@ -173,7 +189,26 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     protected void refDataPhones(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindPhone) {
             List<Phone> phones = phoneService.filterValid(this.getConstituentId(request));
+            Phone selectedPhone = null;
+            if (command instanceof PhoneAware) {
+                selectedPhone = ((PhoneAware)command).getSelectedPhone();
+            }
+            if (phones != null) {
+                filterInactiveNotSelected(selectedPhone, phones);
+            }
             refData.put(StringConstants.PHONES, phones);
+        }
+    }
+    
+    private static <T extends AbstractCommunicationEntity> void filterInactiveNotSelected(T command, List<T> masterList) {
+        for (Iterator<T> iterator = masterList.iterator(); iterator.hasNext();) {
+            T entity = iterator.next();
+            if (command == null && entity.isInactive()) {
+                iterator.remove();
+            }
+            else if (command != null && entity.isInactive() && !entity.getId().equals(command.getId())) {
+                iterator.remove();
+            }
         }
     }
     

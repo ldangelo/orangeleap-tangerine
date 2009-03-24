@@ -120,9 +120,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     @Override
     public T filterByPrimary(List<T> entities, Long constituentId) {
-    	
         List<T> activeEntities = filterByActive(entities);
-        
         for (T entity : activeEntities) {
             if (entity.isPrimary() == true) {
                 return entity;
@@ -130,17 +128,18 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         // An inactive entity cannot be a primary, so return a blank one.
         return createEntity(constituentId);        
-
     }
 
     @Override
     public T getPrimary(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getPrimary: constituentId = " + constituentId);
+        }
         List<T> entities = readByConstituentId(constituentId);
         return filterByPrimary(entities, constituentId);
     }
     
-    protected List<T> filterByActive(List<T> entities)
-    {
+    protected List<T> filterByActive(List<T> entities) {
         List<T> activeEntities = new ArrayList<T>();
         for (T entity : entities) {
             if (entity.isInactive() == false) {

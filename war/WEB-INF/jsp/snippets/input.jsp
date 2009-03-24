@@ -91,7 +91,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${addresses}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.address.userCreated && opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.address.userCreated && opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
 						</c:forEach>
 						<c:if test="${not empty addresses}">
 							</optgroup>
@@ -118,7 +118,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${phones}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.phone.userCreated && opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.phone.userCreated && opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
 						</c:forEach>
 						<c:if test="${not empty phones}">
 							</optgroup>
@@ -145,7 +145,7 @@
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${emails}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.email.userCreated && opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/></option>
+							<option value="${opt.id}" <c:if test='${!fieldVO.model.email.userCreated && opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
 						</c:forEach>
 						<c:if test="${not empty emails}">
 							</optgroup>

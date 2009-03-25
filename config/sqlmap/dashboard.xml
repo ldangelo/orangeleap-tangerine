@@ -21,7 +21,12 @@
 		<result property="sqltext" column="SQL_TEXT" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<sql id="SELECT_DASHBOARD_ITEMS_FRAGMENT">
+	<resultMap id="DASHBOARD_ITEM_DATA_RESULT" class="com.orangeleap.tangerine.domain.customization.DashboardItemDataValue" >
+		<result property="label" column="LABEL" jdbcType="VARCHAR" />
+		<result property="dataValue" column="DATA_VALUE" jdbcType="BIGINT" />
+	</resultMap>
+
+	<select id="SELECT_DASHBOARD_ITEM" resultMap="DASHBOARD_ITEM_RESULT" parameterClass="map">
 		select
 		di.DASHBOARD_ITEM_ID,
  		di.DASHBOARD_ITEM_TYPE,
@@ -40,6 +45,11 @@
  		where 
  		di.SITE_NAME = #siteName#
  		order by di.ITEM_ORDER, did.DATASET_NUM
- 	</sql>
+ 	</select>
+ 	
+	<select id="SELECT_DASHBOARD_ITEM_DATA" resultMap="DASHBOARD_ITEM_DATA_RESULT" parameterClass="map">
+	$sql$
+	</select>
+ 	
 	
 </sqlMap>

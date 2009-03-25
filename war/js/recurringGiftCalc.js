@@ -34,9 +34,9 @@ RecurringGift.GiftCalculator = function() {
         }
 
         var span = interval[fields.frequency];
-        var period = Math.floor(fields.diff/span);
         // always assume at least one interval, even if calculated period is zero
-        return period == 0? fields.total : (period*fields.total).toFixed(2);
+        var period = Math.floor(fields.diff/span) + 1;
+        return (period * fields.total).toFixed(2);
     };
 
     // PRIVATE: returns an object with the value of the form fields we need for the calc

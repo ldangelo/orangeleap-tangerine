@@ -285,5 +285,10 @@
             <artifact name="xmlunit" type="jar" ext="jar"/>
         </dependency>
 
+        <dependency org="joda-time" name="joda-time" transitive="false" rev="1.6">
+            <artifact name="joda-time" type="jar" ext="jar"/>
+        </dependency>
+
+
 	</dependencies>
 </ivy-module>

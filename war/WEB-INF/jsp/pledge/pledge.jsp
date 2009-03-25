@@ -1,6 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <spring:message code='enterPledge' var="titleText" />
 <tiles:insertDefinition name="base">
+    <tiles:putAttribute name="customHeaderContent" type="string">
+        <script type="text/javascript" src="js/recurringGiftCalc.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
@@ -137,6 +140,12 @@
 							<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchGiftValue'/></span> 
 						</div>
 						<div class="value" id="subTotal">0</div>
+                        <span id="totalContributionInfo">
+                        <div id="totalContributionText">
+                            <spring:message code="totalContribution"/>
+                        </div>
+                        <div class="value" id="totalContribution">0</div>
+                        </span>
 					</div>
 				</c:forEach>
 				<div class="formButtonFooter personFormButtons">

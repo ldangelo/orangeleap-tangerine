@@ -52,8 +52,6 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         	data.getColumnTitles().add(ds.getLabel());
         	data.getColumnTypes().add("number");
         	
-        	String sql = ds.getSqltext();
-        	sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
         	List<DashboardItemDataValue> values = dashboardDao.getDashboardQueryResults(ds);
         	
         	List<BigDecimal> datapointlist = new ArrayList<BigDecimal>();

@@ -32,9 +32,13 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
             logger.debug("getDashboard");
         }
         Map<String, Object> params = setupParams();
+
         // TODO could add filter for logged-in user/roles if desired
 
         List<DashboardItem> rows = (List<DashboardItem>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM", params);
+        
+        // TODO Could filter site-specific overrides here based on item order
+        
         return rows;
 	}
 	
@@ -45,7 +49,11 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
             logger.debug("getDashboardQueryResults");
         }
         Map<String, Object> params = setupParams();
-        params.put("sql", ds.getSqltext());
+
+        String sql = ds.getSqltext();
+    	sql = sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
+        
+        params.put("sql", sql);
         List<DashboardItemDataValue> rows = (List<DashboardItemDataValue>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM_DATA", params);
         return rows;
 	}

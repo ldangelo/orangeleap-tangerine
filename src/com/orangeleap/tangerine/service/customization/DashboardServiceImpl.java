@@ -20,6 +20,8 @@ import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 @Service("dashboardService")
 public class DashboardServiceImpl extends AbstractTangerineService implements DashboardService {
 
+	public static final int DATA_POINT_LIMIT = 12;
+	
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -43,10 +45,11 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         
     	// Populate data structures for google js graphing library
         DashboardData data = new DashboardData();
+    	data.setGraphType(item.getType());
         data.setTitle(item.getTitle());
+        data.setUrl(item.getUrl());
     	data.getColumnTitles().add("");
     	data.getColumnTypes().add("string");
-    	data.setGraphType(item.getType());
         for (DashboardItemDataset ds : item.getDatasets()) {
         	
         	data.getColumnTitles().add(ds.getLabel());
@@ -57,6 +60,7 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         	List<BigDecimal> datapointlist = new ArrayList<BigDecimal>();
         	List<String> labellist = new ArrayList<String>();
         	for (DashboardItemDataValue value : values) {
+        		if (datapointlist.size() >= DATA_POINT_LIMIT) break;
         		datapointlist.add(value.getDataValue());
         		labellist.add(value.getLabel());
         	}

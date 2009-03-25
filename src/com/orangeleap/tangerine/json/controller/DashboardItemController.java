@@ -40,9 +40,19 @@ public class DashboardItemController {
     		itemsData.add(data);
     	}
     	
+    	if (logger.isDebugEnabled()) {
+    		debugPrint(itemsData);
+    	}
+    	
         ModelMap map = new ModelMap();
         map.put("itemsData", itemsData);
         return map;
+    }
+    
+    private void debugPrint(List<DashboardData> itemsData) {
+    	for (DashboardData data : itemsData) {
+    		logger.debug(data);
+    	}
     }
 
 }

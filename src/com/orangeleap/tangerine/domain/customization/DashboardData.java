@@ -4,11 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 // This structure provides data to google.visualization.DataTable
 public class DashboardData {
 	
 	private String title = "";
 	private String graphType = "";
+	private String url = "";
 	private List<String> columnTypes = new ArrayList<String>();
 	private List<String> columnTitles = new ArrayList<String>();
 	private List<String> rowLabels = new ArrayList<String>();
@@ -25,6 +28,12 @@ public class DashboardData {
 	}
 	public String getGraphType() {
 		return graphType;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getUrl() {
+		return url;
 	}
 	public void setColumnTypes(List<String> columnTypes) {
 		this.columnTypes = columnTypes;
@@ -49,6 +58,11 @@ public class DashboardData {
 	}
 	public List<List<BigDecimal>> getRowData() {
 		return rowData;
+	}
+	
+	
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);	
 	}
 	
 }

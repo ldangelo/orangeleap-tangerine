@@ -23,19 +23,11 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName">
-			<value>org.hsqldb.jdbcDriver</value>
-		</property>
-		<property name="url">
-			<value>jdbc:hsqldb:mem:MPowerOpen</value>
-		</property>
-		<property name="username">
-			<value>sa</value>
-		</property>
-		<property name="password">
-			<value></value>
-		</property>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/orangeleaptest" />
+		<property name="username" value="orangeleap"/>
+		<property name="password" value="orangeleap"/>
 	</bean>
 	
 	<!-- TODO: to be replaced with mock -->

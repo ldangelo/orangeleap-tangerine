@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,11 +49,12 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
         if (logger.isDebugEnabled()) {
             logger.debug("getDashboardQueryResults");
         }
-        Map<String, Object> params = setupParams();
 
         String sql = ds.getSqltext();
-    	sql = sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
-        
+        if (sql == null) return new ArrayList<DashboardItemDataValue>();
+        sql = sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
+
+        Map<String, Object> params = setupParams();
         params.put("sql", sql);
         List<DashboardItemDataValue> rows = (List<DashboardItemDataValue>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM_DATA", params);
         return rows;

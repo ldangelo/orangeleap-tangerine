@@ -41,7 +41,7 @@
  		did.DATASET_LABEL,
  		did.SQL_TEXT
  		from DASHBOARD_ITEM di
-		inner join DASHBOARD_ITEM_DATASET did on di.DASHBOARD_ITEM_ID = did.DASHBOARD_ITEM_ID
+		left outer join DASHBOARD_ITEM_DATASET did on di.DASHBOARD_ITEM_ID = did.DASHBOARD_ITEM_ID
  		where 
  		(di.SITE_NAME = #siteName# or di.SITE_NAME is null)
  		order by di.SITE_NAME, di.ITEM_ORDER, did.DATASET_NUM

@@ -35,8 +35,28 @@
 	          classpath="${mysql.db.classpath}">
 
 	     	<transaction src="${basedir}/db/prod/tangerine.ddl"/>
+	     </sql>
+         <sql driver="${mysql.db.driver}"
+	          url="${test.mysql.db.schema}"
+	          userid="${mysql.db.user}"
+	          password="${mysql.db.pw}"
+	          encoding="UTF-8"
+	          classpath="${mysql.db.classpath}"
+              delimiter="$$">
+			    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
+		 </sql>
+         <sql driver="${mysql.db.driver}"
+	          url="${test.mysql.db.schema}"
+	          userid="${mysql.db.user}"
+	          password="${mysql.db.pw}"
+	          encoding="UTF-8"
+	          classpath="${mysql.db.classpath}">
+
 	     	<transaction src="${basedir}/db/test/testData.sql"/>
 	     </sql>
+
+
+
 	</target>
 	
 	<target name="buildall" depends="init">

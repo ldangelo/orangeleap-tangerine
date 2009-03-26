@@ -18,8 +18,17 @@
 	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
-		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
 	    </sql>
+		<sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${mysql.db.classpath}"
+		     	  delimiter="$$">
+		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
+		</sql>		
+
 
 		
 		<!-- Load base data only -->

@@ -8,4 +8,4 @@ create schema company2;
 DROP schema IF EXISTS `company3`;
 create schema company3;
 
-use orangeleap;
+

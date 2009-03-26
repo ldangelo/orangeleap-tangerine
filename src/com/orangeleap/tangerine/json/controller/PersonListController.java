@@ -25,6 +25,7 @@ public class PersonListController {
 
     static {
         NAME_MAP.put("id", "CONSTITUENT_ID");
+        NAME_MAP.put("customid", "CUSTOM_ID");
         NAME_MAP.put("last", "LAST_NAME");
         NAME_MAP.put("first", "FIRST_NAME");
         NAME_MAP.put("organization", "ORGANIZATION_NAME");
@@ -70,6 +71,7 @@ public class PersonListController {
         // keys should map with the NAME_MAP constant
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", constituent.getId());
+        map.put("customid", constituent.getCustomId());
         map.put("last", constituent.getLastName());
         map.put("first", constituent.getFirstName());
         map.put("organization", constituent.getOrganizationName());

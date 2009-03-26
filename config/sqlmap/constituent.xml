@@ -21,14 +21,16 @@
 		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+		<result property="customId" column="CUSTOM_ID" jdbcType="VARCHAR" />
+        <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
+
 	</resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
     	p.CONSTITUENT_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
 		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
-		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME
+		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME, p.CUSTOM_ID
     </sql>
     
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
@@ -74,11 +76,11 @@
 		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
 		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
-		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME)
+		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME, CUSTOM_ID)
 		values (#constituentIndividualRoles#,
 		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lastName#, #legalName#,
 		#loginId#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
-		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#)
+		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#, GENERATEID(#site.name#))
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

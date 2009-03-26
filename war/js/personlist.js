@@ -10,6 +10,7 @@ Ext.onReady(function(){
     	root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
+            {name: 'customid', mapping: 'customid', type: 'string'},
             {name: 'first', mapping: 'first', type: 'string'},
             {name: 'last', mapping: 'last', type: 'string'},
             {name: 'organization', mapping: 'organization', type: 'string'},
@@ -34,7 +35,7 @@ Ext.onReady(function(){
         store: OrangeLeap.person.store,
         columns: [
             {header: 'View', width: 40, sortable: false, menuDisabled: true, fixed: true, renderer: OrangeLeap.person.personViewRenderer},
-            {header: 'ID', width: 40, dataIndex: 'id', sortable: true, align: 'right'},
+            {header: 'ID', width: 60, dataIndex: 'customid', sortable: true, align: 'right'},
             {header: 'First Name', widht: 90, dataIndex: 'first', sortable: true},
             {header: 'Last Name', width: 90, dataIndex: 'last', sortable: true},
             {header: 'Organization', width: 120, dataIndex: 'organization', sortable: true},

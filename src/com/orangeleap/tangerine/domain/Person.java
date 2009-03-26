@@ -42,6 +42,7 @@ public class Person extends AbstractCommunicatorEntity {
     private String loginId;
     private Date createDate;
     private Date updateDate;
+    private String customId;
     
     private List<Gift> gifts;
     private List<Commitment> commitments;
@@ -357,7 +358,15 @@ public class Person extends AbstractCommunicatorEntity {
     public boolean isIndividual() {
         return INDIVIDUAL.equals(getConstituentType());
     }
-    
+
+    public String getCustomId() {
+        return customId;
+    }
+
+    public void setCustomId(String customId) {
+        this.customId = customId;
+    }
+
     @Override
     public void setDefaults() {
         super.setDefaults();

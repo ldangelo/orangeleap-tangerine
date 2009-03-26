@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.DashboardDao;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.DashboardItem;
 import com.orangeleap.tangerine.domain.customization.DashboardItemDataValue;
 import com.orangeleap.tangerine.domain.customization.DashboardItemDataset;
@@ -38,11 +40,28 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
 
         List<DashboardItem> rows = (List<DashboardItem>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM", params);
         
-        // TODO Could filter site-specific overrides here based on item order
+        filterForSiteOverride(rows);
         
         return rows;
 	}
 	
+	private void filterForSiteOverride(List<DashboardItem> rows) {
+		Iterator<DashboardItem> it = rows.iterator();
+		while (it.hasNext()) {
+			DashboardItem di = it.next();
+			Site site = di.getSite();
+			if (site == null) {
+				Iterator<DashboardItem> it2 = rows.iterator();
+				while (it2.hasNext()) {
+					DashboardItem di2 = it2.next();
+					if (di2.getSite() != null && di2.getOrder().equals(di.getOrder())) {
+						it.remove();
+						break;
+					}
+				}
+			}
+		}
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds) {

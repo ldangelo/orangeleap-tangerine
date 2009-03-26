@@ -45,9 +45,9 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
             for (DistributionLine line : aGift.getDistributionLines()) {
                 line.resetIdToNull();
                 line.setGiftId(aGift.getId());
+                insertOrUpdate(line, "DISTRO_LINE");
             }
         }
-        batchInsertOrUpdate(aGift.getDistributionLines(), "DISTRO_LINE");
         return aGift;
     }
 

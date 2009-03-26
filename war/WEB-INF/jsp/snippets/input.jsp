@@ -444,7 +444,7 @@
 		                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
 		                   name="<c:out value='${fieldVO.fieldName}'/>" 
 		                   id="<c:out value='${fieldVO.fieldId}'/>"  
-		                   <c:if test="${fieldVO.fieldValue}">checked</c:if> 
+		                   <c:if test="${fieldVO.fieldValue == 'true'}">checked</c:if> 
 		            />
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">

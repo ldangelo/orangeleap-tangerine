@@ -24,5 +24,8 @@ public class FieldVOTest extends BaseTest {
         assert "other_motivationCode.value".equals(fieldVO.getOtherFieldName());
         fieldVO.setFieldName("customFieldMap[individual.spouse].value");
         assert "customFieldMap[individual.other_spouse].value".equals(fieldVO.getOtherFieldName());
+
+        fieldVO.setFieldName("mutableDistributionLines[0].customFieldMap[tributeOccasion].value");
+        assert "mutableDistributionLines[0].customFieldMap[other_tributeOccasion].value".equals(fieldVO.getOtherFieldName());
     }
 }

@@ -39,9 +39,9 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
             for (GiftInKindDetail detail : aGiftInKind.getDetails()) {
                 detail.resetIdToNull();
                 detail.setGiftInKindId(aGiftInKind.getId());
+                insertOrUpdate(detail, "GIFT_IN_KIND_DETAIL");
             }
         }
-        batchInsertOrUpdate(aGiftInKind.getDetails(), "GIFT_IN_KIND_DETAIL");
         return aGiftInKind;
     }
 

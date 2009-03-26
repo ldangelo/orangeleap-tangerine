@@ -6,6 +6,7 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class DistributionLine extends AbstractCustomizableEntity {  
  
@@ -107,6 +108,12 @@ public class DistributionLine extends AbstractCustomizableEntity {
         return amount != null || percentage != null || StringUtils.hasText(projectCode) || StringUtils.hasText(motivationCode) || StringUtils.hasText(other_motivationCode);
     }
     
+    @Override
+    public void setDefaults() {
+        super.setDefaults();
+        setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true"); 
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("amount", amount).

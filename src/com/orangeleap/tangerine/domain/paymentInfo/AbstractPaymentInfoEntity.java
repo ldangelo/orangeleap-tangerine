@@ -38,7 +38,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     /** Form bean representation of the DistributionLines */
     protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
-            return new DistributionLine();
+            DistributionLine line = new DistributionLine();
+            line.setDefaults();
+            return line;
         }
     });
     
@@ -160,7 +162,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             }
         }
         if (distributionLines.isEmpty()) {
-            distributionLines.add(new DistributionLine());
+            DistributionLine line = new DistributionLine();
+            line.setDefaults();
+            distributionLines.add(line);
         }
     }
 
@@ -321,6 +325,19 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         }
     }
     
+    @Override
+    public void setDefaults() {
+        super.setDefaults();
+        if (distributionLines != null) {
+            for (DistributionLine line : distributionLines) {
+                if (line != null) {
+                    line.setDefaults();
+                    line.setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, person == null ? null : person.getRecognitionName());
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).

@@ -1,9 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,11 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -79,41 +75,6 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
             getSqlMapClientTemplate().update("UPDATE_" + table, o);
         }
         return o;
-    }
-
-    /**
-     * Perform a batch insert or update.
-     * <strong>NOTE:</strong> for INSERTS, IBatis will not be able to return back the generated IDs correctly, thus they are not set.
-     * You will have to do a SELECT to get the generated IDs.
-     * @param entities to batch update or insert
-     * @param table
-     * @return list
-     */
-    protected List<? extends AbstractEntity> batchInsertOrUpdate(final List<? extends AbstractEntity> entities, final String table) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("batchInsertOrUpdate: entities = " + entities + " table = " + table);
-        }
-        if (entities != null && !entities.isEmpty()) {
-            getSqlMapClientTemplate().execute(new SqlMapClientCallback() {
-                public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
-                    executor.startBatch();
-                    for (AbstractEntity entity : entities) {
-                    	setSite(entity);
-                        entity.prePersist();
-
-                        if (entity.getId() == null || entity.getId() <= 0) {
-                            executor.insert("INSERT_" + table, entity);
-                        }
-                        else {
-                            executor.update("UPDATE_" + table, entity);
-                        }
-                    }
-                    executor.executeBatch();
-                    return null;
-                }
-            });
-        }
-        return entities;
     }
     
     // For security, set site before persisting

@@ -138,7 +138,7 @@ public class FieldVO {
             endsInValue = true;
         }
         
-        int startBracketIndex = aFieldName.indexOf('[');
+        int startBracketIndex = aFieldName.lastIndexOf('[');
         if (startBracketIndex > -1) {
             int periodIndex = aFieldName.indexOf('.', startBracketIndex);
             if (periodIndex > -1) {

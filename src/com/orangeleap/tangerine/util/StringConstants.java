@@ -62,5 +62,8 @@ public final class StringConstants {
     public static final String UNKNOWN_LOWER_CASE = "unknown";
     public static final String UNKNOWN_CAMEL_CASE = "Unknown";
 
+    public static final String TAX_DEDUCTIBLE = "taxDeductible";
+    public static final String RECOGNITION_NAME = "recognitionName";
+    
     public static final String USD = "USD";
 }

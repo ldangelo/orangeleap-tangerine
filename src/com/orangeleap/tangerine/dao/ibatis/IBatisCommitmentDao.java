@@ -43,9 +43,9 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 			for (DistributionLine line : commitment.getDistributionLines()) {
                 line.resetIdToNull();
 				line.setCommitmentId(commitment.getId());
+                insertOrUpdate(line, "DISTRO_LINE");
 			}
 		}
-		batchInsertOrUpdate(commitment.getDistributionLines(), "DISTRO_LINE");
 		return aCommitment;
 	}
 

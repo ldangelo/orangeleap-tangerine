@@ -7,27 +7,24 @@
 
 	<target name="deploy" description="Deploy build output and populate database" depends="resolve"  >
 
-		<!-- site to load with tables & data -->
-		<property name="sitename" value="company1" />
-
-		
 		<property name="dev.build.file" value="${basedir}/build/build.xml" />
 		<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
 
-		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/${sitename}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
-        <script language="javascript"> <![CDATA[
-           self.getProject().setProperty("mysql.db.url", overrideUrl);
-        ]]> </script>
-
-		
 		<exec dir="/opt/orangeleap" executable="su" spawn="true">
 			<arg line="- tomcat -c 'cd /opt/orangeleap;/opt/orangeleap/run.sh stop ${instance}'"/>
 	    </exec>
 		<sleep seconds="30" />
 		
-		<echo message="Populating database ${mysql.db.url}"/>
-
+		
+		
+		
+		<!-- populate several schemas -->
+		
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl);
+        ]]> </script>
+		
 		<!-- Reset schema -->
 	     <sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
@@ -39,25 +36,38 @@
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
 	    </sql>
-	     <sql driver="${mysql.db.driver}"
-		          url="${mysql.db.url}"
-		          userid="${mysql.db.user}"
-		          password="${mysql.db.pw}"
-		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
-	              delimiter=";"
-	     	>
-		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
-	    </sql>
 
 		
-		<!-- Load base data only -->
-		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
-
-		<!-- Load sample data -->
-		<ant antfile="${dev.build.file}" target="9. Load Data" />
 		
+		<ant antfile="${build.deploy.file}" target="deploy-data" />
 
+		
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company1?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl);
+        ]]> </script>
+		
+		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl);
+        ]]> </script>
+		
+		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company3?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl);
+        ]]> </script>
+		
+		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		
+		
+		
+		
+		<!-- Tomcat -->
+		
 		
 		<delete dir="${target.tomcat.dir}/work" />
 		<delete dir="${target.tomcat.dir}/temp" />

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="orangeleap" basedir=".." default="deploy-data">
+	
+	<property file="${basedir}/build/build.properties" />
+    <property file="${commonBuild.dir}/commonBuild.properties"/>
+	<import file="${commonBuild.dir}/ivyBuild.xml"/>
+
+	<target name="deploy-data" description="populate database" depends="resolve"  >
+
+		<echo message="Populating database ${mysql.db.url}"/>
+
+	     <sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${mysql.db.classpath}"
+	              delimiter=";"
+	     	>
+		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
+	    </sql>
+
+		
+		<!-- Load base data only -->
+		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
+
+		<!-- Load sample data -->
+		<ant antfile="${dev.build.file}" target="9. Load Data" />
+		
+
+		
+    </target> 
+	
+</project>

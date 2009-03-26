@@ -18,6 +18,7 @@
 	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
+		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
 	    </sql>
 
 		

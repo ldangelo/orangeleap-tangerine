@@ -23,9 +23,9 @@
 		
 		<!-- populate several schemas -->
 		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl1" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
-           self.getProject().setProperty("mysql.db.url", overrideUrl);
+           self.getProject().setProperty("mysql.db.url", overrideUrl1);
         ]]> </script>
 		
 		<!-- Reset schema -->
@@ -45,23 +45,23 @@
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 
 		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company1?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl2" value="jdbc:mysql://localhost:${mysql.port}/company1?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
-           self.getProject().setProperty("mysql.db.url", overrideUrl);
+           self.getProject().setProperty("mysql.db.url", overrideUrl2);
         ]]> </script>
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl3" value="jdbc:mysql://localhost:${mysql.port}/company2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
-           self.getProject().setProperty("mysql.db.url", overrideUrl);
+           self.getProject().setProperty("mysql.db.url", overrideUrl3);
         ]]> </script>
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company3?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl4" value="jdbc:mysql://localhost:${mysql.port}/company3?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
-           self.getProject().setProperty("mysql.db.url", overrideUrl);
+           self.getProject().setProperty("mysql.db.url", overrideUrl4);
         ]]> </script>
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />

@@ -17,6 +17,7 @@ import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.GeneratedId;
 import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -24,6 +25,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
 
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
+    protected ApplicationContext applicationContext;
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -31,8 +33,6 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     protected String getSiteName() {
         return tangerineUserHelper.lookupUserSiteName();
     }
-    
-    protected ApplicationContext applicationContext;
     
     public void setApplicationContext(ApplicationContext applicationContext) {
     	((CustomizableSqlMapClientTemplate)this.getSqlMapClientTemplate()).setApplicationContext(applicationContext);
@@ -99,7 +99,15 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
      * @param entity the Entity that is being deleted
      */
     public final void deleteCustomFields(AbstractCustomizableEntity entity) {
-        IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(getSqlMapClientTemplate());
-        helper.deleteCustomFields(entity.getCustomFieldMap());
+        getCustomFieldHelper().deleteCustomFields(entity.getCustomFieldMap());
+    }
+    
+    public final void loadCustomFields(AbstractCustomizableEntity entity) {
+        Map<String, CustomField> customFieldMap = getCustomFieldHelper().readCustomFields(entity);
+        entity.setCustomFieldMap(customFieldMap);
+    }
+    
+    protected IBatisCustomFieldHelper getCustomFieldHelper() {
+        return new IBatisCustomFieldHelper(getSqlMapClientTemplate());
     }
 }

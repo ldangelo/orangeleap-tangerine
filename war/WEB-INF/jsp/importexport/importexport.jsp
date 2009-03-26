@@ -10,10 +10,11 @@
 			<h1>Export a CSV file</h1>
 	        <form method="post" action="export.htm" >
 	        
-		        <select id="entity" name="entity"  onchange="if ( $('#entity').val() === 'gift' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }"  >
+		        <select id="entity" name="entity"  onchange="if ( $('#entity').val() === 'gift' || $('#entity').val() === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }"  >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
-		          <option value="gift">Gifts</option> 
+		          <option value="gift">Gift Summary</option> 
+		          <!--  <option value="distributionLine">Gift Detail</option>    -->
 		        </select>    
 		                
 		        <input type="submit" value="Export" onclick="if ( $('#entity').val() === '' ) return false; else return true; "/>

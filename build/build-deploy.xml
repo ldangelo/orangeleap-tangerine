@@ -4,6 +4,9 @@
 	<property file="${basedir}/build/build.properties" />
     <property file="${commonBuild.dir}/commonBuild.properties"/>
 	<import file="${commonBuild.dir}/ivyBuild.xml"/>
+	
+	<property name="build.deploy.data.file" value="${basedir}/build/build-deploy-data.xml" />
+
 
 	<target name="deploy" description="Deploy build output and populate database" depends="resolve"  >
 
@@ -39,7 +42,7 @@
 
 		
 		
-		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 
 		
 		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company1?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
@@ -47,21 +50,21 @@
            self.getProject().setProperty("mysql.db.url", overrideUrl);
         ]]> </script>
 		
-		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
 		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl);
         ]]> </script>
 		
-		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
 		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/company3?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl);
         ]]> </script>
 		
-		<ant antfile="${build.deploy.file}" target="deploy-data" />
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
 		
 		

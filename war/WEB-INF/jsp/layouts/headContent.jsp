@@ -18,6 +18,8 @@
 <script type="text/javascript" src="js/jquery/jquery-1.3.1.js"></script>
 <script type="text/javascript" src="js/extjs/ext-jquery-adapter.js"></script>
 <script type="text/javascript" src="js/extjs/ext-all.js"></script>
+<script type="text/javascript" src="js/extjs/ext-ajax-queue.js"></script>
+
 <script type="text/javascript" src="js/sidebar.js"></script>
 <script type="text/javascript" src="js/history.js"></script>
 <!-- -->

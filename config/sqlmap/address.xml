@@ -2,14 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ADDRESS">
 
-    <cacheModel id="address-cache" type="LRU" readOnly="true">
-        <flushInterval hours="24"/>
-        <flushOnExecute statement="INSERT_ADDRESS"/>
-        <flushOnExecute statement="UPDATE_ADDRESS"/>
-        <flushOnExecute statement="INACTIVATE_ADDRESSES"/>
-        <property name="size" value="500" />
-    </cacheModel>
-
     <resultMap id="ADDRESS_RESULT" class="com.orangeleap.tangerine.domain.communication.Address">
         <result property="id" column="ADDRESS_ID" jdbcType="BIGINT"/>
         <result property="activationStatus" column="ADDRESS_ACTIVATION_STATUS" jdbcType="VARCHAR"/>
@@ -52,18 +44,18 @@
         where p.SITE_NAME = #siteName# 
     </sql>
 
-    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT" parameterClass="map" cacheModel="address-cache">
+    <select id="SELECT_ADDRESS_BY_ID" resultMap="ADDRESS_RESULT" parameterClass="map" >
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         and addr.ADDRESS_ID = #addressId#
     </select>
 
-    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map" cacheModel="address-cache">
+    <select id="SELECT_ALL_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map" >
         <include refid="SELECT_ADDRESS_FRAGMENT"/>
         and addr.CONSTITUENT_ID = #constituentId#
         order by addr.CREATE_DATE
     </select>
 	
-	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map" cacheModel="address-cache">
+	<select id="SELECT_ACTIVE_ADDRESSES_BY_CONSTITUENT_ID" resultMap="ADDRESS_RESULT" parameterClass="map" >
 		<include refid="SELECT_ADDRESS_FRAGMENT"/>
 		and addr.CONSTITUENT_ID = #constituentId#
 		and addr.INACTIVE = false

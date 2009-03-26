@@ -2,13 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="SECTION_FIELD">
 
-    <cacheModel id="sectionField-cache" type="LRU" readOnly="true">
-        <flushInterval hours="24"/>
-        <flushOnExecute statement="INSERT_SECTION_FIELD"/>
-        <flushOnExecute statement="UPDATE_SECTION_FIELD"/>
-        <property name="size" value="1000" />
-    </cacheModel>
-
 	<resultMap id="SEC_FLD_SITE_NAME_RESULT" class="com.orangeleap.tangerine.domain.Site">
 		<result property="name" column="SEC_FLD_SITE_NAME" jdbcType="VARCHAR" />
 	</resultMap>
@@ -38,14 +31,14 @@
 	</sql>
 
 	<!-- Customized fields per site -->
-	<select id="SELECT_CUSTOMIZED_SEC_FLDS" resultMap="SECTION_FIELD_RESULT" parameterClass="map" cacheModel="sectionField-cache">
+	<select id="SELECT_CUSTOMIZED_SEC_FLDS" resultMap="SECTION_FIELD_RESULT" parameterClass="map" >
 		<include refid="SELECT_SECTION_FIELD_FRAGMENT"/>		 
 		where sf.SECTION_DEFINITION_ID = #sectionDefinitionId#
 		and sf.SITE_NAME = #siteName#
 	</select>
 
 	<!-- Out of the box fields -->
-	<select id="SELECT_OUT_OF_BOX_SEC_FLDS" resultMap="SECTION_FIELD_RESULT" parameterClass="map" cacheModel="sectionField-cache">
+	<select id="SELECT_OUT_OF_BOX_SEC_FLDS" resultMap="SECTION_FIELD_RESULT" parameterClass="map" >
 		<include refid="SELECT_SECTION_FIELD_FRAGMENT"/>		 
 		where sf.SITE_NAME is NULL
 		and sd.PAGE_TYPE = #pageType#

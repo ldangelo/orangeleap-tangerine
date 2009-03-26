@@ -2,15 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="PICKLIST">
 
-    <cacheModel id="picklist-cache" type="LRU">
-        <flushInterval hours="24"/>
-        <flushOnExecute statement="UPDATE_PICKLIST"/>
-        <flushOnExecute statement="UPDATE_PICKLIST_ITEM"/>
-        <flushOnExecute statement="INSERT_PICKLIST"/>
-        <flushOnExecute statement="INSERT_PICKLIST_ITEM"/>
-        <property name="size" value="1000" />
-    </cacheModel>
-
     <resultMap id="PICKLIST_RESULT" class="com.orangeleap.tangerine.domain.customization.Picklist" groupBy="id">
         <result property="id" column="PICKLIST_ID" jdbcType="BIGINT"/>
         <result property="picklistNameId" column="PICKLIST_NAME_ID" jdbcType="VARCHAR"/>
@@ -44,36 +35,36 @@
         where ((P.SITE_NAME = #siteName#) or (P.SITE_NAME is NULL))
     </sql>
     
-    <select id="SELECT_BY_PICKLIST_ID" resultMap="PICKLIST_RESULT" parameterClass="map" cacheModel="picklist-cache">
+    <select id="SELECT_BY_PICKLIST_ID" resultMap="PICKLIST_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and P.PICKLIST_ID = #picklistId#
         order by P.SITE_NAME
     </select>
 
-    <select id="SELECT_BY_PICKLIST_NAME_ID" resultMap="PICKLIST_RESULT" parameterClass="map" cacheModel="picklist-cache">
+    <select id="SELECT_BY_PICKLIST_NAME_ID" resultMap="PICKLIST_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and P.PICKLIST_NAME_ID = #picklistNameId#
         order by P.SITE_NAME
     </select>
 
-    <select id="SELECT_PICKLIST_BY_SITE_NAME" resultMap="PICKLIST_RESULT" parameterClass="string" cacheModel="picklist-cache">
+    <select id="SELECT_PICKLIST_BY_SITE_NAME" resultMap="PICKLIST_RESULT" parameterClass="string" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         order by SITE_NAME, ENTITY_TYPE, P.PICKLIST_DESC
     </select>
 
-    <select id="SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map" cacheModel="picklist-cache">
+    <select id="SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and P.PICKLIST_NAME = #fieldName#
         and ((P.ENTITY_TYPE = #entityType#) or (P.ENTITY_TYPE is NULL)) 
         order by SITE_NAME, ENTITY_TYPE, ITEM_ORDER
     </select>
 
-    <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" cacheModel="picklist-cache">
+    <select id="SELECT_PICKLIST_ITEM_BY_ID" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and I.PICKLIST_ITEM_ID = #picklistItemId#
     </select>
 
-    <select id="SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" cacheModel="picklist-cache">
+    <select id="SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and PICKLIST_NAME_ID = #picklistNameId#
         and ITEM_NAME = #picklistItemName#

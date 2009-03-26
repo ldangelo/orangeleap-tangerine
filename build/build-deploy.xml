@@ -38,6 +38,15 @@
  	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>
+	    </sql>
+	     <sql driver="${mysql.db.driver}"
+		          url="${mysql.db.url}"
+		          userid="${mysql.db.user}"
+		          password="${mysql.db.pw}"
+		          encoding="UTF-8"
+		          classpath="${mysql.db.classpath}"
+	              delimiter=";"
+	     	>
 		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 	    </sql>
 

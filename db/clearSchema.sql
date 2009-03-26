@@ -1,4 +1,4 @@
-drop schema orangeleap;
+drop schema IF EXISTS orangeleap;
 create schema orangeleap;
 
 DROP schema IF EXISTS `company1`;

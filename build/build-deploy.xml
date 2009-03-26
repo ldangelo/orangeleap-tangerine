@@ -7,13 +7,15 @@
 
 	<target name="deploy" description="Deploy build output and populate database" depends="resolve"  >
 
-		
+		<!-- site to load with tables & data -->
+		<property name="sitename" value="company1" />
 
+		
 		<property name="dev.build.file" value="${basedir}/build/build.xml" />
 		<property name="load.base.data.file" value="${basedir}/build/build-base-data.xml" />
 
 		
-		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl" value="jdbc:mysql://localhost:${mysql.port}/${sitename}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl);
         ]]> </script>

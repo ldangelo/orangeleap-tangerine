@@ -44,7 +44,7 @@
 		left outer join DASHBOARD_ITEM_DATASET did on di.DASHBOARD_ITEM_ID = did.DASHBOARD_ITEM_ID
  		where 
  		(di.SITE_NAME = #siteName# or di.SITE_NAME is null)
- 		order by di.SITE_NAME, di.ITEM_ORDER, did.DATASET_NUM
+ 		order by di.ITEM_ORDER, did.DATASET_NUM
  	</select>
  	
 	<select id="SELECT_DASHBOARD_ITEM_DATA" resultMap="DASHBOARD_ITEM_DATA_RESULT" parameterClass="map">

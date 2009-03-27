@@ -50,11 +50,15 @@ public class PageTag extends TagSupport {
     /** TODO: This is a temporarily method used by the gift page and will be changed/removed when Tiles is refactored */
     private void seperateSectionsByGridColumns(List<SectionDefinition> sectionDefinitions) {
         List<SectionDefinition> gridSections = new ArrayList<SectionDefinition>();
+        List<SectionDefinition> hiddenGridRows = new ArrayList<SectionDefinition>();
         List<SectionDefinition> columnSections = new ArrayList<SectionDefinition>();
         
         for (SectionDefinition sectionDefinition : sectionDefinitions) {
             if (LayoutType.GRID.equals(sectionDefinition.getLayoutType())) {
                 gridSections.add(sectionDefinition);
+            }
+            else if (LayoutType.GRID_HIDDEN_ROW.equals(sectionDefinition.getLayoutType())) {
+                hiddenGridRows.add(sectionDefinition);
             }
             else {
                 columnSections.add(sectionDefinition);
@@ -62,6 +66,7 @@ public class PageTag extends TagSupport {
         }
         
         pageContext.getRequest().setAttribute("gridSections", gridSections);
+        pageContext.getRequest().setAttribute("hiddenGridRows", hiddenGridRows);
         pageContext.getRequest().setAttribute("columnSections", columnSections);
     }
 }

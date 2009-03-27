@@ -2,10 +2,13 @@
 <mp:section sectionDefinition="${sectionDefinition}"/>
 <c:forEach var="sectionField" items="${sectionFieldList}">
 	<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model='${row}' />
+	<c:if test='${empty counter}'>
+		<c:set var="counter" value="${status.index}" scope="request"/>
+	</c:if>
 	<c:choose>
 		<c:when test="${fieldVO.fieldType == 'HIDDEN'}">
 			<td class="noDisplay">
-				<input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValue}'/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>" />
+				<input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.fieldValue}'/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>" />
 			</td>
 		</c:when>
 		<c:otherwise>
@@ -17,16 +20,16 @@
 					<c:when test="${fieldVO.fieldType == 'CODE' || fieldVO.fieldType == 'CODE_OTHER'}">
 						<div class="lookupWrapper">
 							<input value="<c:out value='${fieldVO.displayValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> code" lookup="<c:out value='${fieldVO.fieldName}'/>" 
-								id="display-<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>"
+								id="display-<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>"
 								<c:if test="${fieldVO.fieldType == 'CODE_OTHER'}">
-									otherFieldId="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.otherFieldId}'/>"
+									otherFieldId="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.otherFieldId}'/>"
 								</c:if> 
 								type="text"
-								codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" />
+								codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" />
 							<input value="<c:out value='${fieldVO.fieldValue}'/>" 
-								id="hidden-<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>"
+								id="hidden-<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>"
 								type="hidden"
-								name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" />
+								name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" />
 							<a class="lookupLink" href="#"
 								<c:choose>
 									<c:when test="${fieldVO.fieldType == 'CODE_OTHER'}">
@@ -40,8 +43,8 @@
 						</div>
 					</c:when>
 					<c:when test="${fieldVO.fieldType == 'PICKLIST'}">
-						<select name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" 
-							id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>">
+						<select name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" 
+							id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>">
 							<option value="none"><spring:message code="none"/></option>
 							<c:forEach var="code" varStatus="codeStatus" items="${fieldVO.augmentedCodes}">
 								<option value="<c:out value='${code}'/>" 
@@ -52,18 +55,18 @@
 						</select>
 					</c:when>
 					<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-			            <input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>]._<c:out value="${fieldVO.fieldName}"/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>" value="visible" />
+			            <input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>]._<c:out value="${fieldVO.fieldName}"/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>" value="visible" />
 			            <input type="checkbox" value="true" 
 			                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
-			                   name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>" 
-			                   id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>"  
+			                   name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" 
+			                   id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>"  
 			                   <c:if test="${fieldVO.fieldValue}">checked="checked"</c:if>/>
 					</c:when>
 					<c:otherwise>
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> <c:if test="${fieldVO.fieldType == 'NUMBER'}"> number</c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}"> percentage</c:if>" 
 							type="text" 
-							name="<c:out value='${gridCollectionName}'/>[<c:out value='${status.index}'/>].<c:out value='${fieldVO.fieldName}'/>"
-							id="<c:out value='${gridCollectionName}'/>-<c:out value='${status.index}'/>-<c:out value='${fieldVO.fieldId}'/>"/>
+							name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>"
+							id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>"/>
 					</c:otherwise>
 				</c:choose>
 			</td>

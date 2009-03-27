@@ -1,13 +1,40 @@
 $(document).ready(function() {
+	var $gridRows = $("table.distributionLines tbody.gridRow");
+	Distribution.index = $gridRows.length + 1;
+
 	$("#amount, #amountPerGift, #amountTotal").each(function() {
-		Distribution.reInitializeOnReady(this);
+		var $elem = $(this);
+		if ($elem.parent().is(":visible")) {
+			/* Done on load for previously entered distributionLines */
+			var val = $elem.val();
+			if (isNaN(parseFloat(val)) == false) {
+				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
+				Distribution.addNewRow();
+				
+				$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
+					var $amtElem = $(this);
+					var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
+					var rowId = $amtElem.attr('id').replace('-amount', '');
+					
+					var amtVal = parseFloat($amtElem.val());
+					var thisAmt = isNaN(amtVal) ? 0 : OrangeLeap.truncateFloat(amtVal);
+					
+					var pctVal = parseFloat($pctElem.val());
+					var thisPct = isNaN(pctVal) ? 0 : OrangeLeap.truncateFloat(pctVal);
+					
+					var map = Distribution.getMap(rowId);
+					map.amount = thisAmt;
+					map.percent = thisPct;	
+				});
+				Distribution.updateTotals();
+			}
+		}
 	});
-	Distribution.distributionLineBuilder($("table.distributionLines tr", "form"));
-	Distribution.rowCloner("table.distributionLines tr:last");
-	$("table.distributionLines tr:last .deleteButton", "form").hide();
+	Distribution.distributionLineBuilder($gridRows);
+	Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
 	
 	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
-		var amounts = $("table.distributionLines input.amount", "form");
+		var amounts = $("table.distributionLines tbody.gridRow input.amount", "form");
 		var amtVal = $(this).val();
 		Distribution.enteredAmt = amtVal;
 		 
@@ -28,6 +55,21 @@ $(document).ready(function() {
 			$("#amountTotal").change();
 		}
 	});
+	$(".distributionLines").bind("click", function(event) {
+		var $target = $(event.target);
+		var thisId = $target.attr("id");
+		if ($target.is(":checkbox") && thisId && thisId.indexOf("anonymous") > -1) {
+			var recognitionSelector = "li:has(#" + thisId.replace("anonymous", "recognitionName") + ")";
+			OrangeLeap.hideShowRecognition($target, recognitionSelector);
+		} 				
+	});
+	$(".distributionLines :checkbox").each(function() { // onload
+		var $elem = $(this);
+		var thisId = $elem.attr("id");
+		if (thisId && thisId.indexOf("anonymous") > -1) {
+			$elem.triggerHandler("click");
+		} 				
+	});
 });
 
 	
@@ -35,38 +77,10 @@ var Distribution = {
 	oldPct: "",
 	enteredAmt: 0,
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
-	
-	reInitializeOnReady: function(aElem) {
-		var $elem = $(aElem);
-		if ($elem.parent().is(":visible")) {
-			/* Done on load for previously entered distributionLines */
-			var val = $elem.val();
-			if (isNaN(parseFloat(val)) == false) {
-				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
-				Distribution.addNewRow();
-				
-				$("table.distributionLines input.amount", "form").each(function() {
-					var $amtElem = $(this);
-					var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
-					var rowId = $amtElem.attr('id').replace('-amount', '');
-					
-					var amtVal = parseFloat($amtElem.val());
-					var thisAmt = isNaN(amtVal) ? 0 : OrangeLeap.truncateFloat(amtVal);
-					
-					var pctVal = parseFloat($pctElem.val());
-					var thisPct = isNaN(pctVal) ? 0 : OrangeLeap.truncateFloat(pctVal);
-					
-					var map = Distribution.getMap(rowId);
-					map.amount = thisAmt;
-					map.percent = thisPct;	
-				});
-				Distribution.updateTotals();
-			}
-		}
-	},
+	index: 1,
 	
 	recalculatePcts: function() {
-		$("table.distributionLines input.amount", "form").each(function(){
+		$("table.distributionLines tbody.gridRow input.amount", "form").each(function(){
 			Distribution.calculatePct($(this));
 		});
 	},
@@ -181,54 +195,62 @@ var Distribution = {
 	},
 
 	distributionLineBuilder: function($newRow) {
-		$newRow.each(function() {
-			var $row = $(this);
-			$row.find(".deleteButton").click(function(){
-				Distribution.deleteRow($(this).parent().parent());
-			}).show();
-			$row.find("input.number, input.percentage").numeric();
-			$row.find("input.amount, input.percentage").bind("keyup", function(event) {
-				if (event.keyCode != 9) { // ignore tab
-					Distribution.updateFields($(event.target));
-				}
-			});		
-			$row.find("input.amount, input.percentage").bind("change", function(event) {
+		$(".deleteButton", $newRow).click(function() {
+			Distribution.deleteRow($(this).parent().parent());
+			return false;
+		}).show();
+		$("input.number, input.percentage", $newRow).numeric();
+		$("input.amount, input.percentage", $newRow).bind("keyup", function(event) {
+			if (event.keyCode != 9) { // ignore tab
 				Distribution.updateFields($(event.target));
-			});		
-			
-			$row.find("input.code").each(function(){
-				Lookup.codeAutoComplete($(this));
-			});
-			$row.removeClass("focused");
+			}
+		});		
+		$("input.amount, input.percentage", $newRow).bind("change", function(event) {
+			Distribution.updateFields($(event.target));
+		});		
+		$("input.code", $newRow).each(function(){
+			Lookup.codeAutoComplete($(this));
 		});
+		$("a.treeNodeLink", $newRow).bind("click", function(event) {
+			return OrangeLeap.expandCollapse(this);
+		});
+			
+//		$newRow.each(function() {
+//			var $row = $(this);
+//			$row.find("input.number, input.percentage").numeric();
+//			$row.find("input.amount, input.percentage").bind("keyup", function(event) {
+//				if (event.keyCode != 9) { // ignore tab
+//					Distribution.updateFields($(event.target));
+//				}
+//			});		
+//			$row.find("input.amount, input.percentage").bind("change", function(event) {
+//				Distribution.updateFields($(event.target));
+//			});		
+//			
+//			$row.find("input.code").each(function(){
+//				Lookup.codeAutoComplete($(this));
+//			});
+//			$row.removeClass("focused");
+//		});
 	},
 	
 	addNewRow: function() {
-		var $newRow = $("table.distributionLines tr:last", "form").clone(false);
-		var i = $newRow.attr("rowindex");
-		var j = parseInt(i, 10) + 1;
-		$newRow.attr("rowindex", j);
-		$newRow.find("input").each(function() {
-				var $field = $(this);
-				$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
-				$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
-				if ($field.attr('otherFieldId')) {
-					$field.attr('otherFieldId', $field.attr('otherFieldId').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
-				}
-				$field.val("");
-				$field.removeClass("focused");
-			});
-		$("table.distributionLines tr:last .deleteButton", "form").show(); // show the previous last row's delete button
-		Distribution.distributionLineBuilder($newRow);
-		$newRow.find(".deleteButton").hide();
+		var $newRow = $("#gridCloneRow").clone(false);
+		$newRow.attr("id", "gridRow" + Distribution.index);
+		$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + Distribution.index + "]").replace(new RegExp("\\-0-","g"), "-" + Distribution.index + "-").
+			replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + Distribution.index + '"'));
+		$("table.distributionLines tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.distributionLines", "form").append($newRow);
+		Distribution.distributionLineBuilder($newRow);
+		$newRow.removeClass("noDisplay").addClass("gridRow");
+		Distribution.index++;
 	},
 	
 	deleteRow: function(row) {
-		if ($("table.distributionLines tbody tr", "form").length > 1) {
-			row.fadeOut("slow", function() {
+		if ($("table.distributionLines tbody.gridRow", "form").length > 1) {
+			row.parent().fadeOut("slow", function() {
 				var $elem = $(this);
-				var rowId = $elem.find("input.amount").attr('id').replace('-amount', '');
+				var rowId = row.find("input.amount").attr('id').replace('-amount', '');
 				delete Distribution.amtPctMap[rowId];
 				$elem.remove();
 				Distribution.updateTotals();

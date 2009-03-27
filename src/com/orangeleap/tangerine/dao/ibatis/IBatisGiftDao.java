@@ -15,12 +15,11 @@ import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.EntityType;
 
 @Repository("giftDAO")
-public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
+public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -39,15 +38,8 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         
         /* Delete DistributionLines first */
         getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_GIFT_ID", aGift.getId());
-
-        /* Then Insert DistributionLines */
-        if (aGift.getDistributionLines() != null) {
-            for (DistributionLine line : aGift.getDistributionLines()) {
-                line.resetIdToNull();
-                line.setGiftId(aGift.getId());
-                insertOrUpdate(line, "DISTRO_LINE");
-            }
-        }
+        /* Then insert DistributionLines */
+        insertDistributionLines(aGift, "giftId");
         return aGift;
     }
 
@@ -58,7 +50,10 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         }
         Map<String, Object> params = setupParams();
         params.put("id", giftId);
-        return (Gift)getSqlMapClientTemplate().queryForObject("SELECT_GIFT_BY_ID", params);
+        Gift gift = (Gift)getSqlMapClientTemplate().queryForObject("SELECT_GIFT_BY_ID", params);
+        
+        loadDistributionLinesCustomFields(gift);
+        return gift;
     }
 
     @SuppressWarnings("unchecked")
@@ -74,8 +69,7 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> searchGifts(Map<String, Object> searchparams)
-    {
+    public List<Gift> searchGifts(Map<String, Object> searchparams) {
     	Map<String, Object> params = setupParams();
     	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.gift).getMap());
     	
@@ -133,7 +127,6 @@ public class IBatisGiftDao extends AbstractIBatisDao implements GiftDao {
         params.put("toDate", toDate);
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_DATE_RANGE", params);
 	}
-
 
     @SuppressWarnings("unchecked")
     @Override

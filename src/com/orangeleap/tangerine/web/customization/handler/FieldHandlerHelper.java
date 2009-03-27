@@ -58,15 +58,18 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.PICKLIST_DISPLAY, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_DISPLAY, picklistFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL, new PicklistAdditionalFieldsHandler(appContext));
+        PicklistAdditionalFieldsHandler picklistAdditionalFieldsHandler = new PicklistAdditionalFieldsHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL, picklistAdditionalFieldsHandler);
+        fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL_DISPLAY, picklistAdditionalFieldsHandler);
 
         fieldTypeToHandlerMap.put(FieldType.PREFERRED_PHONE_TYPES, new PreferredPhoneFieldHandler(appContext));
 
         LookupFieldHandler lookupFieldHandler = new LookupFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP, lookupFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_QUERY_LOOKUP, lookupFieldHandler);
-
-        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, new LookupOtherFieldHandler(appContext));
+        LookupOtherFieldHandler lookupOtherFieldHandler = new LookupOtherFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_OTHER, lookupOtherFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_DISPLAY, lookupOtherFieldHandler);
 
         fieldTypeToHandlerMap.put(FieldType.CODE, new CodeFieldHandler(appContext)); 
         fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, new CodeOtherFieldHandler(appContext));

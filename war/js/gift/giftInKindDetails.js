@@ -18,9 +18,9 @@ $(document).ready(function() {
 	});
 	
 	$("#anonymous").bind("click", function(event) {
-		GiftInKindDetails.hideShowRecognition($(this));
+		OrangeLeap.hideShowRecognition($(this), "li:has(#recognitionName)");
 	});
-	GiftInKindDetails.hideShowRecognition($("#anonymous")); // onload
+	$("#anonymous").triggerHandler("click");
 });
 
 	
@@ -40,15 +40,6 @@ var GiftInKindDetails = {
 			GiftInKindDetails.setEnteredFmv(val);
 			GiftInKindDetails.addNewRow();
 			GiftInKindDetails.updateTotals();
-		}
-	},
-	
-	hideShowRecognition: function($anonymousElem) {
-		if ($anonymousElem.attr("checked")) {
-			$("li:has(#recognitionName)").hide();
-		} 
-		else {
-			$("li:has(#recognitionName)").show();
 		}
 	},
 	

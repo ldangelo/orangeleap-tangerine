@@ -95,9 +95,13 @@ ul.formFields li.clear {
 ul.width600 {
 	width:600px;
 }
-ul.width375 {
+ul.width385 {
 	width:385px;
 	padding-right:5px;
+}
+ul.width350 {
+	width: 360px;
+	padding-right: 10px;
 }
 span.required {
 	font-size: 1.6em; color:#f00; vertical-align: text-top;
@@ -153,7 +157,14 @@ a.lookupLink, a.multiLookupLink, .lookupField a.hideText, .multiLookupField a.hi
     position: absolute;
 	text-indent: -2000px;
 }
-a.lookupLink:hover, .lookupField a.hideText:hover, .multiLookupField a.hideText:hover, a.lookupLink:focus, .lookupField a.hideText:focus, .multiLookupField a.hideText:focus, a.multiLookupLink:hover {
+.lookupField a.hideText:hover, 
+	.lookupField a.hideText:focus, 
+	.multiLookupField a.hideText:hover, 
+	.multiLookupField a.hideText:focus, 
+	a.lookupLink:hover, 
+	a.lookupLink:focus, 
+	a.multiLookupLink:hover,
+	a.multiLookupLink:focus {
 	background-color: #DFF1FF;
 }
 a.lookupLink, a.multiLookupLink {
@@ -371,12 +382,13 @@ form input[type=text], form input.text {
 form table.tablesorter input.number, form table.tablesorter input.amount, form table.tablesorter input.percentage {
 	text-align:right; 
 }
+table.tablesorter col.node { width: 16px; }
 table.tablesorter col.code { width: 35%; }
 table.tablesorter col.button { width: 3%; }
 table.tablesorter td input.code { width:93.5%; }
 
 table.distributionLines { table-layout: fixed; }
-table.distributionLines col.number { width: 12%; }
+table.distributionLines col.number { width: 13%; }
 
 table.giftInKindDetails col.number { width: 20%; }
 table.giftInKindDetails col.text { width: 40%; }
@@ -435,6 +447,7 @@ ul.formFields div.lookupWrapper input.code {
 	float:left;
 	width:63.8%;
 	background:#eee;
+	min-height: 18px;
 }
 .lookupField {
 	border:1px solid #7F9DB9;
@@ -442,6 +455,7 @@ ul.formFields div.lookupWrapper input.code {
 	min-height: 18px;
 	width:100%;
     position: relative;
+    background-color: #FFF;
 }
 a.hideText {
 	font-size: 0;
@@ -457,7 +471,7 @@ div.lookupScrollBottom { top:-1px; }
 div.lookupScrollTop { top:1px; } 
 div.lookupScrollBottom { height: 1px; left:121px; top:-1px; width:249px; z-index:1; }
 div.lookupScrollContainer { max-height:95px; overflow-x:hidden; overflow-y:auto; position:relative; width:263px; }
-div.multiLookupField { padding:2px 0; width: 247px; position: relative; min-height: 20px; }
+div.multiLookupField { padding:2px 0; width: 247px; position: relative; min-height: 20px; background-color: #FFF; }
 div.lookupScrollLeft, div.lookupScrollRight { height: 100%; position: absolute; top: 0; width: 1px; z-index: 1; }
 div.lookupScrollLeft { left:0; }
 div.lookupScrollRight { left:248px; }
@@ -469,14 +483,42 @@ div.lookupScrollContainer div.multiOption:hover, div.lookupWrapper div.queryLook
 a.deleteOption { vertical-align: bottom; margin-left: 3px; visibility: hidden; }
 div.multiOption:hover a.deleteOption, div.queryLookupOption:hover a.deleteOption, div.multiOption:focus a.deleteOption, div.queryLookupOption:focus a.deleteOption { visibility: visible; } 
 a.deleteOption img { vertical-align: top; }
+a.treeNodeLink { background: transparent url(../images/expandCollapse.gif) no-repeat 0 0; display: block; height: 22px; width: 16px;	margin: 0;	padding: 0; overflow: hidden; text-indent: -2000px; }
+a.plus { background-position: 0 0; }
+a.plus:hover, a.plus:focus { background-position: 0 -22px; } 
+a.minus { background-position: 0 -44px; }
+a.minus:hover, a.minus:focus { background-position: 0 -66px; } 
+div.lookupScrollContainer.readOnly div.multiOption, 
+	div.lookupWrapper.readOnly div.queryLookupOption,
+	div.lookupScrollContainer.readOnly div.multiOption:hover, 
+	div.lookupWrapper.readOnly div.queryLookupOption:hover { background-color: #eee !important; }
+
 
 table.alignLeft td,
-table.alignLeft th {
-	text-align:left;
-}
+	table.alignLeft th { text-align:left; }
 
 input:focus, textarea:focus, select:focus, .focused { background-color: #DFF1FF; }
 input.defaultText { color: #AFAFAF; }
 ul.formFields li.side label.inFocus { font-weight: bold; color: black; }
 
 .mainForm h3.info { color: #070; }
+
+tr.hiddenRow td table { margin-left: 16px; }
+tr.hiddenRow td table ul.width350 li.side label.desc { width:100px; }
+tr.hiddenRow td table ul.width350 li.side select { width:67%; }
+tr.hiddenRow td table ul.width350 div.lookupScrollTop, 
+	tr.hiddenRow td table ul.width350 div.lookupScrollBottom { left: 104px; width: 233px; }
+tr.hiddenRow td table ul.width350 div.lookupWrapper { width: 66%; } 
+tr.hiddenRow td table ul.width350 div.multiLookupField { width: 233px; }
+tr.hiddenRow td table ul.width350 div.readOnly div.multiLookupField { background-color: #eee; }
+tr.hiddenRow td table ul.width350 div.lookupScrollContainer { width: 246px; }
+tr.hiddenRow td table ul.width350 div.lookupScrollContainer div.multiOption { width: 88.5%; }
+tr.hiddenRow td table ul.width350 div.lookupScrollRight { left: 232px; }
+tr.hiddenRow td table ul.width350 li.side input { width: 65.5%; } 
+tr.hiddenRow td table ul.width350 a.multiLookupLink { right: 24px; top: 6px; }
+tr.hiddenRow td table ul.width350 .readOnlyField { width: 63.8%; } 
+tr.hiddenRow td table td { border-bottom: 0; }
+
+table.distributionLines tbody:hover tr td { background-color: #FFD; }
+tbody.expandable tr.expanded td { border-bottom: 0; } 
+

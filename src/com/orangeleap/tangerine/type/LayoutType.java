@@ -4,5 +4,6 @@ public enum LayoutType {
 	ONE_COLUMN,
 	ONE_COLUMN_HIDDEN,
 	TWO_COLUMN,
-	GRID
+	GRID,
+	GRID_HIDDEN_ROW
 }

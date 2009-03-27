@@ -37,7 +37,7 @@
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -46,7 +46,7 @@
 								</ul>
 							</div>
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -67,7 +67,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -88,7 +88,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -46,6 +47,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     
     /** Domain object representation of the DistributionLines */
     protected List<DistributionLine> distributionLines;
+    
+    /* Used by the form for cloning */
+    protected final List<DistributionLine> dummyDistributionLines;
 
     private FormBeanType addressType;
     private FormBeanType phoneType;
@@ -61,6 +65,15 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected Phone selectedPhone = new Phone();
     protected Email selectedEmail = new Email();
     protected PaymentSource selectedPaymentSource = new PaymentSource(person);
+
+    public AbstractPaymentInfoEntity() {
+        super();
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        DistributionLine line = new DistributionLine();
+        line.setDefaults();
+        lines.add(line);
+        dummyDistributionLines = UnmodifiableList.decorate(lines);
+    }
 
     public Person getPerson() {
         return person;
@@ -325,6 +338,10 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         }
     }
     
+    public List<DistributionLine> getDummyDistributionLines() {
+        return dummyDistributionLines;
+    }
+
     @Override
     public void setDefaults() {
         super.setDefaults();

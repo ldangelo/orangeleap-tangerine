@@ -8,7 +8,7 @@ ul.formFields li.side label.desc { padding-top: 2px; }
 .saveButton,.searchButton { height: 23px; }
 a.lookupLink { top: 2px; right: -2px; }
 table.tablesorter tbody tr td a.lookupLink { top: 2px; }
-a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active { background-color: #DFF1FF; }
+a.lookupLink:active, .lookupField a.hideText:active, .multiLookupField a.hideText:active, a.multiLookupLink:active { background-color: #DFF1FF; }
 div.lookupWrapper a.dp-choose-date { top: -1px; right: -5px; }
 a.dp-choose-date:active { background-color: #DFF1FF; }
 input#searchText { font-size: 1.1em; }
@@ -23,5 +23,10 @@ div.lookupScrollTop { top:-15px; left:0;}
 div.lookupScrollContainer { top: -16px; }
 div.lookupScrollBottom { top: -17px; }
 
-
-
+tr.hiddenRow td table ul.width350 div.multiLookupField { min-height: 18px; } 
+tr.hiddenRow td table ul.width350 div.lookupScrollTop { top: -15px; left:0; } 
+tr.hiddenRow td table ul.width350 div.lookupScrollBottom { top:-19px; }
+tr.hiddenRow td table ul.width350 li.side input.checkbox { width: auto; }
+tr.hiddenRow td table ul.width350 li.multiOptionLi { margin-bottom: 0; }
+tr.hiddenRow td table ul.width350 li.queryLookupLi { padding-bottom: 8px; }
+tr.hiddenRow td table ul.width350 div.lookupScrollContainer { }

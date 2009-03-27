@@ -57,9 +57,7 @@ $(document).ready(function() {
 			$(this).find("span.secondary:not('.active')").filter(":visible").slideUp();
 		}
 	 });
-	 
-
-	 
+			 
 	 $(".primaryNav li ul").each(function(){
 	 	var btnWidth = $(this).prev("a").outerWidth() + 20;
 	 	var selfWidth = $(this).outerWidth();
@@ -529,6 +527,24 @@ var Picklist = {
 	}
 }
 var OrangeLeap = {
+	expandCollapse: function(elem) {
+		$elem = $(elem);
+		var rowIndex = $elem.attr("rowIndex");
+		if ($elem.hasClass("plus")) {
+			$elem.removeClass("plus").addClass("minus");
+			var $parent = $elem.parent().parent();
+			$parent.removeClass("collapsed").addClass("expanded");
+			$parent.siblings(".hiddenRow").removeClass("noDisplay");
+		}
+		else {
+			$elem.removeClass("minus").addClass("plus");
+			var $parent = $elem.parent().parent();
+			$parent.removeClass("expanded").addClass("collapsed");
+			$parent.siblings(".hiddenRow").addClass("noDisplay");
+		}
+		return false;
+	},
+	
 	gotoUrl: function(url) {
 		window.location.href = url;
 	},
@@ -567,6 +583,15 @@ var OrangeLeap = {
 			val = val.toFixed(2);
 		}
 		return val;
+	},
+		
+	hideShowRecognition: function($anonymousElem, recognitionSelector) {
+		if ($anonymousElem.attr("checked")) {
+			$(recognitionSelector).hide();
+		} 
+		else {
+			$(recognitionSelector).show();
+		}
 	}	
 }
 
@@ -595,16 +620,11 @@ var Lookup = {
 			delay:10,
 			minChars:0,
 			max:20,
-//			width: 185,
 			formatItem: Lookup.formatItem,
 			showValueAndDesc: true,
 			displayValuePrefix: { hidden: "hidden-", display: "display-" },
 			hideDescription: true,
 			loadingClass:""//,
-//			mustMatch: true//,
-//			onItemSelect: function(itemSelected) {
-//				Lookup.codeAutoCompleteCallback(itemSelected, $elem); // TODO: put back
-//			}
 		});
 	},
 		
@@ -1129,18 +1149,7 @@ var Lookup = {
 	
 	/** Deprecated, to be removed */
 	setCodeValue: function(val, text) {
-//		if (text) {
-//			this.lookupCaller.val(val + " - " + text);
-//			this.lookupCaller.siblings("input:hidden").val(val);
-//		}
-//		else {
-			this.lookupCaller.val(val);
-			
-//			this.lookupCaller.bind("focus", function() {
-//				Lookup.hiliteAndFade($(this));
-//			});
-//			this.lookupCaller.focus();
-//		}
+		this.lookupCaller.val(val);
 		$('#dialog').jqmHide();
 		this.lookupCaller = null;
 		return false;

@@ -13,12 +13,11 @@ import com.orangeleap.tangerine.dao.CommitmentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.type.EntityType;
 
 @Repository("commitmentDAO")
-public class IBatisCommitmentDao extends AbstractIBatisDao implements CommitmentDao {
+public class IBatisCommitmentDao extends AbstractPaymentInfoEntityDao<Commitment> implements CommitmentDao {
 
 	/** Logger for this class and subclasses */
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -37,16 +36,10 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
         
 		/* Delete DistributionLines first */
         getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_COMMITMENT_ID", aCommitment.getId());
-
         /* Then Insert DistributionLines */
-        if (commitment.getDistributionLines() != null) {
-			for (DistributionLine line : commitment.getDistributionLines()) {
-                line.resetIdToNull();
-				line.setCommitmentId(commitment.getId());
-                insertOrUpdate(line, "DISTRO_LINE");
-			}
-		}
-		return aCommitment;
+        insertDistributionLines(aCommitment, "commitmentId");
+
+        return aCommitment;
 	}
 
 	@Override
@@ -56,7 +49,10 @@ public class IBatisCommitmentDao extends AbstractIBatisDao implements Commitment
 		}
 		Map<String, Object> params = setupParams();
 		params.put("id", commitmentId);
-		return (Commitment) getSqlMapClientTemplate().queryForObject("SELECT_COMMITMENT_BY_ID", params);
+		Commitment commitment = (Commitment) getSqlMapClientTemplate().queryForObject("SELECT_COMMITMENT_BY_ID", params);
+		loadDistributionLinesCustomFields(commitment);
+
+		return commitment;
 	}
 
 	@SuppressWarnings("unchecked")

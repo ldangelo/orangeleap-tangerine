@@ -30,9 +30,12 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
     
-    public Gift() { }
+    public Gift() { 
+        super();
+    }
 
     public Gift(Commitment commitment, Date transactionDate) {
+        this();
         this.commitmentId = commitment.getId();
         this.person = commitment.getPerson();
         this.transactionDate = transactionDate;
@@ -40,6 +43,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     }
     
     public Gift(GiftInKind giftInKind) {
+        this();
         setGiftForGiftInKind(giftInKind);
     }
 

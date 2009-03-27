@@ -33,7 +33,7 @@
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -42,7 +42,7 @@
 								</ul>
 							</div>
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -63,7 +63,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -84,7 +84,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -97,29 +97,7 @@
 					<div class="clearColumns"></div>
 				</div>
 				
-				<c:forEach var="sectionDefinition" items="${gridSections}">
-					<c:if test="${!empty sectionDefinition.defaultLabel}">
-						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-					</c:if>
-					<table class="tablesorter" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0"> 
-						<thead> 
-							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
-								<tr>
-									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
-								</tr>
-							</c:forEach>
-						</thead>
-						<tbody>
-							<c:forEach items="${gridCollection}" var="row" varStatus="status">
-								<c:if test="${row != null}">
-									<tr>
-										<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
-									</tr>
-								</c:if>
-							</c:forEach>
-						</tbody>
-					</table>
-				</c:forEach>
+				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" />
 		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">

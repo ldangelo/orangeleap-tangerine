@@ -6,11 +6,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.core.style.ToStringCreator;
 import org.joda.time.DateTime;
-import org.joda.time.Weeks;
 import org.joda.time.Months;
-import org.joda.time.Years;
+import org.joda.time.Weeks;
+import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.CommitmentType;
 
@@ -57,9 +56,12 @@ public class Commitment extends AbstractPaymentInfoEntity { //SiteAware, Viewabl
     private boolean recurring = false;
     private Date projectedDate;
 
-    public Commitment() { }
+    public Commitment() { 
+        super();
+    }
 
     public Commitment(CommitmentType commitmentType) {
+        this();
         this.commitmentType = commitmentType;
     }
 

@@ -30,6 +30,7 @@
 
 				<c:set var="gridCollectionName" value="mutableDistributionLines" />
 				<c:set var="gridCollection" value="${commitment.distributionLines}" />
+				<c:set var="dummyGridCollection" value="${commitment.dummyDistributionLines}" />
 				<c:set var="paymentSource" value="${commitment.paymentSource}" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
@@ -40,7 +41,7 @@
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -49,7 +50,7 @@
 								</ul>
 							</div>
 							<div class="column">
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -70,7 +71,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -91,7 +92,7 @@
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
 									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 								</c:if>
-								<ul class="formFields width375">
+								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
@@ -103,52 +104,7 @@
 					</c:forEach>
 					<div class="clearColumns"></div>
 				</div>
-				<c:forEach var="sectionDefinition" items="${gridSections}">
-				<%-- TODO: the following is cut and paste code --%>
-					<c:if test="${!empty sectionDefinition.defaultLabel}">
-						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-					</c:if>
-					
-					<table class="tablesorter distributionLines" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0"> 
-						<col class="number"/>
-						<col class="number"/> 
-						<col class="code"/>
-						<col class="code"/> 
-						<col class="button"/> 
-						<thead> 
-							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
-								<tr>
-									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
-									<th class="actionColumn">&nbsp;</th>
-								</tr>
-							</c:forEach>
-						</thead>
-						<tbody>
-							<c:forEach items="${gridCollection}" var="row" varStatus="status">
-								<c:if test="${row != null}">
-									<tr rowindex="<c:out value='${status.index}'/>">
-										<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
-										<td><img style="cursor: pointer; display: none;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
-									</tr>
-								</c:if>
-							</c:forEach>
-						</tbody>
-					</table>
-					<div class="gridActions">
-						<div id="totalText">
-							<spring:message code='total'/>&nbsp;
-							<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchGiftValue'/></span> 
-						</div>
-                        <div class="value" id="subTotal">0</div>
-                        <span id="totalContributionInfo">
-                        <div id="totalContributionText">
-                            <spring:message code="totalContribution"/>
-                        </div>
-                        <div class="value" id="totalContribution">0</div>
-                        </span>
-
-					</div>
-				</c:forEach>
+				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">

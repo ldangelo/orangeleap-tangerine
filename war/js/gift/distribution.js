@@ -55,10 +55,10 @@ $(document).ready(function() {
 			$("#amountTotal").change();
 		}
 	});
-	$(".distributionLines").bind("click", function(event) {
+	$(".distributionLines :checkbox").bind("click", function(event) {
 		var $target = $(event.target);
 		var thisId = $target.attr("id");
-		if ($target.is(":checkbox") && thisId && thisId.indexOf("anonymous") > -1) {
+		if (thisId && thisId.indexOf("anonymous") > -1) {
 			var recognitionSelector = "li:has(#" + thisId.replace("anonymous", "recognitionName") + ")";
 			OrangeLeap.hideShowRecognition($target, recognitionSelector);
 		} 				

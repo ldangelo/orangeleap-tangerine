@@ -43,7 +43,8 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[other_onBehalfOf]', 'commitment', 'person', 'customFieldMap[other_onBehalfOf]', ' ', 'HIDDEN');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[anonymous]', 'commitment', 'customFieldMap[anonymous]', 'Anonymous', 'CHECKBOX');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[recognitionName]', 'commitment', 'customFieldMap[recognitionName]', 'Recognition Name', 'TEXT');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[notified]', 'commitment', 'person', 'customFieldMap[notified]', 'To Be Notified', 'MULTI_QUERY_LOOKUP');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[notified]', 'commitment', 'person', 'customFieldMap[notified]', 'To Be Notified', 'QUERY_LOOKUP_OTHER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[other_notified]', 'commitment', 'person', 'customFieldMap[other_notified]', ' ', 'HIDDEN');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[message]', 'commitment', 'customFieldMap[message]', 'Message', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[taxDeductible]', 'commitment', 'customFieldMap[taxDeductible]', 'Tax Ded', 'CHECKBOX');
 
@@ -62,6 +63,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[anonymousReadOnly]', 'commitment', 'customFieldMap[anonymous]', 'Anonymous', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[recognitionNameReadOnly]', 'commitment', 'customFieldMap[recognitionName]', 'Recognition Name', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[notifiedReadOnly]', 'commitment', 'person', 'customFieldMap[notified]', 'To Be Notified', 'QUERY_LOOKUP_DISPLAY');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[other_notifiedReadOnly]', 'commitment', 'person', 'customFieldMap[other_notified]', ' ', 'HIDDEN');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[messageReadOnly]', 'commitment', 'customFieldMap[message]', 'Message', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('commitment.customFieldMap[taxDeductibleReadOnly]', 'commitment', 'customFieldMap[taxDeductible]', 'Tax Ded', 'READ_ONLY_TEXT');
 

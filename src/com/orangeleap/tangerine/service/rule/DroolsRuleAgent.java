@@ -27,9 +27,9 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 //		props.put("url", url);
 		props.put("newInstance", "false");
 		props.put("name","orangeleap");
-//		props.put("poll", "30");
-		props.put("cache", "/usr/local/drools/cache");
-		props.put("dir","/usr/local/drools/rules");
+		props.put("poll", System.getProperty("drools.pollinterval"));
+		props.put("cache", System.getProperty("drools.cachedir"));
+		props.put("dir",System.getProperty("drools.packagedir"));
 		return props;
 	}
 

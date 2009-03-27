@@ -55,20 +55,12 @@ $(document).ready(function() {
 			$("#amountTotal").change();
 		}
 	});
-	$(".distributionLines :checkbox").bind("click", function(event) {
+	$(".distributionLines").bind("click", function(event) {
 		var $target = $(event.target);
-		var thisId = $target.attr("id");
-		if (thisId && thisId.indexOf("anonymous") > -1) {
-			var recognitionSelector = "li:has(#" + thisId.replace("anonymous", "recognitionName") + ")";
-			OrangeLeap.hideShowRecognition($target, recognitionSelector);
-		} 				
+		Distribution.hideShowAnonymous($target);
 	});
 	$(".distributionLines :checkbox").each(function() { // onload
-		var $elem = $(this);
-		var thisId = $elem.attr("id");
-		if (thisId && thisId.indexOf("anonymous") > -1) {
-			$elem.triggerHandler("click");
-		} 				
+		Distribution.hideShowAnonymous($(this));
 	});
 });
 
@@ -78,6 +70,14 @@ var Distribution = {
 	enteredAmt: 0,
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
 	index: 1,
+	
+	hideShowAnonymous: function($target) {
+		var thisId = $target.attr("id");
+		if (thisId && thisId.indexOf("anonymous") > -1) {
+			var recognitionSelector = "li:has(#" + thisId.replace("anonymous", "recognitionName") + ")";
+			OrangeLeap.hideShowRecognition($target, recognitionSelector);
+		} 				
+	},
 	
 	recalculatePcts: function() {
 		$("table.distributionLines tbody.gridRow input.amount", "form").each(function(){

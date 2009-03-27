@@ -30,6 +30,7 @@
 				
 				<c:set var="gridCollectionName" value="mutableDetails" />
 				<c:set var="gridCollection" value="${giftInKind.details}" />
+				<c:set var="dummyGridCollection" value="${giftInKind.dummyDetails}" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
@@ -81,44 +82,7 @@
 					</c:forEach>
 					<div class="clearColumns"></div>
 				</div>
-				<c:forEach var="sectionDefinition" items="${gridSections}">
-					<c:if test="${!empty sectionDefinition.defaultLabel}">
-						<h4 class="gridSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-					</c:if>
-					
-					<table class="tablesorter giftInKindDetails" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
-						<col class="number"/>
-						<col class="text"/> 
-						<col class="code"/>
-						<col class="checkbox"/> 
-						<col class="button"/>
-						<thead> 
-							<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
-								<tr>
-									<%@ include file="/WEB-INF/jsp/snippets/gridResultsHeader.jsp" %>
-									<th class="actionColumn">&nbsp;</th>
-								</tr>
-							</c:forEach>
-						</thead>
-						<tbody>
-							<c:forEach items="${gridCollection}" var="row" varStatus="status">
-								<c:if test="${row != null}">
-									<tr rowindex="<c:out value='${status.index}'/>">
-										<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
-										<td><img style="cursor: pointer; display: none;" class="deleteButton" src="images/icons/deleteRow.png" /></td>
-									</tr>
-								</c:if>
-							</c:forEach>
-						</tbody>
-					</table>
-					<div class="gridActions">
-						<div id="totalText">
-							<spring:message code='total'/>&nbsp;
-							<span class="warningText" id="valueErrorSpan"><spring:message code='mustMatchFairMarketValue'/></span> 
-						</div>
-						<div class="value" id="subTotal">0</div>
-					</div>
-				</c:forEach>
+				<%@ include file="/WEB-INF/jsp/giftInKind/giftInKindDetails.jsp"%>
 
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitGiftInKind'/>" class="saveButton" />

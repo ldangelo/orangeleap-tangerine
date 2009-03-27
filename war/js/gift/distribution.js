@@ -214,24 +214,6 @@ var Distribution = {
 		$("a.treeNodeLink", $newRow).bind("click", function(event) {
 			return OrangeLeap.expandCollapse(this);
 		});
-			
-//		$newRow.each(function() {
-//			var $row = $(this);
-//			$row.find("input.number, input.percentage").numeric();
-//			$row.find("input.amount, input.percentage").bind("keyup", function(event) {
-//				if (event.keyCode != 9) { // ignore tab
-//					Distribution.updateFields($(event.target));
-//				}
-//			});		
-//			$row.find("input.amount, input.percentage").bind("change", function(event) {
-//				Distribution.updateFields($(event.target));
-//			});		
-//			
-//			$row.find("input.code").each(function(){
-//				Lookup.codeAutoComplete($(this));
-//			});
-//			$row.removeClass("focused");
-//		});
 	},
 	
 	addNewRow: function() {

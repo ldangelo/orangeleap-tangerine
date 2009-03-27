@@ -1,15 +1,25 @@
 $(document).ready(function() {
+	var $gridRows = $("table.giftInKindDetails tbody.gridRow");
+	GiftInKindDetails.index = $gridRows.length + 1;
+
 	$("#fairMarketValue").each(function() {
-		GiftInKindDetails.reInitializeOnReady(this);
+		var $elem = $(this);
+
+		/* Done on load for previously entered giftInKindDetails */
+		var val = $elem.val();
+		if (isNaN(parseFloat(val)) == false) {
+			GiftInKindDetails.setEnteredFmv(val);
+			GiftInKindDetails.addNewRow();
+			GiftInKindDetails.updateTotals();
+		}
 	});
-	GiftInKindDetails.detailsBuilder($("table.giftInKindDetails tr", "form"));
-	GiftInKindDetails.rowCloner("table.giftInKindDetails tr:last");
-	$("table.giftInKindDetails tr:last .deleteButton", "form").hide();
+	GiftInKindDetails.detailsBuilder($gridRows);
+	GiftInKindDetails.rowCloner("table.giftInKindDetails tbody.gridRow:last");
 	
 	$("#fairMarketValue").bind("keyup", function(event) {
 		var fairMarketVal = $(this).val();
 		GiftInKindDetails.setEnteredFmv(fairMarketVal);
-		var values = $("table.giftInKindDetails input.detailFairMarketValue", "form");
+		var values = $("table.giftInKindDetails tbody.gridRow input.detailFairMarketValue", "form");
 		 
 		if (values.length == 1) {
 			values.val(fairMarketVal);
@@ -26,26 +36,15 @@ $(document).ready(function() {
 	
 var GiftInKindDetails = {
 	enteredFmv: 0,
+	index: 1,
 	
 	setEnteredFmv: function(val) {
 		this.enteredFmv = OrangeLeap.truncateFloat(parseFloat(val));
 	},
 	
-	reInitializeOnReady: function(aElem) {
-		var $elem = $(aElem);
-
-		/* Done on load for previously entered giftInKindDetails */
-		var val = $elem.val();
-		if (isNaN(parseFloat(val)) == false) {
-			GiftInKindDetails.setEnteredFmv(val);
-			GiftInKindDetails.addNewRow();
-			GiftInKindDetails.updateTotals();
-		}
-	},
-	
 	updateTotals: function() {
 		var totalValue = parseFloat(0);
-		$("table.giftInKindDetails input.detailFairMarketValue", "form").each(function() {
+		$("table.giftInKindDetails tbody.gridRow input.detailFairMarketValue", "form").each(function() {
 			var $fmvElem = $(this);
 			
 			var fairMarketVal = parseFloat($fmvElem.val());
@@ -77,50 +76,36 @@ var GiftInKindDetails = {
 	},
 
 	detailsBuilder: function($newRow) {
-		$newRow.each(function() {
-			var $row = $(this);
-			$row.find(".deleteButton").click(function(){
-				GiftInKindDetails.deleteRow($(this).parent().parent());
-			}).show();
-			$row.find("input.number").numeric();
-			$row.find("input.detailFairMarketValue").bind("keyup change", function(event) {
-				GiftInKindDetails.updateTotals();
-			});		
-			$row.find("input.code").each(function(){
-				Lookup.codeAutoComplete($(this));
-			});
-			$row.removeClass("focused");
+		$(".deleteButton", $newRow).click(function(){
+			GiftInKindDetails.deleteRow($(this).parent().parent().parent());
+			return false;
+		}).show();
+		$("input.number", $newRow).numeric();
+		$("input.detailFairMarketValue", $newRow).bind("keyup change", function(event) {
+			GiftInKindDetails.updateTotals();
+		});		
+		$("input.code", $newRow).each(function(){
+			Lookup.codeAutoComplete($(this));
+		});
+		$("a.treeNodeLink", $newRow).bind("click", function(event) {
+			return OrangeLeap.expandCollapse(this);
 		});
 	},
 	
 	addNewRow: function() {
-		var $newRow = $("table.giftInKindDetails tr:last", "form").clone(false);
-		var i = $newRow.attr("rowindex");
-		var j = parseInt(i, 10) + 1;
-		$newRow.attr("rowindex", j);
-		$newRow.find("input, select").each(function() {
-				var $field = $(this);
-				$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
-				$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
-				if ($field.is(":checkbox")) {
-					$field.removeAttr("checked");
-				}
-				else if ($field.is(":text") || $field.is(":hidden")) {
-					$field.val("");
-				}
-				else if ($field.is(":select")) {
-					$field.get(0).options[0].selected = true;
-				}
-				$field.removeClass("focused");
-			});
-		$("table.giftInKindDetails tr:last .deleteButton", "form").show(); // show the previous last row's delete button
-		GiftInKindDetails.detailsBuilder($newRow);
-		$newRow.find(".deleteButton").hide();
+		var $newRow = $("#gridCloneRow").clone(false);
+		$newRow.attr("id", "gridRow" + GiftInKindDetails.index);
+		$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + GiftInKindDetails.index + "]").replace(new RegExp("\\-0-","g"), "-" + GiftInKindDetails.index + "-").
+			replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + GiftInKindDetails.index + '"'));
+		$("table.giftInKindDetails tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.giftInKindDetails", "form").append($newRow);
+		GiftInKindDetails.detailsBuilder($newRow);
+		$newRow.removeClass("noDisplay").addClass("gridRow");
+		GiftInKindDetails.index++;
 	},
 	
 	deleteRow: function(row) {
-		if ($("table.giftInKindDetails tbody tr", "form").length > 1) {
+		if ($("table.giftInKindDetails tbody.gridRow", "form").length > 1) {
 			row.fadeOut("slow", function() {
 				$(this).remove();
 				GiftInKindDetails.updateTotals();

@@ -519,6 +519,6 @@ tr.hiddenRow td table ul.width350 a.multiLookupLink { right: 24px; top: 6px; }
 tr.hiddenRow td table ul.width350 .readOnlyField { width: 63.8%; } 
 tr.hiddenRow td table td { border-bottom: 0; }
 
-table.distributionLines tbody:hover tr td { background-color: #FFD; }
+table.distributionLines tbody:hover tr td, table.giftInKindDetails tbody:hover tr td { background-color: #FFD; }
 tbody.expandable tr.expanded td { border-bottom: 0; } 
 

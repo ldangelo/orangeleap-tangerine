@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -50,13 +51,21 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
     /** Domain object representation of the GiftInKindDetails */
     private List<GiftInKindDetail> details;
     
+    /* Used by the form for cloning */
+    protected final List<GiftInKindDetail> dummyDetails;
+
     public GiftInKind() {
         super();
+        List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>();
+        GiftInKindDetail detail = new GiftInKindDetail();
+        detail.setDefaults();
+        details.add(detail);
+        dummyDetails = UnmodifiableList.decorate(details);
     }
 
     public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode, 
                         boolean anonymous, String recognitionName, boolean sendAcknowledgment, Date acknowledgmentDate, FormBeanType emailType) {
-        super();
+        this();
         this.fairMarketValue = fairMarketValue;
         this.currencyCode = currencyCode;
         this.donationDate = donationDate;
@@ -236,6 +245,10 @@ public class GiftInKind extends AbstractCustomizableEntity implements EmailAware
                 details.add(detail);
             }
         }
+    }
+
+    public List<GiftInKindDetail> getDummyDetails() {
+        return dummyDetails;
     }
 
     @Override

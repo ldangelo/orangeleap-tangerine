@@ -11,6 +11,8 @@ CREATE TABLE `SITE` (
   `CREATE_DATE` datetime default NULL,
   `MERCHANT_NUMBER` varchar(255) default NULL,
   `MERCHANT_BIN` varchar(255) default NULL,
+  `LOCALE` varchar(255) default NULL,
+  `TIME_ZONE` varchar(255) default NULL,
   `UPDATE_DATE` datetime default NULL,
   `PARENT_SITE_NAME` varchar(255) default NULL,
   PRIMARY KEY  (`SITE_NAME`),

@@ -11,6 +11,8 @@
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="merchantNumber" column="MERCHANT_NUMBER" jdbcType="VARCHAR" />
 		<result property="merchantBin" column="MERCHANT_BIN" jdbcType="VARCHAR" />
+		<result property="localeString" column="LOCALE" jdbcType="VARCHAR" />
+		<result property="timeZoneString" column="TIME_ZONE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="parentSite" resultMap="SITE.PARENT_SITE_RESULT" />
 	</resultMap>
@@ -20,7 +22,7 @@
 	</resultMap>
 
 	<sql id="SITE_COLS_FRAGMENT">
-		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME
+		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, LOCALE, TIME_ZONE, UPDATE_DATE, PARENT_SITE_NAME
 	</sql>
 	
 	<sql id="SELECT_SITE_FRAGMENT">
@@ -43,8 +45,8 @@
 
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
-		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, UPDATE_DATE, PARENT_SITE_NAME)
-		values (#name#, now(), #merchantNumber#, #merchantBin#, now(), #parentSite.name#)
+		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, LOCALE, TIME_ZONE, UPDATE_DATE, PARENT_SITE_NAME)
+		values (#name#, now(), #merchantNumber#, #merchantBin#, #localeString#, #timeZoneString#, now(), #parentSite.name#)
 	</insert>
 	
 	<update id="UPDATE_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
@@ -52,6 +54,8 @@
 		set UPDATE_DATE = now(),
 		MERCHANT_NUMBER = #merchantNumber#,
 		MERCHANT_BIN = #merchantBin#,
+		LOCALE = #localeString#,
+		TIME_ZONE = #timeZoneString#,
 		PARENT_SITE_NAME = #parentSite.name#
 		where SITE_NAME = #name:VARCHAR#
 	</update>

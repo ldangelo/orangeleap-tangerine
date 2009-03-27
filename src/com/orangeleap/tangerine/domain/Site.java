@@ -2,6 +2,8 @@ package com.orangeleap.tangerine.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.springframework.core.style.ToStringCreator;
 
@@ -32,9 +34,19 @@ public class Site implements Serializable {
     private String name;
     private String merchantNumber;
     private String merchantBin;
+    private String localeString;
+    private String timeZoneString;
     private Site parentSite;
     private Date createDate;
     private Date updateDate;
+    
+    public Locale getLocale() {
+    	return localeString == null?Locale.getDefault():new Locale(localeString);
+    }
+
+    public TimeZone getTimeZone() {
+    	return timeZoneString == null?TimeZone.getDefault():TimeZone.getTimeZone(timeZoneString);
+    }
 
     public String getName() {
         return name;
@@ -84,9 +96,29 @@ public class Site implements Serializable {
         this.updateDate = updateDate;
     }
 
+	public void setLocaleString(String localeString) {
+		this.localeString = localeString;
+	}
+
+	public String getLocaleString() {
+		return localeString;
+	}
+
+	public void setTimeZoneString(String timeZoneString) {
+		this.timeZoneString = timeZoneString;
+	}
+
+	public String getTimeZoneString() {
+		return timeZoneString;
+	}
+	
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("name", name).append("merchantNumber", merchantNumber).append("merchantBin", merchantBin).append("parentSite", parentSite).
-                append("createDate", createDate).append("updateDate", updateDate).toString();
+        return new ToStringCreator(this).append("name", name).append("merchantNumber", merchantNumber).append("merchantBin", merchantBin)
+        		.append("localeString", localeString).append("timeZoneString", timeZoneString)
+        		.append("parentSite", parentSite).append("createDate", createDate).append("updateDate", updateDate).toString();
     }
+
+
+	
 }

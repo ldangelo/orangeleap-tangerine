@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -27,9 +29,23 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
     
     @Override
 	public List<String> readSchemas() {
-    	// TODO filter out mysql, test, jasperserver, etc (would error out and skip anyway)
-		return schemaDao.readSchemas();
+    	List<String> list = schemaDao.readSchemas();
+    	Iterator<String> it = list.iterator();
+    	while (it.hasNext()) {
+    		String s = (String)it.next();
+    		if (EXCLUDE_LIST.contains(s)) it.remove();
+    	}
+		return list;
 	}
+    
+    // Schemas to exclude
+    private static final List<String> EXCLUDE_LIST = new ArrayList<String>();
+    static {
+    	EXCLUDE_LIST.add("mysql");
+    	EXCLUDE_LIST.add("information_schema");
+    	EXCLUDE_LIST.add("test");
+    	EXCLUDE_LIST.add("jasperserver");
+    }
 
     @Override
 	public void setSchema(String schema) {

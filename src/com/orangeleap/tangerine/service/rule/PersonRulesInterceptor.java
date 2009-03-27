@@ -6,60 +6,54 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
+import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
-import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.event.NewGiftEvent;
-import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.impl.SessionServiceImpl;
 
-//TODO: all the interceptors are cut & paste code!!!
+
 public class PersonRulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	@SuppressWarnings("unchecked")
-    private Class  eventClass;
-	
-	public static Properties getDroolsProperties() {
-		String host = System.getProperty("drools.host");
-		String port = System.getProperty("drools.port");
-		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.orangeleap.tangerine/NEWEST";
-		logger.debug("Setting Drools URL to "+url);
-		Properties props = new Properties();
-		props.put("url", url);
-		props.put("newInstance", "true");
-		props.put("name","testagent");
-		return props;
+	private Class  eventClass;
+	private DroolsRuleAgent ruleAgent;
+
+	@Autowired
+	void setDroolsRulesAgent(DroolsRuleAgent ruleAgent) {
+		this.ruleAgent = ruleAgent;
 	}
-
-
+	
 	public void doApplyRules(Gift gift) {
 
-		Properties props = getDroolsProperties();
 	
-		RuleAgent agent = RuleAgent.newRuleAgent(props);
-		RuleBase ruleBase = agent.getRuleBase();
+		RuleBase ruleBase = ruleAgent.getRuleAgent().getRuleBase();
 
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-        TangerineUserHelper tangerineUserHelper = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 
-        String site = tangerineUserHelper.lookupUserSiteName(); // TODO: fix for site?
+		String site = null;
 			workingMemory.insert(gift);
 
 			try {
@@ -76,12 +70,14 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 				logger.info(ex.getMessage());
 			}
 
+		if (site == null) {
+			site = gift.getSite().getName();
+		}
+
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
 			logger.info("*** firing all rules");
-
-			String ruleflow = "com.orangeleap.tangerine." + site + "_" + ruleFlowName;
-			workingMemory.startProcess(ruleflow);
+			workingMemory.setFocus(site+"person");
 			workingMemory.fireAllRules();
 		} catch (Exception e) {
 			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
@@ -104,10 +100,6 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event.getClass() == eventClass) {
-			NewGiftEvent nge = (NewGiftEvent) event;
-			doApplyRules(nge.getGift());
-		}
 		
 	}
 }

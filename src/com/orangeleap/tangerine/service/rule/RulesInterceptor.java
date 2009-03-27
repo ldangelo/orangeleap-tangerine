@@ -14,28 +14,29 @@ import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
 import org.springframework.context.ApplicationListener;
 
-import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 
-// TODO: all the interceptors are cut & paste code!!!
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.ConstituentService;
+
+
+
 public abstract class RulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	@SuppressWarnings("unchecked")
-    private Class  eventClass;
+	private Class  eventClass;
 	
 	public static Properties getDroolsProperties() {
 		String host = System.getProperty("drools.host");
 		String port = System.getProperty("drools.port");
-		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.orangeleap.tangerine/NEWEST";
+		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
 		logger.debug("Setting Drools URL to "+url);
 		Properties props = new Properties();
 		props.put("url", url);
@@ -59,9 +60,8 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-        TangerineUserHelper tangerineUserHelper = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 
-        String site = tangerineUserHelper.lookupUserSiteName(); // TODO: fix for site?
+		String site = null;
 			workingMemory.insert(gift);
 
 			try {
@@ -78,11 +78,15 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 				logger.info(ex.getMessage());
 			}
 
+			if (site == null) {
+				site =gift.getSite().getName();
+			}
+
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
 			logger.info("*** firing all rules");
 
-			String ruleflow = "com.orangeleap.tangerine." + site + "_" + ruleFlowName;
+			String ruleflow = "com.mpower." + site + "_" + ruleFlowName;
 			workingMemory.startProcess(ruleflow);
 			workingMemory.fireAllRules();
 		} catch (Exception e) {

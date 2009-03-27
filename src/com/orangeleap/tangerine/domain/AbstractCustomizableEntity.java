@@ -121,6 +121,43 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         }
     }
     
+    //
+    // if the custom field contains the 'value' then remove it
+    public void removeCustomFieldValue(String fieldName, String value) {
+    	
+    	String existingValue = getCustomFieldValue(fieldName);
+    	
+    	//
+    	// if the custom field value does not contain the value
+    	// we are removing simply return
+    	if (existingValue.contains(value) == false) return;
+    	
+    	//
+    	// if the existing value is equal to the value we are removing
+    	// then set the field value to an empty string (remove it)
+    	if (existingValue.contains(",") == false) {
+    		if (existingValue.compareTo(value) == 0)
+    			setCustomFieldValue(fieldName,"");
+    	} else {
+    		//
+    		// if the existing value is a comma separated list of values
+    		// then find the value we are removing in the string and remove it
+    		// then reset the field value
+    		String[] values = existingValue.split(",");
+    		
+    		StringBuilder sb = new StringBuilder();
+    		for (int i = 0; i < values.length; i++) {
+    			if (values[i].equals(value) == false)
+    				sb.append(values[i]);
+    			
+    			if (i != (values.length - 1))
+    				sb.append(",");
+    		}
+    		
+    			setCustomFieldValue(fieldName,sb.toString());
+    	}
+    }
+    
     /**
      * Check if a value already exists for a fieldName.  If so, append to the existing value, else
      * set the value to the specified value 

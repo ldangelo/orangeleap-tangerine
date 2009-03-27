@@ -27,6 +27,7 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
     
     @Override
 	public List<String> readSchemas() {
+    	// TODO filter out mysql, test, jasperserver, etc (would error out and skip anyway)
 		return schemaDao.readSchemas();
 	}
 

@@ -53,7 +53,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         Gift gift = (Gift)getSqlMapClientTemplate().queryForObject("SELECT_GIFT_BY_ID", params);
         
         loadDistributionLinesCustomFields(gift);
-        loadCustomFields(gift.getPerson());
+        if (gift != null) {
+            loadCustomFields(gift.getPerson());
+        }
         return gift;
     }
 

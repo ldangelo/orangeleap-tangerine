@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.service.job;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -38,6 +39,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 
 		List<String> schemas = schemaService.readSchemas();
 		for (String schema : schemas) {
+			logger.info("Processing jobs for "+schema);
 			schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
 			executeInternalForSchema(context, applicationContext);
 		}
@@ -48,6 +50,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 	private void executeInternalForSchema(JobExecutionContext context, ApplicationContext applicationContext) {
 		JobDataMap map = context.getMergedJobDataMap();
 		String [] keys = map.getKeys();
+		Arrays.sort(keys);
 		for (String key : keys) {
 			if (key.startsWith("job[")) {
 				String value = map.getString(key);

@@ -31,13 +31,14 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 	    	return wac.getBean(bean);
 	    }
 	    
-	    private boolean isResourceRequest(HttpServletRequest request) {
+	    private boolean suppressStartTransaction(HttpServletRequest request) {
 	    	String url = request.getRequestURL().toString();
 	    	return url.endsWith(".gif") 
 	    	|| url.endsWith(".jpg") 
 	    	|| url.endsWith(".png")
 	    	|| url.endsWith(".js")
 	    	|| url.endsWith(".css")
+	    	|| url.endsWith("/import.htm")
 	    	;
 	    }
 
@@ -46,7 +47,7 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 				throws ServletException, IOException {
 			
 		    if (TransactionSynchronizationManager.isActualTransactionActive() 
-		    		|| isResourceRequest(request)) {
+		    		|| suppressStartTransaction(request)) {
 				filterChain.doFilter(request, response);
 				return;
 		    }

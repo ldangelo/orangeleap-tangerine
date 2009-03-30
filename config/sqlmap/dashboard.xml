@@ -23,7 +23,8 @@
 
 	<resultMap id="DASHBOARD_ITEM_DATA_RESULT" class="com.orangeleap.tangerine.domain.customization.DashboardItemDataValue" >
 		<result property="label" column="LABEL" jdbcType="VARCHAR" />
-		<result property="dataValue" column="DATA_VALUE" jdbcType="BIGINT" />
+		<result property="labelValue" column="LABEL_VALUE" jdbcType="BIGDECIMAL" />
+		<result property="dataValue" column="DATA_VALUE" jdbcType="BIGDECIMAL" />
 	</resultMap>
 
 	<select id="SELECT_DASHBOARD_ITEM" resultMap="DASHBOARD_ITEM_RESULT" parameterClass="map">

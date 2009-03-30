@@ -26,6 +26,7 @@ $(document).ready(function() {
 		</thead>
 
 		<c:forEach items="${gridCollection}" var="row" varStatus="status">
+			<c:set var="counter" value="${status.index}"/>
 			<%@ include file="/WEB-INF/jsp/snippets/gridRowView.jsp"%>
 		</c:forEach>
 	</table>

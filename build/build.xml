@@ -84,6 +84,7 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/emailSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/phoneSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/giftSetup.sql"/>
+	     	<transaction src="${basedir}/db/dev/devSetup/commitmentSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/devSetup/businessRulesSetup.sql"/>
 	     	<transaction src="${basedir}/db/dev/giftPaymentTypeDefault.sql"/>
 	     	<transaction src="${basedir}/db/dev/customRoleTest/personSearch.sql"/>

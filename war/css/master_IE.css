@@ -23,10 +23,14 @@ div.lookupScrollTop { top:-15px; left:0;}
 div.lookupScrollContainer { top: -16px; }
 div.lookupScrollBottom { top: -17px; }
 
+tr.hiddenRow, tr.hiddenRow td, tr.hiddenRow table, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 li { position: relative; }
+tr.hiddenRow td table div, tr.hiddenRow td table ul.width350, tr.hiddenRow td table ul.width350 div, tr.hiddenRow td table ul.width350 li { zoom: 1; }
 tr.hiddenRow td table ul.width350 div.multiLookupField { min-height: 18px; } 
-tr.hiddenRow td table ul.width350 div.lookupScrollTop { top: -15px; left:0; } 
-tr.hiddenRow td table ul.width350 div.lookupScrollBottom { top:-19px; }
+tr.hiddenRow td table ul.width350 div.lookupScrollTop { top: 0; left:0; } 
+tr.hiddenRow td table ul.width350 div.lookupScrollContainer { top: 0; }
+tr.hiddenRow td table ul.width350 div.lookupScrollBottom { top: -2px; }
 tr.hiddenRow td table ul.width350 li.side input.checkbox { width: auto; }
 tr.hiddenRow td table ul.width350 li.multiOptionLi { margin-bottom: 0; }
 tr.hiddenRow td table ul.width350 li.queryLookupLi { padding-bottom: 8px; }
-tr.hiddenRow td table ul.width350 div.lookupScrollContainer { }
+tr.hiddenRow td table ul.width350 a.multiLookupLink { top: 7px; }
+tr.hiddenRow.noDisplay td table ul.width350, tr.hiddenRow.noDisplay td table div, tr.hiddenRow.noDisplay td table ul.width350 li { display: none; }

@@ -95,8 +95,13 @@ var GiftInKindDetails = {
 	addNewRow: function() {
 		var $newRow = $("#gridCloneRow").clone(false);
 		$newRow.attr("id", "gridRow" + GiftInKindDetails.index);
-		$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + GiftInKindDetails.index + "]").replace(new RegExp("\\-0-","g"), "-" + GiftInKindDetails.index + "-").
-			replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + GiftInKindDetails.index + '"'));
+		if ($.browser.msie) {
+			OrangeLeap.changeIdsNamesIE($newRow, GiftInKindDetails.index);
+		}
+		else {
+			$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + GiftInKindDetails.index + "]").replace(new RegExp("\\-0-","g"), "-" + GiftInKindDetails.index + "-").
+				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + GiftInKindDetails.index + '"'));
+		}
 		$("table.giftInKindDetails tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.giftInKindDetails", "form").append($newRow);
 		GiftInKindDetails.detailsBuilder($newRow);

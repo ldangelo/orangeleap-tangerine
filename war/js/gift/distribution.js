@@ -199,13 +199,13 @@ var Distribution = {
 			Distribution.deleteRow($(this).parent().parent());
 			return false;
 		}).show();
-		$("input.number, input.percentage", $newRow).numeric();
-		$("input.amount, input.percentage", $newRow).bind("keyup", function(event) {
+		$("input.number, input.amount, input.percentage", $newRow).numeric();
+		$("input.number, input.amount, input.percentage", $newRow).bind("keyup", function(event) {
 			if (event.keyCode != 9) { // ignore tab
 				Distribution.updateFields($(event.target));
 			}
 		});		
-		$("input.amount, input.percentage", $newRow).bind("change", function(event) {
+		$("input.number, input.amount, input.percentage", $newRow).bind("change", function(event) {
 			Distribution.updateFields($(event.target));
 		});		
 		$("input.code", $newRow).each(function(){
@@ -219,8 +219,13 @@ var Distribution = {
 	addNewRow: function() {
 		var $newRow = $("#gridCloneRow").clone(false);
 		$newRow.attr("id", "gridRow" + Distribution.index);
-		$newRow.html($newRow.html().replace(new RegExp("\\[0]","g"), "[" + Distribution.index + "]").replace(new RegExp("\\-0-","g"), "-" + Distribution.index + "-").
-			replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + Distribution.index + '"'));
+		if ($.browser.msie) {
+			OrangeLeap.changeIdsNamesIE($newRow, Distribution.index);
+		}
+		else {
+			$newRow.html($newRow.html().replace(new RegExp("\\[0\\]","g"), "[" + Distribution.index + "]").replace(new RegExp("\\-0\\-","g"), "-" + Distribution.index + "-").
+				replace(new RegExp('rowIndex="0"',"gi"), 'rowIndex="' + Distribution.index + '"'));
+		}
 		$("table.distributionLines tbody.gridRow:last .deleteButton", "form").removeClass("noDisplay"); // show the previous last row's delete button
 		$("table.distributionLines", "form").append($newRow);
 		Distribution.distributionLineBuilder($newRow);

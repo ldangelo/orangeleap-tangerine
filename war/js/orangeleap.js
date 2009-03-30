@@ -545,6 +545,38 @@ var OrangeLeap = {
 		return false;
 	},
 	
+	changeIdsNamesIE: function($newRow, index) {
+		$("input, select, textbox", $newRow).each(function() {
+			var $elem = $(this);
+			var thisId = $elem.attr("id");
+			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+			var thisName = $elem.attr("name");
+			$elem.attr("name", thisName.replace(new RegExp("\\[0\\]","g"), "[" + index + "]"));
+			var otherFieldAttr = $elem.attr("otherFieldId");
+			if (otherFieldAttr) {
+				$elem.attr("otherFieldId", otherFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+			}
+			var additionalFieldAttr = $elem.attr("additionalFieldId");
+			if (additionalFieldAttr) {
+				$elem.attr("additionalFieldId", additionalFieldAttr.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+			}
+		});
+		$("a.treeNodeLink", $newRow).each(function() {
+			var $elem = $(this);
+			$elem.attr("rowIndex", index);
+		});
+		$("tr.hiddenRow li, tr.hiddenRow div", $newRow).each(function() {
+			var $elem = $(this);
+			var thisId = $elem.attr("id");
+			$elem.attr("id", thisId.replace(new RegExp("\\-0\\-","g"), "-" + index + "-"));
+		});
+		$("tr.hiddenRow label", $newRow).each(function() {
+			var $elem = $(this);
+			var thisId = $elem.attr("for");
+			$elem.attr("for", thisId.replace(new RegExp("\\[0\\]","g"), "-" + index + "-"));
+		});
+	},
+	
 	gotoUrl: function(url) {
 		window.location.href = url;
 	},

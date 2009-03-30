@@ -17,4 +17,8 @@ public interface TangerineUserHelper {
     public List<String> lookupUserRoles();
     
     public Long lookupUserId();
+    
+    public void setSystemUserAndSiteName(String siteName);
+
+    
 }

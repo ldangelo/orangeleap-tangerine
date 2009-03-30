@@ -85,4 +85,13 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper {
         }
         return roles;
     }
+
+    // Used by nightly scheduled job functions
+    @Override
+    public void setSystemUserAndSiteName(String siteName) {
+    	TangerineAuthenticationToken token = new TangerineAuthenticationToken("system", "", siteName);
+        SecurityContextHolder.getContext().setAuthentication(token);
+    }
+
+    
 }

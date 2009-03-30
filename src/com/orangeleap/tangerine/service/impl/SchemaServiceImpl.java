@@ -49,7 +49,7 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
 
     @Override
 	public void setSchema(String schema) {
-    	// TODO tangerineUserHelper.setUserAndSiteName(String user, String siteName);
+        tangerineUserHelper.setSystemUserAndSiteName(schema);
 	}
 
     

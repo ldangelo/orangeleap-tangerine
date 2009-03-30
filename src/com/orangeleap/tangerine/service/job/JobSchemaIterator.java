@@ -52,7 +52,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 		String [] keys = map.getKeys();
 		Arrays.sort(keys);
 		for (String key : keys) {
-			if (key.startsWith("job[")) {
+			if (key.startsWith("job-")) {
 				String value = map.getString(key);
 				logger.debug("Running " + key + ": " + value);
 				try {

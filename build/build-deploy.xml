@@ -6,6 +6,8 @@
 	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 	
 	<property name="build.deploy.data.file" value="${basedir}/build/build-deploy-data.xml" />
+	
+	<property name="mysql.opts" value="autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
 
 
 	<target name="deploy" description="Deploy build output and populate database" depends="resolve"  >
@@ -23,7 +25,7 @@
 		
 		<!-- populate several schemas -->
 		
-		<property name="overrideUrl1" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl1" value="jdbc:mysql://localhost:${mysql.port}/orangeleap?${mysql.opts}" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl1);
         ]]> </script>
@@ -45,21 +47,21 @@
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 
 		
-		<property name="overrideUrl2" value="jdbc:mysql://localhost:${mysql.port}/company1?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl2" value="jdbc:mysql://localhost:${mysql.port}/company1?${mysql.opts}" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl2);
         ]]> </script>
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
-		<property name="overrideUrl3" value="jdbc:mysql://localhost:${mysql.port}/company2?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl3" value="jdbc:mysql://localhost:${mysql.port}/company2?${mysql.opts}" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl3);
         ]]> </script>
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
-		<property name="overrideUrl4" value="jdbc:mysql://localhost:${mysql.port}/company3?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8" />
+		<property name="overrideUrl4" value="jdbc:mysql://localhost:${mysql.port}/company3?${mysql.opts}" />
         <script language="javascript"> <![CDATA[
            self.getProject().setProperty("mysql.db.url", overrideUrl4);
         ]]> </script>

@@ -32,10 +32,10 @@
 
 		
 		<!-- Load base data only -->
-		<!-- <ant antfile="${load.base.data.file}" target="load.base.data" /> -->
+		<ant antfile="${load.base.data.file}" target="load.base.data" /> 
 
 		<!-- Load sample data -->
-		<ant antfile="${dev.build.file}" target="9. Load Data" />
+		<!--<ant antfile="${dev.build.file}" target="9. Load Data" />-->
 		
 
 		

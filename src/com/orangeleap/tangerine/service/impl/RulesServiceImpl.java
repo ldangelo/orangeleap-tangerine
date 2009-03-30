@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -20,7 +19,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.RulesService;
-import com.orangeleap.tangerine.service.rule.RulesInterceptor;
+import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -34,6 +33,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
     @Resource(name = "giftService")
     private GiftService giftService;
     
+    
     private ApplicationContext applicationContext;
     
 	@Override
@@ -45,13 +45,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	@Override
 	public void executeDailyJobRules() {
 
-
-		Properties props = RulesInterceptor.getDroolsProperties();
-
 		try {
 
-			RuleAgent agent = RuleAgent.newRuleAgent(props);
-			RuleBase ruleBase = agent.getRuleBase();
+			RuleAgent agent = RuleAgent.newRuleAgent(DroolsRuleAgent.getDroolsProperties());
+			
+ 			RuleBase ruleBase = agent.getRuleBase();
 
 			WorkingMemory workingMemory = ruleBase.newStatefulSession();
 

@@ -26,6 +26,7 @@ import org.springframework.security.userdetails.ldap.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SiteService;
 
@@ -98,12 +99,18 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
 
         String username = userToken.getName();
         String site = userToken.getSite();
+        boolean active = checkSiteActive(site);
 
         if (!StringUtils.hasLength(username)) {
             throw new BadCredentialsException(messages.getMessage("LdapAuthenticationProvider.emptyUsername",
                     "Empty Username"));
         }
 
+        if (!active) {
+            throw new BadCredentialsException(messages.getMessage("LdapAuthenticationProvider.inactiveSite",
+                    "Inactive Site"));
+        }
+        
         String password = (String) authentication.getCredentials();
         Assert.notNull(password, "Null password was supplied in authentication token");
 
@@ -147,6 +154,11 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
                 throw new AuthenticationServiceException(ldapAccessFailure.getMessage(), ldapAccessFailure);
             }
         }
+    }
+    protected boolean checkSiteActive(String siteName) {
+         Site site = siteService.readSite(siteName);
+         if (site == null) return true; // new site
+         return site.isActive();
     }
     
     protected GrantedAuthority[] loadUserAuthorities(DirContextOperations userData, String username, String password, String site) {

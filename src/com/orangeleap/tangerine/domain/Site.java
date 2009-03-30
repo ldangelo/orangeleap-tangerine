@@ -36,6 +36,7 @@ public class Site implements Serializable {
     private String merchantBin;
     private String localeString;
     private String timeZoneString;
+    private boolean active = true;
     private Site parentSite;
     private Date createDate;
     private Date updateDate;
@@ -111,6 +112,15 @@ public class Site implements Serializable {
 	public String getTimeZoneString() {
 		return timeZoneString;
 	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
 	
     @Override
     public String toString() {

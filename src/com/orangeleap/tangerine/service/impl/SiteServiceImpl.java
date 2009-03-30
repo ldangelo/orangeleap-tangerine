@@ -115,6 +115,11 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         return siteDao.readSites();
     }
 
+    @Override
+    public Site readSite(String site) {
+        return siteDao.readSite(site);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, FieldRequired> readRequiredFields(PageType pageType, List<String> roles) {

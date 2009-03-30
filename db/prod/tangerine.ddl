@@ -13,6 +13,7 @@ CREATE TABLE `SITE` (
   `MERCHANT_BIN` varchar(255) default NULL,
   `LOCALE` varchar(255) default NULL,
   `TIME_ZONE` varchar(255) default NULL,
+  `ACTIVE` char(1) default '1',
   `UPDATE_DATE` datetime default NULL,
   `PARENT_SITE_NAME` varchar(255) default NULL,
   PRIMARY KEY  (`SITE_NAME`),

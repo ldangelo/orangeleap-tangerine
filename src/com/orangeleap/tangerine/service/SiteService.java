@@ -13,6 +13,8 @@ import com.orangeleap.tangerine.type.PageType;
 public interface SiteService {
 
     public List<Site> readSites();
+    
+    public Site readSite(String siteName);
 
     public Site createSiteAndUserIfNotExist(String siteName);
     

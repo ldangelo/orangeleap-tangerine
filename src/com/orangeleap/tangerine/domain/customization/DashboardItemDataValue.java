@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain.customization;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 // Result of dashboard item query
 public class DashboardItemDataValue {

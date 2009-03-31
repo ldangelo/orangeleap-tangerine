@@ -13,6 +13,9 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
 @Service("fieldService")
@@ -26,6 +29,13 @@ public class FieldServiceImpl implements FieldService {
     
     @Resource(name = "picklistDAO")
     private PicklistDao picklistDao;
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+
+    @Resource(name = "picklistCache")
+    private Cache picklistCache;
+    
 
     @Override
     public FieldRequired lookupFieldRequired(SectionField currentField) {
@@ -48,6 +58,21 @@ public class FieldServiceImpl implements FieldService {
         if (logger.isDebugEnabled()) {
             logger.debug("readPicklistByFieldNameEntityType: fieldName = " + fieldName + " entityType = " + entityType);
         }
-        return picklistDao.readPicklistByFieldName(fieldName, entityType);
+
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+        siteName = (siteName == null ? "DEFAULT" : siteName);
+        String key = siteName + "." + fieldName + "." + entityType.name();
+
+        Element ele = picklistCache.get(key);
+        Picklist picklist = null;
+
+        if(ele == null) {
+            picklist = picklistDao.readPicklistByFieldName(fieldName, entityType);
+            picklistCache.put(new Element(key,picklist));
+        } else {
+            picklist = (Picklist)ele.getValue();
+        }
+
+        return picklist;
     }
 }

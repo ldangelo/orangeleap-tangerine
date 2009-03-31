@@ -51,6 +51,12 @@
           p:cacheName="pageCustomizationCache"
           />
 
+    <bean id="picklistCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+          p:cacheManager-ref="cacheManager"
+          p:cacheName="picklistCache"
+          />
+
    <!--
       The following beans were created and used in the JMS/MOM poc shown during
       Iteration 6.  These beans can be removed but are being left right now as

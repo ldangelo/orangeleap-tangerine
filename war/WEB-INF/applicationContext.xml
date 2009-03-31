@@ -65,6 +65,12 @@
           p:cacheName="pageCustomizationCache"
           />
 
+    <bean id="picklistCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+          p:cacheManager-ref="cacheManager"
+          p:cacheName="picklistCache"
+          />
+
 	<!--
 	- The message source for this context, loaded from localized message files in the classpath (first) and then the database 
 	-->

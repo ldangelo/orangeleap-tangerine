@@ -109,4 +109,16 @@
            memoryStoreEvictionPolicy="LRU"
             />
 
+    <cache name="picklistCache"
+           maxElementsInMemory="200"
+           maxElementsOnDisk="2000"
+           eternal="false"
+           overflowToDisk="true"
+           diskSpoolBufferSizeMB="10"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="3600"
+           diskExpiryThreadIntervalSeconds="600"
+           memoryStoreEvictionPolicy="LRU"
+            />
+
 </ehcache>

@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.SectionDao;
@@ -22,6 +23,9 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RoleType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {
@@ -36,6 +40,12 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     @Resource(name = "pageAccessDAO")
     private PageAccessDao pageAccessDao;
+
+     @Resource(name = "pageCustomizationCache")
+    private Cache pageCustomizationCache;
+
+    @Autowired
+    private TangerineUserHelper tangerineUserHelper;
 
     /*
      * (non-Javadoc)
@@ -63,9 +73,32 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         if (logger.isDebugEnabled()) {
             logger.debug("readSectionFieldsBySection: sectionDefinition = " + sectionDefinition);
         }
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+
         List<SectionField> returnFields;
-        List<SectionField> outOfBoxSectionFields = sectionDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
-        List<SectionField> customSectionFields = sectionDao.readCustomizedSectionFields(sectionDefinition.getId());
+
+        String outOfBoxKey = siteName + "." + sectionDefinition.getPageType().name() + "." + sectionDefinition.getSectionName();
+
+        Element ele = pageCustomizationCache.get(outOfBoxKey);
+        List<SectionField> outOfBoxSectionFields = null;
+
+        if(ele == null) {
+            outOfBoxSectionFields = sectionDao.readOutOfBoxSectionFields(sectionDefinition.getPageType(), sectionDefinition.getSectionName());
+            pageCustomizationCache.put(new Element(outOfBoxKey, outOfBoxSectionFields));
+        } else {
+            outOfBoxSectionFields = (List<SectionField>) ele.getValue();
+        }
+
+        String customSectionKey = siteName + "." + sectionDefinition.getId();
+        ele = pageCustomizationCache.get(customSectionKey);
+        List<SectionField> customSectionFields = null;
+        if(ele == null) {
+            customSectionFields = sectionDao.readCustomizedSectionFields(sectionDefinition.getId());
+            pageCustomizationCache.put(new Element(customSectionKey, customSectionFields));
+        } else {
+            customSectionFields = (List<SectionField>)ele.getValue();
+        }
+            
         if (customSectionFields.isEmpty()) {
             returnFields = outOfBoxSectionFields;
         } 

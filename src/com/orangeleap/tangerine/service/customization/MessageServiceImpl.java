@@ -1,17 +1,19 @@
 package com.orangeleap.tangerine.service.customization;
 
 import java.util.Locale;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.orangeleap.tangerine.dao.MessageDao;
 import com.orangeleap.tangerine.type.MessageResourceType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -22,8 +24,11 @@ public class MessageServiceImpl implements MessageService {
     @Resource(name = "messageDAO")
     private MessageDao messageDao;
 
-    private final ConcurrentMap<String,String> CACHE = new ConcurrentHashMap<String,String>();
+    @Resource(name = "messageResourceCache")
+    private Cache messageResourceCache;
 
+    @Autowired
+    private TangerineUserHelper tangerineUserHelper;
 
     @Override
     public String lookupMessage(MessageResourceType messageResourceType, String messageKey, Locale language) {
@@ -33,14 +38,17 @@ public class MessageServiceImpl implements MessageService {
 
 
         String key = buildKey(messageResourceType, messageKey, language);
-        String msg = CACHE.get(key);
+        Element ele = messageResourceCache.get(key);
+        String msg = null;
 
-        if(msg == null) {
+        if(ele == null) {
             msg = messageDao.readMessage(messageResourceType, messageKey, language);
             // use the String "<NULL>" to represent null
             msg = (msg == null ? "<NULL>" : msg);
-            CACHE.put(key, msg);
-
+            ele = new Element(key, msg);
+            messageResourceCache.put(ele);
+        } else {
+            msg = (String) ele.getValue();
         }
 
         // if we substituted a real null with the <NULL> token, change it back to a real null
@@ -48,8 +56,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private String buildKey(MessageResourceType type, String key, Locale locale) {
-        StringBuilder builder = new StringBuilder(type.name());
-        builder.append("_").append(key).append("_").append(locale.getDisplayLanguage());
+
+        String site = tangerineUserHelper.lookupUserSiteName();
+        site = (site == null ? "DEFAULT": site);                     
+        StringBuilder builder = new StringBuilder(site);
+        builder.append(".").append(type.name()).append(".").append(key).append(".").append(locale.getDisplayLanguage());
 
         return builder.toString();
     }

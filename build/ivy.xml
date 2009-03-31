@@ -289,6 +289,11 @@
             <artifact name="joda-time" type="jar" ext="jar"/>
         </dependency>
 
+        <dependency org="net.sf.ehcache" name="ehcache" transitive="false" rev="1.5.0"/>
+
+        <dependency org="backport-util-concurrent" name="backport-util-concurrent" transitive="false" rev="3.1"/>
+
+        <dependency org="net.sf.jsr107cache" name="jsr107cache" transitive="false" rev="1.0"/>
 
 	</dependencies>
 </ivy-module>

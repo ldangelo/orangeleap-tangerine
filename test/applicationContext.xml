@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
@@ -32,7 +33,17 @@
 	
 	<!-- TODO: to be replaced with mock -->
 	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
-	
+
+    <!-- Load EHCache bean here, since it is needed by messageSource -->
+    <bean id="cacheManager"
+          class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+          p:configLocation="classpath:ehcache.xml"/>
+
+    <bean id="messageResourceCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+          p:cacheManager-ref="cacheManager"
+          p:cacheName="messageResourceCache"
+          />
 
    <!--
       The following beans were created and used in the JMS/MOM poc shown during

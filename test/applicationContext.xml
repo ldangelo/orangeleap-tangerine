@@ -44,6 +44,12 @@
           p:cacheManager-ref="cacheManager"
           p:cacheName="messageResourceCache"
           />
+    
+    <bean id="pageCustomizationCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean"
+          p:cacheManager-ref="cacheManager"
+          p:cacheName="pageCustomizationCache"
+          />
 
    <!--
       The following beans were created and used in the JMS/MOM poc shown during

@@ -235,19 +235,20 @@ public class EntityValidator implements Validator {
                 String propertyString = getPropertyString(key, entity, fieldValueMap);
                 String regex = validationMap.get(key).getRegex();
                 boolean valid;
-                String validator = "extensions:";
-                if (regex.startsWith(validator)) {
-                    if (propertyString.length() == 0) {
-                        // 'required' is validated in validateRequiredFields()
-                        valid = true;
-                    } 
-                    else {
-                        valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
-                    }
-                } 
-                else {
-                    valid = propertyString.matches(regex);
+
+                if (propertyString.length() == 0) {
+                	// 'required' is validated in validateRequiredFields()
+                	valid = true;
+                } else {
+                	String validator = "extensions:";
+                	if (regex.startsWith(validator)) {
+                		valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
+                	}
+                	else {
+                		valid = propertyString.matches(regex);
+                	}
                 }
+                
                 if (!valid && !errorSet.contains(key)) {
                     errors.rejectValue(key, "fieldValidationFailure", new String[] { fieldLabelMap.get(key), propertyString }, "no message provided for the validation error: fieldValidationFailure");
                 }

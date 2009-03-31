@@ -8,7 +8,7 @@
 		<input type="hidden" name="picklistId" value="<c:out value='${picklistItem.picklistId}'/>" />
 		</td>
 		<td>
-		<input name="itemName" size="16" value="<c:out value='${picklistItem.itemName}'/>" />
+		<input name="itemName" size="16" readonly style="background-color:#DDDDDD" value="<c:out value='${picklistItem.itemName}'/>" />
 		</td><td>
 		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
 		</td>

@@ -42,7 +42,20 @@ public class FieldServiceImpl implements FieldService {
         if (logger.isDebugEnabled()) {
             logger.debug("lookupFieldRequired: currentField = " + currentField);
         }
-        return fieldDao.readFieldRequired(currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
+
+        String key = buildRequiredFieldCacheKey(currentField);
+
+        Element ele = picklistCache.get(key);
+        FieldRequired fieldRequired = null;
+
+        if(ele == null) {
+            fieldRequired = fieldDao.readFieldRequired(currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
+            picklistCache.put(new Element(key, fieldRequired));
+        } else {
+            fieldRequired = (FieldRequired) ele.getValue();
+        }
+        
+        return fieldRequired;
     }
 
     @Override
@@ -74,5 +87,23 @@ public class FieldServiceImpl implements FieldService {
         }
 
         return picklist;
+    }
+
+    private String buildRequiredFieldCacheKey(SectionField sectionField) {
+
+        String siteName = tangerineUserHelper.lookupUserSiteName();
+        siteName = (siteName == null ? "DEFAULT" : siteName);
+
+        StringBuilder builder = new StringBuilder(siteName);
+        builder.append(".").append(sectionField.getSectionDefinition().getSectionName());
+        builder.append(".").append(sectionField.getFieldDefinition().getId());
+        if(sectionField.getSecondaryFieldDefinition() == null) {
+            builder.append(".").append("NULL");
+        } else {
+            builder.append(".").append(sectionField.getSecondaryFieldDefinition().getId());
+        }
+
+        return builder.toString();
+
     }
 }

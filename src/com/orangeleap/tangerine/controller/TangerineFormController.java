@@ -29,6 +29,7 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.TangerineCustomDateEditor;
 
 public abstract class TangerineFormController extends SimpleFormController {
 
@@ -89,7 +90,7 @@ public abstract class TangerineFormController extends SimpleFormController {
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); // TODO: custom date format
+        binder.registerCustomEditor(Date.class, new TangerineCustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true)); // TODO: custom date format
         binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
     }
 

@@ -22,11 +22,24 @@
 				</c:if>
 			</label>
 			<c:choose>
-				<c:when test="${fieldVO.fieldType == 'DATE'}">
-					<div class="lookupWrapper">
-					    <form:input path="${fieldVO.fieldName}" size="16" maxlength="10" cssClass="text date ${fieldVO.entityAttributes}" cssErrorClass="textError date" />
-					</div>
-				</c:when>
+                <c:when test="${fieldVO.fieldType == 'DATE'}">
+                    <div class="lookupWrapper">
+                        <form:input path="${fieldVO.fieldName}" size="16" maxlength="10"
+                                    cssClass="text ${fieldVO.entityAttributes}" cssErrorClass="textError"/>
+
+                        <script type="text/javascript">
+                            var name = '${fieldVO.fieldName}';
+                            var seasonal = (name.indexOf('seasonal') > -1);
+                            // remove brackets from IDs
+                            name = name.replace('[','').replace(']','');
+                            new Ext.form.DateField({
+                                applyTo: name,
+                                format: (seasonal ? 'F-j' : 'm/d/Y'),
+                                width: 250
+                            });
+                        </script>
+                    </div>
+                </c:when>
 				<c:when test="${fieldVO.fieldType == 'DATE_DISPLAY'}">
 					<fmt:formatDate value="${fieldVO.fieldValue}" pattern="MM / dd / yyyy" var="formattedDate" />
 					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty formattedDate}">&nbsp;</c:when><c:otherwise><c:out value='${formattedDate}'/></c:otherwise></c:choose></div>

@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.drools.event.DebugAgendaEventListener;
@@ -53,7 +54,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		RuleAgent agent = RuleAgent.newRuleAgent(props);
 		RuleBase ruleBase = agent.getRuleBase();
 
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
 
 		workingMemory.addEventListener (new DebugAgendaEventListener());
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
@@ -89,6 +90,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 			String ruleflow = "com.mpower." + site + "_" + ruleFlowName;
 			workingMemory.startProcess(ruleflow);
 			workingMemory.fireAllRules();
+			workingMemory.dispose();
 		} catch (Exception e) {
 			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
 			logger.info(e);

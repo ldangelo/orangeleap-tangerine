@@ -10,6 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.drools.base.RuleNameEqualsAgendaFilter;
@@ -47,7 +48,7 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 	
 		RuleBase ruleBase = ruleAgent.getRuleAgent().getRuleBase();
 
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
 
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
@@ -79,6 +80,7 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 			logger.info("*** firing all rules");
 			workingMemory.setFocus(site+"person");
 			workingMemory.fireAllRules();
+			workingMemory.dispose();
 		} catch (Exception e) {
 			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
 			logger.info(e);

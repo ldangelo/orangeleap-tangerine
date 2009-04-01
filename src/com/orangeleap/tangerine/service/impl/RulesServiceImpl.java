@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
@@ -51,7 +52,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			
  			RuleBase ruleBase = agent.getRuleBase();
 
-			WorkingMemory workingMemory = ruleBase.newStatefulSession();
+			StatefulSession workingMemory = ruleBase.newStatefulSession();
 
 			List<Person> peopleList = constituentService.readAllConstituentsBySite(); 
 
@@ -67,11 +68,11 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 			}
 
-			String ruleflow = "com.orangeleap.tangerine." + getSiteName() + "_ScheduledRuleflow";
 
 			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.startProcess(ruleflow);
+			workingMemory.setFocus(getSiteName()+"scheduled");
 			workingMemory.fireAllRules();
+			workingMemory.dispose();
 
 		} catch (Throwable t) {
 			logger.error(t);

@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 public class DroolsRuleAgent implements ApplicationContextAware {
 	private static final Log logger = LogFactory.getLog(DroolsRuleAgent.class);
 
-
-	private RuleAgent ruleAgent = null;
 	private ApplicationContext applicationContext;
 	
 	public static Properties getDroolsProperties() {
-		String host = System.getProperty("drools.host");
-		String port = System.getProperty("drools.port");
+//		String host = System.getProperty("drools.host");
+//		String port = System.getProperty("drools.port");
 //		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
 //		logger.debug("Setting Drools URL to "+url);
 		Properties props = new Properties();
@@ -37,17 +35,11 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 		
 	}
 	
-	RuleAgent getRuleAgent()
+	public RuleAgent getRuleAgent()
 	{
-		if (ruleAgent == null)
-			ruleAgent = RuleAgent.newRuleAgent(getDroolsProperties());
-		return ruleAgent;
+			return RuleAgent.newRuleAgent(getDroolsProperties());
 	}
 	
-	void setRuleAgent(RuleAgent agent)
-	{
-		ruleAgent = agent;
-	}
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)

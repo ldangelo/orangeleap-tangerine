@@ -9,7 +9,9 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.drools.base.RuleNameEqualsAgendaFilter;
@@ -49,7 +51,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware, Applica
 
 		RuleBase ruleBase = ruleAgent.getRuleAgent().getRuleBase();
 
-		WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		workingMemory.addEventListener (new DebugAgendaEventListener());
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
 		
@@ -84,6 +86,8 @@ public class PaymentRulesInterceptor implements ApplicationContextAware, Applica
 
 			workingMemory.setFocus(site+"processpayment");
 			workingMemory.fireAllRules();
+			
+			workingMemory.dispose();
 		} catch (Exception e) {
 			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
 			logger.info(e);

@@ -16,8 +16,10 @@ Ext.onReady(function(){
 
     Ext.fly('amountPerGift').on('change', RecurringGift.calculateTotals );
     Ext.fly('frequency').on('change', RecurringGift.calculateTotals );
-    Ext.fly('startDate').on('change', RecurringGift.calculateTotals );
-    Ext.fly('endDate').on('change', RecurringGift.calculateTotals );
+
+
+    Ext.getCmp('startDate-wrapper').on('change', RecurringGift.calculateTotals );
+    Ext.getCmp('endDate-wrapper').on('change', RecurringGift.calculateTotals );
 
 });
 
@@ -51,9 +53,9 @@ RecurringGift.GiftCalculator = function() {
         }
                 
         fields.frequency = Ext.fly('frequency').getValue().toLowerCase();
-        fields.start = Date.parseDate( Ext.fly('startDate').getValue(), 'm/d/Y').clearTime();
+        fields.start = Date.parseDate( Ext.getCmp('startDate-wrapper').getRawValue(), 'm/d/Y').clearTime();
 
-        f = Ext.fly('endDate').getValue();
+        f = Ext.getCmp('endDate-wrapper').getRawValue();
 
         if(f) {
             fields.end = Date.parseDate( f, 'm/d/Y').clearTime();

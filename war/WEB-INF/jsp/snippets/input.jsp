@@ -34,6 +34,7 @@
                             name = name.replace('[','').replace(']','');
                             new Ext.form.DateField({
                                 applyTo: name,
+                                id: name + "-wrapper",
                                 format: (seasonal ? 'F-j' : 'm/d/Y'),
                                 width: 250
                             });

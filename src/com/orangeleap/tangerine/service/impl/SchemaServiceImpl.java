@@ -45,6 +45,7 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
     	EXCLUDE_LIST.add("information_schema");
     	EXCLUDE_LIST.add("test");
     	EXCLUDE_LIST.add("jasperserver");
+    	EXCLUDE_LIST.add("theguru");
     }
 
     @Override

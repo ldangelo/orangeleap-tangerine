@@ -58,20 +58,19 @@ public class CommitmentServiceImpl extends AbstractPaymentService implements Com
     public Commitment maintainCommitment(Commitment commitment) {
     	
     	
-    	// This needs to be a drools rule  see TANGERINE-97
-//    	if (commitment.getCommitmentType() == CommitmentType.PLEDGE) {
-//    		if (commitment.getGifts() == null || commitment.getGifts().size() == 0) {
-//    			if (commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_FULFILLED || commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_IN_PROGRESS) {
-//    				commitment.setPledgeStatus(Commitment.PLEDGE_STATUS_PENDING);
-//    			}
-//    		} else {
-//    			if (commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_FULFILLED) {
-//    				if (!commitment.getAmountPaid().equals(commitment.getAmountTotal())) {
-//    					commitment.setPledgeStatus(Commitment.PLEDGE_STATUS_IN_PROGRESS);
-//    				}
-//    			}
-//    		}
-//    	}
+    	if (commitment.getCommitmentType() == CommitmentType.PLEDGE) {
+    		if (commitment.getGifts() == null || commitment.getGifts().size() == 0) {
+    			if (commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_FULFILLED || commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_IN_PROGRESS) {
+    				commitment.setPledgeStatus(Commitment.PLEDGE_STATUS_PENDING);
+    			}
+    		} else {
+    			if (commitment.getPledgeStatus() == Commitment.PLEDGE_STATUS_FULFILLED) {
+    				if (!commitment.getAmountPaid().equals(commitment.getAmountTotal())) {
+    					commitment.setPledgeStatus(Commitment.PLEDGE_STATUS_IN_PROGRESS);
+    				}
+    			}
+    		}
+    	}
         commitment.filterValidDistributionLines();
         return save(commitment);
     }

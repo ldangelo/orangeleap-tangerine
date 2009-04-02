@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:stream="http://www.springframework.org/schema/integration/stream"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+			http://www.springframework.org/schema/integration/jms
+			http://www.springframework.org/schema/integration/jms/spring-integration-jms-1.0.xsd			
+			http://www.springframework.org/schema/integration/stream
+			http://www.springframework.org/schema/integration/stream/spring-integration-stream-1.0.xsd">
+
+
+  <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <beans:property name="targetConnectionFactory">
+      <beans:bean class="org.apache.activemq.ActiveMQConnectionFactory">
+	<beans:property name="brokerURL" value="tcp://localhost:61616"/>		
+      </beans:bean>
+    </beans:property>
+    <beans:property name="sessionCacheSize" value="10"/>
+    <beans:property name="cacheProducers" value="false"/>
+  </beans:bean>
+
+  <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
+    <beans:constructor-arg value="queue.tangerine.gift"/>
+  </beans:bean>
+  
+  <gateway id="newGift" service-interface="com.orangeleap.tangerine.integration.NewGift"/>
+<!--  <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
+  <gateway id="newAddress" service-interface="com.orangeleap.tangerine.integration.NewAddress"/> -->
+
+  <channel id="newGiftChannel"/>
+  <channel id="newConstituentChannel"/>
+  <channel id="newAddressChannel"/>
+  <channel id="gift_drools_channel"/>
+  <channel id="gift_jms_channel"/>
+  <channel id="payment_drools_channel"/>
+
+  <service-activator input-channel="gift_drools_channel" ref="GiftDrools" method="doApplyRules"/>
+  <service-activator input-channel="payment_drools_channel" ref="PaymentDrools" method="doApplyRules"/>
+
+  <router id="routerEndpoint" input-channel="newGiftChannel" ref="giftRouter"/>
+  
+  <beans:bean id="giftRouter" class="org.springframework.integration.router.RecipientListRouter">
+    <beans:property name="channels">
+      <beans:list>
+		<beans:ref bean="gift_drools_channel"/>
+		<beans:ref bean="payment_drools_channel"/>
+<!-- 		<beans:ref bean="gift_jms_channel"/> -->
+      </beans:list>
+    </beans:property>
+  </beans:bean>
+
+  <beans:bean id="GiftDrools" class="com.orangeleap.tangerine.service.rule.GiftRulesInterceptor">
+    <beans:property name="ruleFlowName" value="GiftDonatedRuleflow"/>
+  </beans:bean>
+
+  <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor">
+    <beans:property name="ruleFlowName" value="processpayment"/>
+  </beans:bean>
+
+  <jms:outbound-gateway id="GiftJms" request-channel="gift_jms_channel" request-destination="GiftDestination" />
+
+	<poller id="poller" default="true">
+		<interval-trigger interval="1000"/>
+	</poller>
+
+</beans:beans>

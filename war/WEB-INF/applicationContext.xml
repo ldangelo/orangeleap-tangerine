@@ -136,8 +136,6 @@
 
 	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
 
-	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
-
 	<!--
 		The following beans were created and used in the JMS/MOM poc shown
 		during Iteration 6. These beans can be removed but are being left

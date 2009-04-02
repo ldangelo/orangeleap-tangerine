@@ -1,11 +1,7 @@
 package com.orangeleap.tangerine.service.payments;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 
 import com.orangeleap.tangerine.domain.checkservice.Batch;
 import com.orangeleap.tangerine.domain.checkservice.Detail;
@@ -13,7 +9,6 @@ import com.orangeleap.tangerine.domain.checkservice.PaymentProcessorException;
 import com.orangeleap.tangerine.domain.checkservice.Response;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.CheckService;
-import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 
 public class EchexPaymentGateway implements ACHPaymentGateway {
     private CheckService checkService = null;

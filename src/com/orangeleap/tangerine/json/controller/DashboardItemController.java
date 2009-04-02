@@ -36,8 +36,12 @@ public class DashboardItemController {
     	List<DashboardItem> items = dashboardService.getDashboard();
     	List<DashboardData> itemsData = new ArrayList<DashboardData>();
     	for (DashboardItem item : items) {
-    		DashboardData data = dashboardService.getDashboardQueryContent(item);
-    		itemsData.add(data);
+    		try {
+    			DashboardData data = dashboardService.getDashboardQueryContent(item);
+    			itemsData.add(data);
+    		} catch (Exception e) {
+    			logger.error("Error rendering dashboard item "+item.getTitle()+": "+e.getMessage());
+    		}
     	}
     	
     	if (logger.isDebugEnabled()) {

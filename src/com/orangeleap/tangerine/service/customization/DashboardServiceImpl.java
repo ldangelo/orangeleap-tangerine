@@ -101,11 +101,13 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         	for (int j = 0; j < data.getRowLabels().size(); j++) {
         		BigDecimal value = null;
         		String label = data.getRowLabels().get(j);
-        		for (DashboardItemDataValue dv : labelData.get(i)) {
-	        		if (label.equals(dv.getLabel())) {
-	        			value = dv.getDataValue();
-	        			break;
-	        		}
+        		if (label != null && labelData.get(i) != null) {
+        			for (DashboardItemDataValue dv : labelData.get(i)) {
+		        		if (label.equals(dv.getLabel())) {
+		        			value = dv.getDataValue();
+		        			break;
+		        		}
+            		}
         		}
         		if (value == null) value = new BigDecimal(0);
         		datapoints.add(value);

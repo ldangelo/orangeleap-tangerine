@@ -1,7 +1,10 @@
 package com.orangeleap.tangerine.service.payments;
 
+
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 import com.orangeleap.tangerine.domain.checkservice.Batch;
 import com.orangeleap.tangerine.domain.checkservice.Detail;
@@ -9,6 +12,7 @@ import com.orangeleap.tangerine.domain.checkservice.PaymentProcessorException;
 import com.orangeleap.tangerine.domain.checkservice.Response;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.CheckService;
+
 
 public class EchexPaymentGateway implements ACHPaymentGateway {
     private CheckService checkService = null;
@@ -49,6 +53,17 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 
 	        try {
 	            response = checkService.sendBatch(batch);
+
+	            if (response.isAccepted()) {
+	            	//g.setAuthCode(response.getAuthCode());
+	    			g.setTxRefNum(String.valueOf((response.getTransactionNumber())));
+	    			g.setPaymentStatus(response.getTransactionConfirmation());
+	    			g.setPaymentMessage(response.getMessage());
+	            } else {
+//	            	g.setPaymentStatus(response.getStatus());
+	    			g.setPaymentMessage(response.getMessage());
+	            }
+	            
 	        } catch(PaymentProcessorException exception) {
 	        	logger.error(exception.getMessage());
 	        }

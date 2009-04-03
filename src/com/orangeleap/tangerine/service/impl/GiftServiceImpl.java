@@ -85,12 +85,16 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("maintainGift: gift = " + gift);
         }
         maintainEntityChildren(gift, gift.getPerson());
-        routeGift(gift);
         setDefaultDates(gift);
         gift.filterValidDistributionLines();
         gift = giftDao.maintainGift(gift);
         paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
         auditService.auditObject(gift, gift.getPerson());
+
+        //
+        // this needs to go last because we need the gift in the database
+        // in order for rules to work properly.
+        routeGift(gift);
 
         return gift;
     }

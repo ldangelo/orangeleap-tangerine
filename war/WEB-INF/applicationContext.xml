@@ -140,4 +140,12 @@
 			<property name="configFile" value="/usr/local/paymentech/config/linehandler.properties"/>
 		</bean>
 
+		<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
+		  <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
+		</bean>
+
+		<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
+		  <property name="checkService" ref="checkService"/>
+		</bean>
+
 </beans>

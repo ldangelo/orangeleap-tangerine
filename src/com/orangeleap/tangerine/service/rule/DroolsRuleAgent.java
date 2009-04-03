@@ -13,6 +13,9 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	private static final Log logger = LogFactory.getLog(DroolsRuleAgent.class);
 
 	private ApplicationContext applicationContext;
+	static private RuleAgent agent = null;
+	
+
 	private final Properties droolsProperties;
 
 	public DroolsRuleAgent(final String pollInterval, final String cacheDir, final String packageDir) {

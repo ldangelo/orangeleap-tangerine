@@ -5,20 +5,24 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugRuleFlowEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
-import com.orangeleap.tangerine.domain.Person;
+
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.GiftService;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
@@ -35,29 +39,41 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
+		StatefulSession session = ruleBase.newStatefulSession();
+		WorkingMemory workingMemory = (WorkingMemory) session;
 		workingMemory.addEventListener (new DebugAgendaEventListener());
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+
+		
+		
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
 		String site = null;
-			workingMemory.insert(gift);
+
 
 			try {
+				if (site == null) {
+					site =gift.getSite().getName();
+				}
+				workingMemory.setFocus(site+"gift");
 				
-				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId()); 
+				workingMemory.insert(gift);
+				
+				/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId()); 
 				Iterator<Gift> giftsIter = gifts.iterator();
 				while (giftsIter.hasNext()) {
 					workingMemory.insert(giftsIter.next());
-				}
+				}*/
 
 				Person person = gift.getPerson();
+				
+				person.setGifts(gs.readMonetaryGifts(person));
 				workingMemory.insert(person);
 
 			} catch (Exception ex) {
-				logger.info(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 
 			if (site == null) {
@@ -66,16 +82,18 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
+
 			logger.info("*** firing all rules");
 
-			workingMemory.setFocus(site+"gift");
 			workingMemory.fireAllRules();
 			
-			workingMemory.dispose();
+			
+			session.dispose();
+			workingMemory = null;
 
 		} catch (Exception e) {
-			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.info(e);
+			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+			logger.error(e);
 		}
 	}
 

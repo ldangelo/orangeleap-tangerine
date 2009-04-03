@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

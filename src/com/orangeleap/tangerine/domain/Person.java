@@ -299,6 +299,16 @@ public class Person extends AbstractCommunicatorEntity {
         return constituentOrganizationRoles;
     }
 
+    public void addConstituentIndividualRoles(String role) {
+    	String existingValue = getConstituentIndividualRoles();
+        if (existingValue == null) {
+            setConstituentIndividualRoles(role);
+        }
+        else {
+            setConstituentIndividualRoles(existingValue + "," + role); 
+        }
+    }
+    
     public void addConstituentRole(String constituentRole) {
         if (constituentRole == null || constituentRole.equals(ORGANIZATION) || constituentRole.equals(INDIVIDUAL)) {
             return;

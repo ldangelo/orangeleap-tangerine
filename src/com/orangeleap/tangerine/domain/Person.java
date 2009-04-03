@@ -1,10 +1,14 @@
 package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class Person extends AbstractCommunicatorEntity {
@@ -40,6 +44,10 @@ public class Person extends AbstractCommunicatorEntity {
     private Date createDate;
     private Date updateDate;
     private String customId;
+    
+    private List<Gift> gifts;
+    private List<RecurringGift> recurringGifts;
+    private List<Pledge> pledges;
     
     public Person() { }
 
@@ -189,6 +197,30 @@ public class Person extends AbstractCommunicatorEntity {
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    public List<Gift> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(List<Gift> gifts) {
+        this.gifts = gifts;
+    }
+
+    public List<RecurringGift> getRecurringGifts() {
+        return recurringGifts;
+    }
+
+    public void setRecurringGifts(List<RecurringGift> recurringGifts) {
+        this.recurringGifts = recurringGifts;
+    }
+
+    public List<Pledge> getPledges() {
+        return pledges;
+    }
+
+    public void setPledges(List<Pledge> pledges) {
+        this.pledges = pledges;
     }
 
     public boolean isMajorDonor() {

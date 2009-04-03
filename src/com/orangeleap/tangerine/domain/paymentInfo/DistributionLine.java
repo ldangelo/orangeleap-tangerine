@@ -32,15 +32,9 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.other_motivationCode = other_motivationCode;
     }
     
-    public DistributionLine(DistributionLine otherLine, boolean isGiftId, Long id) {
+    public DistributionLine(DistributionLine otherLine, Long giftId) {
         this(otherLine.getAmount(), otherLine.getPercentage(), otherLine.getProjectCode(), otherLine.getMotivationCode(), otherLine.getOther_motivationCode());
-        if (isGiftId) {
-            this.giftId = id;
-        }
-        else {
-            // TODO: fix
-            this.pledgeId = id;
-        }
+        this.giftId = giftId;
     }
 
     public BigDecimal getAmount() {

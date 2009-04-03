@@ -41,6 +41,8 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.integration.NewGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
@@ -57,8 +59,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 
-//    @Resource(name = "commitmentService")
-//    private CommitmentService commitmentService;
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
+
+    @Resource(name = "pledgeService")
+    private PledgeService pledgeService;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -205,21 +210,30 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent) {
+    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId, String pledgeId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " commitmentId = " + commitmentId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " recurringGiftId = " + recurringGiftId + 
+                    "pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Gift gift = null;
         if (giftId == null) {
-            Commitment commitment = null;
-            if (commitmentId != null) {
-//                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
-                if (commitment == null) {
-                    logger.error("readGiftByIdCreateIfNull: commitment not found for commitmentId = " + commitmentId);
+            if (recurringGiftId != null) {
+                RecurringGift recurringGift = null;
+                recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(recurringGiftId));
+                if (recurringGift == null) {
+                    logger.error("readGiftByIdCreateIfNull: recurringGift not found for recurringGiftId = " + recurringGiftId);
                     return gift;
                 }
-                gift = this.createGift(commitment, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
-                gift.setPerson(commitment.getPerson());
+                gift = this.createGift(recurringGift, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
+            }
+            else if (pledgeId != null) {
+                Pledge pledge = null;
+                pledge = pledgeService.readPledgeById(Long.parseLong(pledgeId));
+                if (pledge == null) {
+                    logger.error("readGiftByIdCreateIfNull: pledge not found for pledgeId = " + pledgeId);
+                    return gift;
+                }
+                gift = this.createGift(pledge, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
             }
             if (gift == null) {
                 if (constituent != null) {
@@ -300,8 +314,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (commitment.getDistributionLines() != null) {
             List<DistributionLine> list = new ArrayList<DistributionLine>();
             for (DistributionLine oldLine : commitment.getDistributionLines()) {
-                boolean isGift = true;
-                DistributionLine newLine = new DistributionLine(oldLine, isGift, gift.getId());
+                DistributionLine newLine = new DistributionLine(oldLine, gift.getId());
                 list.add(newLine);
             }
             gift.setDistributionLines(list);

@@ -20,7 +20,7 @@ public interface GiftService {
     
     public Gift readGiftById(Long giftId, Long constituentId);
 
-    public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent);
+    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId, String pledgeId);
 
     public List<Gift> readMonetaryGifts(Person constituent);
 

@@ -1,12 +1,10 @@
 package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class Person extends AbstractCommunicatorEntity {
@@ -43,9 +41,6 @@ public class Person extends AbstractCommunicatorEntity {
     private Date updateDate;
     private String customId;
     
-    private List<Gift> gifts;
-    //private List<Commitment> commitments;
-
     public Person() { }
 
     public Person(Long id, Site site) { 
@@ -195,22 +190,6 @@ public class Person extends AbstractCommunicatorEntity {
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
     }
-
-    public List<Gift> getGifts() {
-        return gifts;
-    }
-
-    public void setGifts(List<Gift> gifts) {
-        this.gifts = gifts;
-    }
-
-//    public List<Commitment> getCommitments() {
-//        return commitments;
-//    }
-//
-//    public void setCommitments(List<Commitment> commitments) {
-//        this.commitments = commitments;
-//    }
 
     public boolean isMajorDonor() {
         return isSpecificDonor("majorDonor");

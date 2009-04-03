@@ -22,9 +22,7 @@ public interface PaymentSourceService {
 
     public List<PaymentSource> readAllPaymentSourcesACHCreditCard(Long constituentId);
     
-    public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId);
-
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);
 
-    Map<String, List<PaymentSource>> groupActivePaymentSourcesACHCreditCard(Long constituentId);
+    Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource);
 }

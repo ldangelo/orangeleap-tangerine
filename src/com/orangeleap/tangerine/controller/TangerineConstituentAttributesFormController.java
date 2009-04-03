@@ -150,7 +150,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
     @SuppressWarnings("unchecked")
     protected void refDataPaymentSources(HttpServletRequest request, Object command, Errors errors, Map refData) {
         if (bindPaymentSource) {
-            Map<String, List<PaymentSource>> paymentSources = paymentSourceService.groupActivePaymentSourcesACHCreditCard(this.getConstituentId(request));
+            PaymentSource selectedPaymentSource = null;
+            if (command instanceof PaymentSourceAware) {
+                selectedPaymentSource = ((PaymentSourceAware)command).getSelectedPaymentSource();
+            }
+            Map<String, List<PaymentSource>> paymentSources = paymentSourceService.groupPaymentSources(this.getConstituentId(request), selectedPaymentSource);
             refData.put(StringConstants.PAYMENT_SOURCES, paymentSources);
         }
     }

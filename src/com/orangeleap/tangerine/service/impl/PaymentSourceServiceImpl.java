@@ -64,7 +64,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         if (logger.isDebugEnabled()) {
             logger.debug("filterValidPaymentSources: constituentId = " + constituentId);
         }
-        List<PaymentSource> paymentSources = this.readPaymentSources(constituentId);
+        List<PaymentSource> paymentSources = paymentSourceDao.readAllPaymentSources(constituentId);
         List<PaymentSource> filteredPaymentSources = new ArrayList<PaymentSource>();
         for (PaymentSource paymentSource : paymentSources) {
             if (paymentSource.isValid()) {
@@ -90,35 +90,25 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
     
     @Override
-    public Map<String, List<PaymentSource>> groupActivePaymentSourcesACHCreditCard(Long constituentId) {
+    public Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource) {
         if (logger.isDebugEnabled()) {
-            logger.debug("groupActivePaymentSourcesACHCreditCard: constituentId = " + constituentId);
+            logger.debug("groupPaymentSources: constituentId = " + constituentId);
         }
         Map<String, List<PaymentSource>> groupedSources = new HashMap<String, List<PaymentSource>>();
-        List<PaymentSource> sources = readActivePaymentSourcesACHCreditCard(constituentId);
+        List<PaymentSource> sources = filterValidPaymentSources(constituentId);
         if (sources != null) { 
             for (PaymentSource src : sources) {
-                List<PaymentSource> list = groupedSources.get(src.getPaymentType());
-                if (list == null) {
-                    list = new ArrayList<PaymentSource>();
-                    groupedSources.put(src.getPaymentType(), list);
+                if (src.isInactive() == false || (selectedPaymentSource != null && selectedPaymentSource.getId().equals(src.getId()))) {
+                    List<PaymentSource> list = groupedSources.get(src.getPaymentType());
+                    if (list == null) {
+                        list = new ArrayList<PaymentSource>();
+                        groupedSources.put(src.getPaymentType(), list);
+                    }
+                    list.add(src);
                 }
-                list.add(src);
             }
         }
         return groupedSources;
-    }
-
-    @Override
-    public List<PaymentSource> readActivePaymentSourcesACHCreditCard(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSourcesACHCreditCard: constituentId = " + constituentId);
-        }
-        List<String> paymentTypes = new ArrayList<String>(2);
-        paymentTypes.add(PaymentSource.ACH);
-        paymentTypes.add(PaymentSource.CREDIT_CARD);
-
-        return paymentSourceDao.readActivePaymentSourcesByTypes(constituentId, paymentTypes);
     }
 
     @Override

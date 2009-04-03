@@ -64,7 +64,7 @@
 						<c:forEach var="opt" items="${paymentSources['ACH']}">
 							<option value="${opt.id}" <c:if test='${!fieldVO.model.paymentSource.userCreated && opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>
 								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" achholder="<c:out value='${opt.achHolderName}'/>" 
-								routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/></option>
+								routing="<c:out value='${opt.achRoutingNumberDisplay}'/>" acct="<c:out value='${opt.achAccountNumberDisplay}'/>"><c:out value='${opt.profile}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
 						</c:forEach>
 						<c:if test="${not empty paymentSources['ACH']}">
 							</optgroup>
@@ -83,7 +83,7 @@
 							<option value="${opt.id}" <c:if test='${!fieldVO.model.paymentSource.userCreated && opt.id == fieldVO.model.selectedPaymentSource.id}'>selected="selected"</c:if>  
 								address="${opt.selectedAddress.id}" phone="${opt.selectedPhone.id}" cardholder="<c:out value='${opt.creditCardHolderName}'/>" 
 								cardType="<c:out value='${opt.creditCardType}'/>" number="<c:out value='${opt.creditCardNumberDisplay}'/>" 
-								exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/></option>
+								exp="<fmt:formatDate value='${opt.creditCardExpiration}' pattern='MM / yyyy'/>"><c:out value='${opt.profile}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
 						</c:forEach>
 						<c:if test="${not empty paymentSources['Credit Card']}">
 							</optgroup>

@@ -15,6 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -33,11 +34,19 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
     private Class  eventClass;
 	private final Properties droolsProperties;
 	
-	public RulesInterceptor(final String droolsHost, final String droolsPort) {
+	public RulesInterceptor(String droolsHost, String droolsPort) {
         if (logger.isDebugEnabled()) {
             logger.debug("RulesInterceptor: droolsHost = " + droolsHost + " droolsPort = " + droolsPort);
         }
         droolsProperties = new Properties();
+        String thisHost =  System.getProperty("overrideDroolsHost");
+        if (StringUtils.hasText(thisHost)) {
+            droolsHost = thisHost;
+        }
+        String thisPort =  System.getProperty("overrideDroolsPort");
+        if (StringUtils.hasText(thisPort)) {
+            droolsPort = thisPort;
+        }
         String url = "http://" + droolsHost + ":" + droolsPort + "/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
         logger.debug("Setting Drools URL to " + url);
         droolsProperties.put("url", url);

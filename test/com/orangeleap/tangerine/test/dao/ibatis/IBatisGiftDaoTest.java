@@ -48,7 +48,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert PaymentSource.CASH.equals(gift.getPaymentType());
         assert gift.isDeductible() == true;
         assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-        assert gift.getCommitmentId() == null;
+        assert gift.getRecurringGiftId() == null;
         assert gift.getDonationDate() == null;
         assert gift.getPostmarkDate() == null;
         assert gift.getAuthCode() == null;
@@ -156,7 +156,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getPerson() != null && 100L == readGift.getPerson().getId();
         Assert.assertNotNull("readGift distributionLines is null", readGift.getDistributionLines());
         Assert.assertEquals("readGift distributionLines size is " + readGift.getDistributionLines().size(), 2, readGift.getDistributionLines().size());
-        assert readGift.getCommitmentId() == null;
+        assert readGift.getRecurringGiftId() == null;
         assert readGift.getPostmarkDate() == null;
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
         assert readGift.getOriginalGiftId() == null;
@@ -173,13 +173,13 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 assert "foo".equals(line.getProjectCode());
                 assert line.getMotivationCode() == null;
                 assert line.getOther_motivationCode() == null;
-                assert line.getCommitmentId() == null;
+                assert line.getPledgeId() == null;
             }
             else if (125.5 == line.getAmount().floatValue()) {
                 assert "bar".equals(line.getMotivationCode());
                 assert line.getProjectCode() == null;
                 assert line.getOther_motivationCode() == null;
-                assert line.getCommitmentId() == null;
+                assert line.getPledgeId() == null;
             }
             else {
                 assert false == true;
@@ -225,7 +225,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getPerson() != null && 100L == readGift.getPerson().getId();
         Assert.assertNotNull("readGift distributionLines is null", readGift.getDistributionLines());
         Assert.assertEquals("readGift distributionLines size is " + readGift.getDistributionLines().size(), 2, readGift.getDistributionLines().size());
-        assert readGift.getCommitmentId() == null;
+        assert readGift.getRecurringGiftId() == null;
         assert readGift.getPostmarkDate() == null;
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
         assert readGift.getOriginalGiftId() == null;
@@ -242,13 +242,13 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 assert line.getProjectCode() == null;
                 assert line.getMotivationCode() == null;
                 assert "sss".equals(line.getOther_motivationCode());
-                assert line.getCommitmentId() == null;
+                assert line.getPledgeId() == null;
             }
             else if (125.5 == line.getAmount().floatValue()) {
                 assert "bar".equals(line.getMotivationCode());
                 assert line.getProjectCode() == null;
                 assert line.getOther_motivationCode() == null;
-                assert line.getCommitmentId() == null;
+                assert line.getPledgeId() == null;
             }
             else {
                 Assert.assertEquals("amount = " + line.getAmount().floatValue(), false, true);
@@ -295,7 +295,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert PaymentSource.ACH.equals(gift.getPaymentType());
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getCommitmentId() == 300L;
+                    assert gift.getRecurringGiftId() == 300L;
                     assert gift.getDonationDate() == null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
@@ -325,7 +325,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                                 assert "01000".equals(line.getProjectCode());
                                 assert line.getMotivationCode() == null;
                                 assert line.getOther_motivationCode() == null;
-                                assert line.getCommitmentId() == null;
+                                assert line.getPledgeId() == null;
                                 break;
                             case 200:
                                 assert 75 == line.getAmount().intValue();
@@ -333,7 +333,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                                 assert line.getProjectCode() == null;
                                 assert line.getMotivationCode() == null;
                                 assert "whoa".equals(line.getOther_motivationCode());
-                                assert line.getCommitmentId() == null;
+                                assert line.getPledgeId() == null;
                                 break;
                             case 300:
                                 assert 37.5 == line.getAmount().floatValue();
@@ -341,7 +341,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                                 assert line.getProjectCode() == null;
                                 assert "foo".equals(line.getMotivationCode());
                                 assert line.getOther_motivationCode() == null;
-                                assert line.getCommitmentId() == null;
+                                assert line.getPledgeId() == null;
                                 break;
                             case 400:
                                 assert 37.5 == line.getAmount().floatValue();
@@ -349,7 +349,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                                 assert line.getProjectCode() == null;
                                 assert line.getMotivationCode() == null;
                                 assert line.getOther_motivationCode() == null;
-                                assert line.getCommitmentId() == null;
+                                assert line.getPledgeId() == null;
                                 break;
                             default:
                                 assert false == true;
@@ -369,7 +369,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                     assert PaymentSource.CREDIT_CARD.equals(gift.getPaymentType());
                     assert gift.isDeductible() == false;
                     assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getCommitmentId() == 300L;
+                    assert gift.getRecurringGiftId() == 300L;
                     assert gift.getDonationDate() == null;
                     assert gift.getPostmarkDate() == null;
                     assert gift.getAuthCode() == null;
@@ -457,16 +457,34 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     }
     
     @Test(groups = { "testCommitmentForGift" })
-    public void testReadGiftsReceivedSumByCommitmentId() throws Exception {
-        assert BigDecimal.ZERO.equals(giftDao.readGiftsReceivedSumByCommitmentId(0L));
-        assert 100299 == giftDao.readGiftsReceivedSumByCommitmentId(300L).intValue();
+    public void testReadGiftsReceivedSumByRecurringGiftId() throws Exception {
+        assert BigDecimal.ZERO.equals(giftDao.readGiftsReceivedSumByRecurringGiftId(0L));
+        assert 100299 == giftDao.readGiftsReceivedSumByRecurringGiftId(300L).intValue();
     }
     
     @Test(groups = { "testCommitmentForGift" })
-    public void testReadGiftsByCommitmentId() throws Exception {
-        List<Gift> gifts = giftDao.readGiftsByCommitmentId(0L);
+    public void testReadGiftsByRecurringGiftId() throws Exception {
+        List<Gift> gifts = giftDao.readGiftsByRecurringGiftId(0L);
         assert gifts != null && gifts.isEmpty();
-        gifts = giftDao.readGiftsByCommitmentId(300L);
+        gifts = giftDao.readGiftsByRecurringGiftId(300L);
+        
+        assert gifts.size() == 2;
+        for (Gift gift : gifts) {
+            assert gift.getId() == 300L || gift.getId() == 400L;
+        }
+    }
+    
+    @Test(groups = { "testCommitmentForGift" })
+    public void testReadGiftsReceivedSumByPledgeId() throws Exception {
+        assert BigDecimal.ZERO.equals(giftDao.readGiftsReceivedSumByPledgeId(0L));
+        assert 100299 == giftDao.readGiftsReceivedSumByPledgeId(900L).intValue();
+    }
+    
+    @Test(groups = { "testCommitmentForGift" })
+    public void testReadGiftsByPledgeId() throws Exception {
+        List<Gift> gifts = giftDao.readGiftsByPledgeId(0L);
+        assert gifts != null && gifts.isEmpty();
+        gifts = giftDao.readGiftsByPledgeId(900L);
         
         assert gifts.size() == 2;
         for (Gift gift : gifts) {
@@ -476,9 +494,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testSearchGifts" })
     public void testSearchGifts() throws Exception {
-    	
     	Map<String, Object> params = new HashMap<String, Object>();
-        
         params.put("firstName", "Pablo");
         params.put("accountNumber", new Long(200));
         params.put("phoneMap[home].number", "214-113-2542");
@@ -489,7 +505,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         List<Gift> gifts = giftDao.searchGifts(params);
         assert gifts != null && gifts.size() > 0;
         for (Gift gift : gifts) {
-        	System.out.println(gift.getPerson().getFirstName());
             assert gift.getPerson().getFirstName().equals("Pablo");
             assert gift.getAmount().compareTo(new BigDecimal(300.00)) == 0;
         }

@@ -13,18 +13,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.dao.CommitmentDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.QueryLookupDao;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.QueryLookupService;
-import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.type.EntityType;
 
 @Service("queryLookupService")
@@ -43,8 +44,11 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
     
-    @Resource(name = "commitmentDAO")
-    private CommitmentDao commitmentDao;
+    @Resource(name = "recurringGiftDAO")
+    private RecurringGiftDao recurringGiftDao;
+    
+    @Resource(name = "pledgeDAO")
+    private PledgeDao pledgeDao;
     
     
     @Override
@@ -86,24 +90,29 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
         
         if (entityType == EntityType.person) {
             String where = ql.getSqlWhere();
-            if (where != null && where.trim().length() > 0) filterparms.put(QueryUtil.ADDITIONAL_WHERE, where);
+            if (where != null && where.trim().length() > 0) {
+                filterparms.put(QueryUtil.ADDITIONAL_WHERE, where);
+            }
         	List<Person> persons = constituentDao.searchConstituents(filterparms, null);
         	result.addAll(persons);
         	
         }
         
-        if (entityType == EntityType.gift) {
+        else if (entityType == EntityType.gift) {
             List<Gift> gifts = giftDao.searchGifts(filterparms);
         	result.addAll(gifts);
         }
         
-        if (entityType == EntityType.commitment) {
-        	CommitmentType commitmentType = CommitmentType.RECURRING_GIFT;
-            List<Commitment> commitments = commitmentDao.searchCommitments(commitmentType, filterparms);
-        	result.addAll(commitments);
+        else if (entityType == EntityType.recurringGift) {
+            List<RecurringGift> recurringGifts = recurringGiftDao.searchRecurringGifts(filterparms);
+        	result.addAll(recurringGifts);
+        }
+        
+        else if (entityType == EntityType.pledge) {
+            List<Pledge> pledges = pledgeDao.searchPledges(filterparms);
+            result.addAll(pledges);
         }
         
         return result;
-        
     }
 }

@@ -311,6 +311,13 @@ public class FieldVO {
     public List<Long> getIds() {
         return ids;
     }
+    
+    public void addId(Long id) {
+        if (this.ids == null) {
+            this.ids = new ArrayList<Long>();
+        }
+        this.ids.add(id);
+    }
 
     @SuppressWarnings("unchecked")
     public List<String> getFieldValues() {
@@ -322,6 +329,13 @@ public class FieldVO {
             this.fieldValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
         }
         return fieldValues;
+    }
+
+    public void addFieldValue(String fieldValue) {
+        if (this.fieldValues == null) {
+            this.fieldValues = new ArrayList<String>();
+        }
+        this.fieldValues.add(fieldValue);
     }
 
     @SuppressWarnings("unchecked")
@@ -338,6 +352,13 @@ public class FieldVO {
 
     public void setDisplayValues(List<String> displayValues) {
         this.displayValues = displayValues;
+    }
+    
+    public void addDisplayValue(String displayValue) {
+        if (this.displayValues == null) {
+            this.displayValues = new ArrayList<String>();
+        }
+        this.displayValues.add(displayValue);
     }
 
     @SuppressWarnings("unchecked")

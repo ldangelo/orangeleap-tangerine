@@ -133,23 +133,48 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Gift> readGiftsByCommitmentId(Long commitmentId) {
+    public List<Gift> readGiftsByRecurringGiftId(Long recurringGiftId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByCommitmentId: commitmentId = " + commitmentId);
+            logger.debug("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGiftId);
         }
         Map<String, Object> params = setupParams();
-        params.put("commitmentId", commitmentId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_COMMITMENT_ID", params);
+        params.put("recurringGiftId", recurringGiftId);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_RECURRING_GIFT_ID", params);
     }
 
     @Override
-    public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId) {
+    public BigDecimal readGiftsReceivedSumByRecurringGiftId(Long recurringGiftId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsReceivedSumByCommitmentId: commitmentId = " + commitmentId);
+            logger.debug("readGiftsReceivedSumByRecurringGiftId: recurringGiftId = " + recurringGiftId);
         }
         Map<String, Object> params = setupParams();
-        params.put("commitmentId", commitmentId);
-        BigDecimal result = (BigDecimal) getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID", params);
+        params.put("recurringGiftId", recurringGiftId);
+        BigDecimal result = (BigDecimal) getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_RECURRING_GIFT_ID", params);
+        if (result == null) {
+            result = BigDecimal.ZERO;
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Gift> readGiftsByPledgeId(Long pledgeId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByPledgeId: pledgeId = " + pledgeId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("pledgeId", pledgeId);
+        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_PLEDGE_ID", params);
+    }
+
+    @Override
+    public BigDecimal readGiftsReceivedSumByPledgeId(Long pledgeId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsReceivedSumByPledgeId: pledgeId = " + pledgeId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("pledgeId", pledgeId);
+        BigDecimal result = (BigDecimal) getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_PLEDGE_ID", params);
         if (result == null) {
             result = BigDecimal.ZERO;
         }

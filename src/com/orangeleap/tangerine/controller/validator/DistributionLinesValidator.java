@@ -8,9 +8,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 
 public class DistributionLinesValidator implements Validator {
 
@@ -20,7 +21,7 @@ public class DistributionLinesValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Commitment.class.equals(clazz) || Gift.class.equals(clazz);
+        return RecurringGift.class.equals(clazz) || Pledge.class.equals(clazz) || Gift.class.equals(clazz);
     }
 
     @Override
@@ -34,15 +35,20 @@ public class DistributionLinesValidator implements Validator {
             total = getTotal(gift.getMutableDistributionLines());
             amount = gift.getAmount();
         }
-        else if (target instanceof Commitment) {
-            Commitment commitment = (Commitment)target;
-            total = getTotal(commitment.getMutableDistributionLines());
-            if (commitment.isRecurring()) {
-                amount = commitment.getAmountPerGift();
+        else if (target instanceof Pledge) {
+            Pledge pledge = (Pledge)target;
+            total = getTotal(pledge.getMutableDistributionLines());
+            if (pledge.isRecurring()) {
+                amount = pledge.getAmountPerGift();
             }
             else {
-                amount = commitment.getAmountTotal();
+                amount = pledge.getAmountTotal();
             }
+        }
+        else if (target instanceof RecurringGift) {
+            RecurringGift recurringGift = (RecurringGift)target;
+            total = getTotal(recurringGift.getMutableDistributionLines());
+            amount = recurringGift.getAmountPerGift();
         }
         if (total == null || amount == null || total.compareTo(amount) != 0) {
             errors.reject("distributionLineAmounts");

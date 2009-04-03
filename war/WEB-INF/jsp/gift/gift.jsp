@@ -1,10 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-
-
-<%-- THIS IS POORLY DONE; TODO: redo --%>
-
 <spring:message code='enterGift' var="titleText" />
-
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -14,6 +9,7 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='gift' />
 			<c:set var="person" value="${gift.person}" scope="request" />
+			<input type="hidden" id="thisConstituentId" name="thisConstituentId" value="<c:out value='${person.id}'/>"/> 
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>

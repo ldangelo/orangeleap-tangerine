@@ -1,7 +1,9 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.style.ToStringCreator;
@@ -14,7 +16,8 @@ public class Gift extends AbstractPaymentInfoEntity {
 
     private static final long serialVersionUID = 1L;
     private GiftType giftType;
-    private Long commitmentId;
+    private Long recurringGiftId;
+    private Long pledgeId;
     private BigDecimal amount;
     private BigDecimal deductibleAmount;
     private Date transactionDate;
@@ -29,14 +32,21 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentStatus;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
+    private List<Pledge> pledges;
     
     public Gift() { 
         super();
     }
 
+    // TODO: fix
     public Gift(Commitment commitment, Date transactionDate) {
         this();
-        this.commitmentId = commitment.getId();
+        if (commitment instanceof RecurringGift) {
+            this.recurringGiftId = commitment.getId();
+        }
+        else if (commitment instanceof Pledge) {
+            this.pledgeId = commitment.getId();
+        }
         this.person = commitment.getPerson();
         this.transactionDate = transactionDate;
         this.amount = commitment.getAmountPerGift();
@@ -55,12 +65,20 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.giftType = giftType;
     }
 
-    public Long getCommitmentId() {
-        return commitmentId;
+    public Long getRecurringGiftId() {
+        return recurringGiftId;
     }
 
-    public void setCommitmentId(Long commitmentId) {
-        this.commitmentId = commitmentId;
+    public void setRecurringGiftId(Long recurringGiftId) {
+        this.recurringGiftId = recurringGiftId;
+    }
+
+    public Long getPledgeId() {
+        return pledgeId;
+    }
+
+    public void setPledgeId(Long pledgeId) {
+        this.pledgeId = pledgeId;
     }
 
     public BigDecimal getAmount() {
@@ -175,7 +193,22 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.paymentMessage = message;
 	}
 	
-	public Boolean getIsAuthorized() {
+	public List<Pledge> getPledges() {
+        return pledges;
+    }
+
+    public void setPledges(List<Pledge> pledges) {
+        this.pledges = pledges;
+    }
+
+    public void addPledge(Pledge pledge) {
+        if (pledges == null) {
+            setPledges(new ArrayList<Pledge>());
+        }
+        getPledges().add(pledge);
+    }
+    
+    public Boolean getIsAuthorized() {
 		return !StringUtils.trimToEmpty(authCode).equals("");
 	}
 	
@@ -215,7 +248,8 @@ public class Gift extends AbstractPaymentInfoEntity {
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("giftType", giftType).append("commitmentId", commitmentId).append("amount", amount).
+        return new ToStringCreator(this).append(super.toString()).append("giftType", giftType).append("recurringGiftId", recurringGiftId).
+            append("amount", amount).append("pledgeId", pledgeId).
             append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
             append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).
             append(super.toString()).append("authCode", authCode).append("originalGiftId", originalGiftId).

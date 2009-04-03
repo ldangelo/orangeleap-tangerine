@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.type;
 
 public enum ReferenceType {
-    person
+    person,
+    pledge
 }

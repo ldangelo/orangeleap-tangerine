@@ -13,8 +13,10 @@
 
 	<bean id="emailValidator" class="com.orangeleap.tangerine.controller.validator.EmailValidator" />
 
-	<bean id="commitmentValidator" class="com.orangeleap.tangerine.controller.validator.CommitmentValidator" />
+	<bean id="recurringGiftValidator" class="com.orangeleap.tangerine.controller.validator.RecurringGiftValidator" />
 
+	<bean id="pledgeValidator" class="com.orangeleap.tangerine.controller.validator.PledgeValidator" />
+	
 	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.DistributionLinesValidator" />
 
 	<bean id="giftInKindDetailsValidator" class="com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator" />

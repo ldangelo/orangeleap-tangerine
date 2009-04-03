@@ -21,7 +21,8 @@
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/giftInKind.sql"/>
-	     	<transaction src="${basedir}/db/prod/domain/commitment.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/pledge.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/recurringGift.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentSource.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/fieldRelationship.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/paymentHistory.sql"/>
@@ -53,11 +54,11 @@
 	     	<transaction src="${basedir}/db/prod/pages/pledgeList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/pledgeSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/pledgeSearchResults.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/membership.sql"/>
+<!--	     	<transaction src="${basedir}/db/prod/pages/membership.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/membershipView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/membershipList.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/membershipSearch.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/membershipSearchResults.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/membershipSearchResults.sql"/>-->
 	     	<transaction src="${basedir}/db/prod/pages/addressManager.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/address.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/addressManagerEdit.sql"/>

@@ -20,10 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.service.CommitmentService;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.SessionService;
-import com.orangeleap.tangerine.type.CommitmentType;
 
 //TODO: refactor this and RecurringGiftSearchFormController into one class
 public class PledgeSearchFormController extends SimpleFormController {
@@ -31,8 +30,8 @@ public class PledgeSearchFormController extends SimpleFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name="commitmentService")
-    private CommitmentService commitmentService;
+    @Resource(name="pledgeService")
+    private PledgeService pledgeService;
 
     @Resource(name="sessionService")
     private SessionService sessionService;
@@ -44,7 +43,7 @@ public class PledgeSearchFormController extends SimpleFormController {
         }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
-        Commitment g = new Commitment();
+        Pledge g = new Pledge();
         g.setPerson(p);
         return g;
     }
@@ -55,8 +54,8 @@ public class PledgeSearchFormController extends SimpleFormController {
         if (logger.isDebugEnabled()) {
             logger.debug("onSubmit:");
         }
-        Commitment commitment = (Commitment) command;
-        BeanWrapper bw = new BeanWrapperImpl(commitment);
+        Pledge pledge = (Pledge) command;
+        BeanWrapper bw = new BeanWrapperImpl(pledge);
         Map<String, Object> params = new HashMap<String, Object>();
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
@@ -68,13 +67,13 @@ public class PledgeSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Commitment> commitmentList = commitmentService.searchCommitments(CommitmentType.PLEDGE, params);
+        List<Pledge> pledgeList = pledgeService.searchPledges(params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-        mav.addObject("commitmentList", commitmentList);
-        mav.addObject("commitmentListSize", commitmentList.size());
+        mav.addObject("pledgeList", pledgeList);
+        mav.addObject("pledgeListSize", pledgeList.size());
         return mav;
     }
 }

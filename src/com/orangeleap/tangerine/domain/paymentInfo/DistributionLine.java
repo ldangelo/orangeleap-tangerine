@@ -17,7 +17,9 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private String motivationCode;
     private String other_motivationCode;
     private Long giftId;
-    private Long commitmentId;
+    private Long pledgeId;
+    private Long recurringGiftId;
+    private Long associatedPledgeId;
 
     public DistributionLine() { }
 
@@ -36,7 +38,8 @@ public class DistributionLine extends AbstractCustomizableEntity {
             this.giftId = id;
         }
         else {
-            this.commitmentId = id;
+            // TODO: fix
+            this.pledgeId = id;
         }
     }
 
@@ -88,14 +91,30 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.giftId = giftId;
     }
 
-    public Long getCommitmentId() {
-        return commitmentId;
+    public Long getPledgeId() {
+        return pledgeId;
     }
 
-    public void setCommitmentId(Long commitmentId) {
-        this.commitmentId = commitmentId;
+    public void setPledgeId(Long pledgeId) {
+        this.pledgeId = pledgeId;
     }
     
+    public Long getRecurringGiftId() {
+        return recurringGiftId;
+    }
+
+    public void setRecurringGiftId(Long recurringGiftId) {
+        this.recurringGiftId = recurringGiftId;
+    }
+
+    public Long getAssociatedPledgeId() {
+        return associatedPledgeId;
+    }
+
+    public void setAssociatedPledgeId(Long associatedPledgeId) {
+        this.associatedPledgeId = associatedPledgeId;
+    }
+
     public boolean isValid() {
         boolean valid = false;
         if (amount != null) {
@@ -125,7 +144,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
         return new ToStringCreator(this).append(super.toString()).append("amount", amount).
             append(super.toString()).append("percentage", percentage).append("projectCode", projectCode).
             append(super.toString()).append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).
-            append(super.toString()).append("giftId", giftId).append("commitmentId", commitmentId).
+            append(super.toString()).append("giftId", giftId).append("pledgeId", pledgeId).append("recurringGiftId", recurringGiftId).
             toString();
     }
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 
@@ -16,7 +18,7 @@ public interface GiftService {
     
     public Gift editGift(Gift gift);
     
-    public Gift readGiftById(Long giftId);
+    public Gift readGiftById(Long giftId, Long constituentId);
 
     public Gift readGiftByIdCreateIfNull(String giftId, String commitmentId, Person constituent);
 
@@ -38,7 +40,9 @@ public interface GiftService {
 
     public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType);
 
-    public List<Gift> readGiftsByCommitment(Commitment commitment);
+    public List<Gift> readGiftsByRecurringGiftId(RecurringGift recurringGift);
+    
+    public List<Gift> readGiftsByPledgeId(Pledge pledge);
 
 	public List<Gift> readAllGiftsBySiteName();
 	

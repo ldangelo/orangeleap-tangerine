@@ -20,7 +20,8 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
     private Date updateDate;
     private Person person;
     private Long giftId;
-    private Long commitmentId;
+    private Long pledgeId;
+    private Long recurringGiftId;
 
 	public Site getSite() {
 		return getPerson().getSite();
@@ -90,11 +91,19 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
         this.giftId = giftId;
     }
 
-    public Long getCommitmentId() {
-        return commitmentId;
+    public Long getPledgeId() {
+        return pledgeId;
     }
 
-    public void setCommitmentId(Long commitmentId) {
-        this.commitmentId = commitmentId;
+    public void setPledgeId(Long pledgeId) {
+        this.pledgeId = pledgeId;
+    }
+
+    public Long getRecurringGiftId() {
+        return recurringGiftId;
+    }
+
+    public void setRecurringGiftId(Long recurringGiftId) {
+        this.recurringGiftId = recurringGiftId;
     }
 }

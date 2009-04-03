@@ -11,12 +11,12 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='recurringGift' />
-			<c:set var="person" value="${commitment.person}" scope="request" />
+			<c:set var="person" value="${recurringGift.person}" scope="request" />
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
 			
-			<form:form method="post" commandName="commitment">
+			<form:form method="post" commandName="recurringGift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 				<input type="hidden" name="recurring" id="recurring" value="true"/>
 
@@ -29,9 +29,9 @@
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
 				<c:set var="gridCollectionName" value="mutableDistributionLines" />
-				<c:set var="gridCollection" value="${commitment.distributionLines}" />
-				<c:set var="dummyGridCollection" value="${commitment.dummyDistributionLines}" />
-				<c:set var="paymentSource" value="${commitment.paymentSource}" />
+				<c:set var="gridCollection" value="${recurringGift.distributionLines}" />
+				<c:set var="dummyGridCollection" value="${recurringGift.dummyDistributionLines}" />
+				<c:set var="paymentSource" value="${recurringGift.paymentSource}" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
@@ -65,7 +65,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName != 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.sectionHtmlName != 'recurringGift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -86,7 +86,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName == 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.sectionHtmlName == 'recurringGift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -108,9 +108,9 @@
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}&type=recurringGift')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
 					</c:if>
-					<c:if test="${param.commitmentId > 0}">
+					<c:if test="${param.recurringGiftId > 0}">
 						<a class="newAccountButton" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a>
 					</c:if>
 				</div>

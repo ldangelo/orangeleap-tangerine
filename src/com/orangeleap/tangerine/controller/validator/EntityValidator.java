@@ -32,11 +32,11 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldCondition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -78,7 +78,8 @@ public class EntityValidator implements Validator {
         Person.class.equals(clazz) 
         || Gift.class.equals(clazz) 
         || CommunicationHistory.class.equals(clazz) 
-        || Commitment.class.equals(clazz) 
+        || Pledge.class.equals(clazz) 
+        || RecurringGift.class.equals(clazz) 
         || GiftInKind.class.equals(clazz) 
         || Address.class.equals(clazz) 
         || Email.class.equals(clazz) 
@@ -89,46 +90,43 @@ public class EntityValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("in EntityValidator");
-        // PLEDGE doesn't have payment source, address, or phone (considering refactoring Commitment to RecurringGift and Pledge)
-        if (!(target instanceof Commitment) || !CommitmentType.PLEDGE.equals(((Commitment) target).getCommitmentType())) {
-            if (target instanceof PaymentSourceAware) {
-                PaymentSourceAware obj = (PaymentSourceAware) target;
-                if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
-                    paymentSourceValidator.validatePaymentSource(target, errors);
-                }
-                else if (FormBeanType.EXISTING.equals(obj.getPaymentSourceType())) {
-                    // TODO: validate ID > 0
-                }
+        logger.debug("validate:");
+        if (target instanceof PaymentSourceAware) {
+            PaymentSourceAware obj = (PaymentSourceAware) target;
+            if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
+                paymentSourceValidator.validatePaymentSource(target, errors);
             }
-            if (target instanceof AddressAware) {
-                AddressAware obj = (AddressAware) target;
-                if (FormBeanType.NEW.equals(obj.getAddressType())) {
-                    addressValidator.validateAddress(target, errors);
-                }
-                else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
-                    // TODO: validate ID > 0
-                }
+            else if (FormBeanType.EXISTING.equals(obj.getPaymentSourceType())) {
+                // TODO: validate ID > 0
             }
+        }
+        if (target instanceof AddressAware) {
+            AddressAware obj = (AddressAware) target;
+            if (FormBeanType.NEW.equals(obj.getAddressType())) {
+                addressValidator.validateAddress(target, errors);
+            }
+            else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
+                // TODO: validate ID > 0
+            }
+        }
 
-            if (target instanceof PhoneAware) {
-                PhoneAware obj = (PhoneAware) target;
-                if (FormBeanType.NEW.equals(obj.getPhoneType())) {
-                    phoneValidator.validatePhone(target, errors);
-                }
-                else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
-                    // TODO: validate ID > 0
-                }
+        if (target instanceof PhoneAware) {
+            PhoneAware obj = (PhoneAware) target;
+            if (FormBeanType.NEW.equals(obj.getPhoneType())) {
+                phoneValidator.validatePhone(target, errors);
             }
+            else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
+                // TODO: validate ID > 0
+            }
+        }
 
-            if (target instanceof EmailAware) {
-                EmailAware obj = (EmailAware) target;
-                if (FormBeanType.NEW.equals(obj.getEmailType())) {
-                    emailValidator.validateEMail(target, errors);
-                }
-                else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
-                    // TODO: validate ID > 0
-                }
+        if (target instanceof EmailAware) {
+            EmailAware obj = (EmailAware) target;
+            if (FormBeanType.NEW.equals(obj.getEmailType())) {
+                emailValidator.validateEMail(target, errors);
+            }
+            else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
+                // TODO: validate ID > 0
             }
         }
 

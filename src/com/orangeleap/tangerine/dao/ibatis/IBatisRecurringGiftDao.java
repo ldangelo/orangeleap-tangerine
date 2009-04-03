@@ -11,10 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.dao.util.QueryUtil;
+import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.type.EntityType;
 
 @Repository("recurringGiftDAO")
-public class IBatisRecurringGiftDao extends AbstractIBatisDao implements RecurringGiftDao {
+public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<RecurringGift> implements RecurringGiftDao {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -26,7 +29,6 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
 
     @SuppressWarnings("unchecked")
     @Override
-    // TODO: determine if this query requires a join against site?
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
         if (logger.isDebugEnabled()) {
             logger.debug("readRecurringGifts: date = " + date + " statuses = " + statuses);
@@ -43,11 +45,16 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
         if (logger.isDebugEnabled()) {
             logger.debug("maintainRecurringGift: recurringGift = " + rg);
         }
-		return (RecurringGift)insertOrUpdate(rg, "RECURRING_GIFT");
+		RecurringGift aRecurringGift = (RecurringGift)insertOrUpdate(rg, "RECURRING_GIFT");
+		
+		/* Delete DistributionLines first */
+        getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_RECURRING_GIFT_ID", aRecurringGift.getId()); 
+        /* Then Insert DistributionLines */
+        insertDistributionLines(aRecurringGift, "recurringGiftId");
+        return aRecurringGift;
     }
 
     @Override
-    // TODO: determine if this query requires a join against site?
     public void removeRecurringGift(RecurringGift rg) {
         if (logger.isDebugEnabled()) {
             logger.debug("removeRecurringGift: id = " + rg.getId());
@@ -58,5 +65,41 @@ public class IBatisRecurringGiftDao extends AbstractIBatisDao implements Recurri
         if (logger.isInfoEnabled()) {
             logger.info("removeRecurringGift: number of rows deleted = " + rows);
         }
+    }
+    
+    @Override
+    public RecurringGift readRecurringGiftById(Long recurringGiftId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", recurringGiftId);
+        RecurringGift recurringGift = (RecurringGift) getSqlMapClientTemplate().queryForObject("SELECT_RECURRING_GIFT_BY_ID", params);
+        loadDistributionLinesCustomFields(recurringGift);
+
+        return recurringGift;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<RecurringGift> readRecurringGiftsByConstituentId(Long constituentId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readRecurringGiftsByConstituentIdType: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<RecurringGift> searchRecurringGifts(Map<String, Object> searchParams) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("searchRecurringGifts: searchParams = " + searchParams);
+        }
+        Map<String, Object> params = setupParams();
+        QueryUtil.translateSearchParamsToIBatisParams(searchParams, params, new SearchFieldMapperFactory().getMapper(EntityType.recurringGift).getMap());
+
+        return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFT_BY_SEARCH_TERMS", params);
     }
 }

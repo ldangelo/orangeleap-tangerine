@@ -29,14 +29,13 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.annotation.NotAuditable;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.type.AuditType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("auditService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -400,12 +399,6 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
 
     private String getClassName(Object object) {
         String name = object.getClass().getSimpleName();
-        if (object instanceof Commitment) {
-            name = StringUtils.lowerCase(((Commitment) object).getCommitmentType().getDisplayName());
-        } 
-        else {
-            name = StringUtils.lowerCase(name);
-        }
-        return name;
+        return StringUtils.lowerCase(name);
     }
 }

@@ -5,12 +5,40 @@
 	<resultMap id="RECURRING_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift" groupBy="id">
 		<result property="id" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
-		<result property="commitment" resultMap="COMMITMENT.COMMITMENT_RESULT" />
+		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
+		<result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
+		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="autoPay" column="AUTO_PAY" jdbcType="CHAR" />
+		<result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
+		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
+		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
+		<result property="lastEntryDate" column="LAST_ENTRY_DATE" jdbcType="TIMESTAMP" />
+		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
+		<result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
+		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
+		<result property="recurringGiftStatus" column="RECURRING_GIFT_STATUS" jdbcType="VARCHAR" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
-
-	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
-		select rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE,
-		<include refid="COMMITMENT_COLS_FRAGMENT" />,
+	
+	<sql id="RECURRING_GIFT_COLS_FRAGMENT">
+		rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE, rg.ACKNOWLEDGMENT_DATE, rg.AMOUNT_PER_GIFT, rg.AMOUNT_TOTAL, rg.AUTO_PAY,
+		rg.CHECK_NUMBER, rg.COMMENTS, rg.CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY,
+		rg.LAST_ENTRY_DATE, rg.PAYMENT_TYPE, rg.SEND_ACKNOWLEDGMENT, rg.START_DATE,
+		rg.RECURRING_GIFT_STATUS, rg.UPDATE_DATE
+	</sql>
+	
+	<sql id="SELECT_RECURRING_GIFT_FRAGMENT">
+		select 
+		<include refid="RECURRING_GIFT_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
 		<include refid="ADDRESS_COLS_FRAGMENT" />,
 		<include refid="PHONE_COLS_FRAGMENT" />	,
@@ -19,24 +47,48 @@
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 		
 		from RECURRING_GIFT rg
-		inner join COMMITMENT c on rg.COMMITMENT_ID = c.COMMITMENT_ID
-		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
-		left outer join PHONE ph on c.PHONE_ID = ph.PHONE_ID
-		left outer join ADDRESS addr on c.ADDRESS_ID = addr.ADDRESS_ID
-		left outer join PAYMENT_SOURCE ps on c.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
-		left outer join DISTRO_LINE dl on c.COMMITMENT_ID = dl.COMMITMENT_ID
+		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on rg.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on rg.RECURRING_GIFT_ID = dl.RECURRING_GIFT_ID
+		where
+		p.SITE_NAME= #siteName#
+	</sql>
+
+	<select id="SELECT_RECURRING_GIFT_BY_ID" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		and rg.RECURRING_GIFT_ID = #id#
+	</select>
+
+	<select id="SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		and p.CONSTITUENT_ID = #constituentId#
+		order by rg.CREATE_DATE desc
+	</select>
+
+	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
 		
-		where rg.NEXT_RUN_DATE &lt;= #date#
-		and c.STATUS in
+		and rg.NEXT_RUN_DATE &lt;= #date#
+		and rg.RECURRING_GIFT_STATUS in
     	<iterate property="statuses" conjunction="," open="(" close=")">
 			#statuses[]#
 		</iterate>
 	</select>
   
 	<insert id="INSERT_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
-		insert into RECURRING_GIFT (NEXT_RUN_DATE, COMMITMENT_ID)
-		values (#nextRunDate#, #commitment.id#)
+		insert into RECURRING_GIFT (NEXT_RUN_DATE, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL,
+		AUTO_PAY, CHECK_NUMBER, COMMENTS, CREATE_DATE, CURRENCY_CODE,
+		END_DATE, FREQUENCY, LAST_ENTRY_DATE, PAYMENT_TYPE,  
+		SEND_ACKNOWLEDGMENT, START_DATE, RECURRING_GIFT_STATUS, UPDATE_DATE, 
+		ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
+		values (#nextRunDate#, #acknowledgmentDate#, #amountPerGift#, #amountTotal#,
+		#autoPay#, #checkNumber#, #comments#, now(), #currencyCode#, 
+		#endDate#, #frequency#, #lastEntryDate#, #paymentType#,  
+		#sendAcknowledgment#, #startDate#, #recurringGiftStatus#, now(), 
+		#selectedAddress.id#, #selectedEmail.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -45,7 +97,26 @@
 	<update id="UPDATE_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
 		update RECURRING_GIFT
 		set NEXT_RUN_DATE = #nextRunDate#,
-		COMMITMENT_ID = #commitment.id#
+		ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		AMOUNT_PER_GIFT = #amountPerGift#,
+		AMOUNT_TOTAL = #amountTotal#,
+		AUTO_PAY = #autoPay#,
+		CHECK_NUMBER = #checkNumber#,
+		COMMENTS = #comments#,
+		CURRENCY_CODE = #currencyCode#,
+		END_DATE = #endDate#,
+		FREQUENCY = #frequency#,
+		LAST_ENTRY_DATE = #lastEntryDate#,
+		PAYMENT_TYPE = #paymentType#,
+		RECURRING_GIFT_STATUS = #recurringGiftStatus#,
+		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+		START_DATE = #startDate#,
+		UPDATE_DATE = now(),
+		ADDRESS_ID = #selectedAddress.id#,
+		EMAIL_ID = #selectedEmail.id#,
+		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
+		CONSTITUENT_ID = #person.id#,
+		PHONE_ID = #selectedPhone.id#		
 		where RECURRING_GIFT_ID = #id#
 	</update>
   
@@ -53,5 +124,61 @@
 		delete from RECURRING_GIFT 
 		where RECURRING_GIFT_ID = #id#
 	</delete>
+	
+  	<statement id="SELECT_RECURRING_GIFT_BY_SEARCH_TERMS" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT"/>
+		<isNotNull property="stringParams"> 
+		   <iterate property="stringParams" conjunction="and" open="and" close="">
+		   rg.$stringParams[].key$ like #stringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="nonStringParams"> 
+		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
+		   rg.$nonStringParams[].key$ = #nonStringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="refConstituentParams"> 
+		   <iterate property="refConstituentParams" conjunction="and" open="and" close="">
+		   p.$refConstituentParams[].key$ like #refConstituentParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="phoneParams"> 
+		   and exists (
+		    select * from PHONE sph where 
+		    sph.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="phoneParams" conjunction="and" open="and" close="">
+		    sph.$phoneParams[].key$ like #phoneParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="addressParams"> 
+		   and exists (
+		    select * from ADDRESS saddr where 
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="addressParams" conjunction="and" open="and" close="">
+		    saddr.$addressParams[].key$ like #addressParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="emailParams"> 
+		   and exists (
+		    select * from EMAIL se where 
+		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="emailParams" conjunction="and" open="and" close="">
+		    se.$emailParams[].key$ like #emailParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="customParams"> 
+		   and exists (
+		    select * from CUSTOM_FIELD scf where 
+		   ((scf.ENTITY_ID = rg.RECURRING_GIFT_ID and scf.ENTITY_TYPE = 'recurringGift') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
+		    <iterate property="customParams" conjunction="and" open="and" close="">
+		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		limit 200
+	</statement>
   
 </sqlMap>

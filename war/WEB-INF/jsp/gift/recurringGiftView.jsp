@@ -8,11 +8,11 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='recurringGiftView'/>
 			
-			<c:set var="person" value="${commitment.person}" scope="request" />
+			<c:set var="person" value="${recurringGift.person}" scope="request" />
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
-			<form:form method="post" commandName="commitment">
+			<form:form method="post" commandName="recurringGift">
 				<spring:message code='viewRecurringGift' var="titleText" />
 				<spring:message code='submitRecurringGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
@@ -23,10 +23,10 @@
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
 				<c:set var="gridCollectionName" value="distributionLines" />
-				<c:set var="gridCollection" value="${commitment.distributionLines}" />
-				<c:set var="paymentSource" value="${commitment.paymentSource}" />
+				<c:set var="gridCollection" value="${recurringGift.distributionLines}" />
+				<c:set var="paymentSource" value="${recurringGift.paymentSource}" />
 
-				<h3 class="info"><spring:message code='thisRecurringGiftEntered'/> <fmt:formatDate value="${commitment.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${commitment.createDate}" type="time" />.</h3>
+				<h3 class="info"><spring:message code='thisRecurringGiftEntered'/> <fmt:formatDate value="${recurringGift.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${recurringGift.createDate}" type="time" />.</h3>
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
@@ -59,7 +59,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName != 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.sectionHtmlName != 'recurringGift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -80,7 +80,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName == 'commitment_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.sectionHtmlName == 'recurringGift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -103,7 +103,7 @@
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}&type=recurringGift')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
 					</c:if>
 					<a class="newAccountButton" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a>
 				</div>

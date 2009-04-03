@@ -36,8 +36,9 @@ import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.integration.NewGift;
-import com.orangeleap.tangerine.service.CommitmentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -56,8 +57,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 
-    @Resource(name = "commitmentService")
-    private CommitmentService commitmentService;
+//    @Resource(name = "commitmentService")
+//    private CommitmentService commitmentService;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -194,11 +195,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftById(Long giftId) {
+    public Gift readGiftById(Long giftId, Long constituentId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftById: giftId = " + giftId);
+            logger.debug("readGiftById: giftId = " + giftId + " constituentId = " + constituentId);
         }
-        return giftDao.readGiftById(giftId);
+        Gift gift = giftDao.readGiftById(giftId);
+//        gift.setPledges(commitmentService.findNotCancelledPledgesByGiftId(giftId, constituentId));
+        return gift;
     }
 
     @Override
@@ -210,7 +213,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (giftId == null) {
             Commitment commitment = null;
             if (commitmentId != null) {
-                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+//                commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
                 if (commitment == null) {
                     logger.error("readGiftByIdCreateIfNull: commitment not found for commitmentId = " + commitmentId);
                     return gift;
@@ -225,7 +228,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             }
         }
         else {
-            gift = this.readGiftById(Long.valueOf(giftId));
+            gift = this.readGiftById(Long.valueOf(giftId), constituent.getId());
         }
         return gift;
     }
@@ -282,7 +285,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
-        gift.setCommitmentId(commitment.getId());
+        if (commitment instanceof RecurringGift) {
+            gift.setRecurringGiftId(commitment.getId());
+        }
+        else if (commitment instanceof Pledge) {
+            gift.setPledgeId(commitment.getId());
+        }
         gift.setComments(commitment.getComments());
         gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
@@ -317,7 +325,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (logger.isDebugEnabled()) {
             logger.debug("refundGift: giftId = " + giftId);
         }
-        Gift originalGift = readGiftById(giftId);
+        Gift originalGift = giftDao.readGiftById(giftId);
         try {
             Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
             refundGift.resetIdToNull();
@@ -372,11 +380,20 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
     @Override
-    public List<Gift> readGiftsByCommitment(Commitment commitment) {
+    public List<Gift> readGiftsByRecurringGiftId(RecurringGift recurringGift) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByCommitment: commitment = " + commitment);
+            logger.debug("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGift.getId());
         }
-        return giftDao.readGiftsByCommitmentId(commitment.getId());
+        return giftDao.readGiftsByRecurringGiftId(recurringGift.getId());
+    }
+
+    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
+    @Override
+    public List<Gift> readGiftsByPledgeId(Pledge pledge) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readGiftsByPledgeId: pledgeId = " + pledge.getId());
+        }
+        return giftDao.readGiftsByPledgeId(pledge.getId());
     }
 
 	@Override

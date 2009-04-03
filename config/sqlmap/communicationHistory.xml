@@ -10,7 +10,8 @@
 		<result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="CHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
-		<result property="commitmentId" column="COMMITMENT_ID" jdbcType="BIGINT" />
+		<result property="pledgeId" column="PLEDGE_ID" jdbcType="BIGINT" />
+		<result property="recurringGiftId" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="comments" column="COMMENTS" jdbcType="LONGVARCHAR" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
@@ -18,7 +19,7 @@
 	<sql id="SELECT_COMMUNICATION_HISTORY_FRAGMENT">
 		select
 		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
-		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.COMMITMENT_ID, 
+		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
@@ -40,10 +41,10 @@
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, CREATE_DATE,
-		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, COMMITMENT_ID, GIFT_ID,	CONSTITUENT_ID, COMMENTS)
+		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID, CONSTITUENT_ID, COMMENTS)
 		values (#communicationHistoryType#, now(),
 		#recordDate#, #systemGenerated#, now(),
-		#commitmentId#, #giftId#, #person.id#, #comments#)
+		#pledgeId#, #recurringGiftId#, #giftId#, #person.id#, #comments#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -55,7 +56,8 @@
 		RECORD_DATE = #recordDate#,
 		SYSTEM_GENERATED = #systemGenerated#,
 		UPDATE_DATE = now(),
-		COMMITMENT_ID = #commitmentId#,
+		PLEDGE_ID = #pledgeId#,
+		RECURRING_GIFT_ID = #recurringGiftId#,
 		GIFT_ID = #giftId#,
 		CONSTITUENT_ID = #person.id#,
 		COMMENTS = #comments#

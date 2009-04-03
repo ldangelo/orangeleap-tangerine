@@ -28,14 +28,19 @@ public class TangerineMessageSource extends AbstractMessageSource implements Res
     public void setStaticMessageSource(AbstractMessageSource staticMessageSource) {
         this.staticMessageSource = staticMessageSource;
     }
+    
+    private static Locale checkLocale(Locale locale) {
+        if (locale != null && Locale.ENGLISH.getLanguage().equals(locale.getLanguage()) && "".equals(locale.getCountry())) {
+            return Locale.US;  // assume US if no country is specified and 'en' is used 
+        }
+        return locale;
+    }
 
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
         String message = null;
         
-        if (locale != null && Locale.ENGLISH.getLanguage().equals(locale.getLanguage()) && "".equals(locale.getCountry())) {
-            locale = Locale.US;  // assume US if no country is specified and 'en' is used 
-        }
+        locale = checkLocale(locale);
         try {
             message = staticMessageSource.getMessage(code, null, locale); // check the message bundle first for the key
         }

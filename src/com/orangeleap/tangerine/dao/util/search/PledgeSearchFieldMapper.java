@@ -3,9 +3,10 @@ package com.orangeleap.tangerine.dao.util.search;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommitmentSearchFieldMapper extends SearchFieldMapper {
+public class PledgeSearchFieldMapper extends SearchFieldMapper {
 	
-	public Map<String, String> getMap() {
+	@Override
+    public Map<String, String> getMap() {
 		return MAP;
 	}
 	
@@ -23,7 +24,7 @@ public class CommitmentSearchFieldMapper extends SearchFieldMapper {
 		MAP.put("postalCode", "POSTAL_CODE");
 
 		// Commitment
-		MAP.put("referenceNumber", "COMMITMENT_ID");
+		MAP.put("referenceNumber", "PLEDGE_ID");
 		MAP.put("amountPerGift", "AMOUNT_PER_GIFT");
 		MAP.put("amountTotal", "AMOUNT_TOTAL");
 

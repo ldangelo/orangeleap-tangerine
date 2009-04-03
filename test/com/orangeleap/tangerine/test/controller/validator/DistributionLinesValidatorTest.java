@@ -9,9 +9,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.test.BaseTest;
 
 public class DistributionLinesValidatorTest extends BaseTest {
@@ -50,57 +51,82 @@ public class DistributionLinesValidatorTest extends BaseTest {
     }
 
     @Test(groups = { "validateDistributionLine" })
-    public void testValidateRecurringCommitmentDistributionLine() throws Exception {
-        Commitment commitment = new Commitment();
-        errors = new BindException(commitment, "commitment");
+    public void testValidateRecurringGiftDistributionLine() throws Exception {
+        RecurringGift recurringGift = new RecurringGift();
+        errors = new BindException(recurringGift, "recurringGift");
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(13.5));
         lines.add(aLine);
-        commitment.setMutableDistributionLines(lines);
-        commitment.setRecurring(true);
-        commitment.setAmountPerGift(new BigDecimal(16));
+        recurringGift.setMutableDistributionLines(lines);
+        recurringGift.setAmountPerGift(new BigDecimal(16));
         
-        validator.validate(commitment, errors);
+        validator.validate(recurringGift, errors);
         assert errors.hasErrors() == true;
         
-        errors = new BindException(commitment, "commitment");
+        errors = new BindException(recurringGift, "recurringGift");
         aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(2.5));
         lines.add(aLine);
-        commitment = new Commitment();
-        commitment.setMutableDistributionLines(lines);
-        commitment.setRecurring(true);
-        commitment.setAmountPerGift(new BigDecimal(16));
-        validator.validate(commitment, errors);
+        recurringGift = new RecurringGift();
+        recurringGift.setMutableDistributionLines(lines);
+        recurringGift.setAmountPerGift(new BigDecimal(16));
+        validator.validate(recurringGift, errors);
         assert errors.hasErrors() == false;
     }
 
     @Test(groups = { "validateDistributionLine" })
-    public void testValidateNotRecurringCommitmentDistributionLine() throws Exception {
-        Commitment commitment = new Commitment();
-        errors = new BindException(commitment, "commitment");
+    public void testValidateRecurringPledgeDistributionLine() throws Exception {
+        Pledge pledge = new Pledge();
+        errors = new BindException(pledge, "pledge");
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(13.5));
         lines.add(aLine);
-        commitment.setMutableDistributionLines(lines);
-        commitment.setRecurring(false);
-        commitment.setAmountTotal(new BigDecimal(13.5));
+        pledge.setMutableDistributionLines(lines);
+        pledge.setRecurring(true);
+        pledge.setAmountPerGift(new BigDecimal(16));
         
-        validator.validate(commitment, errors);
-        assert errors.hasErrors() == false;
+        validator.validate(pledge, errors);
+        assert errors.hasErrors() == true;
         
-        errors = new BindException(commitment, "commitment");
+        errors = new BindException(pledge, "pledge");
         aLine = new DistributionLine();
         aLine.setAmount(new BigDecimal(2.5));
         lines.add(aLine);
-        commitment = new Commitment();
-        commitment.setMutableDistributionLines(lines);
-        commitment.setMutableDistributionLines(lines);
-        commitment.setRecurring(false);
-        commitment.setAmountTotal(new BigDecimal(13.5));
-        validator.validate(commitment, errors);
+        pledge = new Pledge();
+        pledge.setMutableDistributionLines(lines);
+        pledge.setRecurring(true);
+        pledge.setAmountPerGift(new BigDecimal(16));
+        validator.validate(pledge, errors);
+        assert errors.hasErrors() == false;
+    }
+
+    @Test(groups = { "validateDistributionLine" })
+    public void testValidateNotRecurringPledgeDistributionLine() throws Exception {
+        Pledge pledge = new Pledge();
+        errors = new BindException(pledge, "commitment");
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        DistributionLine aLine = new DistributionLine();
+        aLine.setAmount(new BigDecimal(13.5));
+        lines.add(aLine);
+        pledge.setMutableDistributionLines(lines);
+        pledge.setRecurring(false);
+        pledge.setAmountTotal(new BigDecimal(13.5));
+        
+        validator.validate(pledge, errors);
+        assert errors.hasErrors() == false;
+        
+        errors = new BindException(pledge, "commitment");
+        aLine = new DistributionLine();
+        aLine.setAmount(new BigDecimal(2.5));
+        lines.add(aLine);
+        pledge = new Pledge();
+        pledge.setMutableDistributionLines(lines);
+        pledge.setMutableDistributionLines(lines);
+        pledge.setRecurring(false);
+        pledge.setAmountTotal(new BigDecimal(13.5));
+        validator.validate(pledge, errors);
         assert errors.hasErrors() == true;
     }
 }

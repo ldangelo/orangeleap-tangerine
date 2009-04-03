@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="PLEDGE">
+
+	<resultMap id="MIN_PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id">
+		<result property="id" column="PLEDGE_ID" jdbcType="BIGINT" />
+		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
+		<result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
+		<result property="pledgeDate" column="PLEDGE_DATE" jdbcType="TIMESTAMP" />
+		<result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
+		<result property="recurring" column="RECURRING" jdbcType="CHAR" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+	</resultMap>
+
+	<resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
+		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
+		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
+		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
+		<result property="lastEntryDate" column="LAST_ENTRY_DATE" jdbcType="TIMESTAMP" />
+		<result property="pledgeCancelDate" column="PLEDGE_CANCEL_DATE"	jdbcType="TIMESTAMP" />
+		<result property="pledgeCancelReason" column="PLEDGE_CANCEL_REASON"	jdbcType="VARCHAR" />
+		<result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
+		<result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
+		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+	</resultMap>
+	
+	<sql id="PLEDGE_COLS_FRAGMENT">
+		c.PLEDGE_ID, c.ACKNOWLEDGMENT_DATE, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, 
+		c.COMMENTS, c.CREATE_DATE, c.END_DATE, c.FREQUENCY,
+		c.LAST_ENTRY_DATE, c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
+		c.PROJECTED_DATE, c.RECURRING, c.SEND_ACKNOWLEDGMENT, 
+		c.START_DATE, c.PLEDGE_STATUS, c.UPDATE_DATE, c.CURRENCY_CODE
+	</sql>
+
+	<sql id="SELECT_PLEDGE_FRAGMENT">
+		select
+		<include refid="PLEDGE_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+
+		from PLEDGE c
+
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
+		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
+	</sql>
+
+	<sql id="SELECT_PLEDGE_FRAGMENT_BY_SITE">
+		<include refid="SELECT_PLEDGE_FRAGMENT" />
+
+		where
+		p.SITE_NAME= #siteName#
+	</sql>
+
+	<select id="SELECT_PLEDGE_BY_ID" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		and c.PLEDGE_ID = #id#
+	</select>
+
+	<select id="SELECT_PLEDGES_BY_CONSTITUENT_ID" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		and c.CONSTITUENT_ID = #constituentId#
+		order by c.CREATE_DATE desc
+	</select>
+	
+	<select id="SELECT_NOT_CANCELLED_PLEDGES_FOR_GIFT" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT" />
+		inner join PLEDGE_GIFT pg on c.PLEDGE_ID = pg.PLEDGE_ID 
+		
+		where 
+		p.SITE_NAME = #siteName#
+		and pg.GIFT_ID = #giftId#
+		and c.CONSTITUENT_ID = #constituentId#  
+		and c.PLEDGE_STATUS != 'cancelled'
+		order by c.PLEDGE_DATE desc
+	</select>
+
+	<select id="SELECT_NOT_CANCELLED_PLEDGES" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
+		select
+		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.PLEDGE_DATE, c.PLEDGE_STATUS, c.RECURRING,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+
+		from PLEDGE c
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
+		where p.SITE_NAME= #siteName#
+		and c.CONSTITUENT_ID = #constituentId#  
+		and c.PLEDGE_STATUS != 'cancelled'
+		order by c.PLEDGE_DATE desc
+	</select>
+
+	<statement id="SELECT_PLEDGE_BY_SQL" resultMap="PLEDGE_RESULT">
+		$sql$
+	</statement>
+
+	<insert id="INSERT_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
+		insert into PLEDGE (ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, CURRENCY_CODE, 
+		COMMENTS, CREATE_DATE, END_DATE, FREQUENCY, LAST_ENTRY_DATE, PLEDGE_CANCEL_DATE,
+		PLEDGE_CANCEL_REASON, PLEDGE_DATE, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT,
+		START_DATE,	PLEDGE_STATUS, UPDATE_DATE, EMAIL_ID, CONSTITUENT_ID)
+		values (#acknowledgmentDate#, #amountPerGift#, #amountTotal#, #currencyCode#, 
+		#comments#, now(), #endDate#,
+		#frequency#, #lastEntryDate#, #pledgeCancelDate#, 
+		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, #sendAcknowledgment#,
+		#startDate#, #pledgeStatus#, now(), #selectedEmail.id#, #person.id#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+	<update id="UPDATE_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
+		update PLEDGE
+		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		AMOUNT_PER_GIFT = #amountPerGift#,
+		AMOUNT_TOTAL = #amountTotal#,
+		COMMENTS = #comments#,
+		CURRENCY_CODE = #currencyCode#,
+		END_DATE = #endDate#,
+		FREQUENCY = #frequency#,
+		LAST_ENTRY_DATE = #lastEntryDate#,
+		PLEDGE_CANCEL_DATE = #pledgeCancelDate#,
+		PLEDGE_CANCEL_REASON = #pledgeCancelReason#,
+		PLEDGE_DATE = #pledgeDate#,
+		PLEDGE_STATUS = #pledgeStatus#,
+		PROJECTED_DATE = #projectedDate#,
+		RECURRING = #recurring#,
+		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
+		START_DATE = #startDate#,
+		UPDATE_DATE = now(),
+		EMAIL_ID = #selectedEmail.id#,
+		CONSTITUENT_ID = #person.id#
+		where PLEDGE_ID = #id#
+	</update>
+	
+	<statement id="SELECT_PLEDGE_BY_SEARCH_TERMS" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE"/>
+		<isNotNull property="stringParams"> 
+		   <iterate property="stringParams" conjunction="and" open="and" close="">
+		   c.$stringParams[].key$ like #stringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="nonStringParams"> 
+		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
+		   c.$nonStringParams[].key$ = #nonStringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="refConstituentParams"> 
+		   <iterate property="refConstituentParams" conjunction="and" open="and" close="">
+		   p.$refConstituentParams[].key$ like #refConstituentParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="phoneParams"> 
+		   and exists (
+		    select * from PHONE sph where 
+		    sph.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="phoneParams" conjunction="and" open="and" close="">
+		    sph.$phoneParams[].key$ like #phoneParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="addressParams"> 
+		   and exists (
+		    select * from ADDRESS saddr where 
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="addressParams" conjunction="and" open="and" close="">
+		    saddr.$addressParams[].key$ like #addressParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="emailParams"> 
+		   and exists (
+		    select * from EMAIL se where 
+		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="emailParams" conjunction="and" open="and" close="">
+		    se.$emailParams[].key$ like #emailParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="customParams"> 
+		   and exists (
+		    select * from CUSTOM_FIELD scf where 
+		   ((scf.ENTITY_ID = c.PLEDGE_ID and scf.ENTITY_TYPE = 'pledge') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
+		    <iterate property="customParams" conjunction="and" open="and" close="">
+		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		limit 200
+	</statement>
+
+</sqlMap>

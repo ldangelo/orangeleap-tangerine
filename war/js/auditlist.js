@@ -118,11 +118,11 @@ Audit.navigate = function(id) {
         case 'phone':
             window.location.href= 'phoneManager.htm?personId=' + rec.data.personId;
             break;
-        case 'recurring gift':
-            window.location.href='recurringGift.htm?commitmentId=' + id + '&personId=' + rec.data.personId;
+        case 'recurringgift':
+            window.location.href='recurringGift.htm?recurringGiftId=' + id + '&personId=' + rec.data.personId;
             break;
         case 'pledge':
-            window.location.href='pledgeList.htm?personId=' + rec.data.personId + '&type=pledge';
+            window.location.href='pledge.htm?pledgeId=' + id + '&personId=' + rec.data.personId;
             break;
         case 'giftinkind':
             window.location.href= 'giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;

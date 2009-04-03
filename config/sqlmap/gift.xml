@@ -25,7 +25,8 @@
 		<result property="sendAcknowledgment" column="GIFT_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
-		<result property="commitmentId" column="GIFT_COMMITMENT_ID" jdbcType="BIGINT" />
+		<result property="pledgeId" column="GIFT_PLEDGE_ID" jdbcType="BIGINT" />
+		<result property="recurringGiftId" column="GIFT_RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
 		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
@@ -45,7 +46,7 @@
 		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE, g.REFUND_GIFT_ID,
 		g.REFUND_GIFT_TRANSACTION_DATE,
 		g.SEND_ACKNOWLEDGMENT as GIFT_SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE as GIFT_TRANSACTION_DATE, g.PAYMENT_TXREFNUM as GIFT_PAYMENT_TXREFNUM, 
-		g.COMMITMENT_ID as GIFT_COMMITMENT_ID 
+		g.PLEDGE_ID as GIFT_PLEDGE_ID, g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID 
 	</sql>
 	
 	<sql id="GIFT_COLS_CHILD_IDS_FRAGMENT">
@@ -94,19 +95,34 @@
 		order by g.TRANSACTION_DATE desc
 	</select>
 
-	<select id="SELECT_GIFTS_BY_COMMITMENT_ID" resultMap="GIFT_RESULT" parameterClass="map">
+	<select id="SELECT_GIFTS_BY_RECURRING_GIFT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
-		and g.COMMITMENT_ID = #commitmentId#
+		and g.RECURRING_GIFT_ID = #recurringGiftId#
 		order by g.TRANSACTION_DATE desc
 	</select>
 
-	<select id="READ_GIFTS_RECEIVED_SUM_BY_COMMITMENT_ID" parameterClass="map" resultClass="decimal">
+	<select id="READ_GIFTS_RECEIVED_SUM_BY_RECURRING_GIFT_ID" parameterClass="map" resultClass="decimal">
 		select SUM(g.AMOUNT)
 		from GIFT g
 		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where p.SITE_NAME = #siteName#
-		and g.COMMITMENT_ID = #commitmentId#
+		and g.RECURRING_GIFT_ID = #recurringGiftId#
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+	</select>
+
+	<select id="READ_GIFTS_RECEIVED_SUM_BY_PLEDGE_ID" parameterClass="map" resultClass="decimal">
+		select SUM(g.AMOUNT)
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+		and g.PLEDGE_ID = #pledgeId#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+	</select>
+
+	<select id="SELECT_GIFTS_BY_PLEDGE_ID" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.PLEDGE_ID = #pledgeId#
+		order by g.TRANSACTION_DATE desc
 	</select>
 
 	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
@@ -137,14 +153,14 @@
 		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
 		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
 		PAYMENT_TXREFNUM,
-		ADDRESS_ID, COMMITMENT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
+		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
 		values (#giftType#, #acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
 		#originalGiftId#, #paymentMessage#, #paymentStatus#,
 		#paymentType#, #postmarkDate#, #refundGiftId#,
 		#refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
-		#txRefNum#, #selectedAddress.id#, #commitmentId#, #selectedEmail.id#,
+		#txRefNum#, #selectedAddress.id#, #pledgeId#, #recurringGiftId#, #selectedEmail.id#,
 		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -175,7 +191,8 @@
 		g.TRANSACTION_DATE = #transactionDate#,
 		g.PAYMENT_TXREFNUM = #txRefNum#,
 		g.ADDRESS_ID = #selectedAddress.id#,
-		g.COMMITMENT_ID = #commitmentId#,
+		g.PLEDGE_ID = #pledgeId#,
+		g.RECURRING_GIFT_ID = #recurringGiftId#,
 		g.EMAIL_ID = #selectedEmail.id#,
 		g.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		g.CONSTITUENT_ID = #person.id#,

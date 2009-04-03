@@ -38,6 +38,10 @@ public final class StringConstants {
     public static final String GIFT_IN_KIND = "giftInKind";
     public static final String GIFTS_IN_KIND = "giftsInKind";
     public static final String GIFT_IN_KIND_ID = "giftInKindId";
+    
+    public static final String RECURRING_GIFT_ID = "recurringGiftId";
+    
+    public static final String PLEDGE_ID = "pledgeId";
 
     public static final String COMMUNICATION_HISTORY = "communicationHistory";
     public static final String COMMUNICATION_HISTORYS = "communicationHistorys";

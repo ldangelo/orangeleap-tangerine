@@ -18,9 +18,13 @@ public interface GiftDao {
 
     public List<Gift> searchGifts(Map<String, Object> params);
 
-    public List<Gift> readGiftsByCommitmentId(Long commitmentId);
+    public List<Gift> readGiftsByRecurringGiftId(Long recurringGiftId);
 
-    public BigDecimal readGiftsReceivedSumByCommitmentId(Long commitmentId);
+    public BigDecimal readGiftsReceivedSumByRecurringGiftId(Long recurringGiftId);
+    
+    public List<Gift> readGiftsByPledgeId(Long pledgeId);
+    
+    public BigDecimal readGiftsReceivedSumByPledgeId(Long pledgeId);
 
 	public List<Gift> readAllGiftsBySite();
 	

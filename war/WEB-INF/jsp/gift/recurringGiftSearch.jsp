@@ -6,7 +6,7 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='recurringGiftSearch'/>
-			<form:form method="post" commandName="commitment">
+			<form:form method="post" commandName="recurringGift">
 				<c:forEach var="sectionDefinition" items="${sectionDefinitions}">
 					<h1>
 						<mp:sectionHeader sectionDefinition="${sectionDefinition}"/>

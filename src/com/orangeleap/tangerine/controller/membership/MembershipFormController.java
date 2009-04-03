@@ -1,11 +1,8 @@
 package com.orangeleap.tangerine.controller.membership;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -24,14 +21,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.orangeleap.tangerine.controller.NoneStringTrimmerEditor;
 import com.orangeleap.tangerine.controller.payment.PaymentSourceEditor;
 import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.CommitmentService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -43,8 +35,8 @@ public class MembershipFormController extends SimpleFormController {
     @Resource(name="tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
     
-    @Resource(name="commitmentService")
-    private CommitmentService commitmentService;
+//    @Resource(name="commitmentService")
+//    private CommitmentService commitmentService;
 
     @Resource(name="paymentSourceService")
     private PaymentSourceService paymentSourceService;
@@ -72,81 +64,81 @@ public class MembershipFormController extends SimpleFormController {
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = new HashMap();
-        String personIdString = request.getParameter("personId");
-        Long personId = null;
-        if (personIdString == null) {
-            String commitmentId = request.getParameter("commitmentId");
-            if (commitmentId != null) {
-                Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
-                if (commitment != null) {
-                    personId = commitment.getPerson().getId();
-                    List<Gift> gifts = commitmentService.getCommitmentGifts(commitment);
-                    refData.put("gifts",gifts);
-                    Iterator<Gift> giftIter = gifts.iterator();
-                    BigDecimal giftSum = new BigDecimal(0);
-                    while (giftIter.hasNext()) {
-                        giftSum = giftSum.add(giftIter.next().getAmount());
-                    }
-                    refData.put("giftSum",giftSum);
-                }
-
-            }
-        } else {
-            personId = Long.valueOf(personIdString);
-        }
-        if (personId != null) {
-            List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
-            refData.put("paymentSources", paymentSources);
-        }
+//        String personIdString = request.getParameter("personId");
+//        Long personId = null;
+//        if (personIdString == null) {
+//            String commitmentId = request.getParameter("commitmentId");
+//            if (commitmentId != null) {
+//                Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
+//                if (commitment != null) {
+//                    personId = commitment.getPerson().getId();
+//                    List<Gift> gifts = commitmentService.getCommitmentGifts(commitment);
+//                    refData.put("gifts",gifts);
+//                    Iterator<Gift> giftIter = gifts.iterator();
+//                    BigDecimal giftSum = new BigDecimal(0);
+//                    while (giftIter.hasNext()) {
+//                        giftSum = giftSum.add(giftIter.next().getAmount());
+//                    }
+//                    refData.put("giftSum",giftSum);
+//                }
+//
+//            }
+//        } else {
+//            personId = Long.valueOf(personIdString);
+//        }
+//        if (personId != null) {
+//            List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
+//            refData.put("paymentSources", paymentSources);
+//        }
         return refData;
     }
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
         String commitmentId = request.getParameter("commitmentId");
-        Commitment commitment = null;
-        if (commitmentId == null) {
-            // create person
-            String personId = request.getParameter("personId");
-            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-            Person person = null;
-            if (personId != null) {
-                person = constituentService.readConstituentById(Long.valueOf(personId));
-                if (person == null) {
-                    logger.error("**** person not found for id: " + personId);
-                    return commitment;
-                }
-                commitment = commitmentService.createDefaultCommitment(person, CommitmentType.MEMBERSHIP);
-                commitment.setPerson(person);
-            }
-        } else {
-            commitment = commitmentService.readCommitmentById(new Long(commitmentId));
-        }
-        if (isFormSubmission(request)) {
-            Map<String, String> fieldLabelMap = siteService.readFieldLabels(pageType, tangerineUserHelper.lookupUserRoles(), request.getLocale());
-            commitment.setFieldLabelMap(fieldLabelMap);
-
-            Map<String, Object> valueMap = siteService.readFieldValues(pageType, tangerineUserHelper.lookupUserRoles(), commitment);
-            commitment.setFieldValueMap(valueMap);
-        }
-        return commitment;
+//        Commitment commitment = null;
+//        if (commitmentId == null) {
+//            // create person
+//            String personId = request.getParameter("personId");
+//            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
+//            Person person = null;
+//            if (personId != null) {
+//                person = constituentService.readConstituentById(Long.valueOf(personId));
+//                if (person == null) {
+//                    logger.error("**** person not found for id: " + personId);
+//                    return commitment;
+//                }
+////                commitment = commitmentService.createDefaultCommitment(person, CommitmentType.MEMBERSHIP);
+////                commitment.setPerson(person);
+//            }
+//        } else {
+//            commitment = commitmentService.readCommitmentById(new Long(commitmentId));
+//        }
+//        if (isFormSubmission(request)) {
+//            Map<String, String> fieldLabelMap = siteService.readFieldLabels(pageType, tangerineUserHelper.lookupUserRoles(), request.getLocale());
+//            commitment.setFieldLabelMap(fieldLabelMap);
+//
+//            Map<String, Object> valueMap = siteService.readFieldValues(pageType, tangerineUserHelper.lookupUserRoles(), commitment);
+//            commitment.setFieldValueMap(valueMap);
+//        }
+        return null;
     }
 
     @Override
     public ModelAndView onSubmit(Object command, BindException errors) throws ServletException {
-        Commitment commitment = (Commitment) command;
+//        Commitment commitment = (Commitment) command;
 
         // validate required fields
-        Commitment current = commitmentService.maintainCommitment(commitment);
+//        Commitment current = commitmentService.maintainCommitment(commitment);
 
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView("redirect:/membershipView.htm", errors.getModel());
-        mav.addObject("commitmentId", current.getId());
-        mav.addObject("saved", true);
-        mav.addObject("id", current.getId());
-        mav.addObject("myErrors",errors);
+//        mav.addObject("commitmentId", current.getId());
+//        mav.addObject("saved", true);
+//        mav.addObject("id", current.getId());
+//        mav.addObject("myErrors",errors);
         return mav;
     }
 }

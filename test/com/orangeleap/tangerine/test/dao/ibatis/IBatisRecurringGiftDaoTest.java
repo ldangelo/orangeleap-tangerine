@@ -1,8 +1,11 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,9 +15,10 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.Site;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.type.CommitmentType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     
@@ -28,31 +32,77 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     	recurringGiftDao = (RecurringGiftDao)super.applicationContext.getBean("recurringGiftDAO");
     }
     
+    public static void testId100L(RecurringGift recurringGift) {
+        assert recurringGift != null;
+        assert recurringGift.getId() == 100L;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            assert sdf.parse("12/25/2007").equals(recurringGift.getNextRunDate());
+        }
+        catch (Exception e) {
+            Assert.assertTrue("Exception occurred: " + e.getMessage(), false);
+        }
+        assert "Thank you for your recurring gift".equals(recurringGift.getComments());
+        assert 550 == recurringGift.getAmountPerGift().intValue();
+        assert Pledge.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
+
+        assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == 100L;
+        assert "hobo@gmail.com".equals(recurringGift.getSelectedEmail().getEmailAddress());
+        assert recurringGift.getSelectedEmail().isInactive() == false;
+
+        assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 100L;
+        assert "Billy Graham Ministries".equals(recurringGift.getPerson().getOrganizationName());
+        assert "Graham".equals(recurringGift.getPerson().getLastName());
+        assert "Billy".equals(recurringGift.getPerson().getFirstName());
+
+        assert recurringGift.getGifts() != null && recurringGift.getGifts().isEmpty();
+        assert BigDecimal.ZERO.equals(recurringGift.getAmountPaid());
+        assert recurringGift.getStartDate() == null;
+        assert recurringGift.getEndDate() == null;
+        assert recurringGift.getCreateDate() == null;
+        assert recurringGift.getUpdateDate() == null;
+        assert recurringGift.getFrequency() == null;
+        assert recurringGift.getLastEntryDate() == null;
+        assert recurringGift.getDistributionLines() != null && recurringGift.getDistributionLines().isEmpty();
+        assert StringConstants.USD.equals(recurringGift.getCurrencyCode());
+        assert recurringGift.isSendAcknowledgment() == false;
+        assert recurringGift.getAcknowledgmentDate() == null;
+    }
+    
+    
+    @Test(groups = { "testReadRecurringGifts" })
+    public void testReadRecurringGiftById() throws Exception {
+        RecurringGift recurringGift = recurringGiftDao.readRecurringGiftById(0L);
+        assert recurringGift == null;
+        
+        recurringGift = recurringGiftDao.readRecurringGiftById(100L);
+        testId100L(recurringGift);
+    }
+
+    
     @Test(groups = { "testMaintainRecurringGift" }, dependsOnGroups = { "testReadRecurringGifts" })
     public void testMaintainRecurringGift() throws Exception {
         // Insert
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
-        Commitment commitment = new Commitment();
-        commitment.setId(400L);
-        RecurringGift recurringGift = new RecurringGift(commitment, sdf.parse("01/01/2009 12:00"));
+        RecurringGift recurringGift = new RecurringGift(sdf.parse("01/01/2009 12:00"));
+        recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_EXPIRED);
+        recurringGift.setAmountPerGift(new BigDecimal(2));
+        recurringGift.setPerson(new Person(300L, new Site("company1")));
 
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         assert recurringGift.getId() > 0;
         List<String> statuses = new ArrayList<String>(1);
-        statuses.add("cancelled");
+        statuses.add(RecurringGift.STATUS_EXPIRED);
         List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("01/02/2009 00:00"), statuses);
         assert readRecurringGifts.size() == 1;
         RecurringGift readRecurringGift = readRecurringGifts.get(0);
         
         assert recurringGift.getId().equals(readRecurringGift.getId());
         assert sdf.parse("01/01/2009 12:00").equals(readRecurringGift.getNextRunDate());
-        assert readRecurringGift.getCommitment() != null && readRecurringGift.getCommitment().getId() == 400L;
-        assert CommitmentType.RECURRING_GIFT.equals(readRecurringGift.getCommitment().getCommitmentType());
-        assert 2 == readRecurringGift.getCommitment().getAmountPerGift().intValue();
-        assert readRecurringGift.getCommitment().isRecurring();
-        assert "cancelled".equals(readRecurringGift.getCommitment().getStatus());
-        assert readRecurringGift.getCommitment().getPerson() != null && readRecurringGift.getCommitment().getPerson().getId() == 300L;
-        Person constituent = readRecurringGift.getCommitment().getPerson();
+        assert 2 == readRecurringGift.getAmountPerGift().intValue();
+        assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
+        assert readRecurringGift.getPerson() != null && readRecurringGift.getPerson().getId() == 300L;
+        Person constituent = readRecurringGift.getPerson();
         IBatisConstituentDaoTest.testConstituentId300(constituent);
         
         // Update
@@ -64,20 +114,17 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         readRecurringGift = readRecurringGifts.get(0);
         assert recurringGift.getId().equals(readRecurringGift.getId());
         assert sdf.parse("10/01/1970 08:00").equals(readRecurringGift.getNextRunDate());
-        assert readRecurringGift.getCommitment() != null && readRecurringGift.getCommitment().getId() == 400L;
-        assert CommitmentType.RECURRING_GIFT.equals(readRecurringGift.getCommitment().getCommitmentType());
-        assert 2 == readRecurringGift.getCommitment().getAmountPerGift().intValue();
-        assert readRecurringGift.getCommitment().isRecurring();
-        assert "cancelled".equals(readRecurringGift.getCommitment().getStatus());
-        assert readRecurringGift.getCommitment().getPerson() != null && readRecurringGift.getCommitment().getPerson().getId() == 300L;
-        constituent = readRecurringGift.getCommitment().getPerson();
+        assert 2 == readRecurringGift.getAmountPerGift().intValue();
+        assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
+        assert readRecurringGift.getPerson() != null && readRecurringGift.getPerson().getId() == 300L;
+        constituent = readRecurringGift.getPerson();
         IBatisConstituentDaoTest.testConstituentId300(constituent);
     } 
     
     @Test(groups = { "testReadRecurringGifts" })
     public void testReadRecurringGifts() throws Exception {
     	List<String> statuses = new ArrayList<String>();
-    	statuses.add(Commitment.STATUS_ACTIVE);
+    	statuses.add(RecurringGift.STATUS_ACTIVE);
     	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     	List<RecurringGift> rgs = recurringGiftDao.readRecurringGifts(sdf.parse("01/01/1980"), statuses);
     	assert rgs != null && rgs.isEmpty();
@@ -85,36 +132,29 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     	rgs = recurringGiftDao.readRecurringGifts(sdf.parse("01/01/2008"), statuses);
     	assert rgs.size() == 1;
     	RecurringGift rGift = rgs.get(0);
-    	assert 100L == rGift.getId();
-    	assert sdf.parse("12/25/2007").equals(rGift.getNextRunDate());
-    	assert rGift.getCommitment() != null && rGift.getCommitment().getId() == 100L;
     	
-    	IBatisCommitmentDaoTest.testId100L(rGift.getCommitment());
+    	testId100L(rGift);
 
         rgs = recurringGiftDao.readRecurringGifts(sdf.parse("02/15/2008"), statuses);
         assert rgs.size() == 2;
         for (RecurringGift recurringGift : rgs) {
-            assert recurringGift.getId() == 100L || recurringGift.getId() == 200L;
+            assert recurringGift.getId() == 100L || recurringGift.getId() == 300L;
             switch (recurringGift.getId().intValue()) {
                 case 100:
                     assert sdf.parse("12/25/2007").equals(recurringGift.getNextRunDate());
-                    assert recurringGift.getCommitment() != null && recurringGift.getCommitment().getId() == 100L;
-                    IBatisCommitmentDaoTest.testId100L(recurringGift.getCommitment());
+                    assert recurringGift.getId() == 100L;
+                    testId100L(recurringGift);
                     break;
-                case 200:
+                case 300:
                     assert sdf.parse("02/14/2008").equals(recurringGift.getNextRunDate());
-                    assert recurringGift.getCommitment() != null && recurringGift.getCommitment().getId() == 300L;
-                    Commitment commitment = recurringGift.getCommitment();
-                    assert CommitmentType.RECURRING_GIFT.equals(commitment.getCommitmentType());
-                    assert 10 == commitment.getAmountPerGift().intValue();
-                    assert commitment.isRecurring();
-                    assert Commitment.STATUS_ACTIVE.equals(commitment.getStatus());
-                    assert commitment.getSelectedAddress() != null && commitment.getSelectedAddress().getId() == null;
-                    assert commitment.getSelectedPhone() != null && commitment.getSelectedPhone().getId() == null;
-                    assert commitment.getSelectedEmail() != null && commitment.getSelectedEmail().getId() == null;
-                    assert commitment.getSelectedPaymentSource() != null && commitment.getSelectedPaymentSource().getId() == null;
-                    assert commitment.getPerson() != null && commitment.getPerson().getId() == 200L;
-                    IBatisConstituentDaoTest.testConstituentId200(commitment.getPerson());
+                    assert 10 == recurringGift.getAmountPerGift().intValue();
+                    assert RecurringGift.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
+                    assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
+                    assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
+                    assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == null;
+                    assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
+                    assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 200L;
+                    IBatisConstituentDaoTest.testConstituentId200(recurringGift.getPerson());
                     break;
                 default:
                     Assert.assertTrue("Invalid ID = " + recurringGift.getId(), false);
@@ -126,7 +166,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     public void testDeleteRecurringGift() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
         List<String> statuses = new ArrayList<String>(1);
-        statuses.add("cancelled");
+        statuses.add(RecurringGift.STATUS_EXPIRED);
         List<RecurringGift> readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses);
         assert readRecurringGifts.size() == 1;
         
@@ -135,4 +175,22 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         readRecurringGifts = recurringGiftDao.readRecurringGifts(sdf.parse("10/02/1970 00:00"), statuses);
         assert readRecurringGifts.isEmpty();
     }
+    
+    @Test(groups = { "testSearchRecurringGifts" })
+    public void testSearchRecurringGifts() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("firstName", "Pablo");
+        params.put("accountNumber", new Long(200));
+        params.put("phoneMap[home].number", "214-113-2542");
+        params.put("addressMap[home].addressLine1", "ACORN");
+        params.put("emailMap[home].email", "");
+        params.put("amountPerGift", new BigDecimal(10));
+        
+        List<RecurringGift> recurringGifts = recurringGiftDao.searchRecurringGifts(params);
+        assert recurringGifts != null && recurringGifts.size() > 0;
+        for (RecurringGift recurringGift : recurringGifts) {
+            assert recurringGift.getPerson().getFirstName().equals("Pablo");
+            assert recurringGift.getAmountPerGift().compareTo(new BigDecimal(10)) == 0;
+        }
+    }   
 }

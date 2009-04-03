@@ -43,7 +43,8 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         assert history.isSystemGenerated() == false;
         assert history.getUpdateDate() != null;
         assert "hello there".equals(history.getComments());
-        assert 100L == history.getCommitmentId();
+        assert 100L == history.getRecurringGiftId();
+        assert history.getPledgeId() == null;
         assert history.getGiftId() == null;
     }
     
@@ -62,7 +63,8 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         assert history.getUpdateDate() != null;
         assert history.getComments() == null;
         assert history.getGiftId() == 600L;
-        assert history.getCommitmentId() == null;
+        assert null == history.getRecurringGiftId();
+        assert history.getPledgeId() == null;
     }
     
     @Test(groups = { "testMaintainCommunicationHistory" }, dependsOnGroups = { "testReadCommunicationHistory" })
@@ -87,7 +89,8 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
     	assert COMMENTS.equals(readHistory.getComments());
     	assert CommunicationHistoryType.GIFT_RECEIPT.equals(readHistory.getCommunicationHistoryType());
     	assert readHistory.getGiftId() == 600L;
-    	assert readHistory.getCommitmentId() == null;
+    	assert readHistory.getPledgeId() == null;
+        assert readHistory.getRecurringGiftId() == null;
     	IBatisConstituentDaoTest.testConstituentId100(readHistory.getPerson());
     	assert readHistory.getCreateDate() != null;
     	assert readHistory.getUpdateDate() != null;
@@ -98,7 +101,7 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
     	history.setCommunicationHistoryType(CommunicationHistoryType.MANUAL);
     	history.setComments(null);
     	history.setGiftId(null);
-    	history.setCommitmentId(100L);
+    	history.setPledgeId(200L);
     	history.setSystemGenerated(true);
         communicationHistoryDao.maintainCommunicationHistory(history);
         
@@ -106,7 +109,8 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         assert readHistory != null;
         assert history.getId().equals(readHistory.getId());
         assert CommunicationHistoryType.MANUAL.equals(readHistory.getCommunicationHistoryType());
-        assert readHistory.getCommitmentId() == 100L;
+        assert readHistory.getPledgeId() == 200L;
+        assert readHistory.getRecurringGiftId() == null;
         IBatisConstituentDaoTest.testConstituentId100(readHistory.getPerson());
         assert readHistory.isSystemGenerated() == true;
         assert readHistory.getComments() == null;

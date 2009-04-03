@@ -28,9 +28,9 @@
 		
 	<sqlMap resource="sqlmap/distroLine.xml"/>
 	<sqlMap resource="sqlmap/paymentSource.xml"/>
-	<sqlMap resource="sqlmap/commitment.xml"/>
-	<sqlMap resource="sqlmap/gift.xml"/>
+	<sqlMap resource="sqlmap/pledge.xml"/>
 	<sqlMap resource="sqlmap/recurringGift.xml"/>
+	<sqlMap resource="sqlmap/gift.xml"/>
 	<sqlMap resource="sqlmap/giftInKindDetail.xml"/>
 	<sqlMap resource="sqlmap/giftInKind.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>

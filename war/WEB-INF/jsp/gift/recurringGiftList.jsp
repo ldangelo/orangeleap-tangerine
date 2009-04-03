@@ -40,13 +40,13 @@
 								<c:choose>
 									<c:when test="${empty row.gifts}">
 										<tr>
-											<td><a href="recurringGift.htm?commitmentId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
+											<td><a href="recurringGift.htm?recurringGiftId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 											<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 										</tr>
 									</c:when>
 									<c:otherwise>
 										<tr>
-											<td><a href="recurringGiftView.htm?commitmentId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
+											<td><a href="recurringGiftView.htm?recurringGiftId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
 											<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 										</tr>
 									</c:otherwise>

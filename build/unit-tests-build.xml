@@ -80,11 +80,24 @@
         />
 
 		<replace file="${test.src.dir}/config/linehandler.properties" token="TESTCONFIGDIR" value="${test.src.dir}/config"/>
+
+		<if>
+			<equals arg1="${environment}" arg2="ci"/>
+			<then>
+				<copy todir="${stage.dir}/test-folder" file="${test.src.dir}/env/ci/test.properties" />
+				<echo message="Copied CI test.properties to ${stage.dir}/test-folder"/>
+			</then>
+			<else>
+				<copy todir="${stage.dir}/test-folder" file="${test.src.dir}/env/local/test.properties" />
+				<echo message="Copied LOCAL test.properties to ${stage.dir}/test-folder"/>
+			</else>
+		</if>
 		
 		<copy todir="${stage.dir}/test-folder">
 			<fileset dir="${test.src.dir}">
 				<include name="**/*.*"/>
 				<exclude name="**/*.java"/>
+				<exclude name="**/test.properties"/>
 			</fileset>
 		</copy>
 

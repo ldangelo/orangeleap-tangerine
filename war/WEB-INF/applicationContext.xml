@@ -24,32 +24,6 @@
 		</property>
 	</bean>
 
-    <bean id="system.properties" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-      <property name="targetClass" value="java.lang.System" />
-      <property name="targetMethod" value="getProperties" />
-    </bean>
-  
-    <bean id="drools.host" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.host</value><value>${drools.host}</value></list></property>
-	</bean>
-    <bean id="drools.port" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.port</value><value>${drools.port}</value></list></property>
-	</bean>
-	 <bean id="drools.pollinterval" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.pollinterval</value><value>${drools.pollinterval}</value></list></property>
-	</bean>
-	 <bean id="drools.cachedir" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.cachedir</value><value>${drools.cachedir}</value></list></property>
-	</bean>
-	 <bean id="drools.packagedir" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.packagedir</value><value>${drools.packagedir}</value></list></property>
-	</bean>
-
 	<context:component-scan base-package="com.orangeleap.tangerine">
 		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
 	</context:component-scan>

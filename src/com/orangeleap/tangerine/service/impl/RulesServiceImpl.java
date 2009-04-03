@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -47,8 +46,9 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	public void executeDailyJobRules() {
 
 		try {
-
-			RuleAgent agent = RuleAgent.newRuleAgent(DroolsRuleAgent.getDroolsProperties());
+		    DroolsRuleAgent droolsRuleAgent = (DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent");
+		    
+			RuleAgent agent = RuleAgent.newRuleAgent(droolsRuleAgent.getDroolsProperties());
 			
  			RuleBase ruleBase = agent.getRuleBase();
 

@@ -2,34 +2,23 @@ package com.orangeleap.tangerine.service.rule;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.agent.RuleAgent;
-import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.impl.SessionServiceImpl;
+import com.orangeleap.tangerine.service.GiftService;
 
 
 
@@ -39,17 +28,10 @@ public class PaymentRulesInterceptor implements ApplicationContextAware, Applica
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	private DroolsRuleAgent ruleAgent;
-	
-
-	@Autowired
-	void setDroolsRulesAgent(DroolsRuleAgent ruleAgent) {
-		this.ruleAgent = ruleAgent;
-	}
 	
 	public void doApplyRules(Gift gift) {
 
-		RuleBase ruleBase = ruleAgent.getRuleAgent().getRuleBase();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		workingMemory.addEventListener (new DebugAgendaEventListener());

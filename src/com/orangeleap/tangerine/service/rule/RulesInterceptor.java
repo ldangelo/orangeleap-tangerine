@@ -8,21 +8,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
 import org.springframework.context.ApplicationListener;
 
-
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
 
 
 
@@ -32,22 +29,27 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;
-	private Class  eventClass;
+	@SuppressWarnings("unchecked")
+    private Class  eventClass;
+	private final Properties droolsProperties;
 	
-	public static Properties getDroolsProperties() {
-		String host = System.getProperty("drools.host");
-		String port = System.getProperty("drools.port");
-		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
-		logger.debug("Setting Drools URL to "+url);
-		Properties props = new Properties();
-		props.put("url", url);
-		props.put("newInstance", "true");
-		props.put("name","testagent");
-		return props;
-	}
+	public RulesInterceptor(final String droolsHost, final String droolsPort) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("RulesInterceptor: droolsHost = " + droolsHost + " droolsPort = " + droolsPort);
+        }
+        droolsProperties = new Properties();
+        String url = "http://" + droolsHost + ":" + droolsPort + "/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
+        logger.debug("Setting Drools URL to " + url);
+        droolsProperties.put("url", url);
+        droolsProperties.put("newInstance", "true");
+        droolsProperties.put("name","testagent");
+    }
 
+	public Properties getDroolsProperties() {
+        return droolsProperties;
+    }
 
-	public void doApplyRules(Gift gift) {
+    public void doApplyRules(Gift gift) {
 
 		Properties props = getDroolsProperties();
 	

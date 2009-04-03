@@ -15,11 +15,9 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
            
-           
-           
-     <bean id="PropertyPlaceholderConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+     <bean id="PropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="order" value="1" />
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 		<property name="locations">
 			<list>
 				<value>classpath:test.properties</value>
@@ -27,20 +25,6 @@
 		</property>
 	</bean>
            
-    <bean id="system.properties" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-      <property name="targetClass" value="java.lang.System" />
-      <property name="targetMethod" value="getProperties" />
-    </bean>
-  
-    <bean id="drools.host" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.host</value><value>${drools.host}</value></list></property>
-	</bean>
-    <bean id="drools.port" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-	    <property name="targetObject"><ref local="system.properties"/></property><property name="targetMethod"><value>setProperty</value></property>
-	    <property name="arguments"><list><value>drools.port</value><value>${drools.port}</value></list></property>
-	</bean>
-
 	<context:component-scan base-package="com.orangeleap.tangerine">
 		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
 	</context:component-scan>

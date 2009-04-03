@@ -8,38 +8,28 @@ import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
 
-@Service("droolsRuleAgent")
 public class DroolsRuleAgent implements ApplicationContextAware {
 	private static final Log logger = LogFactory.getLog(DroolsRuleAgent.class);
 
 	private ApplicationContext applicationContext;
-	
-	public static Properties getDroolsProperties() {
-//		String host = System.getProperty("drools.host");
-//		String port = System.getProperty("drools.port");
-//		String url = "http://"+host+":"+port+"/drools/org.drools.brms.JBRMS/package/com.mpower/NEWEST";
-//		logger.debug("Setting Drools URL to "+url);
-		Properties props = new Properties();
-//		props.put("url", url);
-		props.put("newInstance", "false");
-		props.put("name","orangeleap");
-		props.put("poll", System.getProperty("drools.pollinterval"));
-		props.put("cache", System.getProperty("drools.cachedir"));
-		props.put("dir",System.getProperty("drools.packagedir"));
-		return props;
-	}
+	private final Properties droolsProperties;
 
-	public DroolsRuleAgent() {
-		
+	public DroolsRuleAgent(final String pollInterval, final String cacheDir, final String packageDir) {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("DroolsRuleAgent: pollInterval = " + pollInterval + " cacheDir = " + cacheDir + " packageDir = " + packageDir);
+	    }
+		droolsProperties = new Properties();
+        droolsProperties.put("newInstance", "false");
+        droolsProperties.put("name", "orangeleap");
+        droolsProperties.put("poll", pollInterval);
+        droolsProperties.put("cache", cacheDir);
+        droolsProperties.put("dir", packageDir);
 	}
 	
-	public RuleAgent getRuleAgent()
-	{
-			return RuleAgent.newRuleAgent(getDroolsProperties());
-	}
-	
+	public Properties getDroolsProperties() {
+        return droolsProperties;
+    }
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -47,4 +37,7 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 		this.applicationContext = applicationContext;
 	}
 
+    public RuleAgent getRuleAgent() {
+        return RuleAgent.newRuleAgent(getDroolsProperties());
+    }
 }

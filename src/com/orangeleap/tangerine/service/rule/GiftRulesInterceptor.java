@@ -3,43 +3,37 @@ package com.orangeleap.tangerine.service.rule;
 import java.util.Iterator;
 import java.util.List;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
-
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
-	private DroolsRuleAgent    ruleAgent;
 	
-	@Autowired
-	void setDroolsRulesAgent(DroolsRuleAgent ruleAgent) {
-		this.ruleAgent = ruleAgent;
-	}
+	public GiftRulesInterceptor(String droolsHost, String droolsPort) {
+        super(droolsHost, droolsPort);
+    }
 	
-	public void doApplyRules(Gift gift) {
+	@Override
+    public void doApplyRules(Gift gift) {
 
-		RuleBase ruleBase = ruleAgent.getRuleAgent().getRuleBase();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		workingMemory.addEventListener (new DebugAgendaEventListener());

@@ -54,13 +54,25 @@
     </beans:property>
   </beans:bean>
 
-  <beans:bean id="GiftDrools" class="com.orangeleap.tangerine.service.rule.GiftRulesInterceptor">
+  <beans:bean id="AbstractRulesInterceptor" class="com.orangeleap.tangerine.service.rule.RulesInterceptor" abstract="true">
+    <beans:constructor-arg value="${drools.host}" index="0" />
+    <beans:constructor-arg value="${drools.port}" index="1" />
+  </beans:bean>
+
+  <beans:bean id="GiftDrools" class="com.orangeleap.tangerine.service.rule.GiftRulesInterceptor" parent="AbstractRulesInterceptor">
     <beans:property name="ruleFlowName" value="GiftDonatedRuleflow"/>
   </beans:bean>
 
   <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor">
     <beans:property name="ruleFlowName" value="processpayment"/>
   </beans:bean>
+
+  <beans:bean id="DroolsRuleAgent" class="com.orangeleap.tangerine.service.rule.DroolsRuleAgent">
+    <beans:constructor-arg value="${drools.pollinterval}" index="0"/>
+    <beans:constructor-arg value="${drools.cachedir}" index="1" />
+    <beans:constructor-arg value="${drools.packagedir}" index="2" />
+  </beans:bean>
+
 
   <jms:outbound-gateway id="GiftJms" request-channel="gift_jms_channel" request-destination="GiftDestination" />
 

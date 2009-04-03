@@ -1,28 +1,22 @@
 package com.orangeleap.tangerine.service.rule;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugRuleFlowEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
-
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
+import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.GiftService;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 

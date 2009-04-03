@@ -49,7 +49,7 @@ public class GiftServiceTest extends BaseTest {
         Gift gift = getGift();
     	giftService.maintainGift(gift);
     	Person person = constituentService.readConstituentById(gift.getPerson().getId());
-    	//assert person.isMajorDonor();
+    	assert person.isMajorDonor();
     }
     
     private Gift getGift() throws Exception {
@@ -59,7 +59,7 @@ public class GiftServiceTest extends BaseTest {
         gift.setAcknowledgmentDate(sdf.parse("01/01/2001"));
         gift.setDonationDate(sdf.parse("10/31/1999"));
         gift.setEntryType(GiftEntryType.AUTO);
-        gift.setAmount(new BigDecimal(90000.00));
+        gift.setAmount(new BigDecimal(100000.00));
         gift.setCurrencyCode("USD");
         gift.setTxRefNum("0101010101");
         gift.setGiftType(GiftType.MONETARY_GIFT);
@@ -77,14 +77,14 @@ public class GiftServiceTest extends BaseTest {
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         
         DistributionLine line = new DistributionLine();
-        line.setAmount(new BigDecimal(100.50));
-        line.setProjectCode("foo");
+        line.setAmount(new BigDecimal(80000.00));
+        line.setProjectCode("proj1");
         line.setGiftId(gift.getId());
         lines.add(line);
         
         line = new DistributionLine();
-        line.setAmount(new BigDecimal(125.50));
-        line.setMotivationCode("bar");
+        line.setAmount(new BigDecimal(20000.00));
+        line.setProjectCode("proj2");
         line.setGiftId(gift.getId());
         lines.add(line);
         

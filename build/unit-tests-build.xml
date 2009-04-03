@@ -114,7 +114,10 @@
 
     	<testng classpathref="test-lib-path"
     		outputdir="${stage.dir}/test-output" dumpcommand="yes" failureProperty="test.failed">
-    		<sysproperty key="testConfigDir" value="${test.src.dir}/config/"/>
+    		<sysproperty key="drools.packagedir" value="${drools.packagedir}"/>
+    		<sysproperty key="drools.cachedir" value="${drools.cachedir}"/>
+    		<sysproperty key="drools.pollinterval" value="${drools.pollinterval}"/>
+        	<sysproperty key="testConfigDir" value="${test.src.dir}"/>
     		<xmlfileset dir="${stage.dir}" includes="**/testng.xml"/>
     	</testng>
 

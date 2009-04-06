@@ -275,14 +275,14 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         params.put("phoneMap[home].number", "214-113-2542");
         params.put("addressMap[home].addressLine1", "ACORN");
         params.put("emailMap[home].email", "");
-        params.put("amountTotal", new BigDecimal(2.25));
+        params.put("amountTotal", new BigDecimal("3.99"));
     	
         List<Pledge> pledges = pledgeDao.searchPledges(params);
         Assert.assertNotNull("pledges are null", pledges);
         Assert.assertEquals("pledges size = " + pledges.size(), 1, pledges.size());
         for (Pledge pledge : pledges) {
             assert pledge.getPerson().getFirstName().equals("Pablo");
-            assert pledge.getAmountTotal().compareTo(new BigDecimal(2.25)) == 0;
+            assert pledge.getAmountTotal().compareTo(new BigDecimal("3.99")) == 0;
         }
     }   
     

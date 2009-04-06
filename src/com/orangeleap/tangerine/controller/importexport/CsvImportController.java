@@ -15,6 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -53,7 +55,12 @@ public class CsvImportController extends SimpleFormController {
         }
 
 		String entity = request.getParameter("entity");
-
+		
+		MultipartFile mf = ((MultipartHttpServletRequest)request).getFile("file");
+        String filename = mf.getOriginalFilename();
+		
+		if (!filename.toLowerCase().endsWith(".csv")) throw new RuntimeException("File type must be csv.");
+		
 		FileUploadBean bean = (FileUploadBean) command;
 		
 		ApplicationContext applicationContext = getApplicationContext();

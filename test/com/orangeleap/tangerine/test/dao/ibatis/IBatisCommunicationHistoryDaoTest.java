@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.BeforeMethod;
@@ -28,26 +26,6 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
     private final static Long PERSON_ID = new Long(100);
     private final static String COMMENTS = "Comments added here...";
 
-    @Test(groups = { "testReadCommunicationHistory" })
-    public void testReadCommunicationHistoryByConstituentId() throws Exception {
-        List<CommunicationHistory> list = communicationHistoryDao.readCommunicationHistoryByConstituentId(0L);
-        assert list != null && list.isEmpty();
-        
-        list = communicationHistoryDao.readCommunicationHistoryByConstituentId(new Long(PERSON_ID));
-        assert list != null && list.size() == 1;
-        CommunicationHistory history = list.get(0);
-        IBatisConstituentDaoTest.testConstituentId100(history.getPerson());
-        assert CommunicationHistoryType.GIFT_RECEIPT.equals(history.getCommunicationHistoryType());
-        assert history.getCreateDate() != null;
-        assert history.getRecordDate() != null;
-        assert history.isSystemGenerated() == false;
-        assert history.getUpdateDate() != null;
-        assert "hello there".equals(history.getComments());
-        assert 100L == history.getRecurringGiftId();
-        assert history.getPledgeId() == null;
-        assert history.getGiftId() == null;
-    }
-    
     @Test(groups = { "testReadCommunicationHistory" })
     public void testReadCommunicationHistoryById() throws Exception {
         CommunicationHistory history = communicationHistoryDao.readCommunicationHistoryById(0L);

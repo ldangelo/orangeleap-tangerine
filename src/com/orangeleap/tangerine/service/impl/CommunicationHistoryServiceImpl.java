@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
@@ -15,6 +13,8 @@ import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("communicationHistoryService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -50,11 +50,11 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 	}
 	
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByConstituent(Long constituentId) {
+	public PaginatedResult readCommunicationHistoryByConstituent(Long constituentId, SortInfo sortInfo) {
         if (logger.isDebugEnabled()) {
             logger.debug("readCommunicationHistoryByConstituent: constituentId = " + constituentId);
         }
-		return communicationHistoryDao.readCommunicationHistoryByConstituentId(constituentId);
+		return communicationHistoryDao.readCommunicationHistoryByConstituentId(constituentId, sortInfo);
 	}
 
 	@Override

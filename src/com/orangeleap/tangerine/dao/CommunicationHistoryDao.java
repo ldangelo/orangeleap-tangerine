@@ -1,14 +1,14 @@
 package com.orangeleap.tangerine.dao;
 
-import java.util.List;
-
 import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface CommunicationHistoryDao {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);
 	
-	public List<CommunicationHistory> readCommunicationHistoryByConstituentId(Long personId);
+	public PaginatedResult readCommunicationHistoryByConstituentId(Long personId, SortInfo sortinfo);
 	
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId);
 	

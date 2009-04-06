@@ -751,6 +751,7 @@ CREATE TABLE `COMMUNICATION_HISTORY` (
   `COMMUNICATION_HISTORY_ID` bigint(20) NOT NULL auto_increment,
   `COMMENTS` text,
   `COMMUNICATION_TYPE` varchar(255) default NULL,
+  `ENTRY_TYPE` varchar(255) default NULL,
   `CREATE_DATE` datetime default NULL,
   `RECORD_DATE` datetime default NULL,
   `SYSTEM_GENERATED` char(1) NOT NULL default '0',

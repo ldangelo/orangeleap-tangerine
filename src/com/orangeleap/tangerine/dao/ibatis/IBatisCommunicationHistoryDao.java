@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("communicationHistoryDAO")
 public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements CommunicationHistoryDao {
@@ -37,13 +39,21 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CommunicationHistory> readCommunicationHistoryByConstituentId(Long constituentId) {
+	public PaginatedResult readCommunicationHistoryByConstituentId(Long constituentId, SortInfo sortinfo) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readCommunicationHistoryByConstituentId: constituentId = " + constituentId);
+            logger.debug("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
 		params.put("constituentId", constituentId);
-		return getSqlMapClientTemplate().queryForList("SELECT_COMMUNICATION_HISTORY_BY_CONSTITUENT_ID", params);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
 	}
 
 	@Override

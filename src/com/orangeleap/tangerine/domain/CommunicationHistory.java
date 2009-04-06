@@ -14,6 +14,7 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 
     private Date recordDate;
     private CommunicationHistoryType communicationHistoryType = CommunicationHistoryType.MANUAL;
+    private String entryType = "";
     private boolean systemGenerated = false;
     private String comments = StringConstants.EMPTY;
     private Date createDate;
@@ -106,4 +107,12 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
     public void setRecurringGiftId(Long recurringGiftId) {
         this.recurringGiftId = recurringGiftId;
     }
+
+	public void setEntryType(String entryType) {
+		this.entryType = entryType;
+	}
+
+	public String getEntryType() {
+		return entryType;
+	}
 }

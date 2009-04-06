@@ -4,7 +4,8 @@
 
 	<resultMap id="COMMUNICATION_HISTORY_RESULT" class="com.orangeleap.tangerine.domain.CommunicationHistory" groupBy="id">
 		<result property="id" column="COMMUNICATION_HISTORY_ID"	jdbcType="BIGINT" />
-		<result property="communicationHistoryType" column="COMMUNICATION_TYPE"	jdbcType="INTEGER" />
+		<result property="communicationHistoryType" column="COMMUNICATION_TYPE"	jdbcType="VARCHAR" />
+		<result property="entryType" column="ENTRY_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="recordDate" column="RECORD_DATE" jdbcType="TIMESTAMP" />
 		<result property="systemGenerated" column="SYSTEM_GENERATED" jdbcType="CHAR" />
@@ -18,7 +19,7 @@
 
 	<sql id="SELECT_COMMUNICATION_HISTORY_FRAGMENT">
 		select
-		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
+		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
 		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
@@ -28,6 +29,15 @@
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
+	
+	<sql id="COMMUNICATION_HISTORY_ROWCOUNT_FRAGMENT">
+        select count(*)
+		from COMMUNICATION_HISTORY ch
+		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+    </sql>
+	
+	
 
 	<select id="SELECT_COMMUNICATION_HISTORY_BY_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
 		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
@@ -38,11 +48,25 @@
 		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
 		and ch.CONSTITUENT_ID = #constituentId#
 	</select>
+	
+	<select id="SELECT_COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_PAGINATED" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
+		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
+		and ch.CONSTITUENT_ID = #constituentId#
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+	
+    <select id="COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
+        <include refid="COMMUNICATION_HISTORY_ROWCOUNT_FRAGMENT"/>
+		and ch.CONSTITUENT_ID = #constituentId#
+    </select>
+	
+	
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
-		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, CREATE_DATE,
+		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, ENTRY_TYPE, CREATE_DATE,
 		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID, CONSTITUENT_ID, COMMENTS)
-		values (#communicationHistoryType#, now(),
+		values (#communicationHistoryType#, #entryType#, now(),
 		#recordDate#, #systemGenerated#, now(),
 		#pledgeId#, #recurringGiftId#, #giftId#, #person.id#, #comments#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -52,7 +76,9 @@
 
 	<update id="UPDATE_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		update COMMUNICATION_HISTORY
-		set COMMUNICATION_TYPE = #communicationHistoryType:VARCHAR#,
+		set 
+		COMMUNICATION_TYPE = #communicationHistoryType:VARCHAR#,
+		ENTRY_TYPE = #entryType#,
 		RECORD_DATE = #recordDate#,
 		SYSTEM_GENERATED = #systemGenerated#,
 		UPDATE_DATE = now(),

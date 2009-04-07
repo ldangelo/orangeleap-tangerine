@@ -176,7 +176,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	            newGift.routeGift(gift);
 	        } 
 	        catch (Exception ex) {
-	            logger.error(ex.getMessage(), ex);
+	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
 	        }
 
         } finally {

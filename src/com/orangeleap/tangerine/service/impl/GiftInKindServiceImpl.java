@@ -19,6 +19,8 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.service.GiftInKindService;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("giftInKindService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -65,6 +67,14 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
             logger.debug("readGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         return giftInKindDao.readGiftsInKindByConstituentId(constituentId);
+    }
+    
+    @Override
+    public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
+        }
+        return giftInKindDao.readPaginatedGiftsInKindByConstituentId(constituentId, sortinfo);
     }
     
     @Override

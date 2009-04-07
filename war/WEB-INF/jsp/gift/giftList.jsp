@@ -3,7 +3,7 @@
     <tiles:putAttribute name="customHeaderContent" type="string">
         <script type="text/javascript" src="js/giftList.js"></script>
     </tiles:putAttribute>
-	<tiles:putAttribute name="browserTitle" value="Touch Point Entries" />
+	<tiles:putAttribute name="browserTitle" value="Gift List" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
@@ -16,10 +16,6 @@
 		<jsp:include page="../snippets/personHeader.jsp">
 			<jsp:param name="currentFunctionTitleText" value="Gifts" />
 		</jsp:include>
-		<!--<div class="searchResultsHeader">
-			<h4 class="searchResults">Communication History</h4>
-		</div>-->
-
         <div id="giftsGrid"></div>
         
         </div>

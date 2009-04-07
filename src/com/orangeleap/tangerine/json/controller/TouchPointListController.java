@@ -37,7 +37,7 @@ public class TouchPointListController {
     static {
         NAME_MAP.put("id", "ch.COMMUNICATION_HISTORY_ID");
         NAME_MAP.put("date", "ch.RECORD_DATE");
-        NAME_MAP.put("personId", "ch.PERSON_ID");
+        NAME_MAP.put("personId", "ch.CONSTITUENT_ID");
         NAME_MAP.put("type", "ch.ENTRY_TYPE");
         NAME_MAP.put("comments", "ch.COMMENTS");
     }

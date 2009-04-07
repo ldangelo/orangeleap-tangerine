@@ -12,6 +12,8 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("giftInKindDAO")
 public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKindDao {
@@ -65,4 +67,24 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
         params.put("constituentId", constituentId);
         return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID", params);
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
+		params.put("constituentId", constituentId);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("GIFTS_IN_KIND_BY_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
 }

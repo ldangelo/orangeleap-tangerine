@@ -16,8 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
+import com.orangeleap.tangerine.service.GiftInKindService;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -27,7 +27,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
  * @version 1.0
  */
 @Controller
-public class GiftListController {
+public class GiftInKindListController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -35,35 +35,37 @@ public class GiftListController {
     private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
 
     static {
-        NAME_MAP.put("id", "g.GIFT_ID");
-        NAME_MAP.put("date", "g.TRANSACTION_DATE");
-        NAME_MAP.put("personId", "g.CONSTITUENT_ID");
-        NAME_MAP.put("amount", "g.AMOUNT");
-        NAME_MAP.put("comments", "g.COMMENTS");
-        NAME_MAP.put("authcode", "g.AUTH_CODE");
+        NAME_MAP.put("id", "gik.GIFT_ID");
+        NAME_MAP.put("date", "gik.TRANSACTION_DATE");
+        NAME_MAP.put("personId", "gik.CONSTITUENT_ID");
+        NAME_MAP.put("fairmarketvalue", "gik.FAIR_MARKET_VALUE");
+        NAME_MAP.put("currencycode", "gik.CURRENCY_CODE");
+        NAME_MAP.put("donationdate", "gik.DONATION_DATE");
+        NAME_MAP.put("motivationcode", "gik.MOTIVATION_CODE");
     }
     
-    private Map<String,Object> giftToMap(Gift g) {
+    private Map<String,Object> giftInKindToMap(GiftInKind gik) {
 
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", g.getId());
-        map.put("date", formatter.format(g.getTransactionDate()) );
-        map.put("personId", g.getPerson().getId());
-        map.put("amount", g.getAmount());
-        map.put("comments", g.getComments());
-        map.put("authcode", g.getAuthCode());
+        map.put("id", gik.getId());
+        map.put("date", formatter.format(gik.getTransactionDate()) );
+        map.put("personId", gik.getPerson().getId());
+        map.put("fairmarketvalue", gik.getFairMarketValue());
+        map.put("currencycode", gik.getCurrencyCode());
+        map.put("donationdate", gik.getDonationDate());
+        map.put("motivationcode", gik.getMotivationCode());
     
         return map;
 
     }
 
-    @Resource(name="giftService")
-    private GiftService giftService;
+    @Resource(name="giftInKindService")
+    private GiftInKindService giftInKindService;
 
     @SuppressWarnings("unchecked")
-    @RequestMapping("/giftList.json")
+    @RequestMapping("/giftInKindList.json")
     public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
 
         List<Map> rows = new ArrayList<Map>();
@@ -71,7 +73,7 @@ public class GiftListController {
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
         if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getGiftList called with invalid sort column: [" + sortInfo.getSort() + "]");
+            logger.warn("getGiftInKindList called with invalid sort column: [" + sortInfo.getSort() + "]");
             return new ModelMap("rows", rows);
         }
 
@@ -79,12 +81,12 @@ public class GiftListController {
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
         String personId = request.getParameter("personId");
-        PaginatedResult result = giftService.readPaginatedMonetaryGifts(Long.valueOf(personId), sortInfo); 
+        PaginatedResult result = giftInKindService.readPaginatedGiftsInKindByConstituentId(Long.valueOf(personId), sortInfo); 
 
-        List<Gift> list = result.getRows();
+        List<GiftInKind> list = result.getRows();
 
-        for(Gift g : list) {
-            rows.add( giftToMap(g) );
+        for(GiftInKind g : list) {
+            rows.add( giftInKindToMap(g) );
         }
 
         ModelMap map = new ModelMap("rows", rows);

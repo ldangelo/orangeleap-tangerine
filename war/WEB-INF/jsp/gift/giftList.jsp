@@ -1,9 +1,10 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
+<spring:message code="gifts" var="titleText"/>
 <tiles:insertDefinition name="base">
     <tiles:putAttribute name="customHeaderContent" type="string">
         <script type="text/javascript" src="js/giftList.js"></script>
     </tiles:putAttribute>
-	<tiles:putAttribute name="browserTitle" value="Gift List" />
+	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />

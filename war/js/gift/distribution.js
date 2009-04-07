@@ -9,24 +9,7 @@ $(document).ready(function() {
 			var val = $elem.val();
 			if (isNaN(parseFloat(val)) == false) {
 				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
-				Distribution.addNewRow();
-				
-				$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
-					var $amtElem = $(this);
-					var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
-					var rowId = $amtElem.attr('id').replace('-amount', '');
-					
-					var amtVal = parseFloat($amtElem.val());
-					var thisAmt = isNaN(amtVal) ? 0 : OrangeLeap.truncateFloat(amtVal);
-					
-					var pctVal = parseFloat($pctElem.val());
-					var thisPct = isNaN(pctVal) ? 0 : OrangeLeap.truncateFloat(pctVal);
-					
-					var map = Distribution.getMap(rowId);
-					map.amount = thisAmt;
-					map.percent = thisPct;	
-				});
-				Distribution.updateTotals();
+				Distribution.reInitDistribution();
 			}
 		}
 	});
@@ -70,6 +53,26 @@ var Distribution = {
 	enteredAmt: 0,
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
 	index: 1,
+	
+	reInitDistribution: function() {
+		$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
+			var $amtElem = $(this);
+			var $pctElem = $("#" + $amtElem.attr('id').replace('amount', 'percentage'));
+			var rowId = $amtElem.attr('id').replace('-amount', '');
+			
+			var amtVal = parseFloat($amtElem.val());
+			var thisAmt = isNaN(amtVal) ? 0 : OrangeLeap.truncateFloat(amtVal);
+			
+			var pctVal = parseFloat($pctElem.val());
+			var thisPct = isNaN(pctVal) ? 0 : OrangeLeap.truncateFloat(pctVal);
+			
+			var map = Distribution.getMap(rowId);
+			map.amount = thisAmt;
+			map.percent = thisPct;	
+		});
+		Distribution.updateTotals();
+		Distribution.addNewRow();
+	},
 	
 	hideShowAnonymous: function($target) {
 		var thisId = $target.attr("id");

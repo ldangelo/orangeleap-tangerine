@@ -1,7 +1,7 @@
 var PledgeSelector = {
 	loadPledgeSelector: function(elem) {
 		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
-		var queryString = "constituentId=" + $("#thisConstituentId").val() + "&selectedPledgeIds=" + $("#pledges").val();
+		var queryString = "constituentId=" + $("#thisConstituentId").val() + "&selectedPledgeIds=" + $("#associatedPledgeIds").val();
 
 		$.ajax({
 			type: "POST",
@@ -21,7 +21,6 @@ var PledgeSelector = {
 	},
 	
 	selectorBindings: function() {		
-		// First, serialize all fields in the current distribution lines
 		$("#pledgeSelectorForm #doneButton").bind("click", function() {
 			var queryString = PledgeSelector.serializeDistributionLines();
 			var idsStr = "";
@@ -50,9 +49,7 @@ var PledgeSelector = {
 					var $gridRows = $("table.distributionLines tbody.gridRow");
 					Distribution.index = $gridRows.length + 1;
 					Distribution.distributionLineBuilder($gridRows);
-//					Distribution.recalculatePcts();
-					Distribution.updateTotals();
-					Distribution.addNewRow();
+					Distribution.reInitDistribution();
 					Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
 				},
 				error: function(html){
@@ -92,7 +89,22 @@ var PledgeSelector = {
 		return queryString;
 	},
 	
-	deletePledge: function() {
-		
+	deletePledge: function(elem) {
+		var $pledgeElem = $(elem).parent();
+		var pledgeId = $pledgeElem.attr("selectedId");
+		if (pledgeId) {
+			Lookup.removeSelectedVal($("#associatedPledgeIds"), pledgeId);
+
+			$("div.ea-pledge div.queryLookupOption").each(function() {
+				var $elem = $(this);
+				if ($elem.attr("id").indexOf("associatedPledgeId") > -1 && $elem.attr("selectedId") == pledgeId) {
+					var $lineRowElem = $elem.parents("tbody.gridRow").children("tr.lineRow");
+					Distribution.deleteRow($lineRowElem);
+				}
+			});
+			$pledgeElem.fadeOut("fast", function() {
+				$(this).remove();
+			});
+		} 
 	}	
 }

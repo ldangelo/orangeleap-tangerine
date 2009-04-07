@@ -883,15 +883,7 @@ var Lookup = {
 		var selectedCode = $parent.attr("code");
 		$hiddenElem.each(function() {
 			var $hiddenElem = $(this);
-			var codesValues = $hiddenElem.val().split(",");
-			
-			var newCodesValues = "";
-			for (var x = 0; x < codesValues.length; x++) {
-				if (codesValues[x] != selectedCode) {
-					newCodesValues += codesValues[x] + ",";
-				}
-			}
-			$hiddenElem.val(newCodesValues.substring(0, newCodesValues.length - 1));
+			Lookup.removeSelectedVal($hiddenElem, selectedCode);
 		});
 		 
 		$parent.fadeOut("fast", function() {
@@ -1296,15 +1288,7 @@ var Lookup = {
 				$("#" + otherFieldId).val("");
 			}
 			var selectedId = $parent.attr("selectedId");
-			var idsValues = $hiddenElem.val().split(",");
-			
-			var newIdsValues = "";
-			for (var x = 0; x < idsValues.length; x++) {
-				if (idsValues[x] != selectedId) {
-					newIdsValues += idsValues[x] + ",";
-				}
-			}
-			$hiddenElem.val(newIdsValues.substring(0, newIdsValues.length - 1));
+			Lookup.removeSelectedVal($hiddenElem, selectedId);
 		});
 		 
 		$parent.fadeOut("fast", function() {
@@ -1328,24 +1312,28 @@ var Lookup = {
 			var additionalFieldId = $parentElem.parent().parent().parent().children("input[type=hidden]").attr("additionalFieldId");
 			if (additionalFieldId) {
 				var $additionalFieldElem = $("#" + additionalFieldId);
-				var vals = $additionalFieldElem.val().split(",");
-				var valsLen = vals.length;
-				var newVals = "";
-				for (var x = 0; x < valsLen; x++) {
-					if (vals[x] != optionText) {
-						newVals += vals[x] + ",";
-					}
-				}
-				if (newVals.length > 0) {
-					newVals = newVals.substring(0, newVals.length - 1);
-				}
-				$additionalFieldElem.val(newVals);
+				Lookup.removeSelectedVal($additionalFieldElem, optionText);
 				
 				$parentElem.fadeOut("fast", function() {
 					$(this).remove();
 				});
 			}
 		}
+	},
+	
+	removeSelectedVal: function($elem, valueToCompare) {
+		var vals = $elem.val().split(",");
+		var valsLen = vals.length;
+		var newVals = "";
+		for (var x = 0; x < valsLen; x++) {
+			if (vals[x] != valueToCompare) {
+				newVals += vals[x] + ",";
+			}
+		}
+		if (newVals.length > 0) {
+			newVals = newVals.substring(0, newVals.length - 1);
+		}
+		$elem.val(newVals);
 	},
 	
 	showWaitIndicator: function() {

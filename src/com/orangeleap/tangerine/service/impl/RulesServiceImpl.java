@@ -19,11 +19,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.RulesService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -50,36 +53,45 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	public void executeDailyJobRules() {
 
 		try {
-			
 
+			SiteService ss = (SiteService) applicationContext
+					.getBean("siteService");
+			TangerineUserHelper th = (TangerineUserHelper) applicationContext
+					.getBean("tangerineUserHelper");
+			List<Site> siteList = ss.readSites();
 
-			
-			
-			List<Person> peopleList = constituentService.readAllConstituentsBySite(); 
-			if (peopleList.size() > 0) {
-	 			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+			for (Site s : siteList) {
 
+				th.setSystemUserAndSiteName(s.getName());
 
-				StatefulSession workingMemory = ruleBase.newStatefulSession();
-				workingMemory.addEventListener (new DebugAgendaEventListener());
-				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+				List<Person> peopleList = constituentService
+						.readAllConstituentsBySite();
+				if (peopleList.size() > 0) {
+					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
+							.getBean("DroolsRuleAgent")).getRuleAgent()
+							.getRuleBase();
 
-				
-				workingMemory.setGlobal("applicationContext", applicationContext);
-				workingMemory.setFocus(getSiteName()+"scheduled");
-				for (Person p : peopleList) {
-			
-					List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-					p.setGifts(giftList);
-					FactHandle pfh = workingMemory.insert(p);
+					StatefulSession workingMemory = ruleBase
+							.newStatefulSession();
+					workingMemory
+							.addEventListener(new DebugAgendaEventListener());
+					workingMemory
+							.addEventListener(new DebugWorkingMemoryEventListener());
 
+					workingMemory.setGlobal("applicationContext",
+							applicationContext);
+					workingMemory.setFocus(getSiteName() + "scheduled");
+					for (Person p : peopleList) {
 
-				
+						List<Gift> giftList = giftService
+								.readMonetaryGiftsByConstituentId(p.getId());
+						p.setGifts(giftList);
+						FactHandle pfh = workingMemory.insert(p);
 
-				
+					}
+					workingMemory.fireAllRules();
+					workingMemory.dispose();
 				}
-				workingMemory.fireAllRules();
-				workingMemory.dispose();
 			}
 		} catch (Throwable t) {
 			logger.error(t);

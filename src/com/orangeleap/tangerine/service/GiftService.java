@@ -11,6 +11,8 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface GiftService {
 
@@ -47,5 +49,7 @@ public interface GiftService {
 	public List<Gift> readAllGiftsBySiteName();
 	
 	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
+
+	public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo);
 	
 }

@@ -17,6 +17,8 @@ import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("giftDAO")
 public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements GiftDao {
@@ -68,6 +70,25 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
         return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_CONSTITUENT_ID", params);
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public PaginatedResult readPaginatedMonetaryGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedMonetaryGiftsByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
+		params.put("constituentId", constituentId);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("GIFTS_BY_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
     }
 
     @SuppressWarnings("unchecked")

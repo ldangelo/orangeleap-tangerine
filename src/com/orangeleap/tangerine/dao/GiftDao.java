@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface GiftDao {
 
@@ -33,5 +35,8 @@ public interface GiftDao {
 	public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
 	public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
+
+	public PaginatedResult readPaginatedMonetaryGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
+
 	
 }

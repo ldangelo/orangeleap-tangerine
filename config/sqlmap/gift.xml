@@ -72,6 +72,14 @@
 		left outer join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID
 		where p.SITE_NAME = #siteName#
 	</sql>
+	
+	<sql id="GIFTS_ROWCOUNT_FRAGMENT">
+        select count(*)
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+    </sql>
 
 	<select id="SELECT_GIFT_BY_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />
@@ -94,6 +102,19 @@
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 		order by g.TRANSACTION_DATE desc
 	</select>
+	
+	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultMap="GIFT_RESULT" parameterClass="map">
+		<include refid="GIFT_QUERY_FRAGMENT" />
+		and g.CONSTITUENT_ID = #constituentId#
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+	
+	<select id="GIFTS_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
+        <include refid="GIFTS_ROWCOUNT_FRAGMENT"/>
+		and g.CONSTITUENT_ID = #constituentId#
+    </select>
 
 	<select id="SELECT_GIFTS_BY_RECURRING_GIFT_ID" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT" />

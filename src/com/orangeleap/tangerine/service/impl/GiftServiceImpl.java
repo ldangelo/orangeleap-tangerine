@@ -48,6 +48,8 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("giftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -262,6 +264,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("readMonetaryGifts: constituentId = " + constituentId);
         }
         return giftDao.readMonetaryGiftsByConstituentId(constituentId);
+    }
+
+    @Override
+    public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedMonetaryGifts: constituentId = " + constituentId);
+        }
+        return giftDao.readPaginatedMonetaryGiftsByConstituentId(constituentId, sortinfo);
     }
 
     @Override

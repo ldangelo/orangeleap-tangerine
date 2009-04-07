@@ -89,7 +89,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
 
-    	RulesStack.push(MAINTAIN_METHOD);
+    	boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
         	
             if (logger.isDebugEnabled()) {
@@ -100,7 +100,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        setDefaultDates(gift);
 	        gift.filterValidDistributionLines();
 	        gift = giftDao.maintainGift(gift);
-	        paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+	        if (!reentrant) {
+	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+	        }
 	        auditService.auditObject(gift, gift.getPerson());
 	
 	        //

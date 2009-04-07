@@ -60,6 +60,12 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
     }
+    
+    @Override
+    public String getAuditShortDesc() {
+    	return getNumber();
+    }
+
 
     @Override
     public boolean equals(Object obj) {

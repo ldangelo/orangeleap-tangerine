@@ -49,6 +49,12 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(emailAddress));
     }
+    
+    @Override
+    public String getAuditShortDesc() {
+    	return getEmailAddress();
+    }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -529,6 +529,12 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
     
     @Override
+    public String getAuditShortDesc() {
+    	return (getProfile() == null || getProfile().length() == 0) ? ""+getId() : getProfile();
+    }
+
+    
+    @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("profile", profile).append("paymentType", paymentType).append(creditCardHolderName, "creditCardHolderName").
             append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", person).

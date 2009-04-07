@@ -386,6 +386,12 @@ public class Person extends AbstractCommunicatorEntity {
     public void setCustomId(String customId) {
         this.customId = customId;
     }
+    
+    @Override
+    public String getAuditShortDesc() {
+    	return getFullName();
+    }
+
 
     @Override
     public void setDefaults() {

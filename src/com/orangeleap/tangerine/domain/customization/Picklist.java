@@ -133,6 +133,12 @@ implements Serializable {
 		return picklistDesc;
 	}
 	
+    @Override
+    public String getAuditShortDesc() {
+    	return getPicklistDesc();
+    }
+
+	
 	public String toString() {
 	   return getPicklistDesc();
 	}

@@ -116,6 +116,12 @@ public class Address extends AbstractCommunicationEntity {
                 StringUtils.hasText(postalCode) &&
                 StringUtils.hasText(country));
     }
+    
+    @Override
+    public String getAuditShortDesc() {
+    	return getAddressLine1();
+    }
+
 
     @Override
     public boolean equals(Object obj) {

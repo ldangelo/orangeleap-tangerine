@@ -107,7 +107,9 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
         if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
             String name = tangerineUserHelper.lookupUserName();
-            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(entity) + " " + entity.getId(), siteName, getClassName(entity), entity.getId(), userId));
+            String desc = entity.getAuditShortDesc();
+            if (StringUtils.trimToNull(desc) == null) desc =  "" + entity.getId();
+            audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(entity) + " " + desc, siteName, getClassName(entity), entity.getId(), userId));
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(entity) + " " + entity.getId());
             }

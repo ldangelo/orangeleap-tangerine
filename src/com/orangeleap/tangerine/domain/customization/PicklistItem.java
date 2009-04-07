@@ -107,6 +107,12 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
 	public boolean isReadOnly() {
 		return readOnly;
 	}
+	
+    @Override
+    public String getAuditShortDesc() {
+    	return getItemName();
+    }
+
     
 	
 }

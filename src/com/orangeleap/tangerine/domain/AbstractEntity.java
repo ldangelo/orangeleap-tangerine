@@ -147,6 +147,13 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     public void postRead() {
         // no-op in base implementation    
     }
+    
+    /**
+     * Short description for audit trail
+     */
+    public String getAuditShortDesc() {
+    	return "";
+    }
 
     @Override
     public String toString() {

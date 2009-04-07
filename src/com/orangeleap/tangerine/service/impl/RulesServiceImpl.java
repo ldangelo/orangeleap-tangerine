@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -47,32 +48,27 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 	public void executeDailyJobRules() {
 
 		try {
-		    DroolsRuleAgent droolsRuleAgent = (DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent");
-		    
-			RuleAgent agent = RuleAgent.newRuleAgent(droolsRuleAgent.getDroolsProperties());
 			
- 			RuleBase ruleBase = agent.getRuleBase();
+ 			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+
 
 			StatefulSession workingMemory = ruleBase.newStatefulSession();
 
+			workingMemory.setFocus(getSiteName()+"scheduled");
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			
 			List<Person> peopleList = constituentService.readAllConstituentsBySite(); 
 
 			for (Person p : peopleList) {
-
-				workingMemory.insert(p);
-
 				List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
+				p.setGifts(giftList);
+				FactHandle pfh = workingMemory.insert(p);
 
-				for (Gift g : giftList) {
-					workingMemory.insert(g);
-				}
-
+				workingMemory.fireAllRules();
+				
+				workingMemory.retract(pfh);
 			}
 
-
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setFocus(getSiteName()+"scheduled");
-			workingMemory.fireAllRules();
 			workingMemory.dispose();
 
 		} catch (Throwable t) {

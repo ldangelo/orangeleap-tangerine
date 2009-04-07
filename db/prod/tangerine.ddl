@@ -16,6 +16,11 @@ CREATE TABLE `SITE` (
   `ACTIVE` char(1) default '1',
   `UPDATE_DATE` datetime default NULL,
   `PARENT_SITE_NAME` varchar(255) default NULL,
+  `ACH_SITE_NUMBER` bigint(20) default 0,
+  `ACH_MERCHANT_ID` bigint(20) default 0,
+  `ACH_RULE_NUMBER` bigint(20) default 0,
+  `ACH_COMPANY_NAME` varchar(128) default NULL,
+  `ACH_TEST_MODE` char(1) default 0,
   PRIMARY KEY  (`SITE_NAME`),
   KEY `FK_SITE_PARENT_SITE` (`PARENT_SITE_NAME`),
   CONSTRAINT `FK_SITE_PARENT_SITE` FOREIGN KEY (`PARENT_SITE_NAME`) REFERENCES `SITE` (`SITE_NAME`)

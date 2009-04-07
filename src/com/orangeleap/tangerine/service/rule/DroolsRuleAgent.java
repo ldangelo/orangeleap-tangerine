@@ -15,6 +15,7 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
 	private final Properties droolsProperties;
+	private RuleAgent ruleAgent = null;
 
 	public DroolsRuleAgent(final String pollInterval, final String cacheDir, final String packageDir) {
 	    if (logger.isDebugEnabled()) {
@@ -39,6 +40,12 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	}
 
     public RuleAgent getRuleAgent() {
-        return RuleAgent.newRuleAgent(getDroolsProperties());
+    	if (ruleAgent == null) {
+    		ruleAgent =RuleAgent.newRuleAgent(getDroolsProperties());
+            return ruleAgent; 
+            
+    	} else {
+    		return ruleAgent;
+    	}
     }
 }

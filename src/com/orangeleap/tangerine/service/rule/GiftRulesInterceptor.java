@@ -17,6 +17,7 @@ import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.SiteService;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
@@ -43,7 +44,8 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-
+		SiteService ss = (SiteService) applicationContext.getBean("siteService");
+		
 		String site = null;
 
 
@@ -64,6 +66,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				Person person = gift.getPerson();
 				
 				person.setGifts(gs.readMonetaryGifts(person));
+				person.setSite(ss.readSite(person.getSite().getName()));
 				workingMemory.insert(person);
 
 			} catch (Exception ex) {

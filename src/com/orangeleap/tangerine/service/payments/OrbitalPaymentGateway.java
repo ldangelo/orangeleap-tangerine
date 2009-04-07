@@ -2,8 +2,11 @@ package com.orangeleap.tangerine.service.payments;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.GiftService;
 import com.paymentech.orbital.sdk.configurator.Configurator;
 import com.paymentech.orbital.sdk.configurator.ConfiguratorIF;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
@@ -22,6 +25,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	private String configFile;
 	protected static ConfiguratorIF configurator = null;
 	private TransactionProcessorIF tp = null;
+
+	private ApplicationContext applicationContext;
 
 	public OrbitalPaymentGateway() {
 	}
@@ -129,10 +134,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setTxRefNum(response.getTxRefNum());
 			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
+			gift.setComments(response.getMessage());
 		} else {
 			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
+			gift.setComments(response.getMessage());
 		}
+		GiftService gs = (GiftService) applicationContext.getBean("giftService");
+		gs.maintainGift(gift);
 
 	}
 
@@ -166,23 +175,23 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 					.getMerchantNumber());
 			request.setFieldValue("BIN", gift.getSite().getMerchantBin());
 			request.setFieldValue("OrderID", gift.getId().toString());
-			request.setFieldValue("AccountNum", gift.getPaymentSource()
+			request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
 					.getCreditCardNumber());
 			request.setFieldValue("Amount", gift.getAmount().toString());
-			request.setFieldValue("Exp", gift.getPaymentSource()
+			request.setFieldValue("Exp", gift.getSelectedPaymentSource()
 					.getCreditCardExpirationMonth().toString()
-					+ gift.getPaymentSource().getCreditCardExpirationYear()
-							.toString());
+					+ gift.getSelectedPaymentSource().getCreditCardExpirationYear()
+							.toString().substring(2));
 			// AVS Information
-			if (gift.getAddress().isValid()) {
-				request.setFieldValue("AVSname", gift.getPaymentSource()
+			if (gift.getSelectedAddress().isValid()) {
+				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
 						.getCreditCardHolderName());
-				request.setFieldValue("AVSaddress1", gift.getAddress()
+				request.setFieldValue("AVSaddress1", gift.getSelectedAddress()
 						.getAddressLine1());
-				request.setFieldValue("AVScity", gift.getAddress().getCity());
-				request.setFieldValue("AVSstate", gift.getAddress()
+				request.setFieldValue("AVScity", gift.getSelectedAddress().getCity());
+				request.setFieldValue("AVSstate", gift.getSelectedAddress()
 						.getStateProvince());
-				request.setFieldValue("AVSzip", gift.getAddress()
+				request.setFieldValue("AVSzip", gift.getSelectedAddress()
 						.getPostalCode());
 			}
 
@@ -233,6 +242,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 		}
+		
+		GiftService gs = (GiftService) applicationContext.getBean("giftService");
+		gs.maintainGift(gift);
+
 
 	}
 
@@ -306,7 +319,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 		}
-
+		GiftService gs = (GiftService) applicationContext.getBean("giftService");
+		gs.maintainGift(gift);
+		
 	}
 
 	@Override
@@ -316,5 +331,12 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 
 	private ResponseIF process(RequestIF request) {
 		return null;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+		
 	}
 }

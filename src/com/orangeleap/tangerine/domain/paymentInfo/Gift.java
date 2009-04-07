@@ -30,7 +30,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private Date refundGiftTransactionDate;
     private boolean deductible = false;
     private String txRefNum;
-    private String paymentStatus;
+    private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
     private List<Pledge> pledges;
@@ -230,7 +230,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 	}
 	
 	public Boolean getIsDeclined() {
-		return StringUtils.trimToEmpty(paymentStatus).equals("");
+		return !StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
 	
 	public void setGiftForGiftInKind(GiftInKind giftInKind) {

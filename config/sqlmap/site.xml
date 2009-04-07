@@ -16,6 +16,11 @@
 		<result property="active" column="ACTIVE" jdbcType="CHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="parentSite" resultMap="SITE.PARENT_SITE_RESULT" />
+		<result property="achSiteNumber" column="SITE.ACH_SITE_NUMBER" />
+		<result property="achMerchantId" column="SITE.ACH_MERCHANT_ID" />
+		<result property="achRuleNumber" column="SITE.ACH_RULE_NUMBER" />
+		<result property="achCompanyName" column="SITE.ACH_COMPANY_NAME"/>
+		<result property="achTestMode" column="SITE.ACH_TEST_MODE"/>
 	</resultMap>
 
 	<resultMap id="PARENT_SITE_RESULT" class="com.orangeleap.tangerine.domain.Site">
@@ -23,7 +28,7 @@
 	</resultMap>
 
 	<sql id="SITE_COLS_FRAGMENT">
-		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, LOCALE, TIME_ZONE, ACTIVE, UPDATE_DATE, PARENT_SITE_NAME
+		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, LOCALE, TIME_ZONE, ACTIVE, UPDATE_DATE, PARENT_SITE_NAME,ACH_SITE_NUMBER,ACH_MERCHANT_ID,ACH_RULE_NUMBER,ACH_COMPANY_NAME,ACH_TEST_MODE
 	</sql>
 	
 	<sql id="SELECT_SITE_FRAGMENT">

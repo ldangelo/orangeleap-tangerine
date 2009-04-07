@@ -40,6 +40,11 @@ public class Site implements Serializable {
     private Site parentSite;
     private Date createDate;
     private Date updateDate;
+    private Integer achSiteNumber;
+    private Integer achMerchantId;
+    private Integer achRuleNumber;
+    private String achCompanyName;
+    private Integer achTestMode;
     
     public Locale getLocale() {
     	return localeString == null?Locale.getDefault():new Locale(localeString);
@@ -128,6 +133,46 @@ public class Site implements Serializable {
         		.append("localeString", localeString).append("timeZoneString", timeZoneString)
         		.append("parentSite", parentSite).append("createDate", createDate).append("updateDate", updateDate).toString();
     }
+
+	public Integer getAchSiteNumber() {
+		return achSiteNumber;
+	}
+
+	public void setAchSiteNumber(Integer achSiteNumber) {
+		this.achSiteNumber = achSiteNumber;
+	}
+
+	public Integer getAchMerchantId() {
+		return achMerchantId;
+	}
+
+	public void setAchMerchantId(Integer achMerchantId) {
+		this.achMerchantId = achMerchantId;
+	}
+
+	public Integer getAchRuleNumber() {
+		return achRuleNumber;
+	}
+
+	public void setAchRuleNumber(Integer achRuleNumber) {
+		this.achRuleNumber = achRuleNumber;
+	}
+
+	public String getAchCompanyName() {
+		return achCompanyName;
+	}
+
+	public void setAchCompanyName(String achCompanyName) {
+		this.achCompanyName = achCompanyName;
+	}
+
+	public boolean isAchTestMode() {
+		return achTestMode == 1;
+	}
+
+	public void setAchTestMode(Integer achTestMode) {
+		this.achTestMode = achTestMode;
+	}
 
 
 	

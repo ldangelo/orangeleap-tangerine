@@ -48,7 +48,7 @@ public class TangerineCustomDateEditor extends CustomDateEditor {
                 c.set(Calendar.YEAR, year);
 
                 // if the date is before current date, assume it is next year
-                if(c.before(now)) {
+                if(c.get(Calendar.DAY_OF_YEAR) < now.get(Calendar.DAY_OF_YEAR)) {
                     c.set(Calendar.YEAR, year+1);
                 }
                 

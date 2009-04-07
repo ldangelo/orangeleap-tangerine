@@ -49,6 +49,7 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
+import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -82,25 +83,37 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         context = applicationContext;
     }
 
+    private final static String MAINTAIN_METHOD = "GiftServiceImpl.maintainGift";
+    
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift maintainGift(Gift gift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainGift: gift = " + gift);
+
+    	RulesStack.push(MAINTAIN_METHOD);
+        try {
+        	
+            if (logger.isDebugEnabled()) {
+                logger.debug("maintainGift: gift = " + gift);
+            }
+            
+	        maintainEntityChildren(gift, gift.getPerson());
+	        setDefaultDates(gift);
+	        gift.filterValidDistributionLines();
+	        gift = giftDao.maintainGift(gift);
+	        paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+	        auditService.auditObject(gift, gift.getPerson());
+	
+	        //
+	        // this needs to go last because we need the gift in the database
+	        // in order for rules to work properly.
+	        routeGift(gift);
+        
+	        return gift;
+	        
+        } finally {
+        	RulesStack.pop(MAINTAIN_METHOD);
         }
-        maintainEntityChildren(gift, gift.getPerson());
-        setDefaultDates(gift);
-        gift.filterValidDistributionLines();
-        gift = giftDao.maintainGift(gift);
-        paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
-        auditService.auditObject(gift, gift.getPerson());
 
-        //
-        // this needs to go last because we need the gift in the database
-        // in order for rules to work properly.
-        routeGift(gift);
-
-        return gift;
     }
     
     private void setDefaultDates(Gift gift) {
@@ -114,6 +127,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
     }
 
+    private final static String EDIT_METHOD = "GiftServiceImpl.editGift";
+    
     /*
      * this is needed for JMS
      */
@@ -122,25 +137,46 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("editGift: giftId = " + gift.getId());
-        }
-        maintainEntityChildren(gift, gift.getPerson());
-        gift = giftDao.maintainGift(gift);
-        routeGift(gift);
-        auditService.auditObject(gift, gift.getPerson());
 
-        return gift;
+    	RulesStack.push(EDIT_METHOD);
+        try {
+        	
+	        if (logger.isDebugEnabled()) {
+	            logger.debug("editGift: giftId = " + gift.getId());
+	        }
+	        
+	        maintainEntityChildren(gift, gift.getPerson());
+	        gift = giftDao.maintainGift(gift);
+	        routeGift(gift);
+	        auditService.auditObject(gift, gift.getPerson());
+	
+	        return gift;
+        
+        } finally {
+        	RulesStack.pop(EDIT_METHOD);
+        }
+
     }
     
+    private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";
+    
     private void routeGift(Gift gift) {
+    
+    	RulesStack.push(ROUTE_METHOD);
         try {
-            NewGift newGift = (NewGift) context.getBean("newGift");
-            newGift.routeGift(gift);
-        } 
-        catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
+        	
+	        try {
+	            NewGift newGift = (NewGift) context.getBean("newGift");
+	            newGift.routeGift(gift);
+	        } 
+	        catch (Exception ex) {
+	            logger.error(ex.getMessage(), ex);
+	        }
+
+        } finally {
+        	RulesStack.pop(ROUTE_METHOD);
         }
+
     }
 
 //    private void processMockTrans(Gift gift) {

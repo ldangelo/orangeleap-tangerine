@@ -52,6 +52,11 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 				return;
 		    }
 		    
+		    if (RulesStack.getStack().size() > 0) {
+		    	logger.error("RulesStack not previously cleared.");
+		    	RulesStack.getStack().clear();
+		    }
+		    
 			DataSourceTransactionManager txManager = (DataSourceTransactionManager) getBean(request, "transactionManager");
 		    logger.debug(request.getRequestURL() + ", txManager = " + txManager);
 		    

@@ -108,7 +108,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        //
 	        // this needs to go last because we need the gift in the database
 	        // in order for rules to work properly.
-	        routeGift(gift);
+	        if (!reentrant) {
+	        	routeGift(gift);
+	        }
         
 	        return gift;
 	        

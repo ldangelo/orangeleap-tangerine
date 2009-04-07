@@ -79,8 +79,6 @@
 			debug="true"
         />
 
-		<replace file="${test.src.dir}/config/linehandler.properties" token="TESTCONFIGDIR" value="${test.src.dir}/config"/>
-
 		<if>
 			<equals arg1="${environment}" arg2="ci"/>
 			<then>
@@ -97,7 +95,14 @@
 			<fileset dir="${test.src.dir}">
 				<include name="**/*.*"/>
 				<exclude name="**/*.java"/>
+				<exclude name="**/config/xml/**/*"/>
 				<exclude name="**/test.properties"/>
+			</fileset>
+			<fileset dir="${test.src.dir}/config/xml">
+				<include name="*.xml"/>
+			</fileset>
+			<fileset dir="${test.src.dir}/config/xml/templates">
+				<include name="*.inc"/>
 			</fileset>
 		</copy>
 
@@ -139,8 +144,6 @@
         		<exclude name="**/testng-failed.xml"/>
         	</fileset>
 		</junitreport>
-
-		<replace file="${test.src.dir}/config/linehandler.properties" token="${test.src.dir}/config" value="TESTCONFIGDIR"/>
 
         <fail message="Tests failed: check test reports." if="test.failed" />
 

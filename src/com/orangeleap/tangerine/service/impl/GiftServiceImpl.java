@@ -142,7 +142,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) {
 
-    	RulesStack.push(EDIT_METHOD);
+    	boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
         	
 	        if (logger.isDebugEnabled()) {
@@ -151,7 +151,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        
 	        maintainEntityChildren(gift, gift.getPerson());
 	        gift = giftDao.maintainGift(gift);
-	        routeGift(gift);
+	        if (!reentrant) {
+	        	routeGift(gift);
+	        }
 	        auditService.auditObject(gift, gift.getPerson());
 	
 	        return gift;

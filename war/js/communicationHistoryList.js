@@ -11,7 +11,7 @@ Ext.onReady(function() {
         baseParams.personId = personId[1];
     }
 
-    var header = 'Communication History';
+    var header = 'Touch Point History';
 
 
     CommunicationHistory.store = new Ext.data.JsonStore({
@@ -34,8 +34,8 @@ Ext.onReady(function() {
         pageSize: 100,
         store: CommunicationHistory.store,
         displayInfo: true,
-        displayMsg: 'Displaying communication history {0} - {1} of {2}',
-        emptyMsg: "No communication history to display"
+        displayMsg: 'Displaying touch point history {0} - {1} of {2}',
+        emptyMsg: "No touch point history to display"
     });
 
 

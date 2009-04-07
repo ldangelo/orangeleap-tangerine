@@ -77,7 +77,15 @@
 		<delete dir="${target.tomcat.dir}/work" />
 		<delete dir="${target.tomcat.dir}/temp" />
 		<delete dir="${target.tomcat.dir}/webapps/orangeleap" />
+		
 		<copy file="${build.output.dir}/orangeleap.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />
+		
+		<copy todir="${target.tomcat.dir}/drools/rules" overwrite="true"  >
+		    <fileset dir="${rules.build.output.dir}">
+		      <include name="**/*.pkg"/>
+		    </fileset>
+		</copy>
+		
 		
 		<exec dir="/opt/orangeleap" executable="chown" >
 			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/webapps"/>

@@ -55,22 +55,23 @@ public class CsvImportController extends SimpleFormController {
         }
 
 		String entity = request.getParameter("entity");
+		List<String> result = new ArrayList<String>();
 		
 		MultipartFile mf = ((MultipartHttpServletRequest)request).getFile("file");
         String filename = mf.getOriginalFilename();
 		
-		if (!filename.toLowerCase().endsWith(".csv")) throw new RuntimeException("File type must be csv.");
-		
-		FileUploadBean bean = (FileUploadBean) command;
-		
-		ApplicationContext applicationContext = getApplicationContext();
-
-		List<String> result = new ArrayList<String>();
-		byte[] file = bean.getFile();
-		if (file != null && file.length > 0) {
-			result = importFile(entity, file, errors, applicationContext);
+		if (!filename.toLowerCase().endsWith(".csv")) {
+			result.add("Selected import file must be a csv file.");
 		} else {
-			result.add("Import file required.");
+			FileUploadBean bean = (FileUploadBean) command;
+			ApplicationContext applicationContext = getApplicationContext();
+	
+			byte[] file = bean.getFile();
+			if (file != null && file.length > 0) {
+				result = importFile(entity, file, errors, applicationContext);
+			} else {
+				result.add("Import file required.");
+			}
 		}
 		
         ModelAndView mav = super.onSubmit(request, response, command, errors);

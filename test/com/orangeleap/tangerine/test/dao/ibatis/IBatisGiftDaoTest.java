@@ -20,6 +20,7 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.GiftEntryType;
@@ -43,6 +44,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert 100L == gift.getId(); 
         assert "Thank you for your support".equals(gift.getComments());
         assert gift.getTransactionDate() != null;
+        assert Commitment.STATUS_PENDING.equals(gift.getGiftStatus());
         assert 1000 == gift.getAmount().intValue();
         assert 1000 == gift.getDeductibleAmount().intValue();
         assert PaymentSource.CASH.equals(gift.getPaymentType());
@@ -122,6 +124,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         gift.setComments("foobar!!");
         gift.setTxRefNum("0101010101");
         gift.setGiftType(GiftType.MONETARY_GIFT);
+        gift.setGiftStatus(Commitment.STATUS_IN_PROGRESS);
         Address addr = new Address();
         addr.setId(100L);
         gift.setSelectedAddress(addr);
@@ -141,6 +144,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         Gift readGift = giftDao.readGiftById(gift.getId());
         assert readGift != null;
         assert gift.getId().equals(readGift.getId());
+        assert Commitment.STATUS_IN_PROGRESS.equals(readGift.getGiftStatus());
         assert sdf.parse("01/01/2001").equals(readGift.getAcknowledgmentDate());
         assert sdf.parse("10/31/1999").equals(readGift.getDonationDate());
         assert GiftEntryType.AUTO.equals(readGift.getEntryType());
@@ -194,6 +198,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         gift.setCheckNumber(111);
         gift.setEntryType(GiftEntryType.MANUAL);
         gift.setCurrencyCode("USD");
+        gift.setGiftStatus(Commitment.STATUS_FULFILLED);
         
         gift.setSelectedAddress(null);
         Phone phone = new Phone();
@@ -211,6 +216,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift != null;
         assert gift.getId().equals(readGift.getId());
         assert readGift.getAcknowledgmentDate() == null;
+        assert Commitment.STATUS_FULFILLED.equals(readGift.getGiftStatus());
         assert sdf.parse("10/31/1999").equals(readGift.getDonationDate());
         assert GiftEntryType.MANUAL.equals(readGift.getEntryType());
         assert GiftType.MONETARY_GIFT.equals(readGift.getGiftType());

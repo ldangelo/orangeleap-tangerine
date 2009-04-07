@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +49,7 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -437,5 +439,62 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("readAllGiftsBySiteName:");
         }
         return giftDao.readAllGiftsBySite();
+	}
+	
+	@Override
+	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges) {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges + " pledgeLines = " + pledgeLines + " giftDistributionLines = " + giftDistributionLines);
+	    }
+        List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
+        if ((pledgeLines == null || pledgeLines.isEmpty()) && giftDistributionLines != null) {
+            // NO pledge distribution lines associated with this gift; only add gift distribution lines that have no pledge associations
+            for (DistributionLine giftLine : giftDistributionLines) {
+                if (giftLine != null && giftLine.isFieldEntered()) {
+                    if (org.springframework.util.StringUtils.hasText(giftLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID)) == false) {
+                        returnLines.add(giftLine);
+                    }
+                }
+            }
+        }
+        else if ((giftDistributionLines == null || giftDistributionLines.isEmpty()) && pledgeLines != null) {
+            initPledgeDistributionLine(pledgeLines, returnLines, numPledges, amount);
+        }
+        else if (pledgeLines != null && giftDistributionLines != null) {
+            for (DistributionLine aLine : giftDistributionLines) {
+                if (aLine != null && aLine.isFieldEntered()) {
+                    String associatedPledgeId = aLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID);
+                    if (org.springframework.util.StringUtils.hasText(associatedPledgeId) == false) {
+                        returnLines.add(aLine); // No associated pledgeIds, so just copy the line
+                    }
+                    else {
+                        for (Iterator<DistributionLine> pledgeLineIter = pledgeLines.iterator(); pledgeLineIter.hasNext();) {
+                            DistributionLine pledgeLine = pledgeLineIter.next();
+                            Long associatedPledgeIdLong = Long.parseLong(associatedPledgeId);
+                            if (associatedPledgeIdLong.equals(pledgeLine.getPledgeId())) {
+                                pledgeLineIter.remove();
+                                returnLines.add(aLine); // Has an existing pledgeId, so copy the line; gift distribution lines with an associated pledgeId that is not in the list of pledgeLines will not be copied
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            initPledgeDistributionLine(pledgeLines, returnLines, numPledges, amount);
+        }
+	    return returnLines;
+	}
+	
+	private void initPledgeDistributionLine(List<DistributionLine> pledgeLines, List<DistributionLine> returnLines, int numPledges, BigDecimal amount) {
+	    BigDecimal splitPledgeAmount = BigDecimal.ZERO; 
+	    if (numPledges > 0) {
+	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_UP);
+	    }
+        for (DistributionLine pLine : pledgeLines) {
+            pLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, pLine.getPledgeId().toString());
+            pLine.setPledgeId(null);
+            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
+        }
+        returnLines.addAll(pledgeLines); // Add the remaining pledge lines; these are the pledge distribution lines not already assigned to the gift
 	}
 }

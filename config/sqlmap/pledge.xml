@@ -10,7 +10,6 @@
 		<result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
 		<result property="recurring" column="RECURRING" jdbcType="CHAR" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 
 	<resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
@@ -28,6 +27,7 @@
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
+		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 	
 	<sql id="PLEDGE_COLS_FRAGMENT">
@@ -70,27 +70,13 @@
 		order by c.CREATE_DATE desc
 	</select>
 	
-	<select id="SELECT_NOT_CANCELLED_PLEDGES_FOR_GIFT" resultMap="PLEDGE_RESULT" parameterClass="map">
-		<include refid="SELECT_PLEDGE_FRAGMENT" />
-		inner join PLEDGE_GIFT pg on c.PLEDGE_ID = pg.PLEDGE_ID 
-		
-		where 
-		p.SITE_NAME = #siteName#
-		and pg.GIFT_ID = #giftId#
-		and c.CONSTITUENT_ID = #constituentId#  
-		and c.PLEDGE_STATUS != 'cancelled'
-		order by c.PLEDGE_DATE desc
-	</select>
-
 	<select id="SELECT_NOT_CANCELLED_PLEDGES" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
 		select
 		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.PLEDGE_DATE, c.PLEDGE_STATUS, c.RECURRING,
-		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
-		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from PLEDGE c
 		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
 		where p.SITE_NAME= #siteName#
 		and c.CONSTITUENT_ID = #constituentId#  
 		and c.PLEDGE_STATUS != 'cancelled'

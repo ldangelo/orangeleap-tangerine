@@ -8,6 +8,7 @@
 	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
+        <!-- <property name="sessionForm" value="true"/>-->
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
@@ -48,6 +49,13 @@
     <bean id="giftListController" class="com.orangeleap.tangerine.controller.gift.GiftListController">
         <property name="viewName" value="gift/giftList"/>
     </bean>
+
+    <bean id="giftPledgeLinesController" class="com.orangeleap.tangerine.controller.gift.GiftPledgeLinesController">
+        <property name="commandName" value="giftPledgeLines"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.controller.gift.GiftPledgeLinesForm"/>
+        <property name="formView" value="gift/giftCombinedDistributionLines"/>
+        <property name="successView" value="gift/giftCombinedDistributionLines"/>
+    </bean>
     
     <bean id="giftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
@@ -57,6 +65,7 @@
 		        <prop key="/giftRefund.htm">giftRefundController</prop>
 		        <prop key="/giftSearch.htm">giftSearchController</prop>
 		        <prop key="/giftList.htm">giftListController</prop>
+		        <prop key="/giftPledgeLines.htm">giftPledgeLinesController</prop>
 			</props>
 		</property>
 	</bean>

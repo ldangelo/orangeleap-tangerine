@@ -12,6 +12,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.type.EntityType;
 
@@ -64,18 +65,6 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		params.put("constituentId", constituentId);
 		return getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_BY_CONSTITUENT_ID", params);
 	}
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Pledge> findNotCancelledPledgesByGiftId(Long giftId, Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findNotCancelledPledgesByGiftId: giftId = " + giftId + " constituentId = " + constituentId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("constituentId", constituentId);
-        params.put("giftId", giftId);
-        return getSqlMapClientTemplate().queryForList("SELECT_NOT_CANCELLED_PLEDGES_FOR_GIFT", params);
-    }
     
     @SuppressWarnings("unchecked")
     @Override
@@ -98,5 +87,16 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		QueryUtil.translateSearchParamsToIBatisParams(searchParams, params,	new SearchFieldMapperFactory().getMapper(EntityType.pledge).getMap());
 
 		return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_BY_SEARCH_TERMS", params);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+    public List<DistributionLine> findDistributionLinesForPledges(List<String> pledgeIds) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("pledgeIds", pledgeIds);
+        return getSqlMapClientTemplate().queryForList("SELECT_DISTRO_LINE_BY_PLEDGE_ID", params);
 	}
 }

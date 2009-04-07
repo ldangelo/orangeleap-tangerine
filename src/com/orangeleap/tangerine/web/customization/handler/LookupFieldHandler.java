@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
@@ -17,9 +19,12 @@ public class LookupFieldHandler extends GenericFieldHandler {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    protected PledgeService pledgeService;
 
     public LookupFieldHandler(ApplicationContext appContext) {
         super(appContext);
+        pledgeService = (PledgeService) appContext.getBean("pledgeService");
     }
 
     @Override
@@ -47,14 +52,19 @@ public class LookupFieldHandler extends GenericFieldHandler {
                 }
             }
             fieldVO.setDisplayValue(sb.toString());
+            fieldVO.setReferenceType(referenceType);
         }
         return fieldVO;
     }
 
-    private String resolve(Long id, ReferenceType referenceType) {
+    protected String resolve(Long id, ReferenceType referenceType) {
         if (referenceType == ReferenceType.person) {
             Person constituent = constituentService.readConstituentById(id);
             return constituent.getDisplayValue();
+        }
+        else if (referenceType == ReferenceType.pledge) {
+            Pledge pledge = pledgeService.readPledgeById(id);
+            return pledge.getPledgeShortDescription();
         }
         return "" + id;
     }

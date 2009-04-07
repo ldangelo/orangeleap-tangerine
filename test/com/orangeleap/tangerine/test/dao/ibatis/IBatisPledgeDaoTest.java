@@ -242,18 +242,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
     }
     
     @Test(groups = { "testReadPledge" })
-    public void testFindNotCancelledPledgesByGiftId() throws Exception {
-        List<Pledge> pledges = pledgeDao.findNotCancelledPledgesByGiftId(0L, 200L);
-        assert pledges != null && pledges.isEmpty();
-        pledges = pledgeDao.findNotCancelledPledgesByGiftId(400L, 200L);
-        assert pledges != null && pledges.size() == 3;
-        for (Pledge pledge : pledges) {
-            assert pledge.getId() == 600L || pledge.getId() == 700L || pledge.getId() == 800L;
-            testPledge(pledge);
-        }
-    }
-    
-    @Test(groups = { "testReadPledge" })
     public void testFindNotCancelledPledges() throws Exception {
         List<Pledge> pledges = pledgeDao.findNotCancelledPledges(0L);
         assert pledges != null && pledges.isEmpty();
@@ -264,6 +252,43 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         for (Pledge pledge : pledges) {
             assert pledge.getId() == 600L || pledge.getId() == 700L || pledge.getId() == 800L || pledge.getId() == 900L;
             testPledge(pledge);
+        }
+    }
+    
+    @Test(groups = { "testReadPledge" })
+    public void testFindDistributionLinesForPledges() throws Exception {
+        List<String> pledgeIds = new ArrayList<String>();
+        pledgeIds.add("0");
+        List<DistributionLine> lines = pledgeDao.findDistributionLinesForPledges(pledgeIds);
+        assert lines != null && lines.isEmpty();
+        
+        pledgeIds.add("800");
+        lines = pledgeDao.findDistributionLinesForPledges(pledgeIds);
+        assert lines != null && lines.size() == 1;
+        assert lines.get(0).getId() == 900L;
+        assert lines.get(0).getAmount().intValue() == 99;
+        assert lines.get(0).getPledgeId() == 800L;
+        
+        pledgeIds.add("700");
+        lines = pledgeDao.findDistributionLinesForPledges(pledgeIds);
+        assert lines != null && lines.size() == 3;
+        for (DistributionLine line : lines) {
+            switch (line.getId().intValue()) {
+                case 700:
+                    assert 1.99f == line.getAmount().floatValue();
+                    assert line.getPledgeId() == 700L;
+                    break;
+                case 800:
+                    assert 2 == line.getAmount().intValue();
+                    assert line.getPledgeId() == 700L;
+                    break;
+                case 900:
+                    assert 99 == line.getAmount().intValue();
+                    assert line.getPledgeId() == 800L;
+                    break;
+                default:
+                    Assert.assertTrue("UnexpectedId = " + line.getId(), false);
+            }
         }
     }
     
@@ -291,26 +316,18 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
             case 600:
                 assert 16 == pledge.getAmountTotal().intValue();
                 assert "pending".equals(pledge.getPledgeStatus());
-                assert pledge.getDistributionLines() != null && pledge.getDistributionLines().isEmpty();
                 break;
             case 700:
                 assert 3.99f == pledge.getAmountTotal().floatValue();
                 assert "inProgress".equals(pledge.getPledgeStatus());
-                assert pledge.getDistributionLines() != null && pledge.getDistributionLines().size() == 2;
-                for (DistributionLine line : pledge.getDistributionLines()) {
-                    assert line.getAmount().floatValue() == 1.99f || line.getAmount().intValue() == 2;
-                }
                 break;
             case 800:
                 assert 99 == pledge.getAmountTotal().intValue();
                 assert "fulfilled".equals(pledge.getPledgeStatus());
-                assert pledge.getDistributionLines() != null && pledge.getDistributionLines().size() == 1;
-                assert pledge.getDistributionLines().get(0).getAmount().intValue() == 99;
                 break;
             case 900:
                 assert 2.25f == pledge.getAmountTotal().floatValue();
                 assert "fulfilled".equals(pledge.getPledgeStatus());
-                assert pledge.getDistributionLines() != null && pledge.getDistributionLines().isEmpty();
                 break;
             default:
                 Assert.assertEquals("UnexpectedId = " + pledge.getId(), true, false);

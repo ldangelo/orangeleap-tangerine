@@ -69,5 +69,7 @@ public final class StringConstants {
     public static final String TAX_DEDUCTIBLE = "taxDeductible";
     public static final String RECOGNITION_NAME = "recognitionName";
     
+    public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";
+    
     public static final String USD = "USD";
 }

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.ReferenceType;
 
 public class FieldVO {
 
@@ -30,6 +31,7 @@ public class FieldVO {
     private boolean cascading;
     private List<String> codes;
     private FieldType fieldType;
+    private ReferenceType referenceType;
     private Long id;
     private List<Long> ids;
     private String entityName;
@@ -425,5 +427,13 @@ public class FieldVO {
 
     public boolean isRelationship() {
         return isRelationship;
+    }
+
+    public ReferenceType getReferenceType() {
+        return referenceType;
+    }
+
+    public void setReferenceType(ReferenceType referenceType) {
+        this.referenceType = referenceType;
     }
 }

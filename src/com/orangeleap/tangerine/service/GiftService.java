@@ -1,11 +1,13 @@
 package com.orangeleap.tangerine.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -51,5 +53,7 @@ public interface GiftService {
 	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
 
 	public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo);
+	
+	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges);
 	
 }

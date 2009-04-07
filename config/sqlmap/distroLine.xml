@@ -28,6 +28,16 @@
 		where dl.DISTRO_LINE_ID = #id#
 	</select>
 
+	<select id="SELECT_DISTRO_LINE_BY_PLEDGE_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map">
+		select 
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		from DISTRO_LINE dl
+		where dl.PLEDGE_ID in 
+		<iterate property="pledgeIds" conjunction="," open="(" close=")">
+			#pledgeIds[]#
+		</iterate>
+	</select>
+
 	<insert id="INSERT_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
 		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID)
 		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #pledgeId#, #recurringGiftId#, #giftId#)

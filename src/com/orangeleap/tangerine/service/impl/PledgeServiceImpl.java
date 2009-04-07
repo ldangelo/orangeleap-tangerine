@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -133,15 +134,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     
     // Pledge only
     @Override
-    public List<Pledge> findNotCancelledPledgesByGiftId(Long giftId, Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findNotCancelledPledgesByGiftId: giftId = " + giftId + " constituentId = " + constituentId);
-        }
-        return pledgeDao.findNotCancelledPledgesByGiftId(giftId, constituentId);
-    }
-    
-    // Pledge only
-    @Override
     public Map<String, List<Pledge>> findNotCancelledPledges(Long constituentId, String selectedPledgeIds) {
         if (logger.isDebugEnabled()) {
             logger.debug("findNotCancelledPledges: constituentId = " + constituentId + " selectedPledgeIds = " + selectedPledgeIds);
@@ -163,5 +155,16 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         pledgeMap.put("selectedPledges", selectedPledges);
         pledgeMap.put("notSelectedPledges", notSelectedPledges);
         return pledgeMap;
+    }
+    
+    @Override
+    public List<DistributionLine> findDistributionLinesForPledges(Set<String> pledgeIds) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
+        }
+        if (pledgeIds != null && pledgeIds.isEmpty() == false) {
+            return pledgeDao.findDistributionLinesForPledges(new ArrayList<String>(pledgeIds));
+        }
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -22,6 +23,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class GiftServiceTest extends BaseTest {
@@ -43,6 +45,137 @@ public class GiftServiceTest extends BaseTest {
     	tangerineUserHelper.setSystemUserAndSiteName("company1");
     }
 
+    @Test
+    public void testCombineGiftPledgeDistributionLines() throws Exception {
+        List<DistributionLine> lines = giftService.combineGiftPledgeDistributionLines(null, null, BigDecimal.ZERO, 2);
+        assert lines != null && lines.isEmpty();
+        
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), null, BigDecimal.TEN, 2);
+        assert lines != null && lines.size() == 1;
+        for (DistributionLine line : lines) {
+            assert line.getId() == 1L;
+            assert new BigDecimal(3).equals(line.getAmount());
+        }
+        
+        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(33.33), 2);
+        assert lines != null && lines.size() == 3;
+        for (DistributionLine line : lines) {
+            assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
+            assert line.getPledgeId() == null;
+            if (line.getId() == 98L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 6.66, not " + line.getAmount(), new BigDecimal("6.66"), line.getAmount());
+            }
+            else if (line.getId() == 99L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 10.00, not " + line.getAmount(), new BigDecimal("10.00"), line.getAmount());
+            }
+            else if (line.getId() == 100L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
+                Assert.assertEquals("Expected amount to be 16.66, not " + line.getAmount(), new BigDecimal("16.66"), line.getAmount());
+            }
+        }
+
+        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(0), 2);
+        assert lines != null && lines.size() == 3;
+        for (DistributionLine line : lines) {
+            assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
+            assert line.getPledgeId() == null;
+            if (line.getId() == 98L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+            }
+            else if (line.getId() == 99L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+            }
+            else if (line.getId() == 100L) {
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
+                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+            }
+        }
+        
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), new BigDecimal(20), 2);
+        assert lines != null && lines.size() == 4;
+        for (DistributionLine line : lines) {
+            assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;
+            if (line.getId() == 3L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
+                Assert.assertEquals("Expected amount to be 50, not " + line.getAmount(), new BigDecimal("50"), line.getAmount());
+            }
+            else if (line.getId() == 98L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 4.00, not " + line.getAmount(), new BigDecimal("4.00"), line.getAmount());
+            }
+            else if (line.getId() == 99L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 6.00, not " + line.getAmount(), new BigDecimal("6.00"), line.getAmount());
+            }
+        }
+
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), BigDecimal.ZERO, 2);
+        assert lines != null && lines.size() == 4;
+        for (DistributionLine line : lines) {
+            assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;
+            if (line.getId() == 3L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
+                Assert.assertEquals("Expected amount to be 50, not " + line.getAmount(), new BigDecimal("50"), line.getAmount());
+            }
+            else if (line.getId() == 98L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+            }
+            else if (line.getId() == 99L) {
+                assert line.getPledgeId() == null;
+                assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
+                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+            }
+        }
+    }
+    
+    private List<DistributionLine> setupGiftDistributionLines() {
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        DistributionLine line = new DistributionLine(new BigDecimal(3), new BigDecimal(15), "00001", "abcde", null);
+        line.setId(1L);
+        lines.add(line);
+        
+        line = new DistributionLine(new BigDecimal(5.25), new BigDecimal(20), null, null, "sss");
+        line.setId(2L);
+        line.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "999");
+        lines.add(line);
+        
+        line = new DistributionLine(new BigDecimal(50), new BigDecimal(79), null, null, null);
+        line.setId(3L);
+        line.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "111");
+        lines.add(line);
+        
+        return lines;
+    }
+    
+    private List<DistributionLine> setupPledgeDistributionLines() {
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        DistributionLine line = new DistributionLine(new BigDecimal(1.99), new BigDecimal(40), null, "fghij", null);
+        line.setId(98L);
+        line.setPledgeId(333L);
+        lines.add(line);
+        
+        line = new DistributionLine(new BigDecimal(2.99), new BigDecimal(60), null, null, "nbil");
+        line.setId(99L);
+        line.setPledgeId(333L);
+        lines.add(line);
+        
+        line = new DistributionLine(new BigDecimal(25), new BigDecimal(100), null, null, null);
+        line.setId(100L);
+        line.setPledgeId(111L);
+        lines.add(line);
+        
+        return lines;
+    }
     
     @Test
     public void testMaintainGiftMajorDonor() throws Exception {

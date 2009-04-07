@@ -15,6 +15,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 public class Gift extends AbstractPaymentInfoEntity { 
 
     private static final long serialVersionUID = 1L;
+    private String giftStatus;
     private GiftType giftType;
     private Long recurringGiftId;
     private Long pledgeId;
@@ -55,6 +56,14 @@ public class Gift extends AbstractPaymentInfoEntity {
     public Gift(GiftInKind giftInKind) {
         this();
         setGiftForGiftInKind(giftInKind);
+    }
+
+    public String getGiftStatus() {
+        return giftStatus;
+    }
+
+    public void setGiftStatus(String giftStatus) {
+        this.giftStatus = giftStatus;
     }
 
     public GiftType getGiftType() {
@@ -248,7 +257,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("giftType", giftType).append("recurringGiftId", recurringGiftId).
+        return new ToStringCreator(this).append(super.toString()).append("giftStatus", giftStatus).append("giftType", giftType).append("recurringGiftId", recurringGiftId).
             append("amount", amount).append("pledgeId", pledgeId).
             append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
             append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).

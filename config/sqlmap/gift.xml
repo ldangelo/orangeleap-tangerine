@@ -4,6 +4,7 @@
 
 	<resultMap id="GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id">
 		<result property="id" column="GIFT_ID" jdbcType="BIGINT" />
+		<result property="giftStatus" column="GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
 		<result property="acknowledgmentDate" column="GIFT_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
@@ -39,7 +40,7 @@
 	</resultMap>
 
 	<sql id="GIFT_COLS_FRAGMENT">
-		g.GIFT_ID, g.GIFT_TYPE, g.ACKNOWLEDGMENT_DATE as GIFT_ACKNOWLEDGMENT_DATE, g.AMOUNT as GIFT_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.CHECK_NUMBER as GIFT_CHECK_NUMBER,
+		g.GIFT_ID, g.GIFT_STATUS, g.GIFT_TYPE, g.ACKNOWLEDGMENT_DATE as GIFT_ACKNOWLEDGMENT_DATE, g.AMOUNT as GIFT_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.CHECK_NUMBER as GIFT_CHECK_NUMBER,
 		g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
 		g.DEDUCTIBLE as GIFT_DEDUCTIBLE, g.DEDUCTIBLE_AMOUNT as GIFT_DEDUCTIBLE_AMOUNT, g.DONATION_DATE as GIFT_DONATION_DATE, g.ENTRY_TYPE as GIFT_ENTRY_TYPE,
 		g.ORIGINAL_GIFT_ID, g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE,
@@ -167,7 +168,7 @@
 	</select>
 
 	<insert id="INSERT_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
-		insert into GIFT (GIFT_TYPE, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
+		insert into GIFT (GIFT_STATUS, GIFT_TYPE, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
 		CHECK_NUMBER, COMMENTS,
 		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
 		ORIGINAL_GIFT_ID,
@@ -175,7 +176,7 @@
 		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
 		PAYMENT_TXREFNUM,
 		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
-		values (#giftType#, #acknowledgmentDate#, #amount#, #authCode#,
+		values (#giftStatus#, #giftType#, #acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
 		#originalGiftId#, #paymentMessage#, #paymentStatus#,
@@ -190,7 +191,9 @@
 	
 	<update id="UPDATE_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Gift">
 		update GIFT g, CONSTITUENT p
-		set g.GIFT_TYPE = #giftType#, 
+		set 
+		g.GIFT_STATUS = #giftStatus#, 
+		g.GIFT_TYPE = #giftType#, 
 		g.ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		g.AMOUNT = #amount#,
 		g.AUTH_CODE = #authCode#,

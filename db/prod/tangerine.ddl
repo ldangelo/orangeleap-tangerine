@@ -570,6 +570,7 @@ DROP TABLE IF EXISTS `GIFT`;
 
 CREATE TABLE `GIFT` (
   `GIFT_ID` bigint(20) NOT NULL auto_increment,
+  `GIFT_STATUS` varchar(255) default NULL,
   `GIFT_TYPE` varchar(255) default NULL,
   `ACKNOWLEDGMENT_DATE` datetime default NULL,
   `AMOUNT` decimal(19,2) default NULL,

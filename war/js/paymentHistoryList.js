@@ -26,7 +26,7 @@ Ext.onReady(function() {
             {name: 'paymentType', mapping: 'paymentType', type: 'string'},
             {name: 'description', mapping: 'description', type: 'string'},
             {name: 'amount', mapping: 'amount', type: 'float'},
-            {name: 'currencyCode', mapping: 'currencyCode', type: 'string'},
+            {name: 'currencyCode', mapping: 'currencyCode', type: 'string'}
         ],
         sortInfo:{field: 'date', direction: "DESC"},
         remoteSort: true,
@@ -51,7 +51,7 @@ Ext.onReady(function() {
             {header: 'Payment Type', width: 65, dataIndex: 'paymentType', sortable: true},
             {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true},
             {header: 'Currency', width: 65, dataIndex: 'currencyCode', sortable: true},
-            {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: PaymentHistory.descriptionRenderer},
+            {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: PaymentHistory.descriptionRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

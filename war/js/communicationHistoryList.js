@@ -23,7 +23,7 @@ Ext.onReady(function() {
             {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'personId', mapping: 'personId', type: 'string'},
             {name: 'type', mapping: 'type', type: 'string'},
-            {name: 'comments', mapping: 'comments', type: 'string'},
+            {name: 'comments', mapping: 'comments', type: 'string'}
         ],
         sortInfo:{field: 'date', direction: "DESC"},
         remoteSort: true,
@@ -46,7 +46,7 @@ Ext.onReady(function() {
             {header: '', width: 65, dataIndex: 'id', sortable: true, renderer: CommunicationHistory.entityViewRenderer},
             {header: 'Date', widht: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Type', width: 65, dataIndex: 'type', sortable: true},
-            {header: 'Comments', width: 200,  dataIndex: 'comments', sortable: true, renderer: CommunicationHistory.descriptionRenderer},
+            {header: 'Comments', width: 200,  dataIndex: 'comments', sortable: true, renderer: CommunicationHistory.descriptionRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {

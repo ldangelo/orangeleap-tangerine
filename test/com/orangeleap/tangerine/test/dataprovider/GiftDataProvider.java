@@ -37,7 +37,7 @@ public class GiftDataProvider {
         gift.setPerson(person);
         gift.setId(100L);
         gift.setPaymentSource(paymentSource);
-        
+        gift.setSelectedPaymentSource(paymentSource);
         return new Object[][] { new Object[] { site, person, gift } };
     }
 }

@@ -11,6 +11,8 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -49,28 +51,36 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 		try {
 			
- 			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
 
-			StatefulSession workingMemory = ruleBase.newStatefulSession();
-
-			workingMemory.setFocus(getSiteName()+"scheduled");
-			workingMemory.setGlobal("applicationContext", applicationContext);
+			
 			
 			List<Person> peopleList = constituentService.readAllConstituentsBySite(); 
+			if (peopleList.size() > 0) {
+	 			RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
-			for (Person p : peopleList) {
-				List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
-				p.setGifts(giftList);
-				FactHandle pfh = workingMemory.insert(p);
 
-				workingMemory.fireAllRules();
+				StatefulSession workingMemory = ruleBase.newStatefulSession();
+				workingMemory.addEventListener (new DebugAgendaEventListener());
+				workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+
 				
-				workingMemory.retract(pfh);
+				workingMemory.setGlobal("applicationContext", applicationContext);
+				workingMemory.setFocus(getSiteName()+"scheduled");
+				for (Person p : peopleList) {
+			
+					List<Gift> giftList = giftService.readMonetaryGiftsByConstituentId(p.getId());
+					p.setGifts(giftList);
+					FactHandle pfh = workingMemory.insert(p);
+
+
+				
+
+				
+				}
+				workingMemory.fireAllRules();
+				workingMemory.dispose();
 			}
-
-			workingMemory.dispose();
-
 		} catch (Throwable t) {
 			logger.error(t);
 			t.printStackTrace();

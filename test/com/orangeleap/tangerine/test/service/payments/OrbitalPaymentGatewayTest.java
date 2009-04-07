@@ -19,8 +19,8 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 	 
     @BeforeClass
 	 public void setup() {
-		 paymentGateway = new OrbitalPaymentGateway();
-		 paymentGateway.setConfigFile(System.getProperty("testConfigDir") + "linehandler.properties");
+		 paymentGateway = (OrbitalPaymentGateway) applicationContext.getBean("paymentGateway");
+//		 paymentGateway.setConfigFile("/usr/local/paymentech/config/linehandler.properties");
 	 }
 	 
 	 @Test(groups = { "authorizeTest" }, dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)

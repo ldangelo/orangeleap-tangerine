@@ -5,6 +5,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import static com.orangeleap.tangerine.domain.checkservice.EchexTemplate.*;
 
@@ -28,6 +30,9 @@ import java.net.MalformedURLException;
  */
 @Service("checkService")
 public class CheckServiceImpl extends AbstractTangerineService implements CheckService {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private URL echexUrl;
 
@@ -89,7 +94,9 @@ public class CheckServiceImpl extends AbstractTangerineService implements CheckS
             marshaller.marshal(batch, writer);
             writer.write(FOOTER);
 
-            Document doc = postString(writer.toString());
+            String payload = writer.toString();
+            logger.debug("SENDING---->\r\n" + payload);
+            Document doc = postString(payload);
             Element root = doc.getRootElement();
             Element loadReturn = root.element("Body").element("DataLoadResponse").element("DataLoadReturn");
             SAXReader reader = new SAXReader();
@@ -147,7 +154,8 @@ public class CheckServiceImpl extends AbstractTangerineService implements CheckS
             inStream = conn.getInputStream();
             SAXReader reader = new SAXReader();
             doc = reader.read(inStream);
-
+            logger.debug("RECEIVED<------\r\n" + doc.asXML());
+            
         } catch (Exception ex) {
             throw new PaymentProcessorException("Failed to send payload", ex);
         } finally {

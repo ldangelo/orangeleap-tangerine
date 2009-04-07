@@ -69,7 +69,7 @@ public class TouchPointListController {
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
         if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getgetPaymentHistory called with invalid sort column: [" + sortInfo.getSort() + "]");
+            logger.warn("getCommunicationHistory called with invalid sort column: [" + sortInfo.getSort() + "]");
             return new ModelMap("rows", rows);
         }
 

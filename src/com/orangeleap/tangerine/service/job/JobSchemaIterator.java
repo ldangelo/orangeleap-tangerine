@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.orangeleap.tangerine.service.SchemaService;
+import com.orangeleap.tangerine.util.TangerineDataSource;
 
 public class JobSchemaIterator extends QuartzJobBean {
 
@@ -32,12 +33,19 @@ public class JobSchemaIterator extends QuartzJobBean {
 
 		ApplicationContext applicationContext = null;
 		SchemaService schemaService = null;
+		TangerineDataSource ds = null;
 		try {
 			applicationContext = getApplicationContext(context);
 			schemaService = (SchemaService)applicationContext.getBean("schemaService");
+			ds = (TangerineDataSource)applicationContext.getBean("dataSource");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.fatal(e);
+			return;
+		}
+		
+		if (!ds.isSplitDatabases()) {
+			executeInternalForSchema(context, applicationContext);
 			return;
 		}
 

@@ -4,7 +4,7 @@
 	    <input value="<c:out value='${fieldVO.fieldValue}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="hidden"/>
 	</c:when>
 	<c:otherwise>
-		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_CODE_ADDITIONAL' || fieldVO.fieldType == 'PLEDGE_SELECTION' || fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}"> queryLookupLi</c:if><c:if test="${(fieldVO.fieldType == 'ASSOCIATION' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY') && empty fieldVO.fieldValue}"> noDisplay</c:if>"
+		<li class="side <c:if test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_CODE_ADDITIONAL' || fieldVO.fieldType == 'PLEDGE_SELECTION' || fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">multiOptionLi</c:if><c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY'}"> queryLookupLi</c:if><c:if test="${(fieldVO.fieldType == 'ASSOCIATION' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY') && empty fieldVO.fieldValue}"> noDisplay</c:if>"
 			id="li-<c:out value='${sectionDefinition.sectionHtmlName}'/>-<c:out value='${fieldVO.fieldId}'/>">
 			<c:remove var="errorClass" scope="page" />
 			<c:if test="${commandObject != null}">
@@ -277,7 +277,7 @@
 				        <a href="javascript:void(0)" <c:choose><c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">onclick="Lookup.loadMultiPicklist(this, true)"</c:when><c:otherwise>onclick="Lookup.loadMultiPicklist(this)"</c:otherwise></c:choose> class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				    </c:if>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'ASSOCIATION'}">
+				<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'ASSOCIATION' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}">
 					<c:choose>
 						<c:when test="${fieldVO.fieldType == 'ASSOCIATION'}">
 							<c:set var="clickHandler" value="Lookup.deleteAssociation(this)" scope="page"/>
@@ -286,7 +286,7 @@
 							<c:set var="clickHandler" value="Lookup.deleteOption(this)" scope="page"/>
 						</c:otherwise>
 					</c:choose>
-					<div class="lookupWrapper">
+					<div class="lookupWrapper<c:if test="${fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}"> readOnly</c:if>">
 					    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
 							<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
 							<div id="lookup-<c:out value='${fieldVO.fieldId}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
@@ -305,24 +305,26 @@
 										<span><c:out value='${thisVal}'/></span>
 									</c:otherwise>
 								</c:choose>
-								<c:if test="${not empty thisVal}">
+								<c:if test="${fieldVO.fieldType != 'ASSOCIATION_DISPLAY' && not empty thisVal}">
 									<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 								</c:if>
 							</div>
-							<c:if test="${fieldVO.fieldType != 'ASSOCIATION'}">
+							<c:if test="${fieldVO.fieldType != 'ASSOCIATION' && fieldVO.fieldType != 'ASSOCIATION_DISPLAY'}">
 					        	<a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this, true)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					        </c:if>
 					    </div>
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldId}'/>" <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">otherFieldId="<c:out value='${fieldVO.otherFieldId}'/>"</c:if>/>
-						<div class="queryLookupOption noDisplay clone">
-							<span><a href="" target="_blank"></a></span>
-							<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
-						</div>
+						<c:if test="${fieldVO.fieldType != 'ASSOCIATION_DISPLAY'}">
+							<div class="queryLookupOption noDisplay clone">
+								<span><a href="" target="_blank"></a></span>
+								<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+							</div>
+						</c:if>
 					</div>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}">
+				<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY'}">
 					<div class="lookupScrollTop"></div>
-					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}">readOnly</c:if>">
+					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY'}">readOnly</c:if>">
 					    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 							<div class="lookupScrollLeft"></div>
 							<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
@@ -507,7 +509,6 @@
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PLEDGE_SELECTION' || fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">
-					<c:if test="${fieldVO.fieldType == 'PLEDGE_SELECTION'}"><script type="text/javascript" src="js/gift/pledgeSelector.js"></script></c:if>
 					<div class="lookupScrollTop"></div>
 					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">readOnly</c:if>">
 					    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">

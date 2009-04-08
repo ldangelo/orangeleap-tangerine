@@ -486,7 +486,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	@Override
 	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges) {
 	    if (logger.isDebugEnabled()) {
-	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges + " pledgeLines = " + pledgeLines + " giftDistributionLines = " + giftDistributionLines);
+	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
 	    }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
         if ((pledgeLines == null || pledgeLines.isEmpty()) && giftDistributionLines != null) {
@@ -527,15 +527,21 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	    return returnLines;
 	}
 	
+	public void removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("removeDefaultDistributionLine:");
+        }
+	}
+	
 	private void initPledgeDistributionLine(List<DistributionLine> pledgeLines, List<DistributionLine> returnLines, int numPledges, BigDecimal amount) {
 	    BigDecimal splitPledgeAmount = BigDecimal.ZERO; 
 	    if (numPledges > 0) {
-	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_EVEN);
+	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 10, BigDecimal.ROUND_HALF_EVEN);
 	    }
         for (DistributionLine pLine : pledgeLines) {
             pLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, pLine.getPledgeId().toString());
             pLine.setPledgeId(null);
-            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN));
+            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal("100"), 10, BigDecimal.ROUND_HALF_EVEN).setScale(2, BigDecimal.ROUND_HALF_EVEN));
             
             // find the new percentage (line percentage / numPledges)
             pLine.setPercentage(pLine.getPercentage().divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_EVEN));

@@ -60,12 +60,16 @@ public class GiftServiceTest extends BaseTest {
         
         lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(33.33), 2);
         assert lines != null && lines.size() == 3;
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        BigDecimal totalPct = BigDecimal.ZERO;
         for (DistributionLine line : lines) {
             assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
             assert line.getPledgeId() == null;
+            totalAmount = totalAmount.add(line.getAmount());
+            totalPct = totalPct.add(line.getPercentage());
             if (line.getId() == 98L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
-                Assert.assertEquals("Expected amount to be 6.66, not " + line.getAmount(), new BigDecimal("6.66"), line.getAmount());
+                Assert.assertEquals("Expected amount to be 6.67, not " + line.getAmount(), new BigDecimal("6.67"), line.getAmount());
                 Assert.assertEquals("Expected percentage to be 20.00, not " + line.getPercentage(), new BigDecimal("20.00"), line.getPercentage());
             }
             else if (line.getId() == 99L) {
@@ -79,6 +83,8 @@ public class GiftServiceTest extends BaseTest {
                 Assert.assertEquals("Expected percentage to be 50.00, not " + line.getPercentage(), new BigDecimal("50.00"), line.getPercentage());
             }
         }
+        Assert.assertEquals("Expected total amount = 33.33", new BigDecimal("33.33"), totalAmount);
+        Assert.assertEquals("Expected total percentage = 100.00", new BigDecimal("100.00"), totalPct);
 
         lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(0), 2);
         assert lines != null && lines.size() == 3;

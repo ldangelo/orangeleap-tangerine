@@ -503,6 +503,8 @@ ul.formFields li.side label.inFocus { font-weight: bold; color: black; }
 
 .mainForm h3.info { color: #070; }
 
+div.readOnly div.multiLookupField,
+	div.readOnly div.lookupField { background-color: #eee; }
 tr.hiddenRow td table { margin-left: 16px; }
 tr.hiddenRow td table ul.width350 li.side label.desc { width:100px; }
 tr.hiddenRow td table ul.width350 li.side select { width:67%; }
@@ -510,7 +512,6 @@ tr.hiddenRow td table ul.width350 div.lookupScrollTop,
 	tr.hiddenRow td table ul.width350 div.lookupScrollBottom { left: 104px; width: 233px; }
 tr.hiddenRow td table ul.width350 div.lookupWrapper { width: 66%; } 
 tr.hiddenRow td table ul.width350 div.multiLookupField { width: 233px; }
-tr.hiddenRow td table ul.width350 div.readOnly div.multiLookupField { background-color: #eee; }
 tr.hiddenRow td table ul.width350 div.lookupScrollContainer { width: 246px; }
 tr.hiddenRow td table ul.width350 div.lookupScrollContainer div.multiOption { width: 88.5%; }
 tr.hiddenRow td table ul.width350 div.lookupScrollRight { left: 232px; }

@@ -64,6 +64,9 @@ var PledgeSelector = {
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 			queryString += "&selectedPledgeIds=" + idsStr + "&amount=" + $("#amount").val();
 			
+			var giftDistElem = Ext.get("giftDistributionLinesDiv");
+			giftDistElem.mask("Updating Distribution Lines...")
+			
 			$.ajax({
 				type: "POST",
 				url: "giftPledgeLines.htm?personId=" + $("#thisConstituentId").val(),
@@ -79,6 +82,7 @@ var PledgeSelector = {
 					Distribution.distributionLineBuilder($gridRows);
 					Distribution.reInitDistribution();
 					Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
+					giftDistElem.unmask();
 				},
 				error: function(html){
 					// TODO: improve error handling

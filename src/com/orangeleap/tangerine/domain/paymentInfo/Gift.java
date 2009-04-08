@@ -34,6 +34,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
     private List<Long> associatedPledgeIds;
+
     
     public Gift() { 
         super();
@@ -268,4 +269,5 @@ public class Gift extends AbstractPaymentInfoEntity {
             append(super.toString()).append("entryType", entryType).
             toString();
     }
+
 }

@@ -38,8 +38,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     protected BigDecimal amountPerGift;
     protected Date startDate = Calendar.getInstance().getTime();
     protected Date endDate;
-    private Date createDate;
-    private Date updateDate;
     protected String frequency;
     private Date lastEntryDate;
     private List<Gift> gifts;
@@ -133,22 +131,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         this.endDate = endDate;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
     public String getFrequency() {
         return frequency;
     }
@@ -211,7 +193,7 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     @Override
     public String toString() {
         return new ToStringCreator(this).append("commitmentType", commitmentType).append("amountPerGift", amountPerGift).append("startDate", startDate).
-               append("endDate", endDate).append("createDate", createDate).append("updateDate", updateDate).
+               append("endDate", endDate).append("createDate", getCreateDate()).append("updateDate", getUpdateDate()).
                append("frequency", frequency).
                append("lastEntryDate", lastEntryDate).
                toString();

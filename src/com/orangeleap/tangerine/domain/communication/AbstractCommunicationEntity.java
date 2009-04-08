@@ -13,8 +13,6 @@ import com.orangeleap.tangerine.util.StringConstants;
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible {
 
     protected Long personId;
-    protected Date createDate;
-    protected Date updateDate;
     protected ActivationType activationStatus;
     protected boolean receiveMail = false;
     protected Date temporaryStartDate;
@@ -34,22 +32,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 
     public void setPersonId(Long personId) {
         this.personId = personId;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
     }
 
     public boolean isReceiveMail() {
@@ -174,8 +156,8 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("constituentId", personId).append("createDate", createDate).
-            append("updateDate", updateDate).append("activationStatus", activationStatus).append("receiveMail", receiveMail).append("temporaryStartDate", temporaryStartDate).
+        return new ToStringCreator(this).append(super.toString()).append("constituentId", personId).append("createDate", getCreateDate()).
+            append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveMail", receiveMail).append("temporaryStartDate", temporaryStartDate).
             append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
             append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
             toString();

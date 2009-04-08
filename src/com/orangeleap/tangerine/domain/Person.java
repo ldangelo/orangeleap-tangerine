@@ -41,8 +41,6 @@ public class Person extends AbstractCommunicatorEntity {
     private String constituentIndividualRoles = StringConstants.EMPTY;
     private String constituentOrganizationRoles = StringConstants.EMPTY;
     private String loginId;
-    private Date createDate;
-    private Date updateDate;
     private String customId;
     
     private List<Gift> gifts;
@@ -240,22 +238,6 @@ public class Person extends AbstractCommunicatorEntity {
         return isSpecificDonor;
     }
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-    
     public void setNcaisCode(String ncaisCode) {
         this.ncaisCode = ncaisCode;
     }

@@ -11,6 +11,8 @@
         <result property="picklistName" column="PICKLIST_NAME" jdbcType="VARCHAR"/>
         <result property="site" resultMap="SITE.SITE_NAME_RESULT"/>
         <result property="picklistItems" resultMap="PICKLIST.PICKLIST_ITEM_RESULT" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
     </resultMap>
 
     <resultMap id="PICKLIST_ITEM_RESULT" class="com.orangeleap.tangerine.domain.customization.PicklistItem">
@@ -23,13 +25,17 @@
         <result property="itemOrder" column="ITEM_ORDER" jdbcType="INTEGER"/>
         <result property="referenceValue" column="REFERENCE_VALUE" jdbcType="VARCHAR"/>
         <result property="suppressReferenceValue" column="SUPPRESS_REFERENCE_VALUE" jdbcType="VARCHAR"/>
+		<result property="createDate" column="PI_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="PI_UPDATE_DATE" jdbcType="TIMESTAMP" />
     </resultMap>
 
 
     <sql id="SELECT_PICKLIST_FRAGMENT">
         select P.PICKLIST_ID, P.PICKLIST_NAME_ID, P.PICKLIST_DESC, P.ENTITY_TYPE, P.MULTISELECT, P.PICKLIST_NAME, P.SITE_NAME,
+        P.CREATE_DATE, P.UPDATE_DATE,
         I.PICKLIST_ITEM_ID, I.DEFAULT_DISPLAY_VALUE, I.INACTIVE, I.READ_ONLY, I.ITEM_NAME, I.ITEM_ORDER,
-        I.REFERENCE_VALUE, I.SUPPRESS_REFERENCE_VALUE
+        I.REFERENCE_VALUE, I.SUPPRESS_REFERENCE_VALUE,
+        I.CREATE_DATE as PI_CREATE_DATE, I.UPDATE_DATE as PI_UPDATE_DATE
         from PICKLIST P 
         left outer join PICKLIST_ITEM I on P.PICKLIST_ID = I.PICKLIST_ID
         where ((P.SITE_NAME = #siteName#) or (P.SITE_NAME is NULL))
@@ -78,7 +84,8 @@
         ENTITY_TYPE = #entityType#,
         MULTISELECT = #multiselect#,
         PICKLIST_NAME = #picklistName#,
-        PICKLIST_DESC = #picklistDesc#
+        PICKLIST_DESC = #picklistDesc#,
+        UPDATE_DATE = now()
         where 
         SITE_NAME = #site.name#
         and PICKLIST_ID = #id#
@@ -94,14 +101,15 @@
         ITEM_ORDER = #itemOrder#,
         REFERENCE_VALUE = #referenceValue#,
         SUPPRESS_REFERENCE_VALUE = #suppressReferenceValue#,
-        PICKLIST_ID = #picklistId#
+        PICKLIST_ID = #picklistId#,
+        UPDATE_DATE = now()
         where PICKLIST_ITEM_ID = #id#
     </update>
     
     
     <insert id="INSERT_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">
-      insert into PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, PICKLIST_DESC, SITE_NAME)
-      values (#id#, #picklistNameId#, #entityType#, #multiselect#, #picklistName#, #picklistDesc#, #site.name#)
+      insert into PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, ENTITY_TYPE, MULTISELECT, PICKLIST_NAME, PICKLIST_DESC, SITE_NAME, CREATE_DATE, UPDATE_DATE)
+      values (#id#, #picklistNameId#, #entityType#, #multiselect#, #picklistName#, #picklistDesc#, #site.name#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -116,7 +124,9 @@
 		        ITEM_ORDER,
 		        REFERENCE_VALUE, 
 		        SUPPRESS_REFERENCE_VALUE,
-		        PICKLIST_ID 
+		        PICKLIST_ID,
+		        CREATE_DATE, 
+		        UPDATE_DATE
 		    )
 		    values (
 		        #defaultDisplayValue#,
@@ -126,7 +136,9 @@
 		        #itemOrder#,
 		        #referenceValue#,
 		        #suppressReferenceValue#,
-		        #picklistId#
+		        #picklistId#, 
+		        now(), 
+		        now()
 		    )
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value

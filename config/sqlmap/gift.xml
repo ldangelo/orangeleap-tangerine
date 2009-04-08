@@ -33,6 +33,8 @@
 		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
 		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="updateDate" column="GIFT_UPDATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="createDate" column="GIFT_CREATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 	
 	<resultMap id="GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Gift" groupBy="id" extends="GIFT_RESULT_NO_DISTRO_LINES">
@@ -47,7 +49,8 @@
 		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE, g.REFUND_GIFT_ID,
 		g.REFUND_GIFT_TRANSACTION_DATE,
 		g.SEND_ACKNOWLEDGMENT as GIFT_SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE as GIFT_TRANSACTION_DATE, g.PAYMENT_TXREFNUM as GIFT_PAYMENT_TXREFNUM, 
-		g.PLEDGE_ID as GIFT_PLEDGE_ID, g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID 
+		g.PLEDGE_ID as GIFT_PLEDGE_ID, g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID,
+		g.UPDATE_DATE as GIFT_UPDATE_DATE, g.CREATE_DATE as GIFT_CREATE_DATE
 	</sql>
 	
 	<sql id="GIFT_COLS_CHILD_IDS_FRAGMENT">
@@ -175,7 +178,9 @@
 		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
 		REFUND_GIFT_TRANSACTION_DATE, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
 		PAYMENT_TXREFNUM,
-		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
+		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
+		CREATE_DATE, UPDATE_DATE
+		)
 		values (#giftStatus#, #giftType#, #acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
@@ -183,7 +188,7 @@
 		#paymentType#, #postmarkDate#, #refundGiftId#,
 		#refundGiftTransactionDate#, #sendAcknowledgment#, #transactionDate#,
 		#txRefNum#, #selectedAddress.id#, #pledgeId#, #recurringGiftId#, #selectedEmail.id#,
-		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
+		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -220,7 +225,8 @@
 		g.EMAIL_ID = #selectedEmail.id#,
 		g.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		g.CONSTITUENT_ID = #person.id#,
-		g.PHONE_ID = #selectedPhone.id#
+		g.PHONE_ID = #selectedPhone.id#,
+		g.UPDATE_DATE = now()
 		where 
 		p.CONSTITUENT_ID = g.CONSTITUENT_ID
 		and p.SITE_NAME = #site.name#

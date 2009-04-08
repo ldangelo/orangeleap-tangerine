@@ -11,7 +11,6 @@
         <result property="city" column="ADDRESS_CITY" jdbcType="VARCHAR"/>
         <result property="comments" column="ADDRESS_COMMENT" jdbcType="VARCHAR"/>
         <result property="country" column="ADDRESS_COUNTRY" jdbcType="VARCHAR"/>
-        <result property="createDate" column="ADDRESS_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="effectiveDate" column="ADDRESS_EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
         <result property="inactive" column="ADDRESS_INACTIVE" jdbcType="CHAR"/>
         <result property="postalCode" column="ADDRESS_POSTAL_CODE" jdbcType="VARCHAR"/>
@@ -21,9 +20,10 @@
         <result property="stateProvince" column="ADDRESS_STATE_PROVINCE" jdbcType="VARCHAR"/>
         <result property="temporaryEndDate" column="ADDRESS_TEMPORARY_END_DATE" jdbcType="TIMESTAMP"/>
         <result property="temporaryStartDate" column="ADDRESS_TEMPORARY_START_DATE" jdbcType="TIMESTAMP"/>
-        <result property="updateDate" column="ADDRESS_UPDATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="personId" column="ADDRESS_CONSTITUENT_ID" jdbcType="BIGINT"/>
 		<result property="primary" column="ADDRESS_IS_PRIMARY" jdbcType="CHAR" />
+        <result property="createDate" column="ADDRESS_CREATE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="updateDate" column="ADDRESS_UPDATE_DATE" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="ADDRESS_COLS_FRAGMENT">

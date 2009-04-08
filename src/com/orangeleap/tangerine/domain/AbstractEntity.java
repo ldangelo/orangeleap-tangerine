@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.core.style.ToStringCreator;
@@ -19,6 +20,10 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     protected Map<String, String> fieldLabelMap = null;
     protected Map<String, Object> fieldValueMap = null;
     protected Map<String, FieldDefinition> fieldTypeMap = null;
+    
+    protected Date createDate;
+    protected Date updateDate;
+    
 
     /**
      * Returns the ID, or null if the ID has not been set
@@ -159,4 +164,21 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     public String toString() {
         return new ToStringCreator(this).append("id", id).toString();
     }
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+	
 }

@@ -17,8 +17,6 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
     private String entryType = "";
     private boolean systemGenerated = false;
     private String comments = StringConstants.EMPTY;
-    private Date createDate;
-    private Date updateDate;
     private Person person;
     private Long giftId;
     private Long pledgeId;
@@ -58,22 +56,6 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 
     public void setComments(String comments) {
         this.comments = comments;
-    }
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
     }
 
 	public Date getRecordDate() {

@@ -30,6 +30,15 @@
 		<ant antfile="${internal.build.file}" target="undeploy-war" />
 	</target>
 
+	<target name="3.5. Start Tomcat - Non-Debug Mode">
+		    <java jar="${appserver.home}/bin/bootstrap.jar" fork="true">
+		        <jvmarg value="-Dcatalina.home=${appserver.home}"/>
+		    	<jvmarg value="-Xms128M" />
+		    	<jvmarg value="-Xmx512m" />
+		    	<jvmarg value="-XX:MaxPermSize=512M" />
+		    </java>
+		</target>
+
 	<target name="4. Start Tomcat - Debug Mode">
 		    <java jar="${appserver.home}/bin/bootstrap.jar" fork="true">
 		        <jvmarg value="-Dcatalina.home=${appserver.home}"/>

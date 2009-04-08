@@ -168,7 +168,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getId() == 200L;
         assert "Thank you for your pledge".equals(pledge.getComments());
         assert 25 == pledge.getAmountTotal().intValue();
-        assert "pending".equals(pledge.getPledgeStatus());
+        assert "Pending".equals(pledge.getPledgeStatus());
         assert pledge.isSendAcknowledgment();
         assert pledge.isRecurring();
         
@@ -315,19 +315,19 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         switch (pledge.getId().intValue()) {
             case 600:
                 assert 16 == pledge.getAmountTotal().intValue();
-                assert "pending".equals(pledge.getPledgeStatus());
+                assert "Pending".equals(pledge.getPledgeStatus());
                 break;
             case 700:
                 assert 3.99f == pledge.getAmountTotal().floatValue();
-                assert "inProgress".equals(pledge.getPledgeStatus());
+                assert "In Progress".equals(pledge.getPledgeStatus());
                 break;
             case 800:
                 assert 99 == pledge.getAmountTotal().intValue();
-                assert "fulfilled".equals(pledge.getPledgeStatus());
+                assert "Fulfilled".equals(pledge.getPledgeStatus());
                 break;
             case 900:
                 assert 2.25f == pledge.getAmountTotal().floatValue();
-                assert "fulfilled".equals(pledge.getPledgeStatus());
+                assert "Fulfilled".equals(pledge.getPledgeStatus());
                 break;
             default:
                 Assert.assertEquals("UnexpectedId = " + pledge.getId(), true, false);

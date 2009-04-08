@@ -7,7 +7,7 @@
 
 $.fn.vkfade = function(doScrollTo) {
 	var $elem = $(this);
-	Fat.fade_element($elem.attr("id"), 20, 750, "#FFFF00");
+	Fat.fade_element($elem.attr("id"), 10, 500, "#FFFF00");
 	if (doScrollTo) {
 		var offset = $elem.offset();
 		window.scrollTo((offset.left > 100 ? offset.left - 100 : offset.left), (offset.top > 30 ? offset.top - 30 : offset.top));

@@ -2,12 +2,26 @@ $(document).ready(function() {
 	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId */
 	var ddrFunct = Distribution.deleteRow;
 	Distribution.deleteRow = function(row) {
+		var pledgeId;
+		$(".ea-pledge div.queryLookupOption", $(row).siblings("tr.hiddenRow")).each(function() {
+			var $elem = $(this);
+			if ($elem.attr("id").indexOf("associatedPledgeId") > -1) {
+				pledgeId = $elem.attr("selectedId");
+			}
+		});
+		if (pledgeId) {
+			PledgeSelector.deleteAssociatedPledge(pledgeId);
+		}
 		ddrFunct(row);
 	}
 	
 	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId */
 	var ldaFunct = Lookup.deleteAssociation;
 	Lookup.deleteAssociation = function(elem) {
+		var pledgeId = $(elem).parent().attr("selectedId");
+		if (pledgeId) {
+			PledgeSelector.deleteAssociatedPledge(pledgeId);
+		}
 		ldaFunct(elem);
 	}
 });
@@ -105,7 +119,7 @@ var PledgeSelector = {
 	
 	deleteAssociatedPledge: function(pledgeId) {
 		var numLinesWithPledge = 0;
-		$("div.ea-pledge div.queryLookupOption").siblings("input[type=hidden]").each(function() {
+		$("div.ea-pledge").siblings("input[type=hidden]").each(function() {
 			var $elem = $(this);
 			if ($elem.attr("id").indexOf("associatedPledgeId") > -1 && $elem.val() == pledgeId) {
 				numLinesWithPledge++;
@@ -113,7 +127,16 @@ var PledgeSelector = {
 		});
 		// If only 1 distribution line associated with this pledge is left, remove the associated pledge
 		if (numLinesWithPledge === 1) {
-			
+			var $associatedPledgeIdsElem = $("#associatedPledgeIds");
+			$associatedPledgeIdsElem.siblings(".multiLookupField").children(".multiOption").each(function() {
+				var $elem = $(this);
+				if ($elem.attr("selectedId") == pledgeId) {
+					Lookup.removeSelectedVal($associatedPledgeIdsElem, pledgeId);
+					$elem.fadeOut("fast", function() {
+						$(this).remove();
+					});
+				}
+			});
 		}
 	},
 	

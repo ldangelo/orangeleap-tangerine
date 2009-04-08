@@ -31,6 +31,7 @@
 	<sqlMap resource="sqlmap/pledge.xml"/>
 	<sqlMap resource="sqlmap/recurringGift.xml"/>
 	<sqlMap resource="sqlmap/gift.xml"/>
+	<sqlMap resource="sqlmap/pledgeGift.xml"/>
 	<sqlMap resource="sqlmap/giftInKindDetail.xml"/>
 	<sqlMap resource="sqlmap/giftInKind.xml"/>
 	<sqlMap resource="sqlmap/audit.xml"/>

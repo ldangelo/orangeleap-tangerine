@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.controller.gift;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
@@ -30,6 +33,12 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
                 request.getParameter(StringConstants.RECURRING_GIFT_ID), request.getParameter(StringConstants.PLEDGE_ID));
     }
 
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+        binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociatedPledgeEditor());
+    }
+    
     @Override
     protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
         if (isFormSubmission(request) && errors.hasErrors()) {

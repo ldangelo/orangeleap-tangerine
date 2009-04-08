@@ -9,6 +9,7 @@ public enum FieldType {
     READ_ONLY_TEXT,
     PAYMENT_TYPE_READ_ONLY_TEXT,
     ASSOCIATION,
+    ASSOCIATION_DISPLAY,
     LOOKUP,
     CODE,
     CODE_OTHER,

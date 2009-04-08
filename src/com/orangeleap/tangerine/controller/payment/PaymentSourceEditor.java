@@ -31,10 +31,5 @@ public class PaymentSourceEditor extends RequiresConstituentEditor {
             PaymentSource ps = paymentSourceService.readPaymentSource(paymentSourceId);
             setValue(ps);
         }
-//        else if (StringConstants.NEW.equals(text)) {
-//            PaymentSource ps = new PaymentSource(super.getPerson());
-//            ps.setUserCreated(true);
-//            setValue(ps);
-//        }
     }
 }

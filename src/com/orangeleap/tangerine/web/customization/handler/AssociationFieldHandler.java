@@ -31,7 +31,10 @@ public class AssociationFieldHandler extends LookupFieldHandler {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
             Long id = Long.parseLong((String) propertyValue);
             fieldVO.setId(id);
-            fieldVO.setDisplayValue(resolve(id, referenceType));
+            fieldVO.addId(id);
+            String displayValue = resolve(id, referenceType);
+            fieldVO.setDisplayValue(displayValue);
+            fieldVO.addDisplayValue(displayValue);
             fieldVO.setReferenceType(referenceType);
         }
         return fieldVO;

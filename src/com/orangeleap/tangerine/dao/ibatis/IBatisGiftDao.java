@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.dao.ibatis;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         getSqlMapClientTemplate().delete("DELETE_DISTRO_LINE_BY_GIFT_ID", aGift.getId());
         /* Then insert DistributionLines */
         insertDistributionLines(aGift, "giftId");
+        
+        deleteInsertAssociatedPledges(aGift);
+        
         return aGift;
     }
 
@@ -56,6 +60,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         
         loadDistributionLinesCustomFields(gift);
         if (gift != null) {
+            gift.setAssociatedPledgeIds(readAssociatedPledgeIdsForGift(giftId));
             loadCustomFields(gift.getPerson());
         }
         return gift;
@@ -200,5 +205,30 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
             result = BigDecimal.ZERO;
         }
         return result;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected List<Long> readAssociatedPledgeIdsForGift(Long giftId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAssociatedPledgeIdsForGift: giftId = " + giftId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("giftId", giftId);
+        return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_GIFT_BY_GIFT_ID", paramMap);
+    }
+    
+    protected void deleteInsertAssociatedPledges(Gift gift) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("deleteInsertAssociatedPledges: giftId = " + gift.getId());
+        }
+        getSqlMapClientTemplate().delete("DELETE_PLEDGE_GIFT_BY_GIFT_ID", gift.getId());
+        if (gift.getAssociatedPledgeIds() != null) {
+            for (Long associatedPledgeId : gift.getAssociatedPledgeIds()) {
+                Map<String, Long> paramMap = new HashMap<String, Long>(2);
+                paramMap.put("pledgeId", associatedPledgeId);
+                paramMap.put("giftId", gift.getId());
+                getSqlMapClientTemplate().insert("INSERT_PLEDGE_GIFT", paramMap);
+            }
+        }
     }
 }

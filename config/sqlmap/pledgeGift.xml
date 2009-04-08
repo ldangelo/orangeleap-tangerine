@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PLEDGE_GIFT">
+	
+	<select id="SELECT_PLEDGE_GIFT_BY_GIFT_ID" resultClass="java.lang.Long" parameterClass="map">
+		select pg.PLEDGE_ID 
+		from PLEDGE_GIFT pg
+		where pg.GIFT_ID = #giftId#
+	</select>
+
+	<insert id="INSERT_PLEDGE_GIFT" parameterClass="java.util.Map">
+		insert into PLEDGE_GIFT (GIFT_ID, PLEDGE_ID)
+		values (#giftId#, #pledgeId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+	<delete id="DELETE_PLEDGE_GIFT_BY_GIFT_ID" parameterClass="long">
+	    delete from PLEDGE_GIFT
+	    where GIFT_ID = #giftId#	    
+	</delete>
+
+	<delete id="DELETE_PLEDGE_GIFT_BY_PLEDGE_ID" parameterClass="long">
+	    delete from PLEDGE_GIFT
+	    where PLEDGE_ID = #pledgeId#	    
+	</delete>
+	
+</sqlMap>

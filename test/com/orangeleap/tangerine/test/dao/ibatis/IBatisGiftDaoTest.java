@@ -93,6 +93,125 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == null;
     }
     
+    public static void testGiftId300(Gift gift) {
+        assert "Straight Cash Homey".equals(gift.getComments());
+        assert gift.getTransactionDate() != null;
+        assert 300 == gift.getAmount().intValue();
+        assert 300== gift.getDeductibleAmount().intValue();
+        assert PaymentSource.ACH.equals(gift.getPaymentType());
+        assert gift.isDeductible() == false;
+        assert GiftEntryType.MANUAL.equals(gift.getEntryType());
+        assert gift.getRecurringGiftId() == 300L;
+        assert gift.getDonationDate() == null;
+        assert gift.getPostmarkDate() == null;
+        assert gift.getAuthCode() == null;
+        assert gift.getOriginalGiftId() == null;
+        assert gift.getRefundGiftId() == null;
+        assert gift.getRefundGiftTransactionDate() == null;
+        assert gift.getTxRefNum() == null;
+        assert gift.getPaymentStatus() == null;
+        assert gift.getPaymentMessage() == null;
+        assert StringConstants.USD.equals(gift.getCurrencyCode());
+        assert gift.getCheckNumber() == null;
+        assert gift.isSendAcknowledgment() == false;
+        assert gift.getAcknowledgmentDate() == null;
+        
+        assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == 200L;
+        assert "samsam@yahoo.com".equals(gift.getSelectedEmail().getEmailAddress());
+        assert gift.getSelectedEmail().isInactive() == false;
+
+        assert gift.getDistributionLines() != null && gift.getDistributionLines().size() == 4;
+        for (DistributionLine line : gift.getDistributionLines()) {
+            assert line.getId() >= 100L && line.getId() <= 400L;
+            assert 300L == line.getGiftId();
+            switch (line.getId().intValue()) {
+                case 100:
+                    assert 150 == line.getAmount().intValue();
+                    assert 50 == line.getPercentage().intValue();
+                    assert "01000".equals(line.getProjectCode());
+                    assert line.getMotivationCode() == null;
+                    assert line.getOther_motivationCode() == null;
+                    assert line.getPledgeId() == null;
+                    break;
+                case 200:
+                    assert 75 == line.getAmount().intValue();
+                    assert 25 == line.getPercentage().intValue();
+                    assert line.getProjectCode() == null;
+                    assert line.getMotivationCode() == null;
+                    assert "whoa".equals(line.getOther_motivationCode());
+                    assert line.getPledgeId() == null;
+                    break;
+                case 300:
+                    assert 37.5 == line.getAmount().floatValue();
+                    assert 12.5 == line.getPercentage().floatValue();
+                    assert line.getProjectCode() == null;
+                    assert "foo".equals(line.getMotivationCode());
+                    assert line.getOther_motivationCode() == null;
+                    assert line.getPledgeId() == null;
+                    break;
+                case 400:
+                    assert 37.5 == line.getAmount().floatValue();
+                    assert 12.5 == line.getPercentage().floatValue();
+                    assert line.getProjectCode() == null;
+                    assert line.getMotivationCode() == null;
+                    assert line.getOther_motivationCode() == null;
+                    assert line.getPledgeId() == null;
+                    break;
+                default:
+                    assert false == true;
+            }
+        }
+        assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == null;
+        assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == null;
+        assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == null;
+    }
+    
+    public static void testGiftId400(Gift gift) {
+        assert "Rollin".equals(gift.getComments());
+        assert gift.getTransactionDate() != null;
+        assert 99999 == gift.getAmount().intValue();
+        assert 99999== gift.getDeductibleAmount().intValue();
+        assert PaymentSource.CREDIT_CARD.equals(gift.getPaymentType());
+        assert gift.isDeductible() == false;
+        assert GiftEntryType.MANUAL.equals(gift.getEntryType());
+        assert gift.getRecurringGiftId() == 300L;
+        assert gift.getDonationDate() == null;
+        assert gift.getPostmarkDate() == null;
+        assert gift.getAuthCode() == null;
+        assert gift.getOriginalGiftId() == null;
+        assert gift.getRefundGiftId() == null;
+        assert gift.getRefundGiftTransactionDate() == null;
+        assert gift.getTxRefNum() == null;
+        assert gift.getPaymentStatus() == null;
+        assert gift.getPaymentMessage() == null;
+        assert StringConstants.USD.equals(gift.getCurrencyCode());
+        assert gift.getCheckNumber() == null;
+        assert gift.isSendAcknowledgment() == false;
+        assert gift.getAcknowledgmentDate() == null;
+        
+        assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;
+        assert "3726 THIRD ST".equals(gift.getSelectedAddress().getAddressLine1());
+        assert "Dallas".equals(gift.getSelectedAddress().getCity());
+        assert "TX".equals(gift.getSelectedAddress().getStateProvince());
+        assert "75554".equals(gift.getSelectedAddress().getPostalCode());
+        assert "US".equals(gift.getSelectedAddress().getCountry());
+        assert gift.getSelectedAddress().getAddressLine2() == null;
+        assert gift.getSelectedAddress().getAddressLine3() == null;
+        
+        assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == 200L;
+        assert gift.getSelectedPaymentSource().getCreditCardExpiration() != null;
+        assert "Billy Graham".equals(gift.getSelectedPaymentSource().getCreditCardHolderName());
+        assert "4222".equals(gift.getSelectedPaymentSource().getCreditCardNumber());
+        assert "Billy Graham Visa".equals(gift.getSelectedPaymentSource().getProfile());
+        assert gift.getSelectedPaymentSource().getAchAccountNumber() == null;
+        assert gift.getSelectedPaymentSource().getAchRoutingNumber() == null;
+        assert PaymentSource.CREDIT_CARD.equals(gift.getSelectedPaymentSource().getPaymentType());
+
+        assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == null;
+        assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == null;
+        assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();        
+    }
+
     private void setupDistributionLines(Gift gift) {
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         
@@ -137,6 +256,8 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         person.setSite(site);
         gift.setPerson(person);
         setupDistributionLines(gift);
+        gift.addAssociatedPledgeId(500L);
+        gift.addAssociatedPledgeId(700L);
         
         gift = giftDao.maintainGift(gift);
         assert gift.getId() > 0;
@@ -189,6 +310,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 assert false == true;
             }
         }
+        assert readGift.getAssociatedPledgeIds() != null && readGift.getAssociatedPledgeIds().size() == 2;
+        for (Long associatedPledgeId : readGift.getAssociatedPledgeIds()) {
+            assert associatedPledgeId == 500L || associatedPledgeId == 700L;
+        }
         
         // Update
         gift = readGift;
@@ -211,6 +336,8 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 line.setAmount(new BigDecimal(0.5));
             }
         }
+        gift.setAssociatedPledgeIds(new ArrayList<Long>());
+        gift.addAssociatedPledgeId(700L);
         gift = giftDao.maintainGift(gift);
         readGift = giftDao.readGiftById(gift.getId());
         assert readGift != null;
@@ -260,6 +387,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
                 Assert.assertEquals("amount = " + line.getAmount().floatValue(), false, true);
             }
         }
+        assert readGift.getAssociatedPledgeIds() != null && readGift.getAssociatedPledgeIds().size() == 1;
+        for (Long associatedPledgeId : readGift.getAssociatedPledgeIds()) {
+            assert associatedPledgeId == 700L;
+        }
     }
     
     @Test(groups = { "testReadGift" })
@@ -268,9 +399,25 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift == null;
         
         gift = giftDao.readGiftById(100L);
-        testGiftId100(gift);
-        
+        testGiftId100(gift);        
         assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();        
+        Assert.assertNotNull("Expected associated pledgeIds to be not null", gift.getAssociatedPledgeIds());
+        Assert.assertTrue("Expected associated pledgeIds to be empty", gift.getAssociatedPledgeIds().isEmpty());
+        
+        gift = giftDao.readGiftById(300L);
+        testGiftId300(gift);
+        Assert.assertNotNull("Expected associated pledgeIds to be not null", gift.getAssociatedPledgeIds());
+        Assert.assertEquals("Expected associated pledgeIds to be size 2", 2, gift.getAssociatedPledgeIds().size());
+        for (Long associatedPledgeId : gift.getAssociatedPledgeIds()) {
+            assert associatedPledgeId == 700L || associatedPledgeId == 800L;
+        }
+
+        gift = giftDao.readGiftById(400L);
+        testGiftId400(gift);
+        assert gift.getAssociatedPledgeIds() != null && gift.getAssociatedPledgeIds().size() == 4;
+        for (Long associatedPledgeId : gift.getAssociatedPledgeIds()) {
+            assert associatedPledgeId == 500L || associatedPledgeId == 600L || associatedPledgeId == 700L || associatedPledgeId == 800L;
+        }        
     }
     
     @Test(groups = { "testReadGift" })
@@ -294,123 +441,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
 
             switch (gift.getId().intValue()) {
                 case 300: 
-                    assert "Straight Cash Homey".equals(gift.getComments());
-                    assert gift.getTransactionDate() != null;
-                    assert 300 == gift.getAmount().intValue();
-                    assert 300== gift.getDeductibleAmount().intValue();
-                    assert PaymentSource.ACH.equals(gift.getPaymentType());
-                    assert gift.isDeductible() == false;
-                    assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getRecurringGiftId() == 300L;
-                    assert gift.getDonationDate() == null;
-                    assert gift.getPostmarkDate() == null;
-                    assert gift.getAuthCode() == null;
-                    assert gift.getOriginalGiftId() == null;
-                    assert gift.getRefundGiftId() == null;
-                    assert gift.getRefundGiftTransactionDate() == null;
-                    assert gift.getTxRefNum() == null;
-                    assert gift.getPaymentStatus() == null;
-                    assert gift.getPaymentMessage() == null;
-                    assert StringConstants.USD.equals(gift.getCurrencyCode());
-                    assert gift.getCheckNumber() == null;
-                    assert gift.isSendAcknowledgment() == false;
-                    assert gift.getAcknowledgmentDate() == null;
-                    
-                    assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == 200L;
-                    assert "samsam@yahoo.com".equals(gift.getSelectedEmail().getEmailAddress());
-                    assert gift.getSelectedEmail().isInactive() == false;
-
-                    assert gift.getDistributionLines() != null && gift.getDistributionLines().size() == 4;
-                    for (DistributionLine line : gift.getDistributionLines()) {
-                        assert line.getId() >= 100L && line.getId() <= 400L;
-                        assert 300L == line.getGiftId();
-                        switch (line.getId().intValue()) {
-                            case 100:
-                                assert 150 == line.getAmount().intValue();
-                                assert 50 == line.getPercentage().intValue();
-                                assert "01000".equals(line.getProjectCode());
-                                assert line.getMotivationCode() == null;
-                                assert line.getOther_motivationCode() == null;
-                                assert line.getPledgeId() == null;
-                                break;
-                            case 200:
-                                assert 75 == line.getAmount().intValue();
-                                assert 25 == line.getPercentage().intValue();
-                                assert line.getProjectCode() == null;
-                                assert line.getMotivationCode() == null;
-                                assert "whoa".equals(line.getOther_motivationCode());
-                                assert line.getPledgeId() == null;
-                                break;
-                            case 300:
-                                assert 37.5 == line.getAmount().floatValue();
-                                assert 12.5 == line.getPercentage().floatValue();
-                                assert line.getProjectCode() == null;
-                                assert "foo".equals(line.getMotivationCode());
-                                assert line.getOther_motivationCode() == null;
-                                assert line.getPledgeId() == null;
-                                break;
-                            case 400:
-                                assert 37.5 == line.getAmount().floatValue();
-                                assert 12.5 == line.getPercentage().floatValue();
-                                assert line.getProjectCode() == null;
-                                assert line.getMotivationCode() == null;
-                                assert line.getOther_motivationCode() == null;
-                                assert line.getPledgeId() == null;
-                                break;
-                            default:
-                                assert false == true;
-                        }
-                    }
-
-                    assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == null;
-                    assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == null;
-                    assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == null;
-                    
+                    testGiftId300(gift);
                     break;
                 case 400:
-                    assert "Rollin".equals(gift.getComments());
-                    assert gift.getTransactionDate() != null;
-                    assert 99999 == gift.getAmount().intValue();
-                    assert 99999== gift.getDeductibleAmount().intValue();
-                    assert PaymentSource.CREDIT_CARD.equals(gift.getPaymentType());
-                    assert gift.isDeductible() == false;
-                    assert GiftEntryType.MANUAL.equals(gift.getEntryType());
-                    assert gift.getRecurringGiftId() == 300L;
-                    assert gift.getDonationDate() == null;
-                    assert gift.getPostmarkDate() == null;
-                    assert gift.getAuthCode() == null;
-                    assert gift.getOriginalGiftId() == null;
-                    assert gift.getRefundGiftId() == null;
-                    assert gift.getRefundGiftTransactionDate() == null;
-                    assert gift.getTxRefNum() == null;
-                    assert gift.getPaymentStatus() == null;
-                    assert gift.getPaymentMessage() == null;
-                    assert StringConstants.USD.equals(gift.getCurrencyCode());
-                    assert gift.getCheckNumber() == null;
-                    assert gift.isSendAcknowledgment() == false;
-                    assert gift.getAcknowledgmentDate() == null;
-                    
-                    assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;
-                    assert "3726 THIRD ST".equals(gift.getSelectedAddress().getAddressLine1());
-                    assert "Dallas".equals(gift.getSelectedAddress().getCity());
-                    assert "TX".equals(gift.getSelectedAddress().getStateProvince());
-                    assert "75554".equals(gift.getSelectedAddress().getPostalCode());
-                    assert "US".equals(gift.getSelectedAddress().getCountry());
-                    assert gift.getSelectedAddress().getAddressLine2() == null;
-                    assert gift.getSelectedAddress().getAddressLine3() == null;
-                    
-                    assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == 200L;
-                    assert gift.getSelectedPaymentSource().getCreditCardExpiration() != null;
-                    assert "Billy Graham".equals(gift.getSelectedPaymentSource().getCreditCardHolderName());
-                    assert "4222".equals(gift.getSelectedPaymentSource().getCreditCardNumber());
-                    assert "Billy Graham Visa".equals(gift.getSelectedPaymentSource().getProfile());
-                    assert gift.getSelectedPaymentSource().getAchAccountNumber() == null;
-                    assert gift.getSelectedPaymentSource().getAchRoutingNumber() == null;
-                    assert PaymentSource.CREDIT_CARD.equals(gift.getSelectedPaymentSource().getPaymentType());
-
-                    assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == null;
-                    assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == null;
-                    assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();
+                    testGiftId400(gift);
                     break;
                 default: 
                     assert false == true;

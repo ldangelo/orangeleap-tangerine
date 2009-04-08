@@ -36,10 +36,13 @@ public class GiftListController {
 
     static {
         NAME_MAP.put("id", "g.GIFT_ID");
-        NAME_MAP.put("date", "g.TRANSACTION_DATE");
+        NAME_MAP.put("date", "g.DONATION_DATE");
         NAME_MAP.put("personId", "g.CONSTITUENT_ID");
         NAME_MAP.put("amount", "g.AMOUNT");
+        NAME_MAP.put("currencyCode", "g.CURRENCY_CODE");
+        NAME_MAP.put("paymentStatus", "g.PAYMENT_STATUS");
         NAME_MAP.put("comments", "g.COMMENTS");
+        NAME_MAP.put("refNumber", "g.PAYMENT_TXREFNUM");
         NAME_MAP.put("authcode", "g.AUTH_CODE");
     }
     
@@ -49,10 +52,13 @@ public class GiftListController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", g.getId());
-        map.put("date", formatter.format(g.getTransactionDate()) );
+        map.put("date", formatter.format(g.getDonationDate()) );
         map.put("personId", g.getPerson().getId());
         map.put("amount", g.getAmount());
+        map.put("currencyCode", g.getCurrencyCode());
+        map.put("paymentStatus", g.getPaymentStatus());
         map.put("comments", g.getComments());
+        map.put("refNumber", g.getTxRefNum());
         map.put("authcode", g.getAuthCode());
     
         return map;

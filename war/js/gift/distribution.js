@@ -238,7 +238,7 @@ var Distribution = {
 	
 	deleteRow: function(row) {
 		if ($("table.distributionLines tbody.gridRow", "form").length > 1) {
-			row.parent().fadeOut("slow", function() {
+			row.parent().fadeOut("fast", function() {
 				var $elem = $(this);
 				var rowId = row.find("input.amount").attr('id').replace('-amount', '');
 				delete Distribution.amtPctMap[rowId];

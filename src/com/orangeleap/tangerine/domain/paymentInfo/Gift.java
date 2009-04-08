@@ -33,7 +33,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
-    private List<Pledge> pledges;
+    private List<Long> associatedPledgeIds;
     
     public Gift() { 
         super();
@@ -202,19 +202,19 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.paymentMessage = message;
 	}
 	
-	public List<Pledge> getPledges() {
-        return pledges;
+    public List<Long> getAssociatedPledgeIds() {
+        return associatedPledgeIds;
     }
 
-    public void setPledges(List<Pledge> pledges) {
-        this.pledges = pledges;
+    public void setAssociatedPledgeIds(List<Long> associatedPledgeIds) {
+        this.associatedPledgeIds = associatedPledgeIds;
     }
 
-    public void addPledge(Pledge pledge) {
-        if (pledges == null) {
-            setPledges(new ArrayList<Pledge>());
+    public void addAssociatedPledgeId(Long pledgeId) {
+        if (associatedPledgeIds == null) {
+            setAssociatedPledgeIds(new ArrayList<Long>());
         }
-        getPledges().add(pledge);
+        getAssociatedPledgeIds().add(pledgeId);
     }
     
     public Boolean getIsAuthorized() {

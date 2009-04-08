@@ -632,7 +632,7 @@ var Lookup = {
 	lookupCaller: null,
 	
 	hiliteAndFade: function($elem) {
-		$elem.animate({ backgroundColor: "yellow"}, "slow").animate({backgroundColor: "#FFF"}, "slow");
+		$elem.animate({ backgroundColor: "yellow"}, "fast").animate({backgroundColor: "#FFF"}, "fast");
 	},
 	
 	removeNbsp: function(itemSelected) {
@@ -1319,6 +1319,21 @@ var Lookup = {
 				});
 			}
 		}
+	},
+	
+	deleteAssociation: function(elem) {
+		var $parent = $(elem).parent();
+		var $hiddenElems = $parent.parent().parent().children("input[type=hidden]");
+		
+		$hiddenElems.each(function() {
+			var $hiddenElem = $(this);
+			var selectedId = $parent.attr("selectedId");
+			Lookup.removeSelectedVal($hiddenElem, selectedId);
+		});
+		 
+		$parent.parents("li.side").fadeOut("fast", function() {
+			$(this).addClass("noDisplay");
+		});
 	},
 	
 	removeSelectedVal: function($elem, valueToCompare) {

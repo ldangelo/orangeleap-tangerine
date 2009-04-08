@@ -530,12 +530,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	private void initPledgeDistributionLine(List<DistributionLine> pledgeLines, List<DistributionLine> returnLines, int numPledges, BigDecimal amount) {
 	    BigDecimal splitPledgeAmount = BigDecimal.ZERO; 
 	    if (numPledges > 0) {
-	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_UP);
+	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_EVEN);
 	    }
         for (DistributionLine pLine : pledgeLines) {
             pLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, pLine.getPledgeId().toString());
             pLine.setPledgeId(null);
-            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
+            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN));
+            
+            // find the new percentage (line percentage / numPledges)
+            pLine.setPercentage(pLine.getPercentage().divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_EVEN));
         }
         returnLines.addAll(pledgeLines); // Add the remaining pledge lines; these are the pledge distribution lines not already assigned to the gift
 	}

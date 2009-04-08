@@ -278,6 +278,14 @@
 				    </c:if>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'ASSOCIATION'}">
+					<c:choose>
+						<c:when test="${fieldVO.fieldType == 'ASSOCIATION'}">
+							<c:set var="clickHandler" value="Lookup.deleteAssociation(this)" scope="page"/>
+						</c:when>
+						<c:otherwise>
+							<c:set var="clickHandler" value="Lookup.deleteOption(this)" scope="page"/>
+						</c:otherwise>
+					</c:choose>
 					<div class="lookupWrapper">
 					    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
 							<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
@@ -298,7 +306,7 @@
 									</c:otherwise>
 								</c:choose>
 								<c:if test="${not empty thisVal}">
-									<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+									<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 								</c:if>
 							</div>
 							<c:if test="${fieldVO.fieldType != 'ASSOCIATION'}">
@@ -308,7 +316,7 @@
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldId}'/>" <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">otherFieldId="<c:out value='${fieldVO.otherFieldId}'/>"</c:if>/>
 						<div class="queryLookupOption noDisplay clone">
 							<span><a href="" target="_blank"></a></span>
-							<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+							<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 						</div>
 					</div>
 				</c:when>
@@ -496,7 +504,7 @@
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PLEDGE_SELECTION' || fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">
-					<script type="text/javascript" src="js/gift/pledgeSelector.js"></script>
+					<c:if test="${fieldVO.fieldType == 'PLEDGE_SELECTION'}"><script type="text/javascript" src="js/gift/pledgeSelector.js"></script></c:if>
 					<div class="lookupScrollTop"></div>
 					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType == 'PLEDGE_SELECTION_DISPLAY'}">readOnly</c:if>">
 					    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">

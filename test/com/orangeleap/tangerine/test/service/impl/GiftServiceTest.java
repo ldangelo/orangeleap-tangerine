@@ -55,6 +55,7 @@ public class GiftServiceTest extends BaseTest {
         for (DistributionLine line : lines) {
             assert line.getId() == 1L;
             assert new BigDecimal(3).equals(line.getAmount());
+            assert new BigDecimal(15).equals(line.getPercentage());
         }
         
         lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(33.33), 2);
@@ -65,14 +66,17 @@ public class GiftServiceTest extends BaseTest {
             if (line.getId() == 98L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 6.66, not " + line.getAmount(), new BigDecimal("6.66"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 20.00, not " + line.getPercentage(), new BigDecimal("20.00"), line.getPercentage());
             }
             else if (line.getId() == 99L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 10.00, not " + line.getAmount(), new BigDecimal("10.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 30.00, not " + line.getPercentage(), new BigDecimal("30.00"), line.getPercentage());
             }
             else if (line.getId() == 100L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
                 Assert.assertEquals("Expected amount to be 16.66, not " + line.getAmount(), new BigDecimal("16.66"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 50.00, not " + line.getPercentage(), new BigDecimal("50.00"), line.getPercentage());
             }
         }
 
@@ -81,17 +85,18 @@ public class GiftServiceTest extends BaseTest {
         for (DistributionLine line : lines) {
             assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
             assert line.getPledgeId() == null;
+            Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
             if (line.getId() == 98L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
-                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 20.00, not " + line.getPercentage(), new BigDecimal("20.00"), line.getPercentage());
             }
             else if (line.getId() == 99L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
-                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 30.00, not " + line.getPercentage(), new BigDecimal("30.00"), line.getPercentage());
             }
             else if (line.getId() == 100L) {
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
-                Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 50.00, not " + line.getPercentage(), new BigDecimal("50.00"), line.getPercentage());
             }
         }
         
@@ -103,16 +108,19 @@ public class GiftServiceTest extends BaseTest {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
                 Assert.assertEquals("Expected amount to be 50, not " + line.getAmount(), new BigDecimal("50"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 79, not " + line.getPercentage(), new BigDecimal("79"), line.getPercentage());
             }
             else if (line.getId() == 98L) {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 4.00, not " + line.getAmount(), new BigDecimal("4.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 20.00, not " + line.getPercentage(), new BigDecimal("20.00"), line.getPercentage());
             }
             else if (line.getId() == 99L) {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 6.00, not " + line.getAmount(), new BigDecimal("6.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 30.00, not " + line.getPercentage(), new BigDecimal("30.00"), line.getPercentage());
             }
         }
 
@@ -124,16 +132,19 @@ public class GiftServiceTest extends BaseTest {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("111");
                 Assert.assertEquals("Expected amount to be 50, not " + line.getAmount(), new BigDecimal("50"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 79, not " + line.getPercentage(), new BigDecimal("79"), line.getPercentage());
             }
             else if (line.getId() == 98L) {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 20.00, not " + line.getPercentage(), new BigDecimal("20.00"), line.getPercentage());
             }
             else if (line.getId() == 99L) {
                 assert line.getPledgeId() == null;
                 assert line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID).equals("333");
                 Assert.assertEquals("Expected amount to be 0.00, not " + line.getAmount(), new BigDecimal("0.00"), line.getAmount());
+                Assert.assertEquals("Expected percentage to be 30.00, not " + line.getPercentage(), new BigDecimal("30.00"), line.getPercentage());
             }
         }
     }

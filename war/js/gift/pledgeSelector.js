@@ -1,3 +1,17 @@
+$(document).ready(function() {
+	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId */
+	var ddrFunct = Distribution.deleteRow;
+	Distribution.deleteRow = function(row) {
+		ddrFunct(row);
+	}
+	
+	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId */
+	var ldaFunct = Lookup.deleteAssociation;
+	Lookup.deleteAssociation = function(elem) {
+		ldaFunct(elem);
+	}
+});
+
 var PledgeSelector = {
 	loadPledgeSelector: function(elem) {
 		this.lookupCaller = $(elem).siblings(".lookupScrollContainer").children(".multiLookupField");
@@ -87,6 +101,20 @@ var PledgeSelector = {
 			queryString += $elem.attr("name") + "=" + escape($elem.val()) + "&";
 		});
 		return queryString;
+	},
+	
+	deleteAssociatedPledge: function(pledgeId) {
+		var numLinesWithPledge = 0;
+		$("div.ea-pledge div.queryLookupOption").siblings("input[type=hidden]").each(function() {
+			var $elem = $(this);
+			if ($elem.attr("id").indexOf("associatedPledgeId") > -1 && $elem.val() == pledgeId) {
+				numLinesWithPledge++;
+			}
+		});
+		// If only 1 distribution line associated with this pledge is left, remove the associated pledge
+		if (numLinesWithPledge === 1) {
+			
+		}
 	},
 	
 	deletePledge: function(elem) {

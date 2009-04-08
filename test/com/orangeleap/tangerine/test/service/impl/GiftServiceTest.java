@@ -58,7 +58,7 @@ public class GiftServiceTest extends BaseTest {
             assert new BigDecimal(15).equals(line.getPercentage());
         }
         
-        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(33.33), 2);
+        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal("33.33"), 2);
         assert lines != null && lines.size() == 3;
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal totalPct = BigDecimal.ZERO;

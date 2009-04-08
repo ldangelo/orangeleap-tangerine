@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
@@ -22,6 +24,8 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public List<RecurringGift> readRecurringGiftsForConstituent(Person constituent);
     
     public List<RecurringGift> readRecurringGiftsForConstituent(Long constituentId);
+    
+	public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
     
     public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses);
 

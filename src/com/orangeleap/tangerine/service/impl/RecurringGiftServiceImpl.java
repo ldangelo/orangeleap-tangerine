@@ -17,6 +17,8 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("recurringGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -127,6 +129,16 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return recurringGiftDao.readRecurringGiftsByConstituentId(constituentId);
     }
+    
+    @Override
+    public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
+        }
+        return recurringGiftDao.readPaginatedRecurringGiftsByConstituentId(constituentId, sortinfo);
+    }
+
+
 
     @Override
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params) {

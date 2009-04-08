@@ -15,6 +15,8 @@ import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("pledgeDAO")
 public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implements PledgeDao {
@@ -65,6 +67,26 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		params.put("constituentId", constituentId);
 		return getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_BY_CONSTITUENT_ID", params);
 	}
+	
+    @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
+		params.put("constituentId", constituentId);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("PLEDGES_BY_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
     
     @SuppressWarnings("unchecked")
     @Override

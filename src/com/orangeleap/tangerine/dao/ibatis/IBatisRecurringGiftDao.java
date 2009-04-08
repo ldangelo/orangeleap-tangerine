@@ -15,6 +15,8 @@ import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Repository("recurringGiftDAO")
 public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<RecurringGift> implements RecurringGiftDao {
@@ -90,6 +92,26 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         params.put("constituentId", constituentId);
         return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID", params);
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
+        }
+        Map<String, Object> params = setupParams();
+        sortinfo.addParams(params);
+
+		params.put("constituentId", constituentId);
+
+        List rows = getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("RECURRING_GIFTS_BY_CONSTITUENT_ID_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
+    }
+
 
     @SuppressWarnings("unchecked")
     @Override

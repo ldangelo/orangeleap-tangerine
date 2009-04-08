@@ -23,6 +23,8 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @SuppressWarnings("unchecked")
 @Service("pledgeService")
@@ -123,6 +125,15 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         }
         return pledgeDao.readPledgesByConstituentId(constituentId);
     }
+    
+    @Override
+    public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
+        }
+        return pledgeDao.readPaginatedPledgesByConstituentId(constituentId, sortinfo);
+    }
+
 
     @Override
     public List<Pledge> searchPledges(Map<String, Object> params) {

@@ -58,6 +58,14 @@
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
+	
+	<sql id="PLEDGE_ROWCOUNT_FRAGMENT">
+        select count(*)
+		from PLEDGE c
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+    </sql>
+	
 
 	<select id="SELECT_PLEDGE_BY_ID" resultMap="PLEDGE_RESULT" parameterClass="map">
 		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
@@ -69,6 +77,19 @@
 		and c.CONSTITUENT_ID = #constituentId#
 		order by c.CREATE_DATE desc
 	</select>
+	
+	<select id="SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED" resultMap="PLEDGE_RESULT" parameterClass="map">
+		<include refid="SELECT_PLEDGE_FRAGMENT" />
+		and c.CONSTITUENT_ID = #constituentId#
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+	
+	<select id="PLEDGES_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
+        <include refid="PLEDGE_ROWCOUNT_FRAGMENT"/>
+		and c.CONSTITUENT_ID = #constituentId#
+    </select>
+	
 	
 	<select id="SELECT_NOT_CANCELLED_PLEDGES" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
 		select

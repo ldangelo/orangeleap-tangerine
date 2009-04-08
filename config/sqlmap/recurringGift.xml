@@ -56,6 +56,14 @@
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
+	
+	<sql id="RECURRING_GIFT_ROWCOUNT_FRAGMENT">
+        select count(*)
+		from RECURRING_GIFT rg
+		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+        where p.SITE_NAME = #siteName#
+    </sql>
+	
 
 	<select id="SELECT_RECURRING_GIFT_BY_ID" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
 		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
@@ -67,6 +75,21 @@
 		and p.CONSTITUENT_ID = #constituentId#
 		order by rg.CREATE_DATE desc
 	</select>
+	
+	<select id="SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
+		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		and rg.CONSTITUENT_ID = #constituentId#
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
+	</select>
+	
+	<select id="RECURRING_GIFTS_BY_CONSTITUENT_ID_ROWCOUNT" resultClass="long" parameterClass="map" >
+        <include refid="RECURRING_GIFT_ROWCOUNT_FRAGMENT"/>
+		and rg.CONSTITUENT_ID = #constituentId#
+    </select>
+	
+	
+	
 
 	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
 		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />

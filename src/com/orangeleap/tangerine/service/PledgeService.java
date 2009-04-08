@@ -7,6 +7,8 @@ import java.util.Set;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface PledgeService extends CommitmentService<Pledge> {
 
@@ -23,6 +25,8 @@ public interface PledgeService extends CommitmentService<Pledge> {
     public List<Pledge> readPledgesForConstituent(Person constituent);
 
     public List<Pledge> readPledgesForConstituent(Long constituentId);
+    
+	public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo);
     
     public List<Pledge> searchPledges(Map<String, Object> params);
 

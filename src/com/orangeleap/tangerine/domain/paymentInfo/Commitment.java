@@ -17,12 +17,12 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String STATUS_ACTIVE = "active";
-    public static final String STATUS_CANCELLED = "cancelled";
-    public static final String STATUS_EXPIRED = "expired";
-    public static final String STATUS_FULFILLED = "fulfilled";
-    public static final String STATUS_PENDING = "pending";
-    public static final String STATUS_IN_PROGRESS = "inProgress";
+    public static final String STATUS_ACTIVE = "Active";
+    public static final String STATUS_CANCELLED = "Cancelled";
+    public static final String STATUS_EXPIRED = "Expired";
+    public static final String STATUS_FULFILLED = "Fulfilled";
+    public static final String STATUS_PENDING = "Pending";
+    public static final String STATUS_IN_PROGRESS = "In Progress";
 
     public static final String FREQUENCY_ONE_TIME = "one time";
     public static final String FREQUENCY_WEEKLY = "weekly";

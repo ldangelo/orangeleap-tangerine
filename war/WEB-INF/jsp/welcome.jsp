@@ -13,6 +13,12 @@
 		<div id="dashboard" class="columns" >
 		</div>
 		
+		<!-- 
+		
+<%= com.orangeleap.tangerine.util.DiagUtil.getMemoryStats() %>
+		
+		 -->
+		
 	</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -61,12 +62,17 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			List<Site> siteList = ss.readSites();
 
 			for (Site s : siteList) {
-
+				SortInfo si = new SortInfo();
+				
+				
 				th.setSystemUserAndSiteName(s.getName());
+				si.setStart(0);
+				si.setLimit(100);
+				si.setSort("CONSTITUENT_ID");
+				List<Person> peopleList = constituentService.readAllConstituentsBySite(si);
+				
+				while (peopleList.size() > 0) {
 
-				List<Person> peopleList = constituentService
-						.readAllConstituentsBySite();
-				if (peopleList.size() > 0) {
 					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
 							.getBean("DroolsRuleAgent")).getRuleAgent()
 							.getRuleBase();
@@ -91,6 +97,10 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					}
 					workingMemory.fireAllRules();
 					workingMemory.dispose();
+					
+					si.setStart(si.getStart() + 100);
+					si.setLimit(si.getLimit() + 100);
+					peopleList = constituentService.readAllConstituentsBySite(si);	
 				}
 			}
 		} catch (Throwable t) {

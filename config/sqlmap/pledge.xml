@@ -79,7 +79,7 @@
 	</select>
 	
 	<select id="SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED" resultMap="PLEDGE_RESULT" parameterClass="map">
-		<include refid="SELECT_PLEDGE_FRAGMENT" />
+		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
 		and c.CONSTITUENT_ID = #constituentId#
 		order by $sortColumn$ $sortDir$
         limit $offset$,$limit$

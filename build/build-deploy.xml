@@ -86,6 +86,9 @@
 		    </fileset>
 		</copy>
 		
+		<exec dir="${target.tomcat.dir}/drools/rules" executable="chown" >
+			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/drools/rules"/>
+	    </exec>
 		
 		<exec dir="/opt/orangeleap" executable="chown" >
 			<arg line="-R tomcat.tomcat ${target.tomcat.dir}/webapps"/>

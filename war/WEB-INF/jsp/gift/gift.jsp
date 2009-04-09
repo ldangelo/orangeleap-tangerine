@@ -2,6 +2,10 @@
 <spring:message code='enterGift' var="titleText" />
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
+    <tiles:putAttribute name="customHeaderContent" type="string">
+		<script type="text/javascript" src="js/gift/distribution.js"></script>
+		<script type="text/javascript" src="js/gift/pledgeSelector.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
 	<tiles:putAttribute name="sidebarNav" value="New Gift" />
@@ -123,7 +127,5 @@
 				</div>
 			</form:form>
 		</div>
-		<script type="text/javascript" src="js/gift/distribution.js"></script>
-		<script type="text/javascript" src="js/gift/pledgeSelector.js"></script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

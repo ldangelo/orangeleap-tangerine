@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -480,6 +481,24 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.debug("readAllGiftsBySiteName:");
         }
         return giftDao.readAllGiftsBySite();
+	}
+	
+	@Override
+	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("initGiftAmountDistributionLinesFromPledge: selectedPledgeId = " + selectedPledgeId);
+        }
+        if (gift.getId() == null || gift.getId() <= 0) {
+            if (NumberUtils.isDigits(selectedPledgeId)) {
+                Long pledgeId = Long.parseLong(selectedPledgeId);
+                Pledge pledge = pledgeService.readPledgeById(pledgeId);
+                if (pledge != null) {
+                    gift.setAmount(pledge.isRecurring() ? pledge.getAmountPerGift() : pledge.getAmountTotal());
+                    gift.setDistributionLines(combineGiftPledgeDistributionLines(null, pledge.getDistributionLines(), gift.getAmount(), 1));
+                    gift.addAssociatedPledgeId(pledgeId);
+                }
+            }
+        }
 	}
 	
 	@Override

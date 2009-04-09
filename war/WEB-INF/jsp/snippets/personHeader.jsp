@@ -19,9 +19,14 @@
 			<c:if test="${!hasErrors && (saved || param.saved)}"><span id="savedMarker"><spring:message code='saved'/></span></c:if>
 		</h3>
 	</div>
-	<c:if test="${param.submitButtonText!=null}">
+	<c:if test="${not empty param.submitButtonText || (not empty param.routeButtonText && not empty param.routeUrl)}">
 		<div class="columnRight" style="padding:19px 19px 0 0;">
-			<input type="submit" value="<c:out value='${param.submitButtonText}'/>" class="saveButton" />
+			<c:if test="${not empty param.routeButtonText && not empty param.routeUrl}">
+				<input type="button" value="<c:out value='${param.routeButtonText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('<c:out value='${param.routeUrl}'/>')"/>
+			</c:if>
+			<c:if test="${ not empty param.submitButtonText}">
+				<input type="submit" value="<c:out value='${param.submitButtonText}'/>" class="saveButton" />
+			</c:if>
 		</div>
 	</c:if>
 	<div class="clearColumns"></div>

@@ -10,27 +10,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
-public class AssociatedPledgeEditor extends PropertyEditorSupport {
+public class AssociationEditor extends PropertyEditorSupport {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    public AssociatedPledgeEditor() {
+    public AssociationEditor() {
         super();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        Set<String> ids = StringUtils.commaDelimitedListToSet(text);
-        if (ids != null && ids.isEmpty() == false) {
-            List<Long> pledgeIds = new ArrayList<Long>();
-            for (String s : ids) {
+        Set<String> idsStrings = StringUtils.commaDelimitedListToSet(text);
+        if (idsStrings != null && idsStrings.isEmpty() == false) {
+            List<Long> idsLongs = new ArrayList<Long>();
+            for (String s : idsStrings) {
                 if (NumberUtils.isDigits(s)) {
-                    pledgeIds.add(Long.parseLong(s));
+                    idsLongs.add(Long.parseLong(s));
                 }
             }
-            setValue(pledgeIds);
+            setValue(idsLongs);
         }
     }
 }

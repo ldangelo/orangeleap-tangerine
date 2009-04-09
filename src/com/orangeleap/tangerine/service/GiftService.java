@@ -40,7 +40,7 @@ public interface GiftService {
 
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
-//    public List<Gift> readAllGifts();
+    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount);
 
     public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType);
 

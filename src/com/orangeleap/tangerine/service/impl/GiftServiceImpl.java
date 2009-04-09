@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -489,6 +490,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
 	    }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
+        
+        giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, amount);
+        
         if ((pledgeLines == null || pledgeLines.isEmpty()) && giftDistributionLines != null) {
             // NO pledge distribution lines associated with this gift; only add gift distribution lines that have no pledge associations
             for (DistributionLine giftLine : giftDistributionLines) {
@@ -527,10 +531,58 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	    return returnLines;
 	}
 	
-	public void removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines) {
+	/**
+	 * Check if a default distribution line was created; remove if necessary
+	 * @param giftDistributionLines
+	 */
+	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount) {
         if (logger.isDebugEnabled()) {
-            logger.debug("removeDefaultDistributionLine:");
+            logger.debug("removeDefaultDistributionLine: amount = " + amount);
         }
+        int count = 0;
+        DistributionLine enteredLine = null;
+        if (giftDistributionLines != null) {
+            for (DistributionLine aLine : giftDistributionLines) {
+                if (aLine != null) {
+                    enteredLine = aLine;
+                    count++;
+                }
+            }
+        }
+        /* If only 1 line is entered, check if it is the default */
+        if (count == 1) {
+            DistributionLine defaultLine = new DistributionLine();
+            defaultLine.setDefaults();
+            
+            if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
+                if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) || 
+                        org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode()) || enteredLine.getAssociatedPledgeId() != null) {
+                    // do nothing
+                }
+                else {
+                    boolean isSame = true;
+                    Set<String> keys = enteredLine.getCustomFieldMap().keySet();
+                    for (String aKey : keys) {
+                        // Empty string and null are considered equivalent values for custom fields
+                        if ((enteredLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(enteredLine.getCustomFieldValue(aKey))) 
+                                && (defaultLine.getCustomFieldValue(aKey) == null || StringConstants.EMPTY.equals(defaultLine.getCustomFieldValue(aKey)))) {
+                            // do nothing
+                        }
+                        else if (enteredLine.getCustomFieldValue(aKey) != null && enteredLine.getCustomFieldValue(aKey).equals(defaultLine.getCustomFieldValue(aKey))) {
+                            // do nothing
+                        }
+                        else {
+                            isSame = false;
+                            break;
+                        }
+                    }
+                    if (isSame) {
+                        return new ArrayList<DistributionLine>();
+                    }
+                }
+            }
+        }
+        return giftDistributionLines;
 	}
 	
 	private void initPledgeDistributionLine(List<DistributionLine> pledgeLines, List<DistributionLine> returnLines, int numPledges, BigDecimal amount) {

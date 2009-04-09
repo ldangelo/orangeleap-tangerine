@@ -116,7 +116,15 @@ var PledgeSelector = {
 		var queryString = "";
 		$(":text, :radio, :checkbox, input[type=hidden]", $("tbody.gridRow")).each(function() {
 			var $elem = $(this);
-			queryString += $elem.attr("name") + "=" + escape($elem.val()) + "&";
+			var elemType = $elem.attr("type").toLowerCase();
+			if (elemType == "checkbox" || elemType == "radio") {
+				if ($elem.attr("checked")) {
+					queryString += $elem.attr("name") + "=" + escape($elem.val()) + "&";
+				}
+			}
+			else {
+				queryString += $elem.attr("name") + "=" + escape($elem.val()) + "&";
+			}
 		});
 		return queryString;
 	},

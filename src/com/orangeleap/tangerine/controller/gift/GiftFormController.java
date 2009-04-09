@@ -46,6 +46,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         if (isFormSubmission(request) && errors.hasErrors()) {
             Gift gift = (Gift) command;
             gift.removeEmptyMutableDistributionLines();
+            giftService.checkAssociatedPledgeIds(gift);
         }
         super.onBindAndValidate(request, command, errors);
     }

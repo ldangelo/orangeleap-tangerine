@@ -22,7 +22,7 @@ public interface GiftService {
     
     public Gift editGift(Gift gift);
     
-    public Gift readGiftById(Long giftId, Long constituentId);
+    public Gift readGiftById(Long giftId);
 
     public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId, String pledgeId);
 

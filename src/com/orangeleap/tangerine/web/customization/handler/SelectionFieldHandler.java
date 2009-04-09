@@ -8,20 +8,25 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
-public class PledgeSelectionFieldHandler extends GenericFieldHandler {
+public class SelectionFieldHandler extends GenericFieldHandler {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     private PledgeService pledgeService;
+    private GiftService giftService;
     
-    public PledgeSelectionFieldHandler(ApplicationContext appContext) {
+    public SelectionFieldHandler(ApplicationContext appContext) {
         super(appContext);
         pledgeService = (PledgeService)appContext.getBean("pledgeService");
+        giftService = (GiftService)appContext.getBean("giftService");
     }
     
     @SuppressWarnings("unchecked")
@@ -30,11 +35,18 @@ public class PledgeSelectionFieldHandler extends GenericFieldHandler {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         Object propertyValue = super.getPropertyValue(model, fieldVO);
         if (propertyValue != null) {
-            List<Long> pledgeIds = (List<Long>)propertyValue;
-            for (Long pledgeId : pledgeIds) {
-                Pledge pledge = pledgeService.readPledgeById(pledgeId);
-                fieldVO.addDisplayValue(pledge.getPledgeShortDescription());
-                fieldVO.addId(pledgeId);
+            List<Long> ids = (List<Long>)propertyValue;
+            fieldVO.setReferenceType(currentField.getFieldDefinition().getReferenceType());
+            for (Long id : ids) {
+                if (ReferenceType.pledge.equals(fieldVO.getReferenceType())) {
+                    Pledge pledge = pledgeService.readPledgeById(id);
+                    fieldVO.addDisplayValue(pledge.getShortDescription());
+                }
+                else if (ReferenceType.gift.equals(fieldVO.getReferenceType())) {
+                    Gift gift = giftService.readGiftById(id);
+                    fieldVO.addDisplayValue(gift.getShortDescription());
+                }
+                fieldVO.addId(id);
             }
         }
         return fieldVO;

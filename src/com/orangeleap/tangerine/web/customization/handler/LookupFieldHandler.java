@@ -64,7 +64,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
         }
         else if (referenceType == ReferenceType.pledge) {
             Pledge pledge = pledgeService.readPledgeById(id);
-            return pledge.getPledgeShortDescription();
+            return pledge.getShortDescription();
         }
         return "" + id;
     }

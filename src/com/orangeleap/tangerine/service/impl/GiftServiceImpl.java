@@ -251,13 +251,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftById(Long giftId, Long constituentId) {
+    public Gift readGiftById(Long giftId) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readGiftById: giftId = " + giftId + " constituentId = " + constituentId);
+            logger.debug("readGiftById: giftId = " + giftId);
         }
-        Gift gift = giftDao.readGiftById(giftId);
-//        gift.setPledges(commitmentService.findNotCancelledPledgesByGiftId(giftId, constituentId));
-        return gift;
+        return giftDao.readGiftById(giftId);
     }
 
     @Override
@@ -293,7 +291,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             }
         }
         else {
-            gift = this.readGiftById(Long.valueOf(giftId), constituent.getId());
+            gift = this.readGiftById(Long.valueOf(giftId));
         }
         return gift;
     }

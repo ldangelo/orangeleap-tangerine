@@ -79,9 +79,9 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, new CodeOtherFieldHandler(appContext));
         fieldTypeToHandlerMap.put(FieldType.MULTI_CODE_ADDITIONAL, new CodeAdditionalFieldsHandler(appContext));
 
-        PledgeSelectionFieldHandler pledgeSelectionFieldHandler = new PledgeSelectionFieldHandler(appContext);
-        fieldTypeToHandlerMap.put(FieldType.PLEDGE_SELECTION, pledgeSelectionFieldHandler);
-        fieldTypeToHandlerMap.put(FieldType.PLEDGE_SELECTION_DISPLAY, pledgeSelectionFieldHandler);
+        SelectionFieldHandler selectionFieldHandler = new SelectionFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.SELECTION, selectionFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.SELECTION_DISPLAY, selectionFieldHandler);
 
         fieldTypeToHandlerMap.put(FieldType.SPACER, new SpacerFieldHandler());
         initialized = true;

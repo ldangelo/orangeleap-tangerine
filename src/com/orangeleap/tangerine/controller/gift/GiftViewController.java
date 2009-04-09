@@ -19,7 +19,7 @@ public class GiftViewController extends GiftFormController {
     
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID), getConstituent(request).getId());
+        return giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
     }
     
     @Override

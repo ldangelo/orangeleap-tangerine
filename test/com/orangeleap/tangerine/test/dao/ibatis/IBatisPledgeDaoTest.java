@@ -292,6 +292,28 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         }
     }
     
+    @Test(groups = { "testReadPledge" })
+    public void testReadAssociatedGiftIdsForPledge() throws Exception {
+        Pledge pledge = pledgeDao.readPledgeById(200L);
+        testId200L(pledge);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", pledge.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be empty", pledge.getAssociatedGiftIds().isEmpty());
+        
+        pledge = pledgeDao.readPledgeById(700L);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", pledge.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be size = 2, not " + pledge.getAssociatedGiftIds().size(), pledge.getAssociatedGiftIds().size() == 2);
+        for (Long giftId : pledge.getAssociatedGiftIds()) {
+            assert giftId == 300L || giftId == 400L;
+        }
+        
+        pledge = pledgeDao.readPledgeById(500L);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", pledge.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be size = 1, not " + pledge.getAssociatedGiftIds().size(), pledge.getAssociatedGiftIds().size() == 1);
+        for (Long giftId : pledge.getAssociatedGiftIds()) {
+            assert giftId == 400L;
+        }
+    }
+    
     @Test(groups = { "testSearchPledges" })
     public void testSearchPledges() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();

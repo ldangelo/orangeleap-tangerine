@@ -8,6 +8,12 @@
 		where pg.GIFT_ID = #giftId#
 	</select>
 
+	<select id="SELECT_PLEDGE_GIFT_BY_PLEDGE_ID" resultClass="java.lang.Long" parameterClass="map">
+		select pg.GIFT_ID 
+		from PLEDGE_GIFT pg
+		where pg.PLEDGE_ID = #pledgeId#
+	</select>
+
 	<insert id="INSERT_PLEDGE_GIFT" parameterClass="java.util.Map">
 		insert into PLEDGE_GIFT (GIFT_ID, PLEDGE_ID)
 		values (#giftId#, #pledgeId#)

@@ -53,6 +53,10 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		params.put("id", pledgeId);
 		Pledge pledge = (Pledge) getSqlMapClientTemplate().queryForObject("SELECT_PLEDGE_BY_ID", params);
 		loadDistributionLinesCustomFields(pledge);
+		if (pledge != null) {
+            pledge.setAssociatedGiftIds(readAssociatedGiftIdsForPledge(pledge.getId()));
+            loadCustomFields(pledge.getPerson());
+		}
 
 		return pledge;
 	}
@@ -121,4 +125,14 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         params.put("pledgeIds", pledgeIds);
         return getSqlMapClientTemplate().queryForList("SELECT_DISTRO_LINE_BY_PLEDGE_ID", params);
 	}
+    
+    @SuppressWarnings("unchecked")
+    protected List<Long> readAssociatedGiftIdsForPledge(Long pledgeId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAssociatedGiftIdsForPledge: pledgeId = " + pledgeId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("pledgeId", pledgeId);
+        return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_GIFT_BY_PLEDGE_ID", paramMap);
+    }
 }

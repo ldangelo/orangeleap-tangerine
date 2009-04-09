@@ -1,9 +1,12 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.style.ToStringCreator;
@@ -34,13 +37,11 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
     private List<Long> associatedPledgeIds;
-
     
     public Gift() { 
         super();
     }
 
-    // TODO: fix
     public Gift(Commitment commitment, Date transactionDate) {
         this();
         if (commitment instanceof RecurringGift) {
@@ -243,6 +244,14 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.transactionDate = giftInKind.getTransactionDate();
         this.person = giftInKind.getPerson();
         this.selectedEmail = giftInKind.getSelectedEmail();
+	}
+	
+	public String getShortDescription() {
+        StringBuilder sb = new StringBuilder();
+        sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());
+        sb.append(getAmount()).append(", "); 
+        sb.append(DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(donationDate));
+        return sb.toString();
 	}
 	
 	@Override

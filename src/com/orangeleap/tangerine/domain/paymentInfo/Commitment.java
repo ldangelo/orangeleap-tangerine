@@ -169,6 +169,12 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         this.gifts = gifts;
     }
 
+    public void addGift(Gift g) {
+    	List<Gift> gifts = getGifts();
+    	gifts.add(g);
+    	setGifts(gifts);
+    }
+    
     public BigDecimal getAmountPaid() {
         BigDecimal amount = BigDecimal.ZERO;
         if (getGifts() != null) {

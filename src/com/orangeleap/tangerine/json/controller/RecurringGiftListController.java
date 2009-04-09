@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -57,6 +58,9 @@ public class RecurringGiftListController {
 
     @Resource(name="recurringGiftService")
     private RecurringGiftService recurringGiftService;
+    
+    @Resource(name="giftService")
+    private GiftService giftService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/recurringGiftList.json")
@@ -80,6 +84,8 @@ public class RecurringGiftListController {
         List<RecurringGift> list = result.getRows();
 
         for(RecurringGift g : list) {
+        	
+        	g.setGifts(giftService.readGiftsByRecurringGiftId(g));
             rows.add( recurringGiftToMap(g) );
         }
 

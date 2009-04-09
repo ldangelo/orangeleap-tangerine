@@ -230,10 +230,13 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         } 
         else if (Commitment.STATUS_ACTIVE.equals(status)) {
             nextGiftDate = calculateNextRunDate(commitment);
-        } 
+        }
+        /*
+         * If the status is FULFILLED then we set the nextGiftDate to NULL so it stops charging 
+         
         else if (Commitment.STATUS_FULFILLED.equals(status)) {
             nextGiftDate = calculateNextRunDate(commitment);
-        } 
+        }*/ 
         else {
             nextGiftDate = null;
         }
@@ -246,6 +249,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     protected void createAutoGift(T commitment) {
         Gift gift = giftService.createGift(commitment, GiftType.MONETARY_GIFT, GiftEntryType.AUTO);
+        commitment.addGift(gift);
         gift = giftService.maintainGift(gift);
         commitment.setLastEntryDate(gift.getTransactionDate());
     }

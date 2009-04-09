@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -155,25 +158,26 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isDebugEnabled()) {
             logger.debug("processRecurringGifts:");
         }
-//        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { Commitment.STATUS_ACTIVE, Commitment.STATUS_FULFILLED }));
-//        if (recurringGifts != null) {
-//            for (RecurringGift recurringGift : recurringGifts) {
-//                logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
-//                Date nextDate = null;
-//                if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
-//                    createAutoGift(recurringGift);
-//                    nextDate = getNextRecurringGiftDate(recurringGift);
-//                    if (nextDate != null) {
-//                        recurringGift.setNextRunDate(nextDate);
-//                        recurringGiftDao.maintainRecurringGift(recurringGift);
-//                    }
+        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { Commitment.STATUS_ACTIVE /*, Commitment.STATUS_FULFILLED*/ }));
+        if (recurringGifts != null) {
+            for (RecurringGift recurringGift : recurringGifts) {
+                logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
+                Date nextDate = null;
+                if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
+                    createAutoGift(recurringGift);
+                    nextDate = getNextGiftDate(recurringGift);
+                    if (nextDate != null) {
+
+                        recurringGift.setNextRunDate(nextDate);
+                        recurringGiftDao.maintainRecurringGift(recurringGift);
+                    }
+                }
+                // TODO: is this necessary?
+//                if (nextDate == null) {
+//                    recurringGiftDao.removeRecurringGift(recurringGift);
+//                    recurringGift = null;
 //                }
-//                // TODO: is this necessary?
-////                if (nextDate == null) {
-////                    recurringGiftDao.removeRecurringGift(recurringGift);
-////                    recurringGift = null;
-////                }
-//            }
-//        }
+            }
+        }
     }
 }

@@ -25,7 +25,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 
-@SuppressWarnings("deprecation")
 public class CsvExportController extends SimpleFormController {
 
     protected final Log logger = LogFactory.getLog(getClass());
@@ -42,8 +41,17 @@ public class CsvExportController extends SimpleFormController {
         return new ExportRequest();
     }
     
-    private final Date FUTURE_DATE = new Date("1/1/2100");
-    private final Date PAST_DATE = new Date("1/1/1900");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    private static Date FUTURE_DATE;
+    private static Date PAST_DATE;
+    static {
+    	try {
+    		FUTURE_DATE = sdf.parse("1/1/2100");
+    		PAST_DATE = sdf.parse("1/1/1900");
+    	} catch (Exception e) {}
+    }
+    private static final Long LOW_ID = new Long(0);
+    private static final Long HIGH_ID = new Long(Long.MAX_VALUE);
 
 	@Override
 	protected ModelAndView processFormSubmission(
@@ -53,6 +61,8 @@ public class CsvExportController extends SimpleFormController {
 		ExportRequest er = (ExportRequest)command;
 		if (er.getFromDate() == null) er.setFromDate(PAST_DATE);
 		if (er.getToDate() == null) er.setToDate(FUTURE_DATE);
+		if (er.getFromId() == null) er.setFromId(LOW_ID);
+		if (er.getToId() == null) er.setToId(HIGH_ID);
 		
 		if (!CsvImportController.importexportAllowed(request)) {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.

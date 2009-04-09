@@ -86,6 +86,22 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+	public List<Person> readAllConstituentsByIdRange(Long fromId, Long toId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllConstituentsByIdRange:");
+        }
+
+        Map<String,Object> params = setupParams();
+        params.put("fromId", fromId);
+        params.put("toId", toId);
+
+        List list = getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_ID_RANGE", params);
+        if (list.size() > 5000) throw new RuntimeException("Selection too large."); // Note this needs to be one less than the 5001 in constituent.xml
+        return list;
+    }
 
     @Override
     public int getConstituentCountBySite() {

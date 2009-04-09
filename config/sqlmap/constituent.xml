@@ -62,7 +62,17 @@
         order by $sortColumn$ $sortDir$
         limit $offset$,$limit$
     </select>
-
+    
+    <select id="SELECT_LIMITED_CONSTITUENTS_BY_ID_RANGE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+        select
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>
+        from CONSTITUENT p
+        where p.SITE_NAME = #siteName#
+        and p.CONSTITUENT_ID between #fromId# and #toId#
+        order by p.CONSTITUENT_ID
+        limit 5001
+    </select>
+    
     <select id="SELECT_CONSTITUENT_COUNT_BY_SITE" parameterClass="string" resultClass="int">
         select count(CONSTITUENT_ID) from CONSTITUENT where SITE_NAME = #value#
     </select>

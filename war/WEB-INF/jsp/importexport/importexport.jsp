@@ -6,13 +6,25 @@
 	<tiles:putAttribute name="sidebarNav" value="Import Export" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
+		    
+		    <script>
+		    function ImportExport_hideShow(val) {
+
+		    	if ( val === 'person' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
+		    	if ( val === 'gift' || val === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }
+			    
+		    }
+		    </script>
+		
+		
 			
 			<h1>Export a CSV file</h1>
 	        <form method="post" action="export.htm" >
 	        
-		        <select id="entity" name="entity"  onchange="if ( $('#entity').val() === 'gift' || $('#entity').val() === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }"  >
+		        <select id="entity" name="entity"  onchange="ImportExport_hideShow( $('#entity').val() );"  >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
+		          <!-- <option value="address">Addresses</option>   -->
 		          <option value="gift">Gift Summary</option> 
 		          <!--  <option value="distributionLine">Gift Detail</option>    -->
 		        </select>    
@@ -22,6 +34,16 @@
 		        <br/>
 		        <br/>
 		        
+
+		        <div id="nameRange">
+		         <div>
+					  From constituent Id: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
+					  &nbsp;&nbsp;&nbsp;To constituent Id: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
+		         </div>
+		        </div>
+		        <script type="text/javascript">$('#nameRange').hide();</script>
+
+
 		        <div id="dateRange">
 		         <div class="lookupWrapper">
 					  From date: <input id="fromDate" name="fromDate" size="16" maxlength="10" class="text date" type="text" />
@@ -31,6 +53,7 @@
 		         </div>
 		        </div>
 		        <script type="text/javascript">$('#dateRange').hide();</script>
+
 		        
 	        </form>
 	        
@@ -45,6 +68,7 @@
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
  		          <option value="gift">Gifts: Cash and Checks</option> 
+ 		          <!-- <option value="address">Addresses</option>  -->
 		        </select>            
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import"  />

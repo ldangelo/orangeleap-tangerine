@@ -20,6 +20,7 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public abstract class EntityImporter {
 	
@@ -32,22 +33,31 @@ public abstract class EntityImporter {
 	protected String entity;
 	protected ApplicationContext applicationContext;
 	protected SiteService siteservice;
-	protected EntityExporter entityexporter;
+	protected TangerineUserHelper tangerineUserHelper;
+
 	protected List<FieldDescriptor> fieldDescriptors; 
 	protected Map<String, FieldDescriptor> fieldDescriptorMap = new HashMap<String, FieldDescriptor>();
 	
 	protected EntityImporter(String entity, ApplicationContext applicationContext) {
 		this.entity = entity;
 		this.applicationContext = applicationContext;
+		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
+
 		siteservice = (SiteService)applicationContext.getBean("siteService");
-		ExportRequest er = new ExportRequest();
-		er.setEntity(entity);
-		entityexporter = new EntityExporterFactory().getEntityExporter(er, applicationContext);
-		fieldDescriptors = entityexporter.getExportFieldDescriptors();
+		fieldDescriptors = getFieldDescriptors();
 		for (FieldDescriptor fd : fieldDescriptors) {
             fieldDescriptorMap.put(fd.getName(), fd);
         }
 	}	
+	
+	// Default to same field list as corresponding exporter
+	protected List<FieldDescriptor> getFieldDescriptors() {
+		ExportRequest er = new ExportRequest();
+		er.setEntity(entity);
+		EntityExporter entityexporter = new EntityExporterFactory().getEntityExporter(er, applicationContext);
+		return entityexporter.getExportFieldDescriptors();
+	}
+	
 	
 	public abstract void importValueMap(String action, Map<String, String> m) throws ConstituentValidationException;
 	public abstract String getIdField();

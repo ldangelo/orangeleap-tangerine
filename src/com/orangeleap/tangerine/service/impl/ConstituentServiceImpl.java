@@ -137,6 +137,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.searchConstituents(params, ignoreIds);
     }
+    
+    @Override
+    public List<Person> readAllConstituentsByIdRange(Long fromId, Long toId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readAllConstituentsByIdRange: " + fromId + " " + toId);
+        }
+        return constituentDao.readAllConstituentsByIdRange(fromId, toId);
+    }
+    
 
     @Override
     public Person createDefaultConstituent() {

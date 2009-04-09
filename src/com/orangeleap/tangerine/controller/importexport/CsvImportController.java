@@ -107,6 +107,7 @@ public class CsvImportController extends SimpleFormController {
 			}
 		
 		} catch (Exception e) {
+			e.printStackTrace();
 		    result.add(e.getMessage());
 		}
 		

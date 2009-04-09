@@ -11,6 +11,7 @@ public class EntityExporterFactory {
 		
 		if ("person".equals(er.getEntity())) return new PersonExporter(er, applicationContext);
 		if ("gift".equals(er.getEntity())) return new GiftExporter(er, applicationContext);
+		if ("address".equals(er.getEntity())) return new AddressExporter(er, applicationContext);
 		
 		return null;
 	}

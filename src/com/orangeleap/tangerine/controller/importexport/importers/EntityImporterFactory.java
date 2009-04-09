@@ -9,6 +9,7 @@ public class EntityImporterFactory {
 		
 		if ("person".equals(entity)) return new PersonImporter(entity, applicationContext);
 		if ("gift".equals(entity)) return new GiftImporter(entity, applicationContext);
+		if ("address".equals(entity)) return new AddressImporter(entity, applicationContext);
 		
 		return null;
 	}

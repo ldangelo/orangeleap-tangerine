@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -617,4 +618,29 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         returnLines.addAll(pledgeLines); // Add the remaining pledge lines; these are the pledge distribution lines not already assigned to the gift
 	}
+	   
+	@Override
+    public void checkAssociatedPledgeIds(Gift gift) {
+        Set<Long> linePledgeIds = new HashSet<Long>();
+        for (DistributionLine line : gift.getMutableDistributionLines()) {
+            if (line != null) {
+                String associatedPledgeId = line.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID);
+                if (NumberUtils.isDigits(associatedPledgeId)) {
+                    Long thisPledgeId = Long.parseLong(associatedPledgeId);
+                    linePledgeIds.add(thisPledgeId);
+                    if (gift.getAssociatedPledgeIds() == null || gift.getAssociatedPledgeIds().contains(thisPledgeId) == false) {
+                        gift.addAssociatedPledgeId(thisPledgeId);
+                    }
+                }
+            }
+        }
+        if (gift.getAssociatedPledgeIds() != null) {
+            for (Iterator<Long> iter = gift.getAssociatedPledgeIds().iterator(); iter.hasNext();) {
+                Long id = iter.next();
+                if (linePledgeIds.contains(id) == false) {
+                    iter.remove();
+                }
+            }
+        }
+    }
 }

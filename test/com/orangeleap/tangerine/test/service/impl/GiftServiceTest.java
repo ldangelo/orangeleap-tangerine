@@ -339,4 +339,82 @@ public class GiftServiceTest extends BaseTest {
         return gift;
     }
     
+    @Test
+    public void testCheckAssociatedPledgeIds() throws Exception {
+        Gift gift = new Gift();
+        List<DistributionLine> lines = initLazyListDistributionLines();
+        DistributionLine aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "1");
+        lines.add(aLine);
+        gift.setMutableDistributionLines(lines);
+        giftService.checkAssociatedPledgeIds(gift);   
+        assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 1L;
+        
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "1");
+        lines.add(aLine);
+        gift.setMutableDistributionLines(lines);
+        gift.addAssociatedPledgeId(1L);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 1L;
+
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
+        lines.add(aLine);
+        gift.setMutableDistributionLines(lines);
+        gift.addAssociatedPledgeId(1L);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds().size() == 1 && gift.getAssociatedPledgeIds().get(0) == 2L;
+
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
+        lines.add(aLine);
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "3");
+        lines.add(aLine);
+        gift.setMutableDistributionLines(lines);
+        gift.addAssociatedPledgeId(3L);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds().size() == 2;
+        for (Long id : gift.getAssociatedPledgeIds()) {
+            assert id == 2L || id == 3L;
+        }
+
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "2");
+        lines.add(aLine);
+        aLine = new DistributionLine();
+        aLine.setCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, "3");
+        lines.add(aLine);
+        gift.setMutableDistributionLines(lines);
+        gift.addAssociatedPledgeId(2L);
+        gift.addAssociatedPledgeId(3L);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds().size() == 2;
+        for (Long id : gift.getAssociatedPledgeIds()) {
+            assert id == 2L || id == 3L;
+        }
+
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        gift.setMutableDistributionLines(lines);
+        gift.addAssociatedPledgeId(1L);
+        gift.addAssociatedPledgeId(5L);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds().isEmpty();
+
+        gift = new Gift();
+        lines = initLazyListDistributionLines();
+        gift.setMutableDistributionLines(lines);
+        giftService.checkAssociatedPledgeIds(gift);
+        assert gift.getAssociatedPledgeIds() == null;
+    }
 }

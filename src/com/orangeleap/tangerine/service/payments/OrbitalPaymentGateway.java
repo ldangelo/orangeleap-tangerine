@@ -52,6 +52,8 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	@Override
 	public void AuthorizeAndCapture(Gift gift) {
 		RequestIF request = null;
+		String month;
+		String year;
 
 		if (configurator == null) {
             Initialize();
@@ -71,16 +73,20 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 					.getMerchantNumber());
 			request.setFieldValue("BIN", gift.getSite().getMerchantBin());
 			request.setFieldValue("OrderID", gift.getId().toString());
-			request.setFieldValue("AccountNum", gift.getPaymentSource()
+			request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
 					.getCreditCardNumber());
 			request.setFieldValue("Amount", gift.getAmount().toString());
-			request.setFieldValue("Exp", gift.getPaymentSource()
-					.getCreditCardExpirationMonth().toString()
-					+ gift.getPaymentSource().getCreditCardExpirationYear()
-							.toString());
+
+			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
+			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
+			
+			if (month.length() == 1) month = "0" + month;
+			
+			request.setFieldValue("Exp", month + year);
+
 			// AVS Information
 			if (gift.getAddress().isValid()) {
-				request.setFieldValue("AVSname", gift.getPaymentSource()
+				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
 						.getCreditCardHolderName());
 				request.setFieldValue("AVSaddress1", gift.getAddress()
 						.getAddressLine1());
@@ -156,7 +162,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	@Override
 	public void Authorize(Gift gift) {
 		RequestIF request = null;
-
+		String month;
+		String year;
+		
 		if (configurator == null) {
             Initialize();
         }
@@ -178,10 +186,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
 					.getCreditCardNumber());
 			request.setFieldValue("Amount", gift.getAmount().toString());
-			request.setFieldValue("Exp", gift.getSelectedPaymentSource()
-					.getCreditCardExpirationMonth().toString()
-					+ gift.getSelectedPaymentSource().getCreditCardExpirationYear()
-							.toString().substring(2));
+			
+			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
+			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
+			
+			if (month.length() == 1) month = "0" + month;
+			
+			request.setFieldValue("Exp", month + year);
+
 			// AVS Information
 			if (gift.getSelectedAddress().isValid()) {
 				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()

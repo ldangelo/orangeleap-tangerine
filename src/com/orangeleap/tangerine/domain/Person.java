@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.domain;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -390,8 +389,13 @@ public class Person extends AbstractCommunicatorEntity {
         if (isOrganization() && StringUtils.isBlank(getLegalName())) {
             setLegalName(getOrganizationName());
         }
-        if (isIndividual() && StringUtils.isBlank(getRecognitionName())) {
-            setRecognitionName(createName(false));
+        if (StringUtils.isBlank(getRecognitionName())) {
+            if (isIndividual()) { 
+                setRecognitionName(createName(false));
+            }
+            else if (isOrganization()) {
+                setRecognitionName(getOrganizationName());
+            }
         }
         if (StringUtils.isBlank(getCustomFieldValue(FORMAL_SALUTATION))) {
             if (isOrganization()) {

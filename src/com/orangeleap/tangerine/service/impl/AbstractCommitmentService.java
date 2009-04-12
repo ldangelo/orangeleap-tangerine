@@ -63,7 +63,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
             commitmentWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
-        DistributionLine line = new DistributionLine();
+        DistributionLine line = new DistributionLine(constituent);
+        line.setDefaults();
         BeanWrapper lineWrapper = PropertyAccessorFactory.forBeanPropertyAccess(line);
         lineWrapper.setPropertyValue(lineIdProperty, commitment.getId());
         lines.add(line);

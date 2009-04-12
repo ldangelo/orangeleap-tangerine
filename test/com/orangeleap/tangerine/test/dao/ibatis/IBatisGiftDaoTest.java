@@ -97,7 +97,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert "Straight Cash Homey".equals(gift.getComments());
         assert gift.getTransactionDate() != null;
         assert 300 == gift.getAmount().intValue();
-        assert 300== gift.getDeductibleAmount().intValue();
+        assert 300 == gift.getDeductibleAmount().intValue();
         assert PaymentSource.ACH.equals(gift.getPaymentType());
         assert gift.isDeductible() == false;
         assert GiftEntryType.MANUAL.equals(gift.getEntryType());
@@ -124,6 +124,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (DistributionLine line : gift.getDistributionLines()) {
             assert line.getId() >= 100L && line.getId() <= 400L;
             assert 300L == line.getGiftId();
+            assert 200L == line.getPerson().getId();
             switch (line.getId().intValue()) {
                 case 100:
                     assert 150 == line.getAmount().intValue();
@@ -294,6 +295,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
 
         for (DistributionLine line : readGift.getDistributionLines()) {
             assert readGift.getId().equals(line.getGiftId());
+            assert line.getPerson().getId() == 100L;
             if (100.5 == line.getAmount().floatValue()) {
                 assert "foo".equals(line.getProjectCode());
                 assert line.getMotivationCode() == null;

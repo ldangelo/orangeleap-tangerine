@@ -84,6 +84,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
         for (DistributionLine line : readPledge.getDistributionLines()) {
             assert readPledge.getId().equals(line.getPledgeId());
+            assert line.getPerson().getId() == 100L;
             if (100 == line.getAmount().floatValue()) {
                 assert "foo".equals(line.getProjectCode());
                 assert line.getMotivationCode() == null;
@@ -188,6 +189,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
                     assert line.getGiftId() == null;
                     assert line.getMotivationCode() == null;
                     assert line.getProjectCode() == null;
+                    assert line.getPerson().getId() == 300L;
                     break;
                 case 600:
                     assert 5 == line.getAmount().intValue();
@@ -196,6 +198,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
                     assert line.getGiftId() == null;
                     assert line.getMotivationCode() == null;
                     assert line.getProjectCode() == null;
+                    assert line.getPerson().getId() == 300L;
                     break;
                 default:
                     Assert.assertTrue("Invalid ID = " + line.getId(), false);
@@ -268,11 +271,13 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert lines.get(0).getId() == 900L;
         assert lines.get(0).getAmount().intValue() == 99;
         assert lines.get(0).getPledgeId() == 800L;
+        assert lines.get(0).getPerson().getId() == 200L;
         
         pledgeIds.add("700");
         lines = pledgeDao.findDistributionLinesForPledges(pledgeIds);
         assert lines != null && lines.size() == 3;
         for (DistributionLine line : lines) {
+            assert line.getPerson().getId() == 200L;
             switch (line.getId().intValue()) {
                 case 700:
                     assert 1.99f == line.getAmount().floatValue();

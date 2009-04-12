@@ -40,7 +40,7 @@ public interface GiftService {
 
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
-    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount);
+    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent);
 
     public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType);
 
@@ -54,9 +54,9 @@ public interface GiftService {
 
 	public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo);
 	
-	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges);
+	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent);
 	
-	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId);
+	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId, Person constituent);
 	
 	public void checkAssociatedPledgeIds(Gift gift);
 }

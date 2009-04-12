@@ -60,94 +60,114 @@ public class GiftServiceTest extends BaseTest {
 
     @Test(groups="testRemove")
     public void testRemoveDefaultDistributionLine() throws Exception {
+        Person constituent = new Person();
         List<DistributionLine> lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
         
-        List<DistributionLine> returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        List<DistributionLine> returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.isEmpty();
         
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30.01"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30.01"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.isEmpty();
 
         lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 2 && returnLines.get(0).getAmount().equals(new BigDecimal("30")) && returnLines.get(1).getAmount().equals(new BigDecimal("30"));
         
         lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), "foo", null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, "foo", null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, "foo"));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("99.99"), null, null, null));
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
         DistributionLine line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.addCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "false");
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
 
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.setCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true");
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.isEmpty();
 
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.setCustomFieldValue("anonymous", "true");
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
         
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.setCustomFieldValue("anonymous", null);
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.isEmpty();
         
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.setCustomFieldValue("anonymous", StringConstants.EMPTY);
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.isEmpty();
         
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         line.setAssociatedPledgeId(100L);
         lines.add(line);
-        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"));
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
+        assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
+        
+        lines = initLazyListDistributionLines();
+        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
+        constituent.setRecognitionName("foo");
+        line.setPerson(constituent);
+        line.setDefaults();
+        lines.add(line);
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
+        assert returnLines != null && returnLines.isEmpty();
+        
+        lines = initLazyListDistributionLines();
+        line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
+        Person newPerson = new Person();
+        newPerson.setRecognitionName("foo2");
+        line.setPerson(newPerson);
+        line.setDefaults();
+        lines.add(line);
+        returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
         assert returnLines != null && returnLines.size() == 1 && returnLines.get(0).getAmount().equals(new BigDecimal("30"));
     }
 
     @Test
     public void testCombineGiftPledgeDistributionLines() throws Exception {
-        List<DistributionLine> lines = giftService.combineGiftPledgeDistributionLines(null, null, BigDecimal.ZERO, 2);
+        List<DistributionLine> lines = giftService.combineGiftPledgeDistributionLines(null, null, BigDecimal.ZERO, 2, null);
         assert lines != null && lines.isEmpty();
         
-        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), null, BigDecimal.TEN, 2);
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), null, BigDecimal.TEN, 2, null);
         assert lines != null && lines.size() == 1;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L;
@@ -155,7 +175,7 @@ public class GiftServiceTest extends BaseTest {
             assert new BigDecimal(15).equals(line.getPercentage());
         }
         
-        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal("33.33"), 2);
+        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal("33.33"), 2, null);
         assert lines != null && lines.size() == 3;
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal totalPct = BigDecimal.ZERO;
@@ -183,7 +203,7 @@ public class GiftServiceTest extends BaseTest {
         Assert.assertEquals("Expected total amount = 33.33", new BigDecimal("33.33"), totalAmount);
         Assert.assertEquals("Expected total percentage = 100.00", new BigDecimal("100.00"), totalPct);
 
-        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(0), 2);
+        lines = giftService.combineGiftPledgeDistributionLines(null, setupPledgeDistributionLines(), new BigDecimal(0), 2, null);
         assert lines != null && lines.size() == 3;
         for (DistributionLine line : lines) {
             assert line.getId() == 98L || line.getId() == 99L || line.getId() == 100L;
@@ -203,7 +223,7 @@ public class GiftServiceTest extends BaseTest {
             }
         }
         
-        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), new BigDecimal(20), 2);
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), new BigDecimal(20), 2, null);
         assert lines != null && lines.size() == 4;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;
@@ -227,7 +247,7 @@ public class GiftServiceTest extends BaseTest {
             }
         }
 
-        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), BigDecimal.ZERO, 2);
+        lines = giftService.combineGiftPledgeDistributionLines(setupGiftDistributionLines(), setupPledgeDistributionLines(), BigDecimal.ZERO, 2, null);
         assert lines != null && lines.size() == 4;
         for (DistributionLine line : lines) {
             assert line.getId() == 1L || line.getId() == 3L || line.getId() == 98L || line.getId() == 99L;

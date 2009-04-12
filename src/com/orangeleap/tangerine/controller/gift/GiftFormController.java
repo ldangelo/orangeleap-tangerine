@@ -31,7 +31,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
         Gift gift = giftService.readGiftByIdCreateIfNull(super.getConstituent(request), request.getParameter(StringConstants.GIFT_ID), 
                 request.getParameter(StringConstants.RECURRING_GIFT_ID), request.getParameter(StringConstants.PLEDGE_ID));
-        giftService.initGiftAmountDistributionLinesFromPledge(gift, request.getParameter("selectedPledgeId"));
+        giftService.initGiftAmountDistributionLinesFromPledge(gift, request.getParameter("selectedPledgeId"), getConstituent(request));
         return gift;
     }
 

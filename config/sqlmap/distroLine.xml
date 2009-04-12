@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="DISTRO_LINE">
 
-	<resultMap id="DISTRO_LINE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
+	<resultMap id="DISTRO_LINE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine" groupBy="id">
 		<result property="id" column="DISTRO_LINE_ID" jdbcType="BIGINT" />
 		<result property="amount" column="DISTRO_LINE_AMOUNT" jdbcType="DECIMAL" />
 		<result property="percentage" column="DISTRO_LINE_PERCENTAGE" jdbcType="DECIMAL" />
@@ -12,6 +12,7 @@
 		<result property="giftId" column="DISTRO_GIFT_ID" jdbcType="BIGINT" />
 		<result property="pledgeId" column="DISTRO_PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="DISTRO_RECURRING_GIFT_ID" jdbcType="BIGINT" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
 	<sql id="DISTRO_LINE_COLS_FRAGMENT">
@@ -21,17 +22,13 @@
 		dl.PLEDGE_ID as DISTRO_PLEDGE_ID, dl.RECURRING_GIFT_ID as DISTRO_RECURRING_GIFT_ID
 	</sql>
 	
-	<select id="SELECT_DISTRO_LINE_BY_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="long">
-		select 
-		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
-		from DISTRO_LINE dl
-		where dl.DISTRO_LINE_ID = #id#
-	</select>
-
 	<select id="SELECT_DISTRO_LINE_BY_PLEDGE_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map">
 		select 
-		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 		from DISTRO_LINE dl
+		inner join PLEDGE pld on dl.PLEDGE_ID = pld.PLEDGE_ID 
+		inner join CONSTITUENT p on pld.CONSTITUENT_ID = p.CONSTITUENT_ID
 		where dl.PLEDGE_ID in 
 		<iterate property="pledgeIds" conjunction="," open="(" close=")">
 			#pledgeIds[]#

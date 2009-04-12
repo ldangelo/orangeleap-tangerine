@@ -6,6 +6,7 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class DistributionLine extends AbstractCustomizableEntity {  
@@ -20,6 +21,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long pledgeId;
     private Long recurringGiftId;
     private Long associatedPledgeId;
+    private Person person;
 
     public DistributionLine() { }
 
@@ -34,7 +36,13 @@ public class DistributionLine extends AbstractCustomizableEntity {
     
     public DistributionLine(DistributionLine otherLine, Long giftId) {
         this(otherLine.getAmount(), otherLine.getPercentage(), otherLine.getProjectCode(), otherLine.getMotivationCode(), otherLine.getOther_motivationCode());
+        this.person = otherLine.getPerson();
         this.giftId = giftId;
+    }
+
+    public DistributionLine(Person person) {
+        this();
+        this.person = person;
     }
 
     public BigDecimal getAmount() {
@@ -109,6 +117,14 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.associatedPledgeId = associatedPledgeId;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     public boolean isValid() {
         boolean valid = false;
         if (amount != null) {
@@ -131,6 +147,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     public void setDefaults() {
         super.setDefaults();
         setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true"); 
+        setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, person == null ? null : person.getRecognitionName());
     }
 
     @Override

@@ -39,7 +39,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     /** Form bean representation of the DistributionLines */
     protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
-            DistributionLine line = new DistributionLine();
+            DistributionLine line = new DistributionLine(getPerson());
             line.setDefaults();
             return line;
         }
@@ -49,7 +49,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected List<DistributionLine> distributionLines;
     
     /* Used by the form for cloning */
-    protected final List<DistributionLine> dummyDistributionLines;
+    protected List<DistributionLine> dummyDistributionLines;
 
     private FormBeanType addressType;
     private FormBeanType phoneType;
@@ -68,11 +68,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public AbstractPaymentInfoEntity() {
         super();
-        List<DistributionLine> lines = new ArrayList<DistributionLine>();
-        DistributionLine line = new DistributionLine();
-        line.setDefaults();
-        lines.add(line);
-        dummyDistributionLines = UnmodifiableList.decorate(lines);
     }
 
     public Person getPerson() {
@@ -89,6 +84,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
                 selectedPaymentSource.setPerson(person);
             }
         }
+        List<DistributionLine> lines = new ArrayList<DistributionLine>();
+        DistributionLine line = new DistributionLine(person);
+        line.setDefaults();
+        lines.add(line);
+        dummyDistributionLines = UnmodifiableList.decorate(lines);
     }
 
     public String getComments() {
@@ -175,7 +175,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             }
         }
         if (distributionLines.isEmpty()) {
-            DistributionLine line = new DistributionLine();
+            DistributionLine line = new DistributionLine(person);
             line.setDefaults();
             distributionLines.add(line);
         }
@@ -349,7 +349,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             for (DistributionLine line : distributionLines) {
                 if (line != null) {
                     line.setDefaults();
-                    line.setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, person == null ? null : person.getRecognitionName());
                 }
             }
         }

@@ -342,7 +342,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         gift.setPerson(constituent);
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
-        DistributionLine line = new DistributionLine();
+        DistributionLine line = new DistributionLine(constituent);
+        line.setDefaults();
         line.setGiftId(gift.getId());
         lines.add(line);
         gift.setDistributionLines(lines);
@@ -485,7 +486,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	}
 	
 	@Override
-	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId) {
+	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId, Person constituent) {
         if (logger.isDebugEnabled()) {
             logger.debug("initGiftAmountDistributionLinesFromPledge: selectedPledgeId = " + selectedPledgeId);
         }
@@ -495,7 +496,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                 Pledge pledge = pledgeService.readPledgeById(pledgeId);
                 if (pledge != null) {
                     gift.setAmount(pledge.isRecurring() ? pledge.getAmountPerGift() : pledge.getAmountTotal());
-                    gift.setDistributionLines(combineGiftPledgeDistributionLines(null, pledge.getDistributionLines(), gift.getAmount(), 1));
+                    gift.setDistributionLines(combineGiftPledgeDistributionLines(null, pledge.getDistributionLines(), gift.getAmount(), 1, constituent));
                     gift.addAssociatedPledgeId(pledgeId);
                 }
             }
@@ -503,13 +504,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	}
 	
 	@Override
-	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges) {
+	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent) {
 	    if (logger.isDebugEnabled()) {
 	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
 	    }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
         
-        giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, amount);
+        giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, amount, constituent);
         
         if ((pledgeLines == null || pledgeLines.isEmpty()) && giftDistributionLines != null) {
             // NO pledge distribution lines associated with this gift; only add gift distribution lines that have no pledge associations
@@ -553,7 +554,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	 * Check if a default distribution line was created; remove if necessary
 	 * @param giftDistributionLines
 	 */
-	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount) {
+	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent) {
         if (logger.isDebugEnabled()) {
             logger.debug("removeDefaultDistributionLine: amount = " + amount);
         }
@@ -569,7 +570,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         /* If only 1 line is entered, check if it is the default */
         if (count == 1) {
-            DistributionLine defaultLine = new DistributionLine();
+            DistributionLine defaultLine = new DistributionLine(constituent);
             defaultLine.setDefaults();
             
             if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {

@@ -10,6 +10,7 @@ import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.util.StringUtils;
 
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 
 
@@ -20,21 +21,26 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
  */
 @SuppressWarnings("unchecked")
 public class GiftPledgeLinesForm {
-    
+    private Person constituent;
     private String selectedPledgeIds;
     private Set<String> pledgeIds;
     private String amount;
     private BigDecimal enteredAmount;
     
+    public GiftPledgeLinesForm(Person constituent) {
+        super();
+        this.constituent = constituent;
+    }
+
     /** Form bean representation of the DistributionLines */
     private List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
-            DistributionLine line = new DistributionLine();
+            DistributionLine line = new DistributionLine(constituent);
             line.setDefaults();
             return line;
         }
     });
-    
+
     public Set<String> getPledgeIds() {
         return pledgeIds;
     }

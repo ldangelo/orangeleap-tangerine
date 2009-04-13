@@ -11,7 +11,7 @@
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-			<mp:page pageName='giftAdjustment,giftView' skip="giftView:gift.distribution,giftView:gift.extendedDistribution" />
+			<mp:page pageName='giftAdjustment,giftView' skip="giftView:gift.donation,giftView:gift.distribution,giftView:gift.extendedDistribution" />
 
 			<c:set var="person" value="${gift.person}" scope="request" />
 			<c:if test="${person.id != null}">
@@ -19,7 +19,7 @@
 			</c:if>
 
 			<form:form method="post" commandName="gift">
-				<spring:message code='submitGift' var="submitText" />
+				<spring:message code='adjustGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
@@ -130,8 +130,11 @@
 				</div>
 
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
+                <script type="text/javascript">
+                     Ext.select('.gridActions').hide();
+                </script>
 				<div class="formButtonFooter personFormButtons">
-					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
+					<input type="submit" value="<spring:message code='adjustGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
 					</c:if>

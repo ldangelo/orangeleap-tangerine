@@ -12,6 +12,7 @@ import org.joda.time.Weeks;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.CommitmentType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public abstract class Commitment extends AbstractPaymentInfoEntity {  
 
@@ -194,6 +195,14 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
             }
         }
         return amount;
+    }
+
+    @Override
+    public void setDefaults() {
+        super.setDefaults();
+        setDefaultCustomFieldValue(StringConstants.INITIAL_REMINDER, "5");
+        setDefaultCustomFieldValue(StringConstants.MAXIMUM_REMINDERS, "1");
+        setDefaultCustomFieldValue(StringConstants.REMINDER_INTERVAL, "0");
     }
 
     @Override

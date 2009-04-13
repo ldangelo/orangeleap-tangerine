@@ -71,5 +71,9 @@ public final class StringConstants {
     
     public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";
     
+    public static final String INITIAL_REMINDER = "initialReminder";
+    public static final String MAXIMUM_REMINDERS = "maximumReminders";
+    public static final String REMINDER_INTERVAL = "reminderInterval";
+    
     public static final String USD = "USD";
 }

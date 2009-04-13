@@ -44,6 +44,7 @@
 
 				<c:set var="gridCollectionName" value="distributionLines" />
 				<c:set var="gridCollection" value="${gift.distributionLines}" />
+				<c:set var="dummyGridCollection" value="${gift.dummyDistributionLines}" />
 				<c:set var="paymentSource" value="${gift.paymentSource}" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">

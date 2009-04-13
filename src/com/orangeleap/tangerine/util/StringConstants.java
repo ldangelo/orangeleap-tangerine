@@ -12,6 +12,7 @@ public final class StringConstants {
     public static final String ADDRESS = "address";
     public static final String ADDRESSES = "addresses";
     public static final String ADDRESS_ID = "addressId";
+    public static final String ADDRESS_TYPE = "addressType";
     public static final String SELECTED_ADDRESS = "selectedAddress";
 
     public static final String CONSTITUENT = "constituent";
@@ -23,11 +24,13 @@ public final class StringConstants {
     public static final String EMAIL = "email";
     public static final String EMAILS = "emails";
     public static final String EMAIL_ID = "emailId";
+    public static final String EMAIL_TYPE = "emailType";
     public static final String SELECTED_EMAIL = "selectedEmail";
 
     public static final String PHONE = "phone";
     public static final String PHONES = "phones";
     public static final String PHONE_ID = "phoneId";
+    public static final String PHONE_TYPE = "phoneType";
     public static final String SELECTED_PHONE = "selectedPhone";
 
     public static final String GIFT = "gift";

@@ -101,7 +101,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     }
 
     public Date getEffectiveDate() {
-        //TANGERINE-203, for a new, permanent contact, use Today as defaut
+        //TANGERINE-203, for a new, permanent contact, use Today as default
         if((id == null || id == 0) && effectiveDate  == null
                 && ActivationType.permanent.equals(getActivationStatus())) {
             this.effectiveDate = new Date();

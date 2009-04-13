@@ -6,7 +6,6 @@ package com.orangeleap.tangerine.domain.communication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -32,7 +31,9 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     // Called by CustomizableSqlMapClientTemplate when object is loaded.
     public void setCommunicationFields(ApplicationContext applicationContext) {
     	
-    	if (applicationContext == null) return;
+    	if (applicationContext == null) {
+            return;
+        }
     	
     	AddressService addressService;
     	EmailService emailService;

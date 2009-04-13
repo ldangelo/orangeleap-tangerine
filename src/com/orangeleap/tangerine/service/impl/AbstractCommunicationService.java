@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -190,7 +191,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
      * @return today's date
      */
     protected Date getNowDate() {
-        return Calendar.getInstance().getTime();
+        return Calendar.getInstance(Locale.getDefault()).getTime();
     }
     
     protected List<T> filterValidEntities(final List<T> entities) {

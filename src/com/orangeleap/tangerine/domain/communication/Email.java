@@ -1,10 +1,15 @@
 package com.orangeleap.tangerine.domain.communication;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class Email extends AbstractCommunicationEntity  { //SiteAware, ConstituentInfo { TODO: put back for IBatis
 
@@ -55,6 +60,16 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
     	return getEmailAddress();
     }
 
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if (StringUtils.hasText(getCustomFieldValue(StringConstants.EMAIL_TYPE)) == false) {
+            setCustomFieldValue(StringConstants.EMAIL_TYPE, StringConstants.UNKNOWN_LOWER_CASE);
+            if (getEffectiveDate() == null) {
+                setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object obj) {

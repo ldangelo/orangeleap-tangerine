@@ -1,11 +1,15 @@
 package com.orangeleap.tangerine.domain.communication;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.type.ActivationType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class Address extends AbstractCommunicationEntity {
     
@@ -122,6 +126,16 @@ public class Address extends AbstractCommunicationEntity {
     	return getAddressLine1();
     }
 
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if (StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE)) == false) {
+            setCustomFieldValue(StringConstants.ADDRESS_TYPE, StringConstants.UNKNOWN_LOWER_CASE);
+            if (getEffectiveDate() == null) {
+                setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object obj) {

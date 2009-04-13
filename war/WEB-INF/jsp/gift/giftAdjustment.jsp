@@ -5,6 +5,9 @@
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
+    <tiles:putAttribute name="customHeaderContent" type="string">
+		<script type="text/javascript" src="js/gift/distribution.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
@@ -50,6 +53,17 @@
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
+<%-- 
+							<div class="column">
+								<ul class="formFields width385">
+									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+ --%>
 							<div class="column">
 								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
@@ -68,7 +82,7 @@
 									<li class="clear"></li>
 								</ul>
 							</div>
-							<div class="clearColumns"></div>
+ 							<div class="clearColumns"></div>
 						</div>
 					</c:if>
 				</c:forEach>
@@ -115,7 +129,7 @@
 					<div class="clearColumns"></div>
 				</div>
 
-				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
+				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">

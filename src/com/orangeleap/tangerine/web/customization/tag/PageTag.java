@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.web.customization.tag;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
@@ -26,7 +25,7 @@ public class PageTag extends TagSupport {
     private static final long serialVersionUID = 1L;
     private String pageName;
     private PageCustomizationService pageCustomizationService;
-
+    private List<String> skipList = new ArrayList<String>();
     public String getPageName() {
         return pageName;
     }
@@ -35,13 +34,57 @@ public class PageTag extends TagSupport {
         this.pageName = pageName;
     }
 
+    public String getSkip() {
+        // poor-mans join() operation
+        StringBuilder builder = new StringBuilder();
+        for(String item : skipList) {
+            builder.append(item).append(',');
+        }
+
+        if(builder.charAt( builder.length()-1 ) == ',') {
+            builder.deleteCharAt( builder.length() - 1);
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * A comma-separated list of sections that should not be rendered. Each token
+     * in the comma delimited String is in the format pagename:section.name
+     * (pagename, colon, section name). For example, to exclude the gift.distribution
+     * section of the giftView page, you would use a token like giftView:gift.distribution
+     * @param skipSections comma-delimited String of sections to skip
+     */
+    public void setSkip(String skipSections) {
+
+        String[] sides = skipSections.split(",");
+        for(String side:sides) {
+            skipList.add(side);
+        }
+
+    }
+
     @Override
     public int doStartTag() throws JspException {
         ApplicationContext appContext = WebApplicationContextUtils.getWebApplicationContext(this.pageContext.getServletContext());
         pageCustomizationService = (PageCustomizationService) appContext.getBean("pageCustomizationService");
         TangerineUserHelper tangerineUserHelper = (TangerineUserHelper)appContext.getBean("tangerineUserHelper");
-        List<SectionDefinition> sectionDefinitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(pageName), tangerineUserHelper.lookupUserRoles());
-        
+
+        // handle multiple page names separated by a comma
+        String[] pages = pageName.split(",");
+        List<SectionDefinition> sectionDefinitions = new ArrayList<SectionDefinition>();
+
+        for(String page : pages) {
+            List<SectionDefinition> defintions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(page), tangerineUserHelper.lookupUserRoles());
+
+            for(SectionDefinition def : defintions) {
+                String key = page + ":" + def.getSectionName();
+                if(!skipList.contains(key)) {
+                    sectionDefinitions.add(def);
+                }
+            }
+        }
+
         pageContext.getRequest().setAttribute("sectionDefinitions", sectionDefinitions);
         seperateSectionsByGridColumns(sectionDefinitions);
         return Tag.EVAL_BODY_INCLUDE;

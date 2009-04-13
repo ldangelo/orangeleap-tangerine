@@ -31,6 +31,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private Long originalGiftId;
     private Long refundGiftId;
     private Date refundGiftTransactionDate;
+    private String refundDetails;
     private boolean deductible = false;
     private String txRefNum;
     private String paymentStatus = StringConstants.EMPTY;
@@ -162,6 +163,14 @@ public class Gift extends AbstractPaymentInfoEntity {
 
     public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
         this.refundGiftTransactionDate = refundGiftTransactionDate;
+    }
+
+    public String getRefundDetails() {
+        return refundDetails;
+    }
+
+    public void setRefundDetails(String refundDetails) {
+        this.refundDetails = refundDetails;
     }
 
     public boolean isDeductible() {

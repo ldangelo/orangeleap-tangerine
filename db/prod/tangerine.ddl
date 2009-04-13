@@ -600,6 +600,7 @@ CREATE TABLE `GIFT` (
   `POSTMARK_DATE` datetime default NULL,
   `REFUND_GIFT_ID` bigint(20) default NULL,
   `REFUND_GIFT_TRANSACTION_DATE` datetime default NULL,
+  `REFUND_DETAILS` varchar(255) default NULL,
   `SEND_ACKNOWLEDGMENT` char(1) NOT NULL default '0',
   `TRANSACTION_DATE` datetime default NULL,
   `PAYMENT_TXREFNUM` varchar(255) default NULL,

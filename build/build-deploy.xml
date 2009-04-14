@@ -79,6 +79,11 @@
 		
 		<delete dir="${target.tomcat.dir}/temp" />
 		<mkdir dir="${target.tomcat.dir}/temp" />
+
+		<exec dir="${target.tomcat.dir}" executable="chown" >
+			<arg line="-R tomcat.tomcat ${target.tomcat.dir}"/>
+		</exec>
+
 		
 		<delete dir="${target.tomcat.dir}/webapps/orangeleap" />
 		

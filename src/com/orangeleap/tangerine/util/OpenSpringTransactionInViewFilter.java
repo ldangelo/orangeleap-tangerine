@@ -84,8 +84,8 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 			try {
 				txManager.commit(status);
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
+				// Don't generally log transactions marked as rollback only by service or validation exceptions; logged elsewhere.
+				logger.debug(e);
 			}
 		
 		}

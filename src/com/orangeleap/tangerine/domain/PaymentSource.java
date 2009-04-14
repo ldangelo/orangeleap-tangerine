@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.AES;
 
-public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {//SiteAware, ConstituentInfo TODO: put back for IBatis
+public class PaymentSource extends AbstractEntity implements Inactivatible, AddressAware, PhoneAware {
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";
@@ -114,7 +114,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getCreditCardHolderName() {
-        if (creditCardHolderName == null && person != null) {
+        if (creditCardHolderName == null && person != null && CREDIT_CARD.equals(paymentType)) {
             creditCardHolderName = person.getFirstLast();
         }
         return creditCardHolderName;
@@ -125,7 +125,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getAchHolderName() {
-        if (achHolderName == null && person != null) {
+        if (achHolderName == null && person != null && ACH.equals(paymentType)) {
             achHolderName = person.getFirstLast();
         }
         return achHolderName;
@@ -162,7 +162,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         this.creditCardNumber = creditCardNumber;
         if (creditCardNumber != null) {
             creditCardNumberEncrypted = AES.encrypt(creditCardNumber);
-        } else {
+        } 
+        else {
             creditCardNumberEncrypted = null;
         }
     }
@@ -218,7 +219,8 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         this.achAccountNumber = achAccountNumber;
         if (achAccountNumber != null) {
             achAccountNumberEncrypted = AES.encrypt(achAccountNumber);
-        } else {
+        } 
+        else {
             achAccountNumberEncrypted = null;
         }
     }
@@ -467,36 +469,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         return false;
     }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (!(obj instanceof PaymentSource)) {
-//            return false;
-//        }
-//        PaymentSource ps = (PaymentSource) obj;
-//        EqualsBuilder eb = new EqualsBuilder();
-//        eb.append(getPaymentType(), ps.getPaymentType());
-//        if (ACH.equals(getPaymentType())) {
-//            eb.append(achHolderName, ps.achHolderName).append(achAccountNumber, ps.achAccountNumber).append(achAccountNumberEncrypted, ps.achAccountNumberEncrypted);
-//        } 
-//        else if (CREDIT_CARD.equals(getPaymentType())) {
-//            eb.append(creditCardHolderName, ps.creditCardHolderName).append(creditCardType, ps.creditCardType).append(creditCardNumberEncrypted, ps.creditCardNumberEncrypted);
-//        }
-//        return eb.isEquals();
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        HashCodeBuilder hcb = new HashCodeBuilder();
-//        hcb.append(getPaymentType());
-//        if (ACH.equals(getPaymentType())) {
-//            hcb.append(achHolderName).append(achAccountNumber).append(achRoutingNumber);
-//        } 
-//        else if (CREDIT_CARD.equals(getPaymentType())) {
-//            hcb.append(creditCardHolderName).append(creditCardType).append(creditCardNumber);
-//        }
-//        return hcb.hashCode();
-//    }
-
     @Override
     public void prePersist() {
         super.prePersist();
@@ -530,7 +502,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     
     @Override
     public String getAuditShortDesc() {
-    	return (getProfile() == null || getProfile().length() == 0) ? ""+getId() : getProfile();
+    	return (getProfile() == null || getProfile().length() == 0) ? "" + getId() : getProfile();
     }
 
     

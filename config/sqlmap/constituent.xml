@@ -68,8 +68,8 @@
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        and p.CONSTITUENT_ID between #fromId# and #toId#
-        order by p.CONSTITUENT_ID
+        and p.CUSTOM_ID between #fromId# and #toId#
+        order by p.CUSTOM_ID
         limit 5001
     </select>
     

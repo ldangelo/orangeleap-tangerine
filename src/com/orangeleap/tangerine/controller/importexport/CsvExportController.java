@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -50,8 +51,8 @@ public class CsvExportController extends SimpleFormController {
     		PAST_DATE = sdf.parse("1/1/1900");
     	} catch (Exception e) {}
     }
-    private static final Long LOW_ID = new Long(0);
-    private static final Long HIGH_ID = new Long(Long.MAX_VALUE);
+    private static final String LOW_ID = new String("0");
+    private static final String HIGH_ID = new String("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
 
 	@Override
 	protected ModelAndView processFormSubmission(
@@ -61,8 +62,8 @@ public class CsvExportController extends SimpleFormController {
 		ExportRequest er = (ExportRequest)command;
 		if (er.getFromDate() == null) er.setFromDate(PAST_DATE);
 		if (er.getToDate() == null) er.setToDate(FUTURE_DATE);
-		if (er.getFromId() == null) er.setFromId(LOW_ID);
-		if (er.getToId() == null) er.setToId(HIGH_ID);
+		if (StringUtils.trimToNull(er.getFromId()) == null) er.setFromId(LOW_ID);
+		if (StringUtils.trimToNull(er.getToId()) == null) er.setToId(HIGH_ID);
 		
 		if (!CsvImportController.importexportAllowed(request)) {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.

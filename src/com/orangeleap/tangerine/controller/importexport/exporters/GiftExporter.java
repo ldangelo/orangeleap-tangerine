@@ -58,10 +58,10 @@ public class GiftExporter extends EntityExporter {
 		FieldDefinition fd = new FieldDefinition();
 		fd.setId("gift.personId");
 		fd.setEntityType(EntityType.gift);
-		fd.setFieldName("person.accountNumber");
+		fd.setFieldName("person.id");
 		fd.setFieldType(FieldType.TEXT);
 		
-		FieldDescriptor fieldDescriptor = new FieldDescriptor("person.accountNumber", FieldDescriptor.NATIVE, fd);
+		FieldDescriptor fieldDescriptor = new FieldDescriptor("person.id", FieldDescriptor.NATIVE, fd);
 		list.add(0, fieldDescriptor);
 		
 		return list;

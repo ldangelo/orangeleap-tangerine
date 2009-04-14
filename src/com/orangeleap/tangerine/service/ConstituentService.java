@@ -32,6 +32,6 @@ public interface ConstituentService {
 
     public int getConstituentCountBySite();
 
-	public List<Person> readAllConstituentsByIdRange(Long fromId, Long toId);
+	public List<Person> readAllConstituentsByIdRange(String fromId, String toId);
 	
 }

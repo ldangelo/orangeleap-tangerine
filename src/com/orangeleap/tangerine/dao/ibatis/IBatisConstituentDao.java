@@ -21,7 +21,8 @@ import com.orangeleap.tangerine.type.EntityType;
  */
 @Repository("constituentDAO")
 public class IBatisConstituentDao extends AbstractIBatisDao implements ConstituentDao {
-    
+	
+	
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -89,7 +90,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
     @Override
-	public List<Person> readAllConstituentsByIdRange(Long fromId, Long toId) {
+	public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readAllConstituentsByIdRange:");
         }

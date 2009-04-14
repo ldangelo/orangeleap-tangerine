@@ -37,8 +37,8 @@
 
 		        <div id="nameRange">
 		         <div>
-					  From constituent Id: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
-					  &nbsp;&nbsp;&nbsp;To constituent Id: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
+					  From constituent account number: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
+					  &nbsp;&nbsp;&nbsp;To constituent account number: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
 		         </div>
 		        </div>
 		        <script type="text/javascript">$('#nameRange').hide();</script>

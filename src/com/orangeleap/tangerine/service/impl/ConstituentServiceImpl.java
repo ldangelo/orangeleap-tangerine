@@ -139,7 +139,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
     
     @Override
-    public List<Person> readAllConstituentsByIdRange(Long fromId, Long toId) {
+    public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
         if (logger.isDebugEnabled()) {
             logger.debug("readAllConstituentsByIdRange: " + fromId + " " + toId);
         }

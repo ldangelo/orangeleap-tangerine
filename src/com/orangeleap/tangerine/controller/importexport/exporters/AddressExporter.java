@@ -60,10 +60,10 @@ public class AddressExporter extends EntityExporter {
 		FieldDefinition fd = new FieldDefinition();
 		fd.setId("person.id");
 		fd.setEntityType(EntityType.person);
-		fd.setFieldName("accountNumber");
+		fd.setFieldName("id");
 		fd.setFieldType(FieldType.TEXT);
 		
-		FieldDescriptor fieldDescriptor = new FieldDescriptor("accountNumber", FieldDescriptor.NATIVE, fd);
+		FieldDescriptor fieldDescriptor = new FieldDescriptor("id", FieldDescriptor.NATIVE, fd);
 		list.add(0, fieldDescriptor);
 
 		// Add a column for address id

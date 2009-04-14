@@ -149,6 +149,7 @@
 		</bean>
 
 	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
+		<property name="communicationHistoryService" ref="communicationHistoryService"/>
 		<property name="uri" value="http://localhost:8080/jasperserver/services/repository"/>
 		<property name="userName" value="jasperadmin"/>
 		<property name="password" value="jasperadmin"/>

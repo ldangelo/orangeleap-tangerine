@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,10 +33,12 @@ import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty
 import com.jaspersoft.jasperserver.irplugin.JServer;
 import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
 import com.jaspersoft.jasperserver.irplugin.wsclient.WSClient;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
 
 //@Service("emailSendingService")
 public class EmailService {
@@ -46,7 +49,7 @@ public class EmailService {
 	private String uri = null;
 	private String templateName = null;
 	private String subject = null;
-	
+	private CommunicationHistoryService communicationHistoryService;
 	private java.util.Map map = new HashMap();
 	private Site site;
 	
@@ -170,6 +173,18 @@ public class EmailService {
 			//
 			// finally we mail the message
 			sender.send(message);
+
+			//
+			// add entry to touchpoints for this e-mail
+			CommunicationHistory ch = new CommunicationHistory();
+			ch.setPerson(p);
+			ch.setGiftId(g.getId());
+			ch.setSystemGenerated(true);
+			ch.setComments("Sent e-mail using template named " + getTemplateName());
+			ch.setEntryType("Email");
+			ch.setRecordDate(new Date());
+
+			communicationHistoryService.maintainCommunicationHistory(ch);
 			
 		} catch (MessagingException e1) {
 			logger.error(e1.getMessage());
@@ -265,5 +280,14 @@ public class EmailService {
 
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	public CommunicationHistoryService getCommunicationHistoryService() {
+		return communicationHistoryService;
+	}
+
+	public void setCommunicationHistoryService(
+			CommunicationHistoryService communicationHistoryService) {
+		this.communicationHistoryService = communicationHistoryService;
 	}
 }

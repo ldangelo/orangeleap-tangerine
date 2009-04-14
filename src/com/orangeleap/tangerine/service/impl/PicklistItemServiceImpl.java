@@ -16,12 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.PicklistDao;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.type.CacheGroupType;
 
 /*
  * Manages picklist items for site.
@@ -34,11 +36,16 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    
+    
     @Resource(name = "auditService")
     private AuditService auditService;
 
     @Resource(name = "picklistDAO")
     private PicklistDao picklistDao;
+    
+    @Resource(name = "cacheGroupDAO")
+    private CacheGroupDao cacheGroupDao;
     
 
 	private boolean exclude(Picklist picklist) {
@@ -189,7 +196,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist maintainPicklist(Picklist picklist) {
     	validate(picklist);
-    	return picklistDao.maintainPicklist(picklist);
+    	picklist = picklistDao.maintainPicklist(picklist);
+    	cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PICKLIST);
+    	return picklist;
     }
     
     private void validate(Picklist picklist) {
@@ -240,11 +249,13 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	}
         
     	picklist = picklistDao.maintainPicklist(picklist);
+    	cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PICKLIST);
+
 
  		// Audit
         for (PicklistItem apicklistItem: picklist.getPicklistItems()) {
         	if (apicklistItem.getItemName().equals(picklistItem.getItemName())) {
-        		//auditService.auditObject(apicklistItem); // TODO fix for iBatis
+        		auditService.auditObject(apicklistItem); 
         		return apicklistItem;
         	}
         }

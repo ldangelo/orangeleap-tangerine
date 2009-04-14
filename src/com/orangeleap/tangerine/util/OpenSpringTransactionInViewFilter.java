@@ -33,11 +33,8 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 	    
 	    private boolean suppressStartTransaction(HttpServletRequest request) {
 	    	String url = request.getRequestURL().toString();
-	    	return url.endsWith(".gif") 
-	    	|| url.endsWith(".jpg") 
-	    	|| url.endsWith(".png")
-	    	|| url.endsWith(".js")
-	    	|| url.endsWith(".css")
+	    	
+	    	return FilterUtil.isResourceRequest(request)
 	    	|| url.endsWith("/import.htm")
 	    	;
 	    }

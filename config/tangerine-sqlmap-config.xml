@@ -38,5 +38,6 @@
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/paymentHistory.xml"/>
 	<sqlMap resource="sqlmap/dashboard.xml"/>
+	<sqlMap resource="sqlmap/cacheGroup.xml"/>
 
 </sqlMapConfig>

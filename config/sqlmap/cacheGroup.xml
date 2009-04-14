@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="CACHE_GROUP">
+
+
+	<resultMap id="CACHE_GROUP_RESULT" class="com.orangeleap.tangerine.domain.CacheGroup">
+		<result property="id" column="CACHE_GROUP_ID" jdbcType="VARCHAR" />
+		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+
+
+
+	<!-- Selects -->
+	<select id="SELECT_CACHE_GROUPS" parameterClass="map" resultMap="CACHE_GROUP_RESULT">
+		select CACHE_GROUP_ID, UPDATE_DATE from CACHE_GROUP 
+	</select>
+	
+	<!-- Inserts/Updates -->
+	
+	<update id="UPDATE_CACHE_GROUP_BY_ID" parameterClass="map">
+		update CACHE_GROUP
+		set UPDATE_DATE = now()
+		where CACHE_GROUP_ID = #id#
+	</update>
+
+</sqlMap>

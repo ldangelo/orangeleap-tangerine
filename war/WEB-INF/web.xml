@@ -28,6 +28,10 @@
         <filter-name>openSpringTransactionInView</filter-name>
         <filter-class>com.orangeleap.tangerine.util.OpenSpringTransactionInViewFilter</filter-class>
     </filter>
+	<filter>
+        <filter-name>cacheGroup</filter-name>
+        <filter-class>com.orangeleap.tangerine.util.CacheGroupFilter</filter-class>
+    </filter>
 	
 
 	<filter-mapping>
@@ -37,7 +41,12 @@
 	
 	<filter-mapping>
 		<filter-name>openSpringTransactionInView</filter-name>
-		<url-pattern>/*</url-pattern>  <!-- Can we be more specific? -->
+		<url-pattern>/*</url-pattern>  
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>cacheGroup</filter-name>
+		<url-pattern>/*</url-pattern>  
 	</filter-mapping>
 	
 	

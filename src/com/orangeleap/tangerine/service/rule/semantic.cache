@@ -1,0 +1,15 @@
+;; Object rule/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "rule/"
+  :tables (list 
+   (semanticdb-table "DroolsRuleAgent.java"
+    :major-mode 'java-mode
+    :tags '(("com.orangeleap.tangerine.service.rule" package nil nil [1 47]) ("java.util.Properties" include nil nil [49 77]) ("org.apache.commons.logging.Log" include nil nil [79 117]) ("org.apache.commons.logging.LogFactory" include nil nil [118 163]) ("org.drools.agent.RuleAgent" include nil nil [164 198]) ("org.springframework.beans.BeansException" include nil nil [199 247]) ("org.springframework.context.ApplicationContext" include nil nil [248 302]) ("org.springframework.context.ApplicationContextAware" include nil nil [303 362]) ("org.springframework.stereotype.Service" include nil nil [363 409]) ("DroolsRuleAgent" type (:typemodifiers ("public") :interfaces ("ApplicationContextAware") :members (("logger" variable (:typemodifiers ("private" "static" "final") :type "Log") (reparse-symbol class_member_declaration) [506 581]) ("applicationContext" variable (:typemodifiers ("private") :type "ApplicationContext") (reparse-symbol class_member_declaration) [584 630]) ("getDroolsProperties" function (:typemodifiers ("public" "static") :type "Properties") (reparse-symbol class_member_declaration) [634 1277]) ("DroolsRuleAgent" function (:constructor-flag t :typemodifiers ("public")) (reparse-symbol class_member_declaration) [1280 1312]) ("getRuleAgent" function (:typemodifiers ("public") :type "RuleAgent") (reparse-symbol class_member_declaration) [1316 1410]) ("setApplicationContext" function (:throws ("BeansException") :typemodifiers ("public") :arguments (("applicationContext" variable (:type "ApplicationContext") (reparse-symbol formal_parameters) [1461 1498])) :type "void") (reparse-symbol class_member_declaration) [1427 1577])) :type "class") nil [439 1580]))
+    :file "DroolsRuleAgent.java"
+    :pointmax 1581
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre4"
+  :semanticdb-version "2.0pre4"
+  )

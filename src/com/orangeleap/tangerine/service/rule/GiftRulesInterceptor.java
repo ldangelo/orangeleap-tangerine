@@ -18,12 +18,16 @@ import com.orangeleap.tangerine.event.NewGiftEvent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.RuleTask;
+import com.orangeleap.tangerine.util.TaskStack;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
+	
+	
 	
 	public GiftRulesInterceptor(String droolsHost, String droolsPort) {
         super(droolsHost, droolsPort);
@@ -67,6 +71,8 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				
 				person.setGifts(gs.readMonetaryGifts(person));
 				person.setSite(ss.readSite(person.getSite().getName()));
+
+				TaskStack.push(new RuleTask(applicationContext,site + "email",person,gift));
 				workingMemory.insert(person);
 
 			} catch (Exception ex) {

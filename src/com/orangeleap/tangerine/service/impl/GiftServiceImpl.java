@@ -54,6 +54,7 @@ import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -114,7 +115,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        if (!reentrant) {
 	        	routeGift(gift);
 	        }
-        
+	        
 	        return gift;
 	        
         } finally {

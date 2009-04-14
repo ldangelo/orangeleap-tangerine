@@ -18,7 +18,7 @@
 			<artifact name="satsuma" type="jar" />
 		</dependency>
 
-        <!-- Custom JsonView -->
+        <!-- Custom JsonView --> 
         <dependency org="com.mpower" name="JsonView" transitive="false" rev="latest.integration">
 			<artifact name="JsonView" type="jar" />
 		</dependency>
@@ -251,6 +251,51 @@
 			<artifact name="activemq-all" type="jar" />
 			<artifact name="activemq-all" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
+		
+		<!-- Jasper ireport plugin -->
+		<dependency org="com.jaspersoft.jasperserver.irplugin" name="jasperserver-ireport-plugin" transitive="false" rev="3.0.0">
+			<artifact name="jasperserver-ireport-plugin" type="jar"/>
+		</dependency>
+		<!-- Jasperserver common -->
+		<dependency org="com.jaspersoft.jasperserver" name="jasperserver-common-ws" transitive="false" rev="3.0.0">
+			<artifact name="jasperserver-common-ws" type="jar"/>
+		</dependency>
+		
+		<!-- Jasper Reports -->
+		<dependency org="net.sf.jasperreports" name="jasperreports" transitive="false" rev="3.0.0">
+			<artifact name="jasperreports" type="jar"/>
+		</dependency>
+		<dependency org="org.apache.axis" name="axis" transitive="false" rev="1.3">
+			<artifact name="axis" type="jar"/>
+		</dependency>
+		<dependency org="javax.xml.rpc" name="axis-jaxrpc" transitive="false" rev="1.3">
+			<artifact name="axis-jaxrpc" type="jar"/>
+		</dependency>
+		<dependency org="javax.xml.soap" name="axis-saaj" transitive="false" rev="1.3">
+			<artifact name="axis-saaj" type="jar"/>
+		</dependency>
+		
+		<dependency org="javax.wsdl" name="wsdl4j" transitive="false" rev="1.5.1">
+			<artifact name="wsdl4j" type="jar"/>
+		</dependency>
+		<dependency org="org.apache.commons.discovery" name="commons-discovery" transitive="false" rev="0.2">
+			<artifact name="commons-discovery" type="jar"/>
+		</dependency>
+		<dependency org="com.lowagie" name="itext" transitive="false" rev="1.3.1">
+			<artifact name="itext" type="jar"/>
+		</dependency>
+		
+		
+		<!--  Mail -->
+		<dependency org="javax.mail" name="javamail" transitive="false" rev="1.4.2">
+			<artifact name="javamail" type="jar"/>
+		</dependency>
+		
+		<!-- java activation framework -->
+		<dependency org="javax.activation" name="activation" transitive="false" rev="1.1.1">
+			<artifact name="activation" type="jar"/>
+		</dependency>
+		
 		
 		<!-- Test -->
 		<dependency org="org.testng" name="testng" rev="5.7" conf="test->default" classifier="jdk15">

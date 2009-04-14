@@ -30,6 +30,7 @@
 	<import resource="contexts/quartz-context.xml"/>
 	<import resource="contexts/recurringGift-context.xml"/>
 	<import resource="contexts/validator-context.xml"/>
+	<import resource="contexts/emailsending-context.xml"/>
 
     <context:component-scan base-package="com.orangeleap.tangerine.controller"/>
 

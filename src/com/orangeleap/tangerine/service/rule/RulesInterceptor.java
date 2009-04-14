@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
@@ -20,6 +21,9 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.RuleTask;
+import com.orangeleap.tangerine.util.TaskStack;
 
 
 
@@ -28,10 +32,14 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
-	private String ruleFlowName;
+	private String agendaGroup;
 	@SuppressWarnings("unchecked")
     private Class  eventClass;
 	private final Properties droolsProperties;
+	
+	public RulesInterceptor() {
+		droolsProperties = new Properties();
+	}
 	
 	public RulesInterceptor(final String droolsHost, final String droolsPort) {
         if (logger.isDebugEnabled()) {
@@ -51,34 +59,40 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
     public void doApplyRules(Gift gift) {
 
-		Properties props = getDroolsProperties();
-	
-		RuleAgent agent = RuleAgent.newRuleAgent(props);
-		RuleBase ruleBase = agent.getRuleBase();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
-		StatefulSession workingMemory = ruleBase.newStatefulSession();
-
+		StatefulSession session = ruleBase.newStatefulSession();
+		WorkingMemory workingMemory = (WorkingMemory) session;
 		workingMemory.addEventListener (new DebugAgendaEventListener());
 		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+
+		
+		
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-
+		SiteService ss = (SiteService) applicationContext.getBean("siteService");
+		
 		String site = null;
-			workingMemory.insert(gift);
+
 
 			try {
-				List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId());
-				Iterator<Gift> giftsIter = gifts.iterator();
-				while (giftsIter.hasNext()) {
-					workingMemory.insert(giftsIter.next());
+				if (site == null) {
+					site =gift.getSite().getName();
 				}
-
+				workingMemory.setFocus(site+"email");
+				
+				workingMemory.insert(gift);
+				
 				Person person = gift.getPerson();
+				
+				person.setGifts(gs.readMonetaryGifts(person));
+				person.setSite(ss.readSite(person.getSite().getName()));
+
 				workingMemory.insert(person);
 
 			} catch (Exception ex) {
-				logger.info(ex.getMessage());
+				logger.error(ex.getMessage());
 			}
 
 			if (site == null) {
@@ -87,15 +101,18 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
+
 			logger.info("*** firing all rules");
 
-			String ruleflow = "com.mpower." + site + "_" + ruleFlowName;
-			workingMemory.startProcess(ruleflow);
 			workingMemory.fireAllRules();
-			workingMemory.dispose();
+			
+			
+			session.dispose();
+			workingMemory = null;
+
 		} catch (Exception e) {
-			logger.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
-			logger.info(e);
+			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
+			logger.error(e);
 		}
 	}
 
@@ -108,12 +125,12 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 			return this.applicationContext;
 	}
 
-	public String getRuleFlowName() {
-		return ruleFlowName;
+	public String getAgendaGroup() {
+		return agendaGroup;
 	}
 
-	public void setRuleFlowName(String ruleFlowName) {
-		this.ruleFlowName = ruleFlowName;
+	public void setAgendaGroup(String agendaGroup) {
+		this.agendaGroup = agendaGroup;
 	}
 
 	/*@Override

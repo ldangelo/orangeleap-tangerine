@@ -62,6 +62,10 @@
   <beans:bean id="GiftDrools" class="com.orangeleap.tangerine.service.rule.GiftRulesInterceptor" parent="AbstractRulesInterceptor"/>
 
   <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor"/>
+  
+  <beans:bean id="emailInterceptor" class="com.orangeleap.tangerine.service.rule.EmailRulesInterceptor">
+  	<beans:property name="agendaGroup" value="email"/>
+  </beans:bean>
 
   <beans:bean id="DroolsRuleAgent" class="com.orangeleap.tangerine.service.rule.DroolsRuleAgent">
     <beans:constructor-arg value="${drools.pollinterval}" index="0"/>

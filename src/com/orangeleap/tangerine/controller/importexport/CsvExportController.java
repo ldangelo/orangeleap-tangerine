@@ -58,6 +58,8 @@ public class CsvExportController extends SimpleFormController {
 	protected ModelAndView processFormSubmission(
 			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
+
+
 		
 		ExportRequest er = (ExportRequest)command;
 		if (er.getFromDate() == null) er.setFromDate(PAST_DATE);
@@ -69,16 +71,20 @@ public class CsvExportController extends SimpleFormController {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
         }
 		
-		String exportData = getExport(er);
-
-		response.setContentType("application/x-download"); 
-		response.setHeader("Content-Disposition", "attachment; filename=" + er.getEntity() + "-export.csv");
-		response.setContentLength(exportData.length());
-		PrintWriter out = response.getWriter();
-		out.print(exportData);
-		out.flush();
-
-		return null;
+		try {
+			String exportData = getExport(er);
+			response.setContentType("application/x-download"); 
+			response.setHeader("Content-Disposition", "attachment; filename=" + er.getEntity() + "-export.csv");
+			response.setContentLength(exportData.length());
+			PrintWriter out = response.getWriter();
+			out.print(exportData);
+			out.flush();
+			return null;
+		} catch (Exception e) {
+			ModelAndView mav = new ModelAndView("redirect:/importexport.htm");
+			mav.addObject("exportmessage", e.getMessage());
+			return mav;
+		}
 
 	}
 

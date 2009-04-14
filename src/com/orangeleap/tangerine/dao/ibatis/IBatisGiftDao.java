@@ -154,7 +154,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         Map<String, Object> params = setupParams();
         params.put("fromDate", fromDate);
         params.put("toDate", toDate);
-        return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_DATE_RANGE", params);
+        List list = getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_DATE_RANGE", params);
+        if (list.size() > 5000) throw new RuntimeException("Selection too large, reduce selection range."); // Note this needs to be one less than the 5001 in gift.xml
+        return list;
 	}
 
     @SuppressWarnings("unchecked")

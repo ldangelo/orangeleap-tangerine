@@ -100,7 +100,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         params.put("toId", toId);
 
         List list = getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_ID_RANGE", params);
-        if (list.size() > 5000) throw new RuntimeException("Selection too large."); // Note this needs to be one less than the 5001 in constituent.xml
+        if (list.size() > 5000) throw new RuntimeException("Selection too large, reduce selection range."); // Note this needs to be one less than the 5001 in constituent.xml
         return list;
     }
 

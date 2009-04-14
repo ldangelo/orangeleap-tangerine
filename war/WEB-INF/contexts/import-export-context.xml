@@ -27,7 +27,9 @@
     </bean>
 	
 	<!-- Csv file download  -->
-    <bean id="exportController" class="com.orangeleap.tangerine.controller.importexport.CsvExportController"/>
+    <bean id="exportController" class="com.orangeleap.tangerine.controller.importexport.CsvExportController">
+    	<property name="successView" value="redirect:/importexport.htm"/>
+    </bean>
 	
 	<!-- Csv file upload  -->
 	 <bean id="importController" class="com.orangeleap.tangerine.controller.importexport.CsvImportController">

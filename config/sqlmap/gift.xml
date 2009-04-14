@@ -99,6 +99,7 @@
 		<include refid="GIFT_QUERY_FRAGMENT" />
 		and g.TRANSACTION_DATE between #fromDate# and #toDate# 
 		order by g.TRANSACTION_DATE desc
+		limit 5001
 	</select>
 
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID" resultMap="GIFT_RESULT" parameterClass="map">

@@ -57,6 +57,8 @@
 		        
 	        </form>
 	        
+	        <c:out value="${param.exportmessage}" />
+	        
 	        <br/>
 	        <br/>
 	        <br/>

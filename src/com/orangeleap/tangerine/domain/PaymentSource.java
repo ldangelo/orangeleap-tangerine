@@ -414,7 +414,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
             if (ACH.equals(paymentType)) {
                 sb.append(ACH); // TODO: move to message bundle and lookup
                 sb.append("****");
-                sb.append(findLastFourDigits(this.achAccountNumber));
+                sb.append(findLastFourDigits(getAchAccountNumber()));
                 this.profile = sb.toString();
             }
             else if (CREDIT_CARD.equals(paymentType)) {
@@ -422,7 +422,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
                     sb.append(creditCardType);
                 }
                 sb.append("****");
-                sb.append(findLastFourDigits(this.creditCardNumber));
+                sb.append(findLastFourDigits(getCreditCardNumber()));
                 this.profile = sb.toString();
             }
         }
@@ -454,14 +454,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
      */
     public boolean isValid() {
         if (ACH.equals(paymentType)) {
-            return StringUtils.hasText(achHolderName) &&
-                StringUtils.hasText(achAccountNumber) &&
-                StringUtils.hasText(achRoutingNumber);
+            return StringUtils.hasText(getAchHolderName()) &&
+                StringUtils.hasText(getAchAccountNumber()) &&
+                StringUtils.hasText(getAchRoutingNumber());
         }
         else if (CREDIT_CARD.equals(paymentType)) {
-            return StringUtils.hasText(creditCardHolderName) &&
-                StringUtils.hasText(creditCardType) &&
-                StringUtils.hasText(creditCardNumber);
+            return StringUtils.hasText(getCreditCardHolderName()) &&
+                StringUtils.hasText(getCreditCardType()) &&
+                StringUtils.hasText(getCreditCardNumber());
         }
         else if (CASH.equals(paymentType) || CHECK.equals(paymentType)) {
             return true; // TODO: what are the validity constraints for CASH and CHECK?

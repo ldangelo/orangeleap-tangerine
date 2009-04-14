@@ -199,14 +199,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getSelectedAddress().getAddressLine2() == null;
         assert gift.getSelectedAddress().getAddressLine3() == null;
         
-        assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == 200L;
-        assert gift.getSelectedPaymentSource().getCreditCardExpiration() != null;
-        assert "Billy Graham".equals(gift.getSelectedPaymentSource().getCreditCardHolderName());
-        assert "4222".equals(gift.getSelectedPaymentSource().getCreditCardNumber());
-        assert "Billy Graham Visa".equals(gift.getSelectedPaymentSource().getProfile());
-        assert gift.getSelectedPaymentSource().getAchAccountNumber() == null;
-        assert gift.getSelectedPaymentSource().getAchRoutingNumber() == null;
-        assert PaymentSource.CREDIT_CARD.equals(gift.getSelectedPaymentSource().getPaymentType());
+        IBatisPaymentSourceDaoTest.testId200(gift.getSelectedPaymentSource());
 
         assert gift.getSelectedPhone() != null && gift.getSelectedPhone().getId() == null;
         assert gift.getSelectedEmail() != null && gift.getSelectedEmail().getId() == null;

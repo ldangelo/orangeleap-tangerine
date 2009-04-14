@@ -4,12 +4,12 @@
 
 	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id">
 		<result property="id" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" />
-		<result property="achAccountNumber" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
+		<result property="achAccountNumberEncrypted" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
 		<result property="achHolderName" column="PAYMENT_SRC_ACH_HOLDER_NAME" jdbcType="VARCHAR" />
 		<result property="achRoutingNumber" column="PAYMENT_SRC_ACH_ROUTING_NUMBER"	jdbcType="VARCHAR" />
 		<result property="creditCardExpiration" column="PAYMENT_SRC_CREDIT_CARD_EXPIRATION" jdbcType="TIMESTAMP" />
 		<result property="creditCardHolderName" column="PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME" jdbcType="VARCHAR" />
-		<result property="creditCardNumber" column="PAYMENT_SRC_CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
+		<result property="creditCardNumberEncrypted" column="PAYMENT_SRC_CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
 		<result property="creditCardType" column="PAYMENT_SRC_CREDIT_CARD_TYPE" jdbcType="VARCHAR" />
 		<result property="inactive" column="PAYMENT_SRC_INACTIVE" jdbcType="CHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
@@ -70,13 +70,13 @@
 	
 	<select id="SELECT_BY_CREDIT_CARD_NUM" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
-		and ps.CREDIT_CARD_NUMBER = #creditCardNumber#
+		and ps.CREDIT_CARD_NUMBER = #creditCardNumberEncrypted#
 	</select>
 	
 	<select id="SELECT_BY_ACH_NUM" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
 		and ps.ACH_ROUTING_NUMBER = #achRoutingNumber#
-		and ps.ACH_ACCOUNT_NUMBER = #achAccountNumber#
+		and ps.ACH_ACCOUNT_NUMBER = #achAccountNumberEncrypted#
 	</select>
 	
 	<select id="SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
@@ -98,9 +98,9 @@
 		CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
-		values (#achAccountNumber#, #achHolderName#,
+		values (#achAccountNumberEncrypted#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
-		#creditCardNumber#, #creditCardType#, #inactive#,
+		#creditCardNumberEncrypted#, #creditCardType#, #inactive#,
 		#profile#, #paymentType#, #selectedAddress.id#, #person.id#,
 		#selectedPhone.id#, now(), now())
         <selectKey keyProperty="id" resultClass="long">
@@ -110,12 +110,12 @@
 
 	<update id="UPDATE_PAYMENT_SOURCE" parameterClass="com.orangeleap.tangerine.domain.PaymentSource">
 		update PAYMENT_SOURCE
-		set ACH_ACCOUNT_NUMBER = #achAccountNumber#,
+		set ACH_ACCOUNT_NUMBER = #achAccountNumberEncrypted#,
 		ACH_HOLDER_NAME = #achHolderName#,
 		ACH_ROUTING_NUMBER = #achRoutingNumber#,
 		CREDIT_CARD_EXPIRATION = #creditCardExpiration#,
 		CREDIT_CARD_HOLDER_NAME = #creditCardHolderName#,
-		CREDIT_CARD_NUMBER = #creditCardNumber#,
+		CREDIT_CARD_NUMBER = #creditCardNumberEncrypted#,
 		CREDIT_CARD_TYPE = #creditCardType#,
 		INACTIVE = #inactive#,
 		PAYMENT_PROFILE = #profile#,

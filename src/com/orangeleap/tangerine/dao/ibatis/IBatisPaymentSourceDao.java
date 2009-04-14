@@ -96,7 +96,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
             logger.debug("readExistingCreditCards: creditCardNumber = " + creditCardNumber);
         }
         Map<String, Object> params = setupParams();
-        params.put("creditCardNumber", creditCardNumber);
+        params.put("creditCardNumberEncrypted", creditCardNumber);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_CREDIT_CARD_NUM", params);
     }
     
@@ -107,7 +107,7 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
             logger.debug("readExistingAchAccounts: achAccountNum = " + achAccountNum + " achRoutingNum = " + achRoutingNum);
         }
         Map<String, Object> params = setupParams();
-        params.put("achAccountNumber", achAccountNum);
+        params.put("achAccountNumberEncrypted", achAccountNum);
         params.put("achRoutingNumber", achRoutingNum);
         return getSqlMapClientTemplate().queryForList("SELECT_BY_ACH_NUM", params);
     }

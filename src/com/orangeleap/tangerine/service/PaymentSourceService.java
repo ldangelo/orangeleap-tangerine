@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
 
 public interface PaymentSourceService {
@@ -25,4 +26,6 @@ public interface PaymentSourceService {
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);
 
     Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource);
+    
+    public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware);
 }

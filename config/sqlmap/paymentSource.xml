@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="PAYMENT_SOURCE">
 
-	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource">
+	<resultMap id="PAYMENT_SOURCE_RESULT" class="com.orangeleap.tangerine.domain.PaymentSource" groupBy="id">
 		<result property="id" column="PAYMENT_SOURCE_ID" jdbcType="BIGINT" />
 		<result property="achAccountNumber" column="PAYMENT_SRC_ACH_ACCOUNT_NUMBER" jdbcType="VARCHAR" />
 		<result property="achHolderName" column="PAYMENT_SRC_ACH_HOLDER_NAME" jdbcType="VARCHAR" />
@@ -67,7 +67,18 @@
 		and ps.INACTIVE = false
 		order by PAYMENT_SRC_TYPE
 	</select>
-
+	
+	<select id="SELECT_BY_CREDIT_CARD_NUM" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
+		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
+		and ps.CREDIT_CARD_NUMBER = #creditCardNumber#
+	</select>
+	
+	<select id="SELECT_BY_ACH_NUM" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
+		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
+		and ps.ACH_ROUTING_NUMBER = #achRoutingNumber#
+		and ps.ACH_ACCOUNT_NUMBER = #achAccountNumber#
+	</select>
+	
 	<select id="SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES" resultMap="PAYMENT_SOURCE_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_SRC_FRAGMENT"/>
 		and ps.CONSTITUENT_ID = #constituentId#

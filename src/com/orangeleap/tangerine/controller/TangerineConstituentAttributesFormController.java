@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.communication.address.AddressEditor;
 import com.orangeleap.tangerine.controller.communication.email.EmailEditor;
@@ -28,6 +31,7 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -283,5 +287,40 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 paymentSourceAware.setPaymentSourceAwarePaymentType();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+        if (isFormSubmission(request) && errors.hasErrors() == false && bindPaymentSource && command instanceof PaymentSourceAware) {
+            PaymentSourceAware aware = (PaymentSourceAware) command;
+            if (FormBeanType.NEW.equals(aware.getPaymentSourceType())) {
+                Map<String, Object> conflictingSources = paymentSourceService.checkForSameConflictingPaymentSources(aware);
+                String useConflictingName = request.getParameter("useConflictingName");
+                if ("true".equals(useConflictingName) == false) {
+                    Set<String> nameSources = (Set<String>) conflictingSources.get("names");
+                    if (nameSources != null && nameSources.isEmpty() == false) {
+                        ModelAndView mav = showForm(request, response, errors);
+                        mav.addObject("conflictingNames", nameSources);
+                        
+                        if (command instanceof AbstractPaymentInfoEntity) {
+                            ((AbstractPaymentInfoEntity)command).removeEmptyMutableDistributionLines();
+                        }
+                            
+                        return mav;
+                    }
+                }
+                List<PaymentSource> dateSources = (List<PaymentSource>) conflictingSources.get("dates");
+                if (dateSources != null && dateSources.isEmpty() == false) {
+                    PaymentSource src = dateSources.get(0); // should only be 1
+                    src.setCreditCardExpirationMonth(aware.getPaymentSource().getCreditCardExpirationMonth());
+                    src.setCreditCardExpirationYear(aware.getPaymentSource().getCreditCardExpirationYear());
+                    aware.setSelectedPaymentSource(src);
+                    aware.setPaymentSourceType(FormBeanType.EXISTING);
+                    aware.setPaymentSource(null);
+                }
+            }
+        }        
+        return super.processFormSubmission(request, response, command, errors);
     }
 }

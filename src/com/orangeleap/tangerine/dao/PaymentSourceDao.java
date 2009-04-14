@@ -17,4 +17,8 @@ public interface PaymentSourceDao {
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes);
 
     public PaymentSource readPaymentSourceById(Long paymentSourceId);
+    
+    public List<PaymentSource> readExistingCreditCards(String creditCardNumber);
+    
+    public List<PaymentSource> readExistingAchAccounts(String achAccountNum, String achRoutingNum);
 }

@@ -20,6 +20,7 @@
 						
 			<form:form method="post" commandName="gift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
+				<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
 			
 				<spring:message code='submitGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">

@@ -3,6 +3,7 @@
 <tiles:insertDefinition name="base">
     <tiles:putAttribute name="customHeaderContent" type="string">
         <script type="text/javascript" src="js/recurringGiftCalc.js"></script>
+		<script type="text/javascript" src="js/gift/distribution.js"></script>
     </tiles:putAttribute>
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -18,6 +19,7 @@
 			
 			<form:form method="post" commandName="recurringGift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
+				<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
 				<input type="hidden" name="recurring" id="recurring" value="true"/>
 
 				<spring:message code='submitRecurringGift' var="submitText" />
@@ -40,6 +42,17 @@
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
+<%-- 
+							<div class="column">
+								<ul class="formFields width385">
+									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<%@ include file="/WEB-INF/jsp/snippets/input.jsp"%>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+--%>							
 							<div class="column">
 								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
@@ -58,7 +71,7 @@
 									<li class="clear"></li>
 								</ul>
 							</div>
-							<div class="clearColumns"></div>
+ 							<div class="clearColumns"></div>
 						</div>
 					</c:if>
 				</c:forEach>
@@ -116,6 +129,5 @@
 				</div>
 			</form:form>
 		</div>
-		<script type="text/javascript" src="js/gift/distribution.js"></script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

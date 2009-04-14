@@ -88,4 +88,27 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
         params.put("paymentTypes", paymentTypes);
         return getSqlMapClientTemplate().queryForList("SELECT_ACTIVE_PAYMENT_SOURCES_BY_CONSTITUENT_ID_TYPES", params);
     }
-}
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PaymentSource> readExistingCreditCards(String creditCardNumber) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readExistingCreditCards: creditCardNumber = " + creditCardNumber);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("creditCardNumber", creditCardNumber);
+        return getSqlMapClientTemplate().queryForList("SELECT_BY_CREDIT_CARD_NUM", params);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<PaymentSource> readExistingAchAccounts(String achAccountNum, String achRoutingNum) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readExistingAchAccounts: achAccountNum = " + achAccountNum + " achRoutingNum = " + achRoutingNum);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("achAccountNumber", achAccountNum);
+        params.put("achRoutingNumber", achRoutingNum);
+        return getSqlMapClientTemplate().queryForList("SELECT_BY_ACH_NUM", params);
+    }
+} 

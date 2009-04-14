@@ -107,21 +107,27 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
             paymentSourceAware.setSelectedPaymentSource(null);
             paymentSourceAware.setPaymentSource(null);
         }
-        else if ((PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) || 
-                PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) && 
-                FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
-            PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
-            newPaymentSource.setPerson(constituent);
-            
-            if (entity instanceof AddressAware && FormBeanType.NONE.equals(((AddressAware)entity).getAddressType()) == false) {
-                newPaymentSource.setFromAddressAware((AddressAware)entity);
+        else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType()) || 
+                PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
+            if (FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
+                PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
+                newPaymentSource.setPerson(constituent);
+                newPaymentSource.setPaymentType(paymentSourceAware.getPaymentType());
+                
+                if (entity instanceof AddressAware && FormBeanType.NONE.equals(((AddressAware)entity).getAddressType()) == false) {
+                    newPaymentSource.setFromAddressAware((AddressAware)entity);
+                }
+                if (entity instanceof PhoneAware && FormBeanType.NONE.equals(((PhoneAware)entity).getPhoneType()) == false) { 
+                    newPaymentSource.setFromPhoneAware((PhoneAware)entity);
+                }
+    
+                paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
+                paymentSourceAware.setSelectedPaymentSource(paymentSourceAware.getPaymentSource());
             }
-            if (entity instanceof PhoneAware && FormBeanType.NONE.equals(((PhoneAware)entity).getPhoneType()) == false) { 
-                newPaymentSource.setFromPhoneAware((PhoneAware)entity);
+            else if (FormBeanType.EXISTING.equals(paymentSourceAware.getPaymentSourceType())) {
+                paymentSourceService.maintainPaymentSource(paymentSourceAware.getSelectedPaymentSource());
+                paymentSourceAware.setPaymentSource(paymentSourceAware.getSelectedPaymentSource());
             }
-
-            paymentSourceAware.setPaymentSource(paymentSourceService.maintainPaymentSource(newPaymentSource));
-            paymentSourceAware.setSelectedPaymentSource(paymentSourceAware.getPaymentSource());
         }
     }
 }

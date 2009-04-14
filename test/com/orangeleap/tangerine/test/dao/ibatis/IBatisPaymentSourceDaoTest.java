@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -26,7 +27,41 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
     public void setup() {
         paymentSourceDao = (PaymentSourceDao)super.applicationContext.getBean("paymentSourceDAO");
     }
+    
+    public static void testId200(PaymentSource src) {
+        assert src.getCreditCardExpiration() != null;
+        assert "Billy Graham".equals(src.getCreditCardHolderName());
+        assert "4222".equals(src.getCreditCardNumber());
+        assert "Billy Graham Visa".equals(src.getProfile());
+        assert src.isInactive() == false;
+        assert src.getAchAccountNumber() == null;
+        assert src.getAchRoutingNumber() == null;
+        assert PaymentSource.CREDIT_CARD.equals(src.getPaymentType());
+        assert src.getPerson() != null && src.getPerson().getId() == 100L;
+    }
+    
+    public static void testId500(PaymentSource src) {
+        assert src.getCreditCardExpiration() == null;
+        assert src.getCreditCardNumber() == null;
+        assert "Ruth ACH".equals(src.getProfile());
+        assert "999999".equals(src.getAchAccountNumber());
+        assert "1234".equals(src.getAchRoutingNumber());
+        assert PaymentSource.ACH.equals(src.getPaymentType());
+        assert src.getPerson() != null && src.getPerson().getId() == 100L;
+    }
 
+    public static void testId900(PaymentSource src) {
+        assert src.getCreditCardExpiration() != null;
+        assert "Franklin Graham".equals(src.getCreditCardHolderName());
+        assert "4222".equals(src.getCreditCardNumber());
+        assert src.isInactive();
+        assert "Frank Graham Visa".equals(src.getProfile());
+        assert src.getAchAccountNumber() == null;
+        assert src.getAchRoutingNumber() == null;
+        assert PaymentSource.CREDIT_CARD.equals(src.getPaymentType());
+        assert src.getPerson() != null && src.getPerson().getId() == 100L;
+    }
+    
     @Test(groups = { "testMaintainPaymentSource" }, dependsOnGroups = { "testReadPaymentSource" })
     public void testMaintainPaymentSource() throws Exception {
         // Insert
@@ -143,11 +178,11 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadPaymentSource" })
     public void testReadAllPaymentSources() throws Exception {
         List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(100L);
-        assert sources != null && sources.size() == 5;
+        assert sources != null && sources.size() == 6;
         for (int i = 0; i < 3; i++) {
             assert sources.get(i).isInactive() == false;
         }
-        for (int i = 3; i < 5; i++) {
+        for (int i = 3; i < 6; i++) {
             assert sources.get(i).isInactive() == true;
         }
     }
@@ -165,13 +200,7 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
             assert src.isInactive() == false;
             switch (src.getId().intValue()) {
                 case 200: 
-                    assert src.getCreditCardExpiration() != null;
-                    assert "Billy Graham".equals(src.getCreditCardHolderName());
-                    assert "4222".equals(src.getCreditCardNumber());
-                    assert "Billy Graham Visa".equals(src.getProfile());
-                    assert src.getAchAccountNumber() == null;
-                    assert src.getAchRoutingNumber() == null;
-                    assert PaymentSource.CREDIT_CARD.equals(src.getPaymentType());
+                    testId200(src);
                     break;
                 case 300:
                     assert src.getCreditCardExpiration() == null;
@@ -182,12 +211,7 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
                     assert PaymentSource.CASH.equals(src.getPaymentType());
                     break;
                 case 500:
-                    assert src.getCreditCardExpiration() == null;
-                    assert src.getCreditCardNumber() == null;
-                    assert "Ruth ACH".equals(src.getProfile());
-                    assert "999999".equals(src.getAchAccountNumber());
-                    assert "1234".equals(src.getAchRoutingNumber());
-                    assert PaymentSource.ACH.equals(src.getPaymentType());
+                    testId500(src);
                     break;
                 default:
                     assert false == true;
@@ -213,25 +237,44 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
             assert src.isInactive() == false;
             switch (src.getId().intValue()) {
                 case 200: 
-                    assert src.getCreditCardExpiration() != null;
-                    assert "Billy Graham".equals(src.getCreditCardHolderName());
-                    assert "4222".equals(src.getCreditCardNumber());
-                    assert "Billy Graham Visa".equals(src.getProfile());
-                    assert src.getAchAccountNumber() == null;
-                    assert src.getAchRoutingNumber() == null;
-                    assert PaymentSource.CREDIT_CARD.equals(src.getPaymentType());
+                    testId200(src);
                     break;
                 case 500:
-                    assert src.getCreditCardExpiration() == null;
-                    assert src.getCreditCardNumber() == null;
-                    assert "Ruth ACH".equals(src.getProfile());
-                    assert "999999".equals(src.getAchAccountNumber());
-                    assert "1234".equals(src.getAchRoutingNumber());
-                    assert PaymentSource.ACH.equals(src.getPaymentType());
+                    testId500(src);
                     break;
                 default:
                     assert false == true;
             }
         }        
+    }
+    
+    @Test(groups = { "testReadPaymentSource" })
+    public void testReadExistingCreditCards() throws Exception {
+        List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards("foo");
+        assert sources != null && sources.isEmpty();
+        
+        sources = paymentSourceDao.readExistingCreditCards("4222");
+        assert sources != null && sources.size() == 2;
+        for (PaymentSource src : sources) {
+            if (src.getId() == 200L) {
+                testId200(src);
+            }
+            else if (src.getId() == 900L) {
+                testId900(src);
+            }
+            else {
+                Assert.assertTrue("Unexpected id = " + src.getId(), false);
+            }
+        }
+    }
+
+    @Test(groups = { "testReadPaymentSource" })
+    public void testReadExistingAchAccounts() throws Exception {
+        List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts("foo", "bar");
+        assert sources != null && sources.isEmpty();
+        
+        sources = paymentSourceDao.readExistingAchAccounts("999999", "1234");
+        assert sources != null && sources.size() == 1;
+        testId500(sources.get(0));
     }
 }

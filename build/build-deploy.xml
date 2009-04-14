@@ -75,7 +75,11 @@
 		
 		
 		<delete dir="${target.tomcat.dir}/work" />
+		<mkdir dir="${target.tomcat.dir}/work" />
+		
 		<delete dir="${target.tomcat.dir}/temp" />
+		<mkdir dir="${target.tomcat.dir}/temp" />
+		
 		<delete dir="${target.tomcat.dir}/webapps/orangeleap" />
 		
 		<copy file="${build.output.dir}/orangeleap.war" todir="${target.tomcat.dir}/webapps" overwrite="true"  />

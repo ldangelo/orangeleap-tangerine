@@ -103,8 +103,8 @@
            eternal="false"
            overflowToDisk="true"
            diskSpoolBufferSizeMB="20"
-           timeToIdleSeconds="7200"
-           timeToLiveSeconds="21600"
+           timeToIdleSeconds="120"
+           timeToLiveSeconds="120"
            diskExpiryThreadIntervalSeconds="600"
            memoryStoreEvictionPolicy="LRU"
             />

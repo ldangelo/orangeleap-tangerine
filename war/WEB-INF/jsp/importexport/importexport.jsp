@@ -73,12 +73,14 @@
  		           <option value="address">Addresses</option>   
 		        </select>            
 	            <input type="file" name="file"/>
-	            <input type="submit" value="Import"  />
+	            <input type="submit" value="Import" onclick="$('#importResult').html(''); return true;" />
 	        </form>
-        	
-            <c:forEach var="line" items="${importResult}">
-				<c:out value="${line}"/><br/>
-       	    </c:forEach>
+	        
+        	<div id="importResult">
+                <c:forEach var="line" items="${importResult}">
+			    	<c:out value="${line}"/><br/>
+         	    </c:forEach>
+     		</div>
         	
 		</div>
 	</tiles:putAttribute>

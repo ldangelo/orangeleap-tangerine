@@ -102,7 +102,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         List<PaymentSource> sources = filterValidPaymentSources(constituentId);
         if (sources != null) { 
             for (PaymentSource src : sources) {
-                if (src.isInactive() == false || (selectedPaymentSource != null && selectedPaymentSource.getId().equals(src.getId()))) {
+                if (src.isInactive() == false || (selectedPaymentSource != null && src.getId().equals(selectedPaymentSource.getId()))) {
                     List<PaymentSource> list = groupedSources.get(src.getPaymentType());
                     if (list == null) {
                         list = new ArrayList<PaymentSource>();

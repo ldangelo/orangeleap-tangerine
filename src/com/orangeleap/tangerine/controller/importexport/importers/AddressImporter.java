@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.controller.importexport.importers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,8 +8,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.exporters.AddressExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.controller.importexport.fielddefs.FieldDefUtil;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AddressService;
@@ -18,6 +21,8 @@ import com.orangeleap.tangerine.type.PageType;
 
 
 public class AddressImporter extends EntityImporter {
+	
+	private static String ACCOUNT_FIELD = "account";
 	
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -32,12 +37,18 @@ public class AddressImporter extends EntityImporter {
 	
 	@Override
 	public String getIdField() {
-		return "addressId";
+		return "id";
 	}
 	
 	@Override
 	protected PageType getPageType() {
 	    return PageType.address;
+	}
+	
+	@Override
+	protected boolean ignore(String key) {
+		if (AddressExporter.isConstituentReadOnlyField(key) || key.equals(ACCOUNT_FIELD)) return true;
+		return false;
 	}
 
 	@Override
@@ -49,7 +60,11 @@ public class AddressImporter extends EntityImporter {
 			}
 		};
 		
-		return FieldDefUtil.getFieldDescriptors(exclusion, getPageType(), siteservice, tangerineUserHelper);
+		List<FieldDescriptor> list = FieldDefUtil.getFieldDescriptors(exclusion, getPageType(), siteservice, tangerineUserHelper);
+		
+		list.add(AddressExporter.getFieldDescriptor("id"));
+		
+		return list;
 	}
 
 	private static FieldDefUtil.Exclusion defaultExclusion = FieldDefUtil.getDefaultExclusions();
@@ -64,9 +79,16 @@ public class AddressImporter extends EntityImporter {
 		
 		String id = values.get(getIdField());
 		if (action.equals(EntityImporter.ACTION_ADD)) {
+			
 			address = new Address();
-			logger.debug("Adding new entity...");
+			String account = values.get(ACCOUNT_FIELD);
+			Person person = constituentService.readConstituentByCustomId(account);
+			if (person == null) throw new RuntimeException("Invalid constituent account "+account);
+			address.setPersonId(person.getId());
+			logger.debug("Adding new address to "+person.getFullName()+"...");
+			
 		} else {
+			
 			if (id == null) {
                 throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
             }
@@ -81,6 +103,7 @@ public class AddressImporter extends EntityImporter {
                 throw new RuntimeException(getIdField() + " " + id + " not found.");
 			}
 			logger.debug("Importing constituent "+id+"...");
+			
 		}
 		
 

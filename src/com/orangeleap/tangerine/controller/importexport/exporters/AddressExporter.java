@@ -61,6 +61,9 @@ public class AddressExporter extends EntityExporter {
 		return name;
 	}
 
+	public static boolean isConstituentReadOnlyField(String name) {
+		return name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.equals("customId");
+	}
 
 	@Override
 	public List<FieldDescriptor> getExportFieldDescriptors() {
@@ -70,19 +73,12 @@ public class AddressExporter extends EntityExporter {
 		while (it.hasNext()) {
 			FieldDescriptor fd = it.next();
 			String name = fd.getName();
-			boolean exportfield = name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.equals("customId") || name.startsWith("primaryAddress");
+			boolean exportfield = isConstituentReadOnlyField(name) || name.startsWith("primaryAddress");
 			if (!exportfield) it.remove();
 		}
 
 		// Add a column for address id
-		FieldDefinition fd = new FieldDefinition();
-		fd.setId("primaryAddress.id");
-		fd.setEntityType(EntityType.address);
-		fd.setFieldName("primaryAddress.id");
-		fd.setFieldType(FieldType.TEXT);
-		FieldDescriptor fieldDescriptor = new FieldDescriptor("primaryAddress.id", FieldDescriptor.NATIVE, fd);
-		list.add(0, fieldDescriptor);
-
+		list.add(0, getFieldDescriptor("primaryAddress.id"));
 		
 		// Add a column for address line 3 after address line 2
 		int addr2 = 0;
@@ -92,17 +88,21 @@ public class AddressExporter extends EntityExporter {
 				addr2 = i;
 			}
 		}
-		fd = new FieldDefinition();
-		fd.setId("primaryAddress.addressLine3");
-		fd.setEntityType(EntityType.address);
-		fd.setFieldName("primaryAddress.addressLine3");
-		fd.setFieldType(FieldType.TEXT);
-		fieldDescriptor = new FieldDescriptor("primaryAddress.addressLine3", FieldDescriptor.NATIVE, fd);
-		list.add(addr2 + 1, fieldDescriptor);
+		list.add(addr2 + 1, getFieldDescriptor("primaryAddress.addressLine3"));
 
 		
 		return list;
 		
+	}
+	
+	public static FieldDescriptor getFieldDescriptor(String name) {
+		FieldDefinition fd = new FieldDefinition();
+		fd.setId(name);
+		fd.setEntityType(EntityType.address);
+		fd.setFieldName(name);
+		fd.setFieldType(FieldType.TEXT);
+		FieldDescriptor fieldDescriptor = new FieldDescriptor(name, FieldDescriptor.NATIVE, fd);
+		return fieldDescriptor;
 	}
 
 }

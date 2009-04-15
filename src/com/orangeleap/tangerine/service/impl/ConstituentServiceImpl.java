@@ -106,14 +106,29 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             logger.debug("readConstituentById: id = " + id);
         }
         Person constituent = constituentDao.readConstituentById(id);
+        addCommunicationEntities(constituent);
+        return constituent;
+    }
+
+    @Override
+    public Person readConstituentByCustomId(String customId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readConstituentByCustomId: id = " + customId);
+        }
+        Person constituent = constituentDao.readConstituentByCustomId(customId);
+        addCommunicationEntities(constituent);
+        return constituent;
+    }
+    
+    private void addCommunicationEntities(Person constituent) {
         if (constituent != null) {
             constituent.setAddresses(addressService.readByConstituentId(constituent.getId()));
             constituent.setPhones(phoneService.readByConstituentId(constituent.getId()));
             constituent.setEmails(emailService.readByConstituentId(constituent.getId()));
         }
-        return constituent;
     }
 
+    
     @Override
     public Person readConstituentByLoginId(String loginId) {
         if (logger.isDebugEnabled()) {
@@ -121,6 +136,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.readConstituentByLoginId(loginId);
     }
+    
 
     @Override
     public List<Person> searchConstituents(Map<String, Object> params) {

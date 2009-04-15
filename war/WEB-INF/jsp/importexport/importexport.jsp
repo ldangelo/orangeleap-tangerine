@@ -70,7 +70,7 @@
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
  		          <option value="gift">Gifts: Cash and Checks</option> 
- 		        <!--   <option value="address">Addresses</option>   -->
+ 		           <option value="address">Addresses</option>   
 		        </select>            
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import"  />

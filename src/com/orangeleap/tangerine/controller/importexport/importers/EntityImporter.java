@@ -76,10 +76,17 @@ public abstract class EntityImporter {
 		return fieldDescriptorMap.get(name);
 	}
 
+	protected boolean ignore(String key) {
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected void setFieldValue(Object o, String key, String svalue) {
 		
 			try {
+				
+				if (ignore(key)) return;
+				
 				FieldDescriptor fd = getFieldDescriptor(key);
 				if (fd == null) {
                     throw new RuntimeException("Unrecognized import field name: "+key);

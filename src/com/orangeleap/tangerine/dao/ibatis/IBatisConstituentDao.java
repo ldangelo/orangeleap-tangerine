@@ -51,6 +51,16 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
         return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
     
+    @Override
+    public Person readConstituentByCustomId(String id) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("readConstituentByCustomId: id = " + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("customId", id);
+        return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_CUSTOM_ID", params);
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public List<Person> readConstituentsByIds(List<Long> ids) {

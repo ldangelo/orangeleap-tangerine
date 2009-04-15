@@ -14,6 +14,8 @@ public interface ConstituentService {
 
     public Person readConstituentById(Long id);
 
+    public Person readConstituentByCustomId(String id);
+
     public Person readConstituentByLoginId(String id);
 
 	public List<Person> searchConstituents(Map<String, Object> params);

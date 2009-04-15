@@ -9,6 +9,8 @@ public interface ConstituentDao {
 
     public Person readConstituentById(Long id);
 
+    public Person readConstituentByCustomId(String id);
+
     public List<Person> readAllConstituentsBySite();
 
     public List<Person> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit);

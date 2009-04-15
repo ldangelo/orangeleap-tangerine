@@ -48,6 +48,11 @@
 		</iterate>
 	</select>
 	
+	<select id="SELECT_CONSTITUENT_BY_CUSTOM_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
+		and p.CUSTOM_ID = #customId# 
+	</select>
+	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>
 

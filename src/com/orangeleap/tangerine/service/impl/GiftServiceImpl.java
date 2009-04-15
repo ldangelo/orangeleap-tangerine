@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -181,12 +181,26 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        } 
 	        catch (Exception ex) {
 	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
+	            writeRulesFailureLog(ex.getMessage() + "\r\n" + gift);
 	        }
 
         } finally {
         	RulesStack.pop(ROUTE_METHOD);
         }
 
+    }
+    
+    private synchronized void writeRulesFailureLog(String message) {
+    	try {
+    		FileWriter out = new FileWriter("rules-errors.log");
+    		try {
+    			out.write(message);
+    		} finally {
+    			out.close();
+    		}
+    	} catch (Exception e) {
+    		logger.error("Unable to write to rules error log file: "+message);
+    	}
     }
 
 //    private void processMockTrans(Gift gift) {

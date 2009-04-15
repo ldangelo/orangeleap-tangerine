@@ -45,6 +45,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     private String creditCardSecurityCode;
     @NotAuditable
     private String achAccountNumber;
+    private String lastFourDigits;
 
     private FormBeanType addressType;
     private FormBeanType phoneType;
@@ -231,6 +232,14 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
 
     public void setAchAccountNumberDisplay(String str) {
         // no-op
+    }
+
+    public String getLastFourDigits() {
+        return lastFourDigits;
+    }
+
+    public void setLastFourDigits(String lastFourDigits) {
+        this.lastFourDigits = lastFourDigits;
     }
 
     @Override
@@ -475,13 +484,20 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
         if (paymentType != null) {
             if (ACH.equals(paymentType)) {
                 clearCredit();
+                if (getLastFourDigits() == null) {
+                    setLastFourDigits(getAchAccountNumber().length() > 4 ? getAchAccountNumber().substring(getAchAccountNumber().length() - 4, getAchAccountNumber().length()) : getAchAccountNumber());
+                }
             }
             else if (CREDIT_CARD.equals(paymentType)) {
                 clearACH();
+                if (getLastFourDigits() == null) {
+                    setLastFourDigits(getCreditCardNumber().length() > 4 ? getCreditCardNumber().substring(getCreditCardNumber().length() - 4, getCreditCardNumber().length()) : getCreditCardNumber());
+                }
             }
             else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
                 clearCredit();
                 clearACH();
+                setLastFourDigits(null);
             }
         }
     }

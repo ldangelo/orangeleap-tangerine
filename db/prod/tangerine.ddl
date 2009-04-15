@@ -477,6 +477,7 @@ CREATE TABLE `PAYMENT_SOURCE` (
   `CREDIT_CARD_NUMBER` varchar(255) default NULL,
   `CREDIT_CARD_TYPE` varchar(255) default NULL,
   `INACTIVE` char(1) NOT NULL default '0',
+  `LAST_FOUR_DIGITS` varchar(4) default NULL,
   `PAYMENT_PROFILE` varchar(255) default NULL,
   `PAYMENT_TYPE` varchar(255) default NULL,
   `ADDRESS_ID` bigint(20) default NULL,

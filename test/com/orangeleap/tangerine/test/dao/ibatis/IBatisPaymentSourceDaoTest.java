@@ -95,9 +95,9 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         src.setInactive(true);
         src.setCreditCardExpiration(new Date());
         src.setCreditCardHolderName("Big Bird");
-        src.setCreditCardNumberEncrypted("0000");
-        src.setCreditCardType("Visa");
-        src.setProfile("Big Bird Visa");
+        src.setCreditCardNumber("6011008400223068");
+        src.setCreditCardType("Discover");
+        src.setProfile("Big Bird Discover");
         src.setSelectedAddress(null);
         
         Phone phone = new Phone();
@@ -111,10 +111,11 @@ public class IBatisPaymentSourceDaoTest extends AbstractIBatisTest {
         assert readSource.getAchAccountNumber() == null;
         assert readSource.getAchRoutingNumber() == null;
         assert readSource.getCreditCardExpiration() != null;
-        assert "0000".equals(readSource.getCreditCardNumberEncrypted());
+        assert "6011008400223068".equals(readSource.getCreditCardNumber());
+        assert "3068".equals(readSource.getLastFourDigits());
         assert "Big Bird".equals(readSource.getCreditCardHolderName());
-        assert "Visa".equals(readSource.getCreditCardType());
-        assert "Big Bird Visa".equals(readSource.getProfile());
+        assert "Discover".equals(readSource.getCreditCardType());
+        assert "Big Bird Discover".equals(readSource.getProfile());
         assert readSource.getPerson() != null && 200L == readSource.getPerson().getId();
         assert readSource.getSelectedAddress() != null && readSource.getSelectedAddress().getId() == null;
         assert readSource.getSelectedPhone() != null && 100L == readSource.getSelectedPhone().getId();

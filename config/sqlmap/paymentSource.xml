@@ -12,6 +12,7 @@
 		<result property="creditCardNumberEncrypted" column="PAYMENT_SRC_CREDIT_CARD_NUMBER" jdbcType="VARCHAR" />
 		<result property="creditCardType" column="PAYMENT_SRC_CREDIT_CARD_TYPE" jdbcType="VARCHAR" />
 		<result property="inactive" column="PAYMENT_SRC_INACTIVE" jdbcType="CHAR" />
+		<result property="lastFourDigits" column="PAYMENT_SRC_LAST_FOUR_DIGITS" jdbcType="VARCHAR" />
 		<result property="profile" column="PAYMENT_SRC_PROFILE" jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_SRC_TYPE" jdbcType="VARCHAR" />
 		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" /> 
@@ -27,6 +28,7 @@
 		ps.CREDIT_CARD_EXPIRATION as PAYMENT_SRC_CREDIT_CARD_EXPIRATION, ps.CREDIT_CARD_HOLDER_NAME as PAYMENT_SRC_CREDIT_CARD_HOLDER_NAME, 
 		ps.CREDIT_CARD_NUMBER as PAYMENT_SRC_CREDIT_CARD_NUMBER, ps.CREDIT_CARD_TYPE as PAYMENT_SRC_CREDIT_CARD_TYPE,
 		ps.INACTIVE as PAYMENT_SRC_INACTIVE, ps.PAYMENT_PROFILE as PAYMENT_SRC_PROFILE, ps.PAYMENT_TYPE as PAYMENT_SRC_TYPE,
+		ps.LAST_FOUR_DIGITS as PAYMENT_SRC_LAST_FOUR_DIGITS,
 		ps.UPDATE_DATE as PAYMENT_SRC_UPDATE_DATE, ps.CREATE_DATE as PAYMENT_SRC_CREATE_DATE
     </sql>
 
@@ -94,13 +96,13 @@
 		insert into PAYMENT_SOURCE (ACH_ACCOUNT_NUMBER,
 		ACH_HOLDER_NAME,
 		ACH_ROUTING_NUMBER, CREDIT_CARD_EXPIRATION, CREDIT_CARD_HOLDER_NAME, CREDIT_CARD_NUMBER,
-		CREDIT_CARD_TYPE, INACTIVE, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID,
+		CREDIT_CARD_TYPE, INACTIVE, LAST_FOUR_DIGITS, PAYMENT_PROFILE, PAYMENT_TYPE, ADDRESS_ID,
 		CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#achAccountNumberEncrypted#, #achHolderName#,
 		#achRoutingNumber#, #creditCardExpiration#, #creditCardHolderName#,
-		#creditCardNumberEncrypted#, #creditCardType#, #inactive#,
+		#creditCardNumberEncrypted#, #creditCardType#, #inactive#, #lastFourDigits#, 
 		#profile#, #paymentType#, #selectedAddress.id#, #person.id#,
 		#selectedPhone.id#, now(), now())
         <selectKey keyProperty="id" resultClass="long">
@@ -118,6 +120,7 @@
 		CREDIT_CARD_NUMBER = #creditCardNumberEncrypted#,
 		CREDIT_CARD_TYPE = #creditCardType#,
 		INACTIVE = #inactive#,
+		LAST_FOUR_DIGITS = #lastFourDigits#, 
 		PAYMENT_PROFILE = #profile#,
 		PAYMENT_TYPE = #paymentType#,
 		ADDRESS_ID = #selectedAddress.id#,

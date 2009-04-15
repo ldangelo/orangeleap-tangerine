@@ -51,7 +51,7 @@ public abstract class EntityExporter {
 		header.add("action");
 		for (int i = 0; i < fields.size();i++) {
 			FieldDescriptor fd = fields.get(i);
-			header.add(fd.getExportFieldNameForInternalName());
+			header.add(mapName(fd.getExportFieldNameForInternalName()));
 		}
 		result.add(header);
 		
@@ -72,6 +72,10 @@ public abstract class EntityExporter {
 		
 		return result;
 		
+	}
+	
+	protected String mapName(String name) {
+		return name;
 	}
 	
 	private void removeInvalidFields(List<FieldDescriptor> fields, List<List<String>> list) {

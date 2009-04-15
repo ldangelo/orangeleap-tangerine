@@ -24,7 +24,7 @@
 		        <select id="entity" name="entity"  onchange="ImportExport_hideShow( $('#entity').val() );"  >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
-		          <!-- <option value="address">Addresses</option>   -->
+		          <option value="address">Addresses</option>   
 		          <option value="gift">Gift Summary</option> 
 		          <!--  <option value="distributionLine">Gift Detail</option>    -->
 		        </select>    
@@ -70,7 +70,7 @@
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
  		          <option value="gift">Gifts: Cash and Checks</option> 
- 		          <!-- <option value="address">Addresses</option>  -->
+ 		        <!--   <option value="address">Addresses</option>   -->
 		        </select>            
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import"  />

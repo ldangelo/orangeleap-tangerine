@@ -56,6 +56,7 @@ var returnDashboard = function(resp) {
     	if (itemData.graphType === 'Bar' ) barChart(itemData, elem);
     	if (itemData.graphType === 'Rss' ) rss(itemData, elem);
     	if (itemData.graphType === 'Area' ) areaChart(itemData, elem);
+    	if (itemData.graphType === 'IFrame' ) iframe(itemData, elem);
 
     	if (j % 2 == 1) {
     		dashboard.append('<div class="clearColumns" />');
@@ -146,3 +147,15 @@ function rss(itemData, elem) {
     }
 }
 
+function iframe(itemData, elem) {
+    try {
+        var div = document.createElement("iframe");
+        $(div).attr("src",itemData.url);
+        $(div).attr("width","350");
+        $(div).attr("height","220");
+        $(div).attr("scrolling","no");
+        $(div).attr("frameborder","0");
+        elem.appendChild(div);
+    } catch (e) {
+    }
+}

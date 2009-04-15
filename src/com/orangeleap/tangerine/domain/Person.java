@@ -376,7 +376,6 @@ public class Person extends AbstractCommunicatorEntity {
         if (isOrganization()) {
             setDefaultCustomFieldValue(ORGANIZATION_ELIGIBILITY, StringConstants.UNKNOWN_LOWER_CASE);
         }
-        setDefaultCustomFieldValue(DONOR_PROFILES, StringConstants.UNKNOWN_LOWER_CASE);
     }
 
     @Override

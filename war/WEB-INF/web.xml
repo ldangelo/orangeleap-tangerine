@@ -72,6 +72,11 @@
         <filter-name>gzipFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
+	
+	<filter-mapping>
+        <filter-name>gzipFilter</filter-name>
+        <url-pattern>*.json</url-pattern>
+	</filter-mapping>
 
 	<listener>
 		<listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>

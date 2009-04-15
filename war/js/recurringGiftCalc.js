@@ -53,7 +53,8 @@ RecurringGift.GiftCalculator = function() {
         }
                 
         fields.frequency = Ext.fly('frequency').getValue().toLowerCase();
-        fields.start = Date.parseDate( Ext.getCmp('startDate-wrapper').getRawValue(), 'm/d/Y').clearTime();
+        var thisStartDate = Date.parseDate( Ext.getCmp('startDate-wrapper').getRawValue(), 'm/d/Y');
+        fields.start = thisStartDate ? thisStartDate.clearTime() : "";
 
         f = Ext.getCmp('endDate-wrapper').getRawValue();
 

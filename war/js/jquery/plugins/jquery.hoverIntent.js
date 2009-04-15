@@ -1,5 +1,4 @@
-﻿/**
-* hoverIntent is similar to jQuery's built-in "hover" function except that
+/** hoverIntent is similar to jQuery's built-in "hover" function except that
 * instead of firing the onMouseOver event immediately, hoverIntent checks
 * to see if the user's mouse has slowed down (beneath the sensitivity
 * threshold) before firing the onMouseOver event.

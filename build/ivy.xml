@@ -314,6 +314,7 @@
 			<artifact name="hamcrest-library" type="jar" ext="jar"/>
 		</dependency>
 		
+		<!--  Etc -->
 		<dependency org="com.paymentech.orbital.sdk" name="paymentechsdk" rev="6.2.0">
 			<artifact name="paymentechsdk" type="jar" ext="jar"/>
 		</dependency>
@@ -334,11 +335,21 @@
             <artifact name="joda-time" type="jar" ext="jar"/>
         </dependency>
 
+		<!-- Caching -->
         <dependency org="net.sf.ehcache" name="ehcache" transitive="false" rev="1.5.0"/>
 
         <dependency org="backport-util-concurrent" name="backport-util-concurrent" transitive="false" rev="3.1"/>
 
         <dependency org="net.sf.jsr107cache" name="jsr107cache" transitive="false" rev="1.0"/>
-
+		
+		<!-- JsLex -->
+		<dependency org="com.rockstarapps.jslex" name="jslex-ant" rev="1.2b" transitive="false" conf="war->default">
+			<artifact name="jslex-ant" type="jar" ext="jar"/>
+		</dependency>
+		
+		<dependency org="com.rockstarapps.jslex" name="jslex-optimization" rev="1.2b" transitive="false" conf="war->default">
+			<artifact name="jslex-optimization" type="jar" ext="jar"/>
+		</dependency>
+		
 	</dependencies>
 </ivy-module>

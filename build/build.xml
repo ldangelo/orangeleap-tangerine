@@ -197,6 +197,10 @@
 	<target name="uberclean" description="delete the ivy local repository, ivy cache, and project build">
 		<ant antfile="${internal.build.file}" target="uberclean" />
 	</target> 
+
+	<target name="optimization" description="minify and gzip CSS and JS files">
+		<ant antfile="${internal.build.file}" target="optimization" />
+	</target> 
 	
 	<target name="usage">
 		<echo>This is the build file for Orange Leap</echo>
@@ -211,6 +215,7 @@
 		<echo>Use "app.synch" to synchronize the JSPs, images, CSS,
 			and JS files with the server.  This can be configured to happen
 			automatically when something is saved in Eclipse.</echo>
+		<echo>Use "optimization" to minify and gzip CSS and JS files</echo>
 		<echo>Use "resolve" to resolve dependencies using Ivy</echo>
 		<echo>Use "publish" to publish artifacts to the Shared repository</echo>
 		<echo>Use "publish-local" to publish artifacts to the Local repository</echo>

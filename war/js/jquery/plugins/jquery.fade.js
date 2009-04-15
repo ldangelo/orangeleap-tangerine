@@ -102,4 +102,4 @@ var Fat = {
 		if (rgb) c = this.make_hex(parseInt(rgb[1]),parseInt(rgb[2]),parseInt(rgb[3]));
 		return c;
 	}
-}
+};

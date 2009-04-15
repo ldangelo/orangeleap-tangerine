@@ -200,7 +200,76 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="optimization" depends="resolve">
+		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
+			<classpath path="${war.lib}"/>
+		</taskdef>
+		
+		<css-optimization
+			minify="true" 
+			gZip="true" 
+			destFile="${war.dir}/css/tangerine.css" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="true">
+	
+			<!--	
+				Defines the set of files that will be concatenated and
+				then optimized. All the files need to be css files or 
+				errors will occur.
+			-->
+            <fileset dir="${war.dir}/css" includes="tablesorter.css" />
+            <fileset dir="${war.dir}/css" includes="jquery.tooltip.css" />
+            <fileset dir="${war.dir}/css" includes="datePicker.css" />
+            <fileset dir="${war.dir}/css" includes="jqModal.css" />
+            <fileset dir="${war.dir}/css" includes="jquery.autocomplete.css" />
+            <fileset dir="${war.dir}/css" includes="jquery.cluetip.css" />
+            <fileset dir="${war.dir}/css" includes="master.css" />
+            <fileset dir="${war.dir}/css" includes="navigation.css" />
+            <fileset dir="${war.dir}/css" includes="forms.css" />
+            <fileset dir="${war.dir}/css" includes="pages.css" />
+            <fileset dir="${war.dir}/js/extjs/resources/css" includes="ext-all.css" />
+            <fileset dir="${war.dir}/js/extjs/resources/css" includes="xtheme-gray.css" />
+            <fileset dir="${war.dir}/css" includes="orange-theme.css" />
+            <fileset dir="${war.dir}/css" includes="ext-styles.css" />
+		</css-optimization>
 
+		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
+			<classpath path="${war.lib}"/>
+		</taskdef>
+
+		<javascript-optimization
+			minify="true" 
+			yCompressor="true" 
+			gZip="false" 
+			destFile="${war.dir}/js/tangerine.js" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="true">
+
+			<!--	
+				Defines the set of files that will be concatenated and
+				then optimized. All the files need to be JavaScript files
+				or errors will occur.
+			-->
+            <fileset dir="${war.dir}/js" includes="jquery/jquery-1.3.2.min.js" />
+            <fileset dir="${war.dir}/js" includes="extjs/ext-jquery-adapter.js" />
+            <fileset dir="${war.dir}/js" includes="extjs/ext-all.js" />
+            <fileset dir="${war.dir}/js" includes="extjs/ext-ajax-queue.js" />
+            <fileset dir="${war.dir}/js" includes="jquery.bgiframe.js" />
+            <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.hoverIntent.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery.cluetip.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery.selectboxes.js" />
+	        <fileset dir="${war.dir}/js" includes="jqModal.js" />
+	        <fileset dir="${war.dir}/js" includes="jqDnR.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.numeric.pack.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.fade.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
+	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.autocomplete.js" />
+	        <fileset dir="${war.dir}/js" includes="date.js" />
+		</javascript-optimization>
+
+	</target>
+		
 	<target name="usage">
 		<echo>This is the internal build file for Tangerine.</echo>
 		<echo>Please use build.xml</echo>

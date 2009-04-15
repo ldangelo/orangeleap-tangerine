@@ -7,7 +7,7 @@
 	<title>Orange Leap Login</title>
 	<link href="<c:url value='css/login.css' />" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
-	<script type="text/javascript" src="js/jquery/jquery-1.3.1.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-1.3.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
 </head>
 <body>

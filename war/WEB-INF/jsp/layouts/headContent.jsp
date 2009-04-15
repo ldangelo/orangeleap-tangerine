@@ -1,5 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<link rel="stylesheet" type="text/css" media="screen, projection" href="css/screen.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/tablesorter.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/jquery.tooltip.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/datePicker.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/jqModal.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/jquery.cluetip.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/master.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/navigation.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/forms.css" />
+<link rel="stylesheet" type="text/css" media="screen, projection" href="css/pages.css" />
 <link rel="stylesheet" type="text/css" media="print" href="css/print.css" />
 <!--[if IE]>
 	<link href="css/master_IE.css" rel="stylesheet" type="text/css" />

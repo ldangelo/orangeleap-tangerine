@@ -14,7 +14,7 @@ public class PersonSearchFieldMapper extends SearchFieldMapper {
     static {
     	// Constituent
     	MAP.put("id", "CONSTITUENT_ID");
-    	MAP.put("accountNumber", "CONSTITUENT_ID");
+    	MAP.put("customId", "CUSTOM_ID");
     	MAP.put("firstName", "FIRST_NAME");
     	MAP.put("lastName", "LAST_NAME");
     	MAP.put("organizationName", "ORGANIZATION_NAME");

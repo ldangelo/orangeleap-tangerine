@@ -15,7 +15,7 @@ public class PledgeSearchFieldMapper extends SearchFieldMapper {
     static {
     	
 		// Constituent
-		MAP.put("person.accountNumber", "CONSTITUENT_ID");
+		MAP.put("person.customId", "CUSTOM_ID");
 		MAP.put("person.firstName", "FIRST_NAME");
 		MAP.put("person.lastName", "LAST_NAME");
 		MAP.put("person.organizationName", "ORGANIZATION_NAME");

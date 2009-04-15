@@ -120,10 +120,6 @@ public class Person extends AbstractCommunicatorEntity {
         return "person";
     }
 
-    public Long getAccountNumber() {
-        return id;
-    }
-
     public Site getSite() {
         return site;
     }

@@ -55,7 +55,7 @@ public class AddressExporter extends EntityExporter {
 	@Override
 	protected String mapName(String name) {
 		if (name.startsWith("primaryAddress")) {
-			return "address."+name.substring(name.indexOf(".")+1);
+			return name.substring(name.indexOf(".")+1);
 		}
 		if (name.equals("customId")) return "account";
 		return name;
@@ -70,26 +70,17 @@ public class AddressExporter extends EntityExporter {
 		while (it.hasNext()) {
 			FieldDescriptor fd = it.next();
 			String name = fd.getName();
-			boolean exportfield = name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.startsWith("primaryAddress");
+			boolean exportfield = name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.equals("customId") || name.startsWith("primaryAddress");
 			if (!exportfield) it.remove();
 		}
 
-		// Add a column for person custom id
-		FieldDefinition fd = new FieldDefinition();
-		fd.setId("customId");
-		fd.setEntityType(EntityType.person);
-		fd.setFieldName("customId");
-		fd.setFieldType(FieldType.TEXT);
-		FieldDescriptor fieldDescriptor = new FieldDescriptor("customId", FieldDescriptor.NATIVE, fd);
-		list.add(0, fieldDescriptor);
-
 		// Add a column for address id
-		fd = new FieldDefinition();
+		FieldDefinition fd = new FieldDefinition();
 		fd.setId("primaryAddress.id");
 		fd.setEntityType(EntityType.address);
 		fd.setFieldName("primaryAddress.id");
 		fd.setFieldType(FieldType.TEXT);
-		fieldDescriptor = new FieldDescriptor("primaryAddress.id", FieldDescriptor.NATIVE, fd);
+		FieldDescriptor fieldDescriptor = new FieldDescriptor("primaryAddress.id", FieldDescriptor.NATIVE, fd);
 		list.add(0, fieldDescriptor);
 
 		

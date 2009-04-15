@@ -84,6 +84,23 @@ public class AddressExporter extends EntityExporter {
 		list.add(0, fieldDescriptor);
 
 		
+		// Add a column for address line 3 after address line 2
+		int addr2 = 0;
+		for (int i = 0; i < list.size(); i++) {
+			FieldDescriptor afieldDescriptor = list.get(i);
+			if (afieldDescriptor.getName().equals("primaryAddress.addressLine2")) {
+				addr2 = i;
+			}
+		}
+		fd = new FieldDefinition();
+		fd.setId("primaryAddress.addressLine3");
+		fd.setEntityType(EntityType.address);
+		fd.setFieldName("primaryAddress.addressLine3");
+		fd.setFieldType(FieldType.TEXT);
+		fieldDescriptor = new FieldDescriptor("primaryAddress.addressLine3", FieldDescriptor.NATIVE, fd);
+		list.add(addr2 + 1, fieldDescriptor);
+
+		
 		return list;
 		
 	}

@@ -28,4 +28,6 @@ public interface PaymentSourceService {
     Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource);
     
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware);
+    
+    public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSource paymentSource);
 }

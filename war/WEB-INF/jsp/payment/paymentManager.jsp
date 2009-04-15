@@ -16,6 +16,7 @@
 			<c:if test="${id != null}">
 				<input type="hidden" name="id" value="<c:out value='${id}'/>"/>
 			</c:if>
+			<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
 	
 			<spring:message code='paymentMethods' var="titleText" />
 			<spring:message code='submitPaymentMethod' var="submitText" />

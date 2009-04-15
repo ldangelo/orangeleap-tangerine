@@ -166,67 +166,100 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
     
     @Override
+    public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSource paymentSource) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("checkForConflictingPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
+        }
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        if (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) {
+            List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards(paymentSource.getCreditCardNumberEncrypted());
+            PaymentSource existingSource = isSameCreditCard(paymentSource, sources);
+            if (existingSource != null) {
+                returnMap.put("existingSource", existingSource);
+            }
+            else {
+                returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
+                returnMap.put("dates", checkCreditCardDatesPaymentSource(paymentSource, sources));
+            }
+        }
+        else if (PaymentSource.ACH.equals(paymentSource.getPaymentType())) {
+            List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSource.getAchAccountNumberEncrypted(), paymentSource.getAchRoutingNumber());
+            PaymentSource existingSource = isSameACH(paymentSource, sources);
+            if (existingSource != null) {
+                returnMap.put("existingSource", existingSource);
+            }
+            else {
+                returnMap.put("names", checkAccountNamesPaymentSources(paymentSource, sources));
+            }
+        }
+        return returnMap;
+    }
+    
+    @Override
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware) {
         if (logger.isDebugEnabled()) {
             logger.debug("checkForConflictingPaymentSources: paymentSource type = " + paymentSourceAware.getPaymentType());
         }
         Map<String, Object> conflictingPaymentSources = new HashMap<String, Object>();
         if (PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
-            List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards(paymentSourceAware.getPaymentSource().getCreditCardNumber());
-            if (isSameCreditCard(paymentSourceAware, sources) == false) {
+            List<PaymentSource> sources = paymentSourceDao.readExistingCreditCards(paymentSourceAware.getPaymentSource().getCreditCardNumberEncrypted());
+            if (isSame(paymentSourceAware, sources) == false) {
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
                 conflictingPaymentSources.put("dates", checkCreditCardDatesPaymentSource(paymentSourceAware.getPaymentSource(), sources));
             }
         }
         else if (PaymentSource.ACH.equals(paymentSourceAware.getPaymentType())) {
-            List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSourceAware.getPaymentSource().getAchAccountNumber(), paymentSourceAware.getPaymentSource().getAchRoutingNumber());
-            if (isSameACH(paymentSourceAware, sources) == false) {
+            List<PaymentSource> sources = paymentSourceDao.readExistingAchAccounts(paymentSourceAware.getPaymentSource().getAchAccountNumberEncrypted(), paymentSourceAware.getPaymentSource().getAchRoutingNumber());
+            if (isSame(paymentSourceAware, sources) == false) {
                 conflictingPaymentSources.put("names", checkAccountNamesPaymentSources(paymentSourceAware.getPaymentSource(), sources));
             }
         }
         return conflictingPaymentSources;
     }
     
-    private boolean isSameCreditCard(PaymentSourceAware aware, List<PaymentSource> sources) {
+    private boolean isSame(PaymentSourceAware aware, List<PaymentSource> sources) {
         boolean foundSame = false;
         if (sources != null) {
-            PaymentSource newSource = aware.getPaymentSource();
+            PaymentSource existingSource = PaymentSource.CREDIT_CARD.equals(aware.getPaymentType()) ? isSameCreditCard(aware.getPaymentSource(), sources) : isSameACH(aware.getPaymentSource(), sources);
+
+            if (existingSource != null) {
+                foundSame = true;
+                aware.setSelectedPaymentSource(existingSource);
+                aware.setPaymentSourceType(FormBeanType.EXISTING);
+                aware.setPaymentSource(null);
+            }
+        }
+        return foundSame;
+    }
+    
+    private PaymentSource isSameCreditCard(PaymentSource newSource, List<PaymentSource> sources) {
+        if (sources != null) {
             for (PaymentSource src : sources) {
                 if (src.getCreditCardNumberEncrypted().equals(newSource.getCreditCardNumberEncrypted()) &&
                         src.getCreditCardType().equals(newSource.getCreditCardType()) &&
                         src.getCreditCardHolderName().equals(newSource.getCreditCardHolderName()) && 
                         src.getCreditCardExpirationMonth().equals(newSource.getCreditCardExpirationMonth()) && 
                         src.getCreditCardExpirationYear().equals(newSource.getCreditCardExpirationYear())) {
-                    foundSame = true;
-                    aware.setSelectedPaymentSource(src);
-                    aware.setPaymentSourceType(FormBeanType.EXISTING);
-                    aware.setPaymentSource(null);
-                    break;
+                    return src;
                 }
             }
         }
-        return foundSame;
+        return null;
     }
     
-    private boolean isSameACH(PaymentSourceAware aware, List<PaymentSource> sources) {
-        boolean foundSame = false;
+    private PaymentSource isSameACH(PaymentSource newSource, List<PaymentSource> sources) {
         if (sources != null) {
-            PaymentSource newSource = aware.getPaymentSource();
             for (PaymentSource src : sources) {
                 if (src.getAchAccountNumberEncrypted().equals(newSource.getAchAccountNumberEncrypted()) &&
                         src.getAchHolderName().equals(newSource.getAchHolderName()) && 
                         src.getAchRoutingNumber().equals(newSource.getAchRoutingNumber())) {
-                    foundSame = true;
-                    aware.setSelectedPaymentSource(src);
-                    aware.setPaymentSourceType(FormBeanType.EXISTING);
-                    aware.setPaymentSource(null);
-                    break;
+                    return src;
                 }
             }
         }
-        return foundSame;
+        return null;
     }
-    
+        
     private Set<String> checkAccountNamesPaymentSources(PaymentSource paymentSource, List<PaymentSource> sources) {
         if (logger.isDebugEnabled()) {
             logger.debug("checkAccountNamesPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
@@ -258,6 +291,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         List<PaymentSource> dates = new ArrayList<PaymentSource>();
         if (sources != null) {
             for (PaymentSource thisSource : sources) {
+                // Credit Card numbers are the same
                 if ((thisSource.getCreditCardExpirationMonth().equals(paymentSource.getCreditCardExpirationMonth()) == false || 
                     thisSource.getCreditCardExpirationYear().equals(paymentSource.getCreditCardExpirationYear()) == false) && 
                     thisSource.getCreditCardHolderName().equals(paymentSource.getCreditCardHolderName())) {

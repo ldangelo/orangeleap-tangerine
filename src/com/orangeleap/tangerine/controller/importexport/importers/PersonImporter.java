@@ -53,13 +53,7 @@ public class PersonImporter extends EntityImporter {
 			if (id == null) {
                 throw new RuntimeException(getIdField() + " field is required for CHANGE or DELETE action.");
             }
-			Long lid;
-			try {
-				lid = new Long(id);
-			} catch (Exception e) {
-				throw new RuntimeException("Invalid id value "+id);
-			}
-		    constituent = constituentService.readConstituentById(lid);
+		    constituent = constituentService.readConstituentByAccountNumber(id);
 			if (constituent == null) {
                 throw new RuntimeException(getIdField() + " " + id + " not found.");
             }

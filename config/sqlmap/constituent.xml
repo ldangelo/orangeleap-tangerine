@@ -21,7 +21,7 @@
 		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="customId" column="CUSTOM_ID" jdbcType="VARCHAR" />
+		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="VARCHAR" />
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
 
 	</resultMap>
@@ -30,7 +30,7 @@
     	p.CONSTITUENT_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
 		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
-		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME, p.CUSTOM_ID
+		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME, p.ACCOUNT_NUMBER
     </sql>
     
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
@@ -48,9 +48,9 @@
 		</iterate>
 	</select>
 	
-	<select id="SELECT_CONSTITUENT_BY_CUSTOM_ID" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+	<select id="SELECT_CONSTITUENT_BY_ACCOUNT_NUMBER" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
-		and p.CUSTOM_ID = #customId# 
+		and p.ACCOUNT_NUMBER = #accountNumber# 
 	</select>
 	
 	<select id="SELECT_ALL_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="string">
@@ -73,8 +73,8 @@
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        and p.CUSTOM_ID between #fromId# and #toId#
-        order by p.CUSTOM_ID
+        and p.ACCOUNT_NUMBER between #fromId# and #toId#
+        order by p.ACCOUNT_NUMBER
         limit 5001
     </select>
     
@@ -91,11 +91,11 @@
 		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
 		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
-		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME, CUSTOM_ID)
+		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME, ACCOUNT_NUMBER)
 		values (#constituentIndividualRoles#,
 		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lastName#, #legalName#,
 		#loginId#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
-		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#, GENERATEID(#site.name#))
+		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#, if(#accountNumber# is null, GENERATEID(#site.name#), #accountNumber#) )
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -118,6 +118,7 @@
 		RECOGNITION_NAME = #recognitionName#,
 		SUFFIX = #suffix#,
 		TITLE = #title#,
+		ACCOUNT_NUMBER = #accountNumber#,
 		UPDATE_DATE = now()
 		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#
 	</update>

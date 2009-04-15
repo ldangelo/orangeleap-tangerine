@@ -111,11 +111,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public Person readConstituentByCustomId(String customId) {
+    public Person readConstituentByAccountNumber(String accountNumber) {
         if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentByCustomId: id = " + customId);
+            logger.debug("readConstituentByAccountNumber: accountNumber = " + accountNumber);
         }
-        Person constituent = constituentDao.readConstituentByCustomId(customId);
+        Person constituent = constituentDao.readConstituentByAccountNumber(accountNumber);
         addCommunicationEntities(constituent);
         return constituent;
     }

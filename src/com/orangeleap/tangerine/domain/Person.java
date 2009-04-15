@@ -40,7 +40,7 @@ public class Person extends AbstractCommunicatorEntity {
     private String constituentIndividualRoles = StringConstants.EMPTY;
     private String constituentOrganizationRoles = StringConstants.EMPTY;
     private String loginId;
-    private String customId;
+    private String accountNumber;
     
     private List<Gift> gifts;
     private List<RecurringGift> recurringGifts;
@@ -356,12 +356,12 @@ public class Person extends AbstractCommunicatorEntity {
         return INDIVIDUAL.equals(getConstituentType());
     }
 
-    public String getCustomId() {
-        return customId;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setCustomId(String customId) {
-        this.customId = customId;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
     
     @Override

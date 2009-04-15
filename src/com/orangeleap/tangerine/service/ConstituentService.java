@@ -14,7 +14,7 @@ public interface ConstituentService {
 
     public Person readConstituentById(Long id);
 
-    public Person readConstituentByCustomId(String id);
+    public Person readConstituentByAccountNumber(String accountNumber);
 
     public Person readConstituentByLoginId(String id);
 

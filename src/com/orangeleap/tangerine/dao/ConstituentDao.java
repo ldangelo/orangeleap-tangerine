@@ -9,7 +9,7 @@ public interface ConstituentDao {
 
     public Person readConstituentById(Long id);
 
-    public Person readConstituentByCustomId(String id);
+    public Person readConstituentByAccountNumber(String accountNumber);
 
     public List<Person> readAllConstituentsBySite();
 

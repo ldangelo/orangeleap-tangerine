@@ -57,12 +57,11 @@ public class AddressExporter extends EntityExporter {
 		if (name.startsWith("primaryAddress")) {
 			return name.substring(name.indexOf(".")+1);
 		}
-		if (name.equals("customId")) return "account";
 		return name;
 	}
 
 	public static boolean isConstituentReadOnlyField(String name) {
-		return name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.equals("customId");
+		return name.equals("firstName") || name.equals("lastName") || name.equals("organizationName") || name.equals("accountNumber");
 	}
 
 	@Override

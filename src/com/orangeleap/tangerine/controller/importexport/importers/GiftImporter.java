@@ -58,7 +58,7 @@ public class GiftImporter extends EntityImporter {
 		if (id == null) {
             throw new RuntimeException(getIdField() + " field is required.");
         }
-	    Person constituent = constituentService.readConstituentById(new Long(id));
+	    Person constituent = constituentService.readConstituentByAccountNumber(id);
 		if (constituent == null) {
             throw new RuntimeException(getIdField() + " " + id + " not found.");
         }

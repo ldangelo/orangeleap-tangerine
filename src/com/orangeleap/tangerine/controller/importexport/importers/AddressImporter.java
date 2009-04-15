@@ -82,7 +82,7 @@ public class AddressImporter extends EntityImporter {
 			
 			address = new Address();
 			String account = values.get(ACCOUNT_FIELD);
-			Person person = constituentService.readConstituentByCustomId(account);
+			Person person = constituentService.readConstituentByAccountNumber(account);
 			if (person == null) throw new RuntimeException("Invalid constituent account "+account);
 			address.setPersonId(person.getId());
 			logger.debug("Adding new address to "+person.getFullName()+"...");

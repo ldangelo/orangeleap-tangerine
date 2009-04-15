@@ -176,7 +176,6 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         ignoreIds.add(ignoreId);
         
         params.put("firstName", "Pablo");
-        params.put("accountNumber", new Long(200));
         params.put("phoneMap[home].number", "214-113-2542");
         params.put("addressMap[home].addressLine1", "ACORN");
         params.put("emailMap[home].email", "");

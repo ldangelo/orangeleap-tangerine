@@ -47,7 +47,7 @@ Ext.onReady(function() {
         store: PaymentHistory.store,
         columns: [
             {header: 'Id', width: 65, dataIndex: 'id', sortable: true},
-            {header: 'Date', widht: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
+            {header: 'Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
             {header: 'Payment Type', width: 65, dataIndex: 'paymentType', sortable: true},
             {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true},
             {header: 'Currency', width: 65, dataIndex: 'currencyCode', sortable: true},

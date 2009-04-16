@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -28,6 +29,9 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 	
 	@Resource(name = "tangerineUserHelper")
 	private TangerineUserHelper tangerineUserHelper;
+	
+    @Resource(name = "auditService")
+    protected AuditService auditService;
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
@@ -38,7 +42,9 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
             return null;
         }
         communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());
-		return communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
+		CommunicationHistory savedHistory = communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
+		auditService.auditObject(savedHistory, communicationHistory.getPerson());
+		return savedHistory;
 	}
 
 	@Override

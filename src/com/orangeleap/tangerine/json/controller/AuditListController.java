@@ -1,28 +1,27 @@
 package com.orangeleap.tangerine.json.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.apache.commons.validator.GenericValidator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
-import com.orangeleap.tangerine.service.AuditService;
-import com.orangeleap.tangerine.web.common.SortInfo;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.Audit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.orangeleap.tangerine.domain.Audit;
+import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 /**
  * This controller handles JSON requests for populating
@@ -102,7 +101,7 @@ public class AuditListController {
         map.put("user", audit.getUser());
         map.put("type", audit.getAuditType().name());
         map.put("description", audit.getDescription());
-        map.put("objectType", audit.getEntityType());
+        map.put("objectType", "communicationhistory".equals(audit.getEntityType()) ? "touch point" : audit.getEntityType());
         map.put("objectId", audit.getObjectId());
         map.put("personId", audit.getConstituentId());
 

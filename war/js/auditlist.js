@@ -127,6 +127,9 @@ Audit.navigate = function(id) {
         case 'giftinkind':
             window.location.href= 'giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
             break;
+        case 'touch point':
+            window.location.href= 'communicationHistoryView.htm?communicationHistoryId=' + id + '&personId=' + rec.data.personId;
+            break;
         default:
             window.location.href= 'person.htm?personid=' + rec.data.personId;
     }

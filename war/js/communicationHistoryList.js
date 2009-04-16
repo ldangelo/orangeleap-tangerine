@@ -78,7 +78,7 @@ CommunicationHistory.entityViewRenderer = function(val, meta, record) {
 CommunicationHistory.navigate = function(id) {
 	    var rec = CommunicationHistory.grid.getSelectionModel().getSelected();
 	    CommunicationHistory.grid.getGridEl().mask('Loading Record');
-        window.location.href='communicationHistory.htm?communicationHistoryId=' + id + '&personId=' + rec.data.personId;
+        window.location.href='communicationHistoryView.htm?communicationHistoryId=' + id + '&personId=' + rec.data.personId;
 };
 
 

@@ -155,6 +155,7 @@ function iframe(itemData, elem) {
         $(div).attr("src",url);
         $(div).attr("width","350");
         $(div).attr("height","220");
+//        $(div).attr("scrolling","vertical");
         $(div).attr("scrolling","no");
         $(div).attr("frameborder","0");
         elem.appendChild(div);

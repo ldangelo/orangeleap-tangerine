@@ -13,6 +13,9 @@
 		<result property="recurringGiftId" column="RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="comments" column="COMMENTS" jdbcType="LONGVARCHAR" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -22,10 +25,16 @@
 		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
 		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
 
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from COMMUNICATION_HISTORY ch
 		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on ch.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on ch.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on ch.ADDRESS_ID = addr.ADDRESS_ID
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
@@ -65,10 +74,12 @@
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, ENTRY_TYPE, CREATE_DATE,
-		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID, CONSTITUENT_ID, COMMENTS)
+		RECORD_DATE, SYSTEM_GENERATED, UPDATE_DATE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID, CONSTITUENT_ID, 
+		ADDRESS_ID, PHONE_ID, EMAIL_ID, COMMENTS)
 		values (#communicationHistoryType#, #entryType#, now(),
 		#recordDate#, #systemGenerated#, now(),
-		#pledgeId#, #recurringGiftId#, #giftId#, #person.id#, #comments#)
+		#pledgeId#, #recurringGiftId#, #giftId#, #person.id#, 
+		#selectedAddress.id#, #selectedPhone.id#, #selectedEmail.id#, #comments#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -86,6 +97,9 @@
 		RECURRING_GIFT_ID = #recurringGiftId#,
 		GIFT_ID = #giftId#,
 		CONSTITUENT_ID = #person.id#,
+		ADDRESS_ID = #selectedAddress.id#, 
+		PHONE_ID = #selectedPhone.id#, 
+		EMAIL_ID = #selectedEmail.id#, 
 		COMMENTS = #comments#
 		where COMMUNICATION_HISTORY_ID = #id#
 	</update>

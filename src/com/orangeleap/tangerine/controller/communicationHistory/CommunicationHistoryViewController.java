@@ -30,20 +30,6 @@ public class CommunicationHistoryViewController extends TangerineConstituentAttr
     }
 
     @Override
-    protected void onBind(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBind(request, command, errors);
-        CommunicationHistory communicationHistory = (CommunicationHistory) command;
-    }
-   
-    @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        super.onBindAndValidate(request, command, errors);
-        if (errors.hasErrors()) {
-            CommunicationHistory communicationHistory = (CommunicationHistory) command;
-        }
-    }
-
-    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         CommunicationHistory communicationHistory = (CommunicationHistory) command;
         if (!communicationHistory.isSystemGenerated()) {

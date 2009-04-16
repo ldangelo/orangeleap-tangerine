@@ -2,6 +2,9 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
 
+import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.CommunicationHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -21,6 +24,9 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
+    private Address selectedAddress;
+    private Phone selectedPhone;
+    private Email selectedEmail;
 
 	public Site getSite() {
 		return getPerson().getSite();
@@ -97,4 +103,28 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 	public String getEntryType() {
 		return entryType;
 	}
+
+    public Address getSelectedAddress() {
+        return selectedAddress;
+    }
+
+    public void setSelectedAddress(Address selectedAddress) {
+        this.selectedAddress = selectedAddress;
+    }
+
+    public Phone getSelectedPhone() {
+        return selectedPhone;
+    }
+
+    public void setSelectedPhone(Phone selectedPhone) {
+        this.selectedPhone = selectedPhone;
+    }
+
+    public Email getSelectedEmail() {
+        return selectedEmail;
+    }
+
+    public void setSelectedEmail(Email selectedEmail) {
+        this.selectedEmail = selectedEmail;
+    }
 }

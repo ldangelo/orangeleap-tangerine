@@ -90,22 +90,31 @@
 						</c:if>
 					</select>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
+				<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST' || fieldVO.fieldType == 'EXISTING_ADDRESS_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='address'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<option value="new" reference="li:has(:input[name^='address'])" <c:if test='${fieldVO.model.address.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
-						<c:if test='${fieldVO.model.address.userCreated}'>
-							<c:set var="selectedRef" value="li:has(:input[name^='address'])" scope="page"/>
+						<c:if test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
+							<option value="new" reference="li:has(:input[name^='address'])" <c:if test='${fieldVO.model.address.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+							<c:if test='${fieldVO.model.address.userCreated}'>
+								<c:set var="selectedRef" value="li:has(:input[name^='address'])" scope="page"/>
+							</c:if>
 						</c:if>
 						<c:if test="${not empty addresses}">
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${addresses}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.address.userCreated && opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+							<c:choose>
+								<c:when test="${fieldVO.fieldType == 'ADDRESS_PICKLIST'}">
+									<option value="${opt.id}" <c:if test='${!fieldVO.model.address.userCreated && opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:when>
+								<c:otherwise>
+									<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedAddress.id}'>selected="selected"</c:if>><c:out value='${opt.shortDisplay}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 						<c:if test="${not empty addresses}">
 							</optgroup>
@@ -116,22 +125,31 @@
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
+				<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST' || fieldVO.fieldType == 'EXISTING_PHONE_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='phone'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<option value="new" reference="li:has(:input[name^='phone'])" <c:if test='${fieldVO.model.phone.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
-						<c:if test='${fieldVO.model.phone.userCreated}'>
-							<c:set var="selectedRef" value="li:has(:input[name^='phone'])" scope="page"/>
+						<c:if test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
+							<option value="new" reference="li:has(:input[name^='phone'])" <c:if test='${fieldVO.model.phone.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+							<c:if test='${fieldVO.model.phone.userCreated}'>
+								<c:set var="selectedRef" value="li:has(:input[name^='phone'])" scope="page"/>
+							</c:if>
 						</c:if>
 						<c:if test="${not empty phones}">
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${phones}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.phone.userCreated && opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+							<c:choose>
+								<c:when test="${fieldVO.fieldType == 'PHONE_PICKLIST'}">
+									<option value="${opt.id}" <c:if test='${!fieldVO.model.phone.userCreated && opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:when>
+								<c:otherwise>
+									<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedPhone.id}'>selected="selected"</c:if>><c:out value='${opt.number}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 						<c:if test="${not empty phones}">
 							</optgroup>
@@ -142,22 +160,31 @@
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
+				<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST' || fieldVO.fieldType == 'EXISTING_EMAIL_PICKLIST'}">
 					<select name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" class="picklist <c:out value='${fieldVO.entityAttributes}'/>"
 						references="li:has(:input[name^='email'])">
 						<c:set var="selectedRef" value="" scope="page"/>
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
-						<option value="new" reference="li:has(:input[name^='email'])" <c:if test='${fieldVO.model.email.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
-						<c:if test='${fieldVO.model.email.userCreated}'>
-							<c:set var="selectedRef" value="li:has(:input[name^='email'])" scope="page"/>
+						<c:if test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
+							<option value="new" reference="li:has(:input[name^='email'])" <c:if test='${fieldVO.model.email.userCreated}'>selected="selected"</c:if>><spring:message code="createNew"/></option>
+							<c:if test='${fieldVO.model.email.userCreated}'>
+								<c:set var="selectedRef" value="li:has(:input[name^='email'])" scope="page"/>
+							</c:if>
 						</c:if>
 						<c:if test="${not empty emails}">
 							<optgroup label="<spring:message code='orChoose'/>">
 						</c:if>
 						<c:forEach var="opt" varStatus="status" items="${emails}">
-							<option value="${opt.id}" <c:if test='${!fieldVO.model.email.userCreated && opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+							<c:choose>
+								<c:when test="${fieldVO.fieldType == 'EMAIL_PICKLIST'}">
+									<option value="${opt.id}" <c:if test='${!fieldVO.model.email.userCreated && opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:when>
+								<c:otherwise>
+									<option value="${opt.id}" <c:if test='${opt.id == fieldVO.model.selectedEmail.id}'>selected="selected"</c:if>><c:out value='${opt.emailAddress}'/><c:if test="${opt.inactive}">&nbsp;<spring:message code='inactive'/></c:if></option>
+								</c:otherwise>
+							</c:choose>
 						</c:forEach>
 						<c:if test="${not empty emails}">
 							</optgroup>

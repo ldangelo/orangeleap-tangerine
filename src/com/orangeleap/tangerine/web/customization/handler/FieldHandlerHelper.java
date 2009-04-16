@@ -49,6 +49,9 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.ADDRESS_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.PHONE_PICKLIST, genericFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.EMAIL_PICKLIST, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.EXISTING_ADDRESS_PICKLIST, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.EXISTING_PHONE_PICKLIST, genericFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.EXISTING_EMAIL_PICKLIST, genericFieldHandler);
         
         AssociationFieldHandler associationFieldHandler = new AssociationFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.ASSOCIATION, associationFieldHandler);

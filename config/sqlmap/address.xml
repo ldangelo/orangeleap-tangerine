@@ -22,6 +22,7 @@
         <result property="temporaryStartDate" column="ADDRESS_TEMPORARY_START_DATE" jdbcType="TIMESTAMP"/>
         <result property="personId" column="ADDRESS_CONSTITUENT_ID" jdbcType="BIGINT"/>
 		<result property="primary" column="ADDRESS_IS_PRIMARY" jdbcType="CHAR" />
+		<result property="undeliverable" column="ADDRESS_UNDELIVERABLE" jdbcType="CHAR" />
         <result property="createDate" column="ADDRESS_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="ADDRESS_UPDATE_DATE" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -33,7 +34,7 @@
         addr.POSTAL_CODE as ADDRESS_POSTAL_CODE, addr.RECEIVE_CORRESPONDENCE as ADDRESS_RECEIVE_CORRESPONDENCE, addr.SEASONAL_END_DATE as ADDRESS_SEASONAL_END_DATE, 
         addr.SEASONAL_START_DATE as ADDRESS_SEASONAL_START_DATE, addr.STATE_PROVINCE as ADDRESS_STATE_PROVINCE,
         addr.TEMPORARY_END_DATE as ADDRESS_TEMPORARY_END_DATE, addr.TEMPORARY_START_DATE as ADDRESS_TEMPORARY_START_DATE, 
-        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.CONSTITUENT_ID as ADDRESS_CONSTITUENT_ID, addr.IS_PRIMARY as ADDRESS_IS_PRIMARY
+        addr.UPDATE_DATE as ADDRESS_UPDATE_DATE, addr.CONSTITUENT_ID as ADDRESS_CONSTITUENT_ID, addr.IS_PRIMARY as ADDRESS_IS_PRIMARY, addr.UNDELIVERABLE as ADDRESS_UNDELIVERABLE
     </sql>
 
     <sql id="SELECT_ADDRESS_FRAGMENT">
@@ -66,14 +67,14 @@
         insert into ADDRESS (ACTIVATION_STATUS, ADDRESS_LINE_1, ADDRESS_LINE_2,
         ADDRESS_LINE_3, CITY, COMMENT, COUNTRY, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
         POSTAL_CODE, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE, STATE_PROVINCE,
-        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
+        TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY, UNDELIVERABLE)
         values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
         #inactive#, #postalCode#, #receiveMail#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, now(),
-        #personId#, #primary#)
+        #personId#, #primary#, #undeliverable#)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -99,7 +100,8 @@
         TEMPORARY_END_DATE = #temporaryEndDate#,
         TEMPORARY_START_DATE = #temporaryStartDate#,
         CONSTITUENT_ID = #personId#,
-		IS_PRIMARY = #primary#
+		IS_PRIMARY = #primary#,
+		UNDELIVERABLE = #undeliverable#
         where ADDRESS_ID = #id#
     </update>
 

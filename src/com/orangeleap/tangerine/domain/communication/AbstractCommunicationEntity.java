@@ -21,6 +21,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     protected Date seasonalEndDate;
     protected boolean inactive = false;
     protected boolean isPrimary = false;
+    private boolean undeliverable = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
     protected Date effectiveDate; 
@@ -130,6 +131,14 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.isPrimary = isPrimary;
     }
     
+	public void setUndeliverable(boolean undeliverable) {
+		this.undeliverable = undeliverable;
+	}
+
+	public boolean isUndeliverable() {
+		return undeliverable;
+	}
+    
     @Override
     public void prePersist() {
         super.prePersist();
@@ -169,5 +178,5 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     	// TODO - this is now multi-valued
     	return StringConstants.UNKNOWN_LOWER_CASE;
     }
-    
+
 }

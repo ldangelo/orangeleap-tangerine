@@ -6,7 +6,6 @@
 		<result property="id" column="EMAIL_ID" jdbcType="BIGINT" />
 		<result property="activationStatus" column="EMAIL_ACTIVATION_STATUS" jdbcType="VARCHAR" />
 		<result property="comments" column="EMAIL_COMMENT" jdbcType="VARCHAR" />
-		<result property="createDate" column="EMAIL_CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="effectiveDate" column="EMAIL_EFFECTIVE_DATE" jdbcType="TIMESTAMP" />
 		<result property="emailAddress" column="EMAIL_ADDRESS" jdbcType="VARCHAR" />
 		<result property="emailDisplay" column="EMAIL_DISPLAY" jdbcType="VARCHAR" />
@@ -16,16 +15,18 @@
 		<result property="seasonalStartDate" column="EMAIL_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryEndDate" column="EMAIL_TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />
 		<result property="temporaryStartDate" column="EMAIL_TEMPORARY_START_DATE"	jdbcType="TIMESTAMP" />
-		<result property="updateDate" column="EMAIL_UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="personId" column="EMAIL_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="primary" column="EMAIL_IS_PRIMARY" jdbcType="CHAR" />
+		<result property="undeliverable" column="EMAIL_UNDELIVERABLE" jdbcType="CHAR" />
+		<result property="createDate" column="EMAIL_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="EMAIL_UPDATE_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 
     <sql id="EMAIL_COLS_FRAGMENT">
     	e.EMAIL_ID, e.ACTIVATION_STATUS as EMAIL_ACTIVATION_STATUS, e.COMMENT as EMAIL_COMMENT, e.CREATE_DATE as EMAIL_CREATE_DATE, e.EFFECTIVE_DATE as EMAIL_EFFECTIVE_DATE,
 		e.EMAIL_ADDRESS, e.EMAIL_DISPLAY, e.INACTIVE as EMAIL_INACTIVE, e.RECEIVE_CORRESPONDENCE as EMAIL_RECEIVE_CORRESPONDENCE, e.SEASONAL_END_DATE as EMAIL_SEASONAL_END_DATE,
 		e.SEASONAL_START_DATE as EMAIL_SEASONAL_START_DATE, e.TEMPORARY_END_DATE as EMAIL_TEMPORARY_END_DATE, e.TEMPORARY_START_DATE as EMAIL_TEMPORARY_START_DATE,
-		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.CONSTITUENT_ID as EMAIL_CONSTITUENT_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY
+		e.UPDATE_DATE as EMAIL_UPDATE_DATE, e.CONSTITUENT_ID as EMAIL_CONSTITUENT_ID, e.IS_PRIMARY as EMAIL_IS_PRIMARY, e.UNDELIVERABLE as EMAIL_UNDELIVERABLE
 	</sql>
 	
 	<sql id="SELECT_EMAIL_FRAGMENT">
@@ -57,11 +58,11 @@
 	<insert id="INSERT_EMAIL" parameterClass="com.orangeleap.tangerine.domain.communication.Email">
 		insert into EMAIL (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE,
 		EMAIL_ADDRESS, EMAIL_DISPLAY, INACTIVE, RECEIVE_CORRESPONDENCE,
-		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY)
+		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY, UNDELIVERABLE)
 		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
 		#inactive#, #receiveMail#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
-		now(), #personId#, #primary#)
+		now(), #personId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -82,7 +83,8 @@
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
 		CONSTITUENT_ID = #personId#,
-		IS_PRIMARY = #primary#
+		IS_PRIMARY = #primary#,
+		UNDELIVERABLE = #undeliverable#
 		where EMAIL_ID = #id#
 	</update>
 		

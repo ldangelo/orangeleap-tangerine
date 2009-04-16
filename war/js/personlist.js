@@ -36,7 +36,7 @@ Ext.onReady(function(){
         columns: [
             {header: 'View', width: 40, sortable: false, menuDisabled: true, fixed: true, renderer: OrangeLeap.person.personViewRenderer},
             {header: 'Account', width: 60, dataIndex: 'accountNumber', sortable: true, align: 'right'},
-            {header: 'First Name', widht: 90, dataIndex: 'first', sortable: true},
+            {header: 'First Name', width: 90, dataIndex: 'first', sortable: true},
             {header: 'Last Name', width: 90, dataIndex: 'last', sortable: true},
             {header: 'Organization', width: 120, dataIndex: 'organization', sortable: true},
             {header: 'Major', tooltip: 'Major Donors', width: 55, align: 'center', dataIndex: 'majorDonor', sortable: true, renderer: OrangeLeap.person.majorDonorRenderer},

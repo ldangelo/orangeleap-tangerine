@@ -13,6 +13,9 @@ import com.orangeleap.tangerine.controller.importexport.importers.EntityImporter
 import com.orangeleap.tangerine.controller.importexport.importers.EntityImporterFactory;
 
 public class ImportHandler {
+	
+	public static final int MAX_ERRORS = 100;
+	
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -87,7 +90,11 @@ public class ImportHandler {
 			e.printStackTrace();
 			String msg = "Error in import file line "+linenumber+": "+e.getMessage();
 			logger.error(msg);
-			errors.add(msg);
+			if (errors.size() < MAX_ERRORS) {
+				errors.add(msg);
+			} else if (errors.size() == MAX_ERRORS) {
+				errors.add("Additional errors truncated...");
+			}
 		}
 
 	}

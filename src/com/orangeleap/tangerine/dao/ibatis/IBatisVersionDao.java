@@ -28,8 +28,8 @@ public class IBatisVersionDao extends AbstractIBatisDao implements VersionDao {
 
 	@Override
 	public Version selectVersion(String id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("selectVersions:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("selectVersions:");
         }
         Map<String, Object> params = setupParams();
         params.put("id", id);

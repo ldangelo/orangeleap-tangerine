@@ -70,8 +70,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
     public Person maintainConstituent(Person constituent) throws ConstituentValidationException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainConstituent: constituent = " + constituent);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainConstituent: constituent = " + constituent);
         }
         if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
             throw new ConstituentValidationException(); 
@@ -102,8 +102,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public Person readConstituentById(Long id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentById: id = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readConstituentById: id = " + id);
         }
         Person constituent = constituentDao.readConstituentById(id);
         addCommunicationEntities(constituent);
@@ -112,8 +112,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public Person readConstituentByAccountNumber(String accountNumber) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentByAccountNumber: accountNumber = " + accountNumber);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readConstituentByAccountNumber: accountNumber = " + accountNumber);
         }
         Person constituent = constituentDao.readConstituentByAccountNumber(accountNumber);
         addCommunicationEntities(constituent);
@@ -131,8 +131,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     
     @Override
     public Person readConstituentByLoginId(String loginId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readConstituentByLoginId: loginId = " + loginId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readConstituentByLoginId: loginId = " + loginId);
         }
         return constituentDao.readConstituentByLoginId(loginId);
     }
@@ -140,24 +140,24 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public List<Person> searchConstituents(Map<String, Object> params) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchConstituents: params = " + params);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchConstituents: params = " + params);
         }
         return constituentDao.searchConstituents(params, null);
     }
 
     @Override
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);
         }
         return constituentDao.searchConstituents(params, ignoreIds);
     }
     
     @Override
     public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllConstituentsByIdRange: " + fromId + " " + toId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllConstituentsByIdRange: " + fromId + " " + toId);
         }
         return constituentDao.readAllConstituentsByIdRange(fromId, toId);
     }
@@ -165,8 +165,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public Person createDefaultConstituent() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultConstituent:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultConstituent:");
         }
         // get initial person with built-in defaults
         Person constituent = new Person();
@@ -184,8 +184,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("analyzeLapsedDonor: beginDate = " + beginDate + " currentDate = " + currentDate);
+        if (logger.isTraceEnabled()) {
+            logger.trace("analyzeLapsedDonor: beginDate = " + beginDate + " currentDate = " + currentDate);
         }
         return giftDao.analyzeLapsedDonor(beginDate, currentDate);
     }
@@ -193,8 +193,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void setLapsedDonor(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("setLapsedDonor: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("setLapsedDonor: constituentId = " + constituentId);
         }
         Person constituent = readConstituentById(constituentId);
         if (constituent != null) {
@@ -206,8 +206,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public List<Person> readAllConstituentsBySite() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllConstituentsBySite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllConstituentsBySite:");
         }
         return constituentDao.readAllConstituentsBySite();
 	}
@@ -215,8 +215,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Person> readAllConstituentsBySite(SortInfo sort) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllConstituentsBySite:" + sort);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllConstituentsBySite:" + sort);
         }
 
         return constituentDao.readAllConstituentsBySite(sort.getSort(), sort.getDir(), sort.getStart(), sort.getLimit());

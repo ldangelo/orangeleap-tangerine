@@ -28,16 +28,16 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
 
     @Override
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainPaymentSource: paymentSource = " + paymentSource);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainPaymentSource: paymentSourceId = " + paymentSource.getId());
         }
         return (PaymentSource)insertOrUpdate(paymentSource, "PAYMENT_SOURCE");
     }
 
     @Override
     public PaymentSource readPaymentSourceById(Long paymentSourceId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentSourceById: paymentSourceId = " + paymentSourceId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentSourceById: paymentSourceId = " + paymentSourceId);
         }
         Map<String, Object> params = setupParams();
         params.put("paymentSourceId", paymentSourceId);
@@ -46,8 +46,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
 
     @Override
     public PaymentSource readPaymentSourceByProfile(Long constituentId, String profile) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentSourceByProfile: constituentId = " + constituentId + " profile = " + profile);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentSourceByProfile: constituentId = " + constituentId + " profile = " + profile);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -58,8 +58,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readAllPaymentSources(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllPaymentSources: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPaymentSources: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -69,8 +69,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readActivePaymentSources(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSources: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActivePaymentSources: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -80,8 +80,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -92,8 +92,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readExistingCreditCards(String creditCardNumber) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readExistingCreditCards: creditCardNumber = " + creditCardNumber);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readExistingCreditCards: creditCardNumber = " + creditCardNumber);
         }
         Map<String, Object> params = setupParams();
         params.put("creditCardNumberEncrypted", creditCardNumber);
@@ -103,8 +103,8 @@ public class IBatisPaymentSourceDao extends AbstractIBatisDao implements Payment
     @SuppressWarnings("unchecked")
     @Override
     public List<PaymentSource> readExistingAchAccounts(String achAccountNum, String achRoutingNum) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readExistingAchAccounts: achAccountNum = " + achAccountNum + " achRoutingNum = " + achRoutingNum);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readExistingAchAccounts: achAccountNum = " + achAccountNum + " achRoutingNum = " + achRoutingNum);
         }
         Map<String, Object> params = setupParams();
         params.put("achAccountNumberEncrypted", achAccountNum);

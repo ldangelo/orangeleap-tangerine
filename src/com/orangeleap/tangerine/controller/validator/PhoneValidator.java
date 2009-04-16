@@ -22,7 +22,7 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("in PhoneValidator");
+        logger.trace("in PhoneValidator");
         validatePhone(target, errors);
     }
 

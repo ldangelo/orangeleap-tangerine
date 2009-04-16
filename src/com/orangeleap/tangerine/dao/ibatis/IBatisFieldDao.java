@@ -29,8 +29,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     }
     
     private Map<String, Object> setupFieldParams(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("setupFieldParams: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("setupFieldParams: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
         Map<String, Object> params = setupParams();
         params.put("sectionName", sectionName);
@@ -42,10 +42,10 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     @SuppressWarnings("unchecked")
 	@Override
     public FieldRequired readFieldRequired(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readFieldRequired: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFieldRequired: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
-        List<FieldRequired> list = (List<FieldRequired>)getSqlMapClientTemplate().queryForList("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
+        List<FieldRequired> list = getSqlMapClientTemplate().queryForList("SELECT_FIELD_REQUIRED_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
         if (list.size() == 0) {
        	    return null;
         } else {
@@ -56,10 +56,10 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     @SuppressWarnings("unchecked")
 	@Override
     public FieldValidation readFieldValidation(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readFieldValidation: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFieldValidation: sectionName = " + sectionName + " fieldDefinitionId = " + fieldDefinitionId + " secondaryFieldDefinitionId = " + secondaryFieldDefinitionId);
         }
-         List<FieldValidation> list = (List<FieldValidation>)getSqlMapClientTemplate().queryForList("SELECT_FIELD_VALIDATION_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
+         List<FieldValidation> list = getSqlMapClientTemplate().queryForList("SELECT_FIELD_VALIDATION_BY_SITE_SECTION_FIELD_DEF_ID", setupFieldParams(sectionName, fieldDefinitionId, secondaryFieldDefinitionId));
          if (list.size() == 0) {
         	 return null;
          } else {
@@ -70,8 +70,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<FieldRelationship> readMasterFieldRelationships(String masterFieldDefId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readMasterFieldRelationships: masterFieldDefId = " + masterFieldDefId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readMasterFieldRelationships: masterFieldDefId = " + masterFieldDefId);
         }
         Map<String, Object> params = setupParams();
         params.put("id", masterFieldDefId);
@@ -81,8 +81,8 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<FieldRelationship> readDetailFieldRelationships(String detailFieldDefId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readDetailFieldRelationships: detailFieldDefId = " + detailFieldDefId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readDetailFieldRelationships: detailFieldDefId = " + detailFieldDefId);
         }
         Map<String, Object> params = setupParams();
         params.put("id", detailFieldDefId);

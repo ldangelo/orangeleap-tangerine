@@ -31,8 +31,8 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
         }
 		if (communicationHistory.getPerson() == null) {
             return null;
@@ -43,24 +43,24 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
         }
 		return communicationHistoryDao.readCommunicationHistoryById(communicationHistoryId);
 	}
 	
 	@Override
 	public PaginatedResult readCommunicationHistoryByConstituent(Long constituentId, SortInfo sortInfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readCommunicationHistoryByConstituent: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCommunicationHistoryByConstituent: constituentId = " + constituentId);
         }
 		return communicationHistoryDao.readCommunicationHistoryByConstituentId(constituentId, sortInfo);
 	}
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Person constituent) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("readCommunicationHistoryByIdCreateIfNull: communicationHistoryId = " + communicationHistoryId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+		if (logger.isTraceEnabled()) {
+			logger.trace("readCommunicationHistoryByIdCreateIfNull: communicationHistoryId = " + communicationHistoryId + " constituentId = " + (constituent == null ? null : constituent.getId()));
 		}
 		CommunicationHistory communicationHistory = null;
 		if (communicationHistoryId == null) {

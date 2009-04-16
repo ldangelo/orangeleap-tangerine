@@ -115,7 +115,7 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
         Assert.notNull(password, "Null password was supplied in authentication token");
 
         if (password.length() == 0) {
-            logger.debug("Rejecting empty password for user " + username);
+            logger.trace("Rejecting empty password for user " + username);
             throw new BadCredentialsException(messages.getMessage("LdapAuthenticationProvider.emptyPassword",
                     "Empty Password"));
         }
@@ -157,7 +157,9 @@ public class TangerineAuthenticationProvider implements AuthenticationProvider {
     }
     protected boolean checkSiteActive(String siteName) {
          Site site = siteService.readSite(siteName);
-         if (site == null) return true; // new site
+         if (site == null) {
+            return true; // new site
+        }
          return site.isActive();
     }
     

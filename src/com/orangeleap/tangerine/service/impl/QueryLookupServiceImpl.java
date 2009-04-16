@@ -53,16 +53,16 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
     
     @Override
     public QueryLookup readQueryLookup(String fieldDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
         }
         return queryLookupDao.readQueryLookup(fieldDefinitionId);
     }
 
     @Override
     public List<Object> executeQueryLookup(String fieldDefinitionId, Map<String, String> params) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("executeQueryLookup: fieldDefinitionId = " + fieldDefinitionId + " params = " + params);
+        if (logger.isTraceEnabled()) {
+            logger.trace("executeQueryLookup: fieldDefinitionId = " + fieldDefinitionId + " params = " + params);
         }
         
         String searchOption = params.get("searchOption");

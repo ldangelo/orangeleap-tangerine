@@ -32,8 +32,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     @SuppressWarnings("unchecked")
     @Override
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGifts: date = " + date + " statuses = " + statuses);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGifts: date = " + date + " statuses = " + statuses);
         }
         Map<String, Object> params = setupParams();
         params.put("date", date);
@@ -44,8 +44,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
 
     @Override
     public RecurringGift maintainRecurringGift(RecurringGift rg) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainRecurringGift: recurringGift = " + rg);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainRecurringGift: recurringGiftId = " + rg.getId());
         }
 		RecurringGift aRecurringGift = (RecurringGift)insertOrUpdate(rg, "RECURRING_GIFT");
 		
@@ -58,8 +58,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
 
     @Override
     public void removeRecurringGift(RecurringGift rg) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("removeRecurringGift: id = " + rg.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("removeRecurringGift: id = " + rg.getId());
         }
         Map<String, Object> params = setupParams();
         params.put("id", rg.getId());
@@ -71,8 +71,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     
     @Override
     public RecurringGift readRecurringGiftById(Long recurringGiftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
         }
         Map<String, Object> params = setupParams();
         params.put("id", recurringGiftId);
@@ -85,8 +85,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     @SuppressWarnings("unchecked")
     @Override
     public List<RecurringGift> readRecurringGiftsByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGiftsByConstituentIdType: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGiftsByConstituentIdType: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -96,8 +96,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     @SuppressWarnings("unchecked")
     @Override
     public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
@@ -116,8 +116,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     @SuppressWarnings("unchecked")
     @Override
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> searchParams) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchRecurringGifts: searchParams = " + searchParams);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchRecurringGifts: searchParams = " + searchParams);
         }
         Map<String, Object> params = setupParams();
         QueryUtil.translateSearchParamsToIBatisParams(searchParams, params, new SearchFieldMapperFactory().getMapper(EntityType.recurringGift).getMap());

@@ -22,7 +22,7 @@ public class AddressValidator extends AbstractCommunicationValidator<Address> {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("in AddressValidator");
+        logger.trace("in AddressValidator");
         validateAddress(target, errors);
     }
 

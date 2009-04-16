@@ -26,8 +26,8 @@ public abstract class TangerineListController extends ParameterizableViewControl
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("handleRequestInternal:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("handleRequestInternal:");
         }
         Long constituentId = Long.valueOf(request.getParameter(StringConstants.PERSON_ID));
 

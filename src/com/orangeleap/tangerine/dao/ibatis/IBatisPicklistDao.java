@@ -32,8 +32,8 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
 
     @Override
     public Picklist readPicklistById(Long picklistId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistById: picklistId = " + picklistId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistById: picklistId = " + picklistId);
         }
         Map<String, Object> params = setupParams();
         params.put("picklistId", picklistId);
@@ -42,26 +42,30 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
 
     @SuppressWarnings("unchecked")
 	public Picklist readPicklistByNameId(String picklistNameId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistByNameId: picklistNameId = " + picklistNameId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistByNameId: picklistNameId = " + picklistNameId);
         }
         Map<String, Object> params = setupParams();
         params.put("picklistNameId", picklistNameId);
-        List<Picklist> list = (List<Picklist>)getSqlMapClientTemplate().queryForList("SELECT_BY_PICKLIST_NAME_ID", params);
-        if (list.size() == 0) return null;
+        List<Picklist> list = getSqlMapClientTemplate().queryForList("SELECT_BY_PICKLIST_NAME_ID", params);
+        if (list.size() == 0) {
+            return null;
+        }
         return list.get(list.size()-1);
     }
 
     @Override
     public Picklist maintainPicklist(Picklist picklist) {
        
-    	if (logger.isDebugEnabled()) {
-            logger.debug("maintainPicklist: picklist = " + picklist);
+    	if (logger.isTraceEnabled()) {
+            logger.trace("maintainPicklist: picklistId = " + picklist.getId());
         }
         
         // Sanity check
         Picklist dbPicklist = readPicklistById(picklist.getId());
-        if (dbPicklist != null && !dbPicklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot modify default picklist.");
+        if (dbPicklist != null && !dbPicklist.getSite().getName().equals(getSiteName())) {
+            throw new RuntimeException("Cannot modify default picklist.");
+        }
         
         picklist.setSite(new Site(getSiteName()));
         insertOrUpdate(picklist, "PICKLIST");
@@ -78,19 +82,21 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
     @SuppressWarnings("unchecked")
     @Override
     public List<Picklist> listPicklists() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("listPicklists:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("listPicklists:");
         }
         return getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_BY_SITE_NAME", getSiteName());
     }
 
 	@Override
     public Picklist readPicklistByFieldName(String fieldName, EntityType entityType) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistByFieldName: fieldName = " + fieldName + " entityType = " + entityType);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistByFieldName: fieldName = " + fieldName + " entityType = " + entityType);
         }
         Picklist picklist = getPicklist(fieldName, entityType, false);
-        if (picklist != null) return picklist;
+        if (picklist != null) {
+            return picklist;
+        }
         return getPicklist(fieldName, entityType, true);
     }
 
@@ -102,9 +108,13 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         List<Picklist> picklists = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME", params);
         for (Picklist picklist: picklists) {
         	if (picklist.getSite() == null) {
-        		if (useDefault) return picklist;
+        		if (useDefault) {
+                    return picklist;
+                }
         	} else {
-        		if (!useDefault && picklist.getSite().getName().equals(getSiteName())) return picklist;
+        		if (!useDefault && picklist.getSite().getName().equals(getSiteName())) {
+                    return picklist;
+                }
         	}
         }
         return null;
@@ -112,8 +122,8 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
     
     @Override
     public PicklistItem readPicklistItemById(Long picklistItemId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistItemById: picklistId = " + picklistItemId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistItemById: picklistId = " + picklistItemId);
         }
         Map<String, Object> params = setupParams();
         params.put("picklistItemId", picklistItemId);
@@ -126,8 +136,10 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         Map<String, Object> params = setupParams();
         params.put("picklistNameId", picklistNameId);
         params.put("picklistItemName", picklistItemName);
-        List<PicklistItem> list = (List<PicklistItem>)getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME", params);
-        if (list.size() == 0) return null;
+        List<PicklistItem> list = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME", params);
+        if (list.size() == 0) {
+            return null;
+        }
         return list.get(list.size()-1);
         
     }
@@ -135,8 +147,8 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
 
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainPicklistItem: picklistItem = " + picklistItem);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainPicklistItem: picklistItemId = " + picklistItem.getId());
         }
     	if (picklistItem.getId() == null) {
             getSqlMapClientTemplate().insert("INSERT_PICKLIST_ITEM", picklistItem);

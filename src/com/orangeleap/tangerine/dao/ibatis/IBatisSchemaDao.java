@@ -31,8 +31,8 @@ public class IBatisSchemaDao extends AbstractIBatisDao implements SchemaDao {
     @Override
 	public List<String> readSchemas() {
     	
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSchemas");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSchemas");
         }
         
         List<String> list = new ArrayList<String>();

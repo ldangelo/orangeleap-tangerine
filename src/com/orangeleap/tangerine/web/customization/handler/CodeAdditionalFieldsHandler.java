@@ -45,8 +45,8 @@ public class CodeAdditionalFieldsHandler extends GenericFieldHandler {
      */
     @SuppressWarnings("unchecked")
     private void resolveCodes(FieldVO fieldVO, String picklistNameId, String itemNamesStr) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("resolve: picklistNameId = " + picklistNameId + " itemNames = " + itemNamesStr);
+        if (logger.isTraceEnabled()) {
+            logger.trace("resolve: picklistNameId = " + picklistNameId + " itemNames = " + itemNamesStr);
         }
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
         List<String> displayValues = new ArrayList<String>();

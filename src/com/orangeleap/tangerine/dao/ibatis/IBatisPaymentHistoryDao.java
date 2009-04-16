@@ -27,8 +27,8 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 
 	@Override
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("addPaymentHistory: constituentId = " + paymentHistory.getPerson().getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("addPaymentHistory: constituentId = " + paymentHistory.getPerson().getId());
         }
         return (PaymentHistory)insertOrUpdate(paymentHistory, "PAYMENT_HISTORY");
 	}
@@ -36,8 +36,8 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 	@SuppressWarnings("unchecked")
 	@Override
 	public PaginatedResult readPaymentHistoryByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
@@ -55,8 +55,8 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 	@SuppressWarnings("unchecked")
 	@Override
 	public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentHistoryBySite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentHistoryBySite:");
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);

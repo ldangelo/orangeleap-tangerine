@@ -28,8 +28,8 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
 
     @Override
     public GiftInKind maintainGiftInKind(GiftInKind giftInKind) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainGiftInKind: giftInKind = " + giftInKind);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainGiftInKind: giftInKindId = " + giftInKind.getId());
         }
         GiftInKind aGiftInKind = (GiftInKind) insertOrUpdate(giftInKind, "GIFT_IN_KIND");
         
@@ -49,8 +49,8 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
 
     @Override
     public GiftInKind readGiftInKindById(Long giftInKindId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftInKindById: giftInKindId = " + giftInKindId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftInKindById: giftInKindId = " + giftInKindId);
         }
         Map<String, Object> params = setupParams();
         params.put("id", giftInKindId);
@@ -60,8 +60,8 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
     @SuppressWarnings("unchecked")
     @Override
     public List<GiftInKind> readGiftsInKindByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsInKindByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -71,8 +71,8 @@ public class IBatisGiftInKindDao extends AbstractIBatisDao implements GiftInKind
     @SuppressWarnings("unchecked")
     @Override
     public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);

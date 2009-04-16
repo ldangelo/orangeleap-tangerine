@@ -56,8 +56,8 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
      * @return object inserted or updated
      */
     protected GeneratedId insertOrUpdate(final GeneratedId o, final String table) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("insertOrUpdate: o = " + o + " id = " + o.getId() + " table = " + table);
+        if (logger.isTraceEnabled()) {
+            logger.trace("insertOrUpdate: id = " + o.getId() + " table = " + table);
         }
     	setSite(o);
 
@@ -67,7 +67,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
         if (o.getId() == null || o.getId() <= 0) {
             Long generatedId = (Long)getSqlMapClientTemplate().insert("INSERT_" + table, o);
             if (logger.isDebugEnabled()) {
-                logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o + " table = " + table);
+                logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o.getClass().getName() + " table = " + table);
             }
             o.setId(generatedId);
         }

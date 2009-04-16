@@ -38,8 +38,8 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public GiftInKind maintainGiftInKind(GiftInKind giftInKind) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainGiftInKind: giftInKind = " + giftInKind);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainGiftInKind: giftInKind = " + giftInKind);
         }
         maintainEntityChildren(giftInKind, giftInKind.getPerson());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
@@ -55,32 +55,32 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
 
     @Override
     public GiftInKind readGiftInKindById(Long giftInKindId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftInKindById: giftInKindId = " + giftInKindId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftInKindById: giftInKindId = " + giftInKindId);
         }
         return giftInKindDao.readGiftInKindById(giftInKindId);
     }
 
     @Override
     public List<GiftInKind> readGiftsInKindByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsInKindByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         return giftInKindDao.readGiftsInKindByConstituentId(constituentId);
     }
     
     @Override
     public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedGiftsInKindByConstituentId: constituentId = " + constituentId);
         }
         return giftInKindDao.readPaginatedGiftsInKindByConstituentId(constituentId, sortinfo);
     }
     
     @Override
     public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftInKindByIdCreateIfNull: giftInKindId = " + giftInKindId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftInKindByIdCreateIfNull: giftInKindId = " + giftInKindId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         GiftInKind giftInKind = null;
         if (giftInKindId == null) {
@@ -93,8 +93,8 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     }
     
     private GiftInKind createDefaultGiftInKind(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultGiftInKind: constituent = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultGiftInKind: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         GiftInKind giftInKind = new GiftInKind();
         giftInKind.setPerson(constituent);
@@ -106,8 +106,8 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     }
     
     private Gift createGiftForGiftInKind(GiftInKind giftInKind) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createGiftForGiftInKind: giftInKind.giftId = " + giftInKind.getGiftId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("createGiftForGiftInKind: giftInKind.giftId = " + giftInKind.getGiftId());
         }
         Gift gift = null;
         if (giftInKind.getGiftId() == null || giftInKind.getGiftId() <= 0) {

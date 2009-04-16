@@ -31,8 +31,8 @@ public class IBatisMessageDao extends AbstractIBatisDao implements MessageDao {
     @SuppressWarnings("unchecked")
 	@Override
 	public String readMessage(MessageResourceType messageResourceType, String messageKey, Locale locale) {
-    	if (logger.isDebugEnabled()) {
-    	    logger.debug("readMessage: messageResourceType = " + messageResourceType + " messageKey = " + messageKey + " locale = " + locale);
+    	if (logger.isTraceEnabled()) {
+    	    logger.trace("readMessage: messageResourceType = " + messageResourceType + " messageKey = " + messageKey + " locale = " + locale);
     	}
         Map<String, Object> params = setupParams();
         params.put("messageResourceType", messageResourceType);

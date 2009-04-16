@@ -8,12 +8,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.SectionDao;
@@ -24,8 +27,6 @@ import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RoleType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {
@@ -54,8 +55,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionDefinition> readSectionDefinitionsByPageTypeRoles(PageType pageType, List<String> roles) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSectionDefinitionsByPageTypeRoles: pageType = " + pageType + " roles = " + roles);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionDefinitionsByPageTypeRoles: pageType = " + pageType + " roles = " + roles);
         }
         List<SectionDefinition> sectionDefinitions = sectionDao.readSectionDefinitions(pageType, roles);
         List<SectionDefinition> returnSections = removeDuplicateSectionDefinitions(sectionDefinitions);
@@ -70,8 +71,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionField> readSectionFieldsBySection(SectionDefinition sectionDefinition) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSectionFieldsBySection: sectionDefinition = " + sectionDefinition);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionFieldsBySection: sectionDefinition = " + sectionDefinition);
         }
         String siteName = tangerineUserHelper.lookupUserSiteName();
 
@@ -160,8 +161,8 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Override
     @Transactional
     public Map<String, AccessType> readPageAccess(List<String> roles) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPageAccess: roles = " + roles);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPageAccess: roles = " + roles);
         }
         Map<String, PageAccess> pageAccessMap = new HashMap<String, PageAccess>(); // pageType, PageAccess
         List<PageAccess> pages = pageAccessDao.readPageAccess(roles);

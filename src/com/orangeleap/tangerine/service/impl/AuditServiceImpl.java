@@ -98,8 +98,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     private List<Audit> auditEntity(AbstractEntity entity, Long userId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditEntity: userId = " + userId + " entity = " + entity);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditEntity: userId = " + userId + " entity = " + entity);
         }
     	String siteName = tangerineUserHelper.lookupUserSiteName();
         List<Audit> audits = new ArrayList<Audit>();
@@ -108,7 +108,9 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
             String name = tangerineUserHelper.lookupUserName();
             String desc = entity.getAuditShortDesc();
-            if (StringUtils.trimToNull(desc) == null) desc =  "" + entity.getId();
+            if (StringUtils.trimToNull(desc) == null) {
+                desc =  "" + entity.getId();
+            }
             audits.add(new Audit(AuditType.CREATE, name, date, "Added " + getClassName(entity) + " " + desc, siteName, getClassName(entity), entity.getId(), userId));
             if (logger.isDebugEnabled()) {
                 logger.debug("audit Site " + siteName + ": added " + getClassName(entity) + " " + entity.getId());
@@ -194,8 +196,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     
     @SuppressWarnings("unchecked")
     protected boolean isAuditable(BeanWrapper bean, String fieldName) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("isAuditable: bean = " + bean + " fieldName = " + fieldName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("isAuditable: bean = " + bean + " fieldName = " + fieldName);
         }
         boolean auditable = true;
         try {
@@ -226,8 +228,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     
     // Get Person name from id list.
     private String dereference(String siteName, String fieldValue) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("dereference: siteName = " + siteName + " fieldValue = " + fieldValue);
+        if (logger.isTraceEnabled()) {
+            logger.trace("dereference: siteName = " + siteName + " fieldValue = " + fieldValue);
         }
         String names = null;
         if (org.springframework.util.StringUtils.hasText(fieldValue)) {
@@ -246,8 +248,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     private List<Audit> auditAuditable(Auditable auditable, Long userId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditAuditable: userId = " + userId + " auditable = " + auditable);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditAuditable: userId = " + userId + " auditable = " + auditable);
         }
     	String siteName = tangerineUserHelper.lookupUserSiteName();
     	String authName = tangerineUserHelper.lookupUserName();
@@ -309,8 +311,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
 
     @Override
     public List<Audit> allAuditHistoryForSite() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("allAuditHistoryForSite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("allAuditHistoryForSite:");
         }
         return auditDao.allAuditHistoryForSite();
     }
@@ -318,8 +320,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     @Override
     public PaginatedResult allAuditHistoryForSite(SortInfo sortInfo) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("allAuditHistoryForSite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("allAuditHistoryForSite:");
         }
         return auditDao.allAuditHistoryForSite(sortInfo.getSort(), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit());
@@ -327,16 +329,16 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
 
     @Override
     public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
         return auditDao.auditHistoryForEntity(entityTypeDisplay, objectId);
     }
 
     @Override
     public PaginatedResult auditHistoryForEntity(String entityTypeDisplay, Long objectId, SortInfo sortInfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
         return auditDao.auditHistoryForEntity(entityTypeDisplay, objectId, sortInfo.getSort(), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit());
@@ -344,16 +346,16 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
 
     @Override
     public List<Audit> auditHistoryForConstituent(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditHistoryForConstituent: constituentId = " + constituentId);
         }
         return auditDao.auditHistoryForConstituent(constituentId);
     }
 
     @Override
     public PaginatedResult auditHistoryForConstituent(Long constituentId, SortInfo sortInfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditHistoryForConstituent: constituentId = " + constituentId);
         }
         return auditDao.auditHistoryForConstituent(constituentId, sortInfo.getSort(), sortInfo.getDir(),
                 sortInfo.getStart(), sortInfo.getLimit());
@@ -371,8 +373,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     
     @Override
     public Audit auditObjectInactive(Object object, Long userId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("auditObjectInactive: object = " + object);
+        if (logger.isTraceEnabled()) {
+            logger.trace("auditObjectInactive: object = " + object);
         }
     	String siteName = tangerineUserHelper.lookupUserSiteName();
         Audit audit = null;

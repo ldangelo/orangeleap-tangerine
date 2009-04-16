@@ -90,7 +90,7 @@ public class EntityValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("validate:");
+        logger.trace("validate:");
         if (target instanceof PaymentSourceAware) {
             PaymentSourceAware obj = (PaymentSourceAware) target;
             if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {

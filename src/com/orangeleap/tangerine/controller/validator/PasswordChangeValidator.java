@@ -43,18 +43,18 @@ public class PasswordChangeValidator implements Validator {
         String authenticatedPw = tangerineUserHelper.lookupUserPassword();
         if (!authenticatedPw.equals(oldPw)) {
             errors.rejectValue("currentPassword", "currentPasswordIncorrect", null, "current password is incorrect");
-            logger.debug("current password, " + authenticatedPw + ", didn't match " + oldPw);
+            logger.trace("current password, " + authenticatedPw + ", didn't match " + oldPw);
         } else if (!newPw.equals(newConfirmPw)) {
             errors.rejectValue("newPasswordConfirm", "newPasswordConfirmIncorrect", null, "new passwords must match");
-            logger.debug("new password, " + newPw + ", didn't match confirm password " + newConfirmPw);
+            logger.trace("new password, " + newPw + ", didn't match confirm password " + newConfirmPw);
         } else if (authenticatedPw.equals(newPw)) {
             errors.rejectValue("newPassword", "newPasswordMatchesCurrent", null, "new password must be different then current password");
-            logger.debug("new password, " + newPw + ", must be different then current password");
+            logger.trace("new password, " + newPw + ", must be different then current password");
         } else {
             // TODO: validated password requirements here
             if (newPw.trim().length() < MINIMUM_PASSWORD_LENGTH) {
                 errors.rejectValue("newPassword", "newPasswordSizeIncorrect", null, "new password must be at least " + MINIMUM_PASSWORD_LENGTH + " characters");
-                logger.debug("new password, " + newPw + ", must be at least " + MINIMUM_PASSWORD_LENGTH + " characters");
+                logger.trace("new password, " + newPw + ", must be at least " + MINIMUM_PASSWORD_LENGTH + " characters");
             }
         }
     }

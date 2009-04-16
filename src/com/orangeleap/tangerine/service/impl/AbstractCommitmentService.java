@@ -52,8 +52,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     private SiteDao siteDao;
 
     public void createDefault(Person constituent, T commitment, EntityType entityType, String lineIdProperty) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultCommitment: constituent = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultCommitment: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         // get initial commitment with built-in defaults
         BeanWrapper commitmentWrapper = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
@@ -73,8 +73,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     }
 
     public BigDecimal getAmountReceived(T commitment) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getAmountReceived: commitmentId = " + commitment.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("getAmountReceived: commitmentId = " + commitment.getId());
         }
         if (commitment instanceof RecurringGift) {
             return giftDao.readGiftsReceivedSumByRecurringGiftId(commitment.getId());
@@ -88,8 +88,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     }
     
     public void findGiftSum(Map<String, Object> refData, T commitment) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findGiftSum: refData = " + refData + " commitment = " + commitment);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findGiftSum: refData = " + refData + " commitment = " + commitment);
         }
         if (commitment != null) {
             List<Gift> gifts = getCommitmentGifts(commitment);
@@ -106,8 +106,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     // TODO: refactor; this method is a mess!!!
     public List<Calendar> getCommitmentGiftDates(T commitment) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getCommitmentGiftDates: commitment = " + commitment);
+        if (logger.isTraceEnabled()) {
+            logger.trace("getCommitmentGiftDates: commitment = " + commitment);
         }
         List<Calendar> giftDates = null;
         if (commitment.getStartDate() == null) {
@@ -178,8 +178,8 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     }
 
     public List<Gift> getCommitmentGifts(T commitment) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getCommitmentGifts: commitment = " + commitment);
+        if (logger.isTraceEnabled()) {
+            logger.trace("getCommitmentGifts: commitment = " + commitment);
         }
         List<Calendar> giftDates = getCommitmentGiftDates(commitment);
         if (giftDates != null) {
@@ -324,7 +324,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     protected Calendar getToday() {
         Calendar now = Calendar.getInstance();
         Calendar today = new GregorianCalendar(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
-        logger.debug("getToday() = " + today.getTime() + " millis=" + today.getTimeInMillis());
+        logger.trace("getToday() = " + today.getTime() + " millis=" + today.getTimeInMillis());
         return today;
     }
 }

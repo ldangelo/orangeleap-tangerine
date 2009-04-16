@@ -31,8 +31,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 
 	@Override
 	public Pledge maintainPledge(Pledge pledge) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("maintainCommitment: pledge = " + pledge);
+		if (logger.isTraceEnabled()) {
+			logger.trace("maintainCommitment: pledgeId = " + pledge.getId());
 		}
 		Pledge aPledge = (Pledge) insertOrUpdate(pledge, "PLEDGE");
         
@@ -46,8 +46,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 
 	@Override
 	public Pledge readPledgeById(Long pledgeId) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("readPledgeById: pledgeId = " + pledgeId);
+		if (logger.isTraceEnabled()) {
+			logger.trace("readPledgeById: pledgeId = " + pledgeId);
 		}
 		Map<String, Object> params = setupParams();
 		params.put("id", pledgeId);
@@ -64,8 +64,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pledge> readPledgesByConstituentId(Long constituentId) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("readCommitmentsByConstituentIdType: constituentId = "	+ constituentId);
+		if (logger.isTraceEnabled()) {
+			logger.trace("readCommitmentsByConstituentIdType: constituentId = "	+ constituentId);
 		}
 		Map<String, Object> params = setupParams();
 		params.put("constituentId", constituentId);
@@ -75,8 +75,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
     @SuppressWarnings("unchecked")
     @Override
     public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
@@ -95,8 +95,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
     @SuppressWarnings("unchecked")
     @Override
     public List<Pledge> findNotCancelledPledges(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findNotCancelledPledges: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findNotCancelledPledges: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -106,8 +106,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pledge> searchPledges(Map<String, Object> searchParams) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchPledges: searchParams = " + searchParams);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchPledges: searchParams = " + searchParams);
         }
 		Map<String, Object> params = setupParams();
 		QueryUtil.translateSearchParamsToIBatisParams(searchParams, params,	new SearchFieldMapperFactory().getMapper(EntityType.pledge).getMap());
@@ -118,8 +118,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 	@SuppressWarnings("unchecked")
 	@Override
     public List<DistributionLine> findDistributionLinesForPledges(List<String> pledgeIds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
         }
         Map<String, Object> params = setupParams();
         params.put("pledgeIds", pledgeIds);
@@ -128,8 +128,8 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
     
     @SuppressWarnings("unchecked")
     protected List<Long> readAssociatedGiftIdsForPledge(Long pledgeId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAssociatedGiftIdsForPledge: pledgeId = " + pledgeId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAssociatedGiftIdsForPledge: pledgeId = " + pledgeId);
         }
         Map<String, Object> paramMap = setupParams();
         paramMap.put("pledgeId", pledgeId);

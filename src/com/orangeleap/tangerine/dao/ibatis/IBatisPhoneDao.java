@@ -29,16 +29,16 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
     
     @Override
     public Phone maintainEntity(Phone phone) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainEntity: phone = " + phone);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainEntity: phoneId = " + phone.getId());
         }
         return (Phone)insertOrUpdate(phone, "PHONE");
     }
 
     @Override
     public Phone readById(Long phoneId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readById: phoneId = " + phoneId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readById: phoneId = " + phoneId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.PHONE_ID, phoneId);
@@ -48,8 +48,8 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Phone> readByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
@@ -59,8 +59,8 @@ public class IBatisPhoneDao extends AbstractIBatisDao implements PhoneDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Phone> readActiveByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActiveByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);

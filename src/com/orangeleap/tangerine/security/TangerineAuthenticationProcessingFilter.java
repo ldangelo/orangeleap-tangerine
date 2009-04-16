@@ -98,7 +98,7 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
         Map<String, AccessType> pageAccess = pageCustomizationService.readPageAccess(roles);
         WebUtils.setSessionAttribute(request, "pageAccess", pageAccess);
         ((TangerineAuthenticationToken) authResult).setPageAccess(pageAccess);
-        logger.debug(pageAccess);
+        logger.trace(pageAccess);
 
         WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
         WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin());

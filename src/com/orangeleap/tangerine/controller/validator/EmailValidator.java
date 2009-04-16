@@ -22,7 +22,7 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("in EmailValidator");
+        logger.trace("in EmailValidator");
         validateEMail(target, errors);
     }
     

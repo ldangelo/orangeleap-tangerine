@@ -40,8 +40,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public T save(T entity) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("save: entity = " + entity);
+        if (logger.isTraceEnabled()) {
+            logger.trace("save: entity = " + entity);
         }
         if (!entity.isPrimary()) {
         	checkIfOnlyOneActive(entity);
@@ -80,32 +80,32 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     @Override
     public List<T> readByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByConstituentId: constituentId = " + constituentId);
         }
         return getDao().readByConstituentId(constituentId);
     }
 
     @Override
     public List<T> filterValid(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("filterValid: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("filterValid: constituentId = " + constituentId);
         }
         return filterValidEntities(readByConstituentId(constituentId));
     }
 
     @Override
     public T readById(Long entityId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("read: entityId = " + entityId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("read: entityId = " + entityId);
         }
         return getDao().readById(entityId);
     }
     
     @Override
     public void findReferenceDataByConstituentId(Map<String, Object> refData, Long constituentId, String entitiesKey, String activeEntitiesKey, String activeMailEntitiesKey) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findReferenceDataByConstituentId: constituentId = " + constituentId + " entitiesKey = " + entitiesKey + " activeEntitiesKey = " + 
+        if (logger.isTraceEnabled()) {
+            logger.trace("findReferenceDataByConstituentId: constituentId = " + constituentId + " entitiesKey = " + entitiesKey + " activeEntitiesKey = " + 
                     activeEntitiesKey + " activeMailEntitiesKey = " + activeMailEntitiesKey);
         }
         List<T> entities = readByConstituentId(constituentId);
@@ -133,8 +133,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     @Override
     public T getPrimary(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getPrimary: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("getPrimary: constituentId = " + constituentId);
         }
         List<T> entities = readByConstituentId(constituentId);
         return filterByPrimary(entities, constituentId);
@@ -152,8 +152,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     @Override
     public T readByIdCreateIfNull(String entityId, Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readByIdCreateIfNull: entityId = " + entityId + " constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByIdCreateIfNull: entityId = " + entityId + " constituentId = " + constituentId);
         }
         T entity;
         if (entityId == null) {
@@ -167,8 +167,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivateEntities() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("inactivateEntities:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("inactivateEntities:");
         }
         getDao().inactivateEntities();
     }
@@ -176,8 +176,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void inactivate(Long id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("inactivate: id = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("inactivate: id = " + id);
         }
         T entity = readById(id);
         entity.setInactive(true);
@@ -205,8 +205,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     }
     
     protected List<T> filterByActivationType(final List<T> entities, final boolean mailOnly) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("filterByActivationType: entities = " + entities + " mailOnly = " + mailOnly);
+        if (logger.isTraceEnabled()) {
+            logger.trace("filterByActivationType: entities = " + entities + " mailOnly = " + mailOnly);
         }
         // create an ordered map of "status" -> (ordered map of "activationType" -> entity)
         Map<ActivationType, LinkedHashMap<String, List<T>>> statusMap = new LinkedHashMap<ActivationType, LinkedHashMap<String, List<T>>>();

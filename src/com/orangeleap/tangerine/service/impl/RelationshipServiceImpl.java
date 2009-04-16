@@ -47,8 +47,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
     public Person maintainRelationships(Person constituent) throws ConstituentValidationException {
-    	if (logger.isDebugEnabled()) {
-    	    logger.debug("maintainRelationships: constituent = " + constituent);
+    	if (logger.isTraceEnabled()) {
+    	    logger.trace("maintainRelationships: constituent = " + constituent);
     	}
     	if (constituent.getSite() == null) {
             return constituent;

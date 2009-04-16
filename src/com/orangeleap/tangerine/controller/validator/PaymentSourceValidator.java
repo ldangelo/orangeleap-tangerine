@@ -34,7 +34,7 @@ public class PaymentSourceValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("in PaymentSourceValidator");
+        logger.trace("in PaymentSourceValidator");
 
         validatePaymentProfile(target, errors);
         validatePaymentSource(target, errors);

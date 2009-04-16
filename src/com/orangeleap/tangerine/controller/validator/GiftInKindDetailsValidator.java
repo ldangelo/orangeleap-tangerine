@@ -25,7 +25,7 @@ public class GiftInKindDetailsValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("validate:");
+        logger.trace("validate:");
         
         GiftInKind gik = (GiftInKind)target;
         BigDecimal total = getTotal(gik.getMutableDetails());

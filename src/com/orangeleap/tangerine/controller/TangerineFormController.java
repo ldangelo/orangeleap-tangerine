@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -69,8 +68,8 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
 
     public Long getIdAsLong(HttpServletRequest request, String id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getIdAsLong: id = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("getIdAsLong: id = " + id);
         }
         String paramId = request.getParameter(id);
         if (StringUtils.hasText(paramId)) {

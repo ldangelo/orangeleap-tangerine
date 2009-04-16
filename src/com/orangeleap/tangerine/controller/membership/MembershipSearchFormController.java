@@ -27,8 +27,8 @@ public class MembershipSearchFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("handleRequestInternal:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("handleRequestInternal:");
         }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
@@ -40,8 +40,8 @@ public class MembershipSearchFormController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("onSubmit:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("onSubmit:");
         }
 //        Commitment commitment = (Commitment) command;
 //        BeanWrapper bw = new BeanWrapperImpl(commitment);

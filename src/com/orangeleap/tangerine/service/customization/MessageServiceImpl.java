@@ -4,16 +4,17 @@ import java.util.Locale;
 
 import javax.annotation.Resource;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.MessageDao;
 import com.orangeleap.tangerine.type.MessageResourceType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 
 @Service("messageService")
 public class MessageServiceImpl implements MessageService {
@@ -32,10 +33,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String lookupMessage(MessageResourceType messageResourceType, String messageKey, Locale language) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("lookupMessage: messageResourceType = " + messageResourceType + " messageKey = " + messageKey + " language = " + language);
+        if (logger.isTraceEnabled()) {
+            logger.trace("lookupMessage: messageResourceType = " + messageResourceType + " messageKey = " + messageKey + " language = " + language);
         }
-
 
         String key = buildKey(messageResourceType, messageKey, language);
         Element ele = messageResourceCache.get(key);

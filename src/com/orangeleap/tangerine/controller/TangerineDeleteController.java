@@ -31,8 +31,8 @@ public class TangerineDeleteController extends ParameterizableViewController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String id = request.getParameter(idParameterName);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("handleRequestInternal: " + idParameterName + " = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("handleRequestInternal: " + idParameterName + " = " + id);
         }
 
         String personId = request.getParameter(StringConstants.PERSON_ID);

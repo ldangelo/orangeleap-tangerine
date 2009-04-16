@@ -30,16 +30,16 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
 
     @Override
     public Address maintainEntity(Address address) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainEntity: address = " + address);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainEntity: addressId = " + address.getId());
         }
         return (Address) insertOrUpdate(address, "ADDRESS");
     }
 
     @Override
     public Address readById(Long addressId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readById: addressId = " + addressId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readById: addressId = " + addressId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.ADDRESS_ID, addressId);
@@ -49,8 +49,8 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Address> readByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
@@ -60,8 +60,8 @@ public class IBatisAddressDao extends AbstractIBatisDao implements AddressDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Address> readActiveByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActiveByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);

@@ -29,16 +29,16 @@ public class IBatisEmailDao extends AbstractIBatisDao implements EmailDao {
 
     @Override
     public Email maintainEntity(Email email) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainEntity: email = " + email);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainEntity: emailId = " + email.getId());
         }
         return (Email)insertOrUpdate(email, "EMAIL");
     }
 
     @Override
     public Email readById(Long emailId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readById: emailId = " + emailId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readById: emailId = " + emailId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.EMAIL_ID, emailId);
@@ -48,8 +48,8 @@ public class IBatisEmailDao extends AbstractIBatisDao implements EmailDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Email> readByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);
@@ -59,8 +59,8 @@ public class IBatisEmailDao extends AbstractIBatisDao implements EmailDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Email> readActiveByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActiveByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActiveByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put(StringConstants.CONSTITUENT_ID, constituentId);

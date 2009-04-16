@@ -29,8 +29,8 @@ public class IBatisPageAccessDao extends AbstractIBatisDao implements PageAccess
     @SuppressWarnings("unchecked")
     @Override
     public List<PageAccess> readPageAccess(List<String> roles) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPageAccess: roles = " + roles);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPageAccess: roles = " + roles);
         }
         Map<String, Object> params = setupParams();
         params.put("roleNames", roles);

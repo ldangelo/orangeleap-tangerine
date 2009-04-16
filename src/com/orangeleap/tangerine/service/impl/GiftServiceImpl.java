@@ -96,8 +96,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
         	
-            if (logger.isDebugEnabled()) {
-                logger.debug("maintainGift: gift = " + gift);
+            if (logger.isTraceEnabled()) {
+                logger.trace("maintainGift: gift = " + gift);
             }
             
 	        maintainEntityChildren(gift, gift.getPerson());
@@ -149,8 +149,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
         	
-	        if (logger.isDebugEnabled()) {
-	            logger.debug("editGift: giftId = " + gift.getId());
+	        if (logger.isTraceEnabled()) {
+	            logger.trace("editGift: giftId = " + gift.getId());
 	        }
 	        
 	        maintainEntityChildren(gift, gift.getPerson());
@@ -269,16 +269,16 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Override
     public Gift readGiftById(Long giftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftById: giftId = " + giftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftById: giftId = " + giftId);
         }
         return giftDao.readGiftById(giftId);
     }
 
     @Override
     public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId, String pledgeId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftByIdCreateIfNull: giftId = " + giftId + " recurringGiftId = " + recurringGiftId + 
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId + " recurringGiftId = " + recurringGiftId + 
                     "pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Gift gift = null;
@@ -320,32 +320,32 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Override
     public List<Gift> readMonetaryGifts(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readMonetaryGifts: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readMonetaryGifts: constituentId = " + constituentId);
         }
         return giftDao.readMonetaryGiftsByConstituentId(constituentId);
     }
 
     @Override
     public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedMonetaryGifts: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedMonetaryGifts: constituentId = " + constituentId);
         }
         return giftDao.readPaginatedMonetaryGiftsByConstituentId(constituentId, sortinfo);
     }
 
     @Override
     public List<Gift> searchGifts(Map<String, Object> params) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGifts: params = " + params);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGifts: params = " + params);
         }
         return giftDao.searchGifts(params);
     }
 
     @Override
     public Gift createDefaultGift(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultGift: constituent = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultGift: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         // get initial gift with built-in defaults
         Gift gift = new Gift();
@@ -369,8 +369,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Override
     public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createGift: commitment = " + commitment + " giftType = " + giftType + " giftEntryType = " + giftEntryType);
+        if (logger.isTraceEnabled()) {
+            logger.trace("createGift: commitment = " + commitment + " giftType = " + giftType + " giftEntryType = " + giftEntryType);
         }
         Gift gift = new Gift();
         gift.setPerson(commitment.getPerson());
@@ -401,8 +401,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Override
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
+        if (logger.isTraceEnabled()) {
+            logger.trace("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
         }
         return giftDao.analyzeMajorDonor(constituentId, beginDate, currentDate);
     }
@@ -410,8 +410,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift refundGift(Long giftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("refundGift: giftId = " + giftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("refundGift: giftId = " + giftId);
         }
         Gift originalGift = giftDao.readGiftById(giftId);
         try {
@@ -453,8 +453,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
         return giftDao.readMonetaryGiftsByConstituentId(constituentId);
     }
@@ -469,8 +469,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
     @Override
     public List<Gift> readGiftsByRecurringGiftId(RecurringGift recurringGift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGift.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGift.getId());
         }
         return giftDao.readGiftsByRecurringGiftId(recurringGift.getId());
     }
@@ -478,32 +478,32 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
     @Override
     public List<Gift> readGiftsByPledgeId(Pledge pledge) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByPledgeId: pledgeId = " + pledge.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByPledgeId: pledgeId = " + pledge.getId());
         }
         return giftDao.readGiftsByPledgeId(pledge.getId());
     }
 
 	@Override
 	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllGiftsByDateRange:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsByDateRange:");
         }
         return giftDao.readAllGiftsByDateRange(fromDate, toDate);
 	}
 
 	@Override
 	public List<Gift> readAllGiftsBySiteName() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllGiftsBySiteName:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsBySiteName:");
         }
         return giftDao.readAllGiftsBySite();
 	}
 	
 	@Override
 	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("initGiftAmountDistributionLinesFromPledge: selectedPledgeId = " + selectedPledgeId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("initGiftAmountDistributionLinesFromPledge: selectedPledgeId = " + selectedPledgeId);
         }
         if (gift.getId() == null || gift.getId() <= 0) {
             if (NumberUtils.isDigits(selectedPledgeId)) {
@@ -520,8 +520,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	
 	@Override
 	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent) {
-	    if (logger.isDebugEnabled()) {
-	        logger.debug("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
 	    }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
         
@@ -570,8 +570,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	 * @param giftDistributionLines
 	 */
 	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("removeDefaultDistributionLine: amount = " + amount);
+        if (logger.isTraceEnabled()) {
+            logger.trace("removeDefaultDistributionLine: amount = " + amount);
         }
         int count = 0;
         DistributionLine enteredLine = null;

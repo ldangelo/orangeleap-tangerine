@@ -29,9 +29,9 @@ public class TangerineDataSource implements DataSource {
 	public Connection getConnection() throws SQLException {
 		
 		Connection conn = dataSource.getConnection();
-		if (logger.isDebugEnabled()) {
+		if (logger.isTraceEnabled()) {
 			count++;
-			logger.debug("getConnection() called, count = " + (int)count);
+			logger.trace("getConnection() called, count = " + (int)count);
 			//new Exception().fillInStackTrace().printStackTrace();
 		}
 		

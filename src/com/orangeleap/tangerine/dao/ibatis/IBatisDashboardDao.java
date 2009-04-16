@@ -31,14 +31,14 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DashboardItem> getDashboard() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getDashboard");
+        if (logger.isTraceEnabled()) {
+            logger.trace("getDashboard");
         }
         Map<String, Object> params = setupParams();
 
         // TODO could add filter for logged-in user/roles if desired
 
-        List<DashboardItem> rows = (List<DashboardItem>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM", params);
+        List<DashboardItem> rows = getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM", params);
         
         filterForSiteOverride(rows);
         
@@ -65,17 +65,19 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
 	
 	@SuppressWarnings("unchecked")
 	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getDashboardQueryResults");
+        if (logger.isTraceEnabled()) {
+            logger.trace("getDashboardQueryResults");
         }
 
         String sql = ds.getSqltext();
-        if (sql == null) return new ArrayList<DashboardItemDataValue>();
+        if (sql == null) {
+            return new ArrayList<DashboardItemDataValue>();
+        }
         sql = sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
 
         Map<String, Object> params = setupParams();
         params.put("sql", sql);
-        List<DashboardItemDataValue> rows = (List<DashboardItemDataValue>)getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM_DATA", params);
+        List<DashboardItemDataValue> rows = getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM_DATA", params);
         return rows;
 	}
 

@@ -30,8 +30,8 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
     @Override
     public Site createSite(Site site) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSite: siteName = " + site.getName());
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSite: siteName = " + site.getName());
         }
         getSqlMapClientTemplate().insert("INSERT_SITE", site);
         return site;
@@ -39,8 +39,8 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
 
     @Override
     public Site readSite(String siteName) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSite: siteName = " + siteName);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSite: siteName = " + siteName);
         }
         return (Site)getSqlMapClientTemplate().queryForObject("SELECT_BY_SITE_NAME", siteName);
     }
@@ -48,24 +48,24 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<Site> readSites() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSites:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSites:");
         }
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_SITES");
     }
     
     @Override
     public int updateSite(Site site) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("updateSite: site = " + site);
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateSite: site = " + site);
         }
         return getSqlMapClientTemplate().update("UPDATE_SITE", site);
     }
 
     @Override
     public EntityDefault createEntityDefault(EntityDefault entityDefault) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createEntityDefault: entityDefault = " + entityDefault);
+        if (logger.isTraceEnabled()) {
+            logger.trace("createEntityDefault: entityDefault = " + entityDefault);
         }
         Long id = (Long)getSqlMapClientTemplate().insert("INSERT_ENTITY_DEFAULT", entityDefault);
         entityDefault.setId(id);
@@ -78,8 +78,8 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<EntityDefault> readEntityDefaults(List<EntityType> entityTypes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readEntityDefaults: entityTypes = " + entityTypes);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readEntityDefaults: entityTypes = " + entityTypes);
         }
         Map<String, Object> params = setupParams();
         params.put("entityTypes", entityTypes);
@@ -88,8 +88,8 @@ public class IBatisSiteDao extends AbstractIBatisDao implements SiteDao {
     
     @Override
     public int updateEntityDefault(EntityDefault entityDefault) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("updateEntityDefault: entityDefault = " + entityDefault);
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateEntityDefault: entityDefault = " + entityDefault);
         }
         return getSqlMapClientTemplate().update("UPDATE_ENTITY_DEFAULT", entityDefault);
     }

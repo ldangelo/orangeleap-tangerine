@@ -36,8 +36,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PaymentSource maintainPaymentSource(PaymentSource paymentSource) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainPaymentSource: paymentSource = " + paymentSource);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainPaymentSource: paymentSource = " + paymentSource);
         }
         
         maintainEntityChildren(paymentSource, paymentSource.getPerson());
@@ -57,16 +57,16 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
 
     @Override
     public List<PaymentSource> readPaymentSources(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentSources: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentSources: constituentId = " + constituentId);
         }
         return paymentSourceDao.readActivePaymentSources(constituentId);
     }
 
     @Override
     public List<PaymentSource> filterValidPaymentSources(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("filterValidPaymentSources: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("filterValidPaymentSources: constituentId = " + constituentId);
         }
         List<PaymentSource> paymentSources = paymentSourceDao.readAllPaymentSources(constituentId);
         List<PaymentSource> filteredPaymentSources = new ArrayList<PaymentSource>();
@@ -80,8 +80,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
 
     @Override
     public List<PaymentSource> readAllPaymentSourcesACHCreditCard(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllPaymentSourcesACHCreditCard: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllPaymentSourcesACHCreditCard: constituentId = " + constituentId);
         }
         List<PaymentSource> sources = paymentSourceDao.readAllPaymentSources(constituentId);
         List<PaymentSource> filteredSources = new ArrayList<PaymentSource>(); 
@@ -95,8 +95,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     
     @Override
     public Map<String, List<PaymentSource>> groupPaymentSources(Long constituentId, PaymentSource selectedPaymentSource) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("groupPaymentSources: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("groupPaymentSources: constituentId = " + constituentId);
         }
         Map<String, List<PaymentSource>> groupedSources = new HashMap<String, List<PaymentSource>>();
         List<PaymentSource> sources = filterValidPaymentSources(constituentId);
@@ -117,24 +117,24 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
 
     @Override
     public List<PaymentSource> readActivePaymentSourcesByTypes(Long constituentId, List<String> paymentTypes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readActivePaymentSourcesByTypes: constituentId = " + constituentId + " paymentTypes = " + paymentTypes);
         }
         return paymentSourceDao.readActivePaymentSourcesByTypes(constituentId, paymentTypes);
     }
 
     @Override
     public PaymentSource readPaymentSource(Long paymentSourceId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentSource: paymentSourceId = " + paymentSourceId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentSource: paymentSourceId = " + paymentSourceId);
         }
         return paymentSourceDao.readPaymentSourceById(paymentSourceId);
     }
 
     @Override
     public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentSourceCreateIfNull: paymentSourceId = " + paymentSourceId + " constituent = " + constituent);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentSourceCreateIfNull: paymentSourceId = " + paymentSourceId + " constituent = " + constituent);
         }
         PaymentSource paymentSource = null;
         if (paymentSourceId == null) {
@@ -149,8 +149,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivate(Long id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("inactivate: id = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("inactivate: id = " + id);
         }
         PaymentSource ps = this.readPaymentSource(id);
         ps.setInactive(true);
@@ -159,16 +159,16 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
 
     @Override
     public PaymentSource findPaymentSourceProfile(Long constituentId, String profile) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findPaymentSourceProfile: constituentId = " + constituentId + " profile = " + profile);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findPaymentSourceProfile: constituentId = " + constituentId + " profile = " + profile);
         }
         return paymentSourceDao.readPaymentSourceByProfile(constituentId, profile);
     }
     
     @Override
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSource paymentSource) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("checkForConflictingPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
+        if (logger.isTraceEnabled()) {
+            logger.trace("checkForConflictingPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
         }
         Map<String, Object> returnMap = new HashMap<String, Object>();
         if (PaymentSource.CREDIT_CARD.equals(paymentSource.getPaymentType())) {
@@ -197,8 +197,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     
     @Override
     public Map<String, Object> checkForSameConflictingPaymentSources(PaymentSourceAware paymentSourceAware) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("checkForConflictingPaymentSources: paymentSource type = " + paymentSourceAware.getPaymentType());
+        if (logger.isTraceEnabled()) {
+            logger.trace("checkForConflictingPaymentSources: paymentSource type = " + paymentSourceAware.getPaymentType());
         }
         Map<String, Object> conflictingPaymentSources = new HashMap<String, Object>();
         if (PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
@@ -261,8 +261,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
         
     private Set<String> checkAccountNamesPaymentSources(PaymentSource paymentSource, List<PaymentSource> sources) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("checkAccountNamesPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
+        if (logger.isTraceEnabled()) {
+            logger.trace("checkAccountNamesPaymentSources: paymentSource type = " + paymentSource.getPaymentType());
         }
         Set<String> names = new TreeSet<String>();
         boolean hasName = false;
@@ -285,8 +285,8 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
     
     private List<PaymentSource> checkCreditCardDatesPaymentSource(PaymentSource paymentSource, List<PaymentSource> sources) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("checkCreditCardDatesPaymentSource:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("checkCreditCardDatesPaymentSource:");
         }
         List<PaymentSource> dates = new ArrayList<PaymentSource>();
         if (sources != null) {

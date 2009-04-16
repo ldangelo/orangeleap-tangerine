@@ -30,8 +30,8 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
     @SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> allAuditHistoryForSite() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForSite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAuditHistoryForSite:");
         }
         return getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_SITE", setupParams());
 	}
@@ -40,8 +40,8 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
     @Override
     public PaginatedResult allAuditHistoryForSite(String sortColumn, String dir, int start, int limit) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForSite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAuditHistoryForSite:");
         }
 
         Map<String, Object> params = setupParams();
@@ -62,8 +62,8 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
     @SuppressWarnings("unchecked")
 	@Override
 	public List<Audit> auditHistoryForEntity(String entityTypeDisplay, Long objectId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
         Map<String, Object> params = setupParams();
         params.put("entityType", entityTypeDisplay);
@@ -76,8 +76,8 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
     public PaginatedResult auditHistoryForEntity(String entityTypeDisplay, Long objectId,
                                              String sortColumn, String dir, int start, int limit) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
 
         Map<String, Object> params = setupParams();

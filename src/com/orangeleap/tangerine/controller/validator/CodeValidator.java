@@ -46,8 +46,8 @@ public class CodeValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("validate:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("validate:");
         }
         if (target instanceof AbstractEntity) {
         	String sitename = tangerineUserHelper.lookupUserSiteName();

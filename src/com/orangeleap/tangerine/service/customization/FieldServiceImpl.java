@@ -2,6 +2,9 @@ package com.orangeleap.tangerine.service.customization;
 
 import javax.annotation.Resource;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,6 @@ import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
 @Service("fieldService")
@@ -39,8 +40,8 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public FieldRequired lookupFieldRequired(SectionField currentField) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("lookupFieldRequired: currentField = " + currentField);
+        if (logger.isTraceEnabled()) {
+            logger.trace("lookupFieldRequired: currentField = " + currentField);
         }
 
         String key = buildRequiredFieldCacheKey(currentField);
@@ -60,16 +61,16 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public FieldValidation lookupFieldValidation(SectionField currentField) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("lookupFieldValidation: currentField = " + currentField);
+        if (logger.isTraceEnabled()) {
+            logger.trace("lookupFieldValidation: currentField = " + currentField);
         }
         return fieldDao.readFieldValidation(currentField.getSectionDefinition().getSectionName(), currentField.getFieldDefinition().getId(), currentField.getSecondaryFieldDefinition() == null ? null : currentField.getSecondaryFieldDefinition().getId());
     }
 
     @Override
     public Picklist readPicklistByFieldNameEntityType(String fieldName, EntityType entityType) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPicklistByFieldNameEntityType: fieldName = " + fieldName + " entityType = " + entityType);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistByFieldNameEntityType: fieldName = " + fieldName + " entityType = " + entityType);
         }
 
         String siteName = tangerineUserHelper.lookupUserSiteName();

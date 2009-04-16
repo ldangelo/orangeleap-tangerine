@@ -38,8 +38,8 @@ public class RecurringGiftSearchFormController extends SimpleFormController {
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("formBackingObject:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("formBackingObject:");
         }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
@@ -51,8 +51,8 @@ public class RecurringGiftSearchFormController extends SimpleFormController {
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("onSubmit:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("onSubmit:");
         }
         RecurringGift recurringGift = (RecurringGift) command;
         BeanWrapper bw = new BeanWrapperImpl(recurringGift);

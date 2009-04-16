@@ -27,8 +27,8 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
     
 	@Override
 	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
-	    if (logger.isDebugEnabled()) {
-	        logger.debug("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("maintainCommunicationHistory: communicationHistoryId = " + communicationHistory.getId());
 	    }
         if (!communicationHistory.getPerson().getSite().getName().equals(getSiteName())) {
             throw new RuntimeException("Person object does not belong to current site.");
@@ -40,8 +40,8 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 	@SuppressWarnings("unchecked")
 	@Override
 	public PaginatedResult readCommunicationHistoryByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentHistoryByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
@@ -58,8 +58,8 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 
 	@Override
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCommunicationHistoryById: communicationHistoryId = " + communicationHistoryId);
         }
         Map<String, Object> params = setupParams();
 		params.put("id", communicationHistoryId);

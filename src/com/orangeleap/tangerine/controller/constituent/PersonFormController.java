@@ -45,8 +45,8 @@ public class PersonFormController extends TangerineFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Person p = (Person) command;
-        if (logger.isDebugEnabled()) {
-            logger.debug("onSubmit: person = " + p.getFullName());
+        if (logger.isTraceEnabled()) {
+            logger.trace("onSubmit: person = " + p.getFullName());
         }
         
         boolean saved = true;

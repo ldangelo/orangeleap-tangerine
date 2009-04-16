@@ -34,8 +34,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @Override
     public Gift maintainGift(final Gift gift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainGift: gift = " + gift);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainGift: giftId = " + gift.getId());
         }
         Gift aGift = (Gift)insertOrUpdate(gift, "GIFT");
         
@@ -51,8 +51,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @Override
     public Gift readGiftById(Long giftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftById: giftId = " + giftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftById: giftId = " + giftId);
         }
         Map<String, Object> params = setupParams();
         params.put("id", giftId);
@@ -69,8 +69,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     @SuppressWarnings("unchecked")
     @Override
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -80,8 +80,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     @SuppressWarnings("unchecked")
 	@Override
     public PaginatedResult readPaginatedMonetaryGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedMonetaryGiftsByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);
@@ -109,8 +109,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @Override
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
+        if (logger.isTraceEnabled()) {
+            logger.trace("analyzeMajorDonor: constituentId = " + constituentId + " beginDate = " + beginDate + " currentDate = " + currentDate);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -126,8 +126,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 	@SuppressWarnings("unchecked")
     @Override
     public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("analyzeLapsedDonor:  beginDate = " + beginDate + " currentDate = " + currentDate);
+        if (logger.isTraceEnabled()) {
+            logger.trace("analyzeLapsedDonor:  beginDate = " + beginDate + " currentDate = " + currentDate);
         }
         Map<String, Object> params = setupParams();
         params.put("beginDate", beginDate);
@@ -138,8 +138,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     @SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readAllGiftsBySite() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllGiftsBySite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsBySite:");
         }
         Map<String, Object> params = setupParams();
         return getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_SITE", params);
@@ -148,22 +148,24 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     @SuppressWarnings("unchecked")
 	@Override
 	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAllGiftsByDateRange:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllGiftsByDateRange:");
         }
         Map<String, Object> params = setupParams();
         params.put("fromDate", fromDate);
         params.put("toDate", toDate);
         List list = getSqlMapClientTemplate().queryForList("SELECT_ALL_GIFTS_BY_DATE_RANGE", params);
-        if (list.size() > 5000) throw new RuntimeException("Selection too large, reduce selection range."); // Note this needs to be one less than the 5001 in gift.xml
+        if (list.size() > 5000) {
+            throw new RuntimeException("Selection too large, reduce selection range."); // Note this needs to be one less than the 5001 in gift.xml
+        }
         return list;
 	}
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Gift> readGiftsByRecurringGiftId(Long recurringGiftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGiftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGiftId);
         }
         Map<String, Object> params = setupParams();
         params.put("recurringGiftId", recurringGiftId);
@@ -172,8 +174,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @Override
     public BigDecimal readGiftsReceivedSumByRecurringGiftId(Long recurringGiftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsReceivedSumByRecurringGiftId: recurringGiftId = " + recurringGiftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsReceivedSumByRecurringGiftId: recurringGiftId = " + recurringGiftId);
         }
         Map<String, Object> params = setupParams();
         params.put("recurringGiftId", recurringGiftId);
@@ -187,8 +189,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     @SuppressWarnings("unchecked")
     @Override
     public List<Gift> readGiftsByPledgeId(Long pledgeId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsByPledgeId: pledgeId = " + pledgeId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsByPledgeId: pledgeId = " + pledgeId);
         }
         Map<String, Object> params = setupParams();
         params.put("pledgeId", pledgeId);
@@ -197,8 +199,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
 
     @Override
     public BigDecimal readGiftsReceivedSumByPledgeId(Long pledgeId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readGiftsReceivedSumByPledgeId: pledgeId = " + pledgeId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readGiftsReceivedSumByPledgeId: pledgeId = " + pledgeId);
         }
         Map<String, Object> params = setupParams();
         params.put("pledgeId", pledgeId);
@@ -211,8 +213,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     
     @SuppressWarnings("unchecked")
     protected List<Long> readAssociatedPledgeIdsForGift(Long giftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readAssociatedPledgeIdsForGift: giftId = " + giftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAssociatedPledgeIdsForGift: giftId = " + giftId);
         }
         Map<String, Object> paramMap = setupParams();
         paramMap.put("giftId", giftId);
@@ -220,8 +222,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     }
     
     protected void deleteInsertAssociatedPledges(Gift gift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("deleteInsertAssociatedPledges: giftId = " + gift.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteInsertAssociatedPledges: giftId = " + gift.getId());
         }
         getSqlMapClientTemplate().delete("DELETE_PLEDGE_GIFT_BY_GIFT_ID", gift.getId());
         if (gift.getAssociatedPledgeIds() != null) {

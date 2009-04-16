@@ -32,8 +32,8 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionDefinition> readSectionDefinitions(PageType pageType, List<String> roles) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readSectionDefinitions: pageType = " + pageType + " roles = " + roles);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readSectionDefinitions: pageType = " + pageType + " roles = " + roles);
         }
         Map<String, Object> params = setupParams();
         params.put("pageType", pageType);
@@ -44,8 +44,8 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionField> readCustomizedSectionFields(Long sectionDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readCustomizedSectionFields: sectionDefinitionId = " + sectionDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCustomizedSectionFields: sectionDefinitionId = " + sectionDefinitionId);
         }
         Map<String, Object> params = setupParams();
         params.put("sectionDefinitionId", sectionDefinitionId);
@@ -55,8 +55,8 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readOutOfBoxSectionFields: sectionName = " + sectionName + " pageType = " + pageType);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readOutOfBoxSectionFields: sectionName = " + sectionName + " pageType = " + pageType);
         }
         Map<String, Object> params = new HashMap<String, Object>(2);
         params.put("sectionName", sectionName);

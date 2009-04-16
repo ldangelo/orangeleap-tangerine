@@ -26,7 +26,7 @@ public class DistributionLinesValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        logger.debug("validate:");
+        logger.trace("validate:");
         
         BigDecimal total = null;
         BigDecimal amount = null;

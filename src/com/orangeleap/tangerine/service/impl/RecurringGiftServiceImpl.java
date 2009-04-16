@@ -36,24 +36,24 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<RecurringGift> readRecurringGiftsByDateStatuses(Date date, List<String> statuses) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGifts: date = " + date + " statuses = " + statuses);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGifts: date = " + date + " statuses = " + statuses);
         }
         return recurringGiftDao.readRecurringGifts(date, statuses);
     }
 
     @Override
     public RecurringGift readRecurringGiftById(Long recurringGiftId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGiftById: recurringGiftId = " + recurringGiftId);
         }
         return recurringGiftDao.readRecurringGiftById(recurringGiftId);
     }
     
     @Override
     public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGiftByIdCreateIfNull: recurringGiftId = " + recurringGiftId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGiftByIdCreateIfNull: recurringGiftId = " + recurringGiftId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         RecurringGift recurringGift = null;
         if (recurringGiftId == null) {
@@ -69,8 +69,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     
     @Override
     public RecurringGift createDefaultRecurringGift(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultRecurringGift: constituent = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultRecurringGift: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         RecurringGift recurringGift = new RecurringGift();
         createDefault(constituent, recurringGift, EntityType.recurringGift, "recurringGiftId");
@@ -81,8 +81,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public RecurringGift maintainRecurringGift(RecurringGift recurringGift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainRecurringGift: recurringGift = " + recurringGift);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainRecurringGift: recurringGift = " + recurringGift);
         }
         if (recurringGift.isAutoPay()) {
             if (recurringGift == null) {
@@ -104,8 +104,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public RecurringGift editRecurringGift(RecurringGift recurringGift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("editRecurringGift: recurringGiftId = " + recurringGift.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("editRecurringGift: recurringGiftId = " + recurringGift.getId());
         }
         return save(recurringGift);
     }
@@ -119,24 +119,24 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     
     @Override
     public List<RecurringGift> readRecurringGiftsForConstituent(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGifts: constituent = " + constituent);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGifts: constituent = " + constituent);
         }
         return readRecurringGiftsForConstituent(constituent.getId());
     }
 
     @Override
     public List<RecurringGift> readRecurringGiftsForConstituent(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readRecurringGifts: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRecurringGifts: constituentId = " + constituentId);
         }
         return recurringGiftDao.readRecurringGiftsByConstituentId(constituentId);
     }
     
     @Override
     public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedRecurringGiftsByConstituentId: constituentId = " + constituentId);
         }
         return recurringGiftDao.readPaginatedRecurringGiftsByConstituentId(constituentId, sortinfo);
     }
@@ -145,8 +145,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Override
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchRecurringGifts: params = " + params);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchRecurringGifts: params = " + params);
         }
         return recurringGiftDao.searchRecurringGifts(params);
     }
@@ -155,8 +155,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     @Override
     // TODO: fix IBatisRecurringDao Status, map to RecurringStatus, fix in general
     public void processRecurringGifts() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("processRecurringGifts:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("processRecurringGifts:");
         }
         List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { Commitment.STATUS_ACTIVE /*, Commitment.STATUS_FULFILLED*/ }));
         if (recurringGifts != null) {

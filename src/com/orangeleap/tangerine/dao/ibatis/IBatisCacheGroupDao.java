@@ -30,17 +30,17 @@ public class IBatisCacheGroupDao extends AbstractIBatisDao implements CacheGroup
     @SuppressWarnings("unchecked")
 	@Override
     public List<CacheGroup> readCacheGroups() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readCacheGroups " );
+        if (logger.isTraceEnabled()) {
+            logger.trace("readCacheGroups " );
         }
         Map<String, Object> params = setupParams();
-        return (List<CacheGroup>)getSqlMapClientTemplate().queryForList("SELECT_CACHE_GROUPS", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_CACHE_GROUPS", params);
     }
 
     @Override
     public int updateCacheGroupTimestamp(CacheGroupType id) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("updateCacheGroupTimestamp: id = " + id);
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateCacheGroupTimestamp: id = " + id);
         }
         Map<String, Object> params = setupParams();
         params.put("id", id);

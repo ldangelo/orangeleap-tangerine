@@ -40,8 +40,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Pledge maintainPledge(Pledge pledge) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("maintainPledge: pledge = " + pledge);
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainPledge: pledge = " + pledge);
         }
 		if (pledge.getGifts() == null || pledge.getGifts().size() == 0) {
 			if (Commitment.STATUS_FULFILLED.equals(pledge.getPledgeStatus()) || Commitment.STATUS_IN_PROGRESS.equals(pledge.getPledgeStatus())) {
@@ -62,8 +62,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Pledge editPledge(Pledge pledge) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("editPledge: pledgeId = " + pledge.getId());
+        if (logger.isTraceEnabled()) {
+            logger.trace("editPledge: pledgeId = " + pledge.getId());
         }
         return save(pledge);
     }
@@ -77,16 +77,16 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Override
     public Pledge readPledgeById(Long pledgeId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPledgeById: pledgeId = " + pledgeId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledgeById: pledgeId = " + pledgeId);
         }
         return pledgeDao.readPledgeById(pledgeId);
     }
     
     @Override
     public Pledge readPledgeByIdCreateIfNull(String pledgeId, Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPledgeByIdCreateIfNull: pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledgeByIdCreateIfNull: pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Pledge pledge = null;
         if (pledgeId == null) {
@@ -101,8 +101,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
 
     public Pledge createDefaultPledge(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("createDefaultPledge: constituent = " + (constituent == null ? null : constituent.getId()));
+        if (logger.isTraceEnabled()) {
+            logger.trace("createDefaultPledge: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         Pledge pledge = new Pledge();
         createDefault(constituent, pledge, EntityType.pledge, "pledgeId");
@@ -112,24 +112,24 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     
     @Override
     public List<Pledge> readPledgesForConstituent(Person constituent) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPledges: constituent = " + constituent);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledges: constituent = " + constituent);
         }
         return readPledgesForConstituent(constituent.getId());
     }
 
     @Override
     public List<Pledge> readPledgesForConstituent(Long constituentId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPledges: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPledges: constituentId = " + constituentId);
         }
         return pledgeDao.readPledgesByConstituentId(constituentId);
     }
     
     @Override
     public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaginatedPledgesByConstituentId: constituentId = " + constituentId);
         }
         return pledgeDao.readPaginatedPledgesByConstituentId(constituentId, sortinfo);
     }
@@ -137,8 +137,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Override
     public List<Pledge> searchPledges(Map<String, Object> params) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("searchPledges: params = " + params);
+        if (logger.isTraceEnabled()) {
+            logger.trace("searchPledges: params = " + params);
         }
         return pledgeDao.searchPledges(params);
     }
@@ -146,8 +146,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     // Pledge only
     @Override
     public Map<String, List<Pledge>> findNotCancelledPledges(Long constituentId, String selectedPledgeIds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findNotCancelledPledges: constituentId = " + constituentId + " selectedPledgeIds = " + selectedPledgeIds);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findNotCancelledPledges: constituentId = " + constituentId + " selectedPledgeIds = " + selectedPledgeIds);
         }
         Set<String> selectedPledgeIdsSet = StringUtils.commaDelimitedListToSet(selectedPledgeIds);
         List<Pledge> notSelectedPledges = pledgeDao.findNotCancelledPledges(constituentId);
@@ -170,8 +170,8 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     
     @Override
     public List<DistributionLine> findDistributionLinesForPledges(Set<String> pledgeIds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
+        if (logger.isTraceEnabled()) {
+            logger.trace("findDistributionLinesForPledges: pledgeIds = " + pledgeIds);
         }
         if (pledgeIds != null && pledgeIds.isEmpty() == false) {
             return pledgeDao.findDistributionLinesForPledges(new ArrayList<String>(pledgeIds));

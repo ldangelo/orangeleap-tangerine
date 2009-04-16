@@ -174,8 +174,8 @@ public class IBatisCustomFieldHelper {
 
     // Helper method to delete a single custom file
     private void deleteCustomField(CustomField customField) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("deleteCustomField: customField = " + customField);
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteCustomField: customField.fieldName = " + customField.getName());
         }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityType", customField.getEntityType());
@@ -188,8 +188,8 @@ public class IBatisCustomFieldHelper {
 
     // Helper method to persist a single value for custom field, include sequence number
     private void saveSingleCustomField(CustomField customField, String value, int sequenceNumber) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("saveSingleCustomField: customField = " + customField + " value = " + value + " sequenceNumber = " + sequenceNumber);
+        if (logger.isTraceEnabled()) {
+            logger.trace("saveSingleCustomField: customField.fieldName = " + customField.getName() + " value = " + value + " sequenceNumber = " + sequenceNumber);
         }
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityType", customField.getEntityType());

@@ -59,8 +59,8 @@ public class CodeHelperController extends ParameterizableViewController {
         }
         String description = request.getParameter("description");
         String codeType = request.getParameter("type");
-        if (logger.isDebugEnabled()) {
-            logger.debug("handleRequestInternal: searchString = " + searchString + " showInactive = " + showInactive + " description = " + description + " codeType = " + codeType);
+        if (logger.isTraceEnabled()) {
+            logger.trace("handleRequestInternal: searchString = " + searchString + " showInactive = " + showInactive + " description = " + description + " codeType = " + codeType);
         }
         List<PicklistItem> items;
         if (description != null) {

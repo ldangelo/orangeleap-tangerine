@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.service.customization;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +32,8 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
     
     @Override
     public List<DashboardItem> getDashboard() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getDashboard");
+        if (logger.isTraceEnabled()) {
+            logger.trace("getDashboard");
         }
         return dashboardDao.getDashboard();
     }
@@ -42,8 +41,8 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
     @Override
     public DashboardData getDashboardQueryContent(DashboardItem item) {
        
-    	if (logger.isDebugEnabled()) {
-            logger.debug("getDashboardContent "+item.getTitle());
+    	if (logger.isTraceEnabled()) {
+            logger.trace("getDashboardContent "+item.getTitle());
         }
         
     	// Populate data structures for google js graphing library
@@ -65,7 +64,9 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         	
         	// Some data points may be missing from some datasets
         	List<DashboardItemDataValue> values = dashboardDao.getDashboardQueryResults(ds);
-        	if (values.size() > DATA_POINT_LIMIT) values.subList(DATA_POINT_LIMIT, values.size()).clear();
+        	if (values.size() > DATA_POINT_LIMIT) {
+                values.subList(DATA_POINT_LIMIT, values.size()).clear();
+            }
         	
         	// Sort data points by label value
         	for (DashboardItemDataValue value : values) {
@@ -109,7 +110,9 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
 		        		}
             		}
         		}
-        		if (value == null) value = new BigDecimal(0);
+        		if (value == null) {
+                    value = new BigDecimal(0);
+                }
         		datapoints.add(value);
         	}
         }

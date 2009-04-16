@@ -26,8 +26,8 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
 
 	@Override
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("addPaymentHistory: paymentHistory = " + paymentHistory);
+        if (logger.isTraceEnabled()) {
+            logger.trace("addPaymentHistory: paymentHistory = " + paymentHistory);
         }
 		if (paymentHistory.getPerson() == null) {
             return null;
@@ -37,16 +37,16 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
 
 	@Override
 	public PaginatedResult readPaymentHistory(Long constituentId, SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentHistory: constituentId = " + constituentId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentHistory: constituentId = " + constituentId);
         }
 		return paymentHistoryDao.readPaymentHistoryByConstituentId(constituentId, sortinfo);
 	}
 	
 	@Override
 	public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readPaymentHistoryBySite:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentHistoryBySite:");
         }
 		return paymentHistoryDao.readPaymentHistoryBySite(sortinfo);
 	}

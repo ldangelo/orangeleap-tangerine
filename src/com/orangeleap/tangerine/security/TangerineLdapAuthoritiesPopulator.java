@@ -104,15 +104,15 @@ public class TangerineLdapAuthoritiesPopulator implements LdapAuthoritiesPopulat
             return authorities;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Searching for roles for user '" + username + "', DN = " + "'" + userDn + "', with filter " + groupSearchFilter + " in search base '" + getGroupSearchBase() + "'");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Searching for roles for user '" + username + "', DN = " + "'" + userDn + "', with filter " + groupSearchFilter + " in search base '" + getGroupSearchBase() + "'");
         }
 
         String searchBase = getGroupSearchBase() + ",o=" + site;
         Set userRoles = ldapTemplate.searchForSingleAttributeValues(searchBase, groupSearchFilter, new String[] { userDn, username }, groupRoleAttribute);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Roles from search: " + userRoles);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Roles from search: " + userRoles);
         }
 
         Iterator it = userRoles.iterator();
@@ -206,8 +206,8 @@ public class TangerineLdapAuthoritiesPopulator implements LdapAuthoritiesPopulat
     public GrantedAuthority[] getGrantedAuthorities(DirContextOperations user, String username, String site) {
         String userDn = user.getNameInNamespace();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting authorities for user " + userDn);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Getting authorities for user " + userDn);
         }
 
         Set roles = getGroupMembershipRoles(userDn, username, site);

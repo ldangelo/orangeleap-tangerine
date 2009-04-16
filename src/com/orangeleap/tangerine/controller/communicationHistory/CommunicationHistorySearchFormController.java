@@ -40,8 +40,8 @@ public class CommunicationHistorySearchFormController extends SimpleFormControll
 
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("formBackingObject:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("formBackingObject:");
         }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
@@ -53,8 +53,8 @@ public class CommunicationHistorySearchFormController extends SimpleFormControll
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("onSubmit:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("onSubmit:");
         }
         CommunicationHistory communicationHistory = (CommunicationHistory) command;
         BeanWrapper bw = new BeanWrapperImpl(communicationHistory);

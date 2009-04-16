@@ -22,8 +22,8 @@ public class CommunicationHistoryListController extends ParameterizableViewContr
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("handleRequestInternal:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("handleRequestInternal:");
         }
         String personId = request.getParameter("personId");
         Person constituent = constituentService.readConstituentById(Long.valueOf(personId));

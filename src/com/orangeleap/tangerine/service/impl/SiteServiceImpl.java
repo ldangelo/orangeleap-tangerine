@@ -71,8 +71,8 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public synchronized Site createSiteAndUserIfNotExist(String siteName) {
-    	if (logger.isDebugEnabled()) {
-    	    logger.debug("createSiteAndUserIfNotExist: siteName = " + siteName);
+    	if (logger.isTraceEnabled()) {
+    	    logger.trace("createSiteAndUserIfNotExist: siteName = " + siteName);
     	}
     	
     	versionService.checkOrangeLeapSchemaCompatible();

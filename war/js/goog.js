@@ -149,8 +149,10 @@ function rss(itemData, elem) {
 
 function iframe(itemData, elem) {
     try {
+    	var url = ""+itemData.url;
+    	url = url.replace(/amp;/g, "");
         var div = document.createElement("iframe");
-        $(div).attr("src",itemData.url);
+        $(div).attr("src",url);
         $(div).attr("width","350");
         $(div).attr("height","220");
         $(div).attr("scrolling","no");

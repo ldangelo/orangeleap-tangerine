@@ -22,7 +22,7 @@ import com.orangeleap.tangerine.type.PageType;
 
 public class AddressImporter extends EntityImporter {
 	
-	private static String ACCOUNT_FIELD = "account";
+	private static String ACCOUNT_FIELD = "accountNumber";
 	
     protected final Log logger = LogFactory.getLog(getClass());
 

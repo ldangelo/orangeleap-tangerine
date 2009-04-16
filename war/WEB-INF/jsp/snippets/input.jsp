@@ -310,7 +310,7 @@
 								</c:if>
 							</div>
 							<c:if test="${fieldVO.fieldType != 'ASSOCIATION' && fieldVO.fieldType != 'ASSOCIATION_DISPLAY'}">
-					        	<a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this, true)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+					        	<a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this<c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">, true</c:if>)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 					        </c:if>
 					    </div>
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${fieldVO.fieldId}'/>" <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">otherFieldId="<c:out value='${fieldVO.otherFieldId}'/>"</c:if>/>

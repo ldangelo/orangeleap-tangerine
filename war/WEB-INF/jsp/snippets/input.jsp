@@ -53,7 +53,7 @@
 					<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.model.selectedPaymentSource.id}'/>"/>
 					<script type="text/javascript" src="js/payment/paymentEditable.js"></script>
 					<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${commandObject}"/>';</script>
-					<select name="ach-<c:out value='${fieldVO.fieldName}'/>" id="ach-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>">
+					<select name="ach-<c:out value='${fieldVO.fieldName}'/>" id="ach-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" style="display:none">
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>
@@ -71,7 +71,7 @@
 						</c:if>
 					</select>
 										
-					<select name="creditCard-<c:out value='${fieldVO.fieldName}'/>" id="creditCard-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>">
+					<select name="creditCard-<c:out value='${fieldVO.fieldName}'/>" id="creditCard-<c:out value='${fieldVO.fieldId}'/>" class="<c:out value='${fieldVO.entityAttributes}'/>" style="display:none">
 						<c:if test="${fieldVO.required != 'true'}">
 							<option value="none"><spring:message code="none"/></option>
 						</c:if>

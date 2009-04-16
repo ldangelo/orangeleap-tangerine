@@ -41,7 +41,7 @@ public class PaymentHistoryListController {
         NAME_MAP.put("personId", "phis.PERSON_ID");
         NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
         NAME_MAP.put("paymentType", "phis.PAYMENT_TYPE");
-        NAME_MAP.put("description", "phis.DESCRIPTION");
+        NAME_MAP.put("description", "phis.PAYMENT_DESC");
         NAME_MAP.put("amount", "phis.AMOUNT");
         NAME_MAP.put("currencyCode", "phis.CURRENCY_CODE");
     }

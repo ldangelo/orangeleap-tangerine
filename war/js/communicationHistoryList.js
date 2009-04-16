@@ -44,7 +44,7 @@ Ext.onReady(function() {
         store: CommunicationHistory.store,
         columns: [
             {header: '', width: 65, dataIndex: 'id', sortable: true, renderer: CommunicationHistory.entityViewRenderer},
-            {header: 'Date', widht: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Type', width: 65, dataIndex: 'type', sortable: true},
             {header: 'Comments', width: 200,  dataIndex: 'comments', sortable: true, renderer: CommunicationHistory.descriptionRenderer}
         ],

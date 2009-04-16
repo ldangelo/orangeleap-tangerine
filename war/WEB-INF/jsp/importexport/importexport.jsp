@@ -35,24 +35,36 @@
 		        <br/>
 		        
 
-		        <div id="nameRange">
+		        <div id="nameRange" style="display:none">
 		         <div>
 					  From constituent account number: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
 					  &nbsp;&nbsp;&nbsp;To constituent account number: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
 		         </div>
 		        </div>
-		        <script type="text/javascript">$('#nameRange').hide();</script>
 
 
-		        <div id="dateRange">
-		         <div class="lookupWrapper">
+		        <div id="dateRange" style="display:none">
+		         <div>
 					  From date: <input id="fromDate" name="fromDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
-		         <div class="lookupWrapper">
-					  &nbsp;&nbsp;&nbsp;To date: <input id="toDate" name="toDate" size="16" maxlength="10" class="text date" type="text" />
+		         <div>
+					  To date: <input id="toDate" name="toDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
+                    <script type="text/javascript">
+                        new Ext.form.DateField({
+                            applyTo: 'fromDate',
+                            id: "fromDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                        new Ext.form.DateField({
+                            applyTo: 'toDate',
+                            id: "toDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                    </script>
 		        </div>
-		        <script type="text/javascript">$('#dateRange').hide();</script>
 
 		        
 	        </form>

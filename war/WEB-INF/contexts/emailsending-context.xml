@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
 	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
-		<property name="uri" value="http://localhost:8080/jasperserver/services/repository"/>
+		<property name="uri" value="http://${jasper.host}:${jasper.port}/jasperserver/services/repository"/>
 		<property name="userName" value="jasperadmin"/>
 		<property name="password" value="jasperadmin"/>
 	</bean>

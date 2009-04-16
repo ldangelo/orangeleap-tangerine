@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain.communication;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -22,6 +23,8 @@ public class Address extends AbstractCommunicationEntity {
     private String stateProvince;
     private String country;
     private String postalCode;
+    private Date ncoaDate;
+    private Date caasDate;
 
     public Address() { }
 
@@ -94,6 +97,24 @@ public class Address extends AbstractCommunicationEntity {
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
+    
+	public void setNcoaDate(Date ncoaDate) {
+		this.ncoaDate = ncoaDate;
+	}
+
+	public Date getNcoaDate() {
+		return ncoaDate;
+	}
+
+	public void setCaasDate(Date caasDate) {
+		this.caasDate = caasDate;
+	}
+
+	public Date getCaasDate() {
+		return caasDate;
+	}
+
+
 
     public String getShortDisplay() {
         String shortDisplay = null;

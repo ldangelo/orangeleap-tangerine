@@ -195,6 +195,8 @@ CREATE TABLE `ADDRESS` (
   `STATE_PROVINCE` varchar(255) default NULL,
   `TEMPORARY_END_DATE` datetime default NULL,
   `TEMPORARY_START_DATE` datetime default NULL,
+  `NCOA_DATE` datetime default NULL,
+  `CAAS_DATE` datetime default NULL,
   `CONSTITUENT_ID` bigint(20) NOT NULL,
   `IS_PRIMARY` char(1) NOT NULL default '0',
   `UNDELIVERABLE` char(1) NOT NULL default '0',

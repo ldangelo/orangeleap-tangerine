@@ -37,6 +37,8 @@ CREATE TABLE `CUSTOM_FIELD` (
   `CUSTOM_FIELD_ID` bigint(20) NOT NULL auto_increment,
   `FIELD_NAME` varchar(255) NOT NULL,
   `FIELD_VALUE` text,
+  `FIELD_NUMERIC_VALUE` decimal(19,2) default NULL,
+  `FIELD_DATE_VALUE` datetime default NULL,
   `ENTITY_TYPE` varchar(255) default NULL,
   `ENTITY_ID` bigint(20) default NULL,
   `SEQUENCE_NUM` int default 0,

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
@@ -56,7 +57,7 @@ public class PaymentHistoryListController {
         map.put("personId", ph.getPerson().getId());
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymentType", ph.getPaymentType());
-        map.put("description", ph.getDescription());
+        map.put("description", StringUtils.trimToEmpty(ph.getDescription()));
         map.put("amount", ph.getAmount());
         map.put("currencyCode", ph.getCurrencyCode());
 

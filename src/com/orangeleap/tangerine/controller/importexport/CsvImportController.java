@@ -2,7 +2,9 @@ package com.orangeleap.tangerine.controller.importexport;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -53,8 +55,12 @@ public class CsvImportController extends SimpleFormController {
 		if (!importexportAllowed(request)) {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
         }
-
-		String entity = request.getParameter("entity");
+		
+		ImportRequest importRequest = new ImportRequest();
+		importRequest.setEntity(request.getParameter("entity"));
+		importRequest.setNcoaDate(getDate(request.getParameter("ncoaDate")));
+		importRequest.setCaasDate(getDate(request.getParameter("caasDate")));
+		
 		List<String> result = new ArrayList<String>();
 		
 		MultipartFile mf = ((MultipartHttpServletRequest)request).getFile("file");
@@ -68,7 +74,7 @@ public class CsvImportController extends SimpleFormController {
 	
 			byte[] file = bean.getFile();
 			if (file != null && file.length > 0) {
-				result = importFile(entity, file, errors, applicationContext);
+				result = importFile(importRequest, file, errors, applicationContext);
 			} else {
 				result.add("Import file required.");
 			}
@@ -80,16 +86,26 @@ public class CsvImportController extends SimpleFormController {
         return mav;
 
 	}
+	
+	private Date getDate(String s) {
+	    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+	    if (s == null) return null;
+	    try {
+	    	return sdf.parse(s);
+	    } catch (Exception e) {
+	    	return null;
+	    }
+	}
 
 	// Can also import in separate thread, if it is slow for large files, and return a request id for the response which can be polled for when ready
-	private List<String> importFile(String entity, byte[] file, BindException errors, ApplicationContext applicationContext) {
+	private List<String> importFile(ImportRequest importRequest, byte[] file, BindException errors, ApplicationContext applicationContext) {
 
 		List<String> result = new ArrayList<String>();
 		
 		try {
 			
 			List<String[]> data = parseFile(file);
-    		ImportHandler handler = new ImportHandler(entity, data, applicationContext);
+    		ImportHandler handler = new ImportHandler(importRequest, data, applicationContext);
 	    	handler.importData();
 	    	
 			String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrors().size();

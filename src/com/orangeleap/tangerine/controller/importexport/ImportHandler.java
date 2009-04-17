@@ -28,9 +28,9 @@ public class ImportHandler {
 	private int deletes = 0;
 	private List<String> errors = new ArrayList<String>();
 
-	public ImportHandler(String entity, List<String[]> data, ApplicationContext applicationContext) {
+	public ImportHandler(ImportRequest importRequest, List<String[]> data, ApplicationContext applicationContext) {
 
-		entityImporter = new EntityImporterFactory().getEntityImporter(entity, applicationContext);
+		entityImporter = new EntityImporterFactory().getEntityImporter(importRequest, applicationContext);
 		if (entityImporter == null) throw new RuntimeException("Select import type.");
 		this.data = data;
 

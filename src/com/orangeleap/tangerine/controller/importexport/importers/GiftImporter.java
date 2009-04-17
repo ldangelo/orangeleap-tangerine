@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -24,8 +25,8 @@ public class GiftImporter extends EntityImporter {
     private final ConstituentService constituentService;
     private final GiftService giftservice;
 
-	public GiftImporter(String entity, ApplicationContext applicationContext) {
-		super(entity, applicationContext);
+	public GiftImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
+		super(importRequest, applicationContext);
 		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 		giftservice = (GiftService)applicationContext.getBean("giftService");
 	}

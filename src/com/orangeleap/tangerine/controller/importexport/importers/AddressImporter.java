@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.controller.importexport.importers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.AddressExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.controller.importexport.fielddefs.FieldDefUtil;
@@ -29,8 +29,8 @@ public class AddressImporter extends EntityImporter {
     private AddressService addressService;
     private ConstituentService constituentService;
 
-	public AddressImporter(String entity, ApplicationContext applicationContext) {
-		super(entity, applicationContext);
+	public AddressImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
+		super(importRequest, applicationContext);
 		addressService = (AddressService)applicationContext.getBean("addressService");
 		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 	}
@@ -114,10 +114,15 @@ public class AddressImporter extends EntityImporter {
 			mapValuesToObject(values, address);
 		}
 		
+		setCleanseDates(address);
 		addressService.save(address);
 		
 	}
 	
+	private void setCleanseDates(Address address) {
+		if (importRequest.getNcoaDate() != null) address.setNcoaDate(importRequest.getNcoaDate());
+		if (importRequest.getCaasDate() != null) address.setCaasDate(importRequest.getCaasDate());
+	}
 	
 	
 }

@@ -8,11 +8,9 @@
 		<div class="content760 mainForm">
 		    
 		    <script>
-		    function ImportExport_hideShow(val) {
-
+		    function Export_hideShow(val) {
 		    	if ( val === 'person' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
 		    	if ( val === 'gift' || val === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }
-			    
 		    }
 		    </script>
 		
@@ -21,7 +19,7 @@
 			<h1>Export a CSV file</h1>
 	        <form method="post" action="export.htm" >
 	        
-		        <select id="entity" name="entity"  onchange="ImportExport_hideShow( $('#entity').val() );"  >
+		        <select id="exportEntity" name="entity"  onchange="Export_hideShow( $('#exportEntity').val() );"  >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
 		          <option value="address">NCOA Addresses</option>   
@@ -77,15 +75,52 @@
 	
 			<h1>Import a CSV file</h1>
 			
+		    <script>
+		    function Import_hideShow(val) {
+		    	if ( val === 'address' )  { $('#importDates').show(); } else { $('#importDates').hide(); }
+		    }
+		    </script>
+			
+			
 	        <form method="post" action="import.htm" enctype="multipart/form-data">
-		        <select name="entity">
+		        <select id="importEntity" name="entity" onchange="Import_hideShow( $('#importEntity').val() );" >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
  		          <option value="gift">Gifts: Cash and Checks</option> 
- 		           <option value="address">NCOA Addresses</option>   
+ 		          <option value="address">NCOA Addresses</option>   
 		        </select>            
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import" onclick="$('#importResult').html(''); return true;" />
+	            
+	            <br/>
+		        <br/>
+		        
+	            
+	           <div id="importDates" style="display:none">
+		         <div>
+					  NCOA date: <input id="ncoaDate" name="ncoaDate" size="16" maxlength="10" class="text date" type="text" />
+		         </div>
+		         <div>
+					  CAAS date: <input id="caasDate" name="caasDate" size="16" maxlength="10" class="text date" type="text" />
+		         </div>
+                    <script type="text/javascript">
+                        new Ext.form.DateField({
+                            applyTo: 'ncoaDate',
+                            id: "ncoaDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                        new Ext.form.DateField({
+                            applyTo: 'caasDate',
+                            id: "caasDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                    </script>
+		        </div>
+
+	            
+	            
 	        </form>
 	        
         	<div id="importResult">

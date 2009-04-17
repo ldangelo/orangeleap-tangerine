@@ -13,6 +13,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.controller.importexport.ExportRequest;
+import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
@@ -34,7 +35,7 @@ public abstract class EntityImporter {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	protected String entity;
+	protected ImportRequest importRequest;
 	protected ApplicationContext applicationContext;
 	protected SiteService siteservice;
 	protected TangerineUserHelper tangerineUserHelper;
@@ -42,8 +43,8 @@ public abstract class EntityImporter {
 	protected List<FieldDescriptor> fieldDescriptors; 
 	protected Map<String, FieldDescriptor> fieldDescriptorMap = new HashMap<String, FieldDescriptor>();
 	
-	protected EntityImporter(String entity, ApplicationContext applicationContext) {
-		this.entity = entity;
+	protected EntityImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
+		this.importRequest = importRequest;
 		this.applicationContext = applicationContext;
 		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 
@@ -57,7 +58,7 @@ public abstract class EntityImporter {
 	// Default to same field list as corresponding exporter
 	protected List<FieldDescriptor> getFieldDescriptors() {
 		ExportRequest er = new ExportRequest();
-		er.setEntity(entity);
+		er.setEntity(importRequest.getEntity());
 		EntityExporter entityexporter = new EntityExporterFactory().getEntityExporter(er, applicationContext);
 		return entityexporter.getExportFieldDescriptors();
 	}

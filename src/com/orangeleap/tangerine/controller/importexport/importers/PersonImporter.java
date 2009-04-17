@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -22,8 +23,8 @@ public class PersonImporter extends EntityImporter {
     private ConstituentService constituentService;
     private TangerineUserHelper tangerineUserHelper;
 
-	public PersonImporter(String entity, ApplicationContext applicationContext) {
-		super(entity, applicationContext);
+	public PersonImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
+		super(importRequest, applicationContext);
 		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
 		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 	}

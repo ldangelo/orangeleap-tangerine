@@ -21,7 +21,7 @@ import com.orangeleap.tangerine.service.GiftService;
 
 public class PersonRulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
-	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+	private static final Log logger = LogFactory.getLog(PersonRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;

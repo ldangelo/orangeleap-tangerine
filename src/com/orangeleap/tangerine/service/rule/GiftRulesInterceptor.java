@@ -23,7 +23,7 @@ import com.orangeleap.tangerine.util.TaskStack;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
-	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+	private static final Log logger = LogFactory.getLog(GiftRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	
@@ -40,9 +40,11 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;
-		workingMemory.addEventListener (new DebugAgendaEventListener());
-		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-
+		
+		if (logger.isDebugEnabled()) {
+			workingMemory.addEventListener (new DebugAgendaEventListener());
+			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+		}
 		
 		
 		@SuppressWarnings("unused")

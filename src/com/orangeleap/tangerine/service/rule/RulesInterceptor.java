@@ -63,9 +63,11 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;
-		workingMemory.addEventListener (new DebugAgendaEventListener());
-		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-
+		
+		if (logger.isDebugEnabled()) {
+			workingMemory.addEventListener (new DebugAgendaEventListener());
+			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+		}
 		
 		
 		@SuppressWarnings("unused")

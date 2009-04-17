@@ -20,7 +20,7 @@ import com.orangeleap.tangerine.service.GiftService;
 public class PaymentRulesInterceptor implements ApplicationContextAware,
 		ApplicationListener {
 
-	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+	private static final Log logger = LogFactory.getLog(PaymentRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	
@@ -29,9 +29,10 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
-		workingMemory.addEventListener(new DebugAgendaEventListener());
-		workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-
+		if (logger.isDebugEnabled()) {
+			workingMemory.addEventListener(new DebugAgendaEventListener());
+			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
+		}
 		@SuppressWarnings("unused")
 		ConstituentService ps = (ConstituentService) applicationContext
 				.getBean("constituentService");

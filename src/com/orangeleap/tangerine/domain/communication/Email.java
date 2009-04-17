@@ -78,14 +78,14 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         }
         Email e = (Email) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getPersonId(), e.getPersonId()).append(activationStatus, e.getActivationStatus()).append(emailAddress, e.getEmailAddress()).append(emailDisplay, e.getEmailDisplay());
+        eb.append(getPersonId(), e.getPersonId()).append(emailAddress, e.getEmailAddress());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getPersonId()).append(activationStatus).append(emailAddress).append(emailDisplay);
+        hcb.append(getPersonId()).append(emailAddress);
         return hcb.hashCode();
     }
     

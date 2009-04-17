@@ -64,8 +64,17 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         if (FormBeanType.NEW.equals(addressAware.getAddressType())) {
             Address newAddress = addressAware.getAddress();
             newAddress.setPersonId(constituent.getId());
-            addressAware.setAddress(addressService.save(newAddress));
-            addressAware.setSelectedAddress(addressAware.getAddress());
+            
+            Address existingAddress = addressService.alreadyExists(newAddress);
+            if (existingAddress != null) {
+                addressAware.setAddress(existingAddress);
+                addressAware.setSelectedAddress(existingAddress);
+                addressAware.setAddressType(FormBeanType.EXISTING);
+            }
+            else {
+                addressAware.setAddress(addressService.save(newAddress));
+                addressAware.setSelectedAddress(addressAware.getAddress());
+            }
         }
         else if (FormBeanType.NONE.equals(addressAware.getAddressType())) {
             addressAware.setSelectedAddress(null);
@@ -77,8 +86,17 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         if (FormBeanType.NEW.equals(phoneAware.getPhoneType())) {
             Phone newPhone = phoneAware.getPhone();
             newPhone.setPersonId(constituent.getId());
-            phoneAware.setPhone(phoneService.save(newPhone));
-            phoneAware.setSelectedPhone(phoneAware.getPhone());
+            
+            Phone existingPhone = phoneService.alreadyExists(newPhone);
+            if (existingPhone != null) {
+                phoneAware.setPhone(existingPhone);
+                phoneAware.setSelectedPhone(existingPhone);
+                phoneAware.setPhoneType(FormBeanType.EXISTING);
+            }
+            else {
+                phoneAware.setPhone(phoneService.save(newPhone));
+                phoneAware.setSelectedPhone(phoneAware.getPhone());
+            }
         }
         else if (FormBeanType.NONE.equals(phoneAware.getPhoneType())) {
             phoneAware.setSelectedPhone(null);
@@ -90,8 +108,17 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         if (FormBeanType.NEW.equals(emailAware.getEmailType())) {
             Email newEmail = emailAware.getEmail();
             newEmail.setPersonId(constituent.getId());
-            emailAware.setEmail(emailService.save(newEmail));
-            emailAware.setSelectedEmail(emailAware.getEmail());
+            
+            Email existingEmail = emailService.alreadyExists(newEmail);
+            if (existingEmail != null) {
+                emailAware.setEmail(existingEmail);
+                emailAware.setSelectedEmail(existingEmail);
+                emailAware.setEmailType(FormBeanType.EXISTING);
+            }
+            else {
+                emailAware.setEmail(emailService.save(newEmail));
+                emailAware.setSelectedEmail(emailAware.getEmail());
+            }
         }
         else if (FormBeanType.NONE.equals(emailAware.getEmailType())) {
             emailAware.setSelectedEmail(null);

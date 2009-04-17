@@ -37,7 +37,12 @@ public class AddressFormController extends TangerineConstituentAttributesFormCon
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        addressService.save((Address)command);
+        Address address = (Address) command;
+        if (addressService.alreadyExists(address) != null) {
+            errors.reject("errorAddressExists");
+            return showForm(request, response, errors);
+        }
+        addressService.save(address);
         return super.onSubmit(request, response, command, errors);
     }
 }

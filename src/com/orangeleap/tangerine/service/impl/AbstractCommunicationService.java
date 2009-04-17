@@ -36,6 +36,35 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
 
     protected abstract CommunicationDao<T> getDao();
     protected abstract T createEntity(Long constituentId);
+    
+    @Override
+    public T alreadyExists(T entity) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("alreadyExists: entity = " + entity);
+        }
+        List<T> entities = readByConstituentId(entity.getPersonId());
+        T returnEntity = null;
+        for (T existingEntity : entities) {
+            if (existingEntity.equals(entity) && existingEntity.getId().equals(entity.getId()) == false) {
+                returnEntity = existingEntity;
+                break;
+            }
+        }
+        return returnEntity;
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public T saveOnlyIfNew(T entity) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("saveOnlyIfNew: entity = " + entity);
+        }
+        T thisEntity = alreadyExists(entity);
+        if (thisEntity == null) {
+            thisEntity = save(entity);
+        }
+        return thisEntity;
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -43,11 +72,12 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isTraceEnabled()) {
             logger.trace("save: entity = " + entity);
         }
+        List<T> entities = readByConstituentId(entity.getPersonId());
         if (!entity.isPrimary()) {
-        	checkIfOnlyOneActive(entity);
+        	checkIfOnlyOneActive(entity, entities);
         }
         if (entity.isPrimary()) {
-        	checkIfOtherPrimariesExist(entity);
+        	checkIfOtherPrimariesExist(entity, entities);
         } 
         entity = getDao().maintainEntity(entity);
         if (entity.isInactive()) {
@@ -59,10 +89,8 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         return entity;
     }
     
-    protected void checkIfOtherPrimariesExist(T entity) {
-    	Long constituentId = entity.getPersonId();
-    	List<T> list = readByConstituentId(constituentId);
-    	for (T item : list) {
+    protected void checkIfOtherPrimariesExist(T entity, List<T> entities) {
+    	for (T item : entities) {
     		if (!item.getId().equals(entity.getId()) && item.isPrimary()) {
     			item.setPrimary(false);
     			getDao().maintainEntity(item);
@@ -70,10 +98,9 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     	}
     }
     
-    protected void checkIfOnlyOneActive(T entity) {
-    	Long constituentId = entity.getPersonId();
-    	List<T> list = filterValid(constituentId);
-    	if (list.size() == 0 || list.get(0).getId().equals(entity.getId())) {
+    protected void checkIfOnlyOneActive(T entity, List<T> entities) {
+    	List<T> list = filterValid(entities);
+    	if (list.isEmpty() || list.get(0).getId().equals(entity.getId())) {
     		entity.setPrimary(true);
     	}
     }
@@ -91,7 +118,14 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isTraceEnabled()) {
             logger.trace("filterValid: constituentId = " + constituentId);
         }
-        return filterValidEntities(readByConstituentId(constituentId));
+        return filterValid(readByConstituentId(constituentId));
+    }
+
+    public List<T> filterValid(List<T> entities) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("filterValid:");
+        }
+        return filterValidEntities(entities);
     }
 
     @Override

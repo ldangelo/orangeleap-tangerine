@@ -165,7 +165,7 @@ public class Address extends AbstractCommunicationEntity {
         }
         Address a = (Address) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(personId, a.getPersonId()).append(activationStatus, a.getActivationStatus()).append(addressLine1, a.getAddressLine1()).append(addressLine2, a.getAddressLine2()).append(addressLine3, a.getAddressLine3()).append(city, a.getCity())
+        eb.append(personId, a.getPersonId()).append(addressLine1, a.getAddressLine1()).append(addressLine2, a.getAddressLine2()).append(addressLine3, a.getAddressLine3()).append(city, a.getCity())
         .append(country, a.getCountry()).append(stateProvince, a.getStateProvince()).append(postalCode, a.getPostalCode());
         return eb.isEquals();
     }
@@ -173,7 +173,7 @@ public class Address extends AbstractCommunicationEntity {
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(personId).append(activationStatus).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
+        hcb.append(personId).append(addressLine1).append(addressLine2).append(addressLine3).append(city).append(country).append(stateProvince).append(postalCode);
         return hcb.hashCode();
     }
 

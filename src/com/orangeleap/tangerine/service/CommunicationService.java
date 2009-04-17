@@ -7,11 +7,17 @@ import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity
 
 public interface CommunicationService<T extends AbstractCommunicationEntity> {
 
+    public T alreadyExists(T entity);
+    
     public T save(T entity);
+    
+    public T saveOnlyIfNew(T entity);
 
     public List<T> readByConstituentId(Long constituentId);
 
     public List<T> filterValid(Long constituentId);
+    
+    public List<T> filterValid(List<T> entities);
 
     public T readById(Long entityId);
     

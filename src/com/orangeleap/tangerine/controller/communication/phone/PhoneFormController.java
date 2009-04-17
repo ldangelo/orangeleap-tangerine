@@ -37,7 +37,12 @@ public class PhoneFormController extends TangerineConstituentAttributesFormContr
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        phoneService.save((Phone)command);
+        Phone phone = (Phone) command;
+        if (phoneService.alreadyExists(phone) != null) {
+            errors.reject("errorPhoneExists");
+            return showForm(request, response, errors);
+        }
+        phoneService.save(phone);
         return super.onSubmit(request, response, command, errors);
     }
 }

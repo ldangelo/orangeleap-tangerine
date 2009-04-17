@@ -37,7 +37,12 @@ public class EmailFormController extends TangerineConstituentAttributesFormContr
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        emailService.save((Email) command);
+        Email email = (Email) command;
+        if (emailService.alreadyExists(email) != null) {
+            errors.reject("errorEmailExists");
+            return showForm(request, response, errors);
+        }
+        emailService.save(email);
         return super.onSubmit(request, response, command, errors);
     }
 }

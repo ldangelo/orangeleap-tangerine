@@ -89,14 +89,14 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         }
         Phone p = (Phone) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getPersonId(), p.getPersonId()).append(activationStatus, p.getActivationStatus()).append(number, p.getNumber()).append(sms, p.getSms());
+        eb.append(getPersonId(), p.getPersonId()).append(number, p.getNumber());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getPersonId()).append(activationStatus).append(number).append(sms);
+        hcb.append(getPersonId()).append(number);
         return hcb.hashCode();
     }
     

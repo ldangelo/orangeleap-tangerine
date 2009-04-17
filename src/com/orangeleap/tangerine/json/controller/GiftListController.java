@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
@@ -57,7 +58,7 @@ public class GiftListController {
         map.put("amount", g.getAmount());
         map.put("currencyCode", g.getCurrencyCode());
         map.put("paymentStatus", g.getPaymentStatus());
-        map.put("comments", g.getComments());
+        map.put("comments", StringUtils.trimToEmpty(g.getComments()));
         map.put("refNumber", g.getTxRefNum());
         map.put("authcode", g.getAuthCode());
     

@@ -113,7 +113,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			return;
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
-				logger.error(e.getMessage());
+				logger.error("General: " + e.getMessage());
 			}
 			return;
 		}
@@ -124,7 +124,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			response = tp.process(request);
 		} catch (Exception tex) {
 			if (logger.isErrorEnabled()) {
-				logger.error(tex.getMessage());
+				logger.error("Request: "+ tex.getMessage());
 			}
 			return;
 		}

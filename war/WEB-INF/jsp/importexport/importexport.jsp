@@ -27,7 +27,7 @@
 		          <!--  <option value="distributionLine">Gift Detail</option>    -->
 		        </select>    
 		                
-		        <input type="submit" value="Export" onclick="if ( $('#entity').val() === '' ) return false; else return true; "/>
+		        <input type="submit" value="Export" onclick="if ( $('#exportEntity').val() === '' ) return false; else return true; "/>
 
 		        <br/>
 		        <br/>

@@ -115,9 +115,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getCreditCardHolderName() {
-        if (creditCardHolderName == null && person != null && CREDIT_CARD.equals(paymentType)) {
-            creditCardHolderName = person.getFirstLast();
-        }
         return creditCardHolderName;
     }
 
@@ -126,9 +123,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     }
 
     public String getAchHolderName() {
-        if (achHolderName == null && person != null && ACH.equals(paymentType)) {
-            achHolderName = person.getFirstLast();
-        }
         return achHolderName;
     }
 
@@ -423,7 +417,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
             if (ACH.equals(paymentType)) {
                 sb.append(ACH); // TODO: move to message bundle and lookup
                 sb.append("****");
-                sb.append(findLastFourDigits(getAchAccountNumber()));
+                sb.append(getLastFourDigits());
                 this.profile = sb.toString();
             }
             else if (CREDIT_CARD.equals(paymentType)) {
@@ -431,7 +425,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
                     sb.append(creditCardType);
                 }
                 sb.append("****");
-                sb.append(findLastFourDigits(getCreditCardNumber()));
+                sb.append(getLastFourDigits());
                 this.profile = sb.toString();
             }
         }
@@ -485,13 +479,13 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
             if (ACH.equals(paymentType)) {
                 clearCredit();
                 if (getLastFourDigits() == null) {
-                    setLastFourDigits(getAchAccountNumber().length() > 4 ? getAchAccountNumber().substring(getAchAccountNumber().length() - 4, getAchAccountNumber().length()) : getAchAccountNumber());
+                    setLastFourDigits(findLastFourDigits(getAchAccountNumber()));
                 }
             }
             else if (CREDIT_CARD.equals(paymentType)) {
                 clearACH();
                 if (getLastFourDigits() == null) {
-                    setLastFourDigits(getCreditCardNumber().length() > 4 ? getCreditCardNumber().substring(getCreditCardNumber().length() - 4, getCreditCardNumber().length()) : getCreditCardNumber());
+                    setLastFourDigits(findLastFourDigits(getCreditCardNumber()));
                 }
             }
             else if (CHECK.equals(paymentType) || CASH.equals(paymentType)) {
@@ -500,8 +494,20 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
                 setLastFourDigits(null);
             }
         }
+        createDefaultProfileName();
     }
     
+    @Override
+    public void setDefaults() {
+        super.setDefaults();
+        if (creditCardHolderName == null && person != null) {
+            creditCardHolderName = person.getFirstLast();
+        }
+        if (achHolderName == null && person != null) {
+            achHolderName = person.getFirstLast();
+        }
+    }
+
     private void clearCredit() {
         setCreditCardHolderName(null);
         setCreditCardExpiration(null);
@@ -520,7 +526,6 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Addr
     public String getAuditShortDesc() {
     	return (getProfile() == null || getProfile().length() == 0) ? "" + getId() : getProfile();
     }
-
     
     @Override
     public String toString() {

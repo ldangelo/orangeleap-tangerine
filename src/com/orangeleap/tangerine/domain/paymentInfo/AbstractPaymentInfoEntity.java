@@ -345,6 +345,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     @Override
     public void setDefaults() {
         super.setDefaults();
+        if (paymentSource != null) {
+            paymentSource.setDefaults();
+        }
         if (distributionLines != null) {
             for (DistributionLine line : distributionLines) {
                 if (line != null) {

@@ -42,8 +42,6 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
         
         maintainEntityChildren(paymentSource, paymentSource.getPerson());
         
-        paymentSource.createDefaultProfileName();
-
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
 
         if (paymentSource.isInactive()) {

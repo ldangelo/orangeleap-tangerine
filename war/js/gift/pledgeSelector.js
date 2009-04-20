@@ -24,6 +24,25 @@ $(document).ready(function() {
 		}
 		ldaFunct(elem);
 	}
+	
+	$("#amount").one("blur", function(event) {
+		var value = $(this).val(); 
+		if (value && value != "") {
+			$("#thisAssociatedPledge").each(function() {
+				var $elem = $(this);
+				var thisId = $elem.attr("pledgeId");
+				var thisName = $elem.val();
+				var queryString = "selectedPledgeIds=" + thisId + "&amount=" + $("#amount").val();
+				
+				PledgeSelector.updateDistribution(queryString);
+				
+				var $associatedPledgeIdsElem = $("#associatedPledgeIds");
+				$associatedPledgeIdsElem.val(thisId);
+				PledgeSelector.lookupCaller = $associatedPledgeIdsElem.siblings(".multiLookupField");
+				PledgeSelector.doClone(thisId, thisName, $associatedPledgeIdsElem.siblings(".clone"));
+			});
+		}
+	});
 });
 
 var PledgeSelector = {
@@ -64,31 +83,7 @@ var PledgeSelector = {
 			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
 			queryString += "&selectedPledgeIds=" + idsStr + "&amount=" + $("#amount").val();
 			
-			var giftDistElem = Ext.get("giftDistributionLinesDiv");
-			giftDistElem.mask("Updating Distribution Lines...")
-			
-			$.ajax({
-				type: "POST",
-				url: "giftPledgeLines.htm?personId=" + $("#thisConstituentId").val(),
-				data: queryString,
-				success: function(html) {
-					$("tbody.gridRow", $("#gift_distribution")).each(function() {
-						$(this).remove();
-					});
-					Distribution.amtPctMap = {};
-					$("#gift_distribution").append(html);
-					var $gridRows = $("table.distributionLines tbody.gridRow");
-					Distribution.index = $gridRows.length + 1;
-					Distribution.distributionLineBuilder($gridRows);
-					Distribution.reInitDistribution();
-					Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
-					giftDistElem.unmask();
-				},
-				error: function(html){
-					// TODO: improve error handling
-					alert("The server was not available.  Please try again.");
-				}
-			});
+			PledgeSelector.updateDistribution(queryString);
 
 			PledgeSelector.lookupCaller.siblings("input[type=hidden]").eq(0).val(idsStr);
 			
@@ -97,19 +92,51 @@ var PledgeSelector = {
 			var $toBeCloned = PledgeSelector.lookupCaller.parent().find("div.clone");
 			
 			for (var x = ids.length - 1; x >= 0; x--) {
-				var $cloned = $toBeCloned.clone(true);
-				var $popLink = $cloned.find("a[target='_blank']");
-				$cloned.attr("id", "lookup-" + ids[x]);
-				$cloned.attr("selectedId", ids[x]);
-				$popLink.attr("href", "pledge.htm?pledgeId=" + ids[x] + "&personId=" + $("#thisConstituentId").val());
-				$popLink.text(displayNames[x]);
-				
-				$cloned.removeClass("clone").removeClass("noDisplay");
-				$cloned.prependTo(PledgeSelector.lookupCaller);
-				$cloned.vkfade(true);
+				PledgeSelector.doClone(ids[x], displayNames[x], $toBeCloned);
 			} 
 			$("#dialog").jqmHide();					
 		});		
+	},
+	
+	updateDistribution: function(queryString) {
+		var giftDistElem = Ext.get("giftDistributionLinesDiv");
+		giftDistElem.mask("Updating Distribution Lines...")
+		
+		$.ajax({
+			type: "POST",
+			url: "giftPledgeLines.htm?personId=" + $("#thisConstituentId").val(),
+			data: queryString,
+			success: function(html) {
+				$("tbody.gridRow", $("#gift_distribution")).each(function() {
+					$(this).remove();
+				});
+				Distribution.amtPctMap = {};
+				$("#gift_distribution").append(html);
+				var $gridRows = $("table.distributionLines tbody.gridRow");
+				Distribution.index = $gridRows.length + 1;
+				Distribution.distributionLineBuilder($gridRows);
+				Distribution.reInitDistribution();
+				Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
+				giftDistElem.unmask();
+			},
+			error: function(html){
+				// TODO: improve error handling
+				alert("The server was not available.  Please try again.");
+			}
+		});
+	},
+	
+	doClone: function(thisId, thisName, $toBeCloned) {
+		var $cloned = $toBeCloned.clone(true);
+		var $popLink = $cloned.find("a[target='_blank']");
+		$cloned.attr("id", "lookup-" + thisId);
+		$cloned.attr("selectedId", thisId);
+		$popLink.attr("href", "pledge.htm?pledgeId=" + thisId + "&personId=" + $("#thisConstituentId").val());
+		$popLink.text(thisName);
+		
+		$cloned.removeClass("clone").removeClass("noDisplay");
+		$cloned.prependTo(PledgeSelector.lookupCaller);
+		$cloned.vkfade(true);
 	},
 	
 	serializeDistributionLines: function() {

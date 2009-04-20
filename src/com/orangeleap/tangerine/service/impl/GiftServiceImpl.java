@@ -501,24 +501,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	}
 	
 	@Override
-	public void initGiftAmountDistributionLinesFromPledge(Gift gift, String selectedPledgeId, Person constituent) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("initGiftAmountDistributionLinesFromPledge: selectedPledgeId = " + selectedPledgeId);
-        }
-        if (gift.getId() == null || gift.getId() <= 0) {
-            if (NumberUtils.isDigits(selectedPledgeId)) {
-                Long pledgeId = Long.parseLong(selectedPledgeId);
-                Pledge pledge = pledgeService.readPledgeById(pledgeId);
-                if (pledge != null) {
-                    gift.setAmount(pledge.isRecurring() ? pledge.getAmountPerGift() : pledge.getAmountTotal());
-                    gift.setDistributionLines(combineGiftPledgeDistributionLines(null, pledge.getDistributionLines(), gift.getAmount(), 1, constituent));
-                    gift.addAssociatedPledgeId(pledgeId);
-                }
-            }
-        }
-	}
-	
-	@Override
 	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent) {
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);

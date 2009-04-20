@@ -4,13 +4,13 @@
 		id="<c:choose><c:when test='${counter == 0}'>gridCloneRow</c:when><c:otherwise>gridRow<c:out value='${counter}'/></c:otherwise></c:choose>">
 		<mp:section sectionDefinition="${sectionDefinition}"/>
 		<tr class="lineRow <c:if test='${not empty hiddenGridRows}'>expandableRow collapsed</c:if>">
-			<c:if test='${not empty hiddenGridRows}'><td><a href="#" class="treeNodeLink plus" title="<spring:message code='clickShowHideExtended'/>" rowIndex="<c:out value='${counter}'/>"><spring:message code='clickShowHideExtended'/></a></td></c:if> 
+			<c:if test='${not empty hiddenGridRows}'><td class="nodeLink"><a href="#" class="treeNodeLink plus" title="<spring:message code='clickShowHideExtended'/>" rowIndex="<c:out value='${counter}'/>"><spring:message code='clickShowHideExtended'/></a></td></c:if> 
 			<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
 			<td><a href="#" class="<c:if test='${counter == 0 || (counter == 1 && fn:length(gridCollection) == 1)}'>noDisplay</c:if> deleteButton"><img src="images/icons/deleteRow.png"/></a></td>
 		</tr>
 		<c:if test='${not empty hiddenGridRows}'>
 			<tr class="hiddenRow noDisplay">
-				<td colspan="<c:out value='${sectionFieldCount + 2}'/>">
+				<td colspan="<c:out value='${sectionFieldCount}'/>">
 					<table>
 						<tr>
 							<td>

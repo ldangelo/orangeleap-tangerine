@@ -17,6 +17,9 @@
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
+			<c:if test="${associatedPledge != null}">
+				<input type="hidden" id="thisAssociatedPledge" name="thisAssociatedPledge" value="<c:out value='${associatedPledge.shortDescription}'/>" pledgeId="<c:out value='${associatedPledge.id}'/>"/>
+			</c:if>
 						
 			<form:form method="post" commandName="gift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>

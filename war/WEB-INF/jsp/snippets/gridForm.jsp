@@ -62,6 +62,51 @@
 			                   id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>"  
 			                   <c:if test="${fieldVO.fieldValue}">checked="checked"</c:if>/>
 					</c:when>
+					<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_OTHER' || fieldVO.fieldType == 'ASSOCIATION' || fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}">
+						<c:choose>
+							<c:when test="${fieldVO.fieldType == 'ASSOCIATION'}">
+								<c:set var="clickHandler" value="Lookup.deleteAssociation(this)" scope="page"/>
+							</c:when>
+							<c:otherwise>
+								<c:set var="clickHandler" value="Lookup.deleteOption(this)" scope="page"/>
+							</c:otherwise>
+						</c:choose>
+						<div class="lookupWrapper<c:if test="${fieldVO.fieldType == 'ASSOCIATION_DISPLAY'}"> readOnly</c:if>">
+						    <div class="lookupField <c:out value='${fieldVO.entityAttributes}'/>">
+								<c:set var="thisVal" value="${fn:trim(fieldVO.displayValue)}"/>
+								<div id="lookup-<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
+									<c:choose>
+										<c:when test="${not empty fieldVO.id}">
+											<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">
+												<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.id}" />
+												<c:if test="${fieldVO.referenceType != 'person'}">
+													<c:param name="personId" value="${param.personId}" />
+												</c:if>
+											</c:url>
+											<span><a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a></span>
+											<c:remove var="entityLink" scope="page" />
+										</c:when>
+										<c:otherwise>
+											<span><c:out value='${thisVal}'/></span>
+										</c:otherwise>
+									</c:choose>
+									<c:if test="${fieldVO.fieldType != 'ASSOCIATION_DISPLAY' && not empty thisVal}">
+										<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+									</c:if>
+								</div>
+								<c:if test="${fieldVO.fieldType != 'ASSOCIATION' && fieldVO.fieldType != 'ASSOCIATION_DISPLAY'}">
+						        	<a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this<c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">, true</c:if>)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+						        </c:if>
+						    </div>
+							<input type="hidden" name="<c:out value='${gridCollectionName}'/>[<c:out value='${counter}'/>].<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.id}'/>" id="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.fieldId}'/>" <c:if test="${fieldVO.fieldType == 'QUERY_LOOKUP_OTHER'}">otherFieldId="<c:out value='${gridCollectionName}'/>-<c:out value='${counter}'/>-<c:out value='${fieldVO.otherFieldId}'/>"</c:if>/>
+							<c:if test="${fieldVO.fieldType != 'ASSOCIATION_DISPLAY'}">
+								<div class="queryLookupOption noDisplay clone">
+									<span><a href="" target="_blank"></a></span>
+									<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+								</div>
+							</c:if>
+						</div>
+					</c:when>
 					<c:otherwise>
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> <c:if test="${fieldVO.fieldType == 'NUMBER'}"> number</c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}"> percentage</c:if>" 
 							type="text" 

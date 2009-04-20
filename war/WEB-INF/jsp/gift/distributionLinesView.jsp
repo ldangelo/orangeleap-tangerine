@@ -13,9 +13,10 @@ $(document).ready(function() {
 	<table class="tablesorter distributionLines" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0"> 
 		<col class="node"/> 
 		<col class="number"/>
-		<col class="number"/> 
+		<col class="pct"/> 
 		<col class="code"/>
 		<col class="code"/> 
+		<col class="reference"/> 
 		<thead> 
 			<c:forEach items="${gridCollection}" var="row" begin="0" end="0">
 				<tr>

@@ -1,21 +1,26 @@
 package com.orangeleap.tangerine.controller.gift;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class GiftFormController extends TangerineConstituentAttributesFormController {
@@ -26,13 +31,27 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     @Resource(name="giftService")
     protected GiftService giftService;
 
+    @Resource(name = "pledgeService")
+    private PledgeService pledgeService;
+
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-        Gift gift = giftService.readGiftByIdCreateIfNull(super.getConstituent(request), request.getParameter(StringConstants.GIFT_ID), 
+        return giftService.readGiftByIdCreateIfNull(super.getConstituent(request), request.getParameter(StringConstants.GIFT_ID), 
                 request.getParameter(StringConstants.RECURRING_GIFT_ID), request.getParameter(StringConstants.PLEDGE_ID));
-        giftService.initGiftAmountDistributionLinesFromPledge(gift, request.getParameter("selectedPledgeId"), getConstituent(request));
-        return gift;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
+        Map returnMap = super.referenceData(request, command, errors);
+        
+        String selectedPledgeId = request.getParameter("selectedPledgeId");
+        if (NumberUtils.isDigits(selectedPledgeId)) {
+            Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
+            returnMap.put("associatedPledge", pledge);
+        }
+        return returnMap;
     }
 
     @Override

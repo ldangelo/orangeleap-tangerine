@@ -33,4 +33,5 @@ tr.hiddenRow td table ul.width350 li.side input.checkbox { width: auto; }
 tr.hiddenRow td table ul.width350 li.multiOptionLi { margin-bottom: 0; }
 tr.hiddenRow td table ul.width350 li.queryLookupLi { padding-bottom: 8px; }
 tr.hiddenRow td table ul.width350 a.multiLookupLink { top: 7px; }
+table.distributionLines .lineRow .lookupField { top: 1px; }
 tr.hiddenRow.noDisplay td table ul.width350, tr.hiddenRow.noDisplay td table div, tr.hiddenRow.noDisplay td table ul.width350 li { display: none; }

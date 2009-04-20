@@ -7,9 +7,10 @@
 	<table class="tablesorter distributionLines" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" cellspacing="0">
 		<c:if test='${not empty hiddenGridRows}'><col class="node"/></c:if> 
 		<col class="number"/>
-		<col class="number"/> 
+		<col class="pct"/> 
 		<col class="code"/>
 		<col class="code"/> 
+		<col class="reference"/> 
 		<col class="button"/> 
 		<thead> 
 			<c:forEach items="${gridCollection}" var="row" begin="0" end="0">

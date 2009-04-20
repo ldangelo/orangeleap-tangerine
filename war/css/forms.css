@@ -179,9 +179,8 @@ a.multiLookupLink {
 	top: 6px;
 }
 
-table.tablesorter tbody tr td a.lookupLink {
-	top: 1px; right: -4px; padding: 1px;
-}
+table.tablesorter tbody tr td a.lookupLink { top: 1px; right: -4px; padding: 1px; }
+table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1px; }
 .lookupField a.hideText, .multiLookupField a.hideText {
     top: 0;
     right: 0;
@@ -383,16 +382,19 @@ form table.tablesorter input.number, form table.tablesorter input.amount, form t
 	text-align:right; 
 }
 table.tablesorter col.node { width: 16px; }
-table.tablesorter col.code { width: 35%; }
+table.tablesorter col.code { width: 25%; }
+table.tablesorter col.reference { width: 30%; }
 table.tablesorter col.button { width: 3%; }
-table.tablesorter td input.code { width:93.5%; }
+table.tablesorter td input.code { width: 90.2%; }
 
 table.distributionLines { table-layout: fixed; }
-table.distributionLines col.number { width: 13%; }
-
+table.distributionLines col.number { width: 10%; }
+table.distributionLines col.pct { width: 7%; }
+table.distributionLines .lineRow .lookupField { min-height: 18px; padding: 0; }
 table.giftInKindDetails col.number { width: 20%; }
 table.giftInKindDetails col.text { width: 40%; }
 table.giftInKindDetails col.checkbox { width: 3%; }
+table.tablesorter td.nodeLink { width: 16px; padding: 0; vertical-align: middle; }
 
 form table.tablesorter thead tr th {
 	background-color:#E6EEEE;

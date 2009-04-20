@@ -9,8 +9,12 @@
 		</td>
 		<td>
 		<input name="itemName" size="16" readonly style="background-color:#DDDDDD" value="<c:out value='${picklistItem.itemName}'/>" />
-		</td><td>
+		</td>
+		<td>
 		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
+		</td>
+		<td>
+		<input name="longDescription" size="16" value="<c:out value='${picklistItem.longDescription}'/>" />
 		</td>
 		<td>
         <input type="hidden" name="_inactive" value="visible" />
@@ -27,8 +31,12 @@
 		</td>
 		<td class="codeValue">
 		<input name="itemName" size="16" value="<c:out value='${picklistItem.itemName}'/>" />
-		</td><td class="codeDescription">
+		</td>
+		<td class="codeValue">
 		<input name="defaultDisplayValue" size="16" value="<c:out value='${picklistItem.defaultDisplayValue}'/>" />
+		</td>
+		<td class="codeDescription">
+		<input name="longDescription" size="16" value="<c:out value='${picklistItem.longDescription}'/>" />
 		</td>
 		<td><input name="inactive" value="true" type="checkbox" ${picklistItem.inactive?'checked':''}/></td>
 		<td></td>
@@ -42,7 +50,8 @@
     </c:url>
 	<td class="action"><c:if test="${!picklistItem.readOnly}"><a class="editInPlace" onclick="return editInPlace(this);" href="${picklistItemUrl}">Edit</a></c:if>
 	<td class="codeValue"><c:out value='${picklistItem.itemName}'/></td>
-	<td class="codeDescription"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
+	<td class="codeValue"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
+	<td class="longDescription"><c:out value='${picklistItem.longDescription}'/></td>
     <td><input disabled="disabled" name="inactive" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 
      	<c:url var="picklistItemCustomizeUrl" value="picklistItemCustomize.htm">
  			<c:param name="picklistId" value="${picklistItem.picklistId}" />

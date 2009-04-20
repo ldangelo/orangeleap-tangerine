@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.json.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -15,9 +16,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 /**
@@ -46,6 +51,12 @@ public class ConstituentHierarchyController {
     @Resource(name="relationshipService")
     private RelationshipService relationshipService;
 
+    @Resource(name="siteService")
+    private SiteService siteService;
+
+    @Resource(name="tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+
     @SuppressWarnings("unchecked")
     @RequestMapping("/constituentHeirarchy.json")
     public ModelMap getTree(HttpServletRequest request, SortInfo sortInfo)  {
@@ -73,6 +84,17 @@ public class ConstituentHierarchyController {
 	        }
 		    if (person == null) return null;
 	        	
+			// We want person relationships, so type maps are required.
+	        Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.person, tangerineUserHelper.lookupUserRoles(), Locale.getDefault());
+	        person.setFieldLabelMap(fieldLabelMap);
+
+	        Map<String, Object> valueMap = siteService.readFieldValues(PageType.person, tangerineUserHelper.lookupUserRoles(), person);
+	        person.setFieldValueMap(valueMap);
+
+	        Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
+	        person.setFieldTypeMap(typeMap);
+
+		    
         	PersonTreeNode node = relationshipService.getTree(person, fieldDef, true, false);
         	for (int i = 0; i < node.getChildren().size(); i++) {
         		rows.add(personToMap(node.getChildren().get(i).getPerson()));
@@ -80,6 +102,7 @@ public class ConstituentHierarchyController {
         	return new ModelMap("rows", rows);
         
         } catch (Exception e) {
+        	logger.error(e);
         	return null;
         }
     }

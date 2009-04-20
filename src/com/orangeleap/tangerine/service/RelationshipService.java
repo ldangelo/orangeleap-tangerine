@@ -12,4 +12,15 @@ public interface RelationshipService {
 	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException;
 
 	public boolean isRelationship(FieldDefinition fd);
+	
+	public boolean isHierarchy(FieldDefinition fd);
+
+	public PersonTreeNode getTree(Person person, String parentCustomFieldName,
+			String childrenCustomFieldName, boolean oneLevelOnly,
+			boolean fromHeadOfTree) throws ConstituentValidationException;
+
+	public Person getHeadOfTree(Person person, String parentCustomFieldName)
+			throws ConstituentValidationException;
+	
+	
 }

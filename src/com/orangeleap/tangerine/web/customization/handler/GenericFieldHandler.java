@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.customization.FieldService;
 import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.type.FieldType;
@@ -28,11 +29,13 @@ public class GenericFieldHandler implements FieldHandler {
     protected FieldService fieldService;
     protected MessageService messageService;
     protected ConstituentService constituentService;
+    protected RelationshipService relationshipService;
 
     public GenericFieldHandler(ApplicationContext appContext) {
         constituentService = (ConstituentService) appContext.getBean("constituentService");
         messageService = (MessageService) appContext.getBean("messageService");
         fieldService = (FieldService) appContext.getBean("fieldService");
+        relationshipService = (RelationshipService) appContext.getBean("relationshipService");
     }
 
     public String getFieldLabelName(SectionField sectionField) {
@@ -102,8 +105,7 @@ public class GenericFieldHandler implements FieldHandler {
 
         FieldRequired fr = fieldService.lookupFieldRequired(currentField);
         fieldVO.setRequired(fr != null && fr.isRequired());
-//        fieldVO.setHierarchy(currentField.getFieldDefinition().isTree(siteName)); // TODO: put back for IBatis
-//        fieldVO.setRelationship(currentField.getFieldDefinition().isRelationship(siteName)); // TODO: put back for IBatis
+        fieldVO.setHierarchy(relationshipService.isHierarchy(currentField.getFieldDefinition()));
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
             Object propertyValue = getPropertyValue(model, fieldVO);

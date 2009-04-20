@@ -359,6 +359,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	}
 	
 	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
+	@Override
 	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
 		if (fromHeadOfTree) {
             person = getHeadOfTree(person, parentCustomFieldName);
@@ -369,6 +370,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	}
 	
 	// Field must be a master (parent id) custom field.
+	@Override
 	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
 		int level = 0;
 		while (true) {
@@ -521,7 +523,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		return result;
     }
     
-    public boolean isTree(FieldDefinition fd) {
+    @Override
+    public boolean isHierarchy(FieldDefinition fd) {
     	// This must be the parent reference field on the detail record.
     	List<FieldRelationship> list = getSiteDetailFieldRelationships(fd.getId());
     	for (FieldRelationship fr : list) {
@@ -536,4 +539,5 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     public boolean isRelationship(FieldDefinition fd) {
     	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
     }
+    
 }

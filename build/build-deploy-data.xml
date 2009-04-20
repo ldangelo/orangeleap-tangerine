@@ -42,7 +42,7 @@
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
 		          classpath="${mysql.db.classpath}"
-		     	  delimiter="$$">
+		     	  delimiter=";">
 		    <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
 		</sql>		
 

@@ -58,7 +58,7 @@ public class GiftListController {
         map.put("amount", g.getAmount());
         map.put("currencyCode", g.getCurrencyCode());
         map.put("paymentStatus", g.getPaymentStatus());
-        map.put("comments", StringUtils.trimToEmpty(g.getComments()));
+        map.put("comments", ExtUtil.scrub(g.getComments()));
         map.put("refNumber", g.getTxRefNum());
         map.put("authcode", g.getAuthCode());
     

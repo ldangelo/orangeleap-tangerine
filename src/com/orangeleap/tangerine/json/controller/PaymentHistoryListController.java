@@ -57,14 +57,14 @@ public class PaymentHistoryListController {
         map.put("personId", ph.getPerson().getId());
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymentType", ph.getPaymentType());
-        map.put("description", StringUtils.trimToEmpty(ph.getDescription()));
+        map.put("description", ExtUtil.scrub(ph.getDescription()));
         map.put("amount", ph.getAmount());
         map.put("currencyCode", ph.getCurrencyCode());
 
         return map;
 
     }
-
+    
     @Resource(name="paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 

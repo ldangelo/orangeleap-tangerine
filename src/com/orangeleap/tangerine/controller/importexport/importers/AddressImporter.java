@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
+import com.orangeleap.tangerine.controller.importexport.ProperCaseAddressUtil;
 import com.orangeleap.tangerine.controller.importexport.exporters.AddressExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.controller.importexport.fielddefs.FieldDefUtil;
@@ -115,6 +116,15 @@ public class AddressImporter extends EntityImporter {
 		}
 		
 		setCleanseDates(address);
+
+		if (importRequest.isConvertToProperCase()) {
+			address.setAddressLine1(ProperCaseAddressUtil.convertToProperCase(address.getAddressLine1()));
+			address.setAddressLine2(ProperCaseAddressUtil.convertToProperCase(address.getAddressLine2()));
+			address.setAddressLine3(ProperCaseAddressUtil.convertToProperCase(address.getAddressLine3()));
+			address.setCity(ProperCaseAddressUtil.convertToProperCase(address.getCity()));
+		}
+
+		
 		addressService.save(address);
 		
 	}

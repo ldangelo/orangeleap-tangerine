@@ -428,8 +428,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             adjustedGift.setTransactionDate( gift.getRefundGiftTransactionDate());
             // clear these from the adjustment, we'll put them on the original
             adjustedGift.setRefundGiftId(null);
-            adjustedGift.setRefundDetails(null);
-
+            adjustedGift.setGiftType(GiftType.ADJUSTMENT);
+            adjustedGift.setDeductibleAmount(adjustedGift.getAmount());
+            adjustedGift.setOriginalGiftId(originalGift.getId());
+            adjustedGift.setPaymentStatus(null);
+            adjustedGift.setPaymentType(null);
+            adjustedGift.setPostmarkDate(null);
 
             // make sure we really have an adjustment
             if(adjustedGift.getAmount().equals(BigDecimal.ZERO) ) {
@@ -444,7 +448,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             // set the refund (adjustment) details on the original and save it
             originalGift.setRefundGiftId(adjustedGift.getId());
             originalGift.setRefundGiftTransactionDate(adjustedGift.getTransactionDate());
-            originalGift.setRefundDetails(gift.getRefundDetails());
             maintainGift(originalGift);
 
         } catch (IllegalAccessException e) {

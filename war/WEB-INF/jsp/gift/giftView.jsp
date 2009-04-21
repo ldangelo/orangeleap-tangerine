@@ -19,9 +19,12 @@
 						
 			<form:form method="post" commandName="gift">
 				<spring:message code='submitGift' var="submitText" />
+                <spring:message code='adjustGift' var="adjustText"  />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
+                    <jsp:param name="routeButtonText" value="${adjustText}" />
+					<jsp:param name="routeUrl" value="giftAdjustment.htm?giftId=${gift.id}&personId=${person.id}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -119,6 +122,7 @@
 				
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
 				<div class="formButtonFooter personFormButtons">
+				    <input type="button" value="<c:out value='${adjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${gift.id}&personId=${person.id}')"/>
 					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
@@ -129,6 +133,12 @@
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>
+
+<c:if test='${gift.giftType == "ADJUSTMENT"}'>
+    <script type="text/javascript">
+        $(':button[value=${adjustText}]').hide();
+    </script>
+</c:if>
 
 <%--
 <%@ include file="/WEB-INF/jsp/include.jsp" %>

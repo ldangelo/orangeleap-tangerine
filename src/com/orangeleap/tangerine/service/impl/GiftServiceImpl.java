@@ -444,6 +444,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
             // save our adjustment, which gets us the new ID
             adjustedGift = maintainGift(adjustedGift);
+            gift.setId(adjustedGift.getId());
 
             // set the refund (adjustment) details on the original and save it
             originalGift.setRefundGiftId(adjustedGift.getId());

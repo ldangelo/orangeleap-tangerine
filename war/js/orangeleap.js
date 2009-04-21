@@ -1013,6 +1013,42 @@ var Lookup = {
 		});
 	},
 	
+	loadTreeView: function(elem) {
+		
+		var $elem = $(elem);
+		var fieldDef = $elem.attr("fieldDef");
+		var personId = $elem.attr("personId");
+		var treeurl = "constituentHeirarchy.json?memberPersonId=" + personId + "&fieldDef=" + fieldDef;
+		
+		var tree = new Ext.tree.TreePanel({
+	        el:"treeview",
+	        height:200,
+	        width:250,
+		    useArrows:true,
+		    autoScroll:true,
+		    animate:true,
+		    containerScroll: true,
+
+		    loader: new Ext.tree.TreeLoader({
+		    	  dataUrl:treeurl, 
+		    	  requestMethod: 'GET'
+		    }),
+		 
+		    root:  new Ext.tree.AsyncTreeNode({
+		        text: 'Organization',
+		        draggable:false,
+		        disabled: true,
+		        expandable: false,
+		        expanded: true,
+		        id:'0'  
+		    })
+		});
+		
+	    tree.render();
+	    tree.root.expand();
+	    
+	},
+	
 	/* For previously selected options, create a query string from the attribute 'selectedIds' on each text box.  The queryString is the format selectedIds=selectedName|selectedId^selectedName|selectedId2^... */
 	serializeMultiQueryLookup: function(options) {
 		var queryString = "selectedIds=";

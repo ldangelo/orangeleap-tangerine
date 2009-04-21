@@ -36,11 +36,13 @@ public class ConstituentHierarchyController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private Map<String,Object> personToMap(Person p) {
+    @SuppressWarnings("unchecked")
+	private ModelMap personToMap(Person p) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        ModelMap map = new ModelMap();
         map.put("id", p.getId());    
         map.put("text", p.getOrganizationName());    
+        map.put("leaf", false);    
         return map;
 
     }
@@ -59,52 +61,57 @@ public class ConstituentHierarchyController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/constituentHeirarchy.json")
-    public ModelMap getTree(HttpServletRequest request, SortInfo sortInfo)  {
-    	
-        String id = request.getParameter("id");
-        String memberPersonId = request.getParameter("memberPersonId");
-        String fieldDef = request.getParameter("fieldDef");
-        
-        fieldDef = getFieldName(fieldDef);
+    public List getTree(HttpServletRequest request)  {
 
-        logger.debug("constituentHeirarchy.json: id="+id+", memberPersonId="+memberPersonId+", fieldDef="+fieldDef);
-        
-        
+    	String id = request.getParameter("node");
+    	String memberPersonId = request.getParameter("memberPersonId");
+    	String fieldDef = request.getParameter("fieldDef");
+
+    	fieldDef = getFieldName(fieldDef);
+
+    	logger.debug("constituentHeirarchy.json: id="+id+", memberPersonId="+memberPersonId+", fieldDef="+fieldDef);
+
+
     	List<Map> rows = new ArrayList<Map>();
 
-        try {
+    	try {
 
-	        Person person;
-	        if (id == null || "".equals(id) || "0".equals(id)) {
-	           person = constituentService.readConstituentById(new Long(memberPersonId));
-	           if (person == null) return null;
-	       	   person = relationshipService.getHeadOfTree(person, fieldDef);
-	        } else {
-		        person = constituentService.readConstituentById(new Long(id));
-	        }
-		    if (person == null) return null;
-	        	
-			// We want person relationships, so type maps are required.
-	        Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.person, tangerineUserHelper.lookupUserRoles(), Locale.getDefault());
-	        person.setFieldLabelMap(fieldLabelMap);
+    		Person person;
+    		if (id == null || "".equals(id) || "0".equals(id)) {
+    			person = constituentService.readConstituentById(new Long(memberPersonId));
+    			if (person == null) return null;
+    			populateMaps(person);
+    			Person head = relationshipService.getHeadOfTree(person, fieldDef);
+    			rows.add(personToMap(head));
+    		} else {
+    			person = constituentService.readConstituentById(new Long(id));
+    			if (person == null) return null;
+    			populateMaps(person);
+    			PersonTreeNode node = relationshipService.getTree(person, fieldDef, true, false);
+    			for (int i = 0; i < node.getChildren().size(); i++) {
+    				rows.add(personToMap(node.getChildren().get(i).getPerson()));
+    			}
+    		}
 
-	        Map<String, Object> valueMap = siteService.readFieldValues(PageType.person, tangerineUserHelper.lookupUserRoles(), person);
-	        person.setFieldValueMap(valueMap);
+    		return rows;
 
-	        Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
-	        person.setFieldTypeMap(typeMap);
+    	} catch (Exception e) {
+    		logger.error(e);
+    		return null;
+    	}
+    }
 
-		    
-        	PersonTreeNode node = relationshipService.getTree(person, fieldDef, true, false);
-        	for (int i = 0; i < node.getChildren().size(); i++) {
-        		rows.add(personToMap(node.getChildren().get(i).getPerson()));
-        	}
-        	return new ModelMap("rows", rows);
-        
-        } catch (Exception e) {
-        	logger.error(e);
-        	return null;
-        }
+    private void populateMaps(Person person) {
+		// We want person relationships, so type maps are required.
+        Map<String, String> fieldLabelMap = siteService.readFieldLabels(PageType.person, tangerineUserHelper.lookupUserRoles(), Locale.getDefault());
+        person.setFieldLabelMap(fieldLabelMap);
+
+        Map<String, Object> valueMap = siteService.readFieldValues(PageType.person, tangerineUserHelper.lookupUserRoles(), person);
+        person.setFieldValueMap(valueMap);
+
+        Map<String, FieldDefinition> typeMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
+        person.setFieldTypeMap(typeMap);
+    	
     }
     
     private String getFieldName(String fieldDef) {

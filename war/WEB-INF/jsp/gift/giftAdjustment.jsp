@@ -42,7 +42,7 @@
 --%>
 
 
-				<c:set var="gridCollectionName" value="distributionLines" />
+				<c:set var="gridCollectionName" value="mutableDistributionLines" />
 				<c:set var="gridCollection" value="${gift.distributionLines}" />
 				<c:set var="dummyGridCollection" value="${gift.dummyDistributionLines}" />
 				<c:set var="paymentSource" value="${gift.paymentSource}" />

@@ -57,4 +57,6 @@ public interface GiftService {
 	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent);
 	
 	public void checkAssociatedPledgeIds(Gift gift);
+
+    public void adjustGift(Gift gift);
 }

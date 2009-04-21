@@ -76,7 +76,7 @@ public class EntityValidator implements Validator {
     public boolean supports(Class clazz) {
         return 
         Person.class.equals(clazz) 
-        || Gift.class.equals(clazz) 
+        || Gift.class.isAssignableFrom(clazz)
         || CommunicationHistory.class.equals(clazz) 
         || Pledge.class.equals(clazz) 
         || RecurringGift.class.equals(clazz) 

@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -406,6 +408,56 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.analyzeMajorDonor(constituentId, beginDate, currentDate);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void adjustGift(Gift gift) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("adjustGift: giftId = " + gift.getId());
+        }
+        //TODO - DRAFT functionality. Need to bounce off Karie
+
+        try {
+            // get the original gift to compare against
+            Gift originalGift = readGiftById(gift.getId());
+
+            // clone the incoming gift; we'll use as a template
+            Gift adjustedGift = (Gift) BeanUtils.cloneBean(gift);
+            adjustedGift.resetIdToNull();
+
+            adjustedGift.setTransactionDate( gift.getRefundGiftTransactionDate());
+            // clear these from the adjustment, we'll put them on the original
+            adjustedGift.setRefundGiftId(null);
+            adjustedGift.setRefundDetails(null);
+
+
+            // make sure we really have an adjustment
+            if(adjustedGift.getAmount().equals(BigDecimal.ZERO) ) {
+                // if no amout difference, don't save anything
+                logger.debug("adjustGift: adjustment amout = 0; exiting method");
+                return;
+            }
+
+            // save our adjustment, which gets us the new ID
+            adjustedGift = maintainGift(adjustedGift);
+
+            // set the refund (adjustment) details on the original and save it
+            originalGift.setRefundGiftId(adjustedGift.getId());
+            originalGift.setRefundGiftTransactionDate(adjustedGift.getTransactionDate());
+            originalGift.setRefundDetails(gift.getRefundDetails());
+            maintainGift(originalGift);
+
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

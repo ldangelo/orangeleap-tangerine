@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.controller.gift;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.util.StringConstants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,16 +21,20 @@ public class GiftAdjustmentController extends GiftFormController {
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
+        Gift ret = giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
+
+        AdjustedGift ag = new AdjustedGift();
+        ag.setGift(ret);
+        ag.setOriginalAmount(ret.getAmount());
+        ag.setAmount(null);   // clear the amount. It will hold the adjustment
+
+        return ag;
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Gift gift = (Gift) command;
-
-        // do cool stuff
-
-        Gift current = giftService.editGift(gift);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        AdjustedGift gift = (AdjustedGift) command;
+        giftService.adjustGift(gift.getGift());
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + gift.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
     }
 }

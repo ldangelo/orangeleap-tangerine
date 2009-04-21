@@ -36,6 +36,7 @@
     </bean>
 
     <bean id="giftAdjustmentController" class="com.orangeleap.tangerine.controller.gift.GiftAdjustmentController" parent="giftFormController">
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift"/>
         <property name="formView" value="gift/giftAdjustment"/>
         <property name="successView" value="redirect:/giftAdjustment.htm"/>
 		<property name="validators">

@@ -142,7 +142,7 @@ public class EmailService {
 		// next we extract the output of the report and put it into a mime
 		// message
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
-		sender.setHost("localhost");
+		sender.setHost(site.getSmtpServerName());
 		
 		MimeMessage message = sender.createMimeMessage();
 		MimeMessageHelper helper;
@@ -169,7 +169,7 @@ public class EmailService {
 			helper.addAttachment(getTemplateName() + ".pdf",file);
 			helper.setText("Thank you for your recent donation!");
 			helper.setSubject(subject);
-			helper.setFrom("ondemaind@orangeleap.com");
+			helper.setFrom(site.getSmtpFromAddress());
 			//
 			// finally we mail the message
 			sender.send(message);

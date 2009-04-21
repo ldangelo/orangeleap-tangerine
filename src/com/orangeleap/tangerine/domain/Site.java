@@ -45,6 +45,10 @@ public class Site implements Serializable {
     private Integer achRuleNumber;
     private String achCompanyName;
     private Integer achTestMode;
+    private String  smtpServerName;
+    private String  smtpAccountName;
+    private String  smtpPassword;
+    private String  smtpFromAddress;
     
     public Locale getLocale() {
     	return localeString == null?Locale.getDefault():new Locale(localeString);
@@ -172,6 +176,42 @@ public class Site implements Serializable {
 
 	public void setAchTestMode(Integer achTestMode) {
 		this.achTestMode = achTestMode;
+	}
+
+	public String getSmtpServerName() {
+		return smtpServerName;
+	}
+
+	public void setSmtpServerName(String smtpServerName) {
+		this.smtpServerName = smtpServerName;
+	}
+
+	public String getSmtpAccountName() {
+		return smtpAccountName;
+	}
+
+	public void setSmtpAccountName(String smtpAccountName) {
+		this.smtpAccountName = smtpAccountName;
+	}
+
+	public String getSmtpPassword() {
+		return smtpPassword;
+	}
+
+	public void setSmtpPassword(String smtpPassword) {
+		this.smtpPassword = smtpPassword;
+	}
+
+	public String getSmtpFromAddress() {
+		return smtpFromAddress;
+	}
+
+	public void setSmtpFromAddress(String smtpFromAddress) {
+		this.smtpFromAddress = smtpFromAddress;
+	}
+
+	public Integer getAchTestMode() {
+		return achTestMode;
 	}
 
 

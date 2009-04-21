@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="FIELD_RELATIONSHIP">
+	
+	<resultMap id="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
+		<result property="id" column="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="customFieldId" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
+		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!--  Validate constituentId belongs to current site before using these queries -->
+
+	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
+		select 
+		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID,
+		from 
+		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
+	</sql>
+	
+	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
+		where 
+		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#	
+	</select>
+
+    <!-- Returns all custom fields associated with relationship (various date ranges and sequence nums) -->
+	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_RELATIONSHIP" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
+		where 
+		CONSTITUENT_ID = #personId#	
+		and FIELD_RELATIONSHIP_ID = #fieldRelationshipId#	
+	</select>
+
+	
+	<insert id="INSERT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
+		insert into CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP (CONSTITUENT_ID, CUSTOM_FIELD_ID, FIELD_RELATIONSHIP_ID)
+		values (#constituentId#, #customFieldId#, #fieldRelationshipId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+	<update id="UPDATE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
+		update CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP
+		set 
+		CONSTITUENT_ID = #constituentId#,
+		CUSTOM_FIELD_ID = #customFieldId#
+		FIELD_RELATIONSHIP_ID = #fieldRelationshipId#
+		where 
+		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#
+	</update>
+	
+</sqlMap>

@@ -347,10 +347,12 @@
 								<a href="javascript:void(0)" onclick="<c:out value='${pageScope.clickHandler}'/>" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 							</div>
 						</c:if>
+						<!-- 
 						<c:if test="${fieldVO.hierarchy}">
 				       		 <a href="javascript:void(0)" onclick="Lookup.loadTreeView(this)" personid="${param.personId}" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" >+</a>
 				       		 <div id="treeview" ></div>
 				    	</c:if>
+				    	-->
 					</div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'MULTI_QUERY_LOOKUP' || fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY'}">

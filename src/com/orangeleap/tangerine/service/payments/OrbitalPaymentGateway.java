@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
+import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.paymentech.orbital.sdk.configurator.Configurator;
@@ -85,16 +86,15 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("Exp", month + year);
 
 			// AVS Information
-			if (gift.getAddress().isValid()) {
+			Address addr = gift.getSelectedAddress();
+			
+			if (addr != null && addr.isValid()) {
 				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
 						.getCreditCardHolderName());
-				request.setFieldValue("AVSaddress1", gift.getAddress()
-						.getAddressLine1());
-				request.setFieldValue("AVScity", gift.getAddress().getCity());
-				request.setFieldValue("AVSstate", gift.getAddress()
-						.getStateProvince());
-				request.setFieldValue("AVSzip", gift.getAddress()
-						.getPostalCode());
+				request.setFieldValue("AVSaddress1", addr.getAddressLine1());
+				request.setFieldValue("AVScity", addr.getCity());
+				request.setFieldValue("AVSstate", addr.getStateProvince());
+				request.setFieldValue("AVSzip", addr.getPostalCode());
 			}
 
 			if (logger.isInfoEnabled()) {
@@ -195,16 +195,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("Exp", month + year);
 
 			// AVS Information
-			if (gift.getSelectedAddress().isValid()) {
+			Address addr = gift.getSelectedAddress();
+			if (addr != null && addr.isValid()) {
 				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
 						.getCreditCardHolderName());
-				request.setFieldValue("AVSaddress1", gift.getSelectedAddress()
-						.getAddressLine1());
-				request.setFieldValue("AVScity", gift.getSelectedAddress().getCity());
-				request.setFieldValue("AVSstate", gift.getSelectedAddress()
-						.getStateProvince());
-				request.setFieldValue("AVSzip", gift.getSelectedAddress()
-						.getPostalCode());
+				request.setFieldValue("AVSaddress1", addr.getAddressLine1());
+				request.setFieldValue("AVScity", addr.getCity());
+				request.setFieldValue("AVSstate", addr.getStateProvince());
+				request.setFieldValue("AVSzip", addr.getPostalCode());
 			}
 
 			if (logger.isInfoEnabled()) {

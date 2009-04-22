@@ -132,7 +132,12 @@
 
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
                 <script type="text/javascript">
-                     Ext.select('.gridActions').hide();
+                    // hacks to make distribution lines behave themselves in an Adjustment 
+                    Ext.select('.gridActions').hide();
+                     Ext.select('a.deleteButton').hide();
+                     Ext.select('th.header:nth(2)').update('');
+                     Ext.select('col.pct').setWidth(0);
+                     Ext.select('input.percentage').hide();
                 </script>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='adjustGift'/>" class="saveButton" />

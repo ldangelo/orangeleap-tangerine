@@ -40,13 +40,33 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
     private RelationshipService relationshipService;
 
 
+    // Used for adding / deleting custom field instances and updating date ranges.  
+    // Adds or updates items in place, validates date ranges and deletes any existing custom fields not in the passed list.
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship) {
+	public List<ConstituentCustomFieldRelationship> maintainConstituentCustomFieldRelationships(List<ConstituentCustomFieldRelationship> constituentCustomFieldRelationships) {
+	    
+    	// Validate the site can access the constituents.
+    	for (ConstituentCustomFieldRelationship constituentCustomFieldRelationship : constituentCustomFieldRelationships) {
+    		Long constituentId = constituentCustomFieldRelationship.getConstituentId();
+    	    if (null == constituentDao.readConstituentById(constituentId)) return null;
+    	}
+    	
+        // TODO
+    	
+        //relationshipService.maintainRelationships(constituent);
+        //auditService.auditObject(constituentCustomFieldRelationship, constituentCustomFieldRelationship);  // TODO
+        return constituentCustomFieldRelationships;
+    }
+    
+    // Used for custom field maintenance 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationshipCustomFields(ConstituentCustomFieldRelationship constituentCustomFieldRelationship) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituentCustomFieldRelationship: id = " + constituentCustomFieldRelationship.getId());
         }
-	    // If the site can't read the constituent, don't return the ccr.
+	    // If the site can't read the constituent, don't udpate the ccr.
 	    if (null == constituentDao.readConstituentById(constituentCustomFieldRelationship.getConstituentId())) return null;
         constituentCustomFieldRelationship = constituentCustomFieldRelationshipDao.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
         
@@ -67,12 +87,12 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	}
 
     @Override
-    public List<ConstituentCustomFieldRelationship> readAllByConstituentAndFieldRelationship(Long personId, Long fieldRelationshipId) {
+    public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("ConstituentCustomFieldRelationshipService.readById: personId = " + personId + ", fieldRelationshipId" + fieldRelationshipId);
+	        logger.trace("ConstituentCustomFieldRelationshipService.readById: personId = " + personId);
 	    }
 	    if (null == constituentDao.readConstituentById(personId)) return null;
-	    return constituentCustomFieldRelationshipDao.readAllByConstituentAndFieldRelationship(personId, fieldRelationshipId);
+	    return constituentCustomFieldRelationshipDao.readAllByConstituent(personId);
     }
 
 }

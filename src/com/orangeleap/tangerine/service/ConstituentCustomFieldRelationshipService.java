@@ -8,9 +8,11 @@ public interface ConstituentCustomFieldRelationshipService {
 
 	  public ConstituentCustomFieldRelationship readById(Long id);
 	    
-	  public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
+	  public List<ConstituentCustomFieldRelationship> maintainConstituentCustomFieldRelationships(List<ConstituentCustomFieldRelationship> list);
 
-      public List<ConstituentCustomFieldRelationship> readAllByConstituentAndFieldRelationship(Long personId, Long fieldRelationshipId);
-   
+	  public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationshipCustomFields(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
+	  
+      public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId);
+
 	
 }

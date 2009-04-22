@@ -13,7 +13,7 @@ import com.orangeleap.tangerine.dao.ConstituentCustomFieldRelationshipDao;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 
 /** 
- * Corresponds to the CONSTITUENT tables
+ * Corresponds to the CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP table
  */
 @Repository("constituentCustomFieldRelationshipDAO")
 public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisDao implements ConstituentCustomFieldRelationshipDao {
@@ -48,14 +48,13 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndFieldRelationship(Long personId, Long fieldRelationshipId) {
+	public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllByConstituentAndFieldRelationship: personid = " + personId);
+            logger.trace("readAllByConstituent: personid = " + personId);
         }
         Map<String, Object> params = setupParams();
         params.put("personId", personId);
-        params.put("fieldRelationshipId", fieldRelationshipId);
-        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_RELATIONSHIP", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT", params);
 	}
    
 

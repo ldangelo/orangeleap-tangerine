@@ -10,6 +10,6 @@ public interface ConstituentCustomFieldRelationshipDao {
     
     public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
 
-	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndFieldRelationship(Long personId, Long fieldRelationshipId);
+	public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId);
 
 }

@@ -38,6 +38,8 @@
 	<sqlMap resource="sqlmap/audit.xml"/>
 	<sqlMap resource="sqlmap/communicationHistory.xml"/>
 	<sqlMap resource="sqlmap/paymentHistory.xml"/>
+	<sqlMap resource="sqlmap/constituentCustomFieldRelationship.xml"/>
+
 	<sqlMap resource="sqlmap/dashboard.xml"/>
 	<sqlMap resource="sqlmap/cacheGroup.xml"/>
 

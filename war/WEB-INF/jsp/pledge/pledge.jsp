@@ -123,7 +123,7 @@
 					
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				<div class="formButtonFooter personFormButtons">
-					<c:if test="${pledge.id != null && pledge.id > 0}">
+					<c:if test="${requestScope.canApplyPayment}">
 						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&selectedPledgeId=${pledge.id}')"/>
 					</c:if>
 					<input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" />

@@ -124,7 +124,7 @@
 				</div>
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				<div class="formButtonFooter personFormButtons">
-					<c:if test="${recurringGift.id != null && recurringGift.id > 0}">
+					<c:if test="${requestScope.canApplyPayment}">
 						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&selectedRecurringGiftId=${recurringGift.id}')"/>
 					</c:if>
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />

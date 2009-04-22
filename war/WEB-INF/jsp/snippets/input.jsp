@@ -577,7 +577,7 @@
 					</div>
 					<div class="lookupScrollBottom"></div>
 					<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">
-				        <a href="javascript:void(0)" onclick="PledgeRecurringGiftSelector.loadSelector(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+				        <a href="javascript:void(0)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="multiLookupLink hideText selectorLookup" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				    </c:if>
 				</c:when>
 				<c:otherwise>

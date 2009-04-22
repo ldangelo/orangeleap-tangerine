@@ -38,6 +38,7 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = super.referenceData(request, command, errors);
         recurringGiftService.findGiftSum(refData, (RecurringGift)command);
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, recurringGiftService.canApplyPayment((RecurringGift)command));
         return refData;
     }
 

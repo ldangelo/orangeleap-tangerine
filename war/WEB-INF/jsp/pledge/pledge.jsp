@@ -21,7 +21,7 @@
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>
 
 				<spring:message code='submitPledge' var="submitText" />
-				<c:if test="${pledge.id != null && pledge.id > 0}">
+				<c:if test="${requestScope.canApplyPayment}">
 					<spring:message var="applyPaymentText" code="applyPayment"/>
 				</c:if>
 				<jsp:include page="../snippets/personHeader.jsp">

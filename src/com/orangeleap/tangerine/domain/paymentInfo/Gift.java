@@ -275,6 +275,7 @@ public class Gift extends AbstractPaymentInfoEntity {
         StringBuilder sb = new StringBuilder();
         sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());
         sb.append(getAmount()).append(", "); 
+        sb.append(getGiftStatus()).append(", ");
         sb.append(DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(donationDate));
         return sb.toString();
 	}

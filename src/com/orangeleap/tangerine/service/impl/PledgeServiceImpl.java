@@ -177,4 +177,12 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         }
         return null;
     }
+    
+    @Override
+    public boolean canApplyPayment(Pledge pledge) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("canApplyPayment: pledge.id = " + pledge.getId() + " status = " + pledge.getPledgeStatus());
+        }
+        return pledge.getId() != null && pledge.getId() > 0 && Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus()) == false;
+    }
 }

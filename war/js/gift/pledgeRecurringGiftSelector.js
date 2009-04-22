@@ -1,4 +1,25 @@
 $(document).ready(function() {
+	var pledgeIdsVal = $("#associatedPledgeIds").val(); 
+	var recurringGiftIdsVal = $("#associatedRecurringGiftIds").val();
+	
+	if (pledgeIdsVal == '' && recurringGiftIdsVal == '') {
+		$("a.selectorLookup").bind("click", function() {
+			PledgeRecurringGiftSelector.loadSelector(this);
+		});
+	}
+	else if (pledgeIdsVal.length > 0) {
+		$("#associatedPledgeIds").parent().siblings("a.selectorLookup").eq(0).bind("click", function() {
+			PledgeRecurringGiftSelector.loadSelector(this);
+		});
+		PledgeRecurringGiftSelector.disable($('#associatedRecurringGiftIds'));
+	} 
+	else if (recurringGiftIdsVal.length > 0) {
+		$("#associatedRecurringGiftIds").parent().siblings("a.selectorLookup").eq(0).bind("click", function() {
+			PledgeRecurringGiftSelector.loadSelector(this);
+		});
+		PledgeRecurringGiftSelector.disable($('#associatedPledgeIds'));
+	} 
+	
 	/* Decorator pattern in JS - check if a pledge needs to be dis-associated based on pledgeId/recurringGiftId */
 	var ddrFunct = Distribution.deleteRow;
 	Distribution.deleteRow = function(row) {
@@ -44,7 +65,7 @@ $(document).ready(function() {
 	
 	$("#amount").one("blur", function(event) {
 		var value = $(this).val(); 
-		if (value && value != "") {
+		if (value && value != "" && $("#associatedPledgeIds").val() == '' && $("#associatedRecurringGiftIds").val() == '') {
 			// should be either an associated pledge OR associated recurringGift, not both
 			$("#thisAssociatedPledge, #thisAssociatedRecurringGift").each(function() {
 				var $elem = $(this);
@@ -53,11 +74,13 @@ $(document).ready(function() {
 					var thisId = $elem.attr("pledgeId");
 					var queryString = "selectedPledgeIds=" + thisId + "&amount=" + $("#amount").val();
 					var $associatedIdsElem = $("#associatedPledgeIds");
+					PledgeRecurringGiftSelector.disable($('#associatedRecurringGiftIds'));
 				}
 				else {
 					var thisId = $elem.attr("recurringGiftId");
 					var queryString = "selectedRecurringGiftIds=" + thisId + "&amount=" + $("#amount").val();
 					var $associatedIdsElem = $("#associatedRecurringGiftIds");
+					PledgeRecurringGiftSelector.disable($('#associatedPledgeIds'));
 				}
 				
 				PledgeRecurringGiftSelector.updateDistribution(queryString);
@@ -100,6 +123,21 @@ var PledgeRecurringGiftSelector = {
 		});
 	},
 	
+	disable: function($elem) {
+		$elem.val('');
+		var $parent = $elem.parent();
+		$parent.addClass('disabled');
+		$parent.siblings('a.selectorLookup').eq(0).unbind("click");
+	},
+	
+	enable: function($elem) {
+		var $parent = $elem.parent();
+		$parent.removeClass('disabled');
+		$parent.siblings('a.selectorLookup').eq(0).bind("click", function() {
+			PledgeRecurringGiftSelector.loadSelector(this);
+		});
+	},
+	
 	selectorBindings: function() {		
 		$("#selectorForm #doneButton").bind("click", function() {
 			var queryString = PledgeRecurringGiftSelector.serializeDistributionLines();
@@ -126,15 +164,29 @@ var PledgeRecurringGiftSelector = {
 			queryString += idsStr + "&amount=" + $("#amount").val();
 			
 			PledgeRecurringGiftSelector.updateDistribution(queryString);
-
 			PledgeRecurringGiftSelector.lookupCaller.siblings("input[type=hidden]").eq(0).val(idsStr);
-			
 			PledgeRecurringGiftSelector.lookupCaller.children("div.multiQueryLookupOption").remove();
 			
 			var $toBeCloned = PledgeRecurringGiftSelector.lookupCaller.parent().find("div.clone");
 			
 			for (var x = ids.length - 1; x >= 0; x--) {
 				PledgeRecurringGiftSelector.doClone(ids[x], displayNames[x], $toBeCloned, isPledge);
+			}
+			if (isPledge) {
+				if (idsStr == '') {
+					PledgeRecurringGiftSelector.enable($('#associatedRecurringGiftIds'));
+				}
+				else {
+					PledgeRecurringGiftSelector.disable($('#associatedRecurringGiftIds'));
+				}
+			}
+			else {
+				if (idsStr == '') {
+					PledgeRecurringGiftSelector.enable($('#associatedPledgeIds'));
+				}
+				else {
+					PledgeRecurringGiftSelector.disable($('#associatedPledgeIds'));
+				}
 			} 
 			$("#dialog").jqmHide();					
 		});		
@@ -217,6 +269,13 @@ var PledgeRecurringGiftSelector = {
 					Lookup.removeSelectedVal($associatedIdsElem, id);
 					$elem.fadeOut("fast", function() {
 						$(this).remove();
+						if (thisType == 'recurringGift') {
+							var otherId = '#associatedPledgeIds';
+						}
+						else {
+							var otherId = '#associatedRecurringGiftIds';
+						}
+						PledgeRecurringGiftSelector.enable($(otherId));
 					});
 				}
 			});
@@ -232,11 +291,13 @@ var PledgeRecurringGiftSelector = {
 				var multiIdsElem = 'associatedPledgeIds';
 				var singleIdElem = 'associatedPledgeId';
 				var thisClass = 'ea-pledge';
+				var otherId = '#associatedRecurringGiftIds';
 			}
 			else {
 				var multiIdsElem = 'associatedRecurringGiftIds';
 				var singleIdElem = 'associatedRecurringGiftId';
 				var thisClass = 'ea-recurringGift';
+				var otherId = '#associatedPledgeIds';
 			}
 			Lookup.removeSelectedVal($("#" + multiIdsElem), thisId);
 
@@ -249,6 +310,7 @@ var PledgeRecurringGiftSelector = {
 			});
 			$parent.fadeOut("fast", function() {
 				$(this).remove();
+				PledgeRecurringGiftSelector.enable($(otherId));
 			});
 		} 
 	}	

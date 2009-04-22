@@ -23,7 +23,7 @@
 				<input type="hidden" name="recurring" id="recurring" value="true"/>
 
 				<spring:message code='submitRecurringGift' var="submitText" />
-				<c:if test="${recurringGift.id != null && recurringGift.id > 0}">
+				<c:if test="${requestScope.canApplyPayment}">
 					<spring:message var="applyPaymentText" code="applyPayment"/>
 				</c:if>
 				<jsp:include page="../snippets/personHeader.jsp">

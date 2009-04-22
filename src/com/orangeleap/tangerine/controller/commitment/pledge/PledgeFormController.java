@@ -38,6 +38,7 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = super.referenceData(request, command, errors);
         pledgeService.findGiftSum(refData, (Pledge)command);
+        refData.put(StringConstants.CAN_APPLY_PAYMENT, pledgeService.canApplyPayment((Pledge)command));
         return refData;
     }
 

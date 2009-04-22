@@ -33,6 +33,7 @@
 		<iterate property="pledgeIds" conjunction="," open="(" close=")">
 			#pledgeIds[]#
 		</iterate>
+		and pld.PLEDGE_STATUS != 'Cancelled'
 	</select>
 
 	<select id="SELECT_DISTRO_LINE_BY_RECURRING_GIFT_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map">
@@ -46,6 +47,8 @@
 		<iterate property="recurringGiftIds" conjunction="," open="(" close=")">
 			#recurringGiftIds[]#
 		</iterate>
+		and rgt.RECURRING_GIFT_STATUS != 'Cancelled' 
+		and rgt.RECURRING_GIFT_STATUS != 'Expired'
 	</select>
 
 	<insert id="INSERT_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">

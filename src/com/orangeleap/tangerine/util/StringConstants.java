@@ -74,6 +74,7 @@ public final class StringConstants {
     
     public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";
     public static final String ASSOCIATED_RECURRING_GIFT_ID = "associatedRecurringGiftId";
+    public static final String CAN_APPLY_PAYMENT = "canApplyPayment";
 
     public static final String INITIAL_REMINDER = "initialReminder";
     public static final String MAXIMUM_REMINDERS = "maximumReminders";

@@ -216,6 +216,16 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return null;
     }
+    
+    @Override
+    public boolean canApplyPayment(RecurringGift recurringGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("canApplyPayment: recurringGift.id = " + recurringGift.getId() + " status = " + recurringGift.getRecurringGiftStatus());
+        }
+        List<RecurringGift> rGifts = new ArrayList<RecurringGift>(1);
+        rGifts.add(recurringGift);
+        return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override

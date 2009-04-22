@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.controller.gift;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.util.StringConstants;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,12 @@ public class GiftAdjustmentController extends GiftFormController {
         ag.setGift(ret);
         ag.setOriginalAmount(ret.getAmount());
         ag.setAmount(null);   // clear the amount. It will hold the adjustment
+
+        // clear percentages. Don't matter for an adjustment
+        for(DistributionLine line : ag.getDistributionLines()) {
+            line.setPercentage(null);
+        }
+
 
         return ag;
     }

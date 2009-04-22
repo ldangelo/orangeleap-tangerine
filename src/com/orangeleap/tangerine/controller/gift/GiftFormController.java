@@ -85,6 +85,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Gift gift = (Gift) command;
         checkAssociations(gift);
+        gift.filterValidDistributionLines();
         Gift current = giftService.maintainGift(gift);
         return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
     }

@@ -34,7 +34,7 @@
 						<h3 class="info"><spring:message code='thisGiftEntered'/> <fmt:formatDate value="${gift.transactionDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
 					</c:when>
 					<c:otherwise>
-						<h3 class="info"><spring:message code='thisRefundOf'/> <a href="giftView.htm?giftId=${gift.originalGiftId}"><spring:message code='previouslyEnteredGift'/></a>, <spring:message code='refundedOn'/> <fmt:formatDate value="${gift.transactionDate}"/> <spring:message code='at'/> <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
+						<h3 class="info"><spring:message code='thisRefundOf'/> <a href="giftView.htm?giftId=${gift.originalGiftId}&personId=${person.id}"><spring:message code='previouslyEnteredGift'/></a>, <spring:message code='refundedOn'/> <fmt:formatDate value="${gift.transactionDate}"/> <spring:message code='at'/> <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
 					</c:otherwise>
 				</c:choose>
 <%--				

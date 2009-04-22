@@ -104,7 +104,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             
 	        maintainEntityChildren(gift, gift.getPerson());
 	        setDefaultDates(gift);
-	        gift.filterValidDistributionLines();
 	        gift = giftDao.maintainGift(gift);
 	        if (!reentrant) {
 	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
@@ -434,13 +433,42 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             adjustedGift.setPaymentStatus(null);
             adjustedGift.setPaymentType(null);
             adjustedGift.setPostmarkDate(null);
+            adjustedGift.setComments(null);
 
             // make sure we really have an adjustment
             if(adjustedGift.getAmount().equals(BigDecimal.ZERO) ) {
-                // if no amout difference, don't save anything
+                // if no amount difference, don't save anything
                 logger.debug("adjustGift: adjustment amout = 0; exiting method");
                 return;
             }
+
+            // remove the "null" gifts in Mutable DistributionLine
+            List<DistributionLine> mutLines = adjustedGift.getMutableDistributionLines();
+            List<DistributionLine> temp = new ArrayList<DistributionLine>();
+            for(DistributionLine line : mutLines) {
+                if(line.isValid()) {
+                    temp.add(line);
+                }
+            }
+
+            mutLines.clear();
+            mutLines.addAll(temp);
+
+            // now match up the lines and compare the values
+            List<DistributionLine> origLines = originalGift.getDistributionLines();
+            List<DistributionLine> newLines = new ArrayList<DistributionLine>();
+
+            int len = origLines.size();
+
+            for(int i=0; i<len; i++) {
+                if(!origLines.get(i).getAmount().equals(mutLines.get(i).getAmount())) {
+                    DistributionLine dl = mutLines.get(i);
+                    dl.setPercentage(null);
+                    newLines.add( dl );
+                }
+            }
+
+            adjustedGift.setDistributionLines(newLines);
 
             // save our adjustment, which gets us the new ID
             adjustedGift = maintainGift(adjustedGift);
@@ -449,6 +477,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             // set the refund (adjustment) details on the original and save it
             originalGift.setRefundGiftId(adjustedGift.getId());
             originalGift.setRefundGiftTransactionDate(adjustedGift.getTransactionDate());
+
             maintainGift(originalGift);
 
         } catch (IllegalAccessException e) {

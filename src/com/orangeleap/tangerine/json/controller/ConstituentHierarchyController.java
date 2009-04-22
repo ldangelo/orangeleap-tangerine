@@ -61,7 +61,7 @@ public class ConstituentHierarchyController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/constituentHeirarchy.json")
-    public List getTree(HttpServletRequest request)  {
+    public ModelMap getTree(HttpServletRequest request)  {
 
     	String id = request.getParameter("node");
     	String memberPersonId = request.getParameter("memberPersonId");
@@ -93,7 +93,9 @@ public class ConstituentHierarchyController {
     			}
     		}
 
-    		return rows;
+    		ModelMap map = new ModelMap();
+    		map.put("_root", rows);
+    		return map;
 
     	} catch (Exception e) {
     		logger.error(e);

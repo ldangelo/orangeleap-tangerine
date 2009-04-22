@@ -7,6 +7,10 @@
 		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="customFieldId" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
 		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+		<result property="fieldName" column="FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="fieldValue" column="FIELD_VALUE" jdbcType="LONGVARCHAR" />
+		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
+		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 
 	<!--  Validate constituentId belongs to current site before using these queries -->
@@ -14,8 +18,10 @@
 	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
 		select 
 		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID,
+		cf.FIELD_NAME, cf.FIELD_VALUE, cf.START_DATE, cf.END_DATE
 		from 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
+		inner join CUSTOM_FIELD cf on ccr.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID
 	</sql>
 	
 	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">

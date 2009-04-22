@@ -20,5 +20,6 @@ public enum EntityType {
     selectedAddress,
     selectedEmail,
     selectedPhone,
-    selectedPaymentSource
+    selectedPaymentSource,
+    constituentCustomFieldRelationship
 }

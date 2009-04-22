@@ -150,7 +150,7 @@
 
 	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
 		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="uri" value="http://${jasper.host}:${jasper.port}/jasperserver/services/repository"/>
+		<property name="uri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
 		<property name="userName" value="${jasper.username}"/>
 		<property name="password" value="${jasper.password}"/>
 	</bean>

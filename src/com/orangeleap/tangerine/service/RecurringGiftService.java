@@ -40,4 +40,6 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public List<RecurringGift> filterApplicableRecurringGiftsForConstituent(List<RecurringGift> gifts, Date nowDt);
     
     public List<DistributionLine> findDistributionLinesForRecurringGifts(Set<String> recurringGiftIds);
+
+    public boolean canApplyPayment(RecurringGift recurringGift); 
 }

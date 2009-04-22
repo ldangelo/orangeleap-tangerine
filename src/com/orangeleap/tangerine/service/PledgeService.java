@@ -33,4 +33,6 @@ public interface PledgeService extends CommitmentService<Pledge> {
     public Map<String, List<Pledge>> findNotCancelledPledges(Long constituentId, String selectedPledgeIds);
     
     public List<DistributionLine> findDistributionLinesForPledges(Set<String> pledgeIds);
+    
+    public boolean canApplyPayment(Pledge pledge);
 }

@@ -1317,7 +1317,6 @@ div.lookupScrollContainer.readOnly div.multiOption,
 	div.lookupScrollContainer.readOnly div.multiOption:hover, 
 	div.lookupWrapper.readOnly div.queryLookupOption:hover { background-color: #eee !important; }
 
-
 table.alignLeft td,
 	table.alignLeft th { text-align:left; }
 
@@ -1328,7 +1327,13 @@ ul.formFields li.side label.inFocus { font-weight: bold; color: black; }
 .mainForm h3.info { color: #070; }
 
 div.readOnly div.multiLookupField,
-	div.readOnly div.lookupField { background-color: #eee; }
+	div.readOnly div.lookupField, 
+	div.disabled div.multiLookupField,
+	div.disabled div.lookupField { background-color: #EEEEEE; }
+div.disabled ~ a.multiLookupLink {
+	background:#EEEEEE url('../images/icons/viewDisabled.png') no-repeat scroll center center;
+	cursor:default;
+}
 tr.hiddenRow td table { margin-left: 16px; }
 tr.hiddenRow td table ul.width350 li.side label.desc { width:100px; }
 tr.hiddenRow td table ul.width350 li.side select { width:67%; }

@@ -343,13 +343,22 @@
         <dependency org="net.sf.jsr107cache" name="jsr107cache" transitive="false" rev="1.0"/>
 		
 		<!-- JsLex -->
-		<dependency org="com.rockstarapps.jslex" name="jslex-ant" rev="1.2b" transitive="false" conf="war->default">
+		<dependency org="com.rockstarapps.jslex" name="jslex-ant" rev="1.2b" transitive="false" conf="compile->default">
 			<artifact name="jslex-ant" type="jar" ext="jar"/>
 		</dependency>
 		
-		<dependency org="com.rockstarapps.jslex" name="jslex-optimization" rev="1.2b" transitive="false" conf="war->default">
+		<dependency org="com.rockstarapps.jslex" name="jslex-optimization" rev="1.2b" transitive="false" conf="compile->default">
 			<artifact name="jslex-optimization" type="jar" ext="jar"/>
 		</dependency>
+		
+		<!-- Tomcat -->
+		<dependency org="org.apache.tomcat" name="juli" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="jasper" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="jasper-el" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="el-api" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="jsp-api" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="servlet-api" rev="6.0.18" transitive="false" conf="compile->default"/>
+		<dependency org="org.apache.tomcat" name="catalina-ant" rev="6.0.18" transitive="false" conf="compile->default"/>
 		
 	</dependencies>
 </ivy-module>

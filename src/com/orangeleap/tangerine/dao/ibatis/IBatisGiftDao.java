@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         insertDistributionLines(aGift, "giftId");
         
         deleteInsertAssociatedPledges(aGift);
+        deleteInsertAssociatedRecurringGifts(aGift);
         
         return aGift;
     }
@@ -61,6 +63,12 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         loadDistributionLinesCustomFields(gift);
         if (gift != null) {
             gift.setAssociatedPledgeIds(readAssociatedPledgeIdsForGift(giftId));
+            if (gift.getAssociatedPledgeIds() == null || gift.getAssociatedPledgeIds().isEmpty()) {
+                gift.setAssociatedRecurringGiftIds(readAssociatedRecurringGiftIdsForGift(giftId));
+            }
+            else {
+                gift.setAssociatedRecurringGiftIds(new ArrayList<Long>(0)); // default set
+            }
             loadCustomFields(gift.getPerson());
         }
         return gift;
@@ -221,6 +229,16 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_GIFT_BY_GIFT_ID", paramMap);
     }
     
+    @SuppressWarnings("unchecked")
+    protected List<Long> readAssociatedRecurringGiftIdsForGift(Long giftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAssociatedRecurringGiftIdsForGift: giftId = " + giftId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("giftId", giftId);
+        return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFT_GIFT_BY_GIFT_ID", paramMap);
+    }
+    
     protected void deleteInsertAssociatedPledges(Gift gift) {
         if (logger.isTraceEnabled()) {
             logger.trace("deleteInsertAssociatedPledges: giftId = " + gift.getId());
@@ -232,6 +250,21 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                 paramMap.put("pledgeId", associatedPledgeId);
                 paramMap.put("giftId", gift.getId());
                 getSqlMapClientTemplate().insert("INSERT_PLEDGE_GIFT", paramMap);
+            }
+        }
+    }
+    
+    protected void deleteInsertAssociatedRecurringGifts(Gift gift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteInsertAssociatedRecurringGifts: giftId = " + gift.getId());
+        }
+        getSqlMapClientTemplate().delete("DELETE_RECURRING_GIFT_GIFT_BY_GIFT_ID", gift.getId());
+        if (gift.getAssociatedRecurringGiftIds() != null) {
+            for (Long associatedRecurringGiftId : gift.getAssociatedRecurringGiftIds()) {
+                Map<String, Long> paramMap = new HashMap<String, Long>(2);
+                paramMap.put("recurringGiftId", associatedRecurringGiftId);
+                paramMap.put("giftId", gift.getId());
+                getSqlMapClientTemplate().insert("INSERT_RECURRING_GIFT_GIFT", paramMap);
             }
         }
     }

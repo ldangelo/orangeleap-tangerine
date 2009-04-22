@@ -386,6 +386,24 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (Long associatedPledgeId : readGift.getAssociatedPledgeIds()) {
             assert associatedPledgeId == 700L;
         }
+        
+        gift = readGift;
+        gift.setAssociatedPledgeIds(null);
+        gift.addAssociatedRecurringGiftId(300L);
+        gift = giftDao.maintainGift(gift);
+        readGift = giftDao.readGiftById(gift.getId());
+        assert gift.getId().equals(readGift.getId());
+        assert readGift.getAssociatedPledgeIds() != null && readGift.getAssociatedPledgeIds().isEmpty();
+        assert readGift.getAssociatedRecurringGiftIds() != null && readGift.getAssociatedRecurringGiftIds().size() == 1 && readGift.getAssociatedRecurringGiftIds().get(0) == 300L;
+
+        gift = readGift;
+        gift.setAssociatedPledgeIds(null);
+        gift.setAssociatedRecurringGiftIds(new ArrayList<Long>());
+        gift = giftDao.maintainGift(gift);
+        readGift = giftDao.readGiftById(gift.getId());
+        assert gift.getId().equals(readGift.getId());
+        assert readGift.getAssociatedPledgeIds() != null && readGift.getAssociatedPledgeIds().isEmpty();
+        assert readGift.getAssociatedRecurringGiftIds() != null && readGift.getAssociatedRecurringGiftIds().isEmpty();
     }
     
     @Test(groups = { "testReadGift" })
@@ -398,6 +416,8 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getDistributionLines() != null && gift.getDistributionLines().isEmpty();        
         Assert.assertNotNull("Expected associated pledgeIds to be not null", gift.getAssociatedPledgeIds());
         Assert.assertTrue("Expected associated pledgeIds to be empty", gift.getAssociatedPledgeIds().isEmpty());
+        Assert.assertNotNull("Expected associated recurringGiftIds to be not null", gift.getAssociatedRecurringGiftIds());
+        Assert.assertTrue("Expected associated recurringGiftIds to be empty", gift.getAssociatedRecurringGiftIds().isEmpty());
         
         gift = giftDao.readGiftById(300L);
         testGiftId300(gift);
@@ -406,6 +426,8 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (Long associatedPledgeId : gift.getAssociatedPledgeIds()) {
             assert associatedPledgeId == 700L || associatedPledgeId == 800L;
         }
+        Assert.assertNotNull("Expected associated recurringGiftIds to be not null", gift.getAssociatedRecurringGiftIds());
+        Assert.assertTrue("Expected associated recurringGiftIds to be empty", gift.getAssociatedRecurringGiftIds().isEmpty());
 
         gift = giftDao.readGiftById(400L);
         testGiftId400(gift);
@@ -413,6 +435,22 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (Long associatedPledgeId : gift.getAssociatedPledgeIds()) {
             assert associatedPledgeId == 500L || associatedPledgeId == 600L || associatedPledgeId == 700L || associatedPledgeId == 800L;
         }        
+        Assert.assertNotNull("Expected associated recurringGiftIds to be not null", gift.getAssociatedRecurringGiftIds());
+        Assert.assertTrue("Expected associated recurringGiftIds to be empty", gift.getAssociatedRecurringGiftIds().isEmpty());
+
+        gift = giftDao.readGiftById(200L);
+        assert 200L == gift.getId();
+        Assert.assertNotNull("Expected associated pledgeIds to be not null", gift.getAssociatedPledgeIds());
+        Assert.assertTrue("Expected associated pledgeIds to be empty", gift.getAssociatedPledgeIds().isEmpty());
+        assert gift.getAssociatedRecurringGiftIds() != null && gift.getAssociatedRecurringGiftIds().size() == 1;
+        assert gift.getAssociatedRecurringGiftIds().get(0) == 100L;
+
+        gift = giftDao.readGiftById(600L);
+        assert 600L == gift.getId();
+        Assert.assertNotNull("Expected associated pledgeIds to be not null", gift.getAssociatedPledgeIds());
+        Assert.assertTrue("Expected associated pledgeIds to be empty", gift.getAssociatedPledgeIds().isEmpty());
+        assert gift.getAssociatedRecurringGiftIds() != null && gift.getAssociatedRecurringGiftIds().size() == 1;
+        assert gift.getAssociatedRecurringGiftIds().get(0) == 400L;
     }
     
     @Test(groups = { "testReadGift" })

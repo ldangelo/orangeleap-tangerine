@@ -20,14 +20,22 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
  * @date Apr 6, 2009
  */
 @SuppressWarnings("unchecked")
-public class GiftPledgeLinesForm {
+public class GiftPledgeRecurringGiftLinesForm {
     private Person constituent;
+    
+    @SuppressWarnings("unused")
     private String selectedPledgeIds;
     private Set<String> pledgeIds;
+    
+    @SuppressWarnings("unused")
+    private String selectedRecurringGiftIds;
+    private Set<String> recurringGiftIds;
+    
+    @SuppressWarnings("unused")
     private String amount;
     private BigDecimal enteredAmount;
     
-    public GiftPledgeLinesForm(Person constituent) {
+    public GiftPledgeRecurringGiftLinesForm(Person constituent) {
         super();
         this.constituent = constituent;
     }
@@ -48,6 +56,15 @@ public class GiftPledgeLinesForm {
     public void setSelectedPledgeIds(String selectedPledgeIds) {
         this.selectedPledgeIds = selectedPledgeIds;
         this.pledgeIds = selectedPledgeIds == null ? null : StringUtils.commaDelimitedListToSet(selectedPledgeIds);
+    }
+
+    public Set<String> getRecurringGiftIds() {
+        return recurringGiftIds;
+    }
+
+    public void setSelectedRecurringGiftIds(String selectedRecurringGiftIds) {
+        this.selectedRecurringGiftIds = selectedRecurringGiftIds;
+        this.recurringGiftIds = selectedRecurringGiftIds == null ? null : StringUtils.commaDelimitedListToSet(selectedRecurringGiftIds);
     }
 
     public List<DistributionLine> getMutableDistributionLines() {

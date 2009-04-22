@@ -54,9 +54,11 @@ public interface GiftService {
 
 	public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo);
 	
-	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent);
+	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Person constituent, boolean isPledge);
 	
 	public void checkAssociatedPledgeIds(Gift gift);
-
+	
+	public void checkAssociatedRecurringGiftIds(Gift gift);
+	
     public void adjustGift(Gift gift);
 }

@@ -557,48 +557,54 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	}
 	
 	@Override
-	public List<DistributionLine> combineGiftPledgeDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> pledgeLines, BigDecimal amount, int numPledges, Person constituent) {
+	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, 
+	        int numCommitments, Person constituent, boolean isPledge) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numPledges = " + numPledges);
+	        logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numCommitments = " + numCommitments + " isPledge = " + isPledge);
 	    }
         List<DistributionLine> returnLines = new ArrayList<DistributionLine>();
         
         giftDistributionLines = removeDefaultDistributionLine(giftDistributionLines, amount, constituent);
         
-        if ((pledgeLines == null || pledgeLines.isEmpty()) && giftDistributionLines != null) {
-            // NO pledge distribution lines associated with this gift; only add gift distribution lines that have no pledge associations
+        String associatedIdName = isPledge ? StringConstants.ASSOCIATED_PLEDGE_ID : StringConstants.ASSOCIATED_RECURRING_GIFT_ID;
+        
+        if ((commitmentLines == null || commitmentLines.isEmpty()) && giftDistributionLines != null) {
+            // NO pledge/recurringGift distribution lines associated with this gift; only add gift distribution lines that have no pledge/recurringGift associations
             for (DistributionLine giftLine : giftDistributionLines) {
                 if (giftLine != null && giftLine.isFieldEntered()) {
-                    if (org.springframework.util.StringUtils.hasText(giftLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID)) == false) {
+                    if (org.springframework.util.StringUtils.hasText(giftLine.getCustomFieldValue(associatedIdName)) == false) {
                         returnLines.add(giftLine);
                     }
                 }
             }
         }
-        else if ((giftDistributionLines == null || giftDistributionLines.isEmpty()) && pledgeLines != null) {
-            initPledgeDistributionLine(pledgeLines, returnLines, numPledges, amount);
+        else if ((giftDistributionLines == null || giftDistributionLines.isEmpty()) && commitmentLines != null) {
+            initCommitmentDistributionLine(commitmentLines, returnLines, numCommitments, amount, isPledge);
         }
-        else if (pledgeLines != null && giftDistributionLines != null) {
+        else if (commitmentLines != null && giftDistributionLines != null) {
             for (DistributionLine aLine : giftDistributionLines) {
                 if (aLine != null && aLine.isFieldEntered()) {
-                    String associatedPledgeId = aLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID);
-                    if (org.springframework.util.StringUtils.hasText(associatedPledgeId) == false) {
-                        returnLines.add(aLine); // No associated pledgeIds, so just copy the line
+                    String associatedCommitmentId = aLine.getCustomFieldValue(associatedIdName);
+                    if (org.springframework.util.StringUtils.hasText(associatedCommitmentId) == false) {
+                        returnLines.add(aLine); // No associated pledge/recurringGiftIds, so just copy the line
                     }
                     else {
-                        for (Iterator<DistributionLine> pledgeLineIter = pledgeLines.iterator(); pledgeLineIter.hasNext();) {
-                            DistributionLine pledgeLine = pledgeLineIter.next();
-                            Long associatedPledgeIdLong = Long.parseLong(associatedPledgeId);
-                            if (associatedPledgeIdLong.equals(pledgeLine.getPledgeId())) {
-                                pledgeLineIter.remove();
-                                returnLines.add(aLine); // Has an existing pledgeId, so copy the line; gift distribution lines with an associated pledgeId that is not in the list of pledgeLines will not be copied
+                        for (Iterator<DistributionLine> commitmentLineIter = commitmentLines.iterator(); commitmentLineIter.hasNext();) {
+                            DistributionLine commitmentLine = commitmentLineIter.next();
+                            Long associatedCommitmentIdLong = Long.parseLong(associatedCommitmentId);
+                            
+                            Long idToCheck = isPledge ? commitmentLine.getPledgeId() : commitmentLine.getRecurringGiftId();
+                            
+                            if (associatedCommitmentIdLong.equals(idToCheck)) {
+                                commitmentLineIter.remove();
+                                returnLines.add(aLine); // Has an existing pledge/recurringGiftId, so copy the line; gift distribution lines with an associated pledge/recurringGiftId that is not in the list of pledge/recurringGiftLines will not be copied
                                 break;
                             }
                         }
                     }
                 }
             }
-            initPledgeDistributionLine(pledgeLines, returnLines, numPledges, amount);
+            initCommitmentDistributionLine(commitmentLines, returnLines, numCommitments, amount, isPledge);
         }
 	    return returnLines;
 	}
@@ -628,7 +634,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             
             if (amount.equals(enteredLine.getAmount()) && new BigDecimal("100").equals(enteredLine.getPercentage())) {
                 if (org.springframework.util.StringUtils.hasText(enteredLine.getProjectCode()) || org.springframework.util.StringUtils.hasText(enteredLine.getMotivationCode()) || 
-                        org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode()) || enteredLine.getAssociatedPledgeId() != null) {
+                        org.springframework.util.StringUtils.hasText(enteredLine.getOther_motivationCode())) {
                     // do nothing
                 }
                 else {
@@ -657,20 +663,26 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         return giftDistributionLines;
 	}
 	
-	private void initPledgeDistributionLine(List<DistributionLine> pledgeLines, List<DistributionLine> returnLines, int numPledges, BigDecimal amount) {
-	    BigDecimal splitPledgeAmount = BigDecimal.ZERO; 
-	    if (numPledges > 0) {
-	        splitPledgeAmount = amount.divide(new BigDecimal(numPledges), 10, BigDecimal.ROUND_HALF_EVEN);
+	private void initCommitmentDistributionLine(List<DistributionLine> commitmentLines, List<DistributionLine> returnLines, int numCommitments, BigDecimal amount, boolean isPledge) {
+	    BigDecimal splitCommitmentAmount = BigDecimal.ZERO; 
+	    if (numCommitments > 0) {
+	        splitCommitmentAmount = amount.divide(new BigDecimal(numCommitments), 10, BigDecimal.ROUND_HALF_EVEN);
 	    }
-        for (DistributionLine pLine : pledgeLines) {
-            pLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, pLine.getPledgeId().toString());
-            pLine.setPledgeId(null);
-            pLine.setAmount(pLine.getPercentage().multiply(splitPledgeAmount).divide(new BigDecimal("100"), 10, BigDecimal.ROUND_HALF_EVEN).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        for (DistributionLine cLine : commitmentLines) {
+            if (isPledge) {
+                cLine.addCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID, cLine.getPledgeId().toString());
+                cLine.setPledgeId(null);
+            }
+            else {
+                cLine.addCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID, cLine.getRecurringGiftId().toString());
+                cLine.setRecurringGiftId(null);
+            }
+            cLine.setAmount(cLine.getPercentage().multiply(splitCommitmentAmount).divide(new BigDecimal("100"), 10, BigDecimal.ROUND_HALF_EVEN).setScale(2, BigDecimal.ROUND_HALF_EVEN));
             
-            // find the new percentage (line percentage / numPledges)
-            pLine.setPercentage(pLine.getPercentage().divide(new BigDecimal(numPledges), 2, BigDecimal.ROUND_HALF_EVEN));
+            // find the new percentage (line percentage / numCommitments)
+            cLine.setPercentage(cLine.getPercentage().divide(new BigDecimal(numCommitments), 2, BigDecimal.ROUND_HALF_EVEN));
         }
-        returnLines.addAll(pledgeLines); // Add the remaining pledge lines; these are the pledge distribution lines not already assigned to the gift
+        returnLines.addAll(commitmentLines); // Add the remaining pledge/recurringGift lines; these are the pledge/recurringGift distribution lines not already assigned to the gift
 	}
 	   
 	@Override
@@ -692,6 +704,31 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             for (Iterator<Long> iter = gift.getAssociatedPledgeIds().iterator(); iter.hasNext();) {
                 Long id = iter.next();
                 if (linePledgeIds.contains(id) == false) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void checkAssociatedRecurringGiftIds(Gift gift) {
+        Set<Long> lineRecurringGiftIds = new HashSet<Long>();
+        for (DistributionLine line : gift.getMutableDistributionLines()) {
+            if (line != null) {
+                String associatedRecurringGiftId = line.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID);
+                if (NumberUtils.isDigits(associatedRecurringGiftId)) {
+                    Long thisRecurringGiftId = Long.parseLong(associatedRecurringGiftId);
+                    lineRecurringGiftIds.add(thisRecurringGiftId);
+                    if (gift.getAssociatedRecurringGiftIds() == null || gift.getAssociatedRecurringGiftIds().contains(thisRecurringGiftId) == false) {
+                        gift.addAssociatedRecurringGiftId(thisRecurringGiftId);
+                    }
+                }
+            }
+        }
+        if (gift.getAssociatedRecurringGiftIds() != null) {
+            for (Iterator<Long> iter = gift.getAssociatedRecurringGiftIds().iterator(); iter.hasNext();) {
+                Long id = iter.next();
+                if (lineRecurringGiftIds.contains(id) == false) {
                     iter.remove();
                 }
             }

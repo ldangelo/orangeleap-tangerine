@@ -13,6 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -78,7 +79,10 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         params.put("id", recurringGiftId);
         RecurringGift recurringGift = (RecurringGift) getSqlMapClientTemplate().queryForObject("SELECT_RECURRING_GIFT_BY_ID", params);
         loadDistributionLinesCustomFields(recurringGift);
-
+        if (recurringGift != null) {
+            recurringGift.setAssociatedGiftIds(readAssociatedGiftIdsForRecurringGift(recurringGift.getId()));
+            loadCustomFields(recurringGift.getPerson());
+        }
         return recurringGift;
     }
 
@@ -123,5 +127,26 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         QueryUtil.translateSearchParamsToIBatisParams(searchParams, params, new SearchFieldMapperFactory().getMapper(EntityType.recurringGift).getMap());
 
         return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFT_BY_SEARCH_TERMS", params);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<DistributionLine> findDistributionLinesForRecurringGifts(List<String> recurringGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findDistributionLinesForRecurringGifts: recurringGiftIds = " + recurringGiftIds);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("recurringGiftIds", recurringGiftIds);
+        return getSqlMapClientTemplate().queryForList("SELECT_DISTRO_LINE_BY_RECURRING_GIFT_ID", params);
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected List<Long> readAssociatedGiftIdsForRecurringGift(Long recurringGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAssociatedGiftIdsForRecurringGift: recurringGiftId = " + recurringGiftId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("recurringGiftId", recurringGiftId);
+        return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFT_GIFT_BY_RECURRING_GIFT_ID", paramMap);
     }
 }

@@ -4,7 +4,7 @@
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
     <tiles:putAttribute name="customHeaderContent" type="string">
 		<script type="text/javascript" src="js/gift/distribution.js"></script>
-		<script type="text/javascript" src="js/gift/pledgeSelector.js"></script>
+		<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
     </tiles:putAttribute>
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
@@ -17,9 +17,14 @@
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
-			<c:if test="${associatedPledge != null}">
-				<input type="hidden" id="thisAssociatedPledge" name="thisAssociatedPledge" value="<c:out value='${associatedPledge.shortDescription}'/>" pledgeId="<c:out value='${associatedPledge.id}'/>"/>
-			</c:if>
+			<c:choose>
+				<c:when test="${associatedPledge != null}">
+					<input type="hidden" id="thisAssociatedPledge" name="thisAssociatedPledge" value="<c:out value='${associatedPledge.shortDescription}'/>" pledgeId="<c:out value='${associatedPledge.id}'/>"/>
+				</c:when>
+				<c:when test="${associatedRecurringGift != null}">
+					<input type="hidden" id="thisAssociatedRecurringGift" name="thisAssociatedRecurringGift" value="<c:out value='${associatedRecurringGift.shortDescription}'/>" recurringGiftId="<c:out value='${associatedRecurringGift.id}'/>"/>
+				</c:when>
+			</c:choose>
 						
 			<form:form method="post" commandName="gift">
 				<c:if test="${id != null}"><input type="hidden" name="id" value="<c:out value='${id}'/>" /></c:if>

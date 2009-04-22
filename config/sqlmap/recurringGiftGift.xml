@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RECURRING_GIFT_GIFT">
+	
+	<select id="SELECT_RECURRING_GIFT_GIFT_BY_GIFT_ID" resultClass="java.lang.Long" parameterClass="map">
+		select rgg.RECURRING_GIFT_ID 
+		from RECURRING_GIFT_GIFT rgg
+		where rgg.GIFT_ID = #giftId#
+	</select>
+
+	<select id="SELECT_RECURRING_GIFT_GIFT_BY_RECURRING_GIFT_ID" resultClass="java.lang.Long" parameterClass="map">
+		select rgg.GIFT_ID 
+		from RECURRING_GIFT_GIFT rgg
+		where rgg.RECURRING_GIFT_ID = #recurringGiftId#
+	</select>
+
+	<insert id="INSERT_RECURRING_GIFT_GIFT" parameterClass="java.util.Map">
+		insert into RECURRING_GIFT_GIFT (GIFT_ID, RECURRING_GIFT_ID)
+		values (#giftId#, #recurringGiftId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+	<delete id="DELETE_RECURRING_GIFT_GIFT_BY_GIFT_ID" parameterClass="long">
+	    delete from RECURRING_GIFT_GIFT
+	    where GIFT_ID = #giftId#	    
+	</delete>
+
+	<delete id="DELETE_RECURRING_GIFT_GIFT_BY_RECURRING_GIFT_ID" parameterClass="long">
+	    delete from RECURRING_GIFT_GIFT
+	    where RECURRING_GIFT_ID = #recurringGiftId#	    
+	</delete>
+	
+</sqlMap>

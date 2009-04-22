@@ -10,8 +10,10 @@ import org.springframework.context.ApplicationContext;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
@@ -22,11 +24,13 @@ public class SelectionFieldHandler extends GenericFieldHandler {
 
     private PledgeService pledgeService;
     private GiftService giftService;
+    private RecurringGiftService recurringGiftService;
     
     public SelectionFieldHandler(ApplicationContext appContext) {
         super(appContext);
         pledgeService = (PledgeService)appContext.getBean("pledgeService");
         giftService = (GiftService)appContext.getBean("giftService");
+        recurringGiftService = (RecurringGiftService)appContext.getBean("recurringGiftService");
     }
     
     @SuppressWarnings("unchecked")
@@ -41,6 +45,10 @@ public class SelectionFieldHandler extends GenericFieldHandler {
                 if (ReferenceType.pledge.equals(fieldVO.getReferenceType())) {
                     Pledge pledge = pledgeService.readPledgeById(id);
                     fieldVO.addDisplayValue(pledge.getShortDescription());
+                }
+                else if (ReferenceType.recurringGift.equals(fieldVO.getReferenceType())) {
+                    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(id);
+                    fieldVO.addDisplayValue(recurringGift.getShortDescription());
                 }
                 else if (ReferenceType.gift.equals(fieldVO.getReferenceType())) {
                     Gift gift = giftService.readGiftById(id);

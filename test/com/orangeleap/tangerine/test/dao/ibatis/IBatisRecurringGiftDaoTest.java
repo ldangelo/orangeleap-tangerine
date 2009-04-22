@@ -69,6 +69,18 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getAcknowledgmentDate() == null;
     }
     
+    public static void testId300L(RecurringGift recurringGift) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        assert sdf.parse("02/14/2008").equals(recurringGift.getNextRunDate());
+        assert 10 == recurringGift.getAmountPerGift().intValue();
+        assert RecurringGift.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
+        assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
+        assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
+        assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == null;
+        assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
+        assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 200L;
+        IBatisConstituentDaoTest.testConstituentId200(recurringGift.getPerson());
+    }
     
     @Test(groups = { "testReadRecurringGifts" })
     public void testReadRecurringGiftById() throws Exception {
@@ -146,15 +158,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
                     testId100L(recurringGift);
                     break;
                 case 300:
-                    assert sdf.parse("02/14/2008").equals(recurringGift.getNextRunDate());
-                    assert 10 == recurringGift.getAmountPerGift().intValue();
-                    assert RecurringGift.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
-                    assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
-                    assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
-                    assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == null;
-                    assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
-                    assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 200L;
-                    IBatisConstituentDaoTest.testConstituentId200(recurringGift.getPerson());
+                    testId300L(recurringGift);
                     break;
                 default:
                     Assert.assertTrue("Invalid ID = " + recurringGift.getId(), false);
@@ -193,4 +197,26 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
             assert recurringGift.getAmountPerGift().compareTo(new BigDecimal(10)) == 0;
         }
     }   
+
+    @Test(groups = { "testReadRecurringGift" })
+    public void testReadAssociatedGiftIdsForRecurringGift() throws Exception {
+        RecurringGift recurringGift = recurringGiftDao.readRecurringGiftById(300L);
+        testId300L(recurringGift);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", recurringGift.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be empty", recurringGift.getAssociatedGiftIds().isEmpty());
+        
+        recurringGift = recurringGiftDao.readRecurringGiftById(100L);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", recurringGift.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be size = 2, not " + recurringGift.getAssociatedGiftIds().size(), recurringGift.getAssociatedGiftIds().size() == 1);
+        for (Long giftId : recurringGift.getAssociatedGiftIds()) {
+            assert giftId == 200L;
+        }
+        
+        recurringGift = recurringGiftDao.readRecurringGiftById(400L);
+        Assert.assertNotNull("Expected associatedGiftIds to be not null", recurringGift.getAssociatedGiftIds());
+        Assert.assertTrue("Expected associatedGiftIds to be size = 1, not " + recurringGift.getAssociatedGiftIds().size(), recurringGift.getAssociatedGiftIds().size() == 1);
+        for (Long giftId : recurringGift.getAssociatedGiftIds()) {
+            assert giftId == 600L;
+        }
+    }    
 }

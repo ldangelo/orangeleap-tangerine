@@ -17,9 +17,10 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 
-public class GiftPledgeLinesController extends SimpleFormController {
+public class GiftPledgeRecurringGiftLinesController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -30,6 +31,9 @@ public class GiftPledgeLinesController extends SimpleFormController {
     @Resource(name="pledgeService")
     private PledgeService pledgeService;
     
+    @Resource(name="recurringGiftService")
+    private RecurringGiftService recurringGiftService;
+    
     @Resource(name="constituentService")
     private ConstituentService constituentService;
     
@@ -39,19 +43,26 @@ public class GiftPledgeLinesController extends SimpleFormController {
     
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        return new GiftPledgeLinesForm(getConstituent(request));
+        return new GiftPledgeRecurringGiftLinesForm(getConstituent(request));
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        GiftPledgeLinesForm form = (GiftPledgeLinesForm)command;
-        List<DistributionLine> pledgeLines = null;
-        int numPledges = 0;
+        GiftPledgeRecurringGiftLinesForm form = (GiftPledgeRecurringGiftLinesForm)command;
+        List<DistributionLine> commitmentLines = null;
+        int numCommitments = 0;
+        boolean isPledge = false;
         if (form.getPledgeIds() != null) {
-            pledgeLines = pledgeService.findDistributionLinesForPledges(form.getPledgeIds());
-            numPledges = form.getPledgeIds().size();
+            commitmentLines = pledgeService.findDistributionLinesForPledges(form.getPledgeIds());
+            numCommitments = form.getPledgeIds().size();
+            isPledge = true;
         }
-        return new ModelAndView(getSuccessView(), "combinedDistributionLines", giftService.combineGiftPledgeDistributionLines(form.getMutableDistributionLines(), pledgeLines, 
-                form.getEnteredAmount(), numPledges, getConstituent(request)));
+        else if (form.getRecurringGiftIds() != null) {
+            commitmentLines = recurringGiftService.findDistributionLinesForRecurringGifts(form.getRecurringGiftIds());
+            numCommitments = form.getRecurringGiftIds().size();
+            isPledge = false;
+        }
+        return new ModelAndView(getSuccessView(), "combinedDistributionLines", giftService.combineGiftCommitmentDistributionLines(form.getMutableDistributionLines(), commitmentLines, 
+                form.getEnteredAmount(), numCommitments, getConstituent(request), isPledge));
     }
 }

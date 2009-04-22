@@ -143,7 +143,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         return pledgeDao.searchPledges(params);
     }
     
-    // Pledge only
     @Override
     public Map<String, List<Pledge>> findNotCancelledPledges(Long constituentId, String selectedPledgeIds) {
         if (logger.isTraceEnabled()) {

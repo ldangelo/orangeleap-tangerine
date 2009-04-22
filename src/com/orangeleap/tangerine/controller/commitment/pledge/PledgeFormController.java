@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.controller.commitment.pledge;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -9,10 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.orangeleap.tangerine.controller.commitment.CommitmentFormController;
-import com.orangeleap.tangerine.controller.gift.AssociationEditor;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
@@ -29,12 +26,6 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         return pledgeService.readPledgeByIdCreateIfNull(request.getParameter(StringConstants.PLEDGE_ID), super.getConstituent(request));
-    }
-
-    @Override
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-        super.initBinder(request, binder);
-        binder.registerCustomEditor(List.class, "associatedGiftIds", new AssociationEditor());
     }
 
     @Override

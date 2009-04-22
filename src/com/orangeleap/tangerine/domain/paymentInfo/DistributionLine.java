@@ -20,7 +20,6 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
-    private Long associatedPledgeId;
     private Person person;
 
     public DistributionLine() { }
@@ -107,14 +106,6 @@ public class DistributionLine extends AbstractCustomizableEntity {
 
     public void setRecurringGiftId(Long recurringGiftId) {
         this.recurringGiftId = recurringGiftId;
-    }
-
-    public Long getAssociatedPledgeId() {
-        return associatedPledgeId;
-    }
-
-    public void setAssociatedPledgeId(Long associatedPledgeId) {
-        this.associatedPledgeId = associatedPledgeId;
     }
 
     public Person getPerson() {

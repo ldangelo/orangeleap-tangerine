@@ -38,6 +38,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
     private List<Long> associatedPledgeIds;
+    private List<Long> associatedRecurringGiftIds;
     
     public Gift() { 
         super();
@@ -228,6 +229,21 @@ public class Gift extends AbstractPaymentInfoEntity {
         getAssociatedPledgeIds().add(pledgeId);
     }
     
+    public List<Long> getAssociatedRecurringGiftIds() {
+        return associatedRecurringGiftIds;
+    }
+
+    public void setAssociatedRecurringGiftIds(List<Long> associatedRecurringGiftIds) {
+        this.associatedRecurringGiftIds = associatedRecurringGiftIds;
+    }
+
+    public void addAssociatedRecurringGiftId(Long recurringGiftId) {
+        if (associatedRecurringGiftIds == null) {
+            setAssociatedRecurringGiftIds(new ArrayList<Long>());
+        }
+        getAssociatedRecurringGiftIds().add(recurringGiftId);
+    }
+
     public Boolean getIsAuthorized() {
 		return !StringUtils.trimToEmpty(authCode).equals("");
 	}

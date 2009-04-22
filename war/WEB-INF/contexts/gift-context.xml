@@ -47,8 +47,6 @@
 	            <ref bean="codeValidator"/>
 	        </list>
         </property>
-
-
     </bean>
 
     <bean id="giftRefundController" class="com.orangeleap.tangerine.controller.gift.GiftRefundController">
@@ -66,9 +64,9 @@
         <property name="viewName" value="gift/giftList"/>
     </bean>
 
-    <bean id="giftPledgeLinesController" class="com.orangeleap.tangerine.controller.gift.GiftPledgeLinesController">
+    <bean id="giftPledgeRecurringGiftLinesController" class="com.orangeleap.tangerine.controller.gift.GiftPledgeRecurringGiftLinesController">
         <property name="commandName" value="giftPledgeLines"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.controller.gift.GiftPledgeLinesForm"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.controller.gift.GiftPledgeRecurringGiftLinesForm"/>
         <property name="formView" value="gift/giftCombinedDistributionLines"/>
         <property name="successView" value="gift/giftCombinedDistributionLines"/>
     </bean>
@@ -81,7 +79,7 @@
 		        <prop key="/giftRefund.htm">giftRefundController</prop>
 		        <prop key="/giftSearch.htm">giftSearchController</prop>
 		        <prop key="/giftList.htm">giftListController</prop>
-		        <prop key="/giftPledgeLines.htm">giftPledgeLinesController</prop>
+		        <prop key="/giftPledgeRecurringGiftLines.htm">giftPledgeRecurringGiftLinesController</prop>
                 <prop key="/giftAdjustment.htm">giftAdjustmentController</prop>
 			</props>
 		</property>

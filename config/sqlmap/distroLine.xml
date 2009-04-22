@@ -35,6 +35,19 @@
 		</iterate>
 	</select>
 
+	<select id="SELECT_DISTRO_LINE_BY_RECURRING_GIFT_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map">
+		select 
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />
+		from DISTRO_LINE dl
+		inner join RECURRING_GIFT rgt on dl.RECURRING_GIFT_ID = rgt.RECURRING_GIFT_ID 
+		inner join CONSTITUENT p on rgt.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where dl.RECURRING_GIFT_ID in 
+		<iterate property="recurringGiftIds" conjunction="," open="(" close=")">
+			#recurringGiftIds[]#
+		</iterate>
+	</select>
+
 	<insert id="INSERT_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
 		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID)
 		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #pledgeId#, #recurringGiftId#, #giftId#)

@@ -1,15 +1,15 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <div class="modalTopLeft">
 	<div class="modalTopRight">
-		<h4 class="dragHandle" id="modalTitle"><spring:message code="selectPledgesToApplyToGift"/></h4>
+		<h4 class="dragHandle" id="modalTitle"><spring:message code="selectRecurringGiftsToApplyToGift"/></h4>
 		<a href="javascript:void(0)" class="jqmClose hideText"><spring:message code="close"/></a>
 	</div>
 </div>
 <div class="modalContentWrapper">
 	<div class="modalContent">
-		<form method="POST" action="pledgeSelector.htm" id="selectorForm">
-			<c:if test="${empty notSelectedPledges}">
-				<div class="noResults"><spring:message code="noPledgesAvailable"/></div>
+		<form method="POST" action="recurringGiftSelector.htm" id="selectorForm">
+			<c:if test="${empty notSelectedRecurringGifts}">
+				<div class="noResults"><spring:message code="noRecurringGiftsAvailable"/></div>
 			</c:if>
 			<table cellspacing="0" class="multiSelect">
 				<thead>
@@ -23,9 +23,9 @@
 					<tr>
 						<td>
 							<ul id="availableOptions">
-								<c:forEach items="${notSelectedPledges}" var="pledge">
-									<li id="<c:out value='${pledge.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/>  <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+								<c:forEach items="${notSelectedRecurringGifts}" var="recurringGift">
+									<li id="<c:out value='${recurringGift.id}'/>-li">
+										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/>  <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>
@@ -33,9 +33,9 @@
 	                    <td class="spacer">&nbsp;</td>
 			            <td>
 			                <ul id="selectedOptions">
-								<c:forEach items="${selectedPledges}" var="pledge">
-									<li id="<c:out value='${pledge.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/> <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+								<c:forEach items="${selectedRecurringGifts}" var="recurringGift">
+									<li id="<c:out value='${recurringGift.id}'/>-li">
+										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/> <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>

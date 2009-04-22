@@ -50,6 +50,10 @@
         <property name="viewName" value="gift/recurringGiftList"/>
     </bean>
     
+    <bean id="recurringGiftSelectorController" class="com.orangeleap.tangerine.controller.commitment.recurringGift.RecurringGiftSelectorController">
+        <property name="viewName" value="gift/recurringGiftSelector"/>
+    </bean>
+    
     <bean id="recurringGiftUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
@@ -57,6 +61,7 @@
 		    	<prop key="/recurringGiftView.htm">recurringGiftViewController</prop>
 		        <prop key="/recurringGiftSearch.htm">recurringGiftSearchController</prop>
 		        <prop key="/recurringGiftList.htm">recurringGiftListController</prop>
+		        <prop key="/recurringGiftSelector.htm">recurringGiftSelectorController</prop>
 			</props>
 		</property>
 	</bean>

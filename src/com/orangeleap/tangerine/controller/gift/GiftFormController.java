@@ -19,8 +19,10 @@ import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormCon
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class GiftFormController extends TangerineConstituentAttributesFormController {
@@ -33,6 +35,9 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
 
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
+
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
@@ -47,9 +52,14 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         Map returnMap = super.referenceData(request, command, errors);
         
         String selectedPledgeId = request.getParameter("selectedPledgeId");
+        String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
         if (NumberUtils.isDigits(selectedPledgeId)) {
             Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
             returnMap.put("associatedPledge", pledge);
+        }
+        else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
+            RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
+            returnMap.put("associatedRecurringGift", recurringGift);
         }
         return returnMap;
     }
@@ -58,6 +68,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         super.initBinder(request, binder);
         binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociationEditor());
+        binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
     }
     
     @Override
@@ -65,7 +76,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         if (isFormSubmission(request) && errors.hasErrors()) {
             Gift gift = (Gift) command;
             gift.removeEmptyMutableDistributionLines();
-            giftService.checkAssociatedPledgeIds(gift);
+            checkAssociations(gift);
         }
         super.onBindAndValidate(request, command, errors);
     }
@@ -73,8 +84,13 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         Gift gift = (Gift) command;
-        giftService.checkAssociatedPledgeIds(gift);
+        checkAssociations(gift);
         Gift current = giftService.maintainGift(gift);
         return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+    }
+    
+    protected void checkAssociations(Gift gift) {
+        giftService.checkAssociatedPledgeIds(gift);
+        giftService.checkAssociatedRecurringGiftIds(gift);
     }
 }

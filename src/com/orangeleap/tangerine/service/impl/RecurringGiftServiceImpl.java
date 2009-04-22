@@ -1,22 +1,29 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateMidnight;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -141,14 +148,73 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         return recurringGiftDao.readPaginatedRecurringGiftsByConstituentId(constituentId, sortinfo);
     }
 
-
-
     @Override
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params) {
         if (logger.isTraceEnabled()) {
             logger.trace("searchRecurringGifts: params = " + params);
         }
         return recurringGiftDao.searchRecurringGifts(params);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, List<RecurringGift>> findGiftAppliableRecurringGiftsForConstituent(Long constituentId, String selectedRecurringGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findGiftAppliableRecurringGiftsForConstituent: constituentId = " + constituentId + " selectedRecurringGiftIds = " + selectedRecurringGiftIds);
+        }
+        List<RecurringGift> rGifts = recurringGiftDao.readRecurringGiftsByConstituentId(constituentId);
+        
+        Set<String> selectedRecurringGiftIdsSet = StringUtils.commaDelimitedListToSet(selectedRecurringGiftIds);
+        List<RecurringGift> notSelectedRecurringGifts = filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime());
+        List<RecurringGift> selectedRecurringGifts = new ArrayList<RecurringGift>();
+        
+        if (selectedRecurringGiftIdsSet.isEmpty() == false) {
+            for (Iterator<RecurringGift> iter = notSelectedRecurringGifts.iterator(); iter.hasNext();) {
+                RecurringGift aRecurringGift = iter.next();
+                if (selectedRecurringGiftIdsSet.contains(aRecurringGift.getId().toString())) {
+                    selectedRecurringGifts.add(aRecurringGift);
+                    iter.remove();
+                }
+            }
+        }
+        Map<String, List<RecurringGift>> recurringGiftMap = new HashMap<String, List<RecurringGift>>();
+        recurringGiftMap.put("selectedRecurringGifts", selectedRecurringGifts);
+        recurringGiftMap.put("notSelectedRecurringGifts", notSelectedRecurringGifts);
+        return recurringGiftMap;
+    }
+    
+    @Override
+    public List<RecurringGift> filterApplicableRecurringGiftsForConstituent(List<RecurringGift> gifts, Date nowDt) {
+        DateMidnight now = new DateMidnight(nowDt);
+        for (Iterator<RecurringGift> recIter = gifts.iterator(); recIter.hasNext();) {
+            RecurringGift recurringGift = recIter.next();
+            if (Commitment.STATUS_EXPIRED.equals(recurringGift.getRecurringGiftStatus()) || Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus())) {
+                recIter.remove();
+            }
+            else {
+                DateMidnight startDt = new DateMidnight(recurringGift.getStartDate());
+                if (startDt.isAfter(now)) {
+                    recIter.remove();
+                }
+                else if (recurringGift.getEndDate() != null) {
+                    if (new DateMidnight(recurringGift.getEndDate()).isBefore(now)) {
+                        recIter.remove();
+                    }
+                }
+            }
+        }
+        return gifts;
+    }
+    
+    @Override
+    public List<DistributionLine> findDistributionLinesForRecurringGifts(Set<String> recurringGiftIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findDistributionLinesForRecurringGifts: recurringGiftIds = " + recurringGiftIds);
+        }
+        if (recurringGiftIds != null && recurringGiftIds.isEmpty() == false) {
+            return recurringGiftDao.findDistributionLinesForRecurringGifts(new ArrayList<String>(recurringGiftIds));
+        }
+        return null;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

@@ -1,14 +1,18 @@
 package com.orangeleap.tangerine.controller.commitment;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
+import com.orangeleap.tangerine.controller.gift.AssociationEditor;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -26,6 +30,12 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
 
     public void setHandleEmptyDistributionLines(boolean handleEmptyDistributionLines) {
         this.handleEmptyDistributionLines = handleEmptyDistributionLines;
+    }
+
+    @Override
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+        super.initBinder(request, binder);
+        binder.registerCustomEditor(List.class, "associatedGiftIds", new AssociationEditor());
     }
 
     @SuppressWarnings("unchecked")

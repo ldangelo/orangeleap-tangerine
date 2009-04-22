@@ -560,7 +560,7 @@
 									</c:url>
 									<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>
 									<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">
-										<a href="javascript:void(0)" onclick="PledgeSelector.deletePledge(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+										<a href="javascript:void(0)" onclick="PledgeRecurringGiftSelector.deleteThis(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 									</c:if>
 								</div>
 								<c:remove var="entityLink" scope="page" />
@@ -571,13 +571,13 @@
 						<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">
 							<div class="multiQueryLookupOption multiOption noDisplay clone" selectedId="">
 								<a href="" target="_blank"></a>
-								<a href="javascript:void(0)" onclick="PledgeSelector.deletePledge(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
+								<a href="javascript:void(0)" onclick="PledgeRecurringGiftSelector.deleteThis(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 							</div>
 						</c:if>		
 					</div>
 					<div class="lookupScrollBottom"></div>
 					<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">
-				        <a href="javascript:void(0)" onclick="PledgeSelector.loadPledgeSelector(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
+				        <a href="javascript:void(0)" onclick="PledgeRecurringGiftSelector.loadSelector(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				    </c:if>
 				</c:when>
 				<c:otherwise>

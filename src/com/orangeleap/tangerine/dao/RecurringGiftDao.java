@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -23,4 +24,6 @@ public interface RecurringGiftDao {
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> searchParams);
 
 	public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
+	
+	public List<DistributionLine> findDistributionLinesForRecurringGifts(List<String> recurringGiftIds);
 }

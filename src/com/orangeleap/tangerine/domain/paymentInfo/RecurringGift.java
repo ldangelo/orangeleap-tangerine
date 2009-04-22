@@ -1,6 +1,9 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Date;
+import java.util.Locale;
 
 public class RecurringGift extends Commitment {
 
@@ -14,6 +17,13 @@ public class RecurringGift extends Commitment {
 
     public RecurringGift(Date nextRunDate) {
         this.nextRunDate = nextRunDate;
+    }
+    
+    public RecurringGift(Long id, String recurringGiftStatus, Date startDate, Date endDate) {
+        this.id = id;
+        this.recurringGiftStatus = recurringGiftStatus;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Date getNextRunDate() {
@@ -38,6 +48,22 @@ public class RecurringGift extends Commitment {
 
     public void setAutoPay(boolean autoPay) {
         this.autoPay = autoPay;
+    }
+    
+    public String getShortDescription() {
+        StringBuilder sb = new StringBuilder();
+        sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());
+        sb.append(getAmountPerGift()).append(", ");
+        sb.append(getFrequency()).append(", ");
+        
+        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        if (startDate != null) {
+            sb.append(df.format(startDate));
+        }
+        if (endDate != null) {
+            sb.append(" - ").append(df.format(endDate));
+        }
+        return sb.toString();
     }
     
     @Override

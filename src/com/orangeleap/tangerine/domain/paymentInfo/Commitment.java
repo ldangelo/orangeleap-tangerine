@@ -42,6 +42,7 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     protected String frequency;
     private Date lastEntryDate;
     private List<Gift> gifts;
+    private List<Long> associatedGiftIds;
     
     public Commitment() { 
         super();
@@ -174,6 +175,14 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     	List<Gift> gifts = getGifts();
     	gifts.add(g);
     	setGifts(gifts);
+    }
+
+    public List<Long> getAssociatedGiftIds() {
+        return associatedGiftIds;
+    }
+
+    public void setAssociatedGiftIds(List<Long> associatedGiftIds) {
+        this.associatedGiftIds = associatedGiftIds;
     }
     
     public BigDecimal getAmountPaid() {

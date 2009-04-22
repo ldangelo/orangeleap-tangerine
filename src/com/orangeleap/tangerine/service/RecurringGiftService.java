@@ -3,8 +3,10 @@ package com.orangeleap.tangerine.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -32,4 +34,10 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public void processRecurringGifts();
     
     public List<RecurringGift> searchRecurringGifts(Map<String, Object> params);
+    
+    public Map<String, List<RecurringGift>> findGiftAppliableRecurringGiftsForConstituent(Long constituentId, String selectedRecurringGiftIds);
+    
+    public List<RecurringGift> filterApplicableRecurringGiftsForConstituent(List<RecurringGift> gifts, Date nowDt);
+    
+    public List<DistributionLine> findDistributionLinesForRecurringGifts(Set<String> recurringGiftIds);
 }

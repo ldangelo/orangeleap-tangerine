@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class Pledge extends Commitment {
@@ -16,7 +15,6 @@ public class Pledge extends Commitment {
     private String pledgeStatus = STATUS_PENDING;
     private boolean recurring = false;
     private Date projectedDate;
-    private List<Long> associatedGiftIds;
 
     public boolean isRecurring() {
         return recurring;
@@ -64,14 +62,6 @@ public class Pledge extends Commitment {
 
     public String getPledgeCancelReason() {
     	return pledgeCancelReason;
-    }
-
-    public List<Long> getAssociatedGiftIds() {
-        return associatedGiftIds;
-    }
-
-    public void setAssociatedGiftIds(List<Long> associatedGiftIds) {
-        this.associatedGiftIds = associatedGiftIds;
     }
 
     public String getShortDescription() {

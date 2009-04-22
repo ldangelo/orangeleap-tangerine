@@ -138,6 +138,7 @@
                      Ext.select('th.header:nth(2)').update('');
                      Ext.select('col.pct').setWidth(0);
                      Ext.select('input.percentage').hide();
+                    Distribution.addNewRow = function() {};
                 </script>
 				<div class="formButtonFooter personFormButtons">
 					<input type="submit" value="<spring:message code='adjustGift'/>" class="saveButton" />

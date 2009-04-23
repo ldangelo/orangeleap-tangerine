@@ -131,7 +131,10 @@ public class DistributionLine extends AbstractCustomizableEntity {
     @Override
     public void prePersist() {
         super.prePersist();
-        setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "false"); 
+        setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "false");
+        if ("true".equals(getCustomFieldValue(StringConstants.ANONYMOUS_LOWER_CASE))) {
+            setCustomFieldValue(StringConstants.RECOGNITION_NAME, StringConstants.ANONYMOUS_UPPER_CASE);
+        }
     }
 
     @Override

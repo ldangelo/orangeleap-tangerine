@@ -204,21 +204,35 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     private void validate(Picklist picklist) {
     	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot update non-site-specific entry for Picklist "+picklist.getId());
     }
+    
+    // Since this is now auto-generated based on the display value, ensure it's unique
+    private void checkUnique(Picklist picklist, PicklistItem picklistItem) {
+    	for (PicklistItem item : picklist.getPicklistItems()) {
+    		if (item.getItemName().equals(picklistItem.getItemName())) {
+    			picklistItem.setItemName(picklistItem.getItemName()+"0");
+    		}
+    	}
+    }
 	
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
     	
-    	if (StringUtils.trimToNull(picklistItem.getItemName()) == null || StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
-    	
+		if (StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
+    
     	// Sanity checks
-    	if (picklistItem == null || picklistItem.getPicklistId() == null || picklistItem.getItemName() == null || picklistItem.getItemName().length() == 0) {
+    	if (picklistItem == null || picklistItem.getPicklistId() == null) {
     		throw new RuntimeException("PicklistItem is blank.");
     	}
-
+    	
     	Picklist picklist = picklistDao.readPicklistById(picklistItem.getPicklistId());
     	validate(picklist);
-    	
+
+		if (StringUtils.trimToNull(picklistItem.getItemName()) == null) {
+    		picklistItem.setItemName(picklistItem.getDefaultDisplayValue());
+        	checkUnique(picklist, picklistItem);
+    	}
+
 		logger.info("Updating "+picklist.getSite().getName()+" site-specific copy of picklist item "+picklistItem.getItemName());
 
 		boolean found = false;

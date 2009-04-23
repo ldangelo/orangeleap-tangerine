@@ -33,15 +33,13 @@
 				<table>
 					<tr>
 						<td class="action">&nbsp;</td>
-						<td class="codeValue"><span class="required">*</span>ID</td>
 						<td class="codeValue"><span class="required">*</span>Value</td>
 						<td class="codeDescription">Description</td>
 					 	<td class="inactive">Inactive</td>  
 					 	<td class="customize">&nbsp;Customize</td>  
 					</tr>
 					<tr>
-						<td><h4 style="margin:0;">Filters</h4></td>
-						<td><input class="valueFilter" name="value" size="16" /></td>
+						<td><h4 style="margin:0;">Filter</h4></td>
 						<td><input class="valueFilter" name="description" size="16" /></td>
 						<td></td>
 					 	<td><select name="inactive">

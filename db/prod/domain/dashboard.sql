@@ -12,3 +12,19 @@ INSERT INTO DASHBOARD_ITEM_DATASET (DASHBOARD_ITEM_DATASET_ID, DASHBOARD_ITEM_ID
 INSERT INTO DASHBOARD_ITEM_DATASET (DASHBOARD_ITEM_DATASET_ID, DASHBOARD_ITEM_ID, DATASET_NUM, DATASET_LABEL, SQL_TEXT) VALUES (6, 4, 2, 'Pledge Donors', 'select DATE_FORMAT(ct.PLEDGE_DATE, "%b" ) as "LABEL", EXTRACT(YEAR_MONTH FROM ct.PLEDGE_DATE) as "LABEL_VALUE", SUM(ct.AMOUNT_TOTAL) as "DATA_VALUE" from PLEDGE ct inner join CONSTITUENT c on c.CONSTITUENT_ID = ct.CONSTITUENT_ID  where ct.PLEDGE_DATE between adddate(CURDATE(), -180) and adddate(CURDATE(), 1) and c.SITE_NAME = #siteName# group by LABEL_VALUE ');
 
 
+-- Using the motivation code description insteand of code value doesn't leave enough room...
+--INSERT INTO DASHBOARD_ITEM_DATASET (DASHBOARD_ITEM_DATASET_ID, DASHBOARD_ITEM_ID, DATASET_NUM, DATASET_LABEL, SQL_TEXT) VALUES (1, 1, 1, '', '
+--select pi.DEFAULT_DISPLAY_VALUE as "LABEL", SUM(g.AMOUNT) as "DATA_VALUE" 
+--from 
+--GIFT g 
+--inner join CONSTITUENT c on c.CONSTITUENT_ID = g. CONSTITUENT_ID 
+--inner join DISTRO_LINE dl on g.GIFT_ID = dl.GIFT_ID 
+--inner join PICKLIST_ITEM pi on dl.MOTIVATION_CODE = pi.ITEM_NAME
+--inner join PICKLIST p on p.PICKLIST_ID = pi.PICKLIST_ID
+--where 
+--p.PICKLIST_NAME_ID = ''motivationCode''
+--and p.SITE_NAME = c.SITE_NAME
+--and g.DONATION_DATE between adddate(CURDATE(), -7) and adddate(CURDATE(), 1) 
+--and c.SITE_NAME = #siteName#
+--group by LABEL 
+--');

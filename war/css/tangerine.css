@@ -1274,6 +1274,7 @@ ul.formFields div.lookupWrapper input.code {
 	min-height: 18px;
 	word-wrap: break-word;
 }
+.ea-wrappable { -moz-binding: url('../xml/wordwrap.xml#wordwrap'); }
 .lookupField {
 	border:1px solid #7F9DB9;
 	padding:2px 0;

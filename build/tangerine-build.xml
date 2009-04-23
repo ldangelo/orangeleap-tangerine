@@ -15,31 +15,10 @@
 	</taskdef>
 
 	<target name="build">
-		<antcall target="tangerine-build-jspc"/>
-	</target>
-	
-	<!-- Integrated targets -->
-	<target name="tangerine-build" depends="resolve, clean-build, setup, compile, jar, setup-war, build-integrated-war" description="Does a clean build, but does not precompile JSPs"/>
-
-	<target name="tangerine-build-jspc" depends="resolve, clean-build, setup, compile, jspc, jar, setup-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
-
-	<target name="compress" depends="resolve, optimization" description="Compress CSS and JS files"/>
-
-	<target name="deploy-integrated-war" depends="tangerine-build, copy-tangerine.properties">
-		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
+		<antcall target="build-integrated-war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="tangerine-build, copy-tangerine.properties">
-		<copy todir="${deploy.path}/${war.name}">
-			<fileset dir="${stage.dir}">
-				<include name="${war.name}.war"/>
-			</fileset>
-		</copy>
-		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
-	</target>
-
-	<!-- Singular targets -->
-	<target name="setup">
+	<target name="setup" depends="clean-build, resolve">
 		<echo>Setting up for environment = ${build.env}</echo>
 		<mkdir dir="${stage.dir}" />
 		<if>
@@ -58,34 +37,14 @@
 			</else>
 		</if>
 	</target>
-	
-	<target name="compile">
+
+	<target name="classes-jar" depends="setup">
 		<mkdir dir="${classes.dir}" />
-		
+
 		<echo>Compiling with debug=${debug.compile}</echo>
-		<javac destdir="${classes.dir}" srcdir="${src.dir}" memoryInitialSize="128m" memoryMaximumSize="1024m" fork="true"
+		<javac destdir="${stage.dir}/classes-jar" srcdir="${src.dir}" 
 			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
-	</target>
-	
-	<target name="jspc"> 
-		<taskdef resource="org/apache/catalina/ant/catalina.tasks">
-			<classpath>
-				<pathelement path="${compile.lib}"/>
-				<pathelement path="${war.lib}"/>
-				<pathelement path="${classes.dir}"/>
-			</classpath>
-		</taskdef>
 
-	    <jasper validateXml="false" uriroot="${war.dir}" webXmlFragment="${war.dir}/WEB-INF/generated_web.xml" 
-	    	addWebXmlMappings="true" outputDir="${war.dir}/WEB-INF/src" /> 
-
-		<javac destdir="${classes.dir}" optimize="on" debug="off" memoryInitialSize="128m" memoryMaximumSize="2048m" fork="true"
-	    	failonerror="false" srcdir="${war.dir}/WEB-INF/src" classpathref="compile.path"/>
-
-		<delete dir="${war.dir}/WEB-INF/src" />
-	</target> 
-
-	<target name="jar">
 		<copy todir="${classes.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.*" />
@@ -115,7 +74,7 @@
 		<delete dir="${classes.dir}" />
 	</target>
 
-	<target name="setup-war">
+	<target name="setup-war" depends="classes-jar">
 		<mkdir dir="${stage.dir}/war" />
 		<mkdir dir="${stage.dir}/war/META-INF" />
 		<mkdir dir="${stage.dir}/war/WEB-INF" />
@@ -145,14 +104,14 @@
 
 	</target>
 
-	<target name="build-integrated-war">
+	<target name="build-integrated-war" depends="setup-war">
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
 		</war>
 		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="build-exploded-war">
+	<target name="build-exploded-war" depends="setup-war">
 		<mkdir dir="${stage.dir}/${war.name}.war" />
 		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
@@ -165,8 +124,6 @@
 	<target name="copy-tangerine.properties">
 		<!-- Only copy if tangerine.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
-		<copy todir="${deploy.lib.dir}" file="${basedir}/tangerine.properties" />
-		<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
 			<equals arg1="${tangerine.properties.present}" arg2="true" />
@@ -175,6 +132,18 @@
 				<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>
+	
+	</target>
+	
+	<target name="deploy-integrated-war" depends="build-integrated-war, copy-tangerine.properties">
+		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
+	</target>
+
+	<target name="deploy-exploded-war" depends="build-exploded-war, copy-tangerine.properties">
+		<copy todir="${deploy.path}/${war.name}">
+			<fileset dir="${stage.dir}/${war.name}.war" />
+		</copy>
+		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
 
 	<target name="undeploy-war">
@@ -215,11 +184,6 @@
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
-		<sync todir="${deploy.path}/${war.name}/xml">
-			<fileset dir="${war.dir}/xml">
-				<include name="**/*.*"/>
-			</fileset>
-		</sync>
 		<sync todir="${deploy.path}/${war.name}/images">
 			<fileset dir="${war.dir}/images">
 				<include name="**/*.*"/>
@@ -237,9 +201,9 @@
 		</copy>
 	</target>
 	
-	<target name="optimization">
+	<target name="optimization" depends="resolve">
 		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
-			<classpath path="${compile.lib}"/>
+			<classpath path="${war.lib}"/>
 		</taskdef>
 		
 		<css-optimization
@@ -271,7 +235,7 @@
 		</css-optimization>
 
 		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
-			<classpath path="${compile.lib}"/>
+			<classpath path="${war.lib}"/>
 		</taskdef>
 
 		<javascript-optimization
@@ -305,8 +269,7 @@
 		</javascript-optimization>
 
 	</target>
-	
-	
+		
 	<target name="usage">
 		<echo>This is the internal build file for Tangerine.</echo>
 		<echo>Please use build.xml</echo>

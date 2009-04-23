@@ -45,7 +45,7 @@ RecurringGift.GiftCalculator = function() {
     function getFieldValues() {
 
         var fields = {};
-        var f = Ext.fly('amountPerGift').getValue(true);
+        var f = parseFloat( Ext.fly('amountPerGift').getValue() );
         if(isNaN(f)) {
             fields.total = 0.00;
         } else {

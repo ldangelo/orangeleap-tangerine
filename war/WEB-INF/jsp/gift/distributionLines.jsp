@@ -36,11 +36,14 @@
 			<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchGiftValue'/></span> 
 		</div>
 		<div class="value" id="subTotal">0</div>
-        <span id="totalContributionInfo" class="x-hidden">
+        <span id="totalContributionInfo">
             <div id="totalContributionText">
             <spring:message code="totalContribution"/>
             </div>
             <div class="value" id="totalContribution">0</div>
         </span>
+        <script type="text/javascript">
+            Ext.fly('totalContributionInfo').hide();
+        </script>
 	</div>
 </c:forEach>

@@ -80,7 +80,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName != 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.sectionHtmlName != 'gift_acknowledgment' && sectionDefinition.sectionHtmlName != 'gift_paymentStatus' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style=" singleColumn<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -101,7 +101,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName == 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${(sectionDefinition.sectionHtmlName == 'gift_acknowledgment' || sectionDefinition.sectionHtmlName == 'gift_paymentStatus') && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">

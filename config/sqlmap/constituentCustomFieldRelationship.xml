@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
+
+	<resultMap id="CUSTOM_FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
+		<result property="id" column="CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<sql id="SELECT_CUSTOM_FIELD_RELATIONSHIP">
+		select 
+		cfr.CUSTOM_FIELD_RELATIONSHIP_ID, cfr.FIELD_RELATIONSHIP_ID
+		from 
+		CUSTOM_FIELD_RELATIONSHIP cfr
+		inner join FIELD_RELATIONSHIP fr on cfr.FIELD_RELATIONSHIP_ID = fr.FIELD_RELATIONSHIP_ID
+		where 
+		fr.SITE_NAME is not null
+	</sql>
+	
+	<select id="SELECT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" resultMap="CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+		<include refid="SELECT_CUSTOM_FIELD_RELATIONSHIP"/>
+		and CUSTOM_FIELD_RELATIONSHIP_ID = #id#	
+	</select>
+
+	<select id="SELECT_CUSTOM_FIELD_RELATIONSHIP_BY_SITE" resultMap="CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+		<include refid="SELECT_CUSTOM_FIELD_RELATIONSHIP"/>
+	</select>
+
+	
+	<insert id="INSERT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
+		insert into CUSTOM_FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID)
+		values (#fieldRelationshipId#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+	<update id="UPDATE_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
+		update CUSTOM_FIELD_RELATIONSHIP
+		set 
+		FIELD_RELATIONSHIP_ID = #fieldRelationshipId#
+		where 
+		CUSTOM_FIELD_RELATIONSHIP_ID = #id#
+	</update>
+	
+
 	
 	<resultMap id="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
 		<result property="id" column="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
@@ -13,28 +56,26 @@
 		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 
-	<!--  Validate constituentId belongs to current site before using these queries -->
-
 	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
 		select 
-		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID,
-		cf.FIELD_NAME, cf.FIELD_VALUE, cf.START_DATE, cf.END_DATE
+		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID
 		from 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
-		inner join CUSTOM_FIELD cf on ccr.CUSTOM_FIELD_ID = cf.CUSTOM_FIELD_ID
+		inner join FIELD_RELATIONSHIP fr on ccr.FIELD_RELATIONSHIP_ID = fr.FIELD_RELATIONSHIP_ID
+		where 
+		fr.SITE_NAME is not null
 	</sql>
 	
+	
+	<!--  Validate constituentId belongs to current site before using these queries -->
 	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
-		where 
-		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#	
+		and CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#	
 	</select>
 
-    <!-- Returns all custom fields associated with relationship (various date ranges and sequence nums) -->
 	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
-		where 
-		CONSTITUENT_ID = #personId#	
+		and CONSTITUENT_ID = #personId#	
 	</select>
 
 	

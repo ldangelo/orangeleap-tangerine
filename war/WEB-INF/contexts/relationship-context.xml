@@ -10,16 +10,27 @@
         <property name="successView" value="relationship/relationships" />
     </bean>
 
+    <bean id="relationshipList" class="com.orangeleap.tangerine.controller.relationship.RelationshipListController">
+        <property name="viewName" value="relationship/relationshipList"/>
+    </bean>
+
 	<bean id="relationshipCustomize" class="com.orangeleap.tangerine.controller.relationship.RelationshipCustomizeFormController">
         <property name="formView" value="relationship/relationshipCustomize" />
         <property name="successView" value="relationship/relationshipCustomize" />
+    </bean>
+
+	<bean id="fieldRelationshipCustomize" class="com.orangeleap.tangerine.controller.relationship.FieldRelationshipCustomizeFormController">
+        <property name="formView" value="relationship/fieldRelationshipCustomize" />
+        <property name="successView" value="relationship/fieldRelationshipCustomize" />
     </bean>
 
     <bean id="relationshipUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/relationships.htm">relationships</prop>
+                <prop key="/customFieldList.htm">relationshipList</prop>
                 <prop key="/relationshipCustomize.htm">relationshipCustomize</prop>
+                <prop key="/fieldRelationshipCustomize.htm">fieldRelationshipCustomize</prop>
 			</props>
 		</property>
 	</bean>

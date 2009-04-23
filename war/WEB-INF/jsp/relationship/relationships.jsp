@@ -7,17 +7,38 @@
 		<div class="content760 mainForm">
 
 		<div class="simplebox">
+		    <h4>Maintain relationships for <c:out value='${param.person.fullName}'/></h4><br/>
+		
+		<form method="get" action="customFieldList.htm">
+			<h4>Relationship to Manage</h4>
+			<select id="fieldRelationshipId" name="fieldRelationshipId" onchange="this.form.submit()">
+		  	  <option value="" ${currentFieldRelationshipId==''?'selected':''}>Select...</option>
+			   <c:forEach var="fieldRelationship" items="${fieldRelationships}">
+			     <option value="<c:out value='${fieldRelationship.fieldRelationshipId}'/>" ${currentFieldRelationshipId==fieldRelationship.fieldRelationshipId?'selected':''}><c:out value='${fieldRelationship.defaultLabel}'/></option>
+			     <c:if test="${currentFieldRelationshipId==fieldRelationship.fieldRelationshipId}">
+						<c:set var="currentFieldRelationship" value="${fieldRelationship.defaultLabel}" />
+			     </c:if>
+			   </c:forEach>
+			</select>
+ 		   <c:url var="fieldRelationshipCustomizeUrl" value="fieldRelationshipCustomize.htm">
+ 	         <c:param name="fieldRelationshipId" value="${currentFieldRelationshipId}" />
+		     <c:param name="view" value="customize" />
+		   </c:url>
+		   <c:if test="${currentFieldRelationshipId != ''}">
+		   &nbsp;&nbsp;&nbsp;<a class="action" href="${fieldRelationshipCustomizeUrl}">Customize</a>
+		   </c:if>
+		</form>
+
 
 		<div >
 		<form:form method="post" commandName="map" >
-		    <h4>Maintain relationships for <c:out value='${param.person.fullName}'/></h4><br/>
 			<table class="relationships">
 			  <tr >
-				<th>Field Name</td>
-				<th>Value</td>
-				<th>Start Date</td>
-				<th>End Date</td>
-				<th>Customize</td>
+				<th nowrap>Field Name</td>
+				<th nowrap>Value</td>
+				<th nowrap>Start Date</td>
+				<th nowrap>End Date</td>
+				<th nowrap>Custom Fields</td>
 			  </tr>
 			 <c:forEach var="relationship" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">

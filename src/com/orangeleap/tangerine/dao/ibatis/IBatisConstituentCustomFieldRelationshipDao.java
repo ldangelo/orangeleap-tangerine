@@ -31,7 +31,7 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
     @Override
     public ConstituentCustomFieldRelationship readById(Long id) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readConstituentById: id = " + id);
+            logger.trace("readById: id = " + id);
         }
         Map<String, Object> params = setupParams();
         params.put("id", id);

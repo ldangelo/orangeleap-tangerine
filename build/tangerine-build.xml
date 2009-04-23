@@ -31,7 +31,9 @@
 
 	<target name="deploy-exploded-war" depends="tangerine-build, copy-tangerine.properties">
 		<copy todir="${deploy.path}/${war.name}">
-			<fileset dir="${stage.dir}/${war.name}.war" />
+			<fileset dir="${stage.dir}">
+				<include name="${war.name}.war"/>
+			</fileset>
 		</copy>
 		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
@@ -80,6 +82,7 @@
 		<javac destdir="${classes.dir}" optimize="on" debug="off" memoryInitialSize="128m" memoryMaximumSize="2048m" fork="true"
 	    	failonerror="false" srcdir="${war.dir}/WEB-INF/src" classpathref="compile.path"/>
 
+		<delete dir="${war.dir}/WEB-INF/src" />
 	</target> 
 
 	<target name="jar">
@@ -109,7 +112,7 @@
 			<include name="META-INF/**" />
 			<exclude name="**/test/**/*.class" />
 		</jar>
-		<!--<delete dir="${classes.dir}" />-->
+		<delete dir="${classes.dir}" />
 	</target>
 
 	<target name="setup-war">
@@ -209,6 +212,11 @@
 		</sync>
 		<sync todir="${deploy.path}/${war.name}/js">
 			<fileset dir="${war.dir}/js">
+				<include name="**/*.*"/>
+			</fileset>
+		</sync>
+		<sync todir="${deploy.path}/${war.name}/xml">
+			<fileset dir="${war.dir}/xml">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>

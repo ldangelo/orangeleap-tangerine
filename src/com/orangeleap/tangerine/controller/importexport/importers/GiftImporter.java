@@ -69,6 +69,8 @@ public class GiftImporter extends EntityImporter {
 		
 		mapValuesToObject(values, gift);
 		
+		if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) gift.setGiftStatus("Processed");
+		
 		DistributionLine dl = new DistributionLine();
 		dl.setAmount(gift.getAmount());
 		dl.setPercentage(new BigDecimal(100.00));

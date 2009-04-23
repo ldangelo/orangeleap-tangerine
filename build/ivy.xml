@@ -6,8 +6,7 @@
 		<conf name="compile"/>
 		<conf name="war"/>
 		<conf name="test"/>
-	</configurations>
-	
+
 	<publications>
 		<artifact name="orangeleap" type="war" conf="war" ext="war" />
 	</publications>
@@ -19,7 +18,7 @@
 		</dependency>
 
         <!-- Custom JsonView --> 
-        <dependency org="com.mpower" name="JsonView" transitive="false" rev="latest.integration">
+        <dependency org="com.mpower" name="JsonView" transitive="false" rev="1.1">
 			<artifact name="JsonView" type="jar" />
 		</dependency>
 

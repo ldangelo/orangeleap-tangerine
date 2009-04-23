@@ -98,6 +98,7 @@ public class ConstituentHierarchyController {
     		return map;
 
     	} catch (Exception e) {
+    		e.printStackTrace();
     		logger.error(e);
     		return null;
     	}
@@ -117,8 +118,9 @@ public class ConstituentHierarchyController {
     }
     
     private String getFieldName(String fieldDef) {
+    	if (fieldDef == null || fieldDef.length() == 0) return "";
     	fieldDef = fieldDef.substring(fieldDef.indexOf("[")+1);
-    	fieldDef = fieldDef.substring(0,fieldDef.length()-1);
+    	fieldDef = fieldDef.substring(0,fieldDef.indexOf("]"));
     	return fieldDef;
     }
 

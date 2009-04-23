@@ -1018,10 +1018,12 @@ var Lookup = {
 		var $elem = $(elem);
 		var fieldDef = $elem.attr("fieldDef");
 		var personId = $elem.attr("personId");
+		var divid = $elem.attr("divid");
+		$elem.hide();
 		var treeurl = "constituentHeirarchy.json?memberPersonId=" + personId + "&fieldDef=" + fieldDef;
 		
 		var tree = new Ext.tree.TreePanel({
-	        el:"treeview",
+	        el:divid,
 	        height:200,
 	        width:250,
 		    useArrows:true,

@@ -32,7 +32,7 @@
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
-					<c:set var="totalFields" value="${sectionFieldCount}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">

@@ -35,15 +35,15 @@
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
-				<c:set var="gridCollectionName" value="mutableDistributionLines" />
-				<c:set var="gridCollection" value="${recurringGift.distributionLines}" />
-				<c:set var="dummyGridCollection" value="${recurringGift.dummyDistributionLines}" />
-				<c:set var="paymentSource" value="${recurringGift.paymentSource}" />
+				<c:set var="gridCollectionName" value="mutableDistributionLines" scope="request" />
+				<c:set var="gridCollection" value="${recurringGift.distributionLines}" scope="request" />
+				<c:set var="dummyGridCollection" value="${recurringGift.dummyDistributionLines}" scope="request" />
+				<c:set var="paymentSource" value="${recurringGift.paymentSource}" scope="request" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
-					<c:set var="totalFields" value="${sectionFieldCount}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">

@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 
 <mp:section sectionDefinition="${sectionDefinition}"/>
-<c:set var="totalFields" value="${sectionFieldCount}"/>
+<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 <c:choose>
 	<c:when test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 		<div class="columns">

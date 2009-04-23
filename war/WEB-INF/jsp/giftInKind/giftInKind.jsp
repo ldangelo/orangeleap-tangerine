@@ -28,14 +28,14 @@
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 				
-				<c:set var="gridCollectionName" value="mutableDetails" />
-				<c:set var="gridCollection" value="${giftInKind.details}" />
-				<c:set var="dummyGridCollection" value="${giftInKind.dummyDetails}" />
+				<c:set var="gridCollectionName" value="mutableDetails" scope="request"/>
+				<c:set var="gridCollection" value="${giftInKind.details}" scope="request" />
+				<c:set var="dummyGridCollection" value="${giftInKind.dummyDetails}" scope="request" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
-					<c:set var="totalFields" value="${sectionFieldCount}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">

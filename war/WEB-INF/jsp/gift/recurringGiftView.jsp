@@ -22,15 +22,15 @@
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
-				<c:set var="gridCollectionName" value="distributionLines" />
-				<c:set var="gridCollection" value="${recurringGift.distributionLines}" />
-				<c:set var="paymentSource" value="${recurringGift.paymentSource}" />
+				<c:set var="gridCollectionName" value="distributionLines" scope="request" />
+				<c:set var="gridCollection" value="${recurringGift.distributionLines}" scope="request" />
+				<c:set var="paymentSource" value="${recurringGift.paymentSource}" scope="request" />
 
 				<h3 class="info"><spring:message code='thisRecurringGiftEntered'/> <fmt:formatDate value="${recurringGift.createDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${recurringGift.createDate}" type="time" />.</h3>
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
-					<c:set var="totalFields" value="${sectionFieldCount}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
 					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">

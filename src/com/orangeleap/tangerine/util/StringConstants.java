@@ -70,6 +70,8 @@ public final class StringConstants {
     public static final String UNKNOWN_CAMEL_CASE = "Unknown";
 
     public static final String TAX_DEDUCTIBLE = "taxDeductible";
+    public static final String ANONYMOUS_LOWER_CASE = "anonymous";
+    public static final String ANONYMOUS_UPPER_CASE = "Anonymous";
     public static final String RECOGNITION_NAME = "recognitionName";
     
     public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";

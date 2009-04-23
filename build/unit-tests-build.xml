@@ -60,7 +60,7 @@
 	</target>
 	
 	<target name="buildall" depends="init">
-		<antcall target="tangerine-build-jspc">
+		<antcall target="build">
 			<param name="build.env" value="unit-test"/>
 		</antcall>
 		<mkdir dir="${stage.dir}/test-folder"/>

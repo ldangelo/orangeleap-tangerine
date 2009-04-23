@@ -36,7 +36,7 @@
 			<span class="warningText" id="amountsErrorSpan"><spring:message code='mustMatchGiftValue'/></span> 
 		</div>
 		<div class="value" id="subTotal">0</div>
-        <span id="totalContributionInfo">
+        <span id="totalContributionInfo" class="x-hidden">
             <div id="totalContributionText">
             <spring:message code="totalContribution"/>
             </div>

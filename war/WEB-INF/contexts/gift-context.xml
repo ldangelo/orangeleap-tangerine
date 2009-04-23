@@ -45,6 +45,7 @@
 			        <property name="pageType" value="gift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>
+                 <ref bean="distributionLinesValidator"/>
 	        </list>
         </property>
     </bean>

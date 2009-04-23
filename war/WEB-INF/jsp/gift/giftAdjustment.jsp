@@ -133,7 +133,7 @@
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
                 <script type="text/javascript">
                     // hacks to make distribution lines behave themselves in an Adjustment 
-                    Ext.select('.gridActions').hide();
+                    //Ext.select('.gridActions').hide();
                      Ext.select('a.deleteButton').hide();
                      Ext.select('th.header:nth(2)').update('');
                      Ext.select('col.pct').setWidth(0);

@@ -412,7 +412,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (logger.isDebugEnabled()) {
             logger.debug("adjustGift: giftId = " + gift.getId());
         }
-        //TODO - DRAFT functionality. Need to bounce off Karie
 
         try {
             // get the original gift to compare against
@@ -459,7 +458,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             int len = origLines.size();
 
             for(int i=0; i<len; i++) {
-                if(!origLines.get(i).getAmount().equals(mutLines.get(i).getAmount())) {
+                BigDecimal amt = mutLines.get(i).getAmount();
+                if(amt != null && amt.compareTo(BigDecimal.ZERO) != 0 && !origLines.get(i).getAmount().equals(amt)) {
                     DistributionLine dl = mutLines.get(i);
                     dl.setPercentage(null);
                     newLines.add( dl );

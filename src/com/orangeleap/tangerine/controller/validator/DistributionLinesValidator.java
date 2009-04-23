@@ -21,7 +21,7 @@ public class DistributionLinesValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return RecurringGift.class.equals(clazz) || Pledge.class.equals(clazz) || Gift.class.equals(clazz);
+        return RecurringGift.class.equals(clazz) || Pledge.class.equals(clazz) || Gift.class.isAssignableFrom(clazz);
     }
 
     @Override

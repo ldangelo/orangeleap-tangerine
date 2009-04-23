@@ -15,10 +15,29 @@
 	</taskdef>
 
 	<target name="build">
-		<antcall target="build-integrated-war" />
+		<antcall target="tangerine-build-jspc"/>
+	</target>
+	
+	<!-- Integrated targets -->
+	<target name="tangerine-build" depends="resolve, clean-build, setup, compile, jar, setup-war, build-integrated-war" description="Does a clean build, but does not precompile JSPs"/>
+
+	<target name="tangerine-build-jspc" depends="resolve, clean-build, setup, compile, jspc, jar, setup-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
+
+	<target name="compress" depends="resolve, optimization" description="Compress CSS and JS files"/>
+
+	<target name="deploy-integrated-war" depends="tangerine-build, copy-tangerine.properties">
+		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
 
-	<target name="setup" depends="clean-build, resolve">
+	<target name="deploy-exploded-war" depends="tangerine-build, copy-tangerine.properties">
+		<copy todir="${deploy.path}/${war.name}">
+			<fileset dir="${stage.dir}/${war.name}.war" />
+		</copy>
+		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
+	</target>
+
+	<!-- Singular targets -->
+	<target name="setup">
 		<echo>Setting up for environment = ${build.env}</echo>
 		<mkdir dir="${stage.dir}" />
 		<if>
@@ -38,7 +57,7 @@
 		</if>
 	</target>
 	
-	<target name="compile" depends="setup">
+	<target name="compile">
 		<mkdir dir="${classes.dir}" />
 		
 		<echo>Compiling with debug=${debug.compile}</echo>
@@ -46,7 +65,7 @@
 			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
 	</target>
 	
-	<target name="jspc" depends="compile"> 
+	<target name="jspc"> 
 		<taskdef resource="org/apache/catalina/ant/catalina.tasks">
 			<classpath>
 				<pathelement path="${compile.lib}"/>
@@ -63,7 +82,7 @@
 
 	</target> 
 
-	<target name="jar" depends="compile">
+	<target name="jar">
 		<copy todir="${classes.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.*" />
@@ -93,7 +112,7 @@
 		<!--<delete dir="${classes.dir}" />-->
 	</target>
 
-	<target name="setup-war" depends="jar">
+	<target name="setup-war">
 		<mkdir dir="${stage.dir}/war" />
 		<mkdir dir="${stage.dir}/war/META-INF" />
 		<mkdir dir="${stage.dir}/war/WEB-INF" />
@@ -123,14 +142,14 @@
 
 	</target>
 
-	<target name="build-integrated-war" depends="setup-war">
+	<target name="build-integrated-war">
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
 		</war>
 		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="build-exploded-war" depends="setup-war">
+	<target name="build-exploded-war">
 		<mkdir dir="${stage.dir}/${war.name}.war" />
 		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
@@ -145,7 +164,6 @@
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
 		<copy todir="${deploy.lib.dir}" file="${basedir}/tangerine.properties" />
 		<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
-		<!--
 		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
 			<equals arg1="${tangerine.properties.present}" arg2="true" />
@@ -154,18 +172,6 @@
 				<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>
-		-->
-	</target>
-	
-	<target name="deploy-integrated-war" depends="build-integrated-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
-	</target>
-
-	<target name="deploy-exploded-war" depends="build-exploded-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}/${war.name}">
-			<fileset dir="${stage.dir}/${war.name}.war" />
-		</copy>
-		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
 
 	<target name="undeploy-war">
@@ -223,7 +229,7 @@
 		</copy>
 	</target>
 	
-	<target name="optimization" depends="resolve">
+	<target name="optimization">
 		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
 			<classpath path="${compile.lib}"/>
 		</taskdef>

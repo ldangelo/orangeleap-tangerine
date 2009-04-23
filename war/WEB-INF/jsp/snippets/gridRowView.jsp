@@ -22,6 +22,8 @@
 												<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(hiddenTotalFields div 2)+((hiddenTotalFields%2)-1)}" varStatus="status">
 													<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />
 													<c:set target="${fieldVO}" property="fieldName" value="${gridCollectionName}[${counter}].${fieldVO.fieldName}"/>
+													<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
+													<c:set var="sectionField" value="${sectionField}" scope="request"/>
 													<jsp:include page="../snippets/input.jsp"/>
 												</c:forEach>
 												<li class="clear"></li>
@@ -32,6 +34,8 @@
 												<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(hiddenTotalFields div 2)+(hiddenTotalFields%2)}">
 													<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${row}" />
 													<c:set target="${fieldVO}" property="fieldName" value="${gridCollectionName}[${counter}].${fieldVO.fieldName}"/>
+													<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
+													<c:set var="sectionField" value="${sectionField}" scope="request"/>
 													<jsp:include page="../snippets/input.jsp"/>
 												</c:forEach>
 												<li class="clear"></li>

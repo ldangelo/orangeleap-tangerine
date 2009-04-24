@@ -118,7 +118,7 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
     	List<Email> emails = getEmails();
     	
     	for (Email e: emails) {
-    		if (e.isReceiveMail() && !e.isInactive()) return true;
+    		if (e.isReceiveMail() && !e.isInactive() && !e.isUndeliverable()) return true;
     	}
     	
     	return false;

@@ -10,7 +10,7 @@
 		</tr>
 		<c:if test='${not empty hiddenGridRows}'>
 			<tr class="hiddenRow noDisplay">
-				<td colspan="<c:out value='${sectionFieldCount}'/>">
+				<td colspan="<c:out value='${sectionFieldCount + 2}'/>">
 					<table>
 						<tr>
 							<td>

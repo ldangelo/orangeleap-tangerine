@@ -1214,7 +1214,7 @@ table.distributionLines col.number { width: 10%; }
 table.distributionLines col.pct { width: 7%; }
 table.distributionLines .lineRow .lookupField { min-height: 18px; padding: 0; }
 table.giftInKindDetails col.number { width: 20%; }
-table.giftInKindDetails col.text { width: 40%; }
+table.giftInKindDetails col.text { width: 55%; }
 table.giftInKindDetails col.checkbox { width: 3%; }
 table.tablesorter td.nodeLink { width: 16px; padding: 0; vertical-align: middle; }
 
@@ -1274,7 +1274,9 @@ ul.formFields div.lookupWrapper input.code {
 	min-height: 18px;
 	word-wrap: break-word;
 }
-.ea-wrappable { -moz-binding: url('../xml/wordwrap.xml#wordwrap'); }
+.ea-wrappable { 
+	-moz-binding: url('../xml/wordwrap.xml#wordwrap'); 
+}
 .lookupField {
 	border:1px solid #7F9DB9;
 	padding:2px 0;

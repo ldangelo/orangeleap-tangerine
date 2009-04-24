@@ -11,8 +11,6 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
     
     public T save(T entity);
     
-    public T saveOnlyIfNew(T entity);
-
     public List<T> readByConstituentId(Long constituentId);
 
     public List<T> filterValid(Long constituentId);
@@ -30,4 +28,8 @@ public interface CommunicationService<T extends AbstractCommunicationEntity> {
     public T getPrimary(Long constituentId);
 
     public void inactivateEntities();
+    
+    public void maintainResetReceiveCorrespondence(Long constituentId);
+    
+    public void resetReceiveCorrespondence(T entity);
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +116,7 @@ public class EmailService {
 	}
 	
 	public void sendMail(Person p, Gift g, String subject, String templateName) {
-
+		List<Email> selectedEmails = new LinkedList<Email>();
 		setSubject(subject);
 		setTemplateName(templateName);
 		
@@ -156,12 +157,19 @@ public class EmailService {
 		
 		for (Email e : emailAddresses) {
 			if (e.isReceiveMail() && !e.isInactive() && e.isValid()) {
+				selectedEmails.add(e);
 				try {
 					helper.addTo(e.getEmailAddress());
 				} catch (MessagingException e1) {
 					logger.error(e1.getMessage());
 				}
 			}
+		}
+		
+		//
+		// no e-mail addresses can receive mail
+		if (selectedEmails.size() == 0) {
+			return;
 		}
 		
 		FileSystemResource file = new FileSystemResource(new File(tempFileName));
@@ -176,16 +184,17 @@ public class EmailService {
 
 			//
 			// add entry to touchpoints for this e-mail
-			CommunicationHistory ch = new CommunicationHistory();
-			ch.setPerson(p);
-			ch.setGiftId(g.getId());
-			ch.setSystemGenerated(true);
-			ch.setComments("Sent e-mail using template named " + getTemplateName());
-			ch.setEntryType("Email");
-			ch.setRecordDate(new Date());
-
-			communicationHistoryService.maintainCommunicationHistory(ch);
-			
+			for (Email e: selectedEmails) {
+				CommunicationHistory ch = new CommunicationHistory();
+				ch.setPerson(p);
+				ch.setGiftId(g.getId());
+				ch.setSystemGenerated(true);
+				ch.setComments("Sent e-mail using template named " + getTemplateName());
+				ch.setEntryType("Email");
+				ch.setRecordDate(new Date());
+				ch.setSelectedEmail(e);
+				communicationHistoryService.maintainCommunicationHistory(ch);
+			}
 		} catch (MessagingException e1) {
 			logger.error(e1.getMessage());
 			return;

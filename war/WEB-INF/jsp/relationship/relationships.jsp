@@ -9,27 +9,19 @@
 		<div class="simplebox">
 		    <h4>Maintain relationships for <c:out value='${person.fullName}'/></h4><br/>
 		
-		<form method="get" action="relationship.htm">
-			<h4>Relationship to Manage</h4>
-			<select id="fieldRelationshipId" name="fieldRelationshipId" >
-		  	  <option value="" ${currentFieldRelationshipId==''?'selected':''}>Select...</option>
-			   <c:forEach var="fieldRelationship" items="${fieldRelationships}">
-			     <option value="<c:out value='${fieldRelationship.id}'/>" ${currentFieldRelationshipId==fieldRelationship.id?'selected':''}><c:out value='${fieldRelationship.defaultLabel}'/></option>
-			     <c:if test="${currentFieldRelationshipId==fieldRelationship.id}">
-						<c:set var="currentFieldRelationship" value="${fieldRelationship.defaultLabel}" />
-			     </c:if>
-			   </c:forEach>
-			</select>
- 		   <c:url var="fieldRelationshipCustomizeUrl" value="fieldRelationshipCustomize.htm">
- 	         <c:param name="personId" value="${person.id}" />
- 	         <c:param name="fieldRelationshipId" value="${currentFieldRelationshipId}" />
-		     <c:param name="view" value="customize" />
-		   </c:url>
-		   <c:if test="${currentFieldRelationshipId != ''}">
-		   &nbsp;&nbsp;&nbsp;<a class="action" href="${fieldRelationshipCustomizeUrl}">Customize</a>
-		   </c:if>
+		<form method="post" action="relationship.htm">
 		   <input type=hidden name="personId" value="${person.id}" />
-		   <input type=submit value="Edit" />
+			<h4>Relationship to Manage</h4>
+			<select id="fieldRelationshipId" name="fieldRelationshipId" onchange="if (this.form.fieldRelationshipId.value != '') $('#actions').show(); else $('#actions').hide();">
+		  	  <option value="" >Select...</option>
+			   <c:forEach var="fieldRelationship" items="${fieldRelationships}">
+			     <option value="<c:out value='${fieldRelationship.id}'/>" ><c:out value='${fieldRelationship.defaultLabel}'/></option>
+			   </c:forEach>
+			</select>&nbsp;&nbsp;&nbsp;
+		   <div id="actions" style="display:none">
+		  	   <input type=submit value="Edit" />
+			   <a class="action" href="#" onclick="this.form.action='fieldRelationshipCustomize.htm';this.form.submit();" >Customize</a>
+		   </div>
 		</form>
 
 

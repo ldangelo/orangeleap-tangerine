@@ -1,9 +1,7 @@
 package com.orangeleap.tangerine.controller.relationship;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -39,12 +36,10 @@ public class RelationshipFormController extends SimpleFormController {
     protected ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
     
     
-    @SuppressWarnings("unchecked")
-    @Override
-    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
-    	
-        Map returnMap = new HashMap();
-        
+	@Override
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
         Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
 		if (person == null) return null;
@@ -70,9 +65,10 @@ public class RelationshipFormController extends SimpleFormController {
         form.setFieldRelationship(fieldRelationship);
         form.setFieldLabel(fieldname);
         
-        returnMap.put("form", form);
+        ModelAndView mav = new ModelAndView(super.getSuccessView());
+        mav.addObject("form", form);
+        return mav;
         
-        return returnMap;
     }
 
     

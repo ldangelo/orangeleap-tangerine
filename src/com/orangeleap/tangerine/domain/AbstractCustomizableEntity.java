@@ -130,14 +130,17 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     	//
     	// if the custom field value does not contain the value
     	// we are removing simply return
-    	if (existingValue.contains(value) == false) return;
+    	if (existingValue.contains(value) == false) {
+            return;
+        }
     	
     	//
     	// if the existing value is equal to the value we are removing
     	// then set the field value to an empty string (remove it)
     	if (existingValue.contains(",") == false) {
-    		if (existingValue.compareTo(value) == 0)
-    			setCustomFieldValue(fieldName,"");
+    		if (existingValue.compareTo(value) == 0) {
+                setCustomFieldValue(fieldName,"");
+            }
     	} else {
     		//
     		// if the existing value is a comma separated list of values
@@ -147,11 +150,13 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     		
     		StringBuilder sb = new StringBuilder();
     		for (int i = 0; i < values.length; i++) {
-    			if (values[i].equals(value) == false)
-    				sb.append(values[i]);
+    			if (values[i].equals(value) == false) {
+                    sb.append(values[i]);
+                }
     			
-    			if (i != (values.length - 1))
-    				sb.append(",");
+    			if (i != (values.length - 1)) {
+                    sb.append(",");
+                }
     		}
     		
     			setCustomFieldValue(fieldName,sb.toString());
@@ -172,6 +177,33 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         else {
             setCustomFieldValue(fieldName, existingValue + "," + value); 
         }
+    }
+    
+    /**
+     * Check if a value for a fieldName has the specified value.  If this is a multi-valued custom field,
+     * split the values by ',' and check each individually against the specified value 
+     * @param fieldName
+     * @param value specified value to compare against.
+     * @return
+     */
+    public boolean hasCustomFieldValue(String fieldName, String value) {
+        boolean hasValue = false;
+        String val = getCustomFieldValue(fieldName);
+        if (val != null) {
+            if (val.indexOf(",") > -1) {
+                String values[] = val.split(",");
+                for (String thisValue : values) {
+                    if (thisValue.equals(value)) {
+                        hasValue = true;
+                        break;
+                    }
+                }
+            }
+            else {
+                hasValue = val.equals(value);
+            }
+        }
+        return hasValue;
     }
     
     /**

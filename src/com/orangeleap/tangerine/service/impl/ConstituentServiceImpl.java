@@ -118,27 +118,37 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
         }
         else if (StringConstants.OPT_IN.equals(communicationPref)) {
-            String optInPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES);
-            if (StringConstants.MAIL_CAMEL_CASE.equals(optInPref)) {
-                phoneService.maintainResetReceiveCorrespondence(constituent.getId());
-                emailService.maintainResetReceiveCorrespondence(constituent.getId());
-
-                phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
-                emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
+            // Mail
+            if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.MAIL_CAMEL_CASE) ||
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                // do nothing
             }
-            else if (StringConstants.PHONE_CAMEL_CASE.equals(optInPref)) {
+            else {
                 addressService.maintainResetReceiveCorrespondence(constituent.getId());
-                emailService.maintainResetReceiveCorrespondence(constituent.getId());
-                
                 addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
-                emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
             }
-            else if (StringConstants.EMAIL_CAMEL_CASE.equals(optInPref)) {
-                addressService.maintainResetReceiveCorrespondence(constituent.getId());
-                phoneService.maintainResetReceiveCorrespondence(constituent.getId());
 
-                addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
+            // Phone
+            if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.PHONE_CAMEL_CASE) ||
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                // do nothing
+            }
+            else {
+                phoneService.maintainResetReceiveCorrespondence(constituent.getId());
                 phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+            }
+            
+            // Email
+            if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.EMAIL_CAMEL_CASE) ||
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                // do nothing
+            }
+            else {
+                emailService.maintainResetReceiveCorrespondence(constituent.getId());
+                emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
             }
         }
     }

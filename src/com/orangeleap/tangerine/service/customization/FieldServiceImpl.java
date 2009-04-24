@@ -130,19 +130,33 @@ public class FieldServiceImpl implements FieldService {
                     //Opt Out-All, Unknown, Any, Email, Mail, Text, Phone
                 }
                 else if (StringConstants.OPT_IN.equals(communicationPref)) {
-                    String optInPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES);
-                    if (StringConstants.MAIL_CAMEL_CASE.equals(optInPref)) {
-                       if (EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) {
-                           isDisabled = true;
-                       }
-                    }
-                    else if (StringConstants.PHONE_CAMEL_CASE.equals(optInPref)) {
-                        if (EntityType.address.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) {
+                    if (EntityType.address.equals(sectionField.getFieldDefinition().getEntityType())) {
+                        if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.MAIL_CAMEL_CASE) ||
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                            // do nothing
+                        }
+                        else {
                             isDisabled = true;
                         }
                     }
-                    else if (StringConstants.EMAIL_CAMEL_CASE.equals(optInPref)) {
-                        if (EntityType.address.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType())) {
+                    else if (EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType())) {
+                        if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.PHONE_CAMEL_CASE) ||
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                            // do nothing
+                        }
+                        else {
+                            isDisabled = true;
+                        }
+                    }
+                    else if (EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) {
+                        if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.EMAIL_CAMEL_CASE) ||
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                                constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                            // do nothing
+                        }
+                        else {
                             isDisabled = true;
                         }
                     }

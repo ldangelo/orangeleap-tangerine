@@ -15,6 +15,7 @@ import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
 import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
     
@@ -79,7 +80,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert "bits".equals(readGiftInKind.getOther_motivationCode());
         assert readGiftInKind.isAnonymous();
         assert readGiftInKind.getGiftId() == null;
-        assert readGiftInKind.getRecognitionName() == null;
+        assert readGiftInKind.getRecognitionName().equals(StringConstants.ANONYMOUS_UPPER_CASE);
         assert readGiftInKind.isSendAcknowledgment() == false;
         assert readGiftInKind.getAcknowledgmentDate() == null;
         assert readGiftInKind.getSelectedEmail() != null && readGiftInKind.getSelectedEmail().getId() == 100L;

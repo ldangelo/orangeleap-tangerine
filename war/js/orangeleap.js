@@ -194,6 +194,7 @@ var GenericCustomizer = {
 					$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
 					$field.val("");
 					$field.attr("style", "");
+					$field.attr("class", "");
 					$field.removeAttr("readonly");
 				});
 			$("table.customFields", "form").append($newRow);

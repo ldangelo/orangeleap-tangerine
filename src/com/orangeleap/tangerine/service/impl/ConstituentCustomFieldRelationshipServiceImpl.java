@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.ConstituentCustomFieldRelationshipDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
@@ -87,12 +88,21 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	}
 
     @Override
-    public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId) {
+    public List<ConstituentCustomFieldRelationship> readAllByConstituentAndRelationship(Long personId, Long relationshipId) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("ConstituentCustomFieldRelationshipService.readById: personId = " + personId);
+	        logger.trace("ConstituentCustomFieldRelationshipService.readAllByConstituentAndRelationship: personId = " + personId);
 	    }
 	    if (null == constituentDao.readConstituentById(personId)) return null;
-	    return constituentCustomFieldRelationshipDao.readAllByConstituent(personId);
+	    return constituentCustomFieldRelationshipDao.readAllByConstituentAndRelationship(personId, relationshipId);
+    }
+
+    @Override
+    public List<CustomField> readAllCustomFieldsByConstituent(Long personId) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndRelationship: personId = " + personId);
+	    }
+	    if (null == constituentDao.readConstituentById(personId)) return null;
+	    return constituentCustomFieldRelationshipDao.readAllCustomFieldsByConstituent(personId);
     }
 
 }

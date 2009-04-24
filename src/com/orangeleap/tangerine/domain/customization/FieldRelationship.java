@@ -74,6 +74,10 @@ public class FieldRelationship implements GeneratedId, Serializable {
 	public Site getSite() {
 		return site;
 	}
+	
+	public String getDefaultLabel() {
+		return masterRecordField.getDefaultLabel() + " - " + detailRecordField.getDefaultLabel();
+	}
 
     @Override
     public String toString() {

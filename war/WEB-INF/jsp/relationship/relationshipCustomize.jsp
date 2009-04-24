@@ -20,7 +20,7 @@
 			</c:forEach>
 			</table>
 			<br/>
-			<input type="button" value="Add" class="saveButton" onclick="PicklistCustomizer.addNewRow();" />
+			<input type="button" value="Add" class="saveButton" onclick="GenericCustomizer.addNewRow();" />
 			<input type="submit" value="Save" class="saveButton" />
 		</form:form>
 		</div>

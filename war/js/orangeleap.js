@@ -182,7 +182,7 @@ function getPage(elem) {
 		return false;
 }
 
-var PicklistCustomizer = {	
+var GenericCustomizer = {	
 		addNewRow : function() {
 			var $newRow = $("table.customFields tr:last", "form").clone(false);
 			var i = $newRow.attr("rowindex");
@@ -199,6 +199,8 @@ var PicklistCustomizer = {
 			$("table.customFields", "form").append($newRow);
 		}
 }
+
+
 
 var Picklist = {	
 	rootTrees: {},

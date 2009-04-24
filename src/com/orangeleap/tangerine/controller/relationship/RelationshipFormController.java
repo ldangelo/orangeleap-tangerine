@@ -1,0 +1,84 @@
+package com.orangeleap.tangerine.controller.relationship;
+
+import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
+import com.orangeleap.tangerine.service.ConstituentService;
+
+public class RelationshipFormController extends SimpleFormController {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
+
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
+
+    @Resource(name="constituentCustomFieldRelationshipService")
+    protected ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
+
+    
+	@Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+       
+        Long personId = new Long(request.getParameter("personId"));
+		Person person = constituentService.readConstituentById(personId);
+		if (person == null) return null;
+
+        String relationshipId = request.getParameter("fieldRelationshipId");
+        FieldRelationship fieldRelationship = fieldDao.readFieldRelationship(new Long(relationshipId));
+        String masterfieldname = fieldRelationship.getMasterRecordField().getFieldName();
+        String detailfieldname = fieldRelationship.getDetailRecordField().getFieldName();
+        
+        List<CustomField> list = constituentCustomFieldRelationshipService.readAllCustomFieldsByConstituent(new Long(personId));
+        // Filter for custom fields involved in this relationship. There should only be either all master or all detail fields.
+        Iterator<CustomField> it = list.iterator();
+        while (it.hasNext()) {
+        	CustomField cf = it.next();
+        	if (!cf.getName().equals(masterfieldname) && !cf.getName().equals(detailfieldname)) it.remove();
+        }
+        
+        RelationshipForm form = new RelationshipForm();
+        form.setRelationshipList(list);
+        form.setPerson(person);
+        form.setFieldRelationship(fieldRelationship);
+        
+        return form;
+        
+    }
+
+    @Override
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+    	
+    	RelationshipForm form = (RelationshipForm) command;
+    	// This is the old list for comparision with the new edited list.
+    	List<CustomField> list = form.getRelationshipList(); 
+    	// Passed-in blank values are the same as deletions
+    	
+    	// TODO validate all date ranges, modify custom field values, and maintain other side.
+    	
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        mav.addObject("form", form);
+        return mav;
+        
+    }
+    
+}

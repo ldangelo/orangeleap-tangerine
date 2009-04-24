@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class RelationshipListController extends ParameterizableViewController {
 	
@@ -29,6 +34,9 @@ public class RelationshipListController extends ParameterizableViewController {
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
 
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
+
     @Resource(name = "siteService")
     private SiteService siteService;
 
@@ -37,6 +45,9 @@ public class RelationshipListController extends ParameterizableViewController {
 
 	@Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		Long personId = new Long(request.getParameter("personId"));
+		Person person = constituentService.readConstituentById(personId);
 		
 		// Return all field definitions for the person maint. page that are involved in a relationship.
 		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
@@ -48,14 +59,34 @@ public class RelationshipListController extends ParameterizableViewController {
 			List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fieldDefinitionid);
 			List<FieldRelationship> frdetail = fieldDao.readDetailFieldRelationships(fieldDefinitionid);
 			if (frmaster.size() > 0) {
-				frs.add(frmaster.get(0));
+				FieldRelationship master = frmaster.get(0);
+				add(frs, master);
 			} else if (frdetail.size() > 0) {
-				frs.add(frdetail.get(0));
+				FieldRelationship detail = frdetail.get(0);
+				add(frs, detail);
 			}
 		}
 		
+		Collections.sort(frs, new Comparator<FieldRelationship>() {
+			@Override
+			public int compare(FieldRelationship o1, FieldRelationship o2) {
+				return o1.getDefaultLabel().compareTo(o2.getDefaultLabel());
+			}
+		});
+		
         ModelAndView mav = new ModelAndView(super.getViewName());
         mav.addObject("fieldRelationships", frs);
+        mav.addObject("person", person);
         return mav;
     }
+	
+	private void add(List<FieldRelationship> frs, FieldRelationship fr) {
+		for (FieldRelationship afr : frs) {
+			if (fr.getId().equals(afr.getId())) {
+				return;
+			}
+		}
+		frs.add(fr);
+	}
+	
 }

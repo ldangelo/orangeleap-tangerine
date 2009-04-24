@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentCustomFieldRelationshipDao;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 
 /** 
  * Corresponds to the CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP table
@@ -48,13 +49,26 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<ConstituentCustomFieldRelationship> readAllByConstituent(Long personId) {
+	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndRelationship(Long personId, Long relationshipId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllByConstituent: personid = " + personId);
+            logger.trace("readAllByConstituentAndRelationship: personid = " + personId);
         }
         Map<String, Object> params = setupParams();
         params.put("personId", personId);
-        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT", params);
+        params.put("relationshipId", relationshipId);
+        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_RELATIONSHIP", params);
+	}
+   
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<CustomField> readAllCustomFieldsByConstituent(Long personId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAllCustomFieldsByConstituentAndRelationship: personid = " + personId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("entityId", personId);
+        params.put("entityType", "person");
+        return getSqlMapClientTemplate().queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
 	}
    
 

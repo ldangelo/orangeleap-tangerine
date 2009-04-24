@@ -191,14 +191,10 @@ public class IBatisCustomFieldHelper {
         if (logger.isTraceEnabled()) {
             logger.trace("saveSingleCustomField: customField.fieldName = " + customField.getName() + " value = " + value + " sequenceNumber = " + sequenceNumber);
         }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("entityType", customField.getEntityType());
-        params.put("entityId", customField.getEntityId());
-        params.put("fieldName", customField.getName());
-        params.put("fieldValue", value);
-        params.put("sequenceNum", sequenceNumber);
+        customField.setValue(value);
+        customField.setSequenceNumber(sequenceNumber);
 
-        Long id = (Long) template.insert("INSERT_CUSTOM_FIELD", params);
+        Long id = (Long) template.insert("INSERT_CUSTOM_FIELD", customField);
         customField.setId(id);
     }
 }

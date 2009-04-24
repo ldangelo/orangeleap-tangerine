@@ -8,10 +8,12 @@
 		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
         <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
         <result property="entityId" column="ENTITY_ID" jdbcType="BIGINT"/>
+        <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP"/>
+        <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
 
     <select id="SELECT_CUSTOM_FIELD_BY_ENTITY" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
-        select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM
+        select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE
         from CUSTOM_FIELD
         where ENTITY_ID = #entityId#
         and ENTITY_TYPE = #entityType#
@@ -21,9 +23,9 @@
         order by FIELD_NAME asc, SEQUENCE_NUM asc
     </select>
 
-	<insert id="INSERT_CUSTOM_FIELD" parameterClass="map">
-		insert into CUSTOM_FIELD (FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM)
-		values (#fieldName#, #fieldValue#, #entityType#, #entityId#, #sequenceNum#)
+	<insert id="INSERT_CUSTOM_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.CustomField">
+		insert into CUSTOM_FIELD (FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE)
+		values (#name#, #value#, #entityType#, #entityId#, #sequenceNumber#, #startDate#, #endDate#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

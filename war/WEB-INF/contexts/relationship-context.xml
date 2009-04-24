@@ -5,13 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
-    <bean id="relationships" class="com.orangeleap.tangerine.controller.relationship.RelationshipsFormController">
-        <property name="formView" value="relationship/relationships" />
-        <property name="successView" value="relationship/relationships" />
+    <bean id="relationship" class="com.orangeleap.tangerine.controller.relationship.RelationshipFormController">
+        <property name="formView" value="relationship/relationship" />
+        <property name="successView" value="relationship/relationship" />
     </bean>
 
-    <bean id="relationshipList" class="com.orangeleap.tangerine.controller.relationship.RelationshipListController">
-        <property name="viewName" value="relationship/relationshipList"/>
+    <bean id="relationships" class="com.orangeleap.tangerine.controller.relationship.RelationshipListController">
+        <property name="viewName" value="relationship/relationships"/>
     </bean>
 
 	<bean id="relationshipCustomize" class="com.orangeleap.tangerine.controller.relationship.RelationshipCustomizeFormController">
@@ -28,7 +28,7 @@
 		<property name="mappings">
 		    <props>
                 <prop key="/relationships.htm">relationships</prop>
-                <prop key="/customFieldList.htm">relationshipList</prop>
+                <prop key="/relationship.htm">relationship</prop>
                 <prop key="/relationshipCustomize.htm">relationshipCustomize</prop>
                 <prop key="/fieldRelationshipCustomize.htm">fieldRelationshipCustomize</prop>
 			</props>

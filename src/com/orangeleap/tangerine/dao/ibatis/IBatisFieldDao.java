@@ -67,6 +67,16 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
          }
     }
 
+	@Override
+    public FieldRelationship readFieldRelationship(Long id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFieldRelationship: id=" + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        return (FieldRelationship)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_RELATIONSHIP_BY_ID", params);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<FieldRelationship> readMasterFieldRelationships(String masterFieldDefId) {

@@ -32,6 +32,11 @@
 		and (detail.SITE_NAME = #siteName# or detail.SITE_NAME is null)
 	</sql>
 	
+	<select id="SELECT_FIELD_RELATIONSHIP_BY_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
+		and fr.FIELD_RELATIONSHIP_ID = #id#	
+	</select>
+	
 	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
 		and master.FIELD_DEFINITION_ID = #id#	

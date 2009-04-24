@@ -38,7 +38,7 @@ public class SortInfo {
     }
 
     public void setSort(String sort) {
-        this.sort = sort.trim().toLowerCase();
+        this.sort = sort == null ? null : sort.trim().toLowerCase();
     }
 
     public int getLimit() {

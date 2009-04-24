@@ -25,7 +25,7 @@ public class PersonListController {
 
     static {
         NAME_MAP.put("id", "CONSTITUENT_ID");
-        NAME_MAP.put("accountNumber", "ACCOUNT_NUMBER");
+        NAME_MAP.put("accountnumber", "ACCOUNT_NUMBER");
         NAME_MAP.put("last", "LAST_NAME");
         NAME_MAP.put("first", "FIRST_NAME");
         NAME_MAP.put("organization", "ORGANIZATION_NAME");

@@ -84,6 +84,7 @@ public class MyAccountsController {
 
         Map<String,Object> ret = new HashMap<String,Object>();
         ret.put("id", constituent.getId());
+        ret.put("accountNumber", constituent.getAccountNumber());
         ret.put("first", constituent.getFirstName());
         ret.put("last", constituent.getLastName());
         ret.put("orgName", constituent.getOrganizationName());

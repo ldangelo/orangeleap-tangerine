@@ -8,6 +8,7 @@ Ext.onReady(function() {
     Sidebar.accountStore = new Ext.data.JsonStore({
         fields:[
             {name: 'id', type: 'int'},
+            {name: 'accountNumber', type: 'string'},
             {name: 'first', type: 'string'},
             {name: 'last', type: 'string'},
             {name: 'orgName', type: 'string'},
@@ -31,7 +32,8 @@ Ext.onReady(function() {
         header: false,
         store: Sidebar.accountStore,
         columns:[
-            {id: 'nameColumn', header: 'First', width: 100, sortable: true, dataIndex: 'first', align: 'left'},
+            {id: 'nameColumn', header: 'Account', width: 100, sortable: true, dataIndex: 'accountNumber', align: 'left'},
+            {header: 'First', width: 100, sortable: true, dataIndex: 'first', align: 'left'},
             {header: 'Last', width: 100, sortable: true, dataIndex: 'last', align: 'left'},
             {header: 'Organization', width: 100, sortable: true, dataIndex: 'orgName', align: 'left'},
             {header: 'Gifts', width: 55, sortable: true, dataIndex: 'gifts', align: 'right'},
@@ -56,7 +58,7 @@ Ext.onReady(function() {
     Sidebar.win = new Ext.Window({
         title: 'My Accounts',
         layout: 'fit',
-        width: 540,
+        width: 650,
         height: 400,
         buttons: [{text: 'Close', handler: function() {Sidebar.win.hide();}}],
         buttonAlign: 'center',

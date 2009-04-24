@@ -494,7 +494,8 @@
 		                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
 		                   name="<c:out value='${fieldVO.fieldName}'/>" 
 		                   id="<c:out value='${fieldVO.fieldId}'/>"  
-		                   <c:if test="${fieldVO.fieldValue == 'true'}">checked</c:if> 
+		                   <c:if test="${fieldVO.fieldValue == 'true'}">checked="true"</c:if> 
+		                   <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
 		            />
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
@@ -506,11 +507,13 @@
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
 					<textarea rows="5" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" 
+	                    <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
 						name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>"><c:out value='${fieldVO.displayValue}'/></textarea>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'TEXT' || fieldVO.fieldType == 'LOOKUP' || fieldVO.fieldType == 'DATE_TIME' || fieldVO.fieldType == 'ADDRESS' || fieldVO.fieldType == 'PHONE' || fieldVO.fieldType == 'NUMBER' || fieldVO.fieldType == 'PERCENTAGE'}">
 					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:if test="${fieldVO.fieldType == 'LOOKUP'}">lookup </c:if> <c:if test="${fieldVO.fieldType == 'NUMBER'}">number </c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}">percentage </c:if><c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>"
 						<c:if test="${fieldVO.fieldType == 'DATE_TIME'}">size="16" </c:if> 
+	                    <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
 						name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
 						<c:if test="${fieldVO.fieldType == 'LOOKUP'}"><a class="lookupLink jqModal" href="javascript:void(0)"><spring:message code='lookup'/></a></c:if>
 				</c:when>

@@ -11,11 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PicklistDao;
+import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 // TODO: Need a service to clear the cache and this class needs to observe that class
@@ -24,6 +28,9 @@ public class FieldServiceImpl implements FieldService {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name = "constituentService")
+    private ConstituentService constituentService;
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
@@ -36,7 +43,6 @@ public class FieldServiceImpl implements FieldService {
 
     @Resource(name = "picklistCache")
     private Cache picklistCache;
-    
 
     @Override
     public FieldRequired lookupFieldRequired(SectionField currentField) {
@@ -91,7 +97,6 @@ public class FieldServiceImpl implements FieldService {
     }
 
     private String buildRequiredFieldCacheKey(SectionField sectionField) {
-
         String siteName = tangerineUserHelper.lookupUserSiteName();
         siteName = (siteName == null ? "DEFAULT" : siteName);
 
@@ -103,8 +108,48 @@ public class FieldServiceImpl implements FieldService {
         } else {
             builder.append(".").append(sectionField.getSecondaryFieldDefinition().getId());
         }
-
         return builder.toString();
-
     }
+    
+    @Override
+    public boolean isFieldDisabled(SectionField sectionField, Object model) {
+        boolean isDisabled = false;
+        
+        if ((EntityType.address.equals(sectionField.getFieldDefinition().getEntityType()) || 
+                EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType()) || 
+                EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) && 
+                "receiveCorrespondence".equals(sectionField.getFieldDefinition().getFieldName()) && 
+                model instanceof AbstractCommunicationEntity) {
+            
+            AbstractCommunicationEntity entity = (AbstractCommunicationEntity) model;
+            Person constituent = constituentService.readConstituentById(entity.getPersonId());
+            if (constituent != null) {
+                String communicationPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_PREFERENCES);
+                if (StringConstants.OPT_OUT_ALL.equals(communicationPref)) {
+                    isDisabled = true;
+                    //Opt Out-All, Unknown, Any, Email, Mail, Text, Phone
+                }
+                else if (StringConstants.OPT_IN.equals(communicationPref)) {
+                    String optInPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES);
+                    if (StringConstants.MAIL_CAMEL_CASE.equals(optInPref)) {
+                       if (EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) {
+                           isDisabled = true;
+                       }
+                    }
+                    else if (StringConstants.PHONE_CAMEL_CASE.equals(optInPref)) {
+                        if (EntityType.address.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.email.equals(sectionField.getFieldDefinition().getEntityType())) {
+                            isDisabled = true;
+                        }
+                    }
+                    else if (StringConstants.EMAIL_CAMEL_CASE.equals(optInPref)) {
+                        if (EntityType.address.equals(sectionField.getFieldDefinition().getEntityType()) || EntityType.phone.equals(sectionField.getFieldDefinition().getEntityType())) {
+                            isDisabled = true;
+                        }
+                    }
+                }
+            }
+        }
+        return isDisabled;
+    }
+
 }

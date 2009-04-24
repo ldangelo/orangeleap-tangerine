@@ -106,6 +106,7 @@
 		    <transaction src="${basedir}/db/prod/picklists/militaryPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/racePicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/communicationPreferencesPicklist.sql"/>
+		    <transaction src="${basedir}/db/prod/picklists/communicationOptInPreferencesPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/emailFormatPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/matchingPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/matchingEligibilityPicklist.sql"/>

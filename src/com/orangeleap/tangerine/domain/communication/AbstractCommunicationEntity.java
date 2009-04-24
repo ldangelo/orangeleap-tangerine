@@ -14,7 +14,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 
     protected Long personId;
     protected ActivationType activationStatus;
-    protected boolean receiveMail = false;
+    protected boolean receiveCorrespondence = false;
     protected Date temporaryStartDate;
     protected Date temporaryEndDate;
     protected Date seasonalStartDate;
@@ -35,12 +35,12 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.personId = personId;
     }
 
-    public boolean isReceiveMail() {
-        return receiveMail;
+    public boolean isReceiveCorrespondence() {
+        return receiveCorrespondence;
     }
 
-    public void setReceiveMail(boolean receiveMail) {
-        this.receiveMail = receiveMail;
+    public void setReceiveCorrespondence(boolean receiveCorrespondence) {
+        this.receiveCorrespondence = receiveCorrespondence;
     }
 
     public ActivationType getActivationStatus() {
@@ -166,7 +166,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("constituentId", personId).append("createDate", getCreateDate()).
-            append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveMail", receiveMail).append("temporaryStartDate", temporaryStartDate).
+            append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveCorrespondence", receiveCorrespondence).append("temporaryStartDate", temporaryStartDate).
             append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
             append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).
             toString();

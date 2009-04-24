@@ -45,7 +45,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.getAddressLine3() == null;
         assert readAddress.getCreateDate() != null;
         assert readAddress.getUpdateDate() != null;
-        assert readAddress.isReceiveMail() == false;
+        assert readAddress.isReceiveCorrespondence() == false;
         assert readAddress.isInactive() == false;
         assert readAddress.getComments() == null;
         assert readAddress.getEffectiveDate() != null;
@@ -73,7 +73,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.getAddressLine3() == null;
         assert readAddress.getCreateDate() != null;
         assert readAddress.getUpdateDate() != null;
-        assert readAddress.isReceiveMail() == false;
+        assert readAddress.isReceiveCorrespondence() == false;
         assert readAddress.isInactive() == false;
         assert readAddress.getComments() == null;
         assert readAddress.getEffectiveDate() != null;
@@ -98,7 +98,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert address.getCreateDate() != null;
         assert address.getUpdateDate() != null;
         assert 100L == address.getPersonId();
-        assert address.isReceiveMail() == false;
+        assert address.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(address.getActivationStatus());
         assert address.isInactive() == false;
         assert address.getComments() == null;
@@ -128,28 +128,28 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
                 case 100:
                     assert "3726 THIRD ST".equals(address.getAddressLine1());
                     assert "75554".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == false;
+                    assert address.isReceiveCorrespondence() == false;
                     assert address.isInactive() == false;
                     assert ActivationType.permanent.equals(address.getActivationStatus());
                     break;
                 case 200:
                     assert "406 FAIR OAK DR".equals(address.getAddressLine1());
                     assert "75479".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == true;
+                    assert address.isReceiveCorrespondence() == true;
                     assert address.isInactive() == false;
                     assert ActivationType.temporary.equals(address.getActivationStatus());
                     break;
                 case 300:
                     assert "3709 ASPEN BLVD".equals(address.getAddressLine1());
                     assert "75238".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == false;
+                    assert address.isReceiveCorrespondence() == false;
                     assert address.isInactive() == true;
                     assert ActivationType.seasonal.equals(address.getActivationStatus());
                     break;
                 case 400:
                     assert "5908 ELM RD".equals(address.getAddressLine1());
                     assert "75347".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == false;
+                    assert address.isReceiveCorrespondence() == false;
                     assert address.isInactive() == true;
                     assert ActivationType.permanent.equals(address.getActivationStatus());
                     break;
@@ -184,14 +184,14 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
                 case 100:
                     assert "3726 THIRD ST".equals(address.getAddressLine1());
                     assert "75554".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == false;
+                    assert address.isReceiveCorrespondence() == false;
                     assert address.isInactive() == false;
                     assert ActivationType.permanent.equals(address.getActivationStatus());
                     break;
                 case 200:
                     assert "406 FAIR OAK DR".equals(address.getAddressLine1());
                     assert "75479".equals(address.getPostalCode());
-                    assert address.isReceiveMail() == true;
+                    assert address.isReceiveCorrespondence() == true;
                     assert address.isInactive() == false;
                     assert ActivationType.temporary.equals(address.getActivationStatus());
                     break;

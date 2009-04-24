@@ -10,7 +10,7 @@
 		<result property="emailAddress" column="EMAIL_ADDRESS" jdbcType="VARCHAR" />
 		<result property="emailDisplay" column="EMAIL_DISPLAY" jdbcType="VARCHAR" />
 		<result property="inactive" column="EMAIL_INACTIVE" jdbcType="CHAR" />
-		<result property="receiveMail" column="EMAIL_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
+		<result property="receiveCorrespondence" column="EMAIL_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="EMAIL_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="seasonalStartDate" column="EMAIL_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryEndDate" column="EMAIL_TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />
@@ -60,7 +60,7 @@
 		EMAIL_ADDRESS, EMAIL_DISPLAY, INACTIVE, RECEIVE_CORRESPONDENCE,
 		SEASONAL_END_DATE, SEASONAL_START_DATE, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY, UNDELIVERABLE)
 		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
-		#inactive#, #receiveMail#, #seasonalEndDate#,
+		#inactive#, #receiveCorrespondence#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
 		now(), #personId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -76,7 +76,7 @@
 		EMAIL_ADDRESS = #emailAddress#,
 		EMAIL_DISPLAY = #emailDisplay#,
 		INACTIVE = #inactive#,
-		RECEIVE_CORRESPONDENCE = #receiveMail#,
+		RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
 		SEASONAL_END_DATE = #seasonalEndDate#,
 		SEASONAL_START_DATE = #seasonalStartDate#,
 		TEMPORARY_END_DATE = #temporaryEndDate#,

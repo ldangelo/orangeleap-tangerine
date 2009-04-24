@@ -80,7 +80,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert "bits".equals(readGiftInKind.getOther_motivationCode());
         assert readGiftInKind.isAnonymous();
         assert readGiftInKind.getGiftId() == null;
-        assert readGiftInKind.getRecognitionName().equals(StringConstants.ANONYMOUS_UPPER_CASE);
+        assert readGiftInKind.getRecognitionName().equals(StringConstants.ANONYMOUS_CAMEL_CASE);
         assert readGiftInKind.isSendAcknowledgment() == false;
         assert readGiftInKind.getAcknowledgmentDate() == null;
         assert readGiftInKind.getSelectedEmail() != null && readGiftInKind.getSelectedEmail().getId() == 100L;

@@ -51,6 +51,17 @@ public final class StringConstants {
     public static final String COMMUNICATION_HISTORY_ID = "communicationHistoryId";
     public static final String SELECTED_COMMUNICATION_HISTORY = "selectedcommunicationHistory";
 
+    public static final String COMMUNICATION_PREFERENCES = "communicationPreferences";
+    public static final String COMMUNICATION_OPT_IN_PREFERENCES = "communicationOptInPreferences";
+    public static final String OPT_IN = "Opt In";
+    public static final String OPT_OUT_ALL = "Opt Out-All";
+    public static final String ANY_CAMEL_CASE = "Any";
+    public static final String EMAIL_CAMEL_CASE = "Email";
+    public static final String MAIL_CAMEL_CASE = "Mail";
+    public static final String TEXT_CAMEL_CASE = "Text";
+    public static final String PHONE_CAMEL_CASE = "Phone";
+    
+    //Opt Out-All, Unknown, Any, Email, Mail, Text, Phone
     public static final String PAYMENT_TYPE = "paymentType";
     
     public static final String PAYMENT_SOURCE = "paymentSource";
@@ -71,7 +82,7 @@ public final class StringConstants {
 
     public static final String TAX_DEDUCTIBLE = "taxDeductible";
     public static final String ANONYMOUS_LOWER_CASE = "anonymous";
-    public static final String ANONYMOUS_UPPER_CASE = "Anonymous";
+    public static final String ANONYMOUS_CAMEL_CASE = "Anonymous";
     public static final String RECOGNITION_NAME = "recognitionName";
     
     public static final String ASSOCIATED_PLEDGE_ID = "associatedPledgeId";

@@ -39,7 +39,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
-        assert readPhone.isReceiveMail() == false;
+        assert readPhone.isReceiveCorrespondence() == false;
         assert readPhone.isInactive() == false;
         assert readPhone.getComments() == null;
         assert readPhone.getEffectiveDate() != null;
@@ -61,7 +61,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
-        assert readPhone.isReceiveMail() == false;
+        assert readPhone.isReceiveCorrespondence() == false;
         assert readPhone.isInactive() == false;
         assert readPhone.getComments() == null;
         assert readPhone.getEffectiveDate() != null;
@@ -82,7 +82,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert phone.getCreateDate() != null;
         assert phone.getUpdateDate() != null;
         assert 100L == phone.getPersonId();
-        assert phone.isReceiveMail() == false;
+        assert phone.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(phone.getActivationStatus());
         assert phone.isInactive() == false;
         assert phone.getComments() == null;
@@ -104,7 +104,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
                 assert phone.getUpdateDate() != null;
                 assert phone.getCreateDate() != null;
                 assert 100L == phone.getPersonId();
-                assert phone.isReceiveMail() == false;
+                assert phone.isReceiveCorrespondence() == false;
                 assert phone.isInactive() == false;
                 assert ActivationType.permanent.equals(phone.getActivationStatus());
             }
@@ -145,7 +145,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             assert phone.getUpdateDate() != null;
             assert phone.getCreateDate() != null;
             assert 200L == phone.getPersonId();
-            assert phone.isReceiveMail() == false;
+            assert phone.isReceiveCorrespondence() == false;
             assert phone.isInactive() == false;
             assert ActivationType.permanent.equals(phone.getActivationStatus());
             assert "214-113-2542".equals(phone.getNumber());

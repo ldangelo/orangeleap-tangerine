@@ -156,7 +156,7 @@ public class EmailService {
 		List<Email> emailAddresses = p.getEmails();
 		
 		for (Email e : emailAddresses) {
-			if (e.isReceiveMail() && !e.isInactive() && e.isValid()) {
+			if (e.isReceiveCorrespondence() && !e.isInactive() && e.isValid()) {
 				selectedEmails.add(e);
 				try {
 					helper.addTo(e.getEmailAddress());

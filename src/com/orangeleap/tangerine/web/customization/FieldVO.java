@@ -50,6 +50,7 @@ public class FieldVO {
     private boolean required;
     private boolean isHierarchy;
     private boolean isRelationship;
+    private boolean isDisabled; // TODO: disabled only works for text, longtext, and checkbox fields, make work for all fields
 
     private Object fieldToCheck;
 
@@ -427,6 +428,14 @@ public class FieldVO {
 
     public boolean isRelationship() {
         return isRelationship;
+    }
+
+    public void setDisabled(boolean isDisabled) {
+        this.isDisabled = isDisabled;
+    }
+
+    public boolean isDisabled() {
+        return isDisabled;
     }
 
     public ReferenceType getReferenceType() {

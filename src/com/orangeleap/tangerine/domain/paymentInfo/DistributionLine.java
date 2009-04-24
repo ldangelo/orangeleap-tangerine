@@ -133,7 +133,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
         super.prePersist();
         setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "false");
         if ("true".equals(getCustomFieldValue(StringConstants.ANONYMOUS_LOWER_CASE))) {
-            setCustomFieldValue(StringConstants.RECOGNITION_NAME, StringConstants.ANONYMOUS_UPPER_CASE);
+            setCustomFieldValue(StringConstants.RECOGNITION_NAME, StringConstants.ANONYMOUS_CAMEL_CASE);
         }
     }
 

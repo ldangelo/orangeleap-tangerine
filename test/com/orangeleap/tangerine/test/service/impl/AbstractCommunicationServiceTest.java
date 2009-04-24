@@ -106,9 +106,9 @@ public class AbstractCommunicationServiceTest extends BaseTest {
         readEntities = service.filter(entities, true);
         assert readEntities != null && readEntities.isEmpty();
         
-        permAddress.setReceiveMail(true);
-        tempAddress.setReceiveMail(true);
-        seasonalAddress.setReceiveMail(false);
+        permAddress.setReceiveCorrespondence(true);
+        tempAddress.setReceiveCorrespondence(true);
+        seasonalAddress.setReceiveCorrespondence(false);
         
         readEntities = service.filter(entities, true);
         assert readEntities != null;

@@ -31,6 +31,7 @@ import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -77,6 +78,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             throw new ConstituentValidationException(); 
         }    	
         constituent = constituentDao.maintainConstituent(constituent);
+        maintainCorrespondence(constituent);
         
         Address address = constituent.getPrimaryAddress();
         Phone phone = constituent.getPrimaryPhone();
@@ -98,6 +100,47 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         relationshipService.maintainRelationships(constituent);
         auditService.auditObject(constituent, constituent);
         return constituent;
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void maintainCorrespondence(Person constituent) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainCorrespondence: constituent.id = " + constituent.getId());
+        }
+        String communicationPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_PREFERENCES);
+        if (StringConstants.OPT_OUT_ALL.equals(communicationPref)) {
+            addressService.maintainResetReceiveCorrespondence(constituent.getId());
+            phoneService.maintainResetReceiveCorrespondence(constituent.getId());
+            emailService.maintainResetReceiveCorrespondence(constituent.getId());
+            
+            addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
+            phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+            emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
+        }
+        else if (StringConstants.OPT_IN.equals(communicationPref)) {
+            String optInPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES);
+            if (StringConstants.MAIL_CAMEL_CASE.equals(optInPref)) {
+                phoneService.maintainResetReceiveCorrespondence(constituent.getId());
+                emailService.maintainResetReceiveCorrespondence(constituent.getId());
+
+                phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+                emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
+            }
+            else if (StringConstants.PHONE_CAMEL_CASE.equals(optInPref)) {
+                addressService.maintainResetReceiveCorrespondence(constituent.getId());
+                emailService.maintainResetReceiveCorrespondence(constituent.getId());
+                
+                addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
+                emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
+            }
+            else if (StringConstants.EMAIL_CAMEL_CASE.equals(optInPref)) {
+                addressService.maintainResetReceiveCorrespondence(constituent.getId());
+                phoneService.maintainResetReceiveCorrespondence(constituent.getId());
+
+                addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
+                phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+            }
+        }
     }
 
     @Override

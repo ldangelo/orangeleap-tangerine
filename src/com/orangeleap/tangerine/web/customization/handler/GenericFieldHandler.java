@@ -106,6 +106,7 @@ public class GenericFieldHandler implements FieldHandler {
         FieldRequired fr = fieldService.lookupFieldRequired(currentField);
         fieldVO.setRequired(fr != null && fr.isRequired());
         fieldVO.setHierarchy(relationshipService.isHierarchy(currentField.getFieldDefinition()));
+        fieldVO.setDisabled(fieldService.isFieldDisabled(currentField, model));
 
         if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
             Object propertyValue = getPropertyValue(model, fieldVO);

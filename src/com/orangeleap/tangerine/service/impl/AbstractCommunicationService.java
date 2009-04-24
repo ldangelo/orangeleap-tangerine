@@ -55,19 +55,6 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
     
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public T saveOnlyIfNew(T entity) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("saveOnlyIfNew: entity = " + entity);
-        }
-        T thisEntity = alreadyExists(entity);
-        if (thisEntity == null) {
-            thisEntity = save(entity);
-        }
-        return thisEntity;
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    @Override
     public T save(T entity) {
         if (logger.isTraceEnabled()) {
             logger.trace("save: entity = " + entity);
@@ -198,6 +185,31 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         }
         return entity;
     }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void maintainResetReceiveCorrespondence(Long constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("resetReceiveCorrespondence: constituentId = " + constituentId);
+        }
+        List<T> entities = readByConstituentId(constituentId);
+        if (entities != null) {
+            for (T communicationEntity : entities) {
+                resetReceiveCorrespondence(communicationEntity);
+                getDao().maintainEntity(communicationEntity);
+            }
+        }
+    }
+
+    @Override
+    public void resetReceiveCorrespondence(T entity) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("resetReceiveCorrespondence: entity.id = " + entity.getId());
+        }
+        if (entity != null) {
+            entity.setReceiveCorrespondence(false);
+        }
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void inactivateEntities() {
@@ -216,7 +228,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         T entity = readById(id);
         entity.setInactive(true);
         entity.setPrimary(false);
-        entity.setReceiveMail(false);
+        entity.setReceiveCorrespondence(false);
         this.save(entity);
     }
    
@@ -289,7 +301,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         // If want only those accepting mail, then filter out no mail addresses
         for (Iterator<T> iterator = newList.iterator(); iterator.hasNext();) {
             T entity = iterator.next();
-            if (mailOnly && !entity.isReceiveMail()) {
+            if (mailOnly && !entity.isReceiveCorrespondence()) {
                 iterator.remove();
             }
         }

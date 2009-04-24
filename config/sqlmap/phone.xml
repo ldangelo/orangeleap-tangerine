@@ -10,7 +10,7 @@
 		<result property="inactive" column="PHONE_INACTIVE" jdbcType="CHAR" />
 		<result property="number" column="PHONE_NUMBER" jdbcType="VARCHAR" />
 		<result property="provider" column="PHONE_PROVIDER" jdbcType="VARCHAR" />
-		<result property="receiveMail" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
+		<result property="receiveCorrespondence" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="PHONE_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="seasonalStartDate" column="PHONE_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="sms" column="PHONE_SMS" jdbcType="VARCHAR" />
@@ -65,7 +65,7 @@
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY, UNDELIVERABLE)
 		values (#activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, 
-		#provider#, #receiveMail#, #seasonalEndDate#,
+		#provider#, #receiveCorrespondence#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
 		#temporaryStartDate#, now(), #personId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -81,7 +81,7 @@
 		INACTIVE = #inactive#,
 		NUMBER = #number#,
 		PROVIDER = #provider#,
-		RECEIVE_CORRESPONDENCE = #receiveMail#,
+		RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
 		SEASONAL_END_DATE = #seasonalEndDate#,
 		SEASONAL_START_DATE = #seasonalStartDate#,
 		SMS = #sms#,

@@ -30,7 +30,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email.getUpdateDate() != null;
         assert email.getCreateDate() != null;
         assert 100L == email.getPersonId();
-        assert email.isReceiveMail() == false;
+        assert email.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(email.getActivationStatus());
         assert "hobo@gmail.com".equals(email.getEmailAddress());
         assert email.isInactive() == false;
@@ -44,7 +44,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert email.getCreateDate() != null;
         assert email.getUpdateDate() != null;
         assert 100L == email.getPersonId();
-        assert email.isReceiveMail() == false;
+        assert email.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(email.getActivationStatus());
         assert email.isInactive();
         assert email.getComments() == null;
@@ -71,7 +71,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert readEmail.getEmailDisplay() == null;
         assert readEmail.getCreateDate() != null;
         assert readEmail.getUpdateDate() != null;
-        assert readEmail.isReceiveMail() == false;
+        assert readEmail.isReceiveCorrespondence() == false;
         assert readEmail.isInactive() == false;
         assert readEmail.getComments() == null;
         assert readEmail.getEffectiveDate() != null;
@@ -98,7 +98,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
         assert readEmail.getEmailDisplay() == null;
         assert readEmail.getCreateDate() != null;
         assert readEmail.getUpdateDate() != null;
-        assert readEmail.isReceiveMail() == false;
+        assert readEmail.isReceiveCorrespondence() == false;
         assert readEmail.isInactive() == false;
         assert readEmail.getComments() == null;
         assert readEmail.getEffectiveDate() == null;
@@ -121,7 +121,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
                 assert email.getUpdateDate() != null;
                 assert email.getCreateDate() != null;
                 assert 100L == email.getPersonId();
-                assert email.isReceiveMail() == false;
+                assert email.isReceiveCorrespondence() == false;
                 assert ActivationType.permanent.equals(email.getActivationStatus());
             }
             switch (email.getId().intValue()) {
@@ -155,7 +155,7 @@ public class IBatisEmailDaoTest extends AbstractIBatisTest {
                 assert email.getUpdateDate() != null;
                 assert email.getCreateDate() != null;
                 assert 100L == email.getPersonId();
-                assert email.isReceiveMail() == false;
+                assert email.isReceiveCorrespondence() == false;
                 assert ActivationType.permanent.equals(email.getActivationStatus());
             }
             switch (email.getId().intValue()) {

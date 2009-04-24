@@ -14,7 +14,7 @@
         <result property="effectiveDate" column="ADDRESS_EFFECTIVE_DATE" jdbcType="TIMESTAMP"/>
         <result property="inactive" column="ADDRESS_INACTIVE" jdbcType="CHAR"/>
         <result property="postalCode" column="ADDRESS_POSTAL_CODE" jdbcType="VARCHAR"/>
-        <result property="receiveMail" column="ADDRESS_RECEIVE_CORRESPONDENCE" jdbcType="CHAR"/>
+        <result property="receiveCorrespondence" column="ADDRESS_RECEIVE_CORRESPONDENCE" jdbcType="CHAR"/>
         <result property="seasonalEndDate" column="ADDRESS_SEASONAL_END_DATE" jdbcType="TIMESTAMP"/>
         <result property="seasonalStartDate" column="ADDRESS_SEASONAL_START_DATE" jdbcType="TIMESTAMP"/>
         <result property="stateProvince" column="ADDRESS_STATE_PROVINCE" jdbcType="VARCHAR"/>
@@ -74,7 +74,7 @@
         values (#activationStatus#, #addressLine1#,
         #addressLine2#, #addressLine3#, #city#,
         #comments#, #country#, now(), #effectiveDate#,
-        #inactive#, #postalCode#, #receiveMail#,
+        #inactive#, #postalCode#, #receiveCorrespondence#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, now(),
         #personId#, #ncoaDate#, #caasDate#, #primary#, #undeliverable#)
@@ -96,7 +96,7 @@
         EFFECTIVE_DATE = #effectiveDate#,
         INACTIVE = #inactive#,
         POSTAL_CODE = #postalCode#,
-        RECEIVE_CORRESPONDENCE = #receiveMail#,
+        RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
         SEASONAL_END_DATE = #seasonalEndDate#,
         SEASONAL_START_DATE = #seasonalStartDate#,
         STATE_PROVINCE = #stateProvince#,

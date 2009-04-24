@@ -8,9 +8,11 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 
 public class RelationshipForm {
+	
 	private FieldRelationship fieldRelationship;
 	private Person person;
 	private List<CustomField> relationshipList;
+	private String fieldLabel;
 	
 	public void setFieldRelationship(FieldRelationship fieldRelationship) {
 		this.fieldRelationship = fieldRelationship;
@@ -29,5 +31,11 @@ public class RelationshipForm {
 	}
 	public List<CustomField> getRelationshipList() {
 		return relationshipList;
+	}
+	public void setFieldLabel(String fieldLabel) {
+		this.fieldLabel = fieldLabel;
+	}
+	public String getFieldLabel() {
+		return fieldLabel;
 	}
 }

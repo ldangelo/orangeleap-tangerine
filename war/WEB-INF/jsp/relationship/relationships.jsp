@@ -7,7 +7,7 @@
 		<div class="content760 mainForm">
 
 		<div class="simplebox">
-		    <h4>Maintain relationships for <c:out value='${param.person.fullName}'/></h4><br/>
+		    <h4>Maintain relationships for <c:out value='${person.fullName}'/></h4><br/>
 		
 		<form method="get" action="relationship.htm">
 			<h4>Relationship to Manage</h4>
@@ -21,6 +21,7 @@
 			   </c:forEach>
 			</select>
  		   <c:url var="fieldRelationshipCustomizeUrl" value="fieldRelationshipCustomize.htm">
+ 	         <c:param name="personId" value="${person.id}" />
  	         <c:param name="fieldRelationshipId" value="${currentFieldRelationshipId}" />
 		     <c:param name="view" value="customize" />
 		   </c:url>

@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.core.style.ToStringCreator;
@@ -15,6 +16,8 @@ import com.orangeleap.tangerine.domain.GeneratedId;
 public class CustomField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final Date PAST_DATE = new java.util.Date("01/01/1900");
+    public static final Date FUTURE_DATE = new java.util.Date("01/01/3000");
 
     private Long id;
     private String name;
@@ -24,8 +27,8 @@ public class CustomField implements GeneratedId, Serializable {
     private Long entityId;
     
     private int sequenceNumber;
-    private Date startDate = new java.util.Date("01/01/1900");
-    private Date endDate = new java.util.Date("01/01/3000"); ;
+    private Date startDate = PAST_DATE;
+    private Date endDate = FUTURE_DATE;
 
     public CustomField() {
         super();
@@ -116,6 +119,51 @@ public class CustomField implements GeneratedId, Serializable {
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
+	
+	private static final String FORMAT = "MM/dd/yyyy";
+	
+	private String getDisplayDate(Date d) {
+		if (d == null || d.equals(PAST_DATE) || d.equals(FUTURE_DATE)) return "";
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		return sdf.format(d);
+	}
+	
+	
+	public String getDisplayStartDate() {
+		return getDisplayDate(this.startDate);
+	}
+	
+	public String getDisplayEndDate() {
+		return getDisplayDate(this.endDate);
+	}
+
+	public void setDisplayStartDate(String s) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		if (s == null || s.length() == 0) {
+			this.startDate = PAST_DATE;
+		} else {
+			try {
+				this.startDate = sdf.parse(s);
+			} catch (Exception e) {
+				throw new RuntimeException("Invalid date format " + s);
+			}
+		}
+	}
+	
+	public void setDisplayEndDate(String s) {
+			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+			if (s == null || s.length() == 0) {
+				this.endDate = FUTURE_DATE;
+			} else {
+				try {
+					this.endDate = sdf.parse(s);
+				} catch (Exception e) {
+					throw new RuntimeException("Invalid date format " + s);
+				}
+			}
+		
+	}
+
 }
 
 

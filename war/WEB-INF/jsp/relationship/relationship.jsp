@@ -7,25 +7,23 @@
 		<div class="content760 mainForm">
 
 		<div class="simplebox">
-		    <h4>Maintain relationships for <c:out value='${person.fullName}'/> <c:out value='${relationship.defaultLabel}'/></h4><br/>
+		    <h4>Maintain relationships for <c:out value='${form.person.fullName}'/>: <c:out value='${form.fieldLabel}'/></h4><br/>
 		
 		<div >
 		<form method="post" action="relationship.htm">
 			<table class="customFields">
 			  <tr >
-				<th nowrap>Field Name</td>
 				<th nowrap>Value</td>
 				<th nowrap>Start Date</td>
 				<th nowrap>End Date</td>
-				<th nowrap>Custom Fields</td>
+				<th nowrap>&nbsp;&nbsp;Customize</td>
 			  </tr>
-			 <c:forEach var="relationship" varStatus="status" items="${relationshipList}" >
+			 <c:forEach var="customField" varStatus="status" items="${form.relationshipList}" >
 			  <tr rowindex="${status.count}">
-				<td><input id="relFieldName-${status.count}" name="relFieldName[${status.count}]" size="32" value="<c:out value='${relationship.fieldName}'/>"  /></td>
-				<td><input id="relFieldValue-${status.count}" name="relFieldValue[${status.count}]" size="32" value="<c:out value='${relationship.fieldValue}'/>"  /></td>
-				<td><input id="relStartDate-${status.count}" name="relStartDate[${status.count}]" size="32" value="<c:out value='${relationship.startDate}'/>"  /></td>
-				<td><input id="relEndDate-${status.count}" name="relEndDate[${status.count}]" size="32" value="<c:out value='${relationship.endDate}'/>"  /></td>
-				<td><a href="relationshipCustomize.html?id=${relationship.id}">+</a></td>
+				<td><input id="relFieldValue-${status.count}-" name="relFieldValue[${status.count}]" size="32" value="<c:out value='${customField.value}'/>"  /></td>
+				<td><input id="relStartDate-${status.count}-" name="relStartDate[${status.count}]" size="16" value="<c:out value='${customField.displayStartDate}'/>"  /></td>
+				<td><input id="relEndDate-${status.count}-" name="relEndDate[${status.count}]" size="16" value="<c:out value='${customField.displayEndDate}'/>"  /></td>
+				<td>&nbsp;&nbsp;<a href="relationshipCustomize.html?id=${form.fieldRelationship.id}">+</a></td>
 			  </tr>
 			 </c:forEach>
 			</table>

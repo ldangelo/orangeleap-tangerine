@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="CUSTOM_FIELD">
 
-	<resultMap id="CUSTOM_FIELD_RESULT" class="java.util.HashMap">
+	<resultMap id="CUSTOM_FIELD_RESULT_MAP" class="java.util.HashMap">
 		<result property="id" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
 		<result property="name" column="CUS_FLD_FIELD_NAME" jdbcType="VARCHAR" />
 		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
@@ -11,6 +11,27 @@
         <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP"/>
         <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
+
+	<resultMap id="CUSTOM_FIELD_RESULT" class="com.orangeleap.tangerine.domain.customization.CustomField">
+		<result property="id" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
+		<result property="name" column="CUS_FLD_FIELD_NAME" jdbcType="VARCHAR" />
+		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
+        <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
+        <result property="entityId" column="ENTITY_ID" jdbcType="BIGINT"/>
+        <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP"/>
+        <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_MAP" resultMap="CUSTOM_FIELD_RESULT_MAP" parameterClass="map">
+        select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE
+        from CUSTOM_FIELD
+        where ENTITY_ID = #entityId#
+        and ENTITY_TYPE = #entityType#
+		<isNotNull property="asOfDate"> 
+        and #asOfDate# between START_DATE and END_DATE
+        </isNotNull>
+        order by FIELD_NAME asc, SEQUENCE_NUM asc
+    </select>
 
     <select id="SELECT_CUSTOM_FIELD_BY_ENTITY" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
         select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE

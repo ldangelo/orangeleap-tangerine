@@ -44,7 +44,7 @@ public class IBatisCustomFieldHelper {
         params.put("entityType", entity.getType());
         params.put("asOfDate", new java.util.Date());
 
-        List<Map> customFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
+        List<Map> customFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY_MAP", params);
 
         // group the custom fields by name. There could be multiple
         // rows for each combination of entity type, entity ID and field name,

@@ -70,13 +70,13 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	            if (response.isAccepted()) {
 	            	g.setAuthCode(String.valueOf(response.getTransactionNumber()));
 	    			g.setTxRefNum(String.valueOf(response.getTransactionNumber()));
-	    			g.setPaymentStatus(response.getTransactionConfirmation());
+	    			g.setPaymentStatus("Approved");
 	    			g.setPaymentMessage(response.getMessage());
-	    			g.setComments(response.getMessage());
+//	    			g.setComments(response.getMessage());
 	            } else {
-//	            	g.setPaymentStatus(response.getStatus());
+	            	g.setPaymentStatus("Declined");
 	    			g.setPaymentMessage(response.getMessage());
-	    			g.setComments(response.getMessage());	    			
+//	    			g.setComments(response.getMessage());	    			
 	            }
 	            
 	        } catch(PaymentProcessorException exception) {

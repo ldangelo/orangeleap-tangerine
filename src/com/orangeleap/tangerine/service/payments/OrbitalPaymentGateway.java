@@ -138,13 +138,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
+			gift.setPaymentStatus("Approved");
 			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
-			gift.setComments(response.getMessage());
+//			gift.setComments(response.getMessage());
 		} else {
-			gift.setPaymentStatus(response.getStatus());
+			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
-			gift.setComments(response.getMessage());
+//			gift.setComments(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		gs.maintainGift(gift);
@@ -246,10 +247,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-			gift.setPaymentStatus(response.getStatus());
+			gift.setPaymentStatus("Approved");
 			gift.setPaymentMessage(response.getMessage());
 		} else {
-			gift.setPaymentStatus(response.getStatus());
+			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
 		}
 		
@@ -323,10 +324,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-			gift.setPaymentStatus(response.getStatus());
+			gift.setPaymentStatus("Approved");
 			gift.setPaymentMessage(response.getMessage());
 		} else {
-			gift.setPaymentStatus(response.getStatus());
+			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");

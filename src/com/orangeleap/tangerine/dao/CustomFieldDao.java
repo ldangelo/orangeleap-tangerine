@@ -1,8 +1,7 @@
 package com.orangeleap.tangerine.dao;
 
-import java.util.Map;
+import java.util.List;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 
 /**
@@ -10,8 +9,8 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
  */
 public interface CustomFieldDao {
 
-    public Map<String, CustomField> readCustomFields(AbstractCustomizableEntity entity);
-
-    public void maintainCustomFields(Map<String,CustomField> customFields);
+	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName);
+	
+	public void maintainCustomFieldsByConstituentAndFieldName(Long personId, String fieldName, List<CustomField> list);
 
 }

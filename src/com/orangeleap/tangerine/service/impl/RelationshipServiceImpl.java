@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.dao.ConstituentDao;
+import com.orangeleap.tangerine.dao.CustomFieldDao;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -43,6 +46,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
+    
+    @Resource(name = "customFieldDAO")
+    private CustomFieldDao customFieldDao;
+    
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
@@ -478,12 +485,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		return p1.getId().equals(p2.getId());
 	}
 	
-	private boolean thisCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {
+	private static boolean thisCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {
 		return fieldRelationshipType.equals(RelationshipType.MANY_TO_MANY) ||
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.DETAIL) );
 	}
 	
-	private boolean otherCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {
+	private static boolean otherCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {
 		return fieldRelationshipType.equals(RelationshipType.MANY_TO_MANY) ||
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
 	}
@@ -538,6 +545,146 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     @Override
     public boolean isRelationship(FieldDefinition fd) {
     	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
+    }
+    
+    @Override
+	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndFieldName: personId = " + personId);
+	    }
+	    if (null == constituentDao.readConstituentById(personId)) return null;
+	    return customFieldDao.readCustomFieldsByConstituentAndFieldName(personId, fieldName);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list) {
+    	
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: personId = " + personId);
+	    }
+	    if (null == constituentDao.readConstituentById(personId)) throw new RuntimeException("Invalid constituent id");
+	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
+
+	    // TODO need additional validation for self reference and setting roles
+		validateDateRangesAndSave(personId, fieldDefinition, list);
+	   
+    }
+
+    // Validates date ranges on this field and corresponding referenced entities fields.
+    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> list) {
+    	
+    	// Check date ranges on this entity
+		boolean datesvalid = validateDateRanges(fieldDefinition.getId(), list);
+		if (!datesvalid) {
+			throw new RuntimeException("Date ranges cannot overlap for a single-valued field.");
+		} 
+	    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName(), list);
+    	
+
+		FieldDefinition refField = getCorrespondingField(fieldDefinition);
+		
+    	// Check date ranges on referenced entities
+		for (CustomField cf : list) {
+			
+    		boolean existing = false;
+			Long refid = new Long(cf.getValue());
+			List<CustomField> reflist = customFieldDao.readCustomFieldsByConstituentAndFieldName(new Long(refid), refField.getCustomFieldName());
+	        for (CustomField refcf: reflist) {
+	        	Long backref = new Long(refcf.getValue());
+	        	if (backref.equals(cf.getEntityId())) {
+	        		refcf.setStartDate(cf.getStartDate());
+	        		refcf.setEndDate(cf.getEndDate());
+	        		existing = true;
+	        	}
+	        }
+	        if (!existing) {
+	        	CustomField newcf = new CustomField();
+	        	newcf.setEntityId(refid);
+	        	newcf.setEntityType("person");
+	        	newcf.setName(refField.getCustomFieldName());
+	        	newcf.setStartDate(cf.getStartDate());
+	        	newcf.setEndDate(cf.getEndDate());
+	        	newcf.setValue(""+cf.getEntityId());
+	        	reflist.add(newcf);
+	        }
+		
+			boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
+			if (!refdatesvalid) {
+				Person refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+				throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
+			} 
+		    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(refid, refField.getCustomFieldName(), reflist);
+		
+		}
+		
+    }
+    
+    // Supports one relationship defined per field definition.
+    private FieldDefinition getCorrespondingField(FieldDefinition fd) {
+		List<FieldRelationship> masters = getSiteMasterFieldRelationships(fd.getId()); 
+		FieldDefinition result = searchRelationships(fd, masters);
+		if (result != null) return result;
+		List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId()); 
+		result = searchRelationships(fd, details);
+		return result;
+    }
+    
+    private FieldDefinition searchRelationships(FieldDefinition fd, List<FieldRelationship> list) {
+		for (FieldRelationship fr : list) {
+			if (fr.getMasterRecordField().getId().equals(fd.getId())) return fr.getDetailRecordField();
+			if (fr.getDetailRecordField().getId().equals(fd.getId())) return fr.getMasterRecordField();
+		}
+		return null;
+    }
+    
+    private boolean validateDateRanges(String fieldDefinitionId, List<CustomField> list) {
+    	List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fieldDefinitionId);
+    	List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fieldDefinitionId);
+    	boolean isMultiValued = false;
+    	if (masters.size() > 0) {
+    		isMultiValued = RelationshipServiceImpl.thisCanBeMultiValued(RelationshipDirection.DETAIL, masters.get(0).getRelationshipType());
+    	}
+    	if (details.size() > 0) {
+    		isMultiValued = RelationshipServiceImpl.thisCanBeMultiValued(RelationshipDirection.MASTER, details.get(0).getRelationshipType());
+    	}
+    	if (!isMultiValued) {
+    	    return validateDateRangesDoNotOverlap(list);
+    	}
+    	return true;
+    }    
+    
+    private List<Date> getDays(CustomField cf) {
+    	List<Date> days = new ArrayList<Date>();
+    	Date start = new Date(cf.getStartDate().getTime());
+    	Date end = cf.getEndDate();
+    	while (!start.after(end)) {
+    		days.add(start);
+    		start = nextDay(start);
+    	}
+    	return days;
+    }
+    
+    private Date nextDay(Date date) {
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(date);
+    	cal.add(Calendar.DATE, 1);
+    	return cal.getTime();
+    }
+    
+    private boolean validateDateRangesDoNotOverlap(List<CustomField> list) {
+    	List<Date> alldays = new ArrayList<Date>();
+    	for (CustomField cf : list) {
+    		List<Date> cfdays = getDays(cf);
+    		for (Date d1 : alldays) {
+        		for (Date d2 : cfdays) {
+        			if (d1.equals(d2)) return false;
+        		}
+    		}
+        	alldays.addAll(cfdays);
+    	}
+    	return true;
     }
     
 }

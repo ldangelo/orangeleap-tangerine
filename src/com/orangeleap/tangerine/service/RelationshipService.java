@@ -1,6 +1,9 @@
 package com.orangeleap.tangerine.service;
 
+import java.util.List;
+
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
@@ -22,5 +25,9 @@ public interface RelationshipService {
 	public Person getHeadOfTree(Person person, String parentCustomFieldName)
 			throws ConstituentValidationException;
 	
+	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName);
+	
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list);
+
 	
 }

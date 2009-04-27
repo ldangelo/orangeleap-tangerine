@@ -8,9 +8,13 @@
 
 		<div class="simplebox">
 		    <h4>Maintain relationships for <c:out value='${form.person.fullName}'/>: <c:out value='${form.fieldLabel}'/></h4><br/>
-		
 		<div >
+
+		<span style="color: red;" ><c:out value="${message}" /></span>
+		
 		<form method="post" action="relationship.htm">
+		    <input type=hidden name="personId" value="${form.person.id}" />
+	        <input type=hidden name="fieldDefinitionId" value="${form.fieldDefinition.id}" />
 			<table class="customFields">
 			  <tr >
 				<th nowrap>Value</td>

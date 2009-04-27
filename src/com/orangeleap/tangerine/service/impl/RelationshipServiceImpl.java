@@ -580,8 +580,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		if (!datesvalid) {
 			throw new RuntimeException("Date ranges cannot overlap for a single-valued field.");
 		} 
+    	// TODO need to delete orphaned back references here
 	    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName(), list);
-    	
 
 		FieldDefinition refField = getCorrespondingField(fieldDefinition);
 		

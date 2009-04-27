@@ -349,7 +349,7 @@
 						</c:if>
 						 
 						<c:if test="${fieldVO.hierarchy}">
-				       		 <a href="javascript:void(0)" onclick="Lookup.loadTreeView(this);" divid="treeview-${fieldVO.fieldId}" personid="${param.personId}" fieldDef="<c:out value='${fieldVO.fieldName}'/>" >View heierarchy</a>
+				       		 <a href="javascript:void(0)" onclick="Lookup.loadTreeView(this);" divid="treeview-${fieldVO.fieldId}" personid="${param.personId}" fieldDef="<c:out value='${fieldVO.fieldName}'/>" >View hierarchy</a>
 				       		 <div id="treeview-${fieldVO.fieldId}" ></div>
 				    	</c:if>
 				    	 

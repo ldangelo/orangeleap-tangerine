@@ -116,6 +116,8 @@
 			<transaction src="${basedir}/db/prod/picklists/journalTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/pledgeStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/giftStatusPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustmentReasonPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustmentTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/recurringGiftStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/phoneProviderPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/fmvMethodPicklist.sql"/>

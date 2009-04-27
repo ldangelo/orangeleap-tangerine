@@ -361,8 +361,8 @@
 					    <div class="multiLookupField <c:out value='${fieldVO.entityAttributes}'/>">
 							<div class="lookupScrollLeft"></div>
 							<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
+								<c:set var="thisVal" value="${fn:trim(val)}"/>
 								<div id="lookup-<c:out value='${thisVal}'/>" class="multiQueryLookupOption multiOption" selectedId="<c:out value='${fieldVO.ids[status.index]}'/>">
-									<c:set var="thisVal" value="${fn:trim(val)}"/>
 									<c:choose>
 										<c:when test="${not empty fieldVO.ids[status.index]}">
 											<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">

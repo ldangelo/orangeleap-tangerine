@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
@@ -75,6 +76,16 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         Map<String, Object> params = setupParams();
         params.put("id", id);
         return (FieldRelationship)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_RELATIONSHIP_BY_ID", params);
+    }
+
+	@Override
+    public FieldDefinition readFieldDefinition(String id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readFieldDefinition: id=" + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        return (FieldDefinition)getSqlMapClientTemplate().queryForObject("SELECT_FIELD_DEFINITION_BY_ID", params);
     }
 
     @SuppressWarnings("unchecked")

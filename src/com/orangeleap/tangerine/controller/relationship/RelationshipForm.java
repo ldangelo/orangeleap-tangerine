@@ -3,22 +3,21 @@ package com.orangeleap.tangerine.controller.relationship;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 
 public class RelationshipForm {
 	
-	private FieldRelationship fieldRelationship;
+	private FieldDefinition fieldDefinition;
 	private Person person;
-	private List<CustomField> relationshipList;
+	private List<CustomField> customFieldList;
 	private String fieldLabel;
 	
-	public void setFieldRelationship(FieldRelationship fieldRelationship) {
-		this.fieldRelationship = fieldRelationship;
+	public void setFieldDefinition(FieldDefinition fieldDefinition) {
+		this.fieldDefinition = fieldDefinition;
 	}
-	public FieldRelationship getFieldRelationship() {
-		return fieldRelationship;
+	public FieldDefinition getFieldDefinition() {
+		return fieldDefinition;
 	}
 	public void setPerson(Person person) {
 		this.person = person;
@@ -26,11 +25,11 @@ public class RelationshipForm {
 	public Person getPerson() {
 		return person;
 	}
-	public void setRelationshipList(List<CustomField> relationshipList) {
-		this.relationshipList = relationshipList;
+	public void setCustomFieldList(List<CustomField> relationshipList) {
+		this.customFieldList = relationshipList;
 	}
-	public List<CustomField> getRelationshipList() {
-		return relationshipList;
+	public List<CustomField> getCustomFieldList() {
+		return customFieldList;
 	}
 	public void setFieldLabel(String fieldLabel) {
 		this.fieldLabel = fieldLabel;

@@ -49,44 +49,32 @@ public class RelationshipListController extends ParameterizableViewController {
 		Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
 		
-		// Return all field definitions for the person maint. page that are involved in a relationship.
+		// Return all field definitions for the constituent maintenance page that are involved in a relationship.
 		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
-		List<FieldRelationship> frs = new ArrayList<FieldRelationship>();
+		List<FieldDefinition> fds = new ArrayList<FieldDefinition>();
 		Iterator<Map.Entry<String, FieldDefinition>> it = fieldDefinitionMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, FieldDefinition> me = it.next();
-			String fieldDefinitionid = me.getValue().getId();
+			FieldDefinition fd = me.getValue();
+			String fieldDefinitionid = fd.getId();
 			List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fieldDefinitionid);
 			List<FieldRelationship> frdetail = fieldDao.readDetailFieldRelationships(fieldDefinitionid);
-			if (frmaster.size() > 0) {
-				FieldRelationship master = frmaster.get(0);
-				add(frs, master);
-			} else if (frdetail.size() > 0) {
-				FieldRelationship detail = frdetail.get(0);
-				add(frs, detail);
+			if (frmaster.size() > 0 || frdetail.size() > 0) {
+				fds.add(fd);
 			}
 		}
 		
-		Collections.sort(frs, new Comparator<FieldRelationship>() {
+		Collections.sort(fds, new Comparator<FieldDefinition>() {
 			@Override
-			public int compare(FieldRelationship o1, FieldRelationship o2) {
+			public int compare(FieldDefinition o1, FieldDefinition o2) {
 				return o1.getDefaultLabel().compareTo(o2.getDefaultLabel());
 			}
 		});
 		
         ModelAndView mav = new ModelAndView(super.getViewName());
-        mav.addObject("fieldRelationships", frs);
+        mav.addObject("fieldDefinitions", fds);
         mav.addObject("person", person);
         return mav;
     }
-	
-	private void add(List<FieldRelationship> frs, FieldRelationship fr) {
-		for (FieldRelationship afr : frs) {
-			if (fr.getId().equals(afr.getId())) {
-				return;
-			}
-		}
-		frs.add(fr);
-	}
 	
 }

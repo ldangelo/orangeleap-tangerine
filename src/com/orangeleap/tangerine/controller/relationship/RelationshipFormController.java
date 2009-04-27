@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.ConstituentService;
 
@@ -44,26 +44,32 @@ public class RelationshipFormController extends SimpleFormController {
 		Person person = constituentService.readConstituentById(personId);
 		if (person == null) return null;
 
-        String relationshipId = request.getParameter("fieldRelationshipId");
-        FieldRelationship fieldRelationship = fieldDao.readFieldRelationship(new Long(relationshipId));
-        String masterfieldname = fieldRelationship.getMasterRecordField().getCustomFieldName();
-        
-        String fieldname = fieldRelationship.getMasterRecordField().getDefaultLabel();
+        String fieldDefinitionId = request.getParameter("fieldDefinitionId");
+        FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+        String fieldname = fieldDefinition.getCustomFieldName();
+        String fieldlabel = fieldDefinition.getDefaultLabel();
         
         List<CustomField> list = constituentCustomFieldRelationshipService.readAllCustomFieldsByConstituent(new Long(personId));
-        // Filter for custom fields involved in this relationship. There should only be either all master or all detail fields.
         Iterator<CustomField> it = list.iterator();
         while (it.hasNext()) {
         	CustomField cf = it.next();
-        	boolean valid = cf.getName().equals(masterfieldname);
+        	boolean valid = cf.getName().equals(fieldname);
         	if (!valid) it.remove();
         }
         
+        if (list.size() == 0) {
+        	CustomField cf = new CustomField();
+        	cf.setName(fieldname);
+        	cf.setEntityId(person.getId());
+        	cf.setEntityType("person");
+        	list.add(cf);
+        }
+        
         RelationshipForm form = new RelationshipForm();
-        form.setRelationshipList(list);
+        form.setCustomFieldList(list);
         form.setPerson(person);
-        form.setFieldRelationship(fieldRelationship);
-        form.setFieldLabel(fieldname);
+        form.setFieldDefinition(fieldDefinition);
+        form.setFieldLabel(fieldlabel);
         
         ModelAndView mav = new ModelAndView(super.getSuccessView());
         mav.addObject("form", form);
@@ -78,6 +84,7 @@ public class RelationshipFormController extends SimpleFormController {
     }
 
     @Override
+    // Validate date ranges don't overlap if a single-valued custom field, modify custom field values, and maintain other side of relationships.
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
     	// Passed-in blank values are the same as deletions

@@ -18,16 +18,18 @@
 				<th nowrap>End Date</td>
 				<th nowrap>&nbsp;&nbsp;Customize</td>
 			  </tr>
-			 <c:forEach var="customField" varStatus="status" items="${form.relationshipList}" >
+			 <c:forEach var="customField" varStatus="status" items="${form.customFieldList}" >
 			  <tr rowindex="${status.count}">
-				<td><input id="relFieldValue-${status.count}-" name="relFieldValue[${status.count}]" size="32" value="<c:out value='${customField.value}'/>"  /></td>
 				<td>
-				<input id="relStartDate-${status.count}-" name="relStartDate[${status.count}]" value="<c:out value='${customField.displayStartDate}'/>" dateinput="true"  />
+				<input id="cfFieldValue-${status.count}-" name="cfFieldValue[${status.count}]" size="32" value="<c:out value='${customField.value}'/>"  />
 				</td>
 				<td>
-				<input id="relEndDate-${status.count}-" name="relEndDate[${status.count}]" value="<c:out value='${customField.displayEndDate}'/>" dateinput="true" />
+				<input id="cfStartDate-${status.count}-" name="cfStartDate[${status.count}]" value="<c:out value='${customField.displayStartDate}'/>" dateinput="true"  />
 				</td>
-				<td>&nbsp;&nbsp;<a href="relationshipCustomize.html?id=${form.fieldRelationship.id}">+</a></td>
+				<td>
+				<input id="cfEndDate-${status.count}-" name="cfEndDate[${status.count}]" value="<c:out value='${customField.displayEndDate}'/>" dateinput="true" />
+				</td>
+				<td>&nbsp;&nbsp;<a href="relationshipCustomize.html?id=${form.fieldDefinition.id}">+</a></td>
 			  </tr>
 			 </c:forEach>
 			</table>

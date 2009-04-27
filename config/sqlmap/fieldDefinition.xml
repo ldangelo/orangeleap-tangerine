@@ -54,6 +54,14 @@
 		secCondFd.FIELD_DEFINITION_ID as FLD_CON_SEC_DEP_FIELD_DEFINITION_ID, secCondFd.FIELD_NAME as FLD_CON_SEC_DEP_FIELD_NAME
 	</sql>
 	
+	<select id="SELECT_FIELD_DEFINITION_BY_ID" resultMap="FIELD_DEFINITION_RESULT" parameterClass="map">
+		select 
+		<include refid="FIELD_DEF_COLS_FRAGMENT" />
+		from FIELD_DEFINITION fd
+	    where ((fd.SITE_NAME = #siteName#) or (fd.SITE_NAME is NULL)) 
+	    and fd.FIELD_DEFINITION_ID = #id#
+	</select>
+	
 	<insert id="INSERT_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		insert into FIELD_DEFINITION (DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
 		values (#defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)

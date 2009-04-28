@@ -1,16 +1,22 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.type.FieldType;
 
 /**
  * This class abstracts out the base methods used for working
@@ -24,9 +30,11 @@ public class IBatisCustomFieldHelper {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private SqlMapClientTemplate template;
+    private FieldDao fieldDao;  
 
-    public IBatisCustomFieldHelper(SqlMapClientTemplate template) {
+    public IBatisCustomFieldHelper(SqlMapClientTemplate template, ApplicationContext applicationContext) {
         this.template = template;
+        if (applicationContext != null) fieldDao = (FieldDao)applicationContext.getBean("fieldDAO");
     }
 
     /**
@@ -96,10 +104,14 @@ public class IBatisCustomFieldHelper {
         return ret;
     }
 
-    public void maintainCustomFields(Map<String, CustomField> customFields) {
+   
+    public void maintainCustomFields(AbstractCustomizableEntity entity) {
     	
-    	deleteAllCustomFields(customFields);
+    	Map<String, CustomField> customFields = entity.getCustomFieldMap();
+    	
+    	List<CustomField> newlist = new ArrayList<CustomField>();
 
+    	// Parses out comma separated fields
         for (String key : customFields.keySet()) {
 
             CustomField customField = customFields.get(key);
@@ -114,14 +126,19 @@ public class IBatisCustomFieldHelper {
 
             String[] values = value.split(",");
             Long firstValue = null;
-            int seq = 0;
             // run through each value and insert it with the correct sequence
             // number. If there is only one value (no commas), this still works just fine
             for (String splitValue : values) {
 
                 String trimmedValue = splitValue.trim();
                 if (!trimmedValue.equals("")) {
-                    saveSingleCustomField(customField, trimmedValue, seq++);
+                	CustomField cf = new CustomField();
+                	cf.setEntityId(entity.getId());
+                	cf.setEntityType(entity.getType());
+                	cf.setName(customField.getName());
+                	cf.setValue(trimmedValue);
+
+                	newlist.add(cf);
 
                     // save the Id value from the element at Sequence 0, which we'll
                     // use for the final Id for the custom field
@@ -137,6 +154,60 @@ public class IBatisCustomFieldHelper {
                 customField.setId(firstValue);
             }
         }
+        
+        saveNewCustomFieldList(entity, newlist);
+        
+    }
+    
+    @SuppressWarnings("unchecked")
+    // Determine modifications to existing date-ranged fields which will reasonably correspond to new list for current date.
+	private void saveNewCustomFieldList(AbstractCustomizableEntity entity, List<CustomField> currentNewCustomFields) {
+    	
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("entityId", entity.getId());
+        params.put("entityType", entity.getType());
+
+		List<CustomField> allOldCustomFields = (List<CustomField>)template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
+
+        params.put("asOfDate", new java.util.Date());
+        
+        List<CustomField> currentOldCustomFields = (List<CustomField>)template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
+        
+        List<CustomField> adds = subtract(currentNewCustomFields, currentOldCustomFields);
+        List<CustomField> deletes = subtract(currentOldCustomFields, currentNewCustomFields);
+ 
+        // Only need to maintain the adds and deletes. Keep the existing date ranges on the unchanged ones.
+        for (CustomField cf : deletes) {
+        	deleteCustomField(cf);
+        }
+        
+        for (CustomField cf : adds) {
+        	boolean isSingleValuedAndDateRanged = false;
+        	if (cf.getEntityType().equals("person") && fieldDao != null) {
+        		FieldDefinition fd = fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
+        		if (fd != null && fd.getFieldType().equals(FieldType.QUERY_LOOKUP)) isSingleValuedAndDateRanged = true;
+        	}
+        	addCustomField(cf, allOldCustomFields, isSingleValuedAndDateRanged);
+        }
+    	
+    }
+    
+    
+    
+    // Return list of items in a that are not in b
+    private List<CustomField> subtract(List<CustomField> a, List<CustomField> b) {
+    	List<CustomField> result = new ArrayList<CustomField>();
+        for (CustomField acf : a) {
+        	boolean found = false;
+            for (CustomField bcf : b) {
+            	if ( bcf.getName().equals(acf.getName()) && bcf.getValue().equals(acf.getValue()) ) {
+            		found = true;
+            		break;
+            	}
+            } 
+            if (!found) result.add(acf);
+        }
+        return result;
     }
 
     /**
@@ -144,6 +215,7 @@ public class IBatisCustomFieldHelper {
      * @param customFields
      */
     public void deleteCustomFields(AbstractCustomizableEntity entity) {
+    	
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("entityType", entity.getType());
         params.put("entityId", entity.getId());
@@ -152,31 +224,65 @@ public class IBatisCustomFieldHelper {
 
     }
 
-    private void deleteAllCustomFields(Map<String, CustomField> customFields) {
-    	
-    	// Utilize map's object factory to get entity type and id.
-    	CustomField customField = customFields.get("");
-    	String entityType = customField.getEntityType();
-    	Long entityId = customField.getEntityId();
-    	customFields.remove("");
-
+	private void deleteCustomField(CustomField customField) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("entityType", entityType);
-        params.put("entityId", entityId);
-
+        params.put("entityId", customField.getEntityId());
+        params.put("entityType", customField.getEntityType());
+        params.put("id", customField.getId());
         template.delete("DELETE_CUSTOM_FIELD", params);
-    }
+	}
 
+	private void addCustomField(CustomField customField, List<CustomField> existingFields, boolean isSingleValuedAndDateRanged) {
+		existingFields = filterByName(existingFields, customField);
+		if (existingFields.size() > 0 && !isSingleValuedAndDateRanged) {
+			// Need to fit in between existing date ranged values.
+			customField.setStartDate(addDay(getLatestEndDateBefore(existingFields),1));
+			customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));
+		}
+        template.insert("INSERT_CUSTOM_FIELD", customField);
+	}
+	
+	private Date getLatestEndDateBefore(List<CustomField> existingFields) {
+		Date result = addDay(CustomField.PAST_DATE,-1);
+		Date today = stripTime(new java.util.Date());
+		for (CustomField cf : existingFields) {
+			if (cf.getEndDate().after(result) && cf.getEndDate().before(today)) result = cf.getEndDate();
+		}
+		return result;
+	}
+	private Date getEarliestStartDateAfter(List<CustomField> existingFields) {
+		Date result = addDay(CustomField.FUTURE_DATE,1);
+		Date today = stripTime(new java.util.Date());
+		for (CustomField cf : existingFields) {
+			if (cf.getStartDate().before(result) && cf.getStartDate().after(today)) result = cf.getStartDate();
+		}
+		return result;
+	}
+	private Date addDay(Date d, int i) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		cal.add(Calendar.DATE, i);
+		return cal.getTime();
+	}
+	private Date stripTime(Date d) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR, 0);
+		return cal.getTime();
+	}
+	
+	private List<CustomField> filterByName(List<CustomField> list, CustomField matchingCf) {
+    	List<CustomField> result = new ArrayList<CustomField>();
+    	for (CustomField cf : list) {
+    		if (cf.getName().equals(matchingCf.getName())) {
+    			result.add(cf);
+    		}
+    	}
+    	return result;
+	}
 
-    // Helper method to persist a single value for custom field, include sequence number
-    private void saveSingleCustomField(CustomField customField, String value, int sequenceNumber) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("saveSingleCustomField: customField.fieldName = " + customField.getName() + " value = " + value + " sequenceNumber = " + sequenceNumber);
-        }
-        customField.setValue(value);
-        customField.setSequenceNumber(sequenceNumber);
-
-        Long id = (Long) template.insert("INSERT_CUSTOM_FIELD", customField);
-        customField.setId(id);
-    }
+    
 }

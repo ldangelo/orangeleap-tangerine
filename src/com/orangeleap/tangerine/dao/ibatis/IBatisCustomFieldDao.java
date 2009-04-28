@@ -39,7 +39,7 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
         params.put("entityId", personId);
         params.put("entityType", entityType);
         params.put("fieldName", fieldName);
-        return getSqlMapClientTemplate().queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY_AND_FIELD_NAME", params);
+        return getSqlMapClientTemplate().queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
 	}
    
 	@Override

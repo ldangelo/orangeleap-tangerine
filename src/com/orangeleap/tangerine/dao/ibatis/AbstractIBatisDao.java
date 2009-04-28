@@ -37,6 +37,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     public void setApplicationContext(ApplicationContext applicationContext) {
     	((CustomizableSqlMapClientTemplate)this.getSqlMapClientTemplate()).setApplicationContext(applicationContext);
     }
+    
+    public ApplicationContext getApplicationContext() {
+    	return applicationContext;
+    }
 
     protected AbstractIBatisDao(SqlMapClient sqlMapClient) {
        setSqlMapClientTemplate(new CustomizableSqlMapClientTemplate(sqlMapClient));
@@ -108,6 +112,6 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     }
     
     protected IBatisCustomFieldHelper getCustomFieldHelper() {
-        return new IBatisCustomFieldHelper(getSqlMapClientTemplate());
+        return new IBatisCustomFieldHelper(getSqlMapClientTemplate(), getApplicationContext());
     }
 }

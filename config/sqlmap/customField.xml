@@ -35,7 +35,10 @@
 		<isNotNull property="asOfDate"> 
         and DATE(#asOfDate#) &gt;= START_DATE and DATE(#asOfDate#) &lt;= END_DATE
         </isNotNull>
-        order by FIELD_NAME asc, SEQUENCE_NUM asc
+		<isNotNull property="fieldName"> 
+        and FIELD_NAME = #fieldName#
+        </isNotNull>
+        order by FIELD_NAME asc, SEQUENCE_NUM asc, START_DATE asc
 	</sql>
 
     <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_MAP" resultMap="CUSTOM_FIELD_RESULT_MAP" parameterClass="map">
@@ -45,17 +48,9 @@
     <select id="SELECT_CUSTOM_FIELD_BY_ENTITY" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
         <include refid="CUSTOM_FIELD_SELECT_FRAGMENT" />
     </select>
-
-    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_AND_FIELD_NAME" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
-        select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE
-        from CUSTOM_FIELD
-        where ENTITY_ID = #entityId#
-        and ENTITY_TYPE = #entityType#
-        and FIELD_NAME = #fieldName#
-        order by FIELD_NAME asc, SEQUENCE_NUM asc
-    </select>
-
-	<insert id="INSERT_CUSTOM_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.CustomField">
+    
+    
+    <insert id="INSERT_CUSTOM_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.CustomField">
 		insert into CUSTOM_FIELD (FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE)
 		values (#name#, #value#, #entityType#, #entityId#, #sequenceNumber#, #startDate#, #endDate#)
 		<selectKey keyProperty="id" resultClass="long">

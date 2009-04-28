@@ -35,6 +35,10 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
     	this.applicationContext = applicationContext;
     }
 
+    public ApplicationContext getApplicationContext() {
+    	return applicationContext;
+    }
+
     public CustomizableSqlMapClientTemplate(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
     }
@@ -166,7 +170,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         if (entity != null && entity instanceof AbstractCustomizableEntity) {
 
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
-            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
+            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this, this.applicationContext);
 
             custom.setCustomFieldMap(helper.readCustomFields(custom));
         }
@@ -182,8 +186,8 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         if (entity != null && entity instanceof AbstractCustomizableEntity) {
 
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
-            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
-            helper.maintainCustomFields(custom.getCustomFieldMap());
+            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this, this.applicationContext);
+            helper.maintainCustomFields(custom);
         }
     }
 
@@ -191,7 +195,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
         if (entity != null && entity instanceof AbstractCustomizableEntity) {
 
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
-            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
+            IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this, this.applicationContext);
             helper.deleteCustomFields( custom );
         }
     }

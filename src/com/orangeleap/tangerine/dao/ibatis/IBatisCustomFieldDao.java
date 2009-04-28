@@ -62,6 +62,7 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
         if (logger.isTraceEnabled()) {
             logger.trace("deleteCustomField: id = " + customField.getId());
         }
+        if (customField.getId() == null) throw new RuntimeException("Custom field to delete has no id: "+customField);
         Map<String, Object> params = setupParams();
         params.put("entityId", customField.getEntityId());
         params.put("entityType", customField.getEntityType());

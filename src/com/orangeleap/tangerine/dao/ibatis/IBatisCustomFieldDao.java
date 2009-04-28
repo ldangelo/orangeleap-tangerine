@@ -43,6 +43,9 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
 	}
    
 	public void maintainCustomFieldsByConstituentAndFieldName(Long personId, String fieldName, List<CustomField> list) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainCustomFieldsByConstituentAndFieldName: personid = " + personId + ", fieldName = " + fieldName);
+        }
         Map<String, Object> params = setupParams();
         params.put("entityId", personId);
         params.put("entityType", "person");
@@ -54,6 +57,18 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
         	getSqlMapClientTemplate().insert("INSERT_CUSTOM_FIELD", cf);
         }
 	}
+	
+	public void deleteCustomField(CustomField customField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteCustomField: id = " + customField.getId());
+        }
+        Map<String, Object> params = setupParams();
+        params.put("entityId", customField.getEntityId());
+        params.put("entityType", customField.getEntityType());
+        params.put("id", customField.getId());
+        getSqlMapClientTemplate().delete("DELETE_CUSTOM_FIELD", params);
+	}
+
 
    
 }

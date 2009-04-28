@@ -9,8 +9,9 @@
 		<div class="simplebox">
 		    <h4>Maintain relationships for <c:out value='${person.fullName}'/></h4><br/>
 		
-		<form method="post" action="relationship.htm">
+		<form method="post" action="relationships.htm">
 		   <input type=hidden name="personId" value="${person.id}" />
+		   <input type=hidden id="customize" name="customize" value="" />
 			<h4>Relationship to Manage</h4>
 			<select id="fieldDefinitionId" name="fieldDefinitionId" onchange="if (this.form.fieldDefinitionId.value != '') $('#actions').show(); else $('#actions').hide();">
 		  	  <option value="" >Select...</option>
@@ -20,7 +21,7 @@
 			</select>&nbsp;&nbsp;&nbsp;
 		   <span id="actions" style="display:none">
 		  	   <input type=submit value="Edit" />
-			   &nbsp;&nbsp;&nbsp;<a class="action" href="#" onclick="this.form.action='fieldRelationshipCustomize.htm';this.form.submit();" >Customize</a>
+			   &nbsp;&nbsp;&nbsp;<a class="action" href="#" onclick="this.form.customize='true';this.form.submit();" >Customize</a>
 		   </span>
 		</form>
 

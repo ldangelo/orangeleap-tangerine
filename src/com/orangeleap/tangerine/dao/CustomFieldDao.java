@@ -12,5 +12,7 @@ public interface CustomFieldDao {
 	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName);
 	
 	public void maintainCustomFieldsByConstituentAndFieldName(Long personId, String fieldName, List<CustomField> list);
+	
+	public void deleteCustomField(CustomField customField);
 
 }

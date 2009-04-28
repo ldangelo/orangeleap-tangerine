@@ -5,13 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
        
+    <bean id="relationships" class="com.orangeleap.tangerine.controller.relationship.RelationshipListController">
+        <property name="formView" value="relationship/relationships" />
+        <property name="successView" value="relationship/relationships" />
+    </bean>
+
     <bean id="relationship" class="com.orangeleap.tangerine.controller.relationship.RelationshipFormController">
         <property name="formView" value="relationship/relationship" />
         <property name="successView" value="relationship/relationship" />
-    </bean>
-
-    <bean id="relationships" class="com.orangeleap.tangerine.controller.relationship.RelationshipListController">
-        <property name="viewName" value="relationship/relationships"/>
     </bean>
 
 	<bean id="relationshipCustomize" class="com.orangeleap.tangerine.controller.relationship.RelationshipCustomizeFormController">

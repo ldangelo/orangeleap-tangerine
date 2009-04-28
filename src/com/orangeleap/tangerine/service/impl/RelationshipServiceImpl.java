@@ -495,11 +495,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
 	}
 	
-
-	
-  // These are the relationships for which the current field is a detailField.  The relationship holds the masterField name and relationship type.
-  // There should only be one master field relationship active per FieldDefinition (for a particular site).
-
    private List<FieldRelationship> getSiteDetailFieldRelationships(String fieldDefinitionId) {
 	   return getSiteFieldRelationships(fieldDao.readDetailFieldRelationships(fieldDefinitionId));
    }
@@ -567,26 +562,42 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
 
-	    // TODO need additional validation for self reference and setting roles
+	    // TODO need additional validation for self reference / hierarchy for changed date ranges
+	    
 		validateDateRangesAndSave(personId, fieldDefinition, list);
 	   
     }
 
-    // Validates date ranges on this field and corresponding referenced entities fields.
-    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> list) {
+    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
+
+    	FieldDefinition refField = getCorrespondingField(fieldDefinition);
     	
     	// Check date ranges on this entity
-		boolean datesvalid = validateDateRanges(fieldDefinition.getId(), list);
+		boolean datesvalid = validateDateRanges(fieldDefinition.getId(), newlist);
 		if (!datesvalid) {
 			throw new RuntimeException("Date ranges cannot overlap for a single-valued field.");
 		} 
-    	// TODO need to delete orphaned back references here
-	    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName(), list);
+		
+    	// Find any orphaned back references 
+		List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
+		for (CustomField cf : deletes) {
+			Long refid = new Long(cf.getValue());
+			List<CustomField> reflist = customFieldDao.readCustomFieldsByConstituentAndFieldName(new Long(refid), refField.getCustomFieldName());
+	        for (CustomField refcf: reflist) {
+	        	Long backref = new Long(refcf.getValue());
+	        	if (backref.equals(cf.getEntityId())) {
+	        		customFieldDao.deleteCustomField(refcf);
+	        	}
+	        }
+		    
+		}
+		
+	    // Save custom fields on main entity
+		customFieldDao.maintainCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName(), newlist);
 
-		FieldDefinition refField = getCorrespondingField(fieldDefinition);
 		
     	// Check date ranges on referenced entities
-		for (CustomField cf : list) {
+		for (CustomField cf : newlist) {
 			
     		boolean existing = false;
 			Long refid = new Long(cf.getValue());
@@ -616,10 +627,31 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
 			} 
 		    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(refid, refField.getCustomFieldName(), reflist);
-		
+		    
+		    // TODO need to set new roles on refId.
+		    
 		}
 		
     }
+    
+    private List<CustomField> getDeletes(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
+		List<CustomField> deletes = new ArrayList<CustomField>();
+	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName());
+	    for (CustomField oldcf : oldlist) {
+	    	boolean found = false;
+		    for (CustomField newcf : newlist) {
+		    	if (oldcf.getValue().equals(newcf.getValue())) {
+		    		found = true;
+		    		break;
+		    	}
+		    }
+		    if (!found) {
+		    	deletes.add(oldcf);
+		    }
+	    }
+	    return deletes;
+    }
+    
     
     // Supports one relationship defined per field definition.
     private FieldDefinition getCorrespondingField(FieldDefinition fd) {

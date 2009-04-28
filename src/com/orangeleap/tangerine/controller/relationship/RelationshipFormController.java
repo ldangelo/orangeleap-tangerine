@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -38,11 +39,50 @@ public class RelationshipFormController extends SimpleFormController {
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
-
+ 
+	@SuppressWarnings("unchecked")
 	@Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 		
-		ModelAndView mav = super.handleRequestInternal(request, response);
+		ModelAndView mav = super.showForm(request, response, errors, controlModel);
+		
+        mav.addObject("form", readForm(request));
+        return mav;
+        
+    }
+	
+    
+	@Override
+    public Object formBackingObject(HttpServletRequest request) throws ServletException {
+       return "";
+    }
+	
+
+    @Override
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+
+        ModelAndView mav = new ModelAndView(getSuccessView());
+
+		Long personId = new Long(request.getParameter("personId"));
+		Person person = constituentService.readConstituentById(personId);
+		if (person == null) return null;
+		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
+		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+		String fieldName = fieldDefinition.getCustomFieldName();
+    	List<CustomField> list = getMap(request, personId, fieldName);
+
+    	try {
+    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list);
+    	} catch (Exception e) {
+			mav.addObject("message", e.getMessage());
+    	}
+    	
+        mav.addObject("form", readForm(request));
+        return mav;
+        
+    }
+    
+	private RelationshipForm readForm(HttpServletRequest request) {
 		
         Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
@@ -69,17 +109,10 @@ public class RelationshipFormController extends SimpleFormController {
         form.setFieldDefinition(fieldDefinition);
         form.setFieldLabel(fieldlabel);
         
-        mav.addObject("form", form);
-        return mav;
+        return form;
         
-    }
+	}
 
-    
-	@Override
-    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-       return "";
-    }
-	
 	@SuppressWarnings("unchecked")
 	private List<CustomField> getMap(HttpServletRequest request, Long personId, String fieldName) {
 		List<CustomField> list = new ArrayList<CustomField>();
@@ -94,49 +127,17 @@ public class RelationshipFormController extends SimpleFormController {
 				cf.setName(fieldName);
 				cf.setValue(request.getParameter(parm).trim());
 				if (cf.getValue().length() > 0) {
-					try {
-						cf.setStartDate(getDate(request.getParameter("cfStartDate"+fieldnum).trim()));
-						cf.setEndDate(getDate(request.getParameter("cfEndDate"+fieldnum).trim()));
-						list.add(cf);
-					} catch (Exception ex) {
-					}
+					list.add(cf);
+					cf.setDisplayStartDate(request.getParameter("cfStartDate"+fieldnum));
+					cf.setDisplayEndDate(request.getParameter("cfEndDate"+fieldnum));
 				}
 			}
 		}
 		return list;
 	}
 	
-	private Date getDate(String s) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		return sdf.parse(s);
-	}
 	
 
-
-    @Override
-    // Validate date ranges don't overlap if a single-valued custom field, modify custom field values, and maintain other side of relationships.
-    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
-
-        ModelAndView mav = new ModelAndView(getSuccessView());
-
-		Long personId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(personId);
-		if (person == null) return null;
-		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
-		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-		String fieldName = fieldDefinition.getCustomFieldName();
-    	List<CustomField> list = getMap(request, personId, fieldName);
-
-    	try {
-    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list);
-    	} catch (Exception e) {
-			mav.addObject("message", e.getMessage());
-    	}
-    	
-        return mav;
-        
-    }
-    
   
     
 }

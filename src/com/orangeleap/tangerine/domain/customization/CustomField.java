@@ -139,7 +139,7 @@ public class CustomField implements GeneratedId, Serializable {
 
 	public void setDisplayStartDate(String s) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-		if (s == null || s.length() == 0) {
+		if (s == null || s.trim().length() == 0) {
 			this.startDate = PAST_DATE;
 		} else {
 			try {
@@ -152,7 +152,7 @@ public class CustomField implements GeneratedId, Serializable {
 	
 	public void setDisplayEndDate(String s) {
 			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-			if (s == null || s.length() == 0) {
+			if (s == null || s.trim().length() == 0) {
 				this.endDate = FUTURE_DATE;
 			} else {
 				try {

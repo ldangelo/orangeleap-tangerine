@@ -37,8 +37,6 @@ public class Person extends AbstractCommunicatorEntity {
     private String ncaisCode;
     private String maritalStatus = "Unknown";
     private String preferredPhoneType;
-    private String constituentIndividualRoles = StringConstants.EMPTY;
-    private String constituentOrganizationRoles = StringConstants.EMPTY;
     private String loginId;
     private String accountNumber;
     
@@ -261,19 +259,19 @@ public class Person extends AbstractCommunicatorEntity {
     }
 
     public void setConstituentIndividualRoles(String constituentIndividualRoles) {
-        this.constituentIndividualRoles = constituentIndividualRoles;
+    	setCustomFieldValue("constituentIndividualRoles", constituentIndividualRoles);
     }
 
     public String getConstituentIndividualRoles() {
-        return constituentIndividualRoles;
+        return getCustomFieldValue("constituentIndividualRoles");
     }
 
     public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
-        this.constituentOrganizationRoles = constituentOrganizationRoles;
+    	setCustomFieldValue("constituentOrganizationRoles", constituentOrganizationRoles);
     }
 
     public String getConstituentOrganizationRoles() {
-        return constituentOrganizationRoles;
+        return getCustomFieldValue("constituentOrganizationRoles");
     }
 
     public void addConstituentIndividualRoles(String role) {
@@ -319,12 +317,14 @@ public class Person extends AbstractCommunicatorEntity {
         String constituentAttributes;
         if (isOrganization()) {
             constituentAttributes = ORGANIZATION;
+            String constituentOrganizationRoles = this.getConstituentOrganizationRoles();
             if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
                 constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
             }
         } 
         else {
             constituentAttributes = INDIVIDUAL;
+            String constituentIndividualRoles = this.getConstituentIndividualRoles();
             if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
                 constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
             }

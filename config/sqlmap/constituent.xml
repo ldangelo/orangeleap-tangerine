@@ -4,8 +4,6 @@
 
 	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Person" groupBy="id">
 		<result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT" />
-		<result property="constituentIndividualRoles" column="CONSTITUENT_INDIVIDUAL_ROLES" jdbcType="VARCHAR" />
-		<result property="constituentOrganizationRoles" column="CONSTITUENT_ORGANIZATION_ROLES" jdbcType="VARCHAR" />
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR" />
@@ -27,8 +25,8 @@
 	</resultMap>
 
     <sql id="CONSTITUENT_COLS_FRAGMENT">
-    	p.CONSTITUENT_ID, p.CONSTITUENT_INDIVIDUAL_ROLES,
-		p.CONSTITUENT_ORGANIZATION_ROLES, p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
+    	p.CONSTITUENT_ID, 
+		p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NCAIS_CODE, p.ORGANIZATION_NAME,
 		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME, p.ACCOUNT_NUMBER
     </sql>
@@ -88,12 +86,12 @@
 	</select>
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
-		insert into CONSTITUENT (CONSTITUENT_INDIVIDUAL_ROLES,
-		CONSTITUENT_ORGANIZATION_ROLES,	CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
+		insert into CONSTITUENT (
+		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NCAIS_CODE, ORGANIZATION_NAME,
 		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME, ACCOUNT_NUMBER)
-		values (#constituentIndividualRoles#,
-		#constituentOrganizationRoles#, #constituentType#, #firstName#, #lastName#, #legalName#,
+		values (
+		#constituentType#, #firstName#, #lastName#, #legalName#,
 		#loginId#, #maritalStatus#, #middleName#,	#ncaisCode#, #organizationName#, 
 		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#, if(#accountNumber# is null, GENERATEID(#site.name#), #accountNumber#) )
 		<selectKey keyProperty="id" resultClass="long">
@@ -103,8 +101,7 @@
 
 	<update id="UPDATE_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
 		update CONSTITUENT
-		set CONSTITUENT_INDIVIDUAL_ROLES = #constituentIndividualRoles#,
-		CONSTITUENT_ORGANIZATION_ROLES = #constituentOrganizationRoles#,
+		set 
 		CONSTITUENT_TYPE = #constituentType#,
 		FIRST_NAME = #firstName#,
 		LAST_NAME = #lastName#,

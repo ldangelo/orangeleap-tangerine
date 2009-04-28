@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.domain.customization;
 
-import java.util.Date;
-
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 
 /**
@@ -15,10 +13,6 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
     private Long constituentId;
     private Long customFieldId;
     private Long fieldRelationshipId;
-    private String fieldName;
-    private String fieldValue;
-    private Date startDate;
-    private Date endDate;
 
     public ConstituentCustomFieldRelationship() {
         super();
@@ -48,37 +42,6 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 		return fieldRelationshipId;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldValue(String fieldValue) {
-		this.fieldValue = fieldValue;
-	}
-
-	public String getFieldValue() {
-		return fieldValue;
-	}
 
 }
 

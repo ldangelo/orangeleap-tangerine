@@ -50,10 +50,6 @@
 		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="customFieldId" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
 		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
-		<result property="fieldName" column="FIELD_NAME" jdbcType="VARCHAR" />
-		<result property="fieldValue" column="FIELD_VALUE" jdbcType="LONGVARCHAR" />
-		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
-		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 	</resultMap>
 
 	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
@@ -61,7 +57,6 @@
 		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID
 		from 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
-		inner join FIELD_RELATIONSHIP fr on ccr.FIELD_RELATIONSHIP_ID = fr.FIELD_RELATIONSHIP_ID
 		where 
 		fr.SITE_NAME is not null
 	</sql>

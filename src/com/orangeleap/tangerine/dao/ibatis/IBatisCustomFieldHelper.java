@@ -143,18 +143,13 @@ public class IBatisCustomFieldHelper {
      * Deletes all the custom fields associated with the underlying CustomizableAbstractEntity
      * @param customFields
      */
-    public void deleteCustomFields(Map<String, CustomField> customFields) {
-        for (String key : customFields.keySet()) {
+    public void deleteCustomFields(AbstractCustomizableEntity entity) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("entityType", entity.getType());
+        params.put("entityId", entity.getId());
 
-            CustomField customField = customFields.get(key);
+        template.delete("DELETE_CUSTOM_FIELD", params);
 
-            // clear out the old values if we're doing an update. Not
-            // very elegant but provides a simple solution rather than trying
-            // match up rows that have changed
-            if (customField.getId() != null && customField.getId() > 0) {
-                deleteCustomField(customField);
-            }
-        }
     }
 
     private void deleteAllCustomFields(Map<String, CustomField> customFields) {
@@ -172,19 +167,6 @@ public class IBatisCustomFieldHelper {
         template.delete("DELETE_CUSTOM_FIELD", params);
     }
 
-    // Helper method to delete a single custom file
-    private void deleteCustomField(CustomField customField) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("deleteCustomField: customField.fieldName = " + customField.getName());
-        }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("entityType", customField.getEntityType());
-        params.put("entityId", customField.getEntityId());
-        params.put("fieldName", customField.getName());
-
-        // Entity exists, but client is clearing the value, so remove the orphans
-        template.delete("DELETE_CUSTOM_FIELD", params);
-    }
 
     // Helper method to persist a single value for custom field, include sequence number
     private void saveSingleCustomField(CustomField customField, String value, int sequenceNumber) {

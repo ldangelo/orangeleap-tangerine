@@ -99,7 +99,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
      * @param entity the Entity that is being deleted
      */
     public final void deleteCustomFields(AbstractCustomizableEntity entity) {
-        getCustomFieldHelper().deleteCustomFields(entity.getCustomFieldMap());
+        getCustomFieldHelper().deleteCustomFields(entity);
     }
     
     public final void loadCustomFields(AbstractCustomizableEntity entity) {

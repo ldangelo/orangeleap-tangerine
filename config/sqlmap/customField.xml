@@ -21,9 +21,14 @@
         <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP"/>
         <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
-
-    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_MAP" resultMap="CUSTOM_FIELD_RESULT_MAP" parameterClass="map">
-        select CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE
+	
+	<sql id="CUSTOM_FIELD_COLS_FRAGMENT">
+		CUSTOM_FIELD_ID, FIELD_NAME as CUS_FLD_FIELD_NAME, FIELD_VALUE as CUS_FLD_FIELD_VALUE, ENTITY_TYPE, ENTITY_ID, SEQUENCE_NUM, START_DATE, END_DATE
+	</sql>
+	
+	<sql id="CUSTOM_FIELD_SELECT_FRAGMENT">
+        select 
+        <include refid="CUSTOM_FIELD_COLS_FRAGMENT" />
         from CUSTOM_FIELD
         where ENTITY_ID = #entityId#
         and ENTITY_TYPE = #entityType#
@@ -31,6 +36,14 @@
         and DATE(#asOfDate#) &gt;= START_DATE and DATE(#asOfDate#) &lt;= END_DATE
         </isNotNull>
         order by FIELD_NAME asc, SEQUENCE_NUM asc
+	</sql>
+
+    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_MAP" resultMap="CUSTOM_FIELD_RESULT_MAP" parameterClass="map">
+        <include refid="CUSTOM_FIELD_SELECT_FRAGMENT" />
+    </select>
+
+    <select id="SELECT_CUSTOM_FIELD_BY_ENTITY" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">
+        <include refid="CUSTOM_FIELD_SELECT_FRAGMENT" />
     </select>
 
     <select id="SELECT_CUSTOM_FIELD_BY_ENTITY_AND_FIELD_NAME" resultMap="CUSTOM_FIELD_RESULT" parameterClass="map">

@@ -31,24 +31,25 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName) {
+	public List<CustomField> readCustomFieldsByEntityAndFieldName(Long personId, String entityType, String fieldName) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readCustomFieldsByConstituentAndFieldName: personid = " + personId);
+            logger.trace("readCustomFieldsByEntityAndFieldName: entityType = " + entityType);
         }
         Map<String, Object> params = setupParams();
         params.put("entityId", personId);
-        params.put("entityType", "person");
+        params.put("entityType", entityType);
         params.put("fieldName", fieldName);
         return getSqlMapClientTemplate().queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY_AND_FIELD_NAME", params);
 	}
    
-	public void maintainCustomFieldsByConstituentAndFieldName(Long personId, String fieldName, List<CustomField> list) {
+	@Override
+	public void maintainCustomFieldsByEntityAndFieldName(Long entityId, String entityType, String fieldName, List<CustomField> list) {
         if (logger.isTraceEnabled()) {
-            logger.trace("maintainCustomFieldsByConstituentAndFieldName: personid = " + personId + ", fieldName = " + fieldName);
+            logger.trace("maintainCustomFieldsByEntityAndFieldName: entityId = " + entityId + ", fieldName = " + fieldName);
         }
         Map<String, Object> params = setupParams();
-        params.put("entityId", personId);
-        params.put("entityType", "person");
+        params.put("entityId", entityId);
+        params.put("entityType", entityType);
         params.put("fieldName", fieldName);
         getSqlMapClientTemplate().delete("DELETE_CUSTOM_FIELD", params);
         int seq = 0;
@@ -58,6 +59,8 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
         }
 	}
 	
+	
+	@Override
 	public void deleteCustomField(CustomField customField) {
         if (logger.isTraceEnabled()) {
             logger.trace("deleteCustomField: id = " + customField.getId());

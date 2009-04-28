@@ -37,6 +37,7 @@ import com.orangeleap.tangerine.type.RelationshipType;
 public class RelationshipServiceImpl extends AbstractTangerineService implements RelationshipService {
 	
 	public static final int MAX_TREE_DEPTH = 200;
+	private static final String PERSON = "person";
  
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -548,7 +549,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndFieldName: personId = " + personId);
 	    }
 	    if (null == constituentDao.readConstituentById(personId)) return null;
-	    return customFieldDao.readCustomFieldsByConstituentAndFieldName(personId, fieldName);
+	    return customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldName);
     }
 
     @Override
@@ -582,7 +583,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
 		for (CustomField cf : deletes) {
 			Long refid = new Long(cf.getValue());
-			List<CustomField> reflist = customFieldDao.readCustomFieldsByConstituentAndFieldName(new Long(refid), refField.getCustomFieldName());
+			List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
 	        for (CustomField refcf: reflist) {
 	        	Long backref = new Long(refcf.getValue());
 	        	if (backref.equals(cf.getEntityId())) {
@@ -593,7 +594,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 		
 	    // Save custom fields on main entity
-		customFieldDao.maintainCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName(), newlist);
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName(), newlist);
 
 		
     	// Check date ranges on referenced entities
@@ -601,7 +602,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 			
     		boolean existing = false;
 			Long refid = new Long(cf.getValue());
-			List<CustomField> reflist = customFieldDao.readCustomFieldsByConstituentAndFieldName(new Long(refid), refField.getCustomFieldName());
+			List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
 	        for (CustomField refcf: reflist) {
 	        	Long backref = new Long(refcf.getValue());
 	        	if (backref.equals(cf.getEntityId())) {
@@ -626,7 +627,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				Person refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
 				throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
 			} 
-		    customFieldDao.maintainCustomFieldsByConstituentAndFieldName(refid, refField.getCustomFieldName(), reflist);
+		    customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
 		    
 		    // TODO need to set new roles on refId.
 		    
@@ -636,7 +637,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     private List<CustomField> getDeletes(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
 		List<CustomField> deletes = new ArrayList<CustomField>();
-	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByConstituentAndFieldName(personId, fieldDefinition.getCustomFieldName());
+	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName());
 	    for (CustomField oldcf : oldlist) {
 	    	boolean found = false;
 		    for (CustomField newcf : newlist) {

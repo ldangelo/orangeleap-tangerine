@@ -192,7 +192,7 @@ public class CustomizableSqlMapClientTemplate extends SqlMapClientTemplate {
 
             AbstractCustomizableEntity custom = (AbstractCustomizableEntity) entity;
             IBatisCustomFieldHelper helper = new IBatisCustomFieldHelper(this);
-            helper.deleteCustomFields( custom.getCustomFieldMap());
+            helper.deleteCustomFields( custom );
         }
     }
 

@@ -28,7 +28,7 @@
         where ENTITY_ID = #entityId#
         and ENTITY_TYPE = #entityType#
 		<isNotNull property="asOfDate"> 
-        and #asOfDate# between START_DATE and END_DATE
+        and DATE(#asOfDate#) &gt;= START_DATE and DATE(#asOfDate#) &lt;= END_DATE
         </isNotNull>
         order by FIELD_NAME asc, SEQUENCE_NUM asc
     </select>
@@ -56,6 +56,9 @@
         and ENTITY_ID = #entityId#
 		<isNotNull property="fieldName"> 
         and FIELD_NAME = #fieldName#
+        </isNotNull>
+		<isNotNull property="id"> 
+        and CUSTOM_FIELD_ID = #id#
         </isNotNull>
     </delete>
 

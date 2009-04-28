@@ -263,7 +263,8 @@ public class Person extends AbstractCommunicatorEntity {
     }
 
     public String getConstituentIndividualRoles() {
-        return getCustomFieldValue("constituentIndividualRoles");
+        String result = getCustomFieldValue("constituentIndividualRoles");
+        if (result == null) return ""; else return result;
     }
 
     public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
@@ -271,7 +272,8 @@ public class Person extends AbstractCommunicatorEntity {
     }
 
     public String getConstituentOrganizationRoles() {
-        return getCustomFieldValue("constituentOrganizationRoles");
+    	String result = getCustomFieldValue("constituentOrganizationRoles");
+        if (result == null) return ""; else return result;
     }
 
     public void addConstituentIndividualRoles(String role) {

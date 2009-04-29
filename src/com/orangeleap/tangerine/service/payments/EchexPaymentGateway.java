@@ -52,7 +52,11 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	public void Process(Gift g) {
 			if (g.getPaymentType().compareTo("ACH") != 0) return;
 			
+
+			//
+			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			g.getPerson().setSite(ss.readSite(g.getPerson().getSite().getName()));
 			
 			Batch batch = getTestBatch(ss.readSite(g.getSite().getName()));
 	        Detail detail = new Detail();

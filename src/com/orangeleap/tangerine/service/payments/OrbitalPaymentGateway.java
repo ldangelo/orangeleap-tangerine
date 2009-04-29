@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.paymentech.orbital.sdk.configurator.Configurator;
 import com.paymentech.orbital.sdk.configurator.ConfiguratorIF;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
@@ -61,6 +62,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         }
 
 		try {
+			//
+			// make sure the site information is loaded
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			
 			//
 			// Create the request
 			// Tell the request object which template to use (see
@@ -139,7 +145,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
 			gift.setPaymentStatus("Approved");
-			gift.setPaymentStatus(response.getStatus());
+//			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
 		} else {
@@ -171,6 +177,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         }
 
 		try {
+			//
+			// make sure the site information is loaded
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			
 			//
 			// Create the request
 			// Tell the request object which template to use (see
@@ -269,6 +280,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
         }
 
 		try {
+			//
+			// make sure the site information is loaded
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			
 			//
 			// Create the request
 			// Tell the request object which template to use (see

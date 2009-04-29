@@ -185,7 +185,7 @@ public class IBatisCustomFieldHelper {
         	boolean isSingleValuedAndDateRanged = false;
         	if (cf.getEntityType().equals("person") && fieldDao != null) {
         		FieldDefinition fd = fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
-        		if (fd != null && fd.getFieldType().equals(FieldType.QUERY_LOOKUP)) isSingleValuedAndDateRanged = true;
+        		if (fd != null && (fd.getFieldType().equals(FieldType.QUERY_LOOKUP) || fd.getFieldType().equals(FieldType.PICKLIST))) isSingleValuedAndDateRanged = true;
         	}
         	addCustomField(cf, allOldCustomFields, isSingleValuedAndDateRanged);
         }

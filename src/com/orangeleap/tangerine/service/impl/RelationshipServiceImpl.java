@@ -535,6 +535,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
 
 	    validateNoSelfReference(personId, list);
+	    // TODO check hierarchy recursion
 		validateDateRangesAndSave(personId, fieldDefinition, list);
 	   
     }
@@ -602,14 +603,20 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		        	reflist.add(newcf);
 		        }
 			
+		        Person refPerson;
 				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
 				if (!refdatesvalid) {
-					Person refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+					refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
 					throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
 				} 
-			    customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
+				
+				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
 			    
-			    // TODO need to set new roles on refId.
+			    // Set new roles on refId.
+				refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+				// TODO set date range on role attribute
+			    ensureOtherPersonAttributeIsSet(refField, refPerson);
+				refPerson = constituentDao.maintainConstituent(refPerson);
 			    
 			}
 			

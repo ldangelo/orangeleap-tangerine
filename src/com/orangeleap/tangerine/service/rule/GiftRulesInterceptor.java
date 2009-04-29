@@ -87,7 +87,8 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
-
+			workingMemory.setGlobal("personService", ps);
+			workingMemory.setGlobal("giftService",gs);
 			logger.info("*** firing all rules");
 
 			workingMemory.fireAllRules();

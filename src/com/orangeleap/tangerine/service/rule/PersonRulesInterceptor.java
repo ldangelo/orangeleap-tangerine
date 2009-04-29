@@ -61,6 +61,8 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 
 		try {
 			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setGlobal("personService", ps);
+			workingMemory.setGlobal("giftService",gs);
 			logger.info("*** firing all rules");
 			workingMemory.setFocus(site+"person");
 			workingMemory.fireAllRules();

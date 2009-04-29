@@ -234,7 +234,7 @@ public class IBatisCustomFieldHelper {
 
 	private void addCustomField(CustomField customField, List<CustomField> existingFields, boolean isSingleValuedAndDateRanged) {
 		existingFields = filterByName(existingFields, customField);
-		if (existingFields.size() > 0 && !isSingleValuedAndDateRanged) {
+		if (existingFields.size() > 0 && isSingleValuedAndDateRanged) {
 			// Need to fit in between existing date ranged values.
 			customField.setStartDate(addDay(getLatestEndDateBefore(existingFields),1));
 			customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));

@@ -128,9 +128,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		ResponseIF response = null;
 		try {
 			response = tp.process(request);
-		} catch (Exception tex) {
+		} catch (Exception text) {
 			if (logger.isErrorEnabled()) {
-				logger.error("Request: "+ tex.getMessage());
+				logger.error("Request: "+ text.getMessage());
 			}
 			return;
 		}

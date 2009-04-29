@@ -14,7 +14,7 @@ public class GiftDataProvider {
     @DataProvider(name = "setupGift")
     public static Object[][] createGift() {
         Site site = new Site();
-        site.setName("site 1");
+        site.setName("company1");
         site.setMerchantNumber("700000007668");
         site.setMerchantBin("000002");
         

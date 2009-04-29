@@ -1,6 +1,6 @@
 -- ConstituentIndividualRoles Picklist 
 
-INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, PICKLIST_NAME, PICKLIST_DESC) VALUES (2,'constituentIndividualRoles', 'constituentIndividualRoles', 'Individual Roles');
+INSERT INTO PICKLIST (PICKLIST_ID, PICKLIST_NAME_ID, PICKLIST_NAME, PICKLIST_DESC) VALUES (2,'customFieldMap[constituentIndividualRoles]', 'customFieldMap[constituentIndividualRoles]', 'Individual Roles');
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES (2, 'donor', 'Donor', 'li:has(.ea-donor)', 3);
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES (2, 'sponsor', 'Sponsor', 'li:has(.ea-sponsor)', 4);
 INSERT INTO PICKLIST_ITEM (PICKLIST_ID, ITEM_NAME, DEFAULT_DISPLAY_VALUE, REFERENCE_VALUE, ITEM_ORDER) VALUES (2, 'affiliate', 'Affiliate', 'li:has(.ea-affiliate)', 5);

@@ -93,7 +93,7 @@ public class CustomField implements GeneratedId, Serializable {
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("id", id).append("name", name).append("entityType", entityType).append("entityId", entityId).append("value", value).append("startDate", startDate).append("endDate", endDate).toString();
+        return new ToStringCreator(this).append("id", id).append("name", name).append("entityType", entityType).append("entityId", entityId).append("value", value).append("startDate", startDate).append("endDate", endDate).append("sequenceNumber", sequenceNumber).toString();
     }
 
 	public void setStartDate(Date startDate) {

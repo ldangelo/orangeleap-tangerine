@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.RelationshipService;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class RelationshipFormController extends SimpleFormController {
 
@@ -118,11 +121,13 @@ public class RelationshipFormController extends SimpleFormController {
 			String parm = (String)e.nextElement();
 			if (parm.startsWith("cfFieldValue")) {
 				String fieldnum = parm.substring("cfFieldValue".length());
+				int ifieldnum = Integer.parseInt(fieldnum.replace('[',' ').replace(']',' ').trim());
 				CustomField cf = new CustomField();
 				cf.setEntityId(personId);
 				cf.setEntityType("person");
 				cf.setName(fieldName);
 				cf.setValue(request.getParameter(parm).trim());
+				cf.setSequenceNumber(ifieldnum-1);
 				if (cf.getValue().length() > 0) {
 					list.add(cf);
 					cf.setDisplayStartDate(request.getParameter("cfStartDate"+fieldnum));
@@ -130,6 +135,12 @@ public class RelationshipFormController extends SimpleFormController {
 				}
 			}
 		}
+		Collections.sort(list, new Comparator<CustomField>() {
+			@Override
+			public int compare(CustomField o1, CustomField o2) {
+				return o1.getSequenceNumber() - o2.getSequenceNumber();
+			}
+		});
 		return list;
 	}
 	

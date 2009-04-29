@@ -580,17 +580,18 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		} 
 		
     	// Find any orphaned back references 
-		List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
-		for (CustomField cf : deletes) {
-			Long refid = new Long(cf.getValue());
-			List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
-	        for (CustomField refcf: reflist) {
-	        	Long backref = new Long(refcf.getValue());
-	        	if (backref.equals(cf.getEntityId())) {
-	        		customFieldDao.deleteCustomField(refcf);
-	        	}
-	        }
-		    
+		if (refField != null) {
+			List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
+			for (CustomField cf : deletes) {
+				Long refid = new Long(cf.getValue());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
+		        for (CustomField refcf: reflist) {
+		        	Long backref = new Long(refcf.getValue());
+		        	if (backref.equals(cf.getEntityId())) {
+		        		customFieldDao.deleteCustomField(refcf);
+		        	}
+		        }
+			}
 		}
 		
 	    // Save custom fields on main entity
@@ -598,39 +599,43 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
 		
     	// Check date ranges on referenced entities
-		for (CustomField cf : newlist) {
+		if (refField != null) {
 			
-    		boolean existing = false;
-			Long refid = new Long(cf.getValue());
-			List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
-	        for (CustomField refcf: reflist) {
-	        	Long backref = new Long(refcf.getValue());
-	        	if (backref.equals(cf.getEntityId())) {
-	        		refcf.setStartDate(cf.getStartDate());
-	        		refcf.setEndDate(cf.getEndDate());
-	        		existing = true;
-	        	}
-	        }
-	        if (!existing) {
-	        	CustomField newcf = new CustomField();
-	        	newcf.setEntityId(refid);
-	        	newcf.setEntityType("person");
-	        	newcf.setName(refField.getCustomFieldName());
-	        	newcf.setStartDate(cf.getStartDate());
-	        	newcf.setEndDate(cf.getEndDate());
-	        	newcf.setValue(""+cf.getEntityId());
-	        	reflist.add(newcf);
-	        }
-		
-			boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
-			if (!refdatesvalid) {
-				Person refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
-				throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
-			} 
-		    customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
-		    
-		    // TODO need to set new roles on refId.
-		    
+			for (CustomField cf : newlist) {
+			
+	    		boolean existing = false;
+				Long refid = new Long(cf.getValue());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
+		        for (CustomField refcf: reflist) {
+		        	Long backref = new Long(refcf.getValue());
+		        	if (backref.equals(cf.getEntityId())) {
+		        		refcf.setStartDate(cf.getStartDate());
+		        		refcf.setEndDate(cf.getEndDate());
+		        		existing = true;
+		        	}
+		        }
+		        if (!existing) {
+		        	CustomField newcf = new CustomField();
+		        	newcf.setEntityId(refid);
+		        	newcf.setEntityType("person");
+		        	newcf.setName(refField.getCustomFieldName());
+		        	newcf.setStartDate(cf.getStartDate());
+		        	newcf.setEndDate(cf.getEndDate());
+		        	newcf.setValue(""+cf.getEntityId());
+		        	reflist.add(newcf);
+		        }
+			
+				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
+				if (!refdatesvalid) {
+					Person refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+					throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
+				} 
+			    customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
+			    
+			    // TODO need to set new roles on refId.
+			    
+			}
+			
 		}
 		
     }
@@ -673,6 +678,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
     private boolean validateDateRanges(String fieldDefinitionId, List<CustomField> list) {
+    	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
     	List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fieldDefinitionId);
     	List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fieldDefinitionId);
     	boolean isMultiValued = false;
@@ -682,6 +688,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	if (details.size() > 0) {
     		isMultiValued = RelationshipServiceImpl.thisCanBeMultiValued(RelationshipDirection.MASTER, details.get(0).getRelationshipType());
     	}
+    	
+    	// This is just for certain custom fields that allow date range editing.
+    	FieldType ft = fd.getFieldType();
+    	if (ft.equals(FieldType.QUERY_LOOKUP) || ft.equals(FieldType.PICKLIST)) isMultiValued = false;
+    	if (ft.equals(FieldType.MULTI_PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) isMultiValued = true;
+    
     	if (!isMultiValued) {
     	    return validateDateRangesDoNotOverlap(list);
     	}

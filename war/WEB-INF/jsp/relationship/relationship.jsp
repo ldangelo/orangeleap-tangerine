@@ -20,7 +20,7 @@
 				<th nowrap>Value</td>
 				<th nowrap>Start Date</td>
 				<th nowrap>End Date</td>
-				<th nowrap>&nbsp;&nbsp;Customize</td>
+				<th nowrap>&nbsp;&nbsp;<!-- Customize --></td>
 			  </tr>
 			 <c:forEach var="customField" varStatus="status" items="${form.customFieldList}" >
 			  <tr rowindex="${status.count}">
@@ -33,7 +33,7 @@
 				<td>
 				<input id="cfEndDate-${status.count}-" name="cfEndDate[${status.count}]" value="<c:out value='${customField.displayEndDate}'/>" dateinput="true" />
 				</td>
-				<td>&nbsp;&nbsp;<a href="relationshipCustomize.html?id=${form.fieldDefinition.id}">+</a></td>
+				<td>&nbsp;&nbsp;<!-- <a href="relationshipCustomize.html?id=${form.fieldDefinition.id}">+</a> --></td>
 			  </tr>
 			 </c:forEach>
 			</table>

@@ -21,7 +21,7 @@
 			</select>&nbsp;&nbsp;&nbsp;
 		   <span id="actions" style="display:none">
 		  	   <input type=submit value="Edit" />
-			   &nbsp;&nbsp;&nbsp;<a class="action" href="#" onclick="this.form.customize='true';this.form.submit();" >Customize</a>
+			   &nbsp;&nbsp;&nbsp;<!-- <a class="action" href="#" onclick="this.form.customize='true';this.form.submit();" >Customize</a> -->
 		   </span>
 		</form>
 

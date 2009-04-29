@@ -678,18 +678,19 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
     private boolean validateDateRanges(String fieldDefinitionId, List<CustomField> list) {
-    	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
+    	
+    	boolean isMultiValued = false;
+
     	List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fieldDefinitionId);
     	List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fieldDefinitionId);
-    	boolean isMultiValued = false;
     	if (masters.size() > 0) {
-    		isMultiValued = RelationshipServiceImpl.thisCanBeMultiValued(RelationshipDirection.DETAIL, masters.get(0).getRelationshipType());
+    		isMultiValued = thisCanBeMultiValued(RelationshipDirection.DETAIL, masters.get(0).getRelationshipType());
     	}
     	if (details.size() > 0) {
-    		isMultiValued = RelationshipServiceImpl.thisCanBeMultiValued(RelationshipDirection.MASTER, details.get(0).getRelationshipType());
+    		isMultiValued = thisCanBeMultiValued(RelationshipDirection.MASTER, details.get(0).getRelationshipType());
     	}
     	
-    	// This is just for certain custom fields that allow date range editing.
+    	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
     	FieldType ft = fd.getFieldType();
     	if (ft.equals(FieldType.QUERY_LOOKUP) || ft.equals(FieldType.PICKLIST)) isMultiValued = false;
     	if (ft.equals(FieldType.MULTI_PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) isMultiValued = true;

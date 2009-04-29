@@ -62,7 +62,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             return constituent;
         }
     	ConstituentValidationException ex = new ConstituentValidationException();
-    	String lastRecursiveParentCustomFieldName = null;
     	
     	Map<String, FieldDefinition> map = constituent.getFieldTypeMap();
     	if (map == null) {
@@ -74,56 +73,24 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     		String key = e.getKey();
     		FieldDefinition fd = e.getValue();
     		boolean isReferenceTypeField = fd.getFieldType() == FieldType.QUERY_LOOKUP || fd.getFieldType() == FieldType.MULTI_QUERY_LOOKUP || fd.getFieldType() == FieldType.QUERY_LOOKUP_OTHER;
-    		if (isReferenceTypeField && fd.isCustom()) {
+    		if (isReferenceTypeField && fd.isCustom() && isRelationship(fd)) {
     			
-    			// Determine if there is a relationship defined with another field.
-    			List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fd.getId()); 
-    			List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fd.getId()); 
-    			if (masters.size() == 0 && details.size() == 0) {
-                    continue;
-                }
-
-    			String fieldlabel = fd.getDefaultLabel();
     			String customFieldName = fd.getCustomFieldName();
-
-    			// Get old and new reference field value for comparison
     			String oldFieldValue = getOldFieldValue(constituent, key);
        			String newFieldValue = getNewFieldValue(constituent, key);  
        		    List<Long> oldids = RelationshipUtil.getIds(oldFieldValue);
     			List<Long> newids = RelationshipUtil.getIds(newFieldValue);
     			validateIds(customFieldName, newids);
-    			
-    			if (!oldFieldValue.equals(newFieldValue)) {
- 
-	       			logger.debug("Maintaining relationships for fieldname = " + key + ", oldids = " + oldFieldValue + ", newids = " + newFieldValue);
-	
-	    			// Setup for recursion checks
-	    			boolean needToCheckForRecursion = false;
-		   			for (FieldRelationship fr : masters) {
-		   				if (fr.isRecursive()) {
-                            needToCheckForRecursion = true;
-                        }
-		   			}
-		   			for (FieldRelationship fr : details) {
-		   				if (fr.isRecursive()) {
-		   					needToCheckForRecursion = true;
-		   					lastRecursiveParentCustomFieldName = fr.getDetailRecordField().getCustomFieldName();
-		   				}
-		   			}
-		   			List<Long> descendants = new ArrayList<Long>();
-	    			
-	    			// Maintain the other related fields
-		   			for (FieldRelationship fr : details) {
-			   			if (needToCheckForRecursion) {
-			   				descendants = new ArrayList<Long>();
-			   				getDescendantIds(descendants, constituent, fr.getMasterRecordField().getCustomFieldName(), 0);
-			   			}
-	   			    	maintainRelationShip(fieldlabel, customFieldName, constituent, fr.getMasterRecordField(), RelationshipDirection.MASTER, fr, oldids, newids, descendants, ex);
-	 	   			}
-		   			for (FieldRelationship fr : masters) {
-	   			    	maintainRelationShip(fieldlabel, customFieldName, constituent, fr.getDetailRecordField(), RelationshipDirection.DETAIL, fr, oldids, newids, descendants, ex);
-	 	   			}
-		   			
+
+    			// Get old and new reference field values for orphan reference deletes 
+    			List<Long> deletes = getDeletes(oldids, newids);
+
+    			// Validate and set custom fields for date ranges on this and referenced fields.
+    			List<CustomField> list = this.readCustomFieldsByConstituentAndFieldName(constituent.getId(), customFieldName);
+    			try {
+    				maintainCustomFieldsByConstituentAndFieldDefinition(constituent.getId(), fd.getId(), list, deletes);
+    			} catch (ConstituentValidationException ex1) {
+    				ex.addValidationResults(ex1.getValidationResults());
     			}
 	   			
     		}
@@ -132,12 +99,19 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             throw ex;
         }
     	
-	    if (logger.isDebugEnabled() && lastRecursiveParentCustomFieldName != null) {
-	        // TODO Turn off in production since getting the whole tree could be expensive.
-	    	// debugPrintTree(constituent, lastRecursiveParentCustomFieldName);
-	    }
-			
         return constituent;
+    }
+    
+    private List<Long> getDeletes(List<Long> oldids, List<Long> newids) {
+    	List<Long> result = new ArrayList<Long>();
+    	for (Long oldid : oldids) {
+    		boolean found = false;
+        	for (Long newid : newids) {
+        		if (oldid.equals(newid)) found = true;
+    		}
+        	if (!found) result.add(oldid);
+    	}
+    	return result;
     }
     
     // Validate id list for import.  They must exist and be on same site.
@@ -172,22 +146,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	return null;
 	}
 
-    private void debugPrintTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
-    	try {
-    		PersonTreeNode tree = getTree(person, parentCustomFieldName, false, true);
-    		String result = debugPrintTree(tree);
-    		logger.debug("Tree for "+parentCustomFieldName+":\r\n"+result);
-    		PersonTreeNode thisnode = findPersonNodeInTree(person, tree);
-    		result = debugPrintTree(thisnode);
-    		logger.debug("Subtree for "+person.getDisplayValue()+":\r\n"+result);
-    		Person head = getHeadOfTree(person, parentCustomFieldName);
-    		logger.debug("Head of tree: "+head.getDisplayValue());
-    		Person common = getFirstCommonAncestor(person, head, parentCustomFieldName);
-    		logger.debug("Common ancestor: "+common.getDisplayValue());
-    		logger.debug(tree.toJSONString());
-    	} catch (Exception e) {
-    		logger.debug("debugPrintTree error:" ,e);
-    	}
+    private String getNewFieldValue(Person person, String fieldname) {
+    	BeanWrapperImpl bean = new BeanWrapperImpl(person);
+    	String result = (String) bean.getPropertyValue(fieldname + ".value");
+    	return (result == null) ? "" : result;
     }
     
     private String getOldFieldValue(Person person, String fieldname) {
@@ -195,119 +157,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		return (oldFieldValue == null) ? "" : oldFieldValue;
     }
     
-    private String getNewFieldValue(Person person, String fieldname) {
-    	BeanWrapperImpl bean = new BeanWrapperImpl(person);
-    	String result = (String) bean.getPropertyValue(fieldname + ".value");
-    	return (result == null) ? "" : result;
-    }
-    
-	private void maintainRelationShip(String thisFieldLabel,
-			String customFieldName, 
-			Person person, 
-			FieldDefinition otherField,
-			RelationshipDirection direction,
-			FieldRelationship fieldRelationship, 
-			List<Long> oldIds,
-			List<Long> newIds, 
-			List<Long> checkDescendents,
-			ConstituentValidationException ex) throws ConstituentValidationException { 
-
-        logger.debug("maintainRelationShip() called for " + otherField.getFieldName() + ", " + direction + ", " + fieldRelationship.getRelationshipType() + ", recursive=" + fieldRelationship.isRecursive());	
-        
-        if (!otherField.isCustom()) { 
-        	logger.error("Field Id specified in relationship is not a custom field: " + otherField.getId());
-        	return;
-        }
-
-        // Check if this field can be multi-valued per this relationship.
-		boolean thisCanBeMultiValued = thisCanBeMultiValued(direction, fieldRelationship.getRelationshipType());
-		boolean thisIsMultiValued = newIds.size() > 1;
-		if (!thisCanBeMultiValued && thisIsMultiValued) {
-			String thisFieldTooManyValues = "Value for " + thisFieldLabel + " can only have one selected value.";
-			ex.addValidationResult(thisFieldTooManyValues);
-			return;
-		}
-
-		// Get merged list of all ids, both adds and deletes.
-        List<Long> allids = new ArrayList<Long>();
-        allids.addAll(oldIds);
-        for (Long id : newIds) {
-            if (!allids.contains(id)) {
-                allids.add(id);
-            }
-        }
-        
-		// Check other person's related field for deletion or addition of a reference to this id.
-		boolean otherCanBeMultiValued = otherCanBeMultiValued(direction, fieldRelationship.getRelationshipType());
-        Long thisId = person.getId();
-		String otherfieldname = otherField.getCustomFieldName();  
-		
-		if (allids.isEmpty() == false) {
-    		List<Person> otherPersons = constituentDao.readConstituentsByIds(allids);
-    		for (Person otherPerson : otherPersons) {
-    			
-    			Long otherId = otherPerson.getId();
-    
-    			if (newIds.contains(otherId)) {
-    			
-    				// Self reference
-    				if (thisId.equals(otherId)) {
-    					ex.addValidationResult("fieldSelfReference", new Object[]{thisFieldLabel});
-    					continue;
-    				}
-    	
-    				// Check for recursion loops
-    				if (fieldRelationship.isRecursive()) {
-    					if (thisCanBeMultiValued) {
-    						// Attempt to add an ancestor as a child
-    						List<Long> descendants = new ArrayList<Long>();
-    						getDescendantIds(descendants, otherPerson, customFieldName, 0);
-    						if (descendants.contains(thisId)) {
-    							ex.addValidationResult("childReferenceError", new Object[]{thisFieldLabel});
-    							continue;
-    						}
-    					} else {
-    						// Attempt to set parent to a descendant
-    						if (checkDescendents.contains(otherId)) {
-    							ex.addValidationResult("parentReferenceError", new Object[]{thisFieldLabel});
-    							continue;
-    						}
-    					}
-    				}
-    			
-    			}
-    			
-    			// Check for additions or deletions
-    			CustomField otherCustomField = otherPerson.getCustomFieldMap().get(otherfieldname);
-    			String otherCustomFieldValue = otherCustomField.getValue();
-    			List<Long> otherFieldIds = RelationshipUtil.getIds(otherCustomFieldValue);
-    			boolean found = otherFieldIds.contains(thisId);
-    			boolean shouldBeFound = newIds.contains(otherId);
-    			
-    			// Maintain reverse references
-    			boolean needToPersist = false;
-    			if (found && !shouldBeFound) {
-    				otherFieldIds.remove(thisId);
-    				needToPersist = true;
-    			} else if (!found && shouldBeFound) {
-    				if (!otherCanBeMultiValued) {
-                        otherFieldIds.clear();
-                    }
-    				otherFieldIds.add(thisId);
-    				needToPersist = true;
-    				ensureOtherPersonAttributeIsSet(otherField, otherPerson);
-    			}
-    			
-    			if (needToPersist) {
-    				String newOtherFieldValue = RelationshipUtil.getIdString(otherFieldIds);
-    				logger.debug("Updating related field "+otherCustomField.getName()+" value on "+otherPerson.getDisplayValue() + " to " + newOtherFieldValue);
-    				otherCustomField.setValue(newOtherFieldValue);
-    				constituentDao.maintainConstituent(otherPerson); 
-    			}
-    			
-    		}
-		}
-	}
 	
 	private void ensureOtherPersonAttributeIsSet(FieldDefinition otherFieldDefinition, Person otherPerson) {
 		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
@@ -491,11 +340,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.DETAIL) );
 	}
 	
-	private static boolean otherCanBeMultiValued(RelationshipDirection direction, RelationshipType fieldRelationshipType) {
-		return fieldRelationshipType.equals(RelationshipType.MANY_TO_MANY) ||
-		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
-	}
-	
     
     @Override
     public boolean isHierarchy(FieldDefinition fd) {
@@ -524,8 +368,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException 
+    {
     	
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: personId = " + personId);
@@ -534,38 +379,46 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
 
-	    validateNoSelfReference(personId, list);
+	    validateNoSelfReference(personId, list, fieldDefinition);
 	    // TODO check hierarchy recursion
-		validateDateRangesAndSave(personId, fieldDefinition, list);
+		validateDateRangesAndSave(personId, fieldDefinition, list, additionalDeletes);
 	   
     }
     
-    private void validateNoSelfReference(Long personId, List<CustomField> list) {
+    private void validateNoSelfReference(Long personId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {
     	String id = "" + personId;
 		for (CustomField cf : list) {
-			if (cf.getValue().equals(id)) throw new RuntimeException("Value cannot reference itself.");
+			if (cf.getValue().equals(id)) {
+				ConstituentValidationException ex = new ConstituentValidationException("Field value cannot reference itself.");
+				ex.addValidationResult("fieldSelfReference", new Object[]{fieldDefinition.getDefaultLabel()});
+				throw ex;
+			}
 		}
     }
 
-    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
+    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist, List<Long> additionalDeletes) throws ConstituentValidationException {
 
     	FieldDefinition refField = getCorrespondingField(fieldDefinition);
     	
     	// Check date ranges on this entity
 		boolean datesvalid = validateDateRanges(fieldDefinition.getId(), newlist);
 		if (!datesvalid) {
-			throw new RuntimeException("Date ranges cannot overlap for a single-valued field.");
+			ConstituentValidationException ex = new ConstituentValidationException("Date ranges cannot overlap for a single-valued field.");
+			ex.addValidationResult("fieldDateOverlap", new Object[]{fieldDefinition.getDefaultLabel()});
+			throw ex;
 		} 
 		
     	// Find any orphaned back references 
 		if (refField != null) {
 			List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
-			for (CustomField cf : deletes) {
-				Long refid = new Long(cf.getValue());
+			for (CustomField cf : deletes) { 
+				additionalDeletes.add(new Long(cf.getValue()));
+			}
+			for (Long refid : additionalDeletes) {
 				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
 		        for (CustomField refcf: reflist) {
 		        	Long backref = new Long(refcf.getValue());
-		        	if (backref.equals(cf.getEntityId())) {
+		        	if (backref.equals(personId)) {
 		        		customFieldDao.deleteCustomField(refcf);
 		        	}
 		        }
@@ -607,7 +460,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
 				if (!refdatesvalid) {
 					refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
-					throw new RuntimeException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());  
+					ConstituentValidationException ex = new ConstituentValidationException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());
+					ex.addValidationResult("referenceFieldDateOverlap", new Object[]{refPerson.getFullName()});
+					throw ex;
 				} 
 				
 				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);

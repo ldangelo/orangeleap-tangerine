@@ -72,7 +72,7 @@ public class RelationshipFormController extends SimpleFormController {
     	List<CustomField> list = getMap(request, personId, fieldName);
 
     	try {
-    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list);
+    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
     	} catch (Exception e) {
 			mav.addObject("message", e.getMessage());
     	}

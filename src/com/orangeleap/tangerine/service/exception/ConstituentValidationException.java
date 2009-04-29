@@ -12,4 +12,13 @@ public class ConstituentValidationException extends ValidationException {
     private static final long serialVersionUID = 1L;
 
     public static final String SITE_REQUIRED = "MSG_SITE_REQUIRED";
+    
+    public ConstituentValidationException() {
+    	
+    }
+    
+    public ConstituentValidationException(String message) {
+    	super(message);
+    }
 }
+

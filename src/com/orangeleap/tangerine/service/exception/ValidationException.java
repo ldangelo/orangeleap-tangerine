@@ -18,6 +18,11 @@ public abstract class ValidationException extends Exception {
     public ValidationException() {
         super();
     }
+    
+    public ValidationException(String message) {
+    	super(message);
+    }
+
 
     public ValidationException(String msg, Object[] params) {
         super(msg);

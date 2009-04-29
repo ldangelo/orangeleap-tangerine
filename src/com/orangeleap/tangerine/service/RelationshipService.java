@@ -27,7 +27,7 @@ public interface RelationshipService {
 	
 	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName);
 	
-    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list);
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException;
 
 	
 }

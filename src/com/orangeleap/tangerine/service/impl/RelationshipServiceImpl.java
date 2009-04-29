@@ -77,8 +77,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     		if (isReferenceTypeField && fd.isCustom()) {
     			
     			// Determine if there is a relationship defined with another field.
-    			List<FieldRelationship> masters = getSiteMasterFieldRelationships(fd.getId()); 
-    			List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId()); 
+    			List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fd.getId()); 
+    			List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fd.getId()); 
     			if (masters.size() == 0 && details.size() == 0) {
                     continue;
                 }
@@ -159,7 +159,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
-    			List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId());  
+    			List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fd.getId());  
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
@@ -496,40 +496,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		( fieldRelationshipType.equals(RelationshipType.ONE_TO_MANY) && direction.equals(RelationshipDirection.MASTER) );
 	}
 	
-   private List<FieldRelationship> getSiteDetailFieldRelationships(String fieldDefinitionId) {
-	   return getSiteFieldRelationships(fieldDao.readDetailFieldRelationships(fieldDefinitionId));
-   }
-   
-   private List<FieldRelationship> getSiteMasterFieldRelationships(String fieldDefinitionId) {
-	   return getSiteFieldRelationships(fieldDao.readMasterFieldRelationships(fieldDefinitionId));
-   }
-	
-	// Filter for this site.
-    private List<FieldRelationship> getSiteFieldRelationships(List<FieldRelationship> list) {
-    	List<FieldRelationship> result = new ArrayList<FieldRelationship>();
-		for (FieldRelationship fr : list) {
-			if (fr.getSite() == null) {
-                continue;
-            }
-			if (fr.getSite().getName().equals(getSiteName())) {
-                result.add(fr);
-            }
-		}
-		// If no site specific relationships exist for this field, the default relationships apply.
-		if (result.size() == 0) {
-            for (FieldRelationship fr : list) {
-            	if (fr.getSite() == null) {
-                    result.add(fr);
-                }
-            }
-        }
-		return result;
-    }
     
     @Override
     public boolean isHierarchy(FieldDefinition fd) {
     	// This must be the parent reference field on the detail record.
-    	List<FieldRelationship> list = getSiteDetailFieldRelationships(fd.getId());
+    	List<FieldRelationship> list = fieldDao.readDetailFieldRelationships(fd.getId());
     	for (FieldRelationship fr : list) {
     		if (fr.isRecursive()) {
     			return true;
@@ -540,7 +511,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     @Override
     public boolean isRelationship(FieldDefinition fd) {
-    	return (getSiteMasterFieldRelationships(fd.getId()).size() > 0 || getSiteDetailFieldRelationships(fd.getId()).size() > 0) ;
+    	return (fieldDao.readMasterFieldRelationships(fd.getId()).size() > 0 || fieldDao.readDetailFieldRelationships(fd.getId()).size() > 0) ;
     }
     
     @Override
@@ -563,10 +534,16 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
 
-	    // TODO need additional validation for self reference / hierarchy for changed date ranges
-	    
+	    validateNoSelfReference(personId, list);
 		validateDateRangesAndSave(personId, fieldDefinition, list);
 	   
+    }
+    
+    private void validateNoSelfReference(Long personId, List<CustomField> list) {
+    	String id = "" + personId;
+		for (CustomField cf : list) {
+			if (cf.getValue().equals(id)) throw new RuntimeException("Value cannot reference itself.");
+		}
     }
 
     private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
@@ -661,10 +638,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     // Supports one relationship defined per field definition.
     private FieldDefinition getCorrespondingField(FieldDefinition fd) {
-		List<FieldRelationship> masters = getSiteMasterFieldRelationships(fd.getId()); 
+		List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fd.getId()); 
 		FieldDefinition result = searchRelationships(fd, masters);
 		if (result != null) return result;
-		List<FieldRelationship> details = getSiteDetailFieldRelationships(fd.getId()); 
+		List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fd.getId()); 
 		result = searchRelationships(fd, details);
 		return result;
     }

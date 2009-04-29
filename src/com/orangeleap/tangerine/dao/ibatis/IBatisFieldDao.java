@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -96,9 +97,10 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
         Map<String, Object> params = setupParams();
         params.put("id", masterFieldDefId);
-        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID", params);
+        List<FieldRelationship> result = getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID", params);
+        return filterForSite(result);
     }
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public List<FieldRelationship> readDetailFieldRelationships(String detailFieldDefId) {
@@ -107,6 +109,31 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
         Map<String, Object> params = setupParams();
         params.put("id", detailFieldDefId);
-        return getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID", params);
+        List<FieldRelationship> result =  getSqlMapClientTemplate().queryForList("SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID", params);
+        return filterForSite(result);
     }
+    
+    private List<FieldRelationship> filterForSite(List<FieldRelationship> list) {
+        Iterator<FieldRelationship> it1 =  list.iterator();
+        while (it1.hasNext()) {
+        	FieldRelationship fr1 = it1.next();
+        	if (fr1.getSite() == null) {  
+                Iterator<FieldRelationship> it2 =  list.iterator();
+                while (it2.hasNext()) {
+                	FieldRelationship fr2 = it2.next();
+                	if (fr2.getSite() != null 
+                			&& fr1.getMasterRecordField().getId().equals(fr2.getMasterRecordField().getId()) 
+                			&& fr1.getDetailRecordField().getId().equals(fr2.getDetailRecordField().getId())) 
+                	{
+                		logger.debug("Using overridden relationship for site: "+fr2.getId());
+                		it1.remove(); // site-specific override
+                		break;
+                	}
+                }
+        	}
+        }
+        return list;
+    }
+
+
 }

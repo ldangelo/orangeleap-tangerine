@@ -28,8 +28,7 @@
 		LEFT OUTER JOIN FIELD_DEFINITION master ON fr.MASTER_FIELD_DEFINITION_ID = master.FIELD_DEFINITION_ID
 		LEFT OUTER JOIN FIELD_DEFINITION detail ON fr.DETAIL_FIELD_DEFINITION_ID = detail.FIELD_DEFINITION_ID
 		where 
-		(master.SITE_NAME = #siteName# or master.SITE_NAME is null)
-		and (detail.SITE_NAME = #siteName# or detail.SITE_NAME is null)
+		(fr.SITE_NAME = #siteName# or fr.SITE_NAME is null)
 	</sql>
 	
 	<select id="SELECT_FIELD_RELATIONSHIP_BY_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
@@ -40,11 +39,13 @@
 	<select id="SELECT_FIELD_REL_BY_MASTER_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
 		and master.FIELD_DEFINITION_ID = #id#	
+		order by fr.SITE_NAME
 	</select>
 	
 	<select id="SELECT_FIELD_REL_BY_DETAIL_FIELD_DEF_ID" resultMap="FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_FIELD_REF_FRAGMENT"/>
 		and detail.FIELD_DEFINITION_ID = #id#		
+		order by fr.SITE_NAME
 	</select>
 	
 	<insert id="INSERT_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.FieldRelationship">

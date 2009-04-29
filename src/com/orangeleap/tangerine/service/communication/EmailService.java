@@ -136,9 +136,7 @@ public class EmailService {
 		params.put("GiftAmount", g.getAmount().toString());
 
 		
-		String tempFileName = runReport();
 
-		if (tempFileName != null) {
 		//
 		// next we extract the output of the report and put it into a mime
 		// message
@@ -171,6 +169,7 @@ public class EmailService {
 		if (selectedEmails.size() == 0) {
 			return;
 		}
+		String tempFileName = runReport();
 		
 		FileSystemResource file = new FileSystemResource(new File(tempFileName));
 		try {
@@ -193,16 +192,14 @@ public class EmailService {
 				ch.setEntryType("Email");
 				ch.setRecordDate(new Date());
 				ch.setSelectedEmail(e);
+
 				communicationHistoryService.maintainCommunicationHistory(ch);
 			}
 		} catch (MessagingException e1) {
 			logger.error(e1.getMessage());
 			return;
 		}
-		
 
-
-		}
 	}
 
 	private void setTemplateName(String templateName) {

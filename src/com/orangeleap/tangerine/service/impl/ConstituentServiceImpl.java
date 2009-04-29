@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -25,6 +26,7 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PhoneService;
@@ -33,6 +35,7 @@ import com.orangeleap.tangerine.service.exception.ConstituentValidationException
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("constituentService")
@@ -67,6 +70,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+    
+    @Resource(name = "communicationHistoryService")
+    private CommunicationHistoryService communicationHistoryService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
@@ -280,5 +286,19 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     public int getConstituentCountBySite() {
 
         return constituentDao.getConstituentCountBySite();
+    }
+    
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+	public boolean hasReceivedCommunication(Long constituentId, String commType) {
+    	SortInfo sortInfo = new SortInfo();
+    	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
+    	List<CommunicationHistory> list = results.getRows();
+    	
+    	for (CommunicationHistory ch: list) {
+    		if (ch.getComments().contains(commType)) return true;
+    	}
+    	
+    	return false;
     }
 }

@@ -45,8 +45,11 @@ public class RelationshipFormController extends SimpleFormController {
     public ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 		
 		ModelAndView mav = super.showForm(request, response, errors, controlModel);
+		Long personId = new Long(request.getParameter("personId"));
+		Person person = constituentService.readConstituentById(personId);
 		
         mav.addObject("form", readForm(request));
+        mav.addObject("person", person);
         return mav;
         
     }

@@ -16,6 +16,9 @@ public class PicklistCustomizeFormController extends PicklistCustomizeBaseContro
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+		
+    	if (!picklistEditAllowed(request)) return null; 
+    	
         String picklistNameId = request.getParameter("picklistNameId");
 
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
@@ -47,7 +50,10 @@ public class PicklistCustomizeFormController extends PicklistCustomizeBaseContro
     
 	@Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
-        String picklistNameId = request.getParameter("picklistNameId");
+
+		if (!picklistEditAllowed(request)) return null; 
+
+    	String picklistNameId = request.getParameter("picklistNameId");
         
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
      

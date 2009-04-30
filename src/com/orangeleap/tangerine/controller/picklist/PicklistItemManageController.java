@@ -24,9 +24,13 @@ public class PicklistItemManageController extends ParameterizableViewController 
 
 	@Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		if (!PicklistCustomizeBaseController.picklistEditAllowed(request)) return null; 
+		
     	List<Picklist> picklists = picklistItemService.listPicklists();
         ModelAndView mav = new ModelAndView(super.getViewName());
         mav.addObject("picklists", picklists);
         return mav;
+        
     }
 }

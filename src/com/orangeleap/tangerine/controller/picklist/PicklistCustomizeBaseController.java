@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.type.AccessType;
 
 public class PicklistCustomizeBaseController extends SimpleFormController {
 
@@ -31,6 +33,13 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
 
     @Resource(name="picklistItemService")
     protected PicklistItemService picklistItemService;
+    
+	@SuppressWarnings("unchecked")
+	public static boolean picklistEditAllowed(HttpServletRequest request) {
+		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
+		return pageAccess.get("/picklistItems.htm") == AccessType.ALLOWED;
+	}
+
     
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {

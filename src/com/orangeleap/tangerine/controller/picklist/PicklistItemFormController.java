@@ -25,7 +25,9 @@ public class PicklistItemFormController extends SimpleFormController {
     
 	@Override
     protected Object formBackingObject(HttpServletRequest request) throws ServletException {
-       
+
+		if (!PicklistCustomizeBaseController.picklistEditAllowed(request)) return null; 
+
         String picklistNameId = request.getParameter("picklistNameId");
         String picklistId = request.getParameter("picklistId");
         String picklistItemId = request.getParameter("picklistItemId");
@@ -62,6 +64,9 @@ public class PicklistItemFormController extends SimpleFormController {
 
     @Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+
+    	if (!PicklistCustomizeBaseController.picklistEditAllowed(request)) return null; 
+    	
         PicklistItem picklistItem = (PicklistItem) command;
         // Need to modify id outside of transaction
         PicklistItem newPicklistItem = picklistItemService.maintainPicklistItem(picklistItem);

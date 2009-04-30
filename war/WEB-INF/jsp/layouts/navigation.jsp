@@ -83,7 +83,9 @@
 				<a href="#"><spring:message code="menuGoTo"/></a>
 				<ul>
 			  		<li>
-						<a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
+			            <c:if test="${pageAccess['/picklistItems.htm']=='ALLOWED'}">
+   						   <a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
+						</c:if>
 					</li> 
 					<li>
 					<%

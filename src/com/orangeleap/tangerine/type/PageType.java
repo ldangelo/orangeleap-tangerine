@@ -23,6 +23,7 @@ public enum PageType {
     recurringGiftSearch("/recurringGiftSearch.htm"),
     recurringGiftSearchResults("/recurringGiftSearchResults.htm"),
     recurringGiftView("/recurringGiftView.htm"),
+    picklistItems("/picklistItems.htm"),
     pledge("/pledge.htm"),
     pledgeList("/pledgeList.htm"),
     pledgeSearch("/pledgeSearch.htm"),

@@ -1,13 +1,21 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
-	<tiles:putAttribute name="browserTitle" value="Manage Relationships" />
-	<tiles:putAttribute name="primaryNav" value="Relationships" />
-	<tiles:putAttribute name="secondaryNav" value="Relationships" />
+	<tiles:putAttribute name="browserTitle" value="Manage Relationship" />
+	<tiles:putAttribute name="primaryNav" value="People" />
+	<tiles:putAttribute name="secondaryNav" value="Edit" />
+	<tiles:putAttribute name="sidebarNav" value="Relationships" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
+		<c:set var="person" value="${person}" scope="request" />
+		<c:if test="${person.id!=null}">
+			<c:set var="viewingPerson" value="true" scope="request" />
+		</c:if>
+		<jsp:include page="../snippets/personHeader.jsp">
+			<jsp:param name="currentFunctionTitleText" value="Manage Relationship" />
+		</jsp:include>
 
 		<div class="simplebox">
-		    <h4>Maintain relationships for <c:out value='${form.person.fullName}'/>: <c:out value='${form.fieldLabel}'/></h4><br/>
+		    <h4><c:out value='${form.fieldLabel}'/></h4><br/>
 		<div >
 
 		<span style="color: red;" ><c:out value="${message}" /></span>

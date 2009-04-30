@@ -22,7 +22,7 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 paymentGateway = (OrbitalPaymentGateway) applicationContext.getBean("paymentGateway");
 //		 paymentGateway.setConfigFile("/usr/local/paymentech/config/linehandler.properties");
 	 }
-	 
+	 /*
 	 @Test(groups = { "authorizeTest" }, dataProvider = "setupGift", dataProviderClass = GiftDataProvider.class)
 	 public void authorizeTest(Site site, Person person, Gift gift)
 	 {
@@ -45,4 +45,5 @@ public class OrbitalPaymentGatewayTest extends BaseTest {
 		 assert gift.getIsAuthorized() == true;
 		 assert gift.getIsCaptured() == true;
 	 }
+	 */
 }

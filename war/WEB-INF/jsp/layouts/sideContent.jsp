@@ -62,7 +62,7 @@
 						</span>
 					</div>					
 					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>
-				    <!-- <a class="${sidebarNav=='Relationships'?'active':''}" href="relationships.htm?personId=${person.id}"><spring:message code="relationships"/></a> -->
+				    <a class="${sidebarNav=='Relationships'?'active':''}" href="relationships.htm?personId=${person.id}"><spring:message code="relationships"/></a> 
 				</div>
 			</c:if>
 			<%--

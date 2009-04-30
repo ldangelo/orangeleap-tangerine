@@ -41,7 +41,12 @@
 				<td>
 				<input id="cfEndDate-${status.count}-" name="cfEndDate[${status.count}]" value="<c:out value='${customField.displayEndDate}'/>" dateinput="true" />
 				</td>
-				<td>&nbsp;&nbsp;<!-- <a href="relationshipCustomize.html?id=${form.fieldDefinition.id}">+</a> --></td>
+				<td>&nbsp;&nbsp;
+				<!--  
+				 TODO  suppress this link for new additions until they are validated and saved.
+				   <a href="fieldRelationshipCustomize.htm?personId=${form.person.id}&fieldDefinitionId=${form.fieldDefinition.id}&customFieldId=${customField.id}">+</a> 
+				-->
+				</td>
 			  </tr>
 			 </c:forEach>
 			</table>

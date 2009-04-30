@@ -1,8 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="Customize Relationship" />
-	<tiles:putAttribute name="primaryNav" value="Relationships" />
-	<tiles:putAttribute name="secondaryNav" value="Relationships" />
+	<tiles:putAttribute name="primaryNav" value="People" />
+	<tiles:putAttribute name="secondaryNav" value="Edit" />
+	<tiles:putAttribute name="sidebarNav" value="Relationships" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 	
@@ -10,7 +11,7 @@
 
 		<div >
 		<form:form method="post" commandName="map" >
-		    <h4>Edit custom fields for relationship &quot;<c:out value='${param.relationship.fieldName}'/>&quot;, value &quot;<c:out value='${relationship.fieldValue}'/>&quot;</h4><br/>
+		    <h4>Edit custom fields for relationship &quot;<c:out value='${param.relationship.fieldName}'/>&quot;</h4><br/>
 			<table class="customFields">
 			<c:forEach var="field" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">

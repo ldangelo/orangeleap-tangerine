@@ -20,7 +20,7 @@
 		   <input type=hidden name="personId" value="${person.id}" />
 		   <input type=hidden id="customize" name="customize" value="" />
 			<h4>Relationship to Manage</h4>
-			<select id="fieldDefinitionId" name="fieldDefinitionId" onchange="if (this.form.fieldDefinitionId.value != '') $('#actions').show(); else $('#actions').hide();">
+			<select id="fieldDefinitionId" name="fieldDefinitionId" onchange="changeSelection(this.form.fieldDefinitionId.value);">
 		  	  <option value="" >Select...</option>
 			   <c:forEach var="fieldDefinition" items="${fieldDefinitions}">
 			     <option value="<c:out value='${fieldDefinition.id}'/>" ><c:out value='${fieldDefinition.defaultLabel}'/></option>
@@ -28,10 +28,19 @@
 			</select>&nbsp;&nbsp;&nbsp;
 		   <span id="actions" style="display:none">
 		  	   <input type=submit value="Edit" />
-			   &nbsp;&nbsp;&nbsp;<!-- <a class="action" href="#" onclick="this.form.customize='true';this.form.submit();" >Customize</a> -->
+			   &nbsp;&nbsp;&nbsp;
+			   <a id="customizeLink" href="#" style="display:none" >+</a> 
 		   </span>
 		</form>
-
+		
+		<script>
+		function changeSelection(id) {
+			if (id != '') { $('#actions').show(); setLink(id); } else $('#actions').hide();
+		}
+		function setLink(id) {
+			$("#customizeLink").attr("href", "relationshipCustomize.htm?personId=${person.id}&fieldDefinitionId="+id);
+		}
+		</script>
 
 		</div>
 

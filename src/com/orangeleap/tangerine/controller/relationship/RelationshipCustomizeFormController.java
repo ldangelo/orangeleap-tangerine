@@ -84,9 +84,6 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 	@Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
     	
-		// NOTE: On first save we need to make a copy of the field relationship record to a site-specific one if it is not already, and change the field relationship id being edited!
-		// This is because we can't save the generic parent ids in a site-specific dependent record in case they want to customize the relationship for the site later.
-		
     	String id = request.getParameter("id");
 
         ConstituentCustomFieldRelationship constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.readById(new Long(id));

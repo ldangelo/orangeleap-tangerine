@@ -108,7 +108,7 @@
 		<include refid="GIFT_QUERY_FRAGMENT" />
 		and g.CONSTITUENT_ID = #constituentId#
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-		order by $sortColumn$ $sortDir$
+		order by $sortColumn$ $sortDir$, g.TRANSACTION_DATE desc
         limit $offset$,$limit$
 	</select>
 	

@@ -1298,7 +1298,8 @@ div.lookupScrollTop, div.lookupScrollBottom { height:1px; left:121px; width:249p
 div.lookupScrollBottom { top:-1px; }
 div.lookupScrollTop { top:1px; } 
 div.lookupScrollBottom { height: 1px; left:121px; top:-1px; width:249px; z-index:1; }
-div.lookupScrollContainer { max-height:95px; overflow-x:hidden; overflow-y:auto; position:relative; width:263px; } /*254px*/
+div.lookupScrollContainer { max-height:95px; overflow-x:hidden; overflow-y:auto; position:relative; width:263px; }
+div.lookupScrollContainer.readOnly { width: 254px; } 
 div.multiLookupField { padding:2px 0; width: 247px; position: relative; min-height: 20px; background-color: #FFF; }
 div.lookupScrollLeft, div.lookupScrollRight { height: 100%; position: absolute; top: 0; width: 1px; z-index: 1; }
 div.lookupScrollLeft { left:0; }

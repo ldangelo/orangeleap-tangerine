@@ -10,18 +10,18 @@ public class CustomFieldRelationship extends AbstractCustomizableEntity  {
 
     private static final long serialVersionUID = 1L;
 
-    private Long fieldRelationshipId;
+    private String masterFieldDefinitionId;
 
     public CustomFieldRelationship() {
         super();
     }
 
-	public void setFieldRelationshipId(Long fieldRelationshipId) {
-		this.fieldRelationshipId = fieldRelationshipId;
+	public void setMasterFieldDefinitionId(String masterFieldDefinitionId) {
+		this.masterFieldDefinitionId = masterFieldDefinitionId;
 	}
 
-	public Long getFieldRelationshipId() {
-		return fieldRelationshipId;
+	public String getMasterFieldDefinitionId() {
+		return masterFieldDefinitionId;
 	}
 
 

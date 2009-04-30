@@ -12,7 +12,7 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 
     private Long constituentId;
     private Long customFieldId;
-    private Long fieldRelationshipId;
+    private String masterFieldDefinitionId;
 
     public ConstituentCustomFieldRelationship() {
         super();
@@ -34,12 +34,12 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 		return customFieldId;
 	}
 
-	public void setFieldRelationshipId(Long fieldRelationshipId) {
-		this.fieldRelationshipId = fieldRelationshipId;
+	public void setMasterFieldDefinitionId(String masterFieldDefinitionId) {
+		this.masterFieldDefinitionId = masterFieldDefinitionId;
 	}
 
-	public Long getFieldRelationshipId() {
-		return fieldRelationshipId;
+	public String getMasterFieldDefinitionId() {
+		return masterFieldDefinitionId;
 	}
 
 

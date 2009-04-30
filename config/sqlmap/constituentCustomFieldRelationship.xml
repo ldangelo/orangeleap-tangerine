@@ -4,17 +4,17 @@
 
 	<resultMap id="CUSTOM_FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
 		<result property="id" column="CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
-		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+		<result property="masterFieldDefinitionId" column="MASTER_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<sql id="SELECT_CUSTOM_FIELD_RELATIONSHIP">
 		select 
-		cfr.CUSTOM_FIELD_RELATIONSHIP_ID, cfr.FIELD_RELATIONSHIP_ID
+		cfr.CUSTOM_FIELD_RELATIONSHIP_ID, cfr.MASTER_FIELD_DEFINITION_ID
 		from 
 		CUSTOM_FIELD_RELATIONSHIP cfr
-		inner join FIELD_RELATIONSHIP fr on cfr.FIELD_RELATIONSHIP_ID = fr.FIELD_RELATIONSHIP_ID
+		inner join FIELD_DEFINITION fd on cfr.MASTER_FIELD_DEFINITION_ID = fd.FIELD_DEFINITION_ID
 		where 
-		fr.SITE_NAME is not null
+		(fd.SITE_NAME is null or fd.SITE_NAME = #siteName#)
 	</sql>
 	
 	<select id="SELECT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" resultMap="CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
@@ -28,8 +28,8 @@
 
 	
 	<insert id="INSERT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
-		insert into CUSTOM_FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID)
-		values (#fieldRelationshipId#)
+		insert into CUSTOM_FIELD_RELATIONSHIP (MASTER_FIELD_DEFINITION_ID)
+		values (#masterFieldDefinitionId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -38,7 +38,7 @@
 	<update id="UPDATE_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.CustomFieldRelationship">
 		update CUSTOM_FIELD_RELATIONSHIP
 		set 
-		FIELD_RELATIONSHIP_ID = #fieldRelationshipId#
+		MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#
 		where 
 		CUSTOM_FIELD_RELATIONSHIP_ID = #id#
 	</update>
@@ -49,16 +49,17 @@
 		<result property="id" column="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
 		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="customFieldId" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
-		<result property="fieldRelationshipId" column="FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
+		<result property="masterFieldDefinitionId" column="MASTER_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
 		select 
-		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.FIELD_RELATIONSHIP_ID
+		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.MASTER_FIELD_DEFINITION_ID
 		from 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
+        inner join FIELD_DEFINITION fd on cfr.MASTER_FIELD_DEFINITION_ID = fd.FIELD_DEFINITION_ID
 		where 
-		fr.SITE_NAME is not null
+		(fd.SITE_NAME is null or fd.SITE_NAME = #siteName#)	
 	</sql>
 	
 	
@@ -70,13 +71,13 @@
 
 	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_RELATIONSHIP" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
-		and ccr.CONSTITUENT_ID = #personId#	and ccr.FIELD_RELATIONSHIP_ID = #relationshipId#
+		and ccr.CONSTITUENT_ID = #personId#	and ccr.MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#
 	</select>
 
 	
 	<insert id="INSERT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
-		insert into CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP (CONSTITUENT_ID, CUSTOM_FIELD_ID, FIELD_RELATIONSHIP_ID)
-		values (#constituentId#, #customFieldId#, #fieldRelationshipId#)
+		insert into CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP (CONSTITUENT_ID, CUSTOM_FIELD_ID, MASTER_FIELD_DEFINITION_ID)
+		values (#constituentId#, #customFieldId#, #masterFieldDefinitionId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -86,8 +87,8 @@
 		update CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP
 		set 
 		CONSTITUENT_ID = #constituentId#,
-		CUSTOM_FIELD_ID = #customFieldId#
-		FIELD_RELATIONSHIP_ID = #fieldRelationshipId#
+		CUSTOM_FIELD_ID = #customFieldId#,
+		MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#
 		where 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#
 	</update>

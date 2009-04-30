@@ -74,13 +74,15 @@ public class RelationshipListController extends SimpleFormController {
 			}
 		}
 		
-		// Need to be able to edit date ranges on these two non-relationship custom fields since they may affect the visibility of other relationship custom fields.
+// Support for editing date ranges on these two non-relationship custom fields since they may affect the visibility of other relationship custom fields.
+/*
 		FieldDefinition fd1 = fieldDao.readFieldDefinition("person.customFieldMap[constituentIndividualRoles]");
 		fd1.setDefaultLabel(fd1.getDefaultLabel() + " (Individual)");
 		fds.add(fd1);
 		FieldDefinition fd2 = fieldDao.readFieldDefinition("person.customFieldMap[constituentOrganizationRoles]");
 		fd2.setDefaultLabel(fd2.getDefaultLabel() + " (Organization)");
 		fds.add(fd2);
+*/
 		
 		Collections.sort(fds, new Comparator<FieldDefinition>() {
 			@Override

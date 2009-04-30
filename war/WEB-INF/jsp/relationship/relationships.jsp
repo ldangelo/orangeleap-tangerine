@@ -38,7 +38,7 @@
 			if (id != '') { $('#actions').show(); setLink(id); } else $('#actions').hide();
 		}
 		function setLink(id) {
-			$("#customizeLink").attr("href", "relationshipCustomize.htm?personId=${person.id}&fieldDefinitionId="+id);
+			$("#customizeLink").attr("href", "fieldRelationshipCustomize.htm?personId=${person.id}&fieldDefinitionId="+id);
 		}
 		</script>
 

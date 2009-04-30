@@ -1,4 +1,4 @@
-<%@ include file="/WEB-INF/jsp/include.jsp"%>
+ <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="Manage Relationship" />
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -44,7 +44,7 @@
 				<td>&nbsp;&nbsp;
 				<!--  
 				 TODO  suppress this link for new additions until they are validated and saved.
-				   <a href="fieldRelationshipCustomize.htm?personId=${form.person.id}&fieldDefinitionId=${form.fieldDefinition.id}&customFieldId=${customField.id}">+</a> 
+				   <a href="relationshipCustomize.htm?personId=${form.person.id}&fieldDefinitionId=${form.fieldDefinition.id}&customFieldId=${customField.id}">+</a> 
 				-->
 				</td>
 			  </tr>

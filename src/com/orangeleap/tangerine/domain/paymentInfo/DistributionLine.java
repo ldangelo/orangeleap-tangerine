@@ -20,6 +20,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
+    private Long adjustedGiftId;
     private Person person;
 
     public DistributionLine() { }
@@ -108,6 +109,14 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.recurringGiftId = recurringGiftId;
     }
 
+    public Long getAdjustedGiftId() {
+        return adjustedGiftId;
+    }
+
+    public void setAdjustedGiftId(Long adjustedGiftId) {
+        this.adjustedGiftId = adjustedGiftId;
+    }
+
     public Person getPerson() {
         return person;
     }
@@ -149,7 +158,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
         return new ToStringCreator(this).append(super.toString()).append("amount", amount).
             append(super.toString()).append("percentage", percentage).append("projectCode", projectCode).
             append(super.toString()).append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).
-            append(super.toString()).append("giftId", giftId).append("pledgeId", pledgeId).append("recurringGiftId", recurringGiftId).
+            append(super.toString()).append("giftId", giftId).append("pledgeId", pledgeId).append("recurringGiftId", recurringGiftId).append("adjustedGiftId", adjustedGiftId).
             toString();
     }
 }

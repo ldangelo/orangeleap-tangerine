@@ -51,11 +51,11 @@ public class DistributionLinesValidator implements Validator {
             amount = recurringGift.getAmountPerGift();
         }
         if (total == null || amount == null || total.compareTo(amount) != 0) {
-            errors.reject("distributionLineAmounts");
+            errors.reject("errorDistributionLineAmounts");
         }
     }
     
-    private BigDecimal getTotal(List<DistributionLine> lines) {
+    protected BigDecimal getTotal(List<DistributionLine> lines) {
         BigDecimal total = new BigDecimal(0); 
         for (DistributionLine line : lines) {
             if (line != null) {

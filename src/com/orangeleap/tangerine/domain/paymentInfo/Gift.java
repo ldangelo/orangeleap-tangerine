@@ -24,15 +24,11 @@ public class Gift extends AbstractPaymentInfoEntity {
     private Long pledgeId;
     private BigDecimal amount;
     private BigDecimal deductibleAmount;
-    private Date transactionDate;
     private Date donationDate = new Date();
     private Date postmarkDate;
-    private String authCode = StringConstants.EMPTY;
-    private Long originalGiftId;
-    private Long refundGiftId;
-    private Date refundGiftTransactionDate;
-    private String refundDetails;
     private boolean deductible = false;
+    private Date transactionDate;
+    private String authCode = StringConstants.EMPTY;
     private String txRefNum;
     private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
@@ -140,38 +136,6 @@ public class Gift extends AbstractPaymentInfoEntity {
 
     public void setAuthCode(String authCode) {
         this.authCode = authCode;
-    }
-
-    public Long getOriginalGiftId() {
-        return originalGiftId;
-    }
-
-    public void setOriginalGiftId(Long originalGiftId) {
-        this.originalGiftId = originalGiftId;
-    }
-
-    public Long getRefundGiftId() {
-        return refundGiftId;
-    }
-
-    public void setRefundGiftId(Long refundGiftId) {
-        this.refundGiftId = refundGiftId;
-    }
-
-    public Date getRefundGiftTransactionDate() {
-        return refundGiftTransactionDate;
-    }
-
-    public void setRefundGiftTransactionDate(Date refundGiftTransactionDate) {
-        this.refundGiftTransactionDate = refundGiftTransactionDate;
-    }
-
-    public String getRefundDetails() {
-        return refundDetails;
-    }
-
-    public void setRefundDetails(String refundDetails) {
-        this.refundDetails = refundDetails;
     }
 
     public boolean isDeductible() {
@@ -297,8 +261,7 @@ public class Gift extends AbstractPaymentInfoEntity {
             append("amount", amount).append("pledgeId", pledgeId).
             append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
             append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).
-            append(super.toString()).append("authCode", authCode).append("originalGiftId", originalGiftId).
-            append(super.toString()).append("refundGiftId", refundGiftId).append("refundGiftTransactionDate", refundGiftTransactionDate).
+            append(super.toString()).append("authCode", authCode).
             append(super.toString()).append("deductible", deductible).append("txRefNum", txRefNum).
             append(super.toString()).append("paymentStatus", paymentStatus).append("paymentMessage", paymentMessage).
             append(super.toString()).append("entryType", entryType).

@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.io.FileWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +15,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -38,6 +36,7 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -136,11 +135,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     private final static String EDIT_METHOD = "GiftServiceImpl.editGift";
     
-    /*
-     * this is needed for JMS
-     */
-    // @Resource(name = "creditGateway")
-    // private TangerineCreditGateway creditGateway;
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) {
@@ -201,11 +195,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     		logger.error("Unable to write to rules error log file: "+message);
     	}
     }
-
-//    private void processMockTrans(Gift gift) {
-     // this was a part of our JMS/MOM poc
-     // creditGateway.sendGiftTransaction(gift);
-//    }
     
     private PaymentHistory createPaymentHistoryForGift(Gift gift) {
     	PaymentHistory paymentHistory = new PaymentHistory();
@@ -405,39 +394,51 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.analyzeMajorDonor(constituentId, beginDate, currentDate);
     }
+    
+    @Override
+    public AdjustedGift createdAdjustedGift(Long originalGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("createdAdjustedGift: originalGiftId = " + originalGiftId);
+        }
+        Gift originalGift = readGiftById(originalGiftId);
+        if (originalGift == null) {
+            throw new IllegalArgumentException("Gift for ID = " + originalGiftId + " was not found");
+        }
+        return new AdjustedGift(originalGift);
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void adjustGift(Gift gift) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("adjustGift: giftId = " + gift.getId());
+    public void adjustGift(AdjustedGift adjustedGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("adjustGift: giftId = " + adjustedGift.getId());
         }
 
-        try {
+//        try {
             // get the original gift to compare against
-            Gift originalGift = readGiftById(gift.getId());
+            Gift originalGift = readGiftById(adjustedGift.getId());
 
             // clone the incoming gift; we'll use as a template
-            Gift adjustedGift = (Gift) BeanUtils.cloneBean(gift);
-            adjustedGift.resetIdToNull();
+            //(Gift) BeanUtils.cloneBean(adjustedGift);
+//            adjustedGift.resetIdToNull();
 
-            adjustedGift.setTransactionDate( gift.getRefundGiftTransactionDate());
+//            adjustedGift.setTransactionDate( gift.getAdjustedTransactionDate());
             // clear these from the adjustment, we'll put them on the original
-            adjustedGift.setRefundGiftId(null);
-            adjustedGift.setGiftType(GiftType.ADJUSTMENT);
-            adjustedGift.setDeductibleAmount(adjustedGift.getAmount());
-            adjustedGift.setOriginalGiftId(originalGift.getId());
-            adjustedGift.setPaymentStatus(null);
-            adjustedGift.setPaymentType(null);
-            adjustedGift.setPostmarkDate(null);
-            adjustedGift.setComments(null);
-
-            // make sure we really have an adjustment
-            if(adjustedGift.getAmount().equals(BigDecimal.ZERO) ) {
-                // if no amount difference, don't save anything
-                logger.debug("adjustGift: adjustment amout = 0; exiting method");
-                return;
-            }
+//            adjustedGift.setAdjustedGiftId(null);
+//            adjustedGift.setGiftType(GiftType.ADJUSTMENT);
+//            adjustedGift.setDeductibleAmount(adjustedGift.getAmount());
+//            adjustedGift.setOriginalGiftId(originalGift.getId());
+//            adjustedGift.setPaymentStatus(null);
+//            adjustedGift.setPaymentType(null);
+//            adjustedGift.setPostmarkDate(null);
+//            adjustedGift.setComments(null);
+//
+//            // make sure we really have an adjustment
+//            if(adjustedGift.getAmount().equals(BigDecimal.ZERO) ) {
+//                // if no amount difference, don't save anything
+//                logger.debug("adjustGift: adjustment amount = 0; exiting method");
+//                return;
+//            }
 
             // remove the "null" gifts in Mutable DistributionLine
             List<DistributionLine> mutLines = adjustedGift.getMutableDistributionLines();
@@ -469,68 +470,24 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             adjustedGift.setDistributionLines(newLines);
 
             // save our adjustment, which gets us the new ID
-            adjustedGift = maintainGift(adjustedGift);
-            gift.setId(adjustedGift.getId());
+//            adjustedGift = maintainGift(adjustedGift);
+//            adjustedGift.setId(adjustedGift.getId());
 
             // set the refund (adjustment) details on the original and save it
-            originalGift.setRefundGiftId(adjustedGift.getId());
-            originalGift.setRefundGiftTransactionDate(adjustedGift.getTransactionDate());
+//            originalGift.setAdjustedGiftId(adjustedGift.getId());
+//            originalGift.setAdjustedTransactionDate(adjustedGift.getTransactionDate());
 
             maintainGift(originalGift);
 
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        } catch (InstantiationException e) {
-            throw new IllegalStateException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Gift refundGift(Long giftId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("refundGift: giftId = " + giftId);
-        }
-        Gift originalGift = giftDao.readGiftById(giftId);
-        try {
-            Gift refundGift = (Gift) BeanUtils.cloneBean(originalGift);
-            refundGift.resetIdToNull();
-            refundGift.setTransactionDate(null);
-            refundGift.getPaymentSource().setCreditCardExpiration(null);
-            refundGift.setAmount(originalGift.getAmount().negate());
-            refundGift.setOriginalGiftId(originalGift.getId());
-            refundGift = maintainGift(refundGift);
-            
-            originalGift.filterValidDistributionLines();
-            List<DistributionLine> lines = originalGift.getDistributionLines();
-            List<DistributionLine> refundLines = new ArrayList<DistributionLine>();
-            for (DistributionLine line : lines) {
-                BigDecimal negativeAmount = line.getAmount() == null ? null : line.getAmount().negate();
-                DistributionLine newLine = new DistributionLine(negativeAmount, line.getPercentage(), line.getProjectCode(), line.getMotivationCode(), line.getOther_motivationCode());
-                newLine.setGiftId(refundGift.getId());
-                refundLines.add(newLine);
-            }
-            refundGift.setDistributionLines(refundLines);
-            
-            originalGift.setRefundGiftId(refundGift.getId());
-            originalGift.setRefundGiftTransactionDate(refundGift.getTransactionDate());
-            maintainGift(originalGift);
-            auditService.auditObject(refundGift, refundGift.getPerson());
-            return refundGift;
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException();
-        } catch (InvocationTargetException e) {
-            throw new IllegalStateException();
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException();
-        }
+//        } catch (IllegalAccessException e) {
+//            throw new IllegalStateException(e);
+//        } catch (InstantiationException e) {
+//            throw new IllegalStateException(e);
+//        } catch (InvocationTargetException e) {
+//            throw new IllegalStateException(e);
+//        } catch (NoSuchMethodException e) {
+//            throw new IllegalStateException(e);
+//        }
     }
 
     @Override
@@ -541,13 +498,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.readMonetaryGiftsByConstituentId(constituentId);
     }
-
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRED)
-    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
-//    public List<Gift> readAllGifts() {
-//        return giftDao.readAllGifts(); 
-//    }
 
     // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
     @Override

@@ -19,6 +19,8 @@
 	
 	<bean id="distributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.DistributionLinesValidator" />
 
+	<bean id="adjustedDistributionLinesValidator" class="com.orangeleap.tangerine.controller.validator.AdjustedDistributionLinesValidator" />
+
 	<bean id="giftInKindDetailsValidator" class="com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator" />
 
 	<bean id="codeValidator" class="com.orangeleap.tangerine.controller.validator.CodeValidator">

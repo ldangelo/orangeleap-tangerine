@@ -107,6 +107,29 @@
 							</c:if>
 						</div>
 					</c:when>
+					<c:when test="${fieldVO.fieldType == 'QUERY_LOOKUP_DISPLAY'}">
+						<c:forEach var="val" varStatus="status" items="${fieldVO.displayValues}">
+							<c:set var="thisVal" value="${fn:trim(val)}"/>
+							<c:choose>
+								<c:when test="${not empty fieldVO.ids[status.index]}">
+									<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">
+										<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.ids[status.index]}" />
+										<c:if test="${fieldVO.referenceType != 'person'}">
+											<c:param name="personId" value="${param.personId}" />
+										</c:if>
+									</c:url>
+									<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>
+									<c:remove var="entityLink" scope="page" />
+								</c:when>
+								<c:otherwise>
+									<span><c:out value='${thisVal}'/></span>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</c:when>
+					<c:when test="${fieldVO.fieldType == 'CODE_OTHER_DISPLAY'}">
+						<c:out value='${fieldVO.displayValue}'/>
+					</c:when>
 					<c:otherwise>
 						<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:out value='${fieldVO.fieldName}'/> <c:if test="${fieldVO.fieldType == 'NUMBER'}"> number</c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}"> percentage</c:if>" 
 							type="text" 

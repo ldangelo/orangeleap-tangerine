@@ -79,8 +79,10 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.QUERY_LOOKUP_DISPLAY, lookupOtherFieldHandler);
 
         fieldTypeToHandlerMap.put(FieldType.CODE, new CodeFieldHandler(appContext)); 
-        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, new CodeOtherFieldHandler(appContext));
         fieldTypeToHandlerMap.put(FieldType.MULTI_CODE_ADDITIONAL, new CodeAdditionalFieldsHandler(appContext));
+        CodeOtherFieldHandler codeOtherFieldHandler = new CodeOtherFieldHandler(appContext);
+        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER, codeOtherFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.CODE_OTHER_DISPLAY, codeOtherFieldHandler); 
 
         SelectionFieldHandler selectionFieldHandler = new SelectionFieldHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.SELECTION, selectionFieldHandler);

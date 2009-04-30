@@ -20,6 +20,7 @@
 	     	<transaction src="${basedir}/db/prod/domain/common.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/person.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/gift.sql"/>
+	     	<transaction src="${basedir}/db/prod/domain/adjustment.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/giftInKind.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/pledge.sql"/>
 	     	<transaction src="${basedir}/db/prod/domain/recurringGift.sql"/>
@@ -41,7 +42,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/paymentManagerEdit.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
-             <transaction src="${basedir}/db/prod/pages/giftAdjustment.sql"/>
+            <transaction src="${basedir}/db/prod/pages/adjustedGift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftInKind.sql"/>
@@ -116,8 +117,10 @@
 			<transaction src="${basedir}/db/prod/picklists/journalTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/pledgeStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/giftStatusPicklist.sql"/>
-			<transaction src="${basedir}/db/prod/picklists/adjustmentReasonPicklist.sql"/>
-			<transaction src="${basedir}/db/prod/picklists/adjustmentTypePicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustedReasonPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustedTypePicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustedPaymentRequiredPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/adjustedStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/recurringGiftStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/phoneProviderPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/fmvMethodPicklist.sql"/>

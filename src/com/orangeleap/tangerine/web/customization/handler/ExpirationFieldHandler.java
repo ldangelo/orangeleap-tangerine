@@ -43,6 +43,7 @@ public class ExpirationFieldHandler extends GenericFieldHandler {
             }
         }
         fieldVO.setLabelText(labelText);
+        setEntityAttributes(fieldVO, currentField);
 
         FieldRequired fr = fieldService.lookupFieldRequired(currentField);
         fieldVO.setRequired(fr != null && fr.isRequired());

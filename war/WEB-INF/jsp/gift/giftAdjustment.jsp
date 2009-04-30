@@ -11,14 +11,14 @@
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-			<mp:page pageName='giftAdjustment,giftView' skip="giftView:gift.donation,giftView:gift.distribution,giftView:gift.extendedDistribution" />
+			<mp:page pageName='adjustedGift' />
 
-			<c:set var="person" value="${gift.person}" scope="request" />
+			<c:set var="person" value="${adjustedGift.person}" scope="request" />
 			<c:if test="${person.id != null}">
 				<c:set var="viewingPerson" value="true" scope="request" />
 			</c:if>
 
-			<form:form method="post" commandName="gift">
+			<form:form method="post" commandName="adjustedGift">
 				<spring:message code='adjustGift' var="submitText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
@@ -27,25 +27,25 @@
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
 
+<%--
 				<c:choose>
-					<c:when test="${gift.originalGiftId == null}">
-						<h3 class="info"><spring:message code='thisGiftEntered'/> <fmt:formatDate value="${gift.transactionDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
+					<c:when test="${adjustedGift.originalGiftId == null}">
+						<h3 class="info"><spring:message code='thisGiftEntered'/> <fmt:formatDate value="${adjustedGift.transactionDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${adjustedGift.transactionDate}" type="time" />.</h3>
 					</c:when>
 					<c:otherwise>
-						<h3 class="info"><spring:message code='thisRefundOf'/> <a href="giftView.htm?giftId=${gift.originalGiftId}"><spring:message code='previouslyEnteredGift'/></a>, <spring:message code='refundedOn'/> <fmt:formatDate value="${gift.transactionDate}"/> <spring:message code='at'/> <fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
+						<h3 class="info"><spring:message code='thisRefundOf'/>&nbsp;<a href="giftView.htm?giftId=${adjustedGift.originalGiftId}"><spring:message code='previouslyEnteredGift'/></a>, <spring:message code='refundedOn'/> <fmt:formatDate value="${adjustedGift.transactionDate}"/> <spring:message code='at'/>&nbsp;<fmt:formatDate value="${adjustedGift.transactionDate}" type="time" />.</h3>
 					</c:otherwise>
 				</c:choose>
-<%--
-				<c:if test="${gift.refundGiftId != null}">
-					<h3 class="info">This gift was <a href="giftView.htm?giftId=${gift.refundGiftId}">refunded</a> on <fmt:formatDate value="${gift.refundGiftTransactionDate}"/> at <fmt:formatDate value="${gift.refundGiftTransactionDate}" type="time" />.</h3>
+				<c:if test="${adjustedGift.refundGiftId != null}">
+					<h3 class="info">This gift was <a href="giftView.htm?giftId=${adjustedGift.refundGiftId}">refunded</a> on <fmt:formatDate value="${adjustedGift.refundGiftTransactionDate}"/> at <fmt:formatDate value="${adjustedGift.refundGiftTransactionDate}" type="time" />.</h3>
 				</c:if>
 --%>
 
 
 				<c:set var="gridCollectionName" value="mutableDistributionLines" scope="request" />
-				<c:set var="gridCollection" value="${gift.distributionLines}" scope="request" />
-				<c:set var="dummyGridCollection" value="${gift.dummyDistributionLines}" scope="request" />
-				<c:set var="paymentSource" value="${gift.paymentSource}" scope="request" />
+				<c:set var="gridCollection" value="${adjustedGift.distributionLines}" scope="request" />
+				<c:set var="dummyGridCollection" value="${adjustedGift.dummyDistributionLines}" scope="request" />
+				<c:set var="paymentSource" value="${adjustedGift.paymentSource}" scope="request" />
 
 				<c:forEach var="sectionDefinition" items="${columnSections}">
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
@@ -57,7 +57,7 @@
 							<div class="column">
 								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
-										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${adjustedGift}"/>
 										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
 										<c:set var="sectionField" value="${sectionField}" scope="request"/>
 										<jsp:include page="../snippets/input.jsp"/>
@@ -68,7 +68,7 @@
 							<div class="column">
 								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
-										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${adjustedGift}"/>
 										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
 										<c:set var="sectionField" value="${sectionField}" scope="request"/>
 										<jsp:include page="../snippets/input.jsp"/>
@@ -83,7 +83,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName != 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
 							<div class="column <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>"
 								style=" singleColumn<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -91,30 +91,7 @@
 								</c:if>
 								<ul class="formFields width385">
 									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
-										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
-										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
-										<c:set var="sectionField" value="${sectionField}" scope="request"/>
-										<jsp:include page="../snippets/input.jsp"/>
-									</c:forEach>
-									<li class="clear"></li>
-								</ul>
-							</div>
-						</c:if>
-					</c:forEach>
-					<div class="clearColumns"></div>
-				</div>
-				<div class="columns">
-					<c:forEach var="sectionDefinition" items="${columnSections}">
-						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName == 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
-							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>"
-								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
-								<c:if test="${!empty sectionDefinition.defaultLabel}">
-									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-								</c:if>
-								<ul class="formFields width385">
-									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
-										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' model="${adjustedGift}"/>
 										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
 										<c:set var="sectionField" value="${sectionField}" scope="request"/>
 										<jsp:include page="../snippets/input.jsp"/>
@@ -132,9 +109,6 @@
                     // hacks to make distribution lines behave themselves in an Adjustment 
                     //Ext.select('.gridActions').hide();
                      Ext.select('a.deleteButton').hide();
-                     Ext.select('th.header:nth(2)').update('');
-                     Ext.select('col.pct').setWidth(0);
-                     Ext.select('input.percentage').hide();
                     Distribution.addNewRow = function() {};
                 </script>
 				<div class="formButtonFooter personFormButtons">

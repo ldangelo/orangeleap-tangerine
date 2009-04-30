@@ -319,7 +319,12 @@
 							<div id="lookup-<c:out value='${fieldVO.fieldId}'/>" class="queryLookupOption" selectedId="<c:out value='${fieldVO.id}'/>">
 								<c:choose>
 									<c:when test="${not empty fieldVO.id}">
-										<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">
+										<%--  TODO: remove this when automatic routing to the view page is implemented --%>
+										<c:choose>
+											<c:when test="${fieldVO.referenceType == 'gift'}"><c:set var="thisUrl" value="giftView.htm" scope="page"/></c:when>
+											<c:otherwise><c:set var="thisUrl" value="${fieldVO.referenceType}.htm" scope="page"/></c:otherwise>
+										</c:choose>
+										<c:url value="${thisUrl}" var="entityLink" scope="page">
 											<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.id}" />
 											<c:if test="${fieldVO.referenceType != 'person'}">
 												<c:param name="personId" value="${param.personId}" />

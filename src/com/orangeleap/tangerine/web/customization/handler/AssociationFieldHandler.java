@@ -24,12 +24,11 @@ public class AssociationFieldHandler extends LookupFieldHandler {
     @Override
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
-        boolean isCustom = currentField.getFieldDefinition().isCustom();
         Object propertyValue = super.getPropertyValue(model, fieldVO);
 
-        if (propertyValue != null && NumberUtils.isNumber((String) propertyValue) && isCustom) {
+        if (propertyValue != null && NumberUtils.isNumber(propertyValue.toString())) {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
-            Long id = Long.parseLong((String) propertyValue);
+            Long id = Long.parseLong(propertyValue.toString());
             fieldVO.setId(id);
             fieldVO.addId(id);
             String displayValue = resolve(id, referenceType);

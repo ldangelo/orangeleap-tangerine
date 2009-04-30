@@ -12,6 +12,7 @@
 		<result property="giftId" column="DISTRO_GIFT_ID" jdbcType="BIGINT" />
 		<result property="pledgeId" column="DISTRO_PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="DISTRO_RECURRING_GIFT_ID" jdbcType="BIGINT" />
+		<result property="adjustedGiftId" column="DISTRO_ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
@@ -19,7 +20,7 @@
 		dl.DISTRO_LINE_ID, dl.AMOUNT as DISTRO_LINE_AMOUNT, dl.PERCENTAGE as DISTRO_LINE_PERCENTAGE,
 		dl.PROJECT_CODE as DISTRO_LINE_PROJECT_CODE, dl.MOTIVATION_CODE as DISTRO_LINE_MOTIVATION_CODE, 
 		dl.OTHER_MOTIVATION as DISTRO_LINE_OTHER_MOTIVATION, dl.GIFT_ID as DISTRO_GIFT_ID, 
-		dl.PLEDGE_ID as DISTRO_PLEDGE_ID, dl.RECURRING_GIFT_ID as DISTRO_RECURRING_GIFT_ID
+		dl.PLEDGE_ID as DISTRO_PLEDGE_ID, dl.RECURRING_GIFT_ID as DISTRO_RECURRING_GIFT_ID, dl.ADJUSTED_GIFT_ID as DISTRO_ADJUSTED_GIFT_ID
 	</sql>
 	
 	<select id="SELECT_DISTRO_LINE_BY_PLEDGE_ID" resultMap="DISTRO_LINE_RESULT" parameterClass="map">
@@ -52,8 +53,8 @@
 	</select>
 
 	<insert id="INSERT_DISTRO_LINE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.DistributionLine">
-		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, PLEDGE_ID, RECURRING_GIFT_ID, GIFT_ID)
-		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #pledgeId#, #recurringGiftId#, #giftId#)
+		insert into DISTRO_LINE (AMOUNT, MOTIVATION_CODE, OTHER_MOTIVATION, PERCENTAGE, PROJECT_CODE, PLEDGE_ID, RECURRING_GIFT_ID, ADJUSTED_GIFT_ID, GIFT_ID)
+		values (#amount#, #motivationCode#, #other_motivationCode#, #percentage#, #projectCode#, #pledgeId#, #recurringGiftId#, #adjustedGiftId#, #giftId#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -68,6 +69,7 @@
 		OTHER_MOTIVATION = #other_motivationCode#,
 		PLEDGE_ID = #pledgeId#,
 		RECURRING_GIFT_ID = #recurringGiftId#,
+		ADJUSTED_GIFT_ID = #adjustedGiftId#,
 		GIFT_ID = #giftId#
 		where DISTRO_LINE_ID = #id#
 	</update>
@@ -93,6 +95,11 @@
 	<delete id="DELETE_DISTRO_LINE_BY_RECURRING_GIFT_ID" parameterClass="long">
 	    delete from DISTRO_LINE
 	    where RECURRING_GIFT_ID = #recurringGiftId#	    
+	</delete>
+	
+	<delete id="DELETE_DISTRO_LINE_BY_ADJUSTED_GIFT_ID" parameterClass="long">
+	    delete from DISTRO_LINE
+	    where ADJUSTED_GIFT_ID = #adjustedGiftId#	    
 	</delete>
 	
 </sqlMap>

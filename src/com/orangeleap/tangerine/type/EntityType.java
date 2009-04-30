@@ -10,6 +10,7 @@ public enum EntityType {
     phone,
     gift,
     giftInKind,
+    adjustedGift,
     code,
     picklist,
     recurringGift,

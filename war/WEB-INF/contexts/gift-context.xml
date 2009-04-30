@@ -36,22 +36,19 @@
     </bean>
 
     <bean id="giftAdjustmentController" class="com.orangeleap.tangerine.controller.gift.GiftAdjustmentController" parent="giftFormController">
+        <property name="commandName" value="adjustedGift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift"/>
         <property name="formView" value="gift/giftAdjustment"/>
         <property name="successView" value="redirect:/giftView.htm"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="gift"/>
+			        <property name="pageType" value="adjustedGift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>
-                 <ref bean="distributionLinesValidator"/>
+                <ref bean="adjustedDistributionLinesValidator"/>
 	        </list>
         </property>
-    </bean>
-
-    <bean id="giftRefundController" class="com.orangeleap.tangerine.controller.gift.GiftRefundController">
-        <property name="viewName" value="redirect:/giftView.htm" />
     </bean>
 
     <bean id="giftSearchController" class="com.orangeleap.tangerine.controller.gift.GiftSearchFormController">
@@ -77,7 +74,6 @@
 		    <props>
 		        <prop key="/gift.htm">giftFormController</prop>
 		    	<prop key="/giftView.htm">giftViewController</prop>
-		        <prop key="/giftRefund.htm">giftRefundController</prop>
 		        <prop key="/giftSearch.htm">giftSearchController</prop>
 		        <prop key="/giftList.htm">giftListController</prop>
 		        <prop key="/giftPledgeRecurringGiftLines.htm">giftPledgeRecurringGiftLinesController</prop>

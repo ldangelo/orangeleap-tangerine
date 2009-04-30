@@ -54,9 +54,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getDonationDate() == null;
         assert gift.getPostmarkDate() == null;
         assert gift.getAuthCode() == null;
-        assert gift.getOriginalGiftId() == null;
-        assert gift.getRefundGiftId() == null;
-        assert gift.getRefundGiftTransactionDate() == null;
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
@@ -105,9 +102,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getDonationDate() == null;
         assert gift.getPostmarkDate() == null;
         assert gift.getAuthCode() == null;
-        assert gift.getOriginalGiftId() == null;
-        assert gift.getRefundGiftId() == null;
-        assert gift.getRefundGiftTransactionDate() == null;
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
@@ -179,9 +173,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getDonationDate() == null;
         assert gift.getPostmarkDate() == null;
         assert gift.getAuthCode() == null;
-        assert gift.getOriginalGiftId() == null;
-        assert gift.getRefundGiftId() == null;
-        assert gift.getRefundGiftTransactionDate() == null;
         assert gift.getTxRefNum() == null;
         assert gift.getPaymentStatus() == null;
         assert gift.getPaymentMessage() == null;
@@ -278,9 +269,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getRecurringGiftId() == null;
         assert readGift.getPostmarkDate() == null;
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
-        assert readGift.getOriginalGiftId() == null;
-        assert readGift.getRefundGiftId() == null;
-        assert readGift.getRefundGiftTransactionDate() == null;
         assert readGift.getPaymentStatus().isEmpty();
         assert readGift.getPaymentMessage() == null;
         assert readGift.getCheckNumber() == null;
@@ -356,9 +344,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getRecurringGiftId() == null;
         assert readGift.getPostmarkDate() == null;
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
-        assert readGift.getOriginalGiftId() == null;
-        assert readGift.getRefundGiftId() == null;
-        assert readGift.getRefundGiftTransactionDate() == null;
         assert readGift.getPaymentStatus().isEmpty();
         assert "Hi mom".equals(readGift.getPaymentMessage());
         assert readGift.getCheckNumber() == 111;

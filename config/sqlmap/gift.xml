@@ -16,14 +16,10 @@
 		<result property="deductibleAmount" column="GIFT_DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />
 		<result property="donationDate" column="GIFT_DONATION_DATE" jdbcType="TIMESTAMP" />
 		<result property="entryType" column="GIFT_ENTRY_TYPE" jdbcType="VARCHAR" />
-		<result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
 		<result property="paymentMessage" column="GIFT_PAYMENT_MESSAGE" jdbcType="VARCHAR" />
 		<result property="paymentStatus" column="GIFT_PAYMENT_STATUS" jdbcType="VARCHAR" />
 		<result property="paymentType" column="GIFT_PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
-		<result property="refundGiftId" column="REFUND_GIFT_ID" jdbcType="BIGINT" />
-		<result property="refundGiftTransactionDate" column="REFUND_GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
-		<result property="refundDetails" column="REFUND_DETAILS" jdbcType="VARCHAR"/>
         <result property="sendAcknowledgment" column="GIFT_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
@@ -46,9 +42,8 @@
 		g.GIFT_ID, g.GIFT_STATUS, g.GIFT_TYPE, g.ACKNOWLEDGMENT_DATE as GIFT_ACKNOWLEDGMENT_DATE, g.AMOUNT as GIFT_AMOUNT, g.AUTH_CODE as GIFT_AUTH_CODE, g.CHECK_NUMBER as GIFT_CHECK_NUMBER,
 		g.COMMENTS as GIFT_COMMENTS, g.CURRENCY_CODE as GIFT_CURRENCY_CODE,
 		g.DEDUCTIBLE as GIFT_DEDUCTIBLE, g.DEDUCTIBLE_AMOUNT as GIFT_DEDUCTIBLE_AMOUNT, g.DONATION_DATE as GIFT_DONATION_DATE, g.ENTRY_TYPE as GIFT_ENTRY_TYPE,
-		g.ORIGINAL_GIFT_ID, g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE,
-		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE, g.REFUND_GIFT_ID,
-		g.REFUND_GIFT_TRANSACTION_DATE, g.REFUND_DETAILS,
+		g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE,
+		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE,
 		g.SEND_ACKNOWLEDGMENT as GIFT_SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE as GIFT_TRANSACTION_DATE, g.PAYMENT_TXREFNUM as GIFT_PAYMENT_TXREFNUM, 
 		g.PLEDGE_ID as GIFT_PLEDGE_ID, g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID,
 		g.UPDATE_DATE as GIFT_UPDATE_DATE, g.CREATE_DATE as GIFT_CREATE_DATE
@@ -176,20 +171,18 @@
 		insert into GIFT (GIFT_STATUS, GIFT_TYPE, ACKNOWLEDGMENT_DATE, AMOUNT, AUTH_CODE,
 		CHECK_NUMBER, COMMENTS,
 		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
-		ORIGINAL_GIFT_ID,
-		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE, REFUND_GIFT_ID,
-		REFUND_GIFT_TRANSACTION_DATE, REFUND_DETAILS, SEND_ACKNOWLEDGMENT, TRANSACTION_DATE,
-		PAYMENT_TXREFNUM,
+		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE,  
+		SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM,
 		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#giftStatus#, #giftType#, #acknowledgmentDate#, #amount#, #authCode#,
 		#checkNumber#, #comments#, #currencyCode#, #deductible#,
 		#deductibleAmount#, #donationDate#, #entryType#,
-		#originalGiftId#, #paymentMessage#, #paymentStatus#,
-		#paymentType#, #postmarkDate#, #refundGiftId#,
-		#refundGiftTransactionDate#, #refundDetails#, #sendAcknowledgment#, #transactionDate#,
-		#txRefNum#, #selectedAddress.id#, #pledgeId#, #recurringGiftId#, #selectedEmail.id#,
+		#paymentMessage#, #paymentStatus#,
+		#paymentType#, #postmarkDate#,
+		#sendAcknowledgment#, #transactionDate#, #txRefNum#, 
+		#selectedAddress.id#, #pledgeId#, #recurringGiftId#, #selectedEmail.id#,
 		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -211,14 +204,10 @@
 		g.DEDUCTIBLE_AMOUNT = #deductibleAmount#,
 		g.DONATION_DATE = #donationDate#,
 		g.ENTRY_TYPE = #entryType#,
-		g.ORIGINAL_GIFT_ID = #originalGiftId#,
 		g.PAYMENT_MESSAGE = #paymentMessage#,
 		g.PAYMENT_STATUS = #paymentStatus#,
 		g.PAYMENT_TYPE = #paymentType#,
 		g.POSTMARK_DATE = #postmarkDate#,
-		g.REFUND_GIFT_ID = #refundGiftId#,
-		g.REFUND_GIFT_TRANSACTION_DATE = #refundGiftTransactionDate#,
-        g.REFUND_DETAILS = #refundDetails#,
 		g.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
 		g.TRANSACTION_DATE = #transactionDate#,
 		g.PAYMENT_TXREFNUM = #txRefNum#,

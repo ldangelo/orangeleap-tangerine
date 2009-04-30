@@ -32,10 +32,8 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldCondition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
@@ -76,10 +74,8 @@ public class EntityValidator implements Validator {
     public boolean supports(Class clazz) {
         return 
         Person.class.equals(clazz) 
-        || Gift.class.isAssignableFrom(clazz)
+        || AbstractPaymentInfoEntity.class.isAssignableFrom(clazz)
         || CommunicationHistory.class.equals(clazz) 
-        || Pledge.class.equals(clazz) 
-        || RecurringGift.class.equals(clazz) 
         || GiftInKind.class.equals(clazz) 
         || Address.class.equals(clazz) 
         || Email.class.equals(clazz) 

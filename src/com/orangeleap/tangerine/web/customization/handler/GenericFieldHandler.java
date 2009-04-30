@@ -90,24 +90,13 @@ public class GenericFieldHandler implements FieldHandler {
         }
         fieldVO.setLabelText(labelText);
 
-        // For fields that depend on an entity attribute being selected to show.
-        // For entity attributes like "employee,donor" the entity attribute css classes that activate this field are "ea-employee ea-donor"
-        String entityAttributes = currentField.getFieldDefinition().getEntityAttributes();
-        StringBuilder entityAttributesStyle = new StringBuilder();
-        if (entityAttributes != null) {
-            String[] entityAttributesArray = entityAttributes.split(",");
-            for (String ea : entityAttributesArray) {
-                entityAttributesStyle.append(" ea-"+ea);
-            }
-        }
-        fieldVO.setEntityAttributes(entityAttributesStyle.toString().trim());
-
-
         FieldRequired fr = fieldService.lookupFieldRequired(currentField);
         fieldVO.setRequired(fr != null && fr.isRequired());
         fieldVO.setHierarchy(relationshipService.isHierarchy(currentField.getFieldDefinition()));
         fieldVO.setDisabled(fieldService.isFieldDisabled(currentField, model));
 
+        setEntityAttributes(fieldVO, currentField);
+        
         if (!FieldType.SPACER.equals(fieldVO.getFieldType()) && model != null) {
             Object propertyValue = getPropertyValue(model, fieldVO);
             fieldVO.setFieldValue(propertyValue);
@@ -126,5 +115,19 @@ public class GenericFieldHandler implements FieldHandler {
         }
 
         return fieldVO;
+    }
+    
+    protected void setEntityAttributes(FieldVO fieldVO, SectionField currentField) {
+        // For fields that depend on an entity attribute being selected to show.
+        // For entity attributes like "employee,donor" the entity attribute css classes that activate this field are "ea-employee ea-donor"
+        String entityAttributes = currentField.getFieldDefinition().getEntityAttributes();
+        StringBuilder entityAttributesStyle = new StringBuilder();
+        if (entityAttributes != null) {
+            String[] entityAttributesArray = entityAttributes.split(",");
+            for (String ea : entityAttributesArray) {
+                entityAttributesStyle.append(" ea-"+ea);
+            }
+        }
+        fieldVO.setEntityAttributes(entityAttributesStyle.toString().trim());
     }
 }

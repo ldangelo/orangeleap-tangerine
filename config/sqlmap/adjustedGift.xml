@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ADJUSTED_GIFT">
+
+	<resultMap id="ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id">
+		<result property="id" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
+		<result property="adjustedAmount" column="ADJUSTED_AMOUNT" jdbcType="DECIMAL" />
+		<result property="adjustedReason" column="ADJUSTED_REASON" jdbcType="VARCHAR"/>
+		<result property="adjustedStatus" column="ADJUSTED_STATUS" jdbcType="VARCHAR"/>
+		<result property="adjustedTransactionDate" column="ADJUSTED_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
+		<result property="adjustedType" column="ADJUSTED_TYPE" jdbcType="VARCHAR" />
+		<result property="adjustedPaymentRequired" column="ADJUSTED_PAYMENT_REQUIRED" jdbcType="CHAR"/>
+		<result property="adjustedPaymentTo" column="ADJUSTED_PAYMENT_TO" jdbcType="VARCHAR"/>
+		<result property="authCode" column="ADJUSTED_AUTH_CODE" jdbcType="VARCHAR" />
+		<result property="checkNumber" column="ADJUSTED_CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="comments" column="ADJUSTED_COMMENTS" jdbcType="VARCHAR" />
+		<result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
+		<result property="paymentMessage" column="ADJUSTED_PAYMENT_MESSAGE" jdbcType="VARCHAR" />
+		<result property="paymentStatus" column="ADJUSTED_PAYMENT_STATUS" jdbcType="VARCHAR" />
+		<result property="txRefNum" column="ADJUSTED_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
+		<result property="paymentType" column="ADJUSTED_PAYMENT_TYPE" jdbcType="VARCHAR" />
+		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
+		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
+		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
+		<result property="createDate" column="ADJUSTED_CREATE_DATE" jdbcType="TIMESTAMP" />
+		<result property="updateDate" column="ADJUSTED_UPDATE_DATE" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="ADJUSTED_GIFT_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift" groupBy="id" extends="ADJUSTED_GIFT_RESULT_NO_DISTRO_LINES">
+		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
+	</resultMap>
+
+	<sql id="ADJUSTED_GIFT_COLS_FRAGMENT">
+		ag.ADJUSTED_GIFT_ID, ag.ADJUSTED_AMOUNT, ag.ADJUSTED_REASON, ag.ADJUSTED_STATUS, ag.ADJUSTED_TRANSACTION_DATE, ag.ADJUSTED_TYPE, 
+		ag.ADJUSTED_PAYMENT_REQUIRED, ag.ADJUSTED_PAYMENT_TO, 
+		ag.AUTH_CODE as ADJUSTED_AUTH_CODE, ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER,
+		ag.COMMENTS as ADJUSTED_COMMENTS, ag.GIFT_ID as ORIGINAL_GIFT_ID, ag.PAYMENT_MESSAGE as ADJUSTED_PAYMENT_MESSAGE,
+		ag.PAYMENT_STATUS as ADJUSTED_PAYMENT_STATUS, ag.PAYMENT_TXREFNUM as ADJUSTED_PAYMENT_TXREFNUM, ag.PAYMENT_TYPE as ADJUSTED_PAYMENT_TYPE, 
+		ag.CREATE_DATE as ADJUSTED_CREATE_DATE, ag.UPDATE_DATE as ADJUSTED_UPDATE_DATE
+	</sql>
+	
+	<sql id="ADJUSTED_GIFT_QUERY_FRAGMENT">
+		select
+		<include refid="ADJUSTED_GIFT_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
+		from ADJUSTED_GIFT ag
+		inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join ADDRESS addr on ag.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PHONE ph on ag.PHONE_ID = ph.PHONE_ID
+		left outer join PAYMENT_SOURCE ps on ag.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID
+		where p.SITE_NAME = #siteName#
+	</sql>
+
+	<select id="SELECT_ADJUSTED_GIFT_BY_ID" resultMap="ADJUSTED_GIFT_RESULT" parameterClass="map">
+		<include refid="ADJUSTED_GIFT_QUERY_FRAGMENT" />
+		and ag.ADJUSTED_GIFT_ID = #adjustedGiftId#
+	</select>	
+
+	<select id="SELECT_ADJUSTED_GIFTS_BY_ORIGINAL_GIFT_ID" resultMap="ADJUSTED_GIFT_RESULT" parameterClass="map">
+		<include refid="ADJUSTED_GIFT_QUERY_FRAGMENT" />
+		and ag.GIFT_ID = #originalGiftId#
+	</select>	
+
+	<insert id="INSERT_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">
+		insert into ADJUSTED_GIFT (ADJUSTED_AMOUNT, ADJUSTED_REASON, ADJUSTED_STATUS, ADJUSTED_TRANSACTION_DATE, ADJUSTED_TYPE, 
+		ADJUSTED_PAYMENT_REQUIRED, ADJUSTED_PAYMENT_TO,   
+		AUTH_CODE, CHECK_NUMBER, 
+		COMMENTS, GIFT_ID, PAYMENT_MESSAGE, 
+		PAYMENT_STATUS, PAYMENT_TXREFNUM, PAYMENT_TYPE, 
+		ADDRESS_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
+		CREATE_DATE, UPDATE_DATE
+		)
+		values (#adjustedAmount#, #adjustedReason#, #adjustedStatus#, #adjustedTransactionDate#, #adjustedType#, 
+		#adjustedPaymentRequired#, #adjustedPaymentTo#, 
+		#authCode#,	#checkNumber#, 
+		#comments#, #originalGiftId#, #paymentMessage#,
+		#paymentStatus#, #txRefNum#, #paymentType#,
+		#selectedAddress.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, 
+		now(), now())
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+	
+	<update id="UPDATE_ADJUSTED_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift">
+		update ADJUSTED_GIFT ag, CONSTITUENT p
+		set 
+		ag.ADJUSTED_AMOUNT = #adjustedAmount#,
+        ag.ADJUSTED_REASON = #adjustedReason#,
+		ag.ADJUSTED_STATUS = #adjustedStatus#, 
+		ag.ADJUSTED_TRANSACTION_DATE = #adjustedTransactionDate#,
+		ag.ADJUSTED_TYPE = #adjustedType#, 
+		ag.ADJUSTED_PAYMENT_REQUIRED = #adjustedPaymentRequired#, 
+		ag.ADJUSTED_PAYMENT_TO = #adjustedPaymentTo#, 
+		ag.AUTH_CODE = #authCode#,
+		ag.CHECK_NUMBER = #checkNumber#,
+		ag.COMMENTS = #comments#,
+		ag.GIFT_ID = #originalGiftId#,
+		ag.PAYMENT_MESSAGE = #paymentMessage#,
+		ag.PAYMENT_STATUS = #paymentStatus#,
+		ag.PAYMENT_TXREFNUM = #txRefNum#,
+		ag.PAYMENT_TYPE = #paymentType#,
+		ag.ADDRESS_ID = #selectedAddress.id#,
+		ag.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
+		ag.CONSTITUENT_ID = #person.id#,
+		ag.PHONE_ID = #selectedPhone.id#,
+		ag.UPDATE_DATE = now()
+		where 
+		p.CONSTITUENT_ID = ag.CONSTITUENT_ID
+		and p.SITE_NAME = #site.name#
+		and ag.ADJUSTED_GIFT_ID = #id#
+	</update>
+	
+</sqlMap>

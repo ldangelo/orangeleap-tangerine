@@ -48,14 +48,14 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndRelationship(Long personId, Long relationshipId) {
+	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndField(Long personId, String fieldDefinitionId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllByConstituentAndRelationship: personid = " + personId);
+            logger.trace("readAllByConstituentAndField: personid = " + personId);
         }
         Map<String, Object> params = setupParams();
         params.put("personId", personId);
-        params.put("relationshipId", relationshipId);
-        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_RELATIONSHIP", params);
+        params.put("fieldDefinitionId", fieldDefinitionId);
+        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD", params);
 	}
    
 

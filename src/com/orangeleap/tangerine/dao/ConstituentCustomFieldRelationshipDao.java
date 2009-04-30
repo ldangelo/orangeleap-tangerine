@@ -11,7 +11,7 @@ public interface ConstituentCustomFieldRelationshipDao {
     
     public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
 
-	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndRelationship(Long personId, Long relationshipId);
+	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndField(Long personId, String fieldDefinitionId);
 	
 
 }

@@ -75,6 +75,7 @@ public class GiftImporter extends EntityImporter {
 		dl.setAmount(gift.getAmount());
 		dl.setPercentage(new BigDecimal(100.00));
 		gift.getMutableDistributionLines().add(dl);
+		gift.filterValidDistributionLines();
 		
 		giftservice.maintainGift(gift);
 		

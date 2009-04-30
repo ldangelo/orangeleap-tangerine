@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ import com.orangeleap.tangerine.service.relationship.TooManyLevelsException;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.RelationshipDirection;
 import com.orangeleap.tangerine.type.RelationshipType;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service("relationshipService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -428,8 +431,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    // Save custom fields on main entity
 		customFieldDao.maintainCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName(), newlist);
 
+		// They are saved in the entered order, but we need to check referenced fields with them in start date order.
+		sortByStartDate(newlist);
 		
     	// Check date ranges on referenced entities
+		List<String> matched = new ArrayList<String>();
 		if (refField != null) {
 			
 			for (CustomField cf : newlist) {
@@ -437,12 +443,16 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    		boolean existing = false;
 				Long refid = new Long(cf.getValue());
 				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
+				sortByStartDate(reflist);
 		        for (CustomField refcf: reflist) {
 		        	Long backref = new Long(refcf.getValue());
-		        	if (backref.equals(cf.getEntityId())) {
+		        	if (backref.equals(cf.getEntityId()) 
+		        			&& matched.indexOf(getDuplicateIdMatchKey(refcf)) == -1)  // matched list is used in case there are more than one reference to the same id for different time periods
+		        	{
 		        		refcf.setStartDate(cf.getStartDate());
 		        		refcf.setEndDate(cf.getEndDate());
 		        		existing = true;
+		        		matched.add(getDuplicateIdMatchKey(refcf));
 		        	}
 		        }
 		        if (!existing) {
@@ -477,6 +487,19 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 			
 		}
 		
+    }
+    
+    private String getDuplicateIdMatchKey(CustomField refcf) {
+    	return refcf.getEntityId() + ":" + refcf.getSequenceNumber();
+    }
+    
+    private void sortByStartDate(List<CustomField> list) {
+    	Collections.sort(list, new Comparator<CustomField>() {
+			@Override
+			public int compare(CustomField o1, CustomField o2) {
+				return o1.getStartDate().compareTo(o2.getStartDate());
+			}
+    	});
     }
     
     private List<CustomField> getDeletes(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {

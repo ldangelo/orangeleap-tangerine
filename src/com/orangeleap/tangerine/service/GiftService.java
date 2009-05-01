@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -34,8 +33,6 @@ public interface GiftService {
     public List<Gift> searchGifts(Map<String, Object> params);
 
     public Gift createDefaultGift(Person constituent);
-    
-    public AdjustedGift createdAdjustedGift(Long originalGiftId);
 
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
@@ -60,6 +57,4 @@ public interface GiftService {
 	public void checkAssociatedPledgeIds(Gift gift);
 	
 	public void checkAssociatedRecurringGiftIds(Gift gift);
-	
-    public void adjustGift(AdjustedGift adjustedGift);
 }

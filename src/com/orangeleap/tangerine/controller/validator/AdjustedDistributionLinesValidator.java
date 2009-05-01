@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 
 public class AdjustedDistributionLinesValidator extends DistributionLinesValidator {
 
@@ -16,7 +17,7 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
-    private GiftService giftService;
+    private AdjustedGiftService adjustedGiftService;
     
     @SuppressWarnings("unchecked")
     @Override
@@ -28,17 +29,48 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
     public void validate(Object target, Errors errors) {
         logger.trace("validate:");
         
-        BigDecimal total = null;
-        BigDecimal adjustedAmount = null;
         AdjustedGift adjustedGift = (AdjustedGift)target;
-        BigDecimal originalAmount = adjustedGift.getOriginalAmount();
-        total = getTotal(adjustedGift.getMutableDistributionLines());
-        adjustedAmount = adjustedGift.getAdjustedAmount();
-        if (total == null || adjustedAmount == null || adjustedAmount.compareTo(adjustedAmount) != 0) {
+        
+        checkTotaledDistributionLineAmountMatch(adjustedGift, errors);
+        checkAmountsNotPositive(adjustedGift, errors);
+        checkTotalAdjustedAmount(adjustedGift, errors);
+    }
+    
+    public void checkTotaledDistributionLineAmountMatch(AdjustedGift adjustedGift, Errors errors) {
+        BigDecimal total = getTotal(adjustedGift.getMutableDistributionLines());
+        BigDecimal adjustedAmount = adjustedGift.getAdjustedAmount();
+        if (total == null || adjustedAmount == null || adjustedAmount.compareTo(total) != 0) {
             errors.reject("errorDistributionLineAmounts");
         }
-        if (total != null && total.compareTo(originalAmount) == 1) {
-            errors.reject("errorAdjustedDistributionLinesAmounts");
+    }
+    
+    public void checkAmountsNotPositive(AdjustedGift adjustedGift, Errors errors) {
+        if (adjustedGift.getAdjustedAmount() != null && adjustedGift.getAdjustedAmount().compareTo(BigDecimal.ZERO) >= 0) {
+            errors.rejectValue("adjustedAmount", "errorAdjustedAmountPositive");
         }
+        for (DistributionLine aLine : adjustedGift.getMutableDistributionLines()) {
+            if (aLine != null) {
+                if (aLine.getAmount() != null && aLine.getAmount().compareTo(BigDecimal.ZERO) == 1) {
+                    errors.reject("errorIndividualAdjustedDistributionLineAmountPositive");
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void checkTotalAdjustedAmount(AdjustedGift adjustedGift, Errors errors) {
+        BigDecimal existingAmount = adjustedGiftService.findCurrentTotalAdjustedAmount(adjustedGift.getOriginalGiftId());
+        BigDecimal totalAmount = existingAmount.add(adjustedGift.getAdjustedAmount() == null ? BigDecimal.ZERO : adjustedGift.getAdjustedAmount());
+        BigDecimal originalAmount = adjustedGift.getOriginalAmount();
+        
+        BigDecimal leftoverAmount = originalAmount.add(totalAmount);
+        if (leftoverAmount.compareTo(BigDecimal.ZERO) == -1) {
+            errors.rejectValue("adjustedAmount", "errorTotalAdjustedAmount", new String[] { leftoverAmount.toString() }, null);
+        }
+    }
+
+    /** Used only in unit tests */
+    public void setAdjustedGiftService(AdjustedGiftService adjustedGiftService) {
+        this.adjustedGiftService = adjustedGiftService;
     }
 }

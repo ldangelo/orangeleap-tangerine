@@ -1,30 +1,46 @@
 $(document).ready(function() {
-	var $gridRows = $("table.distributionLines tbody.gridRow");
-	AdjustedDistribution.index = $gridRows.length + 1;
-
-	$("#amount").each(function() {
+     Ext.select('a.deleteButton').hide();
+     
+	$("#adjustedAmount").each(function() {
 		var $elem = $(this);
 		/* Done on load for previously entered distributionLines */
 		var val = $elem.val();
-		if (isNaN(parseFloat(val)) == false) {
+		if (OrangeLeap.isNum(val)) {
 			AdjustedDistribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
 			AdjustedDistribution.reInitDistribution();
 		}
 	});
 	
-	$("#amount").bind("keyup change", function(event) {
-		var amounts = $("table.distributionLines tbody.gridRow input.amount", "form");
+	$("#adjustedAmount").bind("keyup change", function(event) {
 		var amtVal = $(this).val();
-		AdjustedDistribution.enteredAmt = amtVal;
-		 
-		if (amounts.length == 1) {
-			amounts.val(amtVal);
+		if (OrangeLeap.isNum(amtVal)) {
+			AdjustedDistribution.enteredAmt = amtVal;
+			AdjustedDistribution.recalculateAmounts();
+			AdjustedDistribution.updateTotals();
 		}
-		else {
-			AdjustedDistribution.recalculatePcts();
-		}
-		AdjustedDistribution.updateFields(amounts);
 	});
+	$("input.amount, input.percentage", $("#adjustedGift_distribution")).bind("keyup", function(event) {
+		if (event.keyCode != 9) { // ignore tab
+			AdjustedDistribution.updateFields($(event.target));
+		}
+	});		
+	$("a.treeNodeLink", $("#adjustedGift_distribution")).bind("click", function(event) {
+		return OrangeLeap.expandCollapse(this);
+	});
+	
+//	$("#adjustedPaymentRequired").bind("change", function() {
+//		var val = $(this).val();
+//		if (val == "true") {
+//			
+//		}
+//		else {
+//			$("li:has(.ea-giftPayment),li:has(.ea-address),li:has(.ea-phone)").each(function() {
+//				$(this).hide();
+//			});
+//		}
+//	});
+//	$("#adjustedPaymentRequired").triggerHandler("change");
+	//:has(.ea-giftPayment),li:has(.ea-address),li:has(.ea-phone)
 });
 
 	
@@ -32,7 +48,6 @@ var AdjustedDistribution = {
 	oldPct: "",
 	enteredAmt: 0,
 	amtPctMap: { }, // hash of idPrefix (distributionLines-1) --> amount & percent
-	index: 1,
 	
 	reInitDistribution: function() {
 		$("table.distributionLines tbody.gridRow input.amount", "form").each(function() {
@@ -53,9 +68,9 @@ var AdjustedDistribution = {
 		AdjustedDistribution.updateTotals();
 	},
 	
-	recalculatePcts: function() {
-		$("table.distributionLines tbody.gridRow input.amount", "form").each(function(){
-			AdjustedDistribution.calculatePct($(this));
+	recalculateAmounts: function() {
+		$("table.distributionLines tbody.gridRow input.percentage", "form").each(function(){
+			AdjustedDistribution.calculateAmt($(this));
 		});
 	},
 	
@@ -75,19 +90,16 @@ var AdjustedDistribution = {
 		
 	updateTotals: function() {
 		var subTotal = 0;
-		var pctTotal = 0;
 				
 		for (var key in AdjustedDistribution.amtPctMap) {
 			var map = AdjustedDistribution.amtPctMap[key];
 			subTotal += parseFloat(map.amount);
-			pctTotal += parseFloat(map.percent);
 		}
 		subTotal = OrangeLeap.truncateFloat(subTotal);
-		pctTotal = OrangeLeap.truncateFloat(pctTotal);
 		
 		$("#subTotal").html(subTotal.toString());
 		
-		AdjustedDistribution.displayError(subTotal, pctTotal);
+		AdjustedDistribution.displayError(subTotal);
 	},
 	
 	calculateAmt: function($elem) {
@@ -139,15 +151,8 @@ var AdjustedDistribution = {
 		return map;
 	},
 	
-	displayError: function(subTotal, pctTotal) {
-        var v = null;
-        var rec = $('#recurring');
-        if (rec.length) {
-	        v = (rec.val() == "true" ? $('#amountPerGift') : $('#amountTotal'));
-        }
-        else {
-        	v = $('#amount');
-        }
+	displayError: function(subTotal) {
+        var v = $('#adjustedAmount');
 
         if (parseFloat(subTotal) === parseFloat(v.val())) {
             $("#totalText").removeClass("warning");
@@ -158,4 +163,4 @@ var AdjustedDistribution = {
 			$("#amountsErrorSpan").show();
         }
 	}
-}
+};

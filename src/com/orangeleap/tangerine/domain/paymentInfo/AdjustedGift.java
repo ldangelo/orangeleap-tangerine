@@ -12,6 +12,21 @@ import com.orangeleap.tangerine.util.StringConstants;
 @SuppressWarnings("serial")
 public class AdjustedGift extends AbstractPaymentInfoEntity {
 
+    private BigDecimal originalAmount;
+    private BigDecimal currentTotalAdjustedAmount; 
+    private BigDecimal adjustedAmount;
+    private Date adjustedTransactionDate;
+    private String adjustedReason;
+    private String adjustedType;
+    private String adjustedStatus;
+    private boolean adjustedPaymentRequired = false;
+    private String adjustedPaymentTo;
+    private Long originalGiftId;
+    private String authCode = StringConstants.EMPTY;
+    private String txRefNum;
+    private String paymentStatus = StringConstants.EMPTY;
+    private String paymentMessage;
+
     public AdjustedGift() {
         super();
     }
@@ -34,26 +49,17 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         setDistributionLines(lines);
     }
 
-    private BigDecimal adjustedAmount;
-    private BigDecimal originalAmount;
-    private Date adjustedTransactionDate;
-    private String adjustedReason;
-    private String adjustedType;
-    private String adjustedStatus;
-    private boolean adjustedPaymentRequired = false;
-    private String adjustedPaymentTo;
-    private Long originalGiftId;
-    private String authCode = StringConstants.EMPTY;
-    private String txRefNum;
-    private String paymentStatus = StringConstants.EMPTY;
-    private String paymentMessage;
-
-    public BigDecimal getAdjustedAmount() {
-        return adjustedAmount;
+    public AdjustedGift(BigDecimal adjustedAmount) {
+        this();
+        this.adjustedAmount = adjustedAmount;
     }
 
-    public void setAdjustedAmount(BigDecimal adjustedAmount) {
-        this.adjustedAmount = adjustedAmount;
+    /** Used only in unit tests */
+    public AdjustedGift(BigDecimal adjustedAmount, BigDecimal originalAmount, Long originalGiftId, List<DistributionLine> lines) {
+        this(adjustedAmount);
+        this.originalAmount = originalAmount;
+        this.originalGiftId = originalGiftId;
+        setMutableDistributionLines(lines);
     }
 
     public BigDecimal getOriginalAmount() {
@@ -62,6 +68,22 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
 
     public void setOriginalAmount(BigDecimal originalAmount) {
         this.originalAmount = originalAmount;
+    }
+
+    public BigDecimal getCurrentTotalAdjustedAmount() {
+        return currentTotalAdjustedAmount;
+    }
+
+    public void setCurrentTotalAdjustedAmount(BigDecimal currentTotalAdjustedAmount) {
+        this.currentTotalAdjustedAmount = currentTotalAdjustedAmount;
+    }
+
+    public BigDecimal getAdjustedAmount() {
+        return adjustedAmount;
+    }
+
+    public void setAdjustedAmount(BigDecimal adjustedAmount) {
+        this.adjustedAmount = adjustedAmount;
     }
 
     public Date getAdjustedTransactionDate() {
@@ -150,10 +172,5 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
 
     public void setPaymentMessage(String paymentMessage) {
         this.paymentMessage = paymentMessage;
-    }
-
-    @Override
-    public void prePersist() {
-        super.prePersist();
     }
 }

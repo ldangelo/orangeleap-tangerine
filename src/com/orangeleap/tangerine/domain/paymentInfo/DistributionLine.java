@@ -26,8 +26,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     public DistributionLine() { }
 
     public DistributionLine(BigDecimal amount, BigDecimal percentage, String projectCode, String motivationCode, String other_motivationCode) {
-        this();
-        this.amount = amount;
+        this(amount);
         this.percentage = percentage;
         this.projectCode = projectCode;
         this.motivationCode = motivationCode;
@@ -43,6 +42,11 @@ public class DistributionLine extends AbstractCustomizableEntity {
     public DistributionLine(Person person) {
         this();
         this.person = person;
+    }
+
+    public DistributionLine(BigDecimal amount) {
+        this();
+        this.amount = amount;
     }
 
     public BigDecimal getAmount() {

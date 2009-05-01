@@ -42,7 +42,7 @@
         <property name="successView" value="redirect:/giftView.htm"/>
 		<property name="validators">
 			<list>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+	            <bean class="com.orangeleap.tangerine.controller.validator.AdjustedGiftEntityValidator">
 			        <property name="pageType" value="adjustedGift"/>
 	            </bean>
 	            <ref bean="codeValidator"/>

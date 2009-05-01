@@ -36,7 +36,6 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -394,29 +393,17 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
         return giftDao.analyzeMajorDonor(constituentId, beginDate, currentDate);
     }
-    
-    @Override
-    public AdjustedGift createdAdjustedGift(Long originalGiftId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("createdAdjustedGift: originalGiftId = " + originalGiftId);
-        }
-        Gift originalGift = readGiftById(originalGiftId);
-        if (originalGift == null) {
-            throw new IllegalArgumentException("Gift for ID = " + originalGiftId + " was not found");
-        }
-        return new AdjustedGift(originalGift);
-    }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void adjustGift(AdjustedGift adjustedGift) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("adjustGift: giftId = " + adjustedGift.getId());
-        }
+//    @Override
+//    @Transactional(propagation = Propagation.REQUIRED)
+//    public void adjustGift(AdjustedGift adjustedGift) {
+//        if (logger.isTraceEnabled()) {
+//            logger.trace("adjustGift: giftId = " + adjustedGift.getId());
+//        }
 
 //        try {
             // get the original gift to compare against
-            Gift originalGift = readGiftById(adjustedGift.getId());
+//            Gift originalGift = readGiftById(adjustedGift.getId());
 
             // clone the incoming gift; we'll use as a template
             //(Gift) BeanUtils.cloneBean(adjustedGift);
@@ -441,54 +428,54 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 //            }
 
             // remove the "null" gifts in Mutable DistributionLine
-            List<DistributionLine> mutLines = adjustedGift.getMutableDistributionLines();
-            List<DistributionLine> temp = new ArrayList<DistributionLine>();
-            for(DistributionLine line : mutLines) {
-                if(line.isValid()) {
-                    temp.add(line);
-                }
-            }
-
-            mutLines.clear();
-            mutLines.addAll(temp);
-
-            // now match up the lines and compare the values
-            List<DistributionLine> origLines = originalGift.getDistributionLines();
-            List<DistributionLine> newLines = new ArrayList<DistributionLine>();
-
-            int len = origLines.size();
-
-            for(int i=0; i<len; i++) {
-                BigDecimal amt = mutLines.get(i).getAmount();
-                if(amt != null && amt.compareTo(BigDecimal.ZERO) != 0 && !origLines.get(i).getAmount().equals(amt)) {
-                    DistributionLine dl = mutLines.get(i);
-                    dl.setPercentage(null);
-                    newLines.add( dl );
-                }
-            }
-
-            adjustedGift.setDistributionLines(newLines);
-
-            // save our adjustment, which gets us the new ID
-//            adjustedGift = maintainGift(adjustedGift);
-//            adjustedGift.setId(adjustedGift.getId());
-
-            // set the refund (adjustment) details on the original and save it
-//            originalGift.setAdjustedGiftId(adjustedGift.getId());
-//            originalGift.setAdjustedTransactionDate(adjustedGift.getTransactionDate());
-
-            maintainGift(originalGift);
-
-//        } catch (IllegalAccessException e) {
-//            throw new IllegalStateException(e);
-//        } catch (InstantiationException e) {
-//            throw new IllegalStateException(e);
-//        } catch (InvocationTargetException e) {
-//            throw new IllegalStateException(e);
-//        } catch (NoSuchMethodException e) {
-//            throw new IllegalStateException(e);
-//        }
-    }
+//            List<DistributionLine> mutLines = adjustedGift.getMutableDistributionLines();
+//            List<DistributionLine> temp = new ArrayList<DistributionLine>();
+//            for(DistributionLine line : mutLines) {
+//                if(line.isValid()) {
+//                    temp.add(line);
+//                }
+//            }
+//
+//            mutLines.clear();
+//            mutLines.addAll(temp);
+//
+//            // now match up the lines and compare the values
+//            List<DistributionLine> origLines = originalGift.getDistributionLines();
+//            List<DistributionLine> newLines = new ArrayList<DistributionLine>();
+//
+//            int len = origLines.size();
+//
+//            for(int i=0; i<len; i++) {
+//                BigDecimal amt = mutLines.get(i).getAmount();
+//                if(amt != null && amt.compareTo(BigDecimal.ZERO) != 0 && !origLines.get(i).getAmount().equals(amt)) {
+//                    DistributionLine dl = mutLines.get(i);
+//                    dl.setPercentage(null);
+//                    newLines.add( dl );
+//                }
+//            }
+//
+//            adjustedGift.setDistributionLines(newLines);
+//
+//            // save our adjustment, which gets us the new ID
+////            adjustedGift = maintainGift(adjustedGift);
+////            adjustedGift.setId(adjustedGift.getId());
+//
+//            // set the refund (adjustment) details on the original and save it
+////            originalGift.setAdjustedGiftId(adjustedGift.getId());
+////            originalGift.setAdjustedTransactionDate(adjustedGift.getTransactionDate());
+//
+//            maintainGift(originalGift);
+//
+////        } catch (IllegalAccessException e) {
+////            throw new IllegalStateException(e);
+////        } catch (InstantiationException e) {
+////            throw new IllegalStateException(e);
+////        } catch (InvocationTargetException e) {
+////            throw new IllegalStateException(e);
+////        } catch (NoSuchMethodException e) {
+////            throw new IllegalStateException(e);
+////        }
+//    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

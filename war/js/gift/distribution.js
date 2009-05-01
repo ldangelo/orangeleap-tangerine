@@ -7,7 +7,7 @@ $(document).ready(function() {
 		if ($elem.parent().is(":visible")) {
 			/* Done on load for previously entered distributionLines */
 			var val = $elem.val();
-			if (isNaN(parseFloat(val)) == false) {
+			if (OrangeLeap.isNum(val)) {
 				Distribution.enteredAmt = OrangeLeap.truncateFloat(parseFloat(val));
 				Distribution.reInitDistribution();
 			}
@@ -19,15 +19,17 @@ $(document).ready(function() {
 	$("#amount, #amountPerGift, #amountTotal").bind("keyup change", function(event) {
 		var amounts = $("table.distributionLines tbody.gridRow input.amount", "form");
 		var amtVal = $(this).val();
-		Distribution.enteredAmt = amtVal;
-		 
-		if (amounts.length == 1) {
-			amounts.val(amtVal);
+		if (OrangeLeap.isNum(amtVal)) {
+			Distribution.enteredAmt = amtVal;
+			 
+			if (amounts.length == 1) {
+				amounts.val(amtVal);
+			}
+			else {
+				Distribution.recalculatePcts();
+			}
+			Distribution.updateFields(amounts);
 		}
-		else {
-			Distribution.recalculatePcts();
-		}
-		Distribution.updateFields(amounts);
 	});
 	
 	$("#recurring").bind("change", function() {
@@ -250,4 +252,4 @@ var Distribution = {
 			alert("Sorry, you cannot delete that row since it's the only remaining row.")
 		};
 	}
-}
+};

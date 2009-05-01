@@ -599,6 +599,10 @@ var OrangeLeap = {
 		$dialog.show();
 	},
 	
+	isNum: function(val) {
+		return (isNaN(parseFloat(val)) == false);
+	},
+	
 	isFloat: function(value) {
 	   if (isNaN(value) || value.toString().indexOf(".") < 0) {
 		   return false;

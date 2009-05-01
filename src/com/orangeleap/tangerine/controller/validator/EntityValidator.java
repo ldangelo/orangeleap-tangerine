@@ -46,24 +46,24 @@ public class EntityValidator implements Validator {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="tangerineUserHelper")
-    private TangerineUserHelper tangerineUserHelper;
+    protected TangerineUserHelper tangerineUserHelper;
     
     @Resource(name="addressValidator")
-    private AddressValidator addressValidator;
+    protected AddressValidator addressValidator;
     
     @Resource(name="phoneValidator")
-    private PhoneValidator phoneValidator;
+    protected PhoneValidator phoneValidator;
     
     @Resource(name="emailValidator")
-    private EmailValidator emailValidator;
+    protected EmailValidator emailValidator;
     
     @Resource(name="paymentSourceValidator")
-    private PaymentSourceValidator paymentSourceValidator;
+    protected PaymentSourceValidator paymentSourceValidator;
     
     @Resource(name="siteService")
-    private SiteService siteService;
+    protected SiteService siteService;
 
-    private PageType pageType;
+    protected PageType pageType;
 
     public void setPageType(PageType pageType) {
         this.pageType = pageType;
@@ -86,7 +86,39 @@ public class EntityValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public void validate(Object target, Errors errors) {
-        logger.trace("validate:");
+        if (logger.isTraceEnabled()) {
+            logger.trace("validate:");
+        }
+        validateSubEntities(target, errors);
+
+        Set<String> errorSet = new HashSet<String>();
+
+        if (errors.hasErrors()) {
+            List<FieldError> e = errors.getFieldErrors();
+            for (FieldError error : e) {
+                errorSet.add(error.getField());
+            }
+        }
+        
+        AbstractEntity entity = (AbstractEntity) target;
+        Map<String, String> fieldLabelMap = entity.getFieldLabelMap();
+
+        // used as a cache to prevent having to use reflection if the value has already been read
+        Map<String, Object> fieldValueMap = new HashMap<String, Object>();
+
+        // used to know that a field already has an error, so don't add another
+
+        // first, validate required fields
+        validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
+
+        // next, validate custom validation (regex)  
+        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
+    }
+    
+    protected void validateSubEntities(Object target, Errors errors) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("validateSubEntities:");
+        }
         if (target instanceof PaymentSourceAware) {
             PaymentSourceAware obj = (PaymentSourceAware) target;
             if (FormBeanType.NEW.equals(obj.getPaymentSourceType())) {
@@ -125,32 +157,9 @@ public class EntityValidator implements Validator {
                 // TODO: validate ID > 0
             }
         }
-
-        Set<String> errorSet = new HashSet<String>();
-
-        if (errors.hasErrors()) {
-            List<FieldError> e = errors.getFieldErrors();
-            for (FieldError error : e) {
-                errorSet.add(error.getField());
-            }
-        }
-        
-        AbstractEntity entity = (AbstractEntity) target;
-        Map<String, String> fieldLabelMap = entity.getFieldLabelMap();
-
-        // used as a cache to prevent having to use reflection if the value has already been read
-        Map<String, Object> fieldValueMap = new HashMap<String, Object>();
-
-        // used to know that a field already has an error, so don't add another
-
-        // first, validate required fields
-        validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
-
-        // next, validate custom validation (regex)  
-        validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
     }
 
-    private void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+    protected void validateRequiredFields(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, tangerineUserHelper.lookupUserRoles());
         if (requiredFieldMap != null) {
             BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
@@ -182,7 +191,7 @@ public class EntityValidator implements Validator {
         }
     }
     
-    private boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+    protected boolean areFieldConditionsMet(List<FieldCondition> conditions, String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         boolean conditionsMet = true;
         if (conditions != null) {
             for (FieldCondition fc : conditions) {
@@ -207,7 +216,7 @@ public class EntityValidator implements Validator {
         return conditionsMet;
     }
 
-    private void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
+    protected void validateRegex(AbstractEntity entity, Errors errors, Map<String, String> fieldLabelMap, Map<String, Object> fieldValueMap, Set<String> errorSet) {
         Map<String, FieldValidation> validationMap = siteService.readFieldValidations(pageType, tangerineUserHelper.lookupUserRoles());
         if (validationMap != null) {
             for (String key : validationMap.keySet()) {
@@ -250,7 +259,7 @@ public class EntityValidator implements Validator {
         }
     }
 
-    private Object getProperty(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+    protected Object getProperty(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         Object property = fieldValueMap.get(key);
         if (property == null) {
             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(entity);
@@ -265,7 +274,7 @@ public class EntityValidator implements Validator {
         return property;
     }
     
-    private String getPropertyString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
+    protected String getPropertyString(String key, AbstractEntity entity, Map<String, Object> fieldValueMap) {
         Object property = getProperty(key, entity, fieldValueMap);
         return property == null ? StringConstants.EMPTY : property.toString();
     }

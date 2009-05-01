@@ -1,4 +1,5 @@
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.amount', 'adjustedGift', 'adjustedAmount', 'Adjustment Amount', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.currentTotalAdjustedAmount', 'adjustedGift', 'currentTotalAdjustedAmount', 'Current Total Adjusted Amount', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.adjustedAmount', 'adjustedGift', 'adjustedAmount', 'Adjustment Amount', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.reason', 'adjustedGift', 'adjustedReason', 'Adjustment Reason', 'PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.status', 'adjustedGift', 'adjustedStatus', 'Adjustment Status', 'PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.transactionDate', 'adjustedGift', 'adjustedTransactionDate', 'Adjustment Date', 'DATE_DISPLAY');
@@ -9,7 +10,6 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('adjustedGift.originalGiftId', 'adjustedGift', 'gift', 'originalGiftId', 'Original Gift', 'ASSOCIATION_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentType', 'adjustedGift', 'paymentType', 'Payment Method', 'giftPayment', 'PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.selectedPaymentSource', 'adjustedGift', 'selectedPaymentSource', 'Payment Profile', 'giftPayment', 'PAYMENT_SOURCE_PICKLIST');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.selectedPaymentSource.creditCardSecurityCode', 'adjustedGift', 'paymentSource', 'Security Code', '', 'TEXT');
 
 -- Credit Card
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.creditCardHolderName', 'adjustedGift', 'paymentSource', 'Cardholder Name', '', 'TEXT');
@@ -17,6 +17,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.creditCardNumber', 'adjustedGift', 'paymentSource', 'Credit Card Number', '', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.creditCardExpiration', 'adjustedGift', 'paymentSource', 'Expiration', '', 'CC_EXPIRATION');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.creditCardSecurityCode', 'adjustedGift', 'paymentSource', 'Security Code', '', 'TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.selectedPaymentSource.creditCardSecurityCode', 'adjustedGift', 'selectedPaymentSource', 'Security Code', '', 'TEXT');
 
 -- ACH
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, ENTITY_ATTRIBUTES, FIELD_TYPE) VALUES ('adjustedGift.paymentSource.achHolderName', 'adjustedGift', 'paymentSource', 'ACH Holder Name', '', 'TEXT');

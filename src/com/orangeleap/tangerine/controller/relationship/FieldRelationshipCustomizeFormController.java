@@ -1,6 +1,14 @@
+/*
+ * Customizing the relationship field results in a set of custom field template names and default values, similar to picklists.
+ * These values are used when initializing the RelationshipCustomizeFormController fields for a specific constituent's relationship field's custom fields.
+ * 
+ */
+
+
 package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,10 +23,14 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
+import com.orangeleap.tangerine.service.RelationshipService;
 
 public class FieldRelationshipCustomizeFormController extends SimpleFormController {
 
@@ -28,6 +40,12 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
 
     @Resource(name="customFieldRelationshipService")
     protected CustomFieldRelationshipService customFieldRelationshipService;
+ 
+    @Resource(name="relationshipService")
+    protected RelationshipService relationshipService;
+ 
+    @Resource(name="fieldDAO")
+    protected FieldDao fieldDao;
     
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
@@ -69,21 +87,38 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
      
-    	String id = request.getParameter("id");
-
-        CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readById(new Long(id));
+    	String fieldDefinitionId = request.getParameter("fieldDefinitionId");
+    	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
+    	
+    	
+    	List<FieldRelationship> frs = fieldDao.readMasterFieldRelationships(fd.getId());
+    	if (frs.size() == 0) frs = fieldDao.readDetailFieldRelationships(fd.getId());
+    	FieldRelationship fr = frs.get(0);
+    	String masterFieldDefinitionId = fr.getMasterRecordField().getId();
+    	
+        CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readByFieldDefinitionId(masterFieldDefinitionId);
+        if (customFieldRelationship == null) {
+        	customFieldRelationship = new CustomFieldRelationship();
+        	customFieldRelationship.setMasterFieldDefinitionId(masterFieldDefinitionId);
+        	customFieldRelationship = customFieldRelationshipService.maintainCustomFieldRelationshipCustomFields(customFieldRelationship);
+        }
         
         Map<String, String> stringmap = getMap(customFieldRelationship.getCustomFieldMap());
 
 		if (stringmap.size() == 0) stringmap.put("", "");
-        request.setAttribute("map", stringmap);
-        request.setAttribute("customFieldRelationship", customFieldRelationship);
-        return super.showForm(request, response, errors, controlModel);
+        ModelAndView mav = super.showForm(request, response, errors, controlModel);
+        mav.addObject("fieldDefinition", fd);
+        mav.addObject("map", stringmap);
+        mav.addObject("customFieldRelationship", customFieldRelationship);
+        return mav;
     }
     
 	@Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
-    	
+
+		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
+    	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
+
     	String id = request.getParameter("id");
 
         CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readById(new Long(id));
@@ -98,6 +133,7 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
         stringmap = getMap(customFieldRelationship.getCustomFieldMap());
 		
         if (stringmap.size() == 0) stringmap.put("", "");
+        mav.addObject("fieldDefinition", fd);
 		mav.addObject("map", stringmap);
 		mav.addObject("customFieldRelationship", customFieldRelationship);
         return mav;

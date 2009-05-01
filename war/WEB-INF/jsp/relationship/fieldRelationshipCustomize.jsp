@@ -11,7 +11,7 @@
 
 		<div >
 		<form:form method="post" commandName="map" >
-		    <h4>Edit custom fields for relationship &quot;<c:out value='${param.relationship.fieldName}'/>&quot;</h4><br/>
+		    <h4>Edit custom fields for relationship &quot;<c:out value='${fieldDefinition.defaultLabel}'/>&quot;</h4><br/>
 			<table class="customFields">
 			<c:forEach var="field" varStatus="status" items="${map}" >
 			  <tr rowindex="${status.count}">
@@ -21,16 +21,14 @@
 			</c:forEach>
 			</table>
 			<br/>
+			<input type="hidden" name="id" value="${customFieldRelationship.id}"  />
+			<input type="hidden" name="fieldDefinitionId" value="${fieldDefinition.id}"  />
 			<input type="button" value="Add" class="saveButton" onclick="GenericCustomizer.addNewRow();" />
 			<input type="submit" value="Save" class="saveButton" />
 		</form:form>
 		</div>
 		
 		<br/>
- 		<c:url var="relationshipListUrl" value="relationships.htm">
- 			<c:param name="personId" value="${relationship.personId}" />
-		</c:url>
-		<strong><a class="action" href="${relationshipListUrl}">&laquo;Back</a></strong>
 
 		</div>
 		

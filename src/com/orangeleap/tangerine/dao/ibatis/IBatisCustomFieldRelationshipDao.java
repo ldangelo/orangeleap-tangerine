@@ -39,10 +39,21 @@ public class IBatisCustomFieldRelationshipDao extends AbstractIBatisDao implemen
     }
     
     @Override
+    public CustomFieldRelationship readByFieldDefinitionId(String id) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readByFieldDefinitionId: id = " + id);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("id", id);
+        return (CustomFieldRelationship)getSqlMapClientTemplate().queryForObject("SELECT_CUSTOM_FIELD_RELATIONSHIP_BY_MASTER_FIELD_DEFINITION_ID", params);
+    }
+    
+    @Override
     public CustomFieldRelationship maintainCustomFieldRelationship(CustomFieldRelationship customFieldRelationship) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainCustomFieldRelationship: Id = " + customFieldRelationship.getId());
         }
+        customFieldRelationship.setSiteName(getSiteName());
         return (CustomFieldRelationship)insertOrUpdate(customFieldRelationship, "CUSTOM_FIELD_RELATIONSHIP");
     }
 

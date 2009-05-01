@@ -13,6 +13,8 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
     private Long constituentId;
     private Long customFieldId;
     private String masterFieldDefinitionId;
+    private String siteName;
+
 
     public ConstituentCustomFieldRelationship() {
         super();
@@ -40,6 +42,14 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 
 	public String getMasterFieldDefinitionId() {
 		return masterFieldDefinitionId;
+	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+
+	public String getSiteName() {
+		return siteName;
 	}
 
 

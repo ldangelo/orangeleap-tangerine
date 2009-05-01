@@ -74,6 +74,15 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
 	}
 
     @Override
+	public CustomFieldRelationship readByFieldDefinitionId(String id) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("CustomFieldRelationshipService.readByFieldDefinitionId: id = " + id);
+	    }
+	    CustomFieldRelationship CustomFieldRelationship = customFieldRelationshipDao.readByFieldDefinitionId(id);
+	    return CustomFieldRelationship;
+	}
+
+    @Override
     public List<CustomFieldRelationship> readAllBySite() {
 	    return customFieldRelationshipDao.readAllBySite();
     }

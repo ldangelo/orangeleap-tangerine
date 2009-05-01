@@ -8,6 +8,8 @@ public interface CustomFieldRelationshipDao {
 
     public CustomFieldRelationship readById(Long id);
     
+    public CustomFieldRelationship readByFieldDefinitionId(String id);
+
     public CustomFieldRelationship maintainCustomFieldRelationship(CustomFieldRelationship customFieldRelationship);
 
 	public List<CustomFieldRelationship> readAllBySite();

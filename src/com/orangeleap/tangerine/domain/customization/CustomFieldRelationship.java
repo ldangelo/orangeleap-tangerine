@@ -11,6 +11,7 @@ public class CustomFieldRelationship extends AbstractCustomizableEntity  {
     private static final long serialVersionUID = 1L;
 
     private String masterFieldDefinitionId;
+    private String siteName;
 
     public CustomFieldRelationship() {
         super();
@@ -23,6 +24,15 @@ public class CustomFieldRelationship extends AbstractCustomizableEntity  {
 	public String getMasterFieldDefinitionId() {
 		return masterFieldDefinitionId;
 	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
 
 
 }

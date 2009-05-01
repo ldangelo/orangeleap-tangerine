@@ -43,6 +43,7 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituentCustomFieldRelationship: Id = " + constituentCustomFieldRelationship.getId());
         }
+        constituentCustomFieldRelationship.setSiteName(getSiteName());
         return (ConstituentCustomFieldRelationship)insertOrUpdate(constituentCustomFieldRelationship, "CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP");
     }
 

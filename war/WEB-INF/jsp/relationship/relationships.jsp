@@ -29,7 +29,7 @@
 		   <span id="actions" style="display:none">
 		  	   <input type=submit value="Edit" />
 			   &nbsp;&nbsp;&nbsp;
-			   <a id="customizeLink" href="#" style="display:none" >+</a> 
+			   <a id="customizeLink" href="#"  >+</a> 
 		   </span>
 		</form>
 		

@@ -8,11 +8,13 @@ public interface CustomFieldRelationshipService {
 
 	  public CustomFieldRelationship readById(Long id);
 	    
+	  public CustomFieldRelationship readByFieldDefinitionId(String id);
+	    
 	  public List<CustomFieldRelationship> maintainCustomFieldRelationships(List<CustomFieldRelationship> list);
 
 	  public CustomFieldRelationship maintainCustomFieldRelationshipCustomFields(CustomFieldRelationship customFieldRelationship);
 	  
       public List<CustomFieldRelationship> readAllBySite();
-
+      
 	
 }

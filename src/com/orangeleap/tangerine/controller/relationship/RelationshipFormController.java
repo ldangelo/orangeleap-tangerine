@@ -76,11 +76,13 @@ public class RelationshipFormController extends SimpleFormController {
 
     	try {
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
+    		person = constituentService.readConstituentById(personId);
     	} catch (Exception e) {
 			mav.addObject("message", e.getMessage());
     	}
     	
         mav.addObject("form", readForm(request));
+        mav.addObject("person", person);
         return mav;
         
     }

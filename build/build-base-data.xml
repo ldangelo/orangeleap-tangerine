@@ -43,6 +43,7 @@
 	     	<transaction src="${basedir}/db/prod/pages/gift.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftList.sql"/>
             <transaction src="${basedir}/db/prod/pages/adjustedGift.sql"/>
+            <transaction src="${basedir}/db/prod/pages/adjustedGiftView.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftInKind.sql"/>

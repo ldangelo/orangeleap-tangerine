@@ -20,7 +20,7 @@
 
 		<span style="color: red;" ><c:out value="${message}" /></span>
 		
-		<form method="post" action="relationship.htm">
+		<form id="form" method="post" action="relationship.htm">
 		    <input type=hidden name="personId" value="${form.person.id}" />
 	        <input type=hidden name="fieldDefinitionId" value="${form.fieldDefinition.id}" />
 			<table class="customFields">
@@ -28,7 +28,7 @@
 				<th nowrap>Value</td>
 				<th nowrap>Start Date</td>
 				<th nowrap>End Date</td>
-				<th nowrap>&nbsp;&nbsp;<!-- Customize --></td>
+				<th nowrap>&nbsp;&nbsp;Customize</td>
 			  </tr>
 			 <c:forEach var="customField" varStatus="status" items="${form.customFieldList}" >
 			  <tr rowindex="${status.count}">
@@ -41,18 +41,20 @@
 				<td>
 				<input id="cfEndDate-${status.count}-" name="cfEndDate[${status.count}]" value="<c:out value='${customField.displayEndDate}'/>" dateinput="true" />
 				</td>
-				<td>&nbsp;&nbsp;
-				<!--  
-				 TODO  suppress this link for new additions until they are validated and saved.
-				   <a href="relationshipCustomize.htm?personId=${form.person.id}&fieldDefinitionId=${form.fieldDefinition.id}&customFieldId=${customField.id}">+</a> 
-				-->
+				<td>
+				&nbsp;&nbsp;
+				<input id="cfId-${status.count}-" name="cfId[${status.count}]" value="<c:out value='${customField.id}'/>" type="hidden" />
+				<a href="#" 
+				   onclick="$('#customize').val($(this).prev().attr(id));$('#form').submit();"
+				 >+</a> 
 				</td>
 			  </tr>
 			 </c:forEach>
 			</table>
 			<br/>
+			<input id="customize" type="hidden" name="customize" value="" />
 			<input type="button" value="Add" class="saveButton" onclick="GenericCustomizer.addNewRow(); decorateDateInputs();" />
-			<input type="submit" value="Save" class="saveButton" />
+			<input type="button" value="Save" class="saveButton" onclick="$('#customize').val('');$('#form').submit();" />
 		</form>
 		</div>
 

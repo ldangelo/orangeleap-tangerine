@@ -24,7 +24,7 @@ public class Address extends AbstractCommunicationEntity {
     private String country;
     private String postalCode;
     private Date ncoaDate;
-    private Date caasDate;
+    private Date cassDate;
 
     public Address() { }
 
@@ -106,12 +106,12 @@ public class Address extends AbstractCommunicationEntity {
 		return ncoaDate;
 	}
 
-	public void setCaasDate(Date caasDate) {
-		this.caasDate = caasDate;
+	public void setCassDate(Date cassDate) {
+		this.cassDate = cassDate;
 	}
 
-	public Date getCaasDate() {
-		return caasDate;
+	public Date getCassDate() {
+		return cassDate;
 	}
 
 

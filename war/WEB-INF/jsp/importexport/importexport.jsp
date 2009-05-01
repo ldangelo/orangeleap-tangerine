@@ -101,7 +101,7 @@
 					  NCOA date: <input id="ncoaDate" name="ncoaDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
 		         <div>
-					  CAAS date: <input id="caasDate" name="caasDate" size="16" maxlength="10" class="text date" type="text" />
+					  CASS date: <input id="cassDate" name="cassDate" size="16" maxlength="10" class="text date" type="text" />
 		         </div>
                     <script type="text/javascript">
                         new Ext.form.DateField({
@@ -111,8 +111,8 @@
                             width: 250
                         });
                         new Ext.form.DateField({
-                            applyTo: 'caasDate',
-                            id: "caasDate-wrapper",
+                            applyTo: 'cassDate',
+                            id: "cassDate-wrapper",
                             format: 'm/d/Y',
                             width: 250
                         });

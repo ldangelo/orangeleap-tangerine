@@ -131,7 +131,7 @@ public class AddressImporter extends EntityImporter {
 	
 	private void setCleanseDates(Address address) {
 		if (importRequest.getNcoaDate() != null) address.setNcoaDate(importRequest.getNcoaDate());
-		if (importRequest.getCaasDate() != null) address.setCaasDate(importRequest.getCaasDate());
+		if (importRequest.getCassDate() != null) address.setCassDate(importRequest.getCassDate());
 	}
 	
 	

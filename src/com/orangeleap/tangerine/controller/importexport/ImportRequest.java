@@ -6,7 +6,7 @@ public class ImportRequest {
 	
 	private String entity;
 	private Date ncoaDate;
-	private Date caasDate;
+	private Date cassDate;
 	private boolean convertToProperCase = true;
 	
 	
@@ -23,11 +23,11 @@ public class ImportRequest {
 	public Date getNcoaDate() {
 		return ncoaDate;
 	}
-	public void setCaasDate(Date caasDate) {
-		this.caasDate = caasDate;
+	public void setCassDate(Date caasDate) {
+		this.cassDate = caasDate;
 	}
-	public Date getCaasDate() {
-		return caasDate;
+	public Date getCassDate() {
+		return cassDate;
 	}
 	public void setConvertToProperCase(boolean convertToProperCase) {
 		this.convertToProperCase = convertToProperCase;

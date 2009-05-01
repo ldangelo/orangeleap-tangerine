@@ -59,7 +59,7 @@ public class CsvImportController extends SimpleFormController {
 		ImportRequest importRequest = new ImportRequest();
 		importRequest.setEntity(request.getParameter("entity"));
 		importRequest.setNcoaDate(getDate(request.getParameter("ncoaDate")));
-		importRequest.setCaasDate(getDate(request.getParameter("caasDate")));
+		importRequest.setCassDate(getDate(request.getParameter("cassDate")));
 		
 		List<String> result = new ArrayList<String>();
 		

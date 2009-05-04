@@ -315,7 +315,16 @@ public class Person extends AbstractCommunicatorEntity {
     	}
     }
     
-    
+    public void addConstituentOrganizationRoles(String role) {
+    	String existingValue = getConstituentOrganizationRoles();
+        if (existingValue == null) {
+            setConstituentOrganizationRoles(role);
+        }
+        else {
+            setConstituentOrganizationRoles(existingValue + "," + role); 
+        }
+    	
+    }
     public void addConstituentIndividualRoles(String role) {
     	String existingValue = getConstituentIndividualRoles();
         if (existingValue == null) {

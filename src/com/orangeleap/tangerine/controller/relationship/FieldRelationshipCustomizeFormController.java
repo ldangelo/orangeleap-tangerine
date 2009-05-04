@@ -8,7 +8,6 @@
 package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,7 +27,6 @@ import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
 
@@ -89,12 +87,8 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
      
     	String fieldDefinitionId = request.getParameter("fieldDefinitionId");
     	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
-    	
-    	
-    	List<FieldRelationship> frs = fieldDao.readMasterFieldRelationships(fd.getId());
-    	if (frs.size() == 0) frs = fieldDao.readDetailFieldRelationships(fd.getId());
-    	FieldRelationship fr = frs.get(0);
-    	String masterFieldDefinitionId = fr.getMasterRecordField().getId();
+
+    	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
     	
         CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readByFieldDefinitionId(masterFieldDefinitionId);
         if (customFieldRelationship == null) {

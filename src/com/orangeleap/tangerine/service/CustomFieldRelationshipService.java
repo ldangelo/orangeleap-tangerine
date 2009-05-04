@@ -7,6 +7,8 @@ import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
 public interface CustomFieldRelationshipService {
 
 	  public CustomFieldRelationship readById(Long id);
+	  
+	  public String getMasterFieldDefinitonId(String id);
 	    
 	  public CustomFieldRelationship readByFieldDefinitionId(String id);
 	    

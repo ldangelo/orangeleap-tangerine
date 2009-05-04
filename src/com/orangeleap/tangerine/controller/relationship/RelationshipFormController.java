@@ -22,6 +22,7 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -36,6 +37,9 @@ public class RelationshipFormController extends SimpleFormController {
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
+    
+    @Resource(name="customFieldRelationshipService")
+    protected CustomFieldRelationshipService customFieldRelationshipService;
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
@@ -65,6 +69,7 @@ public class RelationshipFormController extends SimpleFormController {
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
 
         ModelAndView mav = new ModelAndView(getSuccessView());
+		
 
 		Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
@@ -74,19 +79,55 @@ public class RelationshipFormController extends SimpleFormController {
 		String fieldName = fieldDefinition.getCustomFieldName();
     	List<CustomField> list = getMap(request, personId, fieldName);
 
+    	int customizeIndex = getIndex(request.getParameter("customizeIndex"));
+        CustomField customizeCf = null;
+        if (customizeIndex > -1) customizeCf = list.get(customizeIndex);
+        
+        String message = "";
+
     	try {
+    		
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
+    		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinitionId);
     		person = constituentService.readConstituentById(personId);
+    		
+    		if (customizeCf != null) {
+    			Long customFieldId = getCustomFieldId(customizeCf, savedlist);
+    		    return new ModelAndView("redirect:/relationshipCustomize.htm?personId=" + personId + "&fieldDefinitionId=" + fieldDefinitionId + "&customFieldId=" + customFieldId);
+    		}
+    		
+    		
     	} catch (Exception e) {
-			mav.addObject("message", e.getMessage());
+    		message = e.getMessage();
     	}
     	
+		mav.addObject("message", message);
         mav.addObject("form", readForm(request));
         mav.addObject("person", person);
         return mav;
         
     }
     
+    private Long getCustomFieldId(CustomField customizeCf, List<CustomField> savedlist) {
+    	for (CustomField cf : savedlist) {
+    		if (cf.getName().equals(customizeCf.getName()) 
+    				&& cf.getValue().equals(customizeCf.getValue())
+    				&& cf.getStartDate().equals(customizeCf.getStartDate())
+    				&& cf.getEndDate().equals(customizeCf.getEndDate())
+    				) {
+    			return cf.getId();
+    		}
+    	}
+    	return null;
+    }
+    
+    private int getIndex(String s) {
+    	if (s == null || s.trim().length() == 0) {
+    		return -1;
+    	}
+    	return Integer.parseInt(s.substring(s.indexOf('-') + 1, s.lastIndexOf('-')));
+    }
+        
 	private RelationshipForm readForm(HttpServletRequest request) {
 		
         Long personId = new Long(request.getParameter("personId"));

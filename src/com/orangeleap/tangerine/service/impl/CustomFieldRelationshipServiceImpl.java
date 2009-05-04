@@ -11,7 +11,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.CustomFieldRelationshipDao;
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
@@ -28,6 +31,9 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
 
     @Resource(name = "customFieldRelationshipDAO")
     private CustomFieldRelationshipDao customFieldRelationshipDao;
+
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
 
     @Resource(name = "auditService")
     private AuditService auditService;
@@ -74,10 +80,21 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
 	}
 
     @Override
+	public String getMasterFieldDefinitonId(String id) {
+	    // Get corresponding master field definition id for relationship
+    	FieldDefinition fd = fieldDao.readFieldDefinition(id);
+    	List<FieldRelationship> frs = fieldDao.readMasterFieldRelationships(fd.getId());
+    	if (frs.size() == 0) frs = fieldDao.readDetailFieldRelationships(fd.getId());
+    	FieldRelationship fr = frs.get(0);
+    	return fr.getMasterRecordField().getId();
+	}
+
+    @Override
 	public CustomFieldRelationship readByFieldDefinitionId(String id) {
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("CustomFieldRelationshipService.readByFieldDefinitionId: id = " + id);
 	    }
+
 	    CustomFieldRelationship CustomFieldRelationship = customFieldRelationshipDao.readByFieldDefinitionId(id);
 	    return CustomFieldRelationship;
 	}

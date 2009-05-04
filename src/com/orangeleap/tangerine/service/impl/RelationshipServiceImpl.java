@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -430,32 +432,39 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		
 	    // Save custom fields on main entity
 		customFieldDao.maintainCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName(), newlist);
+	    newlist = customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName());
 
-		// They are saved in the entered order, but we need to check referenced fields with them in start date order.
-		sortByStartDate(newlist);
-		
     	// Check date ranges on referenced entities
-		List<String> matched = new ArrayList<String>();
 		if (refField != null) {
 			
+			// Sort by referenced id
+			Map<String, List<CustomField>> listsByValues = new HashMap<String, List<CustomField>>();
 			for (CustomField cf : newlist) {
-			
-	    		boolean existing = false;
-				Long refid = new Long(cf.getValue());
+				String value = cf.getValue();
+				List<CustomField> alist = listsByValues.get(value);
+				if (alist == null) {
+					alist = new ArrayList<CustomField>();
+					listsByValues.put(value, alist);
+				}
+				alist.add(cf);
+			}
+				
+			// For each referenced id, delete all the back references to this id and re-populate.
+			for (Map.Entry<String, List<CustomField>> me: listsByValues.entrySet()) {
+				
+				List<CustomField> alist = me.getValue();
+				CustomField cf1 = alist.get(0);
+				
+				Long refid = new Long(cf1.getValue());
 				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
-				sortByStartDate(reflist);
-		        for (CustomField refcf: reflist) {
+				Iterator<CustomField> it = reflist.iterator();
+				while (it.hasNext()) {
+					CustomField refcf = it.next();
 		        	Long backref = new Long(refcf.getValue());
-		        	if (backref.equals(cf.getEntityId()) 
-		        			&& matched.indexOf(getDuplicateIdMatchKey(refcf)) == -1)  // matched list is used in case there are more than one reference to the same id for different time periods
-		        	{
-		        		refcf.setStartDate(cf.getStartDate());
-		        		refcf.setEndDate(cf.getEndDate());
-		        		existing = true;
-		        		matched.add(getDuplicateIdMatchKey(refcf));
-		        	}
-		        }
-		        if (!existing) {
+					if (backref.equals(cf1.getEntityId())) it.remove();
+				}
+				
+				for (CustomField cf: alist) {
 		        	CustomField newcf = new CustomField();
 		        	newcf.setEntityId(refid);
 		        	newcf.setEntityType("person");
@@ -464,12 +473,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		        	newcf.setEndDate(cf.getEndDate());
 		        	newcf.setValue(""+cf.getEntityId());
 		        	reflist.add(newcf);
-		        }
-			
+				}
+				
 		        Person refPerson;
 				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
 				if (!refdatesvalid) {
-					refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+					refPerson = constituentDao.readConstituentById(new Long(cf1.getValue()));
 					ConstituentValidationException ex = new ConstituentValidationException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());
 					ex.addValidationResult("referenceFieldDateOverlap", new Object[]{refPerson.getFullName()});
 					throw ex;
@@ -478,7 +487,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
 			    
 			    // Set new roles on refId.
-				refPerson = constituentDao.readConstituentById(new Long(cf.getValue()));
+				refPerson = constituentDao.readConstituentById(new Long(cf1.getValue()));
 				// TODO set date range on role attribute
 			    ensureOtherPersonAttributeIsSet(refField, refPerson);
 				refPerson = constituentDao.maintainConstituent(refPerson);
@@ -489,15 +498,18 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		
     }
     
-    private String getDuplicateIdMatchKey(CustomField refcf) {
-    	return refcf.getEntityId() + ":" + refcf.getSequenceNumber();
-    }
-    
     private void sortByStartDate(List<CustomField> list) {
     	Collections.sort(list, new Comparator<CustomField>() {
 			@Override
 			public int compare(CustomField o1, CustomField o2) {
-				return o1.getStartDate().compareTo(o2.getStartDate());
+				int result = o1.getStartDate().compareTo(o2.getStartDate());
+				if (result == 0) {
+					result = o1.getSequenceNumber() - o2.getSequenceNumber();
+				}
+				if (result == 0) {
+					result = o1.getValue().compareTo(o2.getValue());
+				}
+				return result;
 			}
     	});
     }
@@ -557,40 +569,48 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	if (ft.equals(FieldType.QUERY_LOOKUP) || ft.equals(FieldType.PICKLIST)) isMultiValued = false;
     	if (ft.equals(FieldType.MULTI_PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) isMultiValued = true;
     
-    	if (!isMultiValued) {
-    	    return validateDateRangesDoNotOverlap(list);
-    	}
-    	return true;
+    	return validateDateRangesDoNotOverlap(list, isMultiValued);
+    	    
     }    
     
-    private List<Date> getDays(CustomField cf) {
-    	List<Date> days = new ArrayList<Date>();
-    	Date start = new Date(cf.getStartDate().getTime());
-    	Date end = cf.getEndDate();
-    	while (!start.after(end)) {
-    		days.add(start);
-    		start = nextDay(start);
-    	}
-    	return days;
-    }
-    
-    private Date nextDay(Date date) {
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTime(date);
-    	cal.add(Calendar.DATE, 1);
-    	return cal.getTime();
-    }
-    
-    private boolean validateDateRangesDoNotOverlap(List<CustomField> list) {
-    	List<Date> alldays = new ArrayList<Date>();
+    // Date ranges cannot overlap for a single valued field.
+    // For a multi-valued field, date ranges still cannot overlap for a single custom field value.
+    private boolean validateDateRangesDoNotOverlap(List<CustomField> list, boolean multiValued) {
+    	
+    	Map<String, List<CustomField>> exclusivelists = new HashMap<String, List<CustomField>>();
     	for (CustomField cf : list) {
-    		List<Date> cfdays = getDays(cf);
-    		for (Date d1 : alldays) {
-        		for (Date d2 : cfdays) {
-        			if (d1.equals(d2)) return false;
-        		}
+    		
+    		String value = cf.getValue();
+    		if (!multiValued) value = "";
+    		
+    		List<CustomField> alist = exclusivelists.get(value);
+    		if (alist == null) {
+    			alist = new ArrayList<CustomField>();
+    			exclusivelists.put(value, alist);
     		}
-        	alldays.addAll(cfdays);
+    		alist.add(cf);
+    	}
+    	
+    	for (Map.Entry<String, List<CustomField>> me : exclusivelists.entrySet()) {
+    		List<CustomField> alist = me.getValue();
+    		if (!checkList(alist)) return false;
+    	}
+    	
+    	
+    	return true;
+    }
+    
+    private boolean checkList(List<CustomField> list) {
+    	sortByStartDate(list);
+    	Date d1 = null;
+    	for (CustomField cf : list) {
+    		if (!cf.getEndDate().after(cf.getStartDate())) {
+    			return false;
+    		}
+    		if (d1 != null && !cf.getStartDate().after(d1)) {
+    			return false;
+    		}
+    		d1 = cf.getEndDate();
     	}
     	return true;
     }

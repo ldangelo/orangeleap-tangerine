@@ -22,7 +22,7 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	        logger.debug("DroolsRuleAgent: pollInterval = " + pollInterval + " cacheDir = " + cacheDir + " packageDir = " + packageDir);
 	    }
 		droolsProperties = new Properties();
-        droolsProperties.put("newInstance", "false");
+        droolsProperties.put("newInstance", "true");
         droolsProperties.put("name", "orangeleap");
         droolsProperties.put("poll", pollInterval);
         droolsProperties.put("cache", cacheDir);

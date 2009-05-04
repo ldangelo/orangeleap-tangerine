@@ -276,6 +276,46 @@ public class Person extends AbstractCommunicatorEntity {
         if (result == null) return ""; else return result;
     }
 
+    public void removeConstituentIndividualRoles(String role) {
+   	String existingValue = getConstituentIndividualRoles();
+    	
+    	//
+    	// if the custom field value does not contain the value
+    	// we are removing simply return
+    	if (existingValue.contains(role) == false) {
+            return;
+        }
+    	
+    	//
+    	// if the existing value is equal to the value we are removing
+    	// then set the field value to an empty string (remove it)
+    	if (existingValue.contains(",") == false) {
+    		if (existingValue.compareTo(role) == 0) {
+                setConstituentIndividualRoles("");
+            }
+    	} else {
+    		//
+    		// if the existing value is a comma separated list of values
+    		// then find the value we are removing in the string and remove it
+    		// then reset the field value
+    		String[] values = existingValue.split(",");
+    		
+    		StringBuilder sb = new StringBuilder();
+    		for (int i = 0; i < values.length; i++) {
+    			if (values[i].equals(role) == false) {
+                    sb.append(values[i]);
+                }
+    			
+    			if (i != (values.length - 1)) {
+                    sb.append(",");
+                }
+    		}
+    		
+    		setConstituentIndividualRoles(sb.toString());
+    	}
+    }
+    
+    
     public void addConstituentIndividualRoles(String role) {
     	String existingValue = getConstituentIndividualRoles();
         if (existingValue == null) {

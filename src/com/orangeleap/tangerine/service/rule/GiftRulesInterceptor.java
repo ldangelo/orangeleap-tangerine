@@ -41,10 +41,10 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;
 		
-		if (logger.isDebugEnabled()) {
+//		if (logger.isDebugEnabled()) {
 			workingMemory.addEventListener (new DebugAgendaEventListener());
 			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-		}
+//		}
 		
 		
 		@SuppressWarnings("unused")

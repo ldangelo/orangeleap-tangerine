@@ -50,7 +50,7 @@ public interface GiftService {
 	
 	public List<Gift> readAllGiftsByDateRange(Date fromDate, Date toDate);
 
-	public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo);
+	public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo);
 	
 	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Person constituent, boolean isPledge);
 	

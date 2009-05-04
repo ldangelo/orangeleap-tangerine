@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.controller.gift;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +32,9 @@ public class GiftAdjustmentViewController extends ParameterizableViewController 
             throw new IllegalArgumentException("The adjustedGiftId is invalid");
         }
         AdjustedGift adjustedGift = adjustedGiftService.readAdjustedGiftById(Long.parseLong(adjustedGiftIdStr));
-        return new ModelAndView(getViewName(), "adjustedGift", adjustedGift);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("adjustedGift", adjustedGift);
+        map.put(StringConstants.HIDE_ADJUST_GIFT_BUTTON, adjustedGiftService.isAdjustedAmountEqualGiftAmount(adjustedGift));
+        return new ModelAndView(getViewName(), map);
     }
 }

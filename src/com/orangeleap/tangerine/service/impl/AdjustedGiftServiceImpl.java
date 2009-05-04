@@ -76,8 +76,15 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         if (logger.isTraceEnabled()) {
             logger.trace("findCurrentTotalAdjustedAmount: originalGiftId = " + originalGiftId);
         }
+        return findCurrentTotalAdjustedAmount(readAdjustedGiftsForOriginalGiftId(originalGiftId));
+    }
+    
+    @Override
+    public BigDecimal findCurrentTotalAdjustedAmount(List<AdjustedGift> adjustedGifts) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findCurrentTotalAdjustedAmount: ");
+        }
         BigDecimal existingAmount = BigDecimal.ZERO;
-        List<AdjustedGift> adjustedGifts = readAdjustedGiftsForOriginalGiftId(originalGiftId);
         if (adjustedGifts != null) {
             for (AdjustedGift aAdjGift : adjustedGifts) {
                 if (aAdjGift.getAdjustedAmount() != null) {
@@ -86,5 +93,27 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
             }
         }
         return existingAmount;
+    }
+    
+    @Override
+    public boolean isAdjustedAmountEqualGiftAmount(Gift gift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("isAdjustedAmountEqualGiftAmount: gift.amount = " + gift.getAmount());
+        }
+        
+        BigDecimal originalAmount = gift.getAmount();
+        BigDecimal adjustedAmount = findCurrentTotalAdjustedAmount(gift.getAdjustedGifts());
+        return originalAmount.add(adjustedAmount).floatValue() == 0;
+    }
+
+    @Override
+    public boolean isAdjustedAmountEqualGiftAmount(AdjustedGift adjustedGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("isAdjustedAmountEqualGiftAmount: adjustedGift.adjustedAmount = " + adjustedGift.getAdjustedAmount());
+        }
+        
+        BigDecimal originalAmount = adjustedGift.getOriginalAmount();
+        BigDecimal adjustedAmount = adjustedGift.getCurrentTotalAdjustedAmount();
+        return originalAmount.add(adjustedAmount).floatValue() == 0;
     }
 }

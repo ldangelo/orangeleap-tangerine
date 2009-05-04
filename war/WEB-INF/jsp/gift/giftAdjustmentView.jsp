@@ -16,7 +16,9 @@
 			</c:if>
 
 			<form:form method="post" commandName="adjustedGift">
-				<spring:message code='enterNewAdjustment' var="newAdjustText" />
+				<c:if test="${hideAdjustGiftButton == false}">
+					<spring:message code='enterNewAdjustment' var="newAdjustText" />
+				</c:if>
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
                     <jsp:param name="routeButtonText" value="${newAdjustText}" />
@@ -90,7 +92,9 @@
 
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
 				<div class="formButtonFooter personFormButtons">
-				    <input type="button" value="<c:out value='${newAdjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}')"/>
+					<c:if test="${hideAdjustGiftButton == false}">
+					    <input type="button" value="<c:out value='${newAdjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}')"/>
+					</c:if>
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
 					</c:if>

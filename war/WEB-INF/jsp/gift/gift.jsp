@@ -3,6 +3,8 @@
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
     <tiles:putAttribute name="customHeaderContent" type="string">
+		<script type="text/javascript" src="js/payment/paymentEditable.js"></script>
+		<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${commandObject}"/>';</script>
 		<script type="text/javascript" src="js/gift/distribution.js"></script>
 		<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
     </tiles:putAttribute>

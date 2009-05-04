@@ -132,6 +132,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert adjustedGift.isAdjustedPaymentRequired();
         assert "foobar".equals(adjustedGift.getAdjustedPaymentTo());
         assert 300L == adjustedGift.getOriginalGiftId();
+        assert 300f == adjustedGift.getOriginalAmount().floatValue();
         assert 200L == adjustedGift.getPerson().getId();
         
         assert adjustedGift.getDistributionLines().size() == 2;
@@ -151,6 +152,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert adjustedGift.isAdjustedPaymentRequired();
         assert "foobar".equals(adjustedGift.getAdjustedPaymentTo());
         assert 300L == adjustedGift.getOriginalGiftId();
+        assert 300f == adjustedGift.getOriginalAmount().floatValue();
         assert 200L == adjustedGift.getPerson().getId();
         
         assert adjustedGift.getDistributionLines().size() == 2;

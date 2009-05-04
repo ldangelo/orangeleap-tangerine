@@ -87,9 +87,9 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     
     @SuppressWarnings("unchecked")
 	@Override
-    public PaginatedResult readPaginatedMonetaryGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
+    public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readPaginatedMonetaryGiftsByConstituentId: constituentId = " + constituentId);
+            logger.trace("readPaginatedGiftListByConstituentId: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
         sortinfo.addParams(params);

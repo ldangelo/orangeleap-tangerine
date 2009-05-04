@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.json.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -35,50 +32,30 @@ public class GiftListController {
     private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
 
     static {
-        NAME_MAP.put("id", "g.GIFT_ID");
-        NAME_MAP.put("date", "g.DONATION_DATE");
-        NAME_MAP.put("personId", "g.CONSTITUENT_ID");
-        NAME_MAP.put("amount", "g.AMOUNT");
-        NAME_MAP.put("currencyCode", "g.CURRENCY_CODE");
-        NAME_MAP.put("paymentType", "g.PAYMENT_TYPE");
-        NAME_MAP.put("paymentStatus", "g.PAYMENT_STATUS");
-        NAME_MAP.put("comments", "g.COMMENTS");
-        NAME_MAP.put("refNumber", "g.PAYMENT_TXREFNUM");
-        NAME_MAP.put("authcode", "g.AUTH_CODE");
+        NAME_MAP.put("id", "id");
+        NAME_MAP.put("date", "date");
+        NAME_MAP.put("constituentId", "constituentId");
+        NAME_MAP.put("amount", "amount");
+        NAME_MAP.put("currencyCode", "currencyCode");
+        NAME_MAP.put("type", "type");
+        NAME_MAP.put("status", "status");
+        NAME_MAP.put("comments", "comments");
+        NAME_MAP.put("refNumber", "refNumber");
+        NAME_MAP.put("authCode", "authCode");
+        NAME_MAP.put("giftType", "giftType");
     }
     
-    private Map<String,Object> giftToMap(Gift g) {
-
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", g.getId());
-        map.put("date", formatter.format(g.getDonationDate()) );
-        map.put("personId", g.getPerson().getId());
-        map.put("amount", g.getAmount());
-        map.put("currencyCode", g.getCurrencyCode());
-        map.put("paymentType", g.getPaymentType());
-        map.put("paymentStatus", g.getPaymentStatus());
-        map.put("comments", ExtUtil.scrub(g.getComments()));
-        map.put("refNumber", g.getTxRefNum());
-        map.put("authcode", g.getAuthCode());
-    
-        return map;
-
-    }
-
     @Resource(name="giftService")
     private GiftService giftService;
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/giftList.json")
     public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
-
         List<Map> rows = new ArrayList<Map>();
 
         // if we're not getting back a valid column name, possible SQL injection,
         // so send back an empty list.
-        if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
+        if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
             logger.warn("getGiftList called with invalid sort column: [" + sortInfo.getSort() + "]");
             return new ModelMap("rows", rows);
         }
@@ -87,19 +64,10 @@ public class GiftListController {
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
         String personId = request.getParameter("personId");
-        PaginatedResult result = giftService.readPaginatedMonetaryGifts(Long.valueOf(personId), sortInfo); 
+        PaginatedResult result = giftService.readPaginatedGiftList(Long.valueOf(personId), sortInfo); 
 
-        List<Gift> list = result.getRows();
-
-        for(Gift g : list) {
-            rows.add( giftToMap(g) );
-        }
-
-        ModelMap map = new ModelMap("rows", rows);
+        ModelMap map = new ModelMap("rows", result.getRows());
         map.put("totalRows", result.getRowCount());
         return map;
     }
-    
-
-
 }

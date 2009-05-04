@@ -314,11 +314,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public PaginatedResult readPaginatedMonetaryGifts(Long constituentId, SortInfo sortinfo) {
+    public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPaginatedMonetaryGifts: constituentId = " + constituentId);
         }
-        return giftDao.readPaginatedMonetaryGiftsByConstituentId(constituentId, sortinfo);
+        return giftDao.readPaginatedGiftListByConstituentId(constituentId, sortinfo);
     }
 
     @Override

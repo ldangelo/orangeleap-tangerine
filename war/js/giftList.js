@@ -19,15 +19,16 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'personId', mapping: 'personId', type: 'string'},
-            {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d'},
+            {name: 'constituentId', mapping: 'constituentId', type: 'string'},
+            {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
             {name: 'amount', mapping: 'amount', type: 'float'},
             {name: 'currencyCode', mapping: 'currencyCode', type: 'string'},
-            {name: 'paymentType', mapping: 'paymentType', type: 'string'},
-            {name: 'paymentStatus', mapping: 'paymentStatus', type: 'string'},
-            {name: 'authcode', mapping: 'authcode', type: 'string'},
+            {name: 'type', mapping: 'type', type: 'string'},
+            {name: 'status', mapping: 'status', type: 'string'},
+            {name: 'authCode', mapping: 'authCode', type: 'string'},
             {name: 'refNumber', mapping: 'refNumber', type: 'string'},
-            {name: 'comments', mapping: 'comments', type: 'string'}
+            {name: 'comments', mapping: 'comments', type: 'string'},
+            {name: 'giftType', mapping: 'giftType', type: 'string'},
         ],
         sortInfo:{field: 'date', direction: "DESC"},
         remoteSort: true,
@@ -47,13 +48,13 @@ Ext.onReady(function() {
         store: GiftList.store,
         columns: [
             {header: '', width: 30, dataIndex: 'id', sortable: true, renderer: GiftList.entityViewRenderer},
-            {header: 'Donation Date', width: 80, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'Donation Dt', width: 80, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Amount', width: 50, dataIndex: 'amount', sortable: true},
             {header: 'Curr', width: 40, dataIndex: 'currencyCode', sortable: true},
-            {header: 'Pay Type', width: 60, dataIndex: 'paymentType', sortable: true},
-            {header: 'Pay Status', width: 65, dataIndex: 'paymentStatus', sortable: true},
-            {header: 'Auth Code', width: 65, dataIndex: 'authcode', sortable: true},
-            {header: 'Ref Number', width: 75, dataIndex: 'refNumber', sortable: true},
+            {header: 'Pay Type', width: 60, dataIndex: 'type', sortable: true},
+            {header: 'Pay Status', width: 65, dataIndex: 'status', sortable: true},
+            {header: 'Auth Code', width: 65, dataIndex: 'authCode', sortable: true},
+            {header: 'Ref Num', width: 75, dataIndex: 'refNumber', sortable: true},
             {header: 'Comments', width: 200,  dataIndex: 'comments', sortable: true, renderer: GiftList.descriptionRenderer}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
@@ -84,9 +85,20 @@ GiftList.entityViewRenderer = function(val, meta, record) {
 };
 
 GiftList.navigate = function(id) {
-	    var rec = GiftList.grid.getSelectionModel().getSelected();
-	    GiftList.grid.getGridEl().mask('Loading Record');
-        window.location.href='giftView.htm?giftId=' + id + '&personId=' + rec.data.personId;
+	var rec = GiftList.grid.getSelectionModel().getSelected();
+	GiftList.grid.getGridEl().mask('Loading Record');
+	
+	switch (rec.data.giftType) {
+		case 'MONETARY':
+		    window.location.href='giftView.htm?giftId=' + id + '&personId=' + rec.data.constituentId;
+			break;
+		case 'ADJUSTED':
+			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.constituentId;
+			break;
+        default:
+            window.location.href= 'person.htm?personid=' + rec.data.constituentId;
+	}
+	return false;
 };
 
 

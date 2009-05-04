@@ -104,11 +104,26 @@
 		order by g.TRANSACTION_DATE desc
 	</select>
 	
-	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultMap="GIFT_RESULT" parameterClass="map">
-		<include refid="GIFT_QUERY_FRAGMENT" />
+	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultClass="java.util.HashMap" parameterClass="map">
+		select g.GIFT_ID as id, g.DONATION_DATE as date, g.CONSTITUENT_ID as constituentId, g.AMOUNT as amount, g.CURRENCY_CODE as currencyCode, 
+		g.PAYMENT_TYPE as type, g.PAYMENT_STATUS as status, g.COMMENTS as comments, g.PAYMENT_TXREFNUM as refNumber, g.AUTH_CODE as authCode, 'MONETARY' as giftType
+		from GIFT g
+		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
 		and g.CONSTITUENT_ID = #constituentId#
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-		order by $sortColumn$ $sortDir$, g.TRANSACTION_DATE desc
+		
+		union 
+		
+		select ag.ADJUSTED_GIFT_ID as id, ag.ADJUSTED_TRANSACTION_DATE as date, ag.CONSTITUENT_ID as constituentId, ag.ADJUSTED_AMOUNT as amount, g2.CURRENCY_CODE as currencyCode, 
+		ag.PAYMENT_TYPE as type, ag.PAYMENT_STATUS as status, ag.COMMENTS as comments, ag.PAYMENT_TXREFNUM as refNumber, ag.AUTH_CODE as authCode, 'ADJUSTED' as giftType
+		from ADJUSTED_GIFT ag
+		inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
+		inner join GIFT g2 on ag.GIFT_ID = g2.GIFT_ID
+		where p.SITE_NAME = #siteName#
+		and ag.CONSTITUENT_ID = #constituentId#
+		
+		order by $sortColumn$ $sortDir$, DATE desc
         limit $offset$,$limit$
 	</select>
 	

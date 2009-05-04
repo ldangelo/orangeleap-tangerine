@@ -36,7 +36,7 @@ public interface GiftDao {
 
 	public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
-	public PaginatedResult readPaginatedMonetaryGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
+	public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 
 	
 }

@@ -1,17 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 
-<spring:message code='adjustGift' var="titleText" />
+<spring:message code='viewAdjustment' var="titleText" />
 <tiles:insertDefinition name="base">
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
-    <tiles:putAttribute name="customHeaderContent" type="string">
-		<script type="text/javascript" src="js/gift/adjustedDistribution.js"></script>
-    </tiles:putAttribute>
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-			<mp:page pageName='adjustedGift' />
+			<mp:page pageName='adjustedGiftView' />
 
 			<c:set var="person" value="${adjustedGift.person}" scope="request" />
 			<c:if test="${person.id != null}">
@@ -19,14 +16,17 @@
 			</c:if>
 
 			<form:form method="post" commandName="adjustedGift">
-				<spring:message code='adjustGift' var="submitText" />
+				<spring:message code='enterNewAdjustment' var="newAdjustText" />
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
-					<jsp:param name="submitButtonText" value="${submitText}" />
+                    <jsp:param name="routeButtonText" value="${newAdjustText}" />
+					<jsp:param name="routeUrl" value="giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
-
+<%-- 
+				<h3 class="info"><spring:message code='thisGiftEntered'/> <fmt:formatDate value="${gift.transactionDate}"/>&nbsp;<spring:message code='at'/>&nbsp;<fmt:formatDate value="${gift.transactionDate}" type="time" />.</h3>
+ --%>
 				<c:set var="gridCollectionName" value="distributionLines" scope="request" />
 				<c:set var="gridCollection" value="${adjustedGift.distributionLines}" scope="request" />
 				<c:set var="paymentSource" value="${adjustedGift.paymentSource}" scope="request" />
@@ -88,13 +88,15 @@
 					<div class="clearColumns"></div>
 				</div>
 
-				<%@ include file="/WEB-INF/jsp/gift/giftAdjustmentDistributionLines.jsp"%>
+				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
 				<div class="formButtonFooter personFormButtons">
-					<input type="submit" value="<spring:message code='adjustGift'/>" class="saveButton" />
+				    <input type="button" value="<c:out value='${newAdjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}')"/>
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
 					</c:if>
+<%-- 				
 					<a class="newAccountButton" href="gift.htm?personId=${person.id}"><spring:message code='enterNewGift'/></a>
+--%>					
 				</div>
 			</form:form>
 		</div>

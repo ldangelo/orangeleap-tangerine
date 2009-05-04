@@ -16,28 +16,38 @@ var PaymentEditable = {
 	commandObject: null,
 	
 	filterPaymentTypes: function($paymentTypeElem, isLoad) {
-		var paymentTypeVal = $paymentTypeElem.val();
-		if (paymentTypeVal == "Cash" || paymentTypeVal == "Check") {
-			$("#" + PaymentEditable.commandObject + "_ach").hide();
-			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
-			$("#" + PaymentEditable.commandObject + "_editAch").hide();
-			$("#" + PaymentEditable.commandObject + "_editCreditCard").hide();
-		} 
-		else if (paymentTypeVal == "Credit Card") {
-			$("#ach-selectedPaymentSource").hide();
-			$("#" + PaymentEditable.commandObject + "_ach").hide();
-			$("#" + PaymentEditable.commandObject + "_editAch").hide();
-
-			PaymentEditable.filterCreditCardPaymentSources($("#creditCard-selectedPaymentSource"), isLoad);
-			$("#creditCard-selectedPaymentSource").show();
+		if ($paymentTypeElem.is(":visible")) {
+			var paymentTypeVal = $paymentTypeElem.val();
+			if (paymentTypeVal == "Cash" || paymentTypeVal == "Check") {
+				$("#" + PaymentEditable.commandObject + "_ach").hide();
+				$("#" + PaymentEditable.commandObject + "_creditCard").hide();
+				$("#" + PaymentEditable.commandObject + "_editAch").hide();
+				$("#" + PaymentEditable.commandObject + "_editCreditCard").hide();
+			} 
+			else if (paymentTypeVal == "Credit Card") {
+				$("#ach-selectedPaymentSource").hide();
+				$("#" + PaymentEditable.commandObject + "_ach").hide();
+				$("#" + PaymentEditable.commandObject + "_editAch").hide();
+	
+				PaymentEditable.filterCreditCardPaymentSources($("#creditCard-selectedPaymentSource"), isLoad);
+				$("#creditCard-selectedPaymentSource").show();
+			}
+			else if (paymentTypeVal == "ACH") {
+				$("#creditCard-selectedPaymentSource").hide();
+				$("#" + PaymentEditable.commandObject + "_editCreditCard").hide();
+				$("#" + PaymentEditable.commandObject + "_creditCard").hide();
+	
+				PaymentEditable.filterAchPaymentSources($("#ach-selectedPaymentSource"), isLoad);
+				$("#ach-selectedPaymentSource").show();
+			}
 		}
-		else if (paymentTypeVal == "ACH") {
+		else {
+			$("#ach-selectedPaymentSource").hide();
 			$("#creditCard-selectedPaymentSource").hide();
-			$("#" + PaymentEditable.commandObject + "_editCreditCard").hide();
+			$("#" + PaymentEditable.commandObject + "_ach").hide();
 			$("#" + PaymentEditable.commandObject + "_creditCard").hide();
-
-			PaymentEditable.filterAchPaymentSources($("#ach-selectedPaymentSource"), isLoad);
-			$("#ach-selectedPaymentSource").show();
+			$("#" + PaymentEditable.commandObject + "_editAch").hide();
+			$("#" + PaymentEditable.commandObject + "_editCreditCard").hide();
 		}
 	},
 		

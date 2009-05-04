@@ -10,6 +10,7 @@ public enum PageType {
     giftSearchResults("/giftSearchResults.htm"),
     giftView("/giftView.htm"),
     adjustedGift("/giftAdjustment.htm"),
+    adjustedGiftView("/giftAdjustmentView.htm"),
     paymentManager("/paymentManager.htm"),
     paymentManagerEdit("/paymentManagerEdit.htm"),
     paymentSource("/paymentSource.htm"),

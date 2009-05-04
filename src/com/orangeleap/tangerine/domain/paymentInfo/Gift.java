@@ -33,8 +33,11 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
+    
     private List<Long> associatedPledgeIds;
     private List<Long> associatedRecurringGiftIds;
+    
+    private List<AdjustedGift> adjustedGifts;
     
     public Gift() { 
         super();
@@ -206,6 +209,14 @@ public class Gift extends AbstractPaymentInfoEntity {
             setAssociatedRecurringGiftIds(new ArrayList<Long>());
         }
         getAssociatedRecurringGiftIds().add(recurringGiftId);
+    }
+
+    public List<AdjustedGift> getAdjustedGifts() {
+        return adjustedGifts;
+    }
+
+    public void setAdjustedGifts(List<AdjustedGift> adjustedGifts) {
+        this.adjustedGifts = adjustedGifts;
     }
 
     public Boolean getIsAuthorized() {

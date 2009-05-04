@@ -560,6 +560,7 @@
 									<c:choose>
 										<%--  TODO: remove this when automatic routing to the view page is implemented --%>
 										<c:when test="${fieldVO.referenceType == 'gift'}"><c:set var="thisUrl" value="giftView.htm" scope="page"/></c:when>
+										<c:when test="${fieldVO.referenceType == 'adjustedGift'}"><c:set var="thisUrl" value="giftAdjustmentView.htm" scope="page"/></c:when>
 										<c:otherwise><c:set var="thisUrl" value="${fieldVO.referenceType}.htm" scope="page"/></c:otherwise>
 									</c:choose>
 									<c:url value="${thisUrl}" var="entityLink" scope="page">

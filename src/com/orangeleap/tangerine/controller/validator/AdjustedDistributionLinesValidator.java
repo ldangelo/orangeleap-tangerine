@@ -37,7 +37,7 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
     }
     
     public void checkTotaledDistributionLineAmountMatch(AdjustedGift adjustedGift, Errors errors) {
-        BigDecimal total = getTotal(adjustedGift.getMutableDistributionLines());
+        BigDecimal total = getTotal(adjustedGift.getDistributionLines());
         BigDecimal adjustedAmount = adjustedGift.getAdjustedAmount();
         if (total == null || adjustedAmount == null || adjustedAmount.compareTo(total) != 0) {
             errors.reject("errorDistributionLineAmounts");
@@ -48,7 +48,7 @@ public class AdjustedDistributionLinesValidator extends DistributionLinesValidat
         if (adjustedGift.getAdjustedAmount() != null && adjustedGift.getAdjustedAmount().compareTo(BigDecimal.ZERO) >= 0) {
             errors.rejectValue("adjustedAmount", "errorAdjustedAmountPositive");
         }
-        for (DistributionLine aLine : adjustedGift.getMutableDistributionLines()) {
+        for (DistributionLine aLine : adjustedGift.getDistributionLines()) {
             if (aLine != null) {
                 if (aLine.getAmount() != null && aLine.getAmount().compareTo(BigDecimal.ZERO) == 1) {
                     errors.reject("errorIndividualAdjustedDistributionLineAmountPositive");

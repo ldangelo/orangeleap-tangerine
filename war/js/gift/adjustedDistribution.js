@@ -1,6 +1,4 @@
 $(document).ready(function() {
-     Ext.select('a.deleteButton').hide();
-     
 	$("#adjustedAmount").each(function() {
 		var $elem = $(this);
 		/* Done on load for previously entered distributionLines */
@@ -28,19 +26,9 @@ $(document).ready(function() {
 		return OrangeLeap.expandCollapse(this);
 	});
 	
-//	$("#adjustedPaymentRequired").bind("change", function() {
-//		var val = $(this).val();
-//		if (val == "true") {
-//			
-//		}
-//		else {
-//			$("li:has(.ea-giftPayment),li:has(.ea-address),li:has(.ea-phone)").each(function() {
-//				$(this).hide();
-//			});
-//		}
-//	});
-//	$("#adjustedPaymentRequired").triggerHandler("change");
-	//:has(.ea-giftPayment),li:has(.ea-address),li:has(.ea-phone)
+	$("#adjustedPaymentRequired").bind("change", function() {
+		$("#paymentType").triggerHandler("change");
+	});
 });
 
 	

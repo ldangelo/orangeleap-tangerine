@@ -27,21 +27,10 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     protected AbstractEntity findEntity(HttpServletRequest request) {
         return adjustedGiftService.createdDefaultAdjustedGift(super.getIdAsLong(request, StringConstants.GIFT_ID));
     }
-    
-    @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && errors.hasErrors()) {
-            AdjustedGift adjustedGift = (AdjustedGift) command;
-            adjustedGift.removeEmptyMutableDistributionLines();
-        }
-        super.onBindAndValidate(request, command, errors);
-    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        AdjustedGift adjustedGift = (AdjustedGift) command;
-        adjustedGift.filterValidDistributionLines();
-        adjustedGiftService.maintainAdjustedGift(adjustedGift);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + adjustedGift.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        AdjustedGift anAdjustedGift = adjustedGiftService.maintainAdjustedGift((AdjustedGift) command);
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
     }
 }

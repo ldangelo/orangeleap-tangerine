@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.customization.SectionField;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -39,22 +40,31 @@ public class SelectionFieldHandler extends GenericFieldHandler {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
         Object propertyValue = super.getPropertyValue(model, fieldVO);
         if (propertyValue != null) {
-            List<Long> ids = (List<Long>)propertyValue;
             fieldVO.setReferenceType(currentField.getFieldDefinition().getReferenceType());
-            for (Long id : ids) {
-                if (ReferenceType.pledge.equals(fieldVO.getReferenceType())) {
-                    Pledge pledge = pledgeService.readPledgeById(id);
-                    fieldVO.addDisplayValue(pledge.getShortDescription());
+            if (ReferenceType.adjustedGift.equals(fieldVO.getReferenceType())) {
+                List<AdjustedGift> adjustedGifts = (List<AdjustedGift>)propertyValue;
+                for (AdjustedGift aAdjGift : adjustedGifts) {
+                    fieldVO.addDisplayValue(aAdjGift.getShortDescription());
+                    fieldVO.addId(aAdjGift.getId());
                 }
-                else if (ReferenceType.recurringGift.equals(fieldVO.getReferenceType())) {
-                    RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(id);
-                    fieldVO.addDisplayValue(recurringGift.getShortDescription());
+            }
+            else {
+                List<Long> ids = (List<Long>)propertyValue;
+                for (Long id : ids) {
+                    if (ReferenceType.pledge.equals(fieldVO.getReferenceType())) {
+                        Pledge pledge = pledgeService.readPledgeById(id);
+                        fieldVO.addDisplayValue(pledge.getShortDescription());
+                    }
+                    else if (ReferenceType.recurringGift.equals(fieldVO.getReferenceType())) {
+                        RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(id);
+                        fieldVO.addDisplayValue(recurringGift.getShortDescription());
+                    }
+                    else if (ReferenceType.gift.equals(fieldVO.getReferenceType())) {
+                        Gift gift = giftService.readGiftById(id);
+                        fieldVO.addDisplayValue(gift.getShortDescription());
+                    }
+                    fieldVO.addId(id);
                 }
-                else if (ReferenceType.gift.equals(fieldVO.getReferenceType())) {
-                    Gift gift = giftService.readGiftById(id);
-                    fieldVO.addDisplayValue(gift.getShortDescription());
-                }
-                fieldVO.addId(id);
             }
         }
         return fieldVO;

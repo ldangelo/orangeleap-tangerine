@@ -61,7 +61,7 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
     @Test(groups = { "validateAdjustedDistributionLine" })
     public void testCheckAmountsNotPositive() throws Exception {
         AdjustedGift adjustedGift = new AdjustedGift(new BigDecimal("-1.99"));
-        adjustedGift.setMutableDistributionLines(lines);
+        adjustedGift.setDistributionLines(lines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
@@ -70,14 +70,14 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         List<DistributionLine> newLines = new ArrayList<DistributionLine>();
         newLines.addAll(lines);
         newLines.add(new DistributionLine(new BigDecimal("0")));
-        adjustedGift.setMutableDistributionLines(newLines);
+        adjustedGift.setDistributionLines(newLines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
         assert errors.hasErrors() == false;
         
         newLines.add(new DistributionLine(new BigDecimal("1")));
-        adjustedGift.setMutableDistributionLines(newLines);
+        adjustedGift.setDistributionLines(newLines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
@@ -85,7 +85,7 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         Assert.assertTrue("errorIndividualAdjustedDistributionLineAmountPositive".equals(errors.getGlobalError().getCode()), "Expected code of 'errorIndividualAdjustedDistributionLineAmountPositive', not '" + errors.getGlobalError().getCode() + "'");
 
         adjustedGift = new AdjustedGift(new BigDecimal("1.99"));
-        adjustedGift.setMutableDistributionLines(lines);
+        adjustedGift.setDistributionLines(lines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();
@@ -93,7 +93,7 @@ public class AdjustedDistributionLinesValidatorTest extends BaseTest {
         Assert.assertTrue("errorAdjustedAmountPositive".equals(errors.getFieldError("adjustedAmount").getCode()), "Expected code of 'errorAdjustedAmountPositive', not '" + errors.getFieldError("adjustedAmount").getCode() + "'");
 
         adjustedGift = new AdjustedGift(new BigDecimal("0"));
-        adjustedGift.setMutableDistributionLines(lines);
+        adjustedGift.setDistributionLines(lines);
         errors = new BindException(adjustedGift, "adjustedGift");       
         validator.checkAmountsNotPositive(adjustedGift, errors);
         mockery.assertIsSatisfied();

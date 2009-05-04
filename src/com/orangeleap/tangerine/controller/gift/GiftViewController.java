@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.controller.gift;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class GiftViewController extends GiftFormController {
@@ -17,9 +19,14 @@ public class GiftViewController extends GiftFormController {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
     
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
+    
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
+        Gift gift = giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
+        gift.setAdjustedGifts(adjustedGiftService.readAdjustedGiftsForOriginalGiftId(gift.getId()));
+        return gift;
     }
     
     @Override

@@ -4,5 +4,6 @@ public enum ReferenceType {
     person,
     pledge,
     gift,
-    recurringGift
+    recurringGift,
+    adjustedGift
 }

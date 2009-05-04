@@ -46,7 +46,11 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         }
         final Map<String, Object> params = setupParams();
         params.put(StringConstants.ADJUSTED_GIFT_ID, adjustedGiftId);
-        return (AdjustedGift) getSqlMapClientTemplate().queryForObject("SELECT_ADJUSTED_GIFT_BY_ID", params);
+        AdjustedGift adjustedGift = (AdjustedGift) getSqlMapClientTemplate().queryForObject("SELECT_ADJUSTED_GIFT_BY_ID", params);
+        
+        loadDistributionLinesCustomFields(adjustedGift);
+        loadCustomFields(adjustedGift.getPerson());
+        return adjustedGift;
     }
 
     @SuppressWarnings("unchecked")

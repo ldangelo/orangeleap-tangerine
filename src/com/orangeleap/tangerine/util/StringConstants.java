@@ -38,6 +38,7 @@ public final class StringConstants {
     public static final String GIFT_ID = "giftId";
     public static final String SELECTED_GIFT = "selectedGift";
     
+    public static final String ADJUSTED_GIFT = "adjustedGift";
     public static final String ADJUSTED_GIFT_ID = "adjustedGiftId";
     public static final String ORIGINAL_GIFT_ID = "originalGiftId";
 

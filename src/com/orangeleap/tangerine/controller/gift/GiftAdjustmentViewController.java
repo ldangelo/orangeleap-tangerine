@@ -33,8 +33,9 @@ public class GiftAdjustmentViewController extends ParameterizableViewController 
         }
         AdjustedGift adjustedGift = adjustedGiftService.readAdjustedGiftById(Long.parseLong(adjustedGiftIdStr));
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("adjustedGift", adjustedGift);
+        map.put(StringConstants.ADJUSTED_GIFT, adjustedGift);
         map.put(StringConstants.HIDE_ADJUST_GIFT_BUTTON, adjustedGiftService.isAdjustedAmountEqualGiftAmount(adjustedGift));
+        map.put(StringConstants.COMMAND_OBJECT, StringConstants.ADJUSTED_GIFT);
         return new ModelAndView(getViewName(), map);
     }
 }

@@ -5,6 +5,11 @@
 	<tiles:putAttribute name="browserTitle" value="${titleText}" />
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Search" />
+    <tiles:putAttribute name="customHeaderContent" type="string">
+		<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
+		<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${commandObject}"/>';</script>
+		<script type="text/javascript" src="js/gift/adjustedDistributionReadOnly.js"></script>
+    </tiles:putAttribute>
 	<tiles:putAttribute name="sidebarNav" value="Gifts" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">

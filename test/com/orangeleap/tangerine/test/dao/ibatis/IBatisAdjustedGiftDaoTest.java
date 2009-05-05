@@ -16,7 +16,6 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
     
@@ -75,16 +74,17 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert 600L == readAdjustedGift.getOriginalGiftId();
         
         assert readAdjustedGift.getSelectedPhone().getId() == null;
-        assert StringConstants.EMPTY.equals(readAdjustedGift.getAuthCode());
+        assert readAdjustedGift.getAuthCode() == null;
         assert readAdjustedGift.getCheckNumber() == null;
         assert readAdjustedGift.getComments() == null;
         assert readAdjustedGift.getPaymentMessage() == null;
-        assert StringConstants.EMPTY.equals(readAdjustedGift.getPaymentStatus());
+        assert readAdjustedGift.getPaymentStatus() == null;
         assert readAdjustedGift.getTxRefNum() == null;
         assert readAdjustedGift.getPaymentType() == null;
         assert readAdjustedGift.getSelectedPaymentSource().getId() == null;
         
         adjustedGift = readAdjustedGift;
+        adjustedGift.setAdjustedPaymentRequired(true);
         adjustedGift.setTxRefNum("012345");
         adjustedGift.setPaymentMessage("I have paid");
         adjustedGift.setAuthCode("xyz");
@@ -93,7 +93,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         readAdjustedGift = adjustedGiftDao.readAdjustedGiftById(adjustedGift.getId());
         assert readAdjustedGift.getId().equals(adjustedGift.getId());
         assert new BigDecimal("9.99").floatValue() == readAdjustedGift.getAdjustedAmount().floatValue();
-        assert readAdjustedGift.isAdjustedPaymentRequired() == false;
+        assert readAdjustedGift.isAdjustedPaymentRequired();
         assert "No Reason".equals(readAdjustedGift.getAdjustedReason());
         assert "Pending".equals(readAdjustedGift.getAdjustedStatus());
         assert "01/01/2010".equals(sdf.format(readAdjustedGift.getAdjustedTransactionDate()));
@@ -110,7 +110,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert readAdjustedGift.getSelectedPhone().getId() == null;
         assert readAdjustedGift.getCheckNumber() == null;
         assert readAdjustedGift.getComments() == null;
-        assert StringConstants.EMPTY.equals(readAdjustedGift.getPaymentStatus());
+        assert readAdjustedGift.getPaymentStatus() == null;
         assert readAdjustedGift.getPaymentType() == null;
         assert readAdjustedGift.getSelectedPaymentSource().getId() == null;
         

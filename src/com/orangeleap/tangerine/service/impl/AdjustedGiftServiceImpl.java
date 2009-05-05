@@ -50,6 +50,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         if (logger.isTraceEnabled()) {
             logger.trace("maintainAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
         }
+        maintainEntityChildren(adjustedGift, adjustedGift.getPerson());
         return adjustedGiftDao.maintainAdjustedGift(adjustedGift);
     }
 

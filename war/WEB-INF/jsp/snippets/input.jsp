@@ -502,10 +502,6 @@
 		            />
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
-					<c:if test="${fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
-						<script type="text/javascript" src="js/payment/paymentTypeReadOnly.js"></script>
-						<script type="text/javascript">var PaymentTypeCommandObject = '<c:out value="${commandObject}"/>';</script>
-					</c:if>
 					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">

@@ -8,10 +8,8 @@ $(document).ready(function() {
 	$("#creditCard-selectedPaymentSource").bind("change", function() {
 		PaymentEditable.filterCreditCardPaymentSources($(this), false);
 	});
-		
 	PaymentEditable.filterPaymentTypes($("#paymentType"), true);
 });
-
 var PaymentEditable = {
 	commandObject: null,
 	
@@ -126,4 +124,5 @@ var PaymentEditable = {
 	hasId: function(val) {
 		return isNaN(parseInt(val, 10)) == false;
 	}
-}
+};
+

@@ -177,6 +177,21 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         this.paymentMessage = paymentMessage;
     }
     
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        if (adjustedPaymentRequired == false) {
+            setAdjustedPaymentTo(null);
+            setAuthCode(null);
+            setCheckNumber(null);
+            setPaymentMessage(null);
+            setPaymentStatus(null);
+            setTxRefNum(null);
+            setPaymentType(null);
+            setSelectedPaymentSource(null);
+        }
+    }
+    
     public String getShortDescription() {
         StringBuilder sb = new StringBuilder();
         sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());

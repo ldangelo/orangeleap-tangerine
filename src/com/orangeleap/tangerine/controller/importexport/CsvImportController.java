@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.controller.importexport;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,33 +52,44 @@ public class CsvImportController extends SimpleFormController {
 			HttpServletResponse response,
 			Object command,
 			BindException errors) throws Exception {
-
+		
+		
 		if (!importexportAllowed(request)) {
             return null;  // For security only, unauthorized users will not have the menu option to even get here normally.
         }
 		
+		List<String> result = new ArrayList<String>();
+		boolean validRequest = true;
+		
 		ImportRequest importRequest = new ImportRequest();
 		importRequest.setEntity(request.getParameter("entity"));
-		importRequest.setNcoaDate(getDate(request.getParameter("ncoaDate")));
-		importRequest.setCassDate(getDate(request.getParameter("cassDate")));
-		
-		List<String> result = new ArrayList<String>();
-		
-		MultipartFile mf = ((MultipartHttpServletRequest)request).getFile("file");
-        String filename = mf.getOriginalFilename();
-		
-		if (!filename.toLowerCase().endsWith(".csv")) {
-			result.add("Selected import file must be a csv file.");
-		} else {
-			FileUploadBean bean = (FileUploadBean) command;
-			ApplicationContext applicationContext = getApplicationContext();
-	
-			byte[] file = bean.getFile();
-			if (file != null && file.length > 0) {
-				result = importFile(importRequest, file, errors, applicationContext);
+		try {
+			importRequest.setNcoaDate(getDate(request.getParameter("ncoaDate")));
+			importRequest.setCassDate(getDate(request.getParameter("cassDate")));
+		} catch (Exception e) {
+			result.add("Invalid Date.");
+			validRequest = false;
+		}
+
+		if (validRequest) {
+			
+			MultipartFile mf = ((MultipartHttpServletRequest)request).getFile("file");
+	        String filename = mf.getOriginalFilename();
+			
+			if (!filename.toLowerCase().endsWith(".csv")) {
+				result.add("Selected import file must be a csv file.");
 			} else {
-				result.add("Import file required.");
+				FileUploadBean bean = (FileUploadBean) command;
+				ApplicationContext applicationContext = getApplicationContext();
+		
+				byte[] file = bean.getFile();
+				if (file != null && file.length > 0) {
+					result = importFile(importRequest, file, errors, applicationContext);
+				} else {
+					result.add("Import file required.");
+				}
 			}
+		
 		}
 		
         ModelAndView mav = super.onSubmit(request, response, command, errors);
@@ -87,14 +99,10 @@ public class CsvImportController extends SimpleFormController {
 
 	}
 	
-	private Date getDate(String s) {
+	private Date getDate(String s) throws ParseException {
 	    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-	    if (s == null) return null;
-	    try {
-	    	return sdf.parse(s);
-	    } catch (Exception e) {
-	    	return null;
-	    }
+	    if (s == null || s.length() == 0) return null;
+	    return sdf.parse(s);
 	}
 
 	// Can also import in separate thread, if it is slow for large files, and return a request id for the response which can be polled for when ready

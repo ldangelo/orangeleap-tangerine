@@ -118,7 +118,6 @@
 	     	<transaction src="${basedir}/db/dev/devSetup/picklistSetup.sql"/>
 	     	
 	     	
-			<transaction src="${basedir}/db/prod/picklists/setPicklistItemsActive.sql"/>
 			<transaction src="${basedir}/db/dev/devSetup/dashboardGifts.sql"/>
 	     	
 	     </sql>

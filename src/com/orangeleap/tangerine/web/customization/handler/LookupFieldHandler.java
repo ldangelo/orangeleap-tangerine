@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.web.customization.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,8 +43,6 @@ public class LookupFieldHandler extends GenericFieldHandler {
         if (propertyValue != null && isCustom) {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
 
-            List<Long> list = new ArrayList<Long>();
-            fieldVO.setIds(list);
             String[] ids = ((String)propertyValue).split(",");
             StringBuffer sb = new StringBuffer();
             for (String id : ids) {
@@ -53,10 +50,9 @@ public class LookupFieldHandler extends GenericFieldHandler {
                     if (sb.length() > 0) {
                         sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
                     }
-                    Long longid = Long.valueOf(id);
-                    sb.append(resolve(longid, referenceType));
-                    fieldVO.setId(longid);
-                    list.add(longid);
+                    Long longId = Long.valueOf(id);
+                    sb.append(resolve(longId, referenceType));
+                    fieldVO.addId(longId);
                 }
             }
             fieldVO.setDisplayValue(sb.toString());

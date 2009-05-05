@@ -32,16 +32,13 @@ public class FieldVO {
     private List<String> codes;
     private FieldType fieldType;
     private ReferenceType referenceType;
-    private Long id;
     private List<Long> ids;
     private String entityName;
     private String entityAttributes;
     private String siteName;
     private String fieldName;
-    private Object fieldValue;
-    private List<String> fieldValues;
-    private Object displayValue;
-    private List<String> displayValues;
+    private List<Object> fieldValues;
+    private List<Object> displayValues;
     private List<String> additionalDisplayValues;
     private String helpText;
     private String labelText;
@@ -84,6 +81,13 @@ public class FieldVO {
     		displayValues.add(""+getFieldValue());
     	}
         return codes;
+    }
+
+    public void addCode(String code) {
+        if (codes == null) {
+            codes = new ArrayList<String>();
+        }
+        codes.add(code);
     }
 
     public String getFieldName() {
@@ -169,7 +173,7 @@ public class FieldVO {
     }
 
     public Long getId() {
-        return id;
+        return ids != null ? ids.get(0) : null;
     }
 
     public String getLabelText() {
@@ -213,7 +217,7 @@ public class FieldVO {
     }
 
     public void setId(Long id) {
-        this.id = id;
+        addId(id);
     }
 
     public void setLabelText(String labelText) {
@@ -233,14 +237,22 @@ public class FieldVO {
     }
 
     public Object getFieldValue() {
-        return fieldValue;
+        return fieldValues != null ? fieldValues.get(0) : null;
     }
 
     public void setFieldValue(Object fieldValue) {
-        if (fieldValue instanceof String) {
-            this.fieldValue = StringUtils.trimToNull((String) fieldValue);
-        } else {
-            this.fieldValue = fieldValue;
+        if (fieldValue != null) {
+            if (fieldValue instanceof String) {
+                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(StringUtils.trimToNull((String) fieldValue), NORMAL_DELIMITER);
+                if (vals != null) {
+                    for (String thisVal : vals) {
+                        addFieldValue(thisVal);
+                    }
+                }
+            }
+            else {
+                addFieldValue(fieldValue);
+            }
         }
     }
 
@@ -265,13 +277,32 @@ public class FieldVO {
     public void setReferenceValues(List<String> referenceValues) {
         this.referenceValues = referenceValues;
     }
+    
+    public void addReferenceValue(String referenceValue) {
+        if (this.referenceValues == null) {
+            this.referenceValues = new ArrayList<String>();
+        }
+        this.referenceValues.add(referenceValue);
+    }
 
     public Object getDisplayValue() {
-        return displayValue != null ? displayValue : fieldValue;
+        return displayValues != null ? displayValues.get(0) : (fieldValues != null ? fieldValues.get(0) : null);
     }
 
     public void setDisplayValue(Object displayValue) {
-        this.displayValue = displayValue;
+        if (displayValue != null) {
+            if (displayValue instanceof String) {
+                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
+                if (vals != null) {
+                    for (String thisVal : vals) {
+                        addDisplayValue(thisVal);
+                    }
+                }
+            }
+            else {
+                addDisplayValue(displayValue);
+            }
+        }
     }
 
     public boolean isMultiLine() {
@@ -322,44 +353,28 @@ public class FieldVO {
         this.ids.add(id);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<String> getFieldValues() {
-        if (this.fieldValues == null) {
-            if (fieldValue == null) {
-                return null;
-            }
-            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(fieldValue.toString(), NORMAL_DELIMITER);
-            this.fieldValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
-        }
+    public List<Object> getFieldValues() {
         return fieldValues;
     }
 
-    public void addFieldValue(String fieldValue) {
+    public void addFieldValue(Object fieldValue) {
         if (this.fieldValues == null) {
-            this.fieldValues = new ArrayList<String>();
+            this.fieldValues = new ArrayList<Object>();
         }
         this.fieldValues.add(fieldValue);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<String> getDisplayValues() {
-        if (this.displayValues == null) {
-            if (displayValue == null) {
-                return null;
-            }
-            String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
-            this.displayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
-        }
+    public List<Object> getDisplayValues() {
         return displayValues;
     }
 
-    public void setDisplayValues(List<String> displayValues) {
+    public void setDisplayValues(List<Object> displayValues) {
         this.displayValues = displayValues;
     }
     
-    public void addDisplayValue(String displayValue) {
+    public void addDisplayValue(Object displayValue) {
         if (this.displayValues == null) {
-            this.displayValues = new ArrayList<String>();
+            this.displayValues = new ArrayList<Object>();
         }
         this.displayValues.add(displayValue);
     }
@@ -396,17 +411,31 @@ public class FieldVO {
         return getDelimitedString(getIds(), NORMAL_DELIMITER);
     }
 
+    @SuppressWarnings("unchecked")
     public boolean isHasField() {
-        if (getFieldValues() == null || getFieldValues().size() == 0) {
-            if (fieldValue == null) {
-                if (fieldToCheck == null) {
-                    return true;
-                }
-                return false;
-            }
-            return fieldValue.equals(fieldToCheck);
+        boolean fieldFound = false;
+        if ((fieldValues == null || fieldValues.isEmpty()) && fieldToCheck == null) {
+            fieldFound = true;
         }
-        return getFieldValues().contains(fieldToCheck);
+        else if (fieldValues == null || fieldValues.isEmpty() || fieldToCheck == null) {
+            fieldFound = false;
+        }
+        else {
+            for (Object thisFieldValue : fieldValues) {
+                Class thisClazz = thisFieldValue.getClass();
+                Class checkClazz = fieldToCheck.getClass();
+                if (thisClazz.equals(checkClazz)) {
+                    fieldFound = thisFieldValue.equals(fieldToCheck);
+                }
+                else {
+                    fieldFound = thisFieldValue.toString().equals(fieldToCheck.toString());
+                }
+                if (fieldFound) {
+                    break;
+                }
+            }
+        }
+        return fieldFound;
     }
 
     @SuppressWarnings("unchecked")

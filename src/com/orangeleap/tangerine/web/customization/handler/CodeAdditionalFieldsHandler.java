@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.web.customization.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -49,17 +48,15 @@ public class CodeAdditionalFieldsHandler extends GenericFieldHandler {
             logger.trace("resolve: picklistNameId = " + picklistNameId + " itemNames = " + itemNamesStr);
         }
         Picklist picklist = picklistItemService.getPicklist(picklistNameId);
-        List<String> displayValues = new ArrayList<String>();
         if (picklist != null) {
             Set<String> itemNames = StringUtils.commaDelimitedListToSet(itemNamesStr);
             if (itemNames != null) {
                 for (PicklistItem code : picklist.getPicklistItems()) { // TODO: does this need to check for active picklist items?
                     if (itemNames.contains(code.getItemName())) {
-                        displayValues.add(new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString());
+                        fieldVO.addDisplayValue(new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString());
                     }
                 }
             }
         }
-        fieldVO.setDisplayValues(displayValues);
     }
 }

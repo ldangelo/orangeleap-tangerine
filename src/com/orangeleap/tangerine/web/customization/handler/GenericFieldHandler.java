@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
 
@@ -101,7 +100,7 @@ public class GenericFieldHandler implements FieldHandler {
             Object propertyValue = getPropertyValue(model, fieldVO);
             fieldVO.setFieldValue(propertyValue);
             if (propertyValue != null) {
-                BeanWrapper propBeanWrappermodel = new BeanWrapperImpl(propertyValue);
+                BeanWrapper propBeanWrappermodel = PropertyAccessorFactory.forBeanPropertyAccess(propertyValue);
                 if (propBeanWrappermodel.isReadableProperty("id")) {
                     fieldVO.setId((Long)propBeanWrappermodel.getPropertyValue("id"));
                 }

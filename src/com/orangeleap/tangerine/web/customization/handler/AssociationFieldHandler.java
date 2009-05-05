@@ -33,7 +33,6 @@ public class AssociationFieldHandler extends LookupFieldHandler {
             fieldVO.addId(id);
             String displayValue = resolve(id, referenceType);
             fieldVO.setDisplayValue(displayValue);
-            fieldVO.addDisplayValue(displayValue);
             fieldVO.setReferenceType(referenceType);
         }
         return fieldVO;

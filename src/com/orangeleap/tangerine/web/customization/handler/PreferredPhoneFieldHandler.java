@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.web.customization.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,8 +30,6 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
     @Override
     public FieldVO handleField(List<SectionField> sectionFields, SectionField currentField, Locale locale, Object model) {
         FieldVO fieldVO = super.handleField(sectionFields, currentField, locale, model);
-        fieldVO.setCodes(new ArrayList<String>());
-        fieldVO.setDisplayValues(new ArrayList<String>());
         for (SectionField currentSectionField : sectionFields) {
             if (FieldType.PHONE == currentSectionField.getFieldDefinition().getFieldType()) {
                 FieldDefinition currentFieldDefinition = currentSectionField.getFieldDefinition();
@@ -40,9 +37,9 @@ public class PreferredPhoneFieldHandler extends GenericFieldHandler {
                 if (GenericValidator.isBlankOrNull(displayValue)) {
                     displayValue = currentSectionField.getFieldDefinition().getDefaultLabel();
                 }
-                fieldVO.getDisplayValues().add(displayValue);
+                fieldVO.addDisplayValue(displayValue);
 
-                fieldVO.getCodes().add(currentFieldDefinition.getFieldName());
+                fieldVO.addCode(currentFieldDefinition.getFieldName());
             }
         }
         return fieldVO;

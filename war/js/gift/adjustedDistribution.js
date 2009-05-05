@@ -10,8 +10,10 @@ $(document).ready(function() {
 	});
 	
 	$("#adjustedAmount").bind("keyup change", function(event) {
-		var amtVal = $(this).val();
+		var $elem = $(this);
+		var amtVal = $elem.val();
 		if (OrangeLeap.isNum(amtVal)) {
+			amtVal = AdjustedDistribution.appendDash($elem);
 			AdjustedDistribution.enteredAmt = amtVal;
 			AdjustedDistribution.recalculateAmounts();
 			AdjustedDistribution.updateTotals();
@@ -19,9 +21,14 @@ $(document).ready(function() {
 	});
 	$("input.amount, input.percentage", $("#adjustedGift_distribution")).bind("keyup", function(event) {
 		if (event.keyCode != 9) { // ignore tab
+			var $elem = $(this);
+			if ($elem.hasClass("amount")) {
+				AdjustedDistribution.appendDash($elem);
+			}
 			AdjustedDistribution.updateFields($(event.target));
 		}
 	});		
+	
 	$("a.treeNodeLink", $("#adjustedGift_distribution")).bind("click", function(event) {
 		return OrangeLeap.expandCollapse(this);
 	});
@@ -66,6 +73,15 @@ var AdjustedDistribution = {
 			map.percent = thisPct;	
 		});
 		AdjustedDistribution.updateTotals();
+	},
+	
+	appendDash: function($elem) {
+		var val = $elem.val();
+		if (parseFloat(val) !== 0 && val.indexOf("-") < 0) {
+			val = "-" + val;
+			$elem.val(val);
+		}
+		return val;
 	},
 	
 	recalculateAmounts: function() {

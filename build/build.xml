@@ -163,6 +163,21 @@
 		
 	</target>
 
+	<target name="9.4 Load Sample Merchant Ids">
+		
+		     <sql driver="${mysql.db.driver}"
+			          url="${mysql.db.url}"
+			          userid="${mysql.db.user}"
+			          password="${mysql.db.pw}"
+			          encoding="UTF-8"
+			          classpath="${mysql.db.classpath}"
+	 	              delimiter=";"
+		     	>
+		        <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
+		    </sql>
+		
+	</target>
+
 	<target name="reloadDb">
 		<antcall target="9.1. Clear Schema"/>
 		<antcall target="9.3 Load Schema"/>

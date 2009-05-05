@@ -12,6 +12,8 @@
 	          classpath="${mysql.db.classpath}">
 	     	
 	     	<transaction src="${basedir}/db/prod/clearTable.sql"/>
+
+	     	<transaction src="${basedir}/db/prod/domain/initKeys.sql"/>
             
 	     	<!-- Field Definitions -->
 	     	<transaction src="${basedir}/db/prod/domain/address.sql"/>
@@ -33,7 +35,7 @@
 	     	
 	     	<!-- Page and Section Definitions -->
 	     	<transaction src="${basedir}/db/prod/pages/pageAccess.sql"/>
-	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>
+	     	<transaction src="${basedir}/db/prod/pages/person.sql"/>  <!-- this need to be first to start the section_field keys at 1000000 -->
 	     	<transaction src="${basedir}/db/prod/pages/personSearch.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/personSearchResults.sql"/>
 	     	<transaction src="${basedir}/db/prod/pages/giftView.sql"/>

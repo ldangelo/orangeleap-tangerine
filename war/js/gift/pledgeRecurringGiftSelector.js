@@ -70,24 +70,27 @@ $(document).ready(function() {
 			$("#thisAssociatedPledge, #thisAssociatedRecurringGift").each(function() {
 				var $elem = $(this);
 				var thisName = $elem.val();
+				var isPledge = false;
 				if ($elem.attr("id") == "thisAssociatedPledge") {
 					var thisId = $elem.attr("pledgeId");
 					var queryString = "selectedPledgeIds=" + thisId + "&amount=" + $("#amount").val();
 					var $associatedIdsElem = $("#associatedPledgeIds");
 					PledgeRecurringGiftSelector.disable($('#associatedRecurringGiftIds'));
+					isPledge = true;
 				}
 				else {
 					var thisId = $elem.attr("recurringGiftId");
 					var queryString = "selectedRecurringGiftIds=" + thisId + "&amount=" + $("#amount").val();
 					var $associatedIdsElem = $("#associatedRecurringGiftIds");
 					PledgeRecurringGiftSelector.disable($('#associatedPledgeIds'));
+					isPledge = false;
 				}
 				
 				PledgeRecurringGiftSelector.updateDistribution(queryString);
 				
 				$associatedIdsElem.val(thisId);
 				PledgeRecurringGiftSelector.lookupCaller = $associatedIdsElem.siblings(".multiLookupField");
-				PledgeRecurringGiftSelector.doClone(thisId, thisName, $associatedIdsElem.siblings(".clone"));
+				PledgeRecurringGiftSelector.doClone(thisId, thisName, $associatedIdsElem.siblings(".clone"), isPledge);
 			});
 		}
 	});

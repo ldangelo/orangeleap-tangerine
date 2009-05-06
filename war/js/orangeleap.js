@@ -117,11 +117,6 @@ $(document).ready(function() {
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
 });
-
-function formatItem(row) {
-	return row[0] + "<span style=\"font-size:10px;\"> - " + row[1] + "</span>";
-}
-
 function saveInPlace(elem, baseUrl) {
 	var queryString = $(elem).parent().parent().find("input").serialize();
 	$.ajax({
@@ -138,7 +133,7 @@ function saveInPlace(elem, baseUrl) {
 		}
 	});
 	return false;
-}
+};
 function newInPlace(elem, baseUrl) {
 	var queryString = $(elem).parent().parent().find("input").serialize();
 	$.ajax({
@@ -157,12 +152,11 @@ function newInPlace(elem, baseUrl) {
 		}
 	});
 	return false;
-}
+};
 function editInPlace(elem) {
 	$(elem).parent().parent().load($(elem).attr("href"));
 	return false;
-}
-
+};
 function getPage(elem) {
 		var queryString = $(".searchForm").find("input").serialize();
 		var baseUrl = $(elem).attr("href");
@@ -180,29 +174,25 @@ function getPage(elem) {
 			}
 		});
 		return false;
-}
-
+};
 var GenericCustomizer = {	
-		addNewRow : function() {
-			var $newRow = $("table.customFields tr:last", "form").clone(false);
-			var i = $newRow.attr("rowindex");
-			var j = parseInt(i, 10) + 1;
-			$newRow.attr("rowindex", j);
-			$newRow.find("input").each(function() {
-					var $field = $(this);
-					$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
-					$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
-					$field.val("");
-					$field.attr("style", "");
-					$field.attr("class", "");
-					$field.removeAttr("readonly");
-				});
-			$("table.customFields", "form").append($newRow);
-		}
-}
-
-
-
+	addNewRow : function() {
+		var $newRow = $("table.customFields tr:last", "form").clone(false);
+		var i = $newRow.attr("rowindex");
+		var j = parseInt(i, 10) + 1;
+		$newRow.attr("rowindex", j);
+		$newRow.find("input").each(function() {
+				var $field = $(this);
+				$field.attr('name', $field.attr('name').replace(new RegExp("\\[\\d+\\]","g"), "[" + j + "]"));
+				$field.attr('id', $field.attr('id').replace(new RegExp("\\-\\d+\\-","g"), "-" + j + "-"));
+				$field.val("");
+				$field.attr("style", "");
+				$field.attr("class", "");
+				$field.removeAttr("readonly");
+			});
+		$("table.customFields", "form").append($newRow);
+	}
+};
 var Picklist = {	
 	rootTrees: {},
 	
@@ -528,7 +518,7 @@ var Picklist = {
 		});	
 		return $select;
 	}
-}
+};
 var OrangeLeap = {
 	expandCollapse: function(elem) {
 		$elem = $(elem);
@@ -632,9 +622,7 @@ var OrangeLeap = {
 			$(recognitionSelector).show();
 		}
 	}	
-}
-
-// TODO: move below to individual JS
+};
 var Lookup = {
 	lookupCaller: null,
 	
@@ -647,14 +635,6 @@ var Lookup = {
 	},
 	
 	codeAutoComplete: function($elem) {
-		/* Temporarily disable auto-completion for BETA 
-		$elem.bind("focus", function() {
-			this.blur(); 
-		});
-		*/
-		/*
-		var oldVal = $elem.val();
-		*/ 
 		$elem.autocomplete("codeHelper.htm?view=autoComplete&type=" + $elem.attr("codeType"), {
 			delay:10,
 			minChars:0,
@@ -674,9 +654,6 @@ var Lookup = {
 	codeAutoCompleteCallback: function(itemSelected, $input) {
 		$("#" + $input.attr("otherFieldId")).val("");
 		$input.siblings("input:hidden").val(itemSelected.selectValue);
-//		var text = Lookup.removeNbsp(itemSelected);
-//		$input.val(itemSelected.selectValue + " - " + text);
-//		$input.siblings("input:hidden").val(itemSelected.selectValue);
 	},
 	
 	loadCodePopup: function(elem, showOtherField) {
@@ -1403,9 +1380,7 @@ var Lookup = {
 	hideWaitIndicator: function() {
 		$("#searchText", "form").removeClass("showWait");
 	}
-}
-
-// TODO: move below to individual JS
+};
 var MultiSelect = {
 	moveOption: function(optionElem, thisOptionType) {
 		var prevOptionType = (thisOptionType === "selected" ? "available" : "selected");
@@ -1425,9 +1400,7 @@ var MultiSelect = {
 	uncheck: function(elem) {
 		elem.children("input[type=checkbox]").eq(0).removeAttr("checked");
 	}
-}
-
-
+};
 // Create a placeholder console object in case Firebug is not present.
 if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };
 // Initialize the console (workaround for current Firebug defect)

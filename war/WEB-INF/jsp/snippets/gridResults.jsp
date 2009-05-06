@@ -30,14 +30,6 @@
 						</c:choose>
 					</c:forEach>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'PICKLIST' or fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
-					<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-						<c:set target="${fieldVO}" property="fieldToCheck" value="${code}"/>
-						<c:if test="${fieldVO.hasField}">
-							<c:out value='${fieldVO.displayValues[status.index]}'/>
-						</c:if>
-					</c:forEach>
-				</c:when>
 				<c:when test="${fieldVO.multiLine}">
 					<c:forEach var="line" items="${fieldVO.splitLineValues}">
 						<c:out value='${line}'/><br/>

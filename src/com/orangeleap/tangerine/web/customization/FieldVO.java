@@ -286,7 +286,24 @@ public class FieldVO {
     }
 
     public Object getDisplayValue() {
-        return displayValues != null ? displayValues.get(0) : (fieldValues != null ? fieldValues.get(0) : null);
+        if (FieldType.PICKLIST.equals(fieldType) || FieldType.PICKLIST_DISPLAY.equals(fieldType) || FieldType.MULTI_PICKLIST.equals(fieldType) || FieldType.MULTI_PICKLIST_DISPLAY.equals(fieldType)) {
+            StringBuilder sb = new StringBuilder();
+            int x = 0;
+            for (String thisCode : getCodes()) {
+                fieldToCheck = thisCode;
+                if (isHasField()) {
+                    sb.append(getDisplayValues().get(x)).append(", ");
+                }
+                x++;
+            }
+            if (sb.length() > 2) {
+                sb = sb.delete(sb.length() - 2, sb.length());
+            }
+            return sb.toString();
+        }
+        else {
+            return displayValues != null ? displayValues.get(0) : (fieldValues != null ? fieldValues.get(0) : null);
+        }
     }
 
     public void setDisplayValue(Object displayValue) {

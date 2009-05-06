@@ -1,15 +1,15 @@
 package com.orangeleap.tangerine.service;
 
-import java.util.List;
+import java.util.Date;
 
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 
 public interface ConstituentCustomFieldRelationshipService {
 
 	  public ConstituentCustomFieldRelationship readById(Long id);
-	    
-	  public List<ConstituentCustomFieldRelationship> maintainConstituentCustomFieldRelationships(List<ConstituentCustomFieldRelationship> list);
 
-	  public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationshipCustomFields(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
+	  public ConstituentCustomFieldRelationship readByConstituentFieldDefinitionCustomFieldIds(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate);
+	  
+	  public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
 	  
 }

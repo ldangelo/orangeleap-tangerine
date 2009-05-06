@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.domain.customization;
 
+import java.util.Date;
+
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 
 /**
@@ -11,7 +13,8 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
     private static final long serialVersionUID = 1L;
 
     private Long constituentId;
-    private Long customFieldId;
+    private String customFieldValue;
+    private Date customFieldStartDate;
     private String masterFieldDefinitionId;
     private String siteName;
 
@@ -28,14 +31,6 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 		return constituentId;
 	}
 
-	public void setCustomFieldId(Long customFieldId) {
-		this.customFieldId = customFieldId;
-	}
-
-	public Long getCustomFieldId() {
-		return customFieldId;
-	}
-
 	public void setMasterFieldDefinitionId(String masterFieldDefinitionId) {
 		this.masterFieldDefinitionId = masterFieldDefinitionId;
 	}
@@ -50,6 +45,22 @@ public class ConstituentCustomFieldRelationship extends AbstractCustomizableEnti
 
 	public String getSiteName() {
 		return siteName;
+	}
+
+	public void setCustomFieldValue(String customFieldValue) {
+		this.customFieldValue = customFieldValue;
+	}
+
+	public String getCustomFieldValue() {
+		return customFieldValue;
+	}
+
+	public void setCustomFieldStartDate(Date customFieldStartDate) {
+		this.customFieldStartDate = customFieldStartDate;
+	}
+
+	public Date getCustomFieldStartDate() {
+		return customFieldStartDate;
 	}
 
 

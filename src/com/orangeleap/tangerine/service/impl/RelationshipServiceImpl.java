@@ -488,7 +488,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 			    
 			    // Set new roles on refId.
 				refPerson = constituentDao.readConstituentById(new Long(cf1.getValue()));
-				// TODO set date range on role attribute
 			    ensureOtherPersonAttributeIsSet(refField, refPerson);
 				refPerson = constituentDao.maintainConstituent(refPerson);
 			    

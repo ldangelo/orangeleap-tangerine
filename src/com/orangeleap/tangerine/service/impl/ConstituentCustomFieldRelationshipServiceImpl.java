@@ -1,6 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.List;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.ConstituentCustomFieldRelationshipDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
@@ -40,29 +41,10 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
     private RelationshipService relationshipService;
 
 
-    // Used for adding / deleting custom field instances and updating date ranges.  
-    // Adds or updates items in place, validates date ranges and deletes any existing custom fields not in the passed list.
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-	public List<ConstituentCustomFieldRelationship> maintainConstituentCustomFieldRelationships(List<ConstituentCustomFieldRelationship> constituentCustomFieldRelationships) {
-	    
-    	// Validate the site can access the constituents.
-    	for (ConstituentCustomFieldRelationship constituentCustomFieldRelationship : constituentCustomFieldRelationships) {
-    		Long constituentId = constituentCustomFieldRelationship.getConstituentId();
-    	    if (null == constituentDao.readConstituentById(constituentId)) return null;
-    	}
-    	
-        // TODO
-    	
-        //relationshipService.maintainRelationships(constituent);
-        //auditService.auditObject(constituentCustomFieldRelationship, constituentCustomFieldRelationship);  // TODO
-        return constituentCustomFieldRelationships;
-    }
-    
     // Used for custom field maintenance 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationshipCustomFields(ConstituentCustomFieldRelationship constituentCustomFieldRelationship) {
+    public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituentCustomFieldRelationship: id = " + constituentCustomFieldRelationship.getId());
         }
@@ -70,7 +52,6 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	    if (null == constituentDao.readConstituentById(constituentCustomFieldRelationship.getConstituentId())) return null;
         constituentCustomFieldRelationship = constituentCustomFieldRelationshipDao.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
         
-        //relationshipService.maintainRelationships(constituent);
         //auditService.auditObject(constituentCustomFieldRelationship, constituentCustomFieldRelationship);  // TODO
         return constituentCustomFieldRelationship;
     }
@@ -85,5 +66,15 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	    if (null == constituentDao.readConstituentById(constituentCustomFieldRelationship.getConstituentId())) return null;
 	    return constituentCustomFieldRelationship;
 	}
+    
+    public ConstituentCustomFieldRelationship readByConstituentFieldDefinitionCustomFieldIds(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
+	    Person constituent = constituentDao.readConstituentById(constituentId);
+	    // If the site can't read the constituent, don't return the ccr.
+	    if (constituent == null) return null;
+	    ConstituentCustomFieldRelationship constituentCustomFieldRelationship = constituentCustomFieldRelationshipDao.readByConstituentFieldDefinitionCustomFieldIds(constituentId, fieldDefinitionId, customFieldValue, customFieldStartDate);
+	    return constituentCustomFieldRelationship;
+	}
+
+	  
 
 }

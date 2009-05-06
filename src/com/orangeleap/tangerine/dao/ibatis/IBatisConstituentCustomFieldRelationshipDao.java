@@ -1,6 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -47,16 +47,17 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
         return (ConstituentCustomFieldRelationship)insertOrUpdate(constituentCustomFieldRelationship, "CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP");
     }
 
-    @SuppressWarnings("unchecked")
 	@Override
-	public List<ConstituentCustomFieldRelationship> readAllByConstituentAndField(Long personId, String fieldDefinitionId) {
+	public ConstituentCustomFieldRelationship readByConstituentFieldDefinitionCustomFieldIds(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllByConstituentAndField: personid = " + personId);
+            logger.trace("readAllByConstituentAndField: constituentId = " + constituentId);
         }
         Map<String, Object> params = setupParams();
-        params.put("personId", personId);
+        params.put("constituentId", constituentId);
         params.put("fieldDefinitionId", fieldDefinitionId);
-        return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD", params);
+        params.put("customFieldValue", customFieldValue);
+        params.put("customFieldStartDate", customFieldStartDate);
+        return (ConstituentCustomFieldRelationship)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD_DEFINITION_AND_CUSTOM_FIELD", params);
 	}
    
 

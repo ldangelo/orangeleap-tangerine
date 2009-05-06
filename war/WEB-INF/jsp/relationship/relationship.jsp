@@ -45,16 +45,16 @@
 				&nbsp;&nbsp;
 				<input id="cfId-${status.count}-" name="cfId[${status.count}]" value="<c:out value='${customField.id}'/>" type="hidden" />
 				<a href="#" 
-				   onclick="$('#customize').val($(this).prev().attr(id));$('#form').submit();"
+				   onclick="$('#customizeIndex').val($(this).prev().attr('id'));$('#form').submit();"
 				 >+</a> 
 				</td>
 			  </tr>
 			 </c:forEach>
 			</table>
 			<br/>
-			<input id="customize" type="hidden" name="customize" value="" />
+			<input id="customizeIndex" type="hidden" name="customizeIndex" value="" />
 			<input type="button" value="Add" class="saveButton" onclick="GenericCustomizer.addNewRow(); decorateDateInputs();" />
-			<input type="button" value="Save" class="saveButton" onclick="$('#customize').val('');$('#form').submit();" />
+			<input type="button" value="Save" class="saveButton" onclick="$('#customizeIndex').val('');$('#form').submit();" />
 		</form>
 		</div>
 

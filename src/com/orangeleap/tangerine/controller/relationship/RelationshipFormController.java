@@ -81,19 +81,20 @@ public class RelationshipFormController extends SimpleFormController {
 
     	int customizeIndex = getIndex(request.getParameter("customizeIndex"));
         CustomField customizeCf = null;
-        if (customizeIndex > -1) customizeCf = list.get(customizeIndex);
+        if (list.size() > 0 && customizeIndex > -1) customizeCf = list.get(customizeIndex);
         
         String message = "";
 
     	try {
     		
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
-    		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinitionId);
+    		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
     		person = constituentService.readConstituentById(personId);
     		
     		if (customizeCf != null) {
-    			Long customFieldId = getCustomFieldId(customizeCf, savedlist);
-    		    return new ModelAndView("redirect:/relationshipCustomize.htm?personId=" + personId + "&fieldDefinitionId=" + fieldDefinitionId + "&customFieldId=" + customFieldId);
+    			CustomField customField = getCustomFieldId(customizeCf, savedlist);
+    			Person refperson = constituentService.readConstituentById(new Long(customField.getValue()));
+    		    return new ModelAndView("redirect:/relationshipCustomize.htm?personId=" + personId + "&fieldDefinitionId=" + fieldDefinitionId + "&customFieldId=" + customField.getId()+"&refvalue="+refperson.getFullName());
     		}
     		
     		
@@ -108,14 +109,14 @@ public class RelationshipFormController extends SimpleFormController {
         
     }
     
-    private Long getCustomFieldId(CustomField customizeCf, List<CustomField> savedlist) {
+    private CustomField getCustomFieldId(CustomField customizeCf, List<CustomField> savedlist) {
     	for (CustomField cf : savedlist) {
     		if (cf.getName().equals(customizeCf.getName()) 
     				&& cf.getValue().equals(customizeCf.getValue())
     				&& cf.getStartDate().equals(customizeCf.getStartDate())
     				&& cf.getEndDate().equals(customizeCf.getEndDate())
     				) {
-    			return cf.getId();
+    			return cf;
     		}
     	}
     	return null;
@@ -125,7 +126,7 @@ public class RelationshipFormController extends SimpleFormController {
     	if (s == null || s.trim().length() == 0) {
     		return -1;
     	}
-    	return Integer.parseInt(s.substring(s.indexOf('-') + 1, s.lastIndexOf('-')));
+    	return Integer.parseInt(s.substring(s.indexOf('-') + 1, s.lastIndexOf('-'))) - 1;
     }
         
 	private RelationshipForm readForm(HttpServletRequest request) {

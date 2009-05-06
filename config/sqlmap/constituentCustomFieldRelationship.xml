@@ -54,14 +54,15 @@
 	<resultMap id="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" class="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
 		<result property="id" column="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID" jdbcType="BIGINT" />
 		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
-		<result property="customFieldId" column="CUSTOM_FIELD_ID" jdbcType="BIGINT" />
 		<result property="masterFieldDefinitionId" column="MASTER_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="customFieldValue" column="CUSTOM_FIELD_VALUE" jdbcType="BIGINT" />
+		<result property="customFieldStartDate" column="CUSTOM_FIELD_START_DATE" jdbcType="BIGINT" />
 		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR"  />
 	</resultMap>
 
 	<sql id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP">
 		select 
-		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_ID, ccr.MASTER_FIELD_DEFINITION_ID, ccr.SITE_NAME
+		ccr.CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID, ccr.CONSTITUENT_ID, ccr.CUSTOM_FIELD_VALUE, ccr.CUSTOM_FIELD_START_DATE, ccr.MASTER_FIELD_DEFINITION_ID, ccr.SITE_NAME
 		from 
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP ccr
 		where 
@@ -75,15 +76,18 @@
 		and CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#	
 	</select>
 
-	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
+	<select id="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD_DEFINITION_AND_CUSTOM_FIELD" resultMap="CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"/>
-		and ccr.CONSTITUENT_ID = #personId#	and ccr.MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#
+		and ccr.CONSTITUENT_ID = #constituentId#	
+		and ccr.MASTER_FIELD_DEFINITION_ID = #fieldDefinitionId#
+		and ccr.CUSTOM_FIELD_VALUE = #customFieldValue#
+		and ccr.CUSTOM_FIELD_START_DATE = #customFieldStartDate#
 	</select>
 
 	
 	<insert id="INSERT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
-		insert into CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP (CONSTITUENT_ID, CUSTOM_FIELD_ID, MASTER_FIELD_DEFINITION_ID, SITE_NAME)
-		values (#constituentId#, #customFieldId#, #masterFieldDefinitionId#, #siteName#)
+		insert into CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP (CONSTITUENT_ID, MASTER_FIELD_DEFINITION_ID, CUSTOM_FIELD_VALUE, CUSTOM_FIELD_START_DATE, SITE_NAME)
+		values (#constituentId#, #masterFieldDefinitionId#, #customFieldValue#, #customFieldStartDate#, #siteName#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -93,8 +97,9 @@
 		update CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP
 		set 
 		CONSTITUENT_ID = #constituentId#,
-		CUSTOM_FIELD_ID = #customFieldId#,
-		MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#
+		MASTER_FIELD_DEFINITION_ID = #masterFieldDefinitionId#,
+		CUSTOM_FIELD_VALUE = #customFieldValue#,
+		CUSTOM_FIELD_START_DATE = #customFieldStartDate#
 		where 
 		SITE_NAME = #siteName# and
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#

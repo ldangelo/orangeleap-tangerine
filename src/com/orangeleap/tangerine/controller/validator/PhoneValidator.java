@@ -41,7 +41,7 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
             errors.setNestedPath("primaryPhone");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Number is required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "invalidNumber", "Phone number is required");
         validateDates(phone, errors);
         errors.setNestedPath(inPath);
     }

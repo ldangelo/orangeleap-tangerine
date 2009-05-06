@@ -39,6 +39,7 @@ public class QueryUtil {
                     if (GenericValidator.isBlankOrNull((String) value) || value.equals("null")) {
                         continue;
                     }
+                    value = ((String)value).replace('\'', ' ').replace('\"', ' ');
                 } 
                 else {
                     if (value == null) {
@@ -46,6 +47,7 @@ public class QueryUtil {
                     }
                     isString = false;
                 }
+                
                 
                 // Constituent fields not including nested fields.
                 if (key.startsWith("person.") && (key.contains("[") || key.indexOf("") != key.lastIndexOf("."))) {

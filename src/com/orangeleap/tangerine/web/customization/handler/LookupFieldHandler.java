@@ -16,6 +16,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
 public class LookupFieldHandler extends GenericFieldHandler {
@@ -62,22 +63,43 @@ public class LookupFieldHandler extends GenericFieldHandler {
     }
 
     protected String resolve(Long id, ReferenceType referenceType) {
+        String val = new StringBuilder(id == null ? StringConstants.EMPTY : id.toString()).toString();
         if (referenceType == ReferenceType.person) {
             Person constituent = constituentService.readConstituentById(id);
-            return constituent.getDisplayValue();
+            if (constituent == null) {
+                logger.warn("resolve: Could not find constituent for ID = " + id);
+            }
+            else {
+                val = constituent.getDisplayValue();
+            }
         }
         else if (referenceType == ReferenceType.pledge) {
             Pledge pledge = pledgeService.readPledgeById(id);
-            return pledge.getShortDescription();
+            if (pledge == null) {
+                logger.warn("resolve: Could not find pledge for ID = " + id);
+            }
+            else {
+                val = pledge.getShortDescription();
+            }
         }
         else if (referenceType == ReferenceType.recurringGift) {
             RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(id);
-            return recurringGift.getShortDescription();
+            if (recurringGift == null) {
+                logger.warn("resolve: Could not find recurringGift for ID = " + id);
+            }
+            else {
+                val = recurringGift.getShortDescription();
+            }
         }
         else if (referenceType == ReferenceType.gift) {
             Gift gift = giftService.readGiftById(id);
-            return gift.getShortDescription();
+            if (gift == null) {
+                logger.warn("resolve: Could not find gift for ID = " + id);
+            }
+            else {
+                val = gift.getShortDescription();
+            }
         }
-        return "" + id;
+        return val;
     }
 }

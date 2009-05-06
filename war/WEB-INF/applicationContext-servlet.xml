@@ -87,17 +87,15 @@
        	<property name="suffix" value=".jsp"></property>
     </bean>
 
-<!-- 
-	<bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-		<property name="customEditors">
-	    	<map>
-	      		<entry key="com.orangeleap.tangerine.domain.PaymentSource">
-	        		<bean id="paymentSourceEditor" class="com.orangeleap.tangerine.controller.payment.PaymentSourceEditor">
-				    	<property name="paymentSourceService" ref="paymentSourceService" />
-				    </bean>
-				</entry>
-			</map>
+	<bean id="exceptionResolver" class="com.orangeleap.tangerine.web.common.TangerineMappingExceptionResolver">
+		<property name="order" value="1"/>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Exception">
+					errors/error
+				</prop>
+			</props>
 		</property>
 	</bean>
- -->
+
 </beans>

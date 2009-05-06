@@ -26,7 +26,6 @@
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
-        <!-- <property name="redirectView" value="redirect:/giftList.htm"/> -->
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">

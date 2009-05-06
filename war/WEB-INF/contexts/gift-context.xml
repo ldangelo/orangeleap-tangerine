@@ -8,7 +8,8 @@
 	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
-        <!-- <property name="sessionForm" value="true"/>-->
+        <property name="formView" value="gift/gift" />
+        <property name="successView" value="redirect:/giftView.htm" />
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
@@ -18,13 +19,14 @@
 	            <ref bean="distributionLinesValidator"/>	            
 	        </list>
         </property>
-        <property name="formView" value="gift/gift" />
-        <property name="successView" value="redirect:/giftView.htm" />
     </bean>
 
-    <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="giftFormController">
+    <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="tangerineConstituentAttributesFormController">
+        <property name="commandName" value="gift"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
+        <!-- <property name="redirectView" value="redirect:/giftList.htm"/> -->
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">

@@ -31,7 +31,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Resource(name="giftService")
-    protected GiftService giftService;
+    private GiftService giftService;
 
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;

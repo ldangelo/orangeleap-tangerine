@@ -570,8 +570,8 @@
 							</c:forEach>
 							<div class="lookupScrollRight"></div>
 					    </div>
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldId}'/>" />
 						<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">
+							<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" value="<c:out value='${fieldVO.idsString}'/>" id="<c:out value='${fieldVO.fieldId}'/>" />
 							<div class="multiQueryLookupOption multiOption noDisplay clone" selectedId="">
 								<a href="" target="_blank"></a>
 								<a href="javascript:void(0)" onclick="PledgeRecurringGiftSelector.deleteThis(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>

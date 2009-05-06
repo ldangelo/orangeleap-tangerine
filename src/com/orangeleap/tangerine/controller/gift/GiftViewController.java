@@ -12,15 +12,20 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.util.StringConstants;
 
-public class GiftViewController extends GiftFormController {
+public class GiftViewController extends TangerineConstituentAttributesFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name="giftService")
+    private GiftService giftService;
     
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
@@ -28,7 +33,9 @@ public class GiftViewController extends GiftFormController {
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
-        gift.setAdjustedGifts(adjustedGiftService.readAdjustedGiftsForOriginalGiftId(gift.getId()));
+        if (gift != null) {
+            gift.setAdjustedGifts(adjustedGiftService.readAdjustedGiftsForOriginalGiftId(gift.getId()));
+        }
         return gift;
     }
     

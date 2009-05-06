@@ -42,7 +42,6 @@
 					</p>
 				</c:forEach>
 				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
-				<a onclick="return(confirm('<spring:message code="confirmRemoveAddress"/>'));" href="addressDelete.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -84,7 +83,6 @@
 					</c:if>
 				</c:forEach>
 				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
-				<a onclick="return(confirm('<spring:message code="confirmRemoveAddress"/>'));" href="addressDelete.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -137,7 +135,6 @@
 					</c:if>
 				</c:forEach>
 				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
-				<a onclick="return(confirm('<spring:message code="confirmRemoveAddress"/>'));" href="addressDelete.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>

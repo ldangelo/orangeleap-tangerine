@@ -24,7 +24,6 @@
 					</c:if>
 				</c:forEach>
 				<a href="paymentManagerEdit.htm?paymentSourceId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
-				<a onclick="return(confirm('<spring:message code='confirmRemovePaymentMethod'/>'));" href="paymentSourceDelete.htm?paymentSourceId=${row.id}&personId=${person.id}""><spring:message code='remove'/></a>
 				<hr />
 
 			</c:forEach>

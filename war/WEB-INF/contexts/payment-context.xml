@@ -26,19 +26,12 @@
     	<property name="formView" value="payment/paymentManagerEdit" />
    		<property name="pageType" value="paymentManagerEdit"/>
     </bean>
-        
-    <bean id="paymentSourceDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
-    	<property name="service" ref="paymentSourceService"/>
-    	<property name="idParameterName" value="paymentSourceId"/>
-    	<property name="viewName" value="redirect:/paymentManager.htm"/>
-    </bean>
     
     <bean id="paymentLookupUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
 		        <prop key="/paymentManager.htm">paymentManager</prop>
                 <prop key="/paymentManagerEdit.htm">paymentManagerEdit</prop>
-                <prop key="/paymentSourceDelete.htm">paymentSourceDelete</prop>
 			</props>
 		</property>
 	</bean>

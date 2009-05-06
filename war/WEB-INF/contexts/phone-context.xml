@@ -28,18 +28,11 @@
     	<property name="formView" value="phone/phoneManagerEdit" />
     </bean>
         
-    <bean id="phoneDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
-    	<property name="service" ref="phoneService"/>
-    	<property name="idParameterName" value="phoneId"/>
-    	<property name="viewName" value="redirect:/phoneManager.htm"/>
-    </bean>
-    
     <bean id="phoneUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/phoneManager.htm">phoneManager</prop>
                 <prop key="/phoneManagerEdit.htm">phoneManagerEdit</prop>
-                <prop key="/phoneDelete.htm">phoneDelete</prop>
 			</props>
 		</property>
 	</bean>

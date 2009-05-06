@@ -28,18 +28,11 @@
     	<property name="formView" value="email/emailManagerEdit"/>
     </bean>
     
-    <bean id="emailDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
-    	<property name="service" ref="emailService"/>
-    	<property name="idParameterName" value="emailId"/>
-    	<property name="viewName" value="redirect:/emailManager.htm"/>
-    </bean>
-
     <bean id="emailUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
                 <prop key="/emailManager.htm">emailManager</prop>
                 <prop key="/emailManagerEdit.htm">emailManagerEdit</prop>
-                <prop key="/emailDelete.htm">emailDelete</prop>
 			</props>
 		</property>
 	</bean>

@@ -29,18 +29,11 @@
     	<property name="formView" value="address/addressManagerEdit"/>
     </bean>
 
-    <bean id="addressDelete" class="com.orangeleap.tangerine.controller.TangerineDeleteController">
-    	<property name="service" ref="addressService"/>
-    	<property name="idParameterName" value="addressId"/>
-    	<property name="viewName" value="redirect:/addressManager.htm"/>
-    </bean>
-
     <bean id="addressUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
 				<prop key="/addressManager.htm">addressManager</prop>
 				<prop key="/addressManagerEdit.htm">addressManagerEdit</prop>
-				<prop key="/addressDelete.htm">addressDelete</prop>
 			</props>
 		</property>
 	</bean>

@@ -163,6 +163,21 @@
 		
 	</target>
 
+	<target name="9.4 Load V2 Extra Schema">
+		
+		     <sql driver="${mysql.db.driver}"
+			          url="${mysql.db.url}"
+			          userid="${mysql.db.user}"
+			          password="${mysql.db.pw}"
+			          encoding="UTF-8"
+			          classpath="${mysql.db.classpath}"
+	 	              delimiter=";"
+		     	>
+			    <transaction src="${basedir}/db/prod/tangerine-V2.ddl"/>
+		    </sql>
+		
+	</target>
+
 	<target name="9.4 Load Sample Merchant Ids">
 		
 		     <sql driver="${mysql.db.driver}"

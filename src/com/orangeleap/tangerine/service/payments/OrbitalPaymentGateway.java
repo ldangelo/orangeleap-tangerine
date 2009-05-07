@@ -82,6 +82,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("OrderID", gift.getId().toString());
 			request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
 					.getCreditCardNumber());
+			
+			String amount = gift.getAmount().toString();
+			if(amount.contains(".")) { 
+				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
+				
+			}
+			else amount += "00";
+			
 			request.setFieldValue("Amount", gift.getAmount().toString());
 
 			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();

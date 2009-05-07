@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,6 +27,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -57,21 +60,23 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 			SiteService ss = (SiteService) applicationContext
 					.getBean("siteService");
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService   gs = (GiftService) applicationContext.getBean("giftService");
+			MailService   ms = (MailService) applicationContext.getBean("mailService");
 			TangerineUserHelper th = (TangerineUserHelper) applicationContext
 					.getBean("tangerineUserHelper");
 			List<Site> siteList = ss.readSites();
-
+			Calendar today = Calendar.getInstance();
+			today.add(Calendar.DATE, -1);
+			Date yesterday = new java.sql.Date(today.getTimeInMillis());
+			
 			for (Site s : siteList) {
 				SortInfo si = new SortInfo();
 				
 				
 				th.setSystemUserAndSiteName(s.getName());
-				si.setStart(0);
-				si.setLimit(100);
-				si.setSort("CONSTITUENT_ID");
-				List<Person> peopleList = constituentService.readAllConstituentsBySite(si);
+				List<Person> peopleList = constituentService.readAllConstituentsBySite();
 				
-				while (peopleList.size() > 0) {
 
 					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
 							.getBean("DroolsRuleAgent")).getRuleAgent()
@@ -84,30 +89,208 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					workingMemory
 							.addEventListener(new DebugWorkingMemoryEventListener());
 
+					workingMemory.setGlobal("giftService", gs);
+					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("mailService",ms);
 					workingMemory.setGlobal("applicationContext",
 							applicationContext);
-					workingMemory.setFocus(getSiteName() + "scheduled");
+					workingMemory.setFocus(getSiteName() + "scheduleddaily");
 					for (Person p : peopleList) {
+						Boolean updated = false;
 
+						//
+						// if the person has been updated or one of their
+						// gifts have been updated
+						if (p.getUpdateDate().compareTo(yesterday) > 0) updated = true;
+						
 						List<Gift> giftList = giftService
 								.readMonetaryGiftsByConstituentId(p.getId());
-						p.setGifts(giftList);
-						FactHandle pfh = workingMemory.insert(p);
+						
+						//
+						// if the person has not been updated check to see if any of their
+						// gifts have been...
+						if (!updated) {
+							for (Gift g: giftList) {
+								if (g.getCreateDate().compareTo(yesterday) > 0) {
+									updated = true;
+									break;
+								}
+							
+							}
+						}
+						if (updated) {
+							p.setGifts(giftList);
+							FactHandle pfh = workingMemory.insert(p);
+						}
 
 					}
 					workingMemory.fireAllRules();
 					workingMemory.dispose();
-					
-					si.setStart(si.getStart() + 100);
-					si.setLimit(si.getLimit() + 100);
-					peopleList = constituentService.readAllConstituentsBySite(si);	
 				}
-			}
 		} catch (Throwable t) {
 			logger.error(t);
 			t.printStackTrace();
 		}
 	}
 
-    
+	@Override
+	public void executeWeeklyJobRules() {
+
+		try {
+
+			SiteService ss = (SiteService) applicationContext
+					.getBean("siteService");
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService   gs = (GiftService) applicationContext.getBean("giftService");
+			MailService   ms = (MailService) applicationContext.getBean("mailService");
+			TangerineUserHelper th = (TangerineUserHelper) applicationContext
+					.getBean("tangerineUserHelper");
+			List<Site> siteList = ss.readSites();
+			Calendar today = Calendar.getInstance();
+			today.add(Calendar.WEEK_OF_YEAR, -1);
+			Date lastweek = new java.sql.Date(today.getTimeInMillis());
+			
+			for (Site s : siteList) {
+				SortInfo si = new SortInfo();
+				
+				
+				th.setSystemUserAndSiteName(s.getName());
+				List<Person> peopleList = constituentService.readAllConstituentsBySite();
+				
+
+					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
+							.getBean("DroolsRuleAgent")).getRuleAgent()
+							.getRuleBase();
+
+					StatefulSession workingMemory = ruleBase
+							.newStatefulSession();
+					workingMemory
+							.addEventListener(new DebugAgendaEventListener());
+					workingMemory
+							.addEventListener(new DebugWorkingMemoryEventListener());
+
+					workingMemory.setGlobal("giftService", gs);
+					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("mailService",ms);
+					workingMemory.setGlobal("applicationContext",
+							applicationContext);
+					workingMemory.setFocus(getSiteName() + "scheduledweekly");
+					for (Person p : peopleList) {
+						Boolean updated = false;
+
+						//
+						// if the person has been updated or one of their
+						// gifts have been updated
+						if (p.getCreateDate().compareTo(lastweek) > 0) updated = true;
+						
+						List<Gift> giftList = giftService
+								.readMonetaryGiftsByConstituentId(p.getId());
+						
+						//
+						// if the person has not been updated check to see if any of their
+						// gifts have been...
+						if (!updated) {
+							for (Gift g: giftList) {
+								if (g.getUpdateDate().compareTo(lastweek) > 0) {
+									updated = true;
+									break;
+								}
+							
+							}
+						}
+						if (updated) {
+							p.setGifts(giftList);
+							FactHandle pfh = workingMemory.insert(p);
+						}
+
+					}
+					workingMemory.fireAllRules();
+					workingMemory.dispose();
+				}
+		} catch (Throwable t) {
+			logger.error(t);
+			t.printStackTrace();
+		}
+	}
+ 
+	@Override
+	public void executeMonthlyJobRules() {
+
+		try {
+
+			SiteService ss = (SiteService) applicationContext
+					.getBean("siteService");
+			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
+			GiftService   gs = (GiftService) applicationContext.getBean("giftService");
+			MailService   ms = (MailService) applicationContext.getBean("mailService");
+			TangerineUserHelper th = (TangerineUserHelper) applicationContext
+					.getBean("tangerineUserHelper");
+			List<Site> siteList = ss.readSites();
+			Calendar today = Calendar.getInstance();
+			today.add(Calendar.MONTH, -1);
+			Date lastmonth = new java.sql.Date(today.getTimeInMillis());
+			
+			for (Site s : siteList) {
+				SortInfo si = new SortInfo();
+				
+				
+				th.setSystemUserAndSiteName(s.getName());
+				List<Person> peopleList = constituentService.readAllConstituentsBySite();
+				
+
+					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
+							.getBean("DroolsRuleAgent")).getRuleAgent()
+							.getRuleBase();
+
+					StatefulSession workingMemory = ruleBase
+							.newStatefulSession();
+					workingMemory
+							.addEventListener(new DebugAgendaEventListener());
+					workingMemory
+							.addEventListener(new DebugWorkingMemoryEventListener());
+
+					workingMemory.setGlobal("giftService", gs);
+					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("mailService",ms);
+					workingMemory.setGlobal("applicationContext",
+							applicationContext);
+					workingMemory.setFocus(getSiteName() + "scheduledmonthly");
+					for (Person p : peopleList) {
+						Boolean updated = false;
+
+						//
+						// if the person has been updated or one of their
+						// gifts have been updated
+						if (p.getCreateDate().compareTo(lastmonth) > 0) updated = true;
+						
+						List<Gift> giftList = giftService
+								.readMonetaryGiftsByConstituentId(p.getId());
+						
+						//
+						// if the person has not been updated check to see if any of their
+						// gifts have been...
+						if (!updated) {
+							for (Gift g: giftList) {
+								if (g.getUpdateDate().compareTo(lastmonth) > 0) {
+									updated = true;
+									break;
+								}
+							
+							}
+						}
+						if (updated) {
+							p.setGifts(giftList);
+							FactHandle pfh = workingMemory.insert(p);
+						}
+
+					}
+					workingMemory.fireAllRules();
+					workingMemory.dispose();
+				}
+		} catch (Throwable t) {
+			logger.error(t);
+			t.printStackTrace();
+		}
+	}
+
 }

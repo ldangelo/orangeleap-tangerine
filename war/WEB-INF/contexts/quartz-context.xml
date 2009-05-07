@@ -5,6 +5,24 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<bean id="monthlyBatchJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	    	<property name="jobClass" value="com.orangeleap.tangerine.service.job.JobSchemaIterator"/>
+	    	<property name="jobDataAsMap" >
+    			  <props>
+	    				        <prop key="job-001">rulesService.executeMonthlyJobRules</prop>
+	 	          </props>
+ 	          </property>
+	</bean>
+
+	<bean id="weeklyBatchJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	    	<property name="jobClass" value="com.orangeleap.tangerine.service.job.JobSchemaIterator"/>
+	    	<property name="jobDataAsMap" >
+    			  <props>
+	    				        <prop key="job-001">rulesService.executeWeeklyJobRules</prop>
+	 	          </props>
+ 	          </property>
+	</bean>
+	
   	<bean id="nightlyBatchJob" class="org.springframework.scheduling.quartz.JobDetailBean">
     	<property name="jobClass" value="com.orangeleap.tangerine.service.job.JobSchemaIterator"/>
     	<property name="jobDataAsMap" >
@@ -20,16 +38,32 @@
  
   	<bean id="nightlyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
   		<property name="jobDetail" ref="nightlyBatchJob" />
-  		 <!-- run every morning at 3 AM -->
-  		<property name="cronExpression" value="0 0 3 * * ?" />
-  		 <!-- run every minute for testing -->
-  		<!-- <property name="cronExpression" value="0 * * * * ?" /> -->
+  		 <!-- run every morning at 3 AM  -->  
+  	     <property name="cronExpression" value="0 0 3 * * ?" /> 
+  		 <!-- run every minute for testing 
+  		<property name="cronExpression" value="* 5 * * * ?" /> --> 
   	</bean>
+
+  	<bean id="weeklyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="weeklyBatchJob" />
+  		 <!-- run on the last every sunday at 4 am -->
+  	     <property name="cronExpression" value="0 0 4 ? * SUN" /> 
+  	</bean>
+
+  	<bean id="monthlyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+  		<property name="jobDetail" ref="monthlyBatchJob" />
+  		 <!-- run on the last day of every month at 1 am -->
+  	     <property name="cronExpression" value="0 0 1 L * ?" /> 
+
+  	</bean>
+
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="nightlyBatchJobTrigger"/>
+				<ref bean="weeklyBatchJobTrigger"/>
+				<ref bean="monthlyBatchJobTrigger"/>
 			</list>
 		</property>
 		<property name="applicationContextSchedulerContextKey">

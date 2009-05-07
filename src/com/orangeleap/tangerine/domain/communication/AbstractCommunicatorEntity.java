@@ -114,6 +114,14 @@ public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEnt
 		return primaryPhone;
 	}
 
+	public boolean canReceiveMail() {
+		List<Address> addresses = getAddresses();
+		for (Address a: addresses) {
+			if(a.isValid() && a.isReceiveCorrespondence() && !a.isInactive()) return true;
+		}
+		return false;
+	}
+	
     public boolean canReceiveEmail() {
     	List<Email> emails = getEmails();
     	

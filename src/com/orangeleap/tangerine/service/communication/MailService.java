@@ -147,12 +147,11 @@ public class MailService {
 			// Add touchpoint for this person so rule will not fire again...
 			CommunicationHistory ch = new CommunicationHistory();
 			ch.setPerson(person);
-//			ch.setGiftId(g.getId());
 			ch.setSystemGenerated(true);
 			ch.setComments("Generated mailing using template named " + getTemplateName());
 			ch.setEntryType("Email");
 			ch.setRecordDate(new Date());
-//			ch.setSelectedEmail(e);
+			ch.setCustomFieldValue("template", getTemplateName());
 
 			communicationHistoryService.maintainCommunicationHistory(ch);
 		}
@@ -212,6 +211,9 @@ public class MailService {
 				attachments = new RequestAttachment[]{attachment};
 				jserver.getWSClient().putResource(reportRD, attachments);
 			}
+			
+			tempLabelFile.delete();
+			tempFile.delete();
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 		}

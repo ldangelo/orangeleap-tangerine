@@ -56,7 +56,7 @@ public class EmailService {
 	
 	private JasperPrint print;
 
-	private String runReport() {
+	private File runReport() {
 		File temp = null;
 		jserver = new JServer();
 		jserver.setUsername(userName);
@@ -84,7 +84,7 @@ public class EmailService {
 			logger.error(e.getMessage());
 			return null;
 		}
-		return temp.getAbsolutePath();
+		return temp;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -169,9 +169,9 @@ public class EmailService {
 		if (selectedEmails.size() == 0) {
 			return;
 		}
-		String tempFileName = runReport();
+		File tempFile = runReport();
 		
-		FileSystemResource file = new FileSystemResource(new File(tempFileName));
+		FileSystemResource file = new FileSystemResource(tempFile);
 		try {
 			helper.addAttachment(getTemplateName() + ".pdf",file);
 			helper.setText("Thank you for your recent donation!");
@@ -192,9 +192,11 @@ public class EmailService {
 				ch.setEntryType("Email");
 				ch.setRecordDate(new Date());
 				ch.setSelectedEmail(e);
+				ch.setCustomFieldValue("template", getTemplateName());
 
 				communicationHistoryService.maintainCommunicationHistory(ch);
 			}
+			tempFile.delete();
 		} catch (MessagingException e1) {
 			logger.error(e1.getMessage());
 			return;

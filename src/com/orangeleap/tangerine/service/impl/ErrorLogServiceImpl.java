@@ -1,0 +1,35 @@
+package com.orangeleap.tangerine.service.impl;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.orangeleap.tangerine.dao.ErrorLogDao;
+import com.orangeleap.tangerine.service.ErrorLogService;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+
+@Service("errorLogService")
+@Transactional(propagation = Propagation.REQUIRED)
+public class ErrorLogServiceImpl extends AbstractTangerineService implements ErrorLogService {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = LogFactory.getLog(getClass());
+
+    @Resource(name = "errorLogDAO")
+    private ErrorLogDao errorLogDao;
+    
+    @Resource(name="tangerineUserHelper")
+    protected TangerineUserHelper tangerineUserHelper;
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void addErrorMessage(String message, String context) {
+    	Long constituentId = tangerineUserHelper.lookupUserId();
+    	errorLogDao.addErrorMessage(message, context, constituentId);
+    }
+
+}

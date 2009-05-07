@@ -43,5 +43,6 @@
 
 	<sqlMap resource="sqlmap/dashboard.xml"/>
 	<sqlMap resource="sqlmap/cacheGroup.xml"/>
+	<sqlMap resource="sqlmap/errorLog.xml"/>
 
 </sqlMapConfig>

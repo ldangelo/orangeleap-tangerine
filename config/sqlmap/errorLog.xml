@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ERROR_LOG">
+
+	<resultMap id="ERROR_LOG" class="java.util.HashMap" >
+		<result property="id" column="ERROR_LOG_ID" jdbcType="BIGINT" />
+		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
+		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="context" column="CONTEXT" jdbcType="VARCHAR" />
+		<result property="message" column="MESSAGE" jdbcType="VARCHAR" />
+		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="ERROR_LOG_COLS_FRAGMENT">
+		el.ERROR_LOG_ID, el.SITE_NAME, el.CONSTITUENT_ID as ERROR_LOG_CONSTITUENT_ID, el.CONTEXT, el.MESSAGE, el.CREATE_DATE
+	</sql>
+	
+	<sql id="SELECT_ERROR_LOG_FRAGMENT">
+		select 
+		<include refid="ERROR_LOG_COLS_FRAGMENT"/>
+		from ERROR_LOG el
+		where el.SITE_NAME = #siteName#
+	</sql>
+
+	<select id="SELECT_ERROR_LOG_BY_SITE" resultMap="ERROR_LOG" parameterClass="map">
+		<include refid="SELECT_ERROR_LOG_FRAGMENT"/>
+		order by el.CREATE_DATE desc
+	</select>
+
+
+	<insert id="INSERT_ERROR_LOG" parameterClass="map">
+		insert into ERROR_LOG (SITE_NAME, CONSTITUENT_ID, CONTEXT, MESSAGE, CREATE_DATE)
+		values (#siteName#, #constituentId#, #context#, #message#, #createDate#)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+
+</sqlMap>

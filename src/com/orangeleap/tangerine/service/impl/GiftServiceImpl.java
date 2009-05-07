@@ -42,6 +42,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.integration.NewGift;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
@@ -77,6 +78,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
+    
+    @Resource(name = "errorLogService")
+    private ErrorLogService errorLogService;
+    
+
 
     private ApplicationContext context;
 
@@ -184,6 +190,9 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     
     private synchronized void writeRulesFailureLog(String message) {
     	try {
+            
+    		errorLogService.addErrorMessage(message, "gift.rules");
+
     		FileWriter out = new FileWriter("rules-errors.log");
     		try {
     			out.write(message);

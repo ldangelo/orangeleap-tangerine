@@ -28,8 +28,12 @@ public class ErrorLogServiceImpl extends AbstractTangerineService implements Err
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void addErrorMessage(String message, String context) {
-    	Long constituentId = tangerineUserHelper.lookupUserId();
-    	errorLogDao.addErrorMessage(message, context, constituentId);
+    	try {
+        	Long constituentId = tangerineUserHelper.lookupUserId();
+    		errorLogDao.addErrorMessage(message, context, constituentId);
+    	} catch (Exception e) {
+    		logger.error("Unable to log error message to ERROR_LOG: "+message, e);
+    	}
     }
 
 }

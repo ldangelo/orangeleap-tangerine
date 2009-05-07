@@ -1,19 +1,5 @@
 SET foreign_key_checks = 0;
 
-DROP TABLE IF EXISTS `ERROR_LOG`;
-
-CREATE TABLE `ERROR_LOG` (
-  `ERROR_LOG_ID` bigint(20) NOT NULL auto_increment,
-  `SITE_NAME` varchar(255) NOT NULL,
-  `CONSTITUENT_ID` bigint(20) default NULL,
-  `CONTEXT` varchar(255) NOT NULL,
-  `MESSAGE` text NOT NULL,
-  `CREATE_DATE` datetime NOT NULL,
-  PRIMARY KEY  (`ERROR_LOG_ID`),
-  KEY `FK_ERROR_LOG_SITE` (`SITE_NAME`),
-  CONSTRAINT `FK_ERROR_LOG_SITE` FOREIGN KEY (`SITE_NAME`) REFERENCES `SITE` (`SITE_NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 # Dump of table CUSTOM_FIELD_RELATIONSHIP
 # ------------------------------------------------------------

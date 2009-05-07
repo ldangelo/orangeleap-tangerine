@@ -24,12 +24,17 @@ public class JobSchemaIterator extends QuartzJobBean {
 	public JobSchemaIterator() {}
 
 	// Allows one instance on the cluster to run jobs and not the others.
-	private boolean enabled = !"false".equalsIgnoreCase(System.getProperty("tangerine.jobs.enabled"));
+	private static final String JOBS_ENABLED = "tangerine.jobs.enabled";
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		
-		if (!enabled) return;
+		String jobsEnabledValue = System.getProperty(JOBS_ENABLED);
+		boolean enabled = !"false".equalsIgnoreCase(jobsEnabledValue);
+		if (!enabled) {
+			logger.info("Skipping jobs: tangerine.jobs.enabled="+jobsEnabledValue);
+			return;
+		}
 
 		ApplicationContext applicationContext = null;
 		SchemaService schemaService = null;

@@ -97,5 +97,16 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    
+
+    <tag>
+    	<name>input</name>
+     	<tag-class>com.orangeleap.tangerine.web.customization.tag.InputTag</tag-class>
+     	<body-content>empty</body-content>
+     	<description>Create an input for the specified FieldType</description>
+     	<attribute>
+            <name>field</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

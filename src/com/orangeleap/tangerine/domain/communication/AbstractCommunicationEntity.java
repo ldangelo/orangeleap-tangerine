@@ -5,12 +5,13 @@ import java.util.Date;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Creatable;
 import com.orangeleap.tangerine.domain.Inactivatible;
 import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings("serial")
-public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible {
+public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible, Creatable {
 
     protected Long personId;
     protected ActivationType activationStatus;
@@ -115,10 +116,12 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
         this.effectiveDate = effectiveDate;
     }
 
+    @Override
     public boolean isUserCreated() {
         return userCreated;
     }
 
+    @Override
     public void setUserCreated(boolean userCreated) {
         this.userCreated = userCreated;
     }

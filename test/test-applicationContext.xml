@@ -29,12 +29,6 @@
 	</context:component-scan>
 
 	<aop:aspectj-autoproxy />
-
-
-
-	<context:component-scan base-package="com.orangeleap.tangerine">
-		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
-	</context:component-scan>
 	
 	<import resource="applicationContext-integration-test.xml"/>
 	
@@ -76,6 +70,11 @@
           p:cacheManager-ref="cacheManager"
           p:cacheName="picklistCache"
           />
+	
+	<bean id="staticMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+ 		<property name="basename" value="tangerine-messages" />
+		<property name="useCodeAsDefaultMessage" value="false" />
+	</bean>
 
    <!--
       The following beans were created and used in the JMS/MOM poc shown during
@@ -105,7 +104,7 @@
 	</bean>
 	-->
 	
-			<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
+		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
 			<property name="configFile" value="config/linehandler.properties"/>
 		</bean>
 

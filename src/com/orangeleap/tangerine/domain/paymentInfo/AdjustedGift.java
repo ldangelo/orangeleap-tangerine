@@ -178,6 +178,14 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
     }
     
     @Override
+    public void setDefaults() {
+        super.setDefaults();
+        if (adjustedPaymentTo == null && person != null) {
+            setAdjustedPaymentTo(person.getFirstLast());
+        }
+    }
+
+    @Override
     public void prePersist() {
         super.prePersist();
         if (adjustedPaymentRequired == false) {

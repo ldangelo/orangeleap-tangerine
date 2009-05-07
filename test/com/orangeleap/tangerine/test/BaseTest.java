@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-@ContextConfiguration(locations = { "classpath:/applicationContext.xml" })
+@ContextConfiguration(locations = { "classpath:/test-applicationContext.xml" })
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     /** Logger for this class and subclasses */

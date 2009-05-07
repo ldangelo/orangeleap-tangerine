@@ -24,6 +24,7 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
         super(sqlMapClient);
     }
     
+    // Call the service method, not this method, in order to get a new transaction.
 	@Override
 	public void addErrorMessage(String message, String context, Long constituentId) {
 		

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -308,6 +309,37 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
                 paymentSourceAware.setPaymentSourceAwarePaymentType();
             }
         }
+    }
+
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+        Object model = super.formBackingObject(request);
+        
+        if (model instanceof PaymentSourceAware) {
+            PaymentSourceAware aware = (PaymentSourceAware) model;
+            if (aware.getSelectedPaymentSource() != null && aware.getSelectedPaymentSource().getId() != null && aware.getSelectedPaymentSource().getId() > 0 && aware.getPaymentSourceType() == null) {
+                aware.setPaymentSourceType(FormBeanType.EXISTING);
+            }
+        }
+        if (model instanceof AddressAware) {
+            AddressAware aware = (AddressAware) model;
+            if (aware.getSelectedAddress() != null && aware.getSelectedAddress().getId() != null && aware.getSelectedAddress().getId() > 0 && aware.getAddressType() == null) {
+                aware.setAddressType(FormBeanType.EXISTING);
+            }
+        }
+        if (model instanceof PhoneAware) {
+            PhoneAware aware = (PhoneAware) model;
+            if (aware.getSelectedPhone() != null && aware.getSelectedPhone().getId() != null && aware.getSelectedPhone().getId() > 0 && aware.getPhoneType() == null) {
+                aware.setPhoneType(FormBeanType.EXISTING);
+            }
+        }
+        if (model instanceof EmailAware) {
+            EmailAware aware = (EmailAware) model;
+            if (aware.getSelectedEmail() != null && aware.getSelectedEmail().getId() != null && aware.getSelectedEmail().getId() > 0 && aware.getEmailType() == null) {
+                aware.setEmailType(FormBeanType.EXISTING);
+            }
+        }
+        return model;
     }
 
     @SuppressWarnings("unchecked")

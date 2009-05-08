@@ -65,6 +65,8 @@ public class FieldHandlerHelper {
         fieldTypeToHandlerMap.put(FieldType.PICKLIST_DISPLAY, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST, picklistFieldHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_DISPLAY, picklistFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.ADJUSTED_GIFT_PAYMENT_SOURCE_PICKLIST, picklistFieldHandler);
+        fieldTypeToHandlerMap.put(FieldType.ADJUSTED_GIFT_PAYMENT_TYPE_PICKLIST, picklistFieldHandler);
         PicklistAdditionalFieldsHandler picklistAdditionalFieldsHandler = new PicklistAdditionalFieldsHandler(appContext);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL, picklistAdditionalFieldsHandler);
         fieldTypeToHandlerMap.put(FieldType.MULTI_PICKLIST_ADDITIONAL_DISPLAY, picklistAdditionalFieldsHandler);

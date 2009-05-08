@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.AES;
 
-public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, AddressAware, PhoneAware {
+public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, NewAddressAware, NewPhoneAware {
 
     private static final long serialVersionUID = 1L;
     public static final String ACH = "ACH";

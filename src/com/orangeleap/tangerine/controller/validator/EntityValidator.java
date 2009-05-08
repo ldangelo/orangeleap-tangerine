@@ -21,6 +21,9 @@ import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
@@ -130,7 +133,7 @@ public class EntityValidator implements Validator {
         }
         if (target instanceof AddressAware) {
             AddressAware obj = (AddressAware) target;
-            if (FormBeanType.NEW.equals(obj.getAddressType())) {
+            if (FormBeanType.NEW.equals(obj.getAddressType()) && obj instanceof NewAddressAware) {
                 addressValidator.validateAddress(target, errors);
             }
             else if (FormBeanType.EXISTING.equals(obj.getAddressType())) {
@@ -140,7 +143,7 @@ public class EntityValidator implements Validator {
 
         if (target instanceof PhoneAware) {
             PhoneAware obj = (PhoneAware) target;
-            if (FormBeanType.NEW.equals(obj.getPhoneType())) {
+            if (FormBeanType.NEW.equals(obj.getPhoneType()) && obj instanceof NewPhoneAware) {
                 phoneValidator.validatePhone(target, errors);
             }
             else if (FormBeanType.EXISTING.equals(obj.getPhoneType())) {
@@ -150,7 +153,7 @@ public class EntityValidator implements Validator {
 
         if (target instanceof EmailAware) {
             EmailAware obj = (EmailAware) target;
-            if (FormBeanType.NEW.equals(obj.getEmailType())) {
+            if (FormBeanType.NEW.equals(obj.getEmailType()) && obj instanceof NewEmailAware) {
                 emailValidator.validateEMail(target, errors);
             }
             else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {

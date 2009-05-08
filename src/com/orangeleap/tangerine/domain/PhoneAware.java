@@ -5,10 +5,6 @@ import com.orangeleap.tangerine.type.FormBeanType;
 
 public interface PhoneAware {
 
-    public Phone getPhone();
-
-    public void setPhone(Phone phone);
-
     public Phone getSelectedPhone();
 
     public void setSelectedPhone(Phone phone);

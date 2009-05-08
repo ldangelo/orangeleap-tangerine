@@ -8,6 +8,9 @@ import org.apache.commons.logging.LogFactory;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
@@ -61,68 +64,78 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     }
 
     private void maintainAddressChild(AddressAware addressAware, Person constituent) {
-        if (FormBeanType.NEW.equals(addressAware.getAddressType())) {
-            Address newAddress = addressAware.getAddress();
+        if (FormBeanType.NEW.equals(addressAware.getAddressType()) && addressAware instanceof NewAddressAware) {
+            NewAddressAware newAddressAware = (NewAddressAware) addressAware;
+            Address newAddress = newAddressAware.getAddress();
             newAddress.setPersonId(constituent.getId());
             
             Address existingAddress = addressService.alreadyExists(newAddress);
             if (existingAddress != null) {
-                addressAware.setAddress(existingAddress);
-                addressAware.setSelectedAddress(existingAddress);
-                addressAware.setAddressType(FormBeanType.EXISTING);
+                newAddressAware.setAddress(existingAddress);
+                newAddressAware.setSelectedAddress(existingAddress);
+                newAddressAware.setAddressType(FormBeanType.EXISTING);
             }
             else {
-                addressAware.setAddress(addressService.save(newAddress));
-                addressAware.setSelectedAddress(addressAware.getAddress());
+                newAddressAware.setAddress(addressService.save(newAddress));
+                newAddressAware.setSelectedAddress(newAddressAware.getAddress());
             }
         }
         else if (FormBeanType.NONE.equals(addressAware.getAddressType())) {
             addressAware.setSelectedAddress(null);
-            addressAware.setAddress(null);
+            
+            if (addressAware instanceof NewAddressAware) { 
+                ((NewAddressAware)addressAware).setAddress(null);
+            }
         }
     }
     
     private void maintainPhoneChild(PhoneAware phoneAware, Person constituent) {
-        if (FormBeanType.NEW.equals(phoneAware.getPhoneType())) {
-            Phone newPhone = phoneAware.getPhone();
+        if (FormBeanType.NEW.equals(phoneAware.getPhoneType()) && phoneAware instanceof NewPhoneAware) {
+            NewPhoneAware newPhoneAware = (NewPhoneAware) phoneAware;
+            Phone newPhone = newPhoneAware.getPhone();
             newPhone.setPersonId(constituent.getId());
             
             Phone existingPhone = phoneService.alreadyExists(newPhone);
             if (existingPhone != null) {
-                phoneAware.setPhone(existingPhone);
-                phoneAware.setSelectedPhone(existingPhone);
-                phoneAware.setPhoneType(FormBeanType.EXISTING);
+                newPhoneAware.setPhone(existingPhone);
+                newPhoneAware.setSelectedPhone(existingPhone);
+                newPhoneAware.setPhoneType(FormBeanType.EXISTING);
             }
             else {
-                phoneAware.setPhone(phoneService.save(newPhone));
-                phoneAware.setSelectedPhone(phoneAware.getPhone());
+                newPhoneAware.setPhone(phoneService.save(newPhone));
+                newPhoneAware.setSelectedPhone(newPhoneAware.getPhone());
             }
         }
         else if (FormBeanType.NONE.equals(phoneAware.getPhoneType())) {
             phoneAware.setSelectedPhone(null);
-            phoneAware.setPhone(null);
+            if (phoneAware instanceof NewPhoneAware) {
+                ((NewPhoneAware)phoneAware).setPhone(null);
+            }
         }
     }
     
     private void maintainEmailChild(EmailAware emailAware, Person constituent) {
-        if (FormBeanType.NEW.equals(emailAware.getEmailType())) {
-            Email newEmail = emailAware.getEmail();
+        if (FormBeanType.NEW.equals(emailAware.getEmailType()) && emailAware instanceof NewEmailAware) {
+            NewEmailAware newEmailAware = (NewEmailAware) emailAware;
+            Email newEmail = newEmailAware.getEmail();
             newEmail.setPersonId(constituent.getId());
             
             Email existingEmail = emailService.alreadyExists(newEmail);
             if (existingEmail != null) {
-                emailAware.setEmail(existingEmail);
-                emailAware.setSelectedEmail(existingEmail);
-                emailAware.setEmailType(FormBeanType.EXISTING);
+                newEmailAware.setEmail(existingEmail);
+                newEmailAware.setSelectedEmail(existingEmail);
+                newEmailAware.setEmailType(FormBeanType.EXISTING);
             }
             else {
-                emailAware.setEmail(emailService.save(newEmail));
-                emailAware.setSelectedEmail(emailAware.getEmail());
+                newEmailAware.setEmail(emailService.save(newEmail));
+                newEmailAware.setSelectedEmail(newEmailAware.getEmail());
             }
         }
         else if (FormBeanType.NONE.equals(emailAware.getEmailType())) {
             emailAware.setSelectedEmail(null);
-            emailAware.setEmail(null);
+            if (emailAware instanceof NewEmailAware) {
+                ((NewEmailAware)emailAware).setEmail(null);
+            }
         }
     }
     

@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Phone;
 
@@ -32,8 +32,8 @@ public class PhoneValidator extends AbstractCommunicationValidator<Phone> {
         if (target instanceof Phone) {
             phone = (Phone) target;
         } 
-        else if (target instanceof PhoneAware) {
-            phone = ((PhoneAware) target).getPhone();
+        else if (target instanceof NewPhoneAware) {
+            phone = ((NewPhoneAware) target).getPhone();
             errors.setNestedPath("phone");
         }
         else if (target instanceof AbstractCommunicatorEntity) {

@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.web.customization.tag.inputs.impl;
+package com.orangeleap.tangerine.web.customization.tag.inputs.impl.display;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +25,7 @@ public class DateDisplayInput extends AbstractInput {
     @Override
     public String handleField(HttpServletRequest request, FieldVO fieldVO) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div id='" + fieldVO.getFieldId() + "' class='readOnlyField " + fieldVO.getEntityAttributes() + "'>");
+        sb.append("<div id='" + fieldVO.getFieldId() + "' class='readOnlyField " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
         SimpleDateFormat sdf = new SimpleDateFormat(getDateFormat());
         
         boolean isSet = false;

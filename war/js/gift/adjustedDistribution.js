@@ -32,22 +32,6 @@ $(document).ready(function() {
 	$("a.treeNodeLink", $("#adjustedGift_distribution")).bind("click", function(event) {
 		return OrangeLeap.expandCollapse(this);
 	});
-	
-	$("#adjustedPaymentRequired").bind("change", function() {
-		var val = $(this).val();
-		if (val == "false") {
-			$("#li-adjustedGift_payment-selectedPaymentSource").hide();
-			$("#adjustedGift_check").hide();
-			$("#adjustedGift_ach").hide();
-			$("#adjustedGift_editAch").hide();
-			$("#adjustedGift_creditCard").hide();
-			$("#adjustedGift_editCreditCard").hide();
-		}
-		else {
-			$("#paymentType").triggerHandler("change");
-		}
-	});
-	$("#adjustedPaymentRequired").triggerHandler("change");
 });
 
 	

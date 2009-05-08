@@ -39,26 +39,51 @@ public class InputTag extends RequestContextAwareTag {
 
     protected String createInputHtml() {
         String html = StringConstants.EMPTY;
-        AbstractInput input = null;
+        String inputName = null; 
         
         FieldType ft = field.getFieldType();
-        if (FieldType.PAYMENT_SOURCE_PICKLIST.equals(ft)) {
-            input = getInputBean("paymentSourcePicklistInput");
+        if (FieldType.PICKLIST.equals(ft)) {
+            inputName = "picklistInput";
+        }
+        else if (FieldType.PAYMENT_SOURCE_PICKLIST.equals(ft)) {
+            inputName = "paymentSourcePicklistInput";
+        }
+        else if (FieldType.ADJUSTED_GIFT_PAYMENT_TYPE_PICKLIST.equals(ft)) {
+            inputName = "adjustedGiftPaymentTypePicklistInput";
+        }
+        else if (FieldType.ADJUSTED_GIFT_PAYMENT_SOURCE_PICKLIST.equals(ft)) {
+            inputName = "adjustedGiftPaymentSourcePicklistInput";
         }
         else if (FieldType.DATE_DISPLAY.equals(ft)) {
-            input = getInputBean("dateDisplayInput");
+            inputName = "dateDisplayInput";
         }
         else if (FieldType.CC_EXPIRATION_DISPLAY.equals(ft)) {
-            input = getInputBean("creditCardExpirationDisplayInput");
-        }
-        else if (FieldType.EXISTING_ADDRESS_PICKLIST.equals(ft)) {
-            input = getInputBean("existingAddressPicklistInput");
+            inputName = "creditCardExpirationDisplayInput";
         }
         else if (FieldType.ADDRESS_PICKLIST.equals(ft)) {
-            input = getInputBean("addressPicklistInput");
+            inputName = "addressPicklistInput";
         }
-        if (input != null) {
-            html = input.handleField(getRequest(), field);
+        else if (FieldType.EXISTING_ADDRESS_PICKLIST.equals(ft)) {
+            inputName = "existingAddressPicklistInput";
+        }
+        else if (FieldType.PHONE_PICKLIST.equals(ft)) {
+            inputName = "phonePicklistInput";
+        }
+        else if (FieldType.EXISTING_PHONE_PICKLIST.equals(ft)) {
+            inputName = "existingPhonePicklistInput";
+        }
+        else if (FieldType.EMAIL_PICKLIST.equals(ft)) {
+            inputName = "emailPicklistInput";
+        }
+        else if (FieldType.EXISTING_EMAIL_PICKLIST.equals(ft)) {
+            inputName = "existingEmailPicklistInput";
+        }
+
+        if (inputName != null) {
+            AbstractInput input = getInputBean(inputName);
+            if (input != null) {
+                html = input.handleField(getRequest(), field);
+            }
         }
         return html;
     }

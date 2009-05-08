@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.web.customization.tag.inputs.impl;
+package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
 import java.util.List;
 
@@ -41,5 +41,13 @@ public abstract class AbstractSingleValuedPicklistInput extends AbstractInput {
         if (list != null && list.isEmpty() == false) {
             sb.append("</optgroup>");
         }
+    }
+    
+    protected void createBeginSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, String references) {
+        sb.append("<select name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "' class='picklist " + checkForNull(fieldVO.getEntityAttributes()) + "' references='" + checkForNull(references) + "'>");
+    }
+    
+    protected void createEndSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
+        sb.append("</select>");
     }
 }

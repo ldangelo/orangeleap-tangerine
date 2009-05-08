@@ -17,9 +17,9 @@ import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
-import com.orangeleap.tangerine.domain.AddressAware;
-import com.orangeleap.tangerine.domain.EmailAware;
-import com.orangeleap.tangerine.domain.PhoneAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.FieldType;
@@ -90,7 +90,9 @@ public abstract class EntityImporter {
 		
 			try {
 				
-				if (ignore(key)) return;
+				if (ignore(key)) {
+                    return;
+                }
 				
 				FieldDescriptor fd = getFieldDescriptor(key);
 				if (fd == null) {
@@ -118,9 +120,15 @@ public abstract class EntityImporter {
                         throw new RuntimeException("Unable to import field.");
                     } 
 					BeanUtils.setProperty(so, fd.getDependentField(), value);
-					if (o instanceof AddressAware) ((AddressAware)o).setAddressType(FormBeanType.NEW);
-					if (o instanceof PhoneAware) ((PhoneAware)o).setPhoneType(FormBeanType.NEW);
-					if (o instanceof EmailAware) ((EmailAware)o).setEmailType(FormBeanType.NEW);
+					if (o instanceof NewAddressAware) {
+                        ((NewAddressAware)o).setAddressType(FormBeanType.NEW);
+                    }
+					if (o instanceof NewPhoneAware) {
+                        ((NewPhoneAware)o).setPhoneType(FormBeanType.NEW);
+                    }
+					if (o instanceof NewEmailAware) {
+                        ((NewEmailAware)o).setEmailType(FormBeanType.NEW);
+                    }
 				} else {
 					BeanUtils.setProperty(o, key, value);
 				}

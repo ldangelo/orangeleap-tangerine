@@ -6,13 +6,14 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.CommunicationHistoryType;
+import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 /*
  * Communication history (including generated correspondence) for Constituent
  */
 // recordedBy and assignedTo have been moved to custom fields
-public class CommunicationHistory extends AbstractCustomizableEntity {
+public class CommunicationHistory extends AbstractCustomizableEntity implements AddressAware, PhoneAware, EmailAware {
     private static final long serialVersionUID = 1L;
 
     private Date recordDate;
@@ -24,6 +25,9 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
+    private FormBeanType addressType;
+    private FormBeanType phoneType;
+    private FormBeanType emailType;
     private Address selectedAddress;
     private Phone selectedPhone;
     private Email selectedEmail;
@@ -126,5 +130,35 @@ public class CommunicationHistory extends AbstractCustomizableEntity {
 
     public void setSelectedEmail(Email selectedEmail) {
         this.selectedEmail = selectedEmail;
+    }
+
+    @Override
+    public FormBeanType getAddressType() {
+        return addressType;
+    }
+
+    @Override
+    public void setAddressType(FormBeanType type) {
+        this.addressType = type;
+    }
+
+    @Override
+    public FormBeanType getPhoneType() {
+        return phoneType;
+    }
+
+    @Override
+    public void setPhoneType(FormBeanType type) {
+        this.phoneType = type;
+    }
+
+    @Override
+    public FormBeanType getEmailType() {
+        return emailType;
+    }
+
+    @Override
+    public void setEmailType(FormBeanType type) {
+        this.emailType = type;
     }
 }

@@ -5,10 +5,6 @@ import com.orangeleap.tangerine.type.FormBeanType;
 
 public interface AddressAware {
 
-    public Address getAddress();
-
-    public void setAddress(Address address);
-
     public Address getSelectedAddress();
 
     public void setSelectedAddress(Address address);

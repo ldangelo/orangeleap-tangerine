@@ -12,7 +12,7 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -20,7 +20,7 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings("unchecked")
-public class GiftInKind extends AbstractCustomizableEntity implements EmailAware {
+public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAware {
     private static final long serialVersionUID = 1L;
     
     private BigDecimal fairMarketValue;

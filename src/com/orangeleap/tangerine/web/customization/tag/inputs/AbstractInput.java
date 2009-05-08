@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
 @Component
@@ -33,6 +34,10 @@ public abstract class AbstractInput implements ApplicationContextAware {
     
     protected String getMessage(String code, String[] args) {
         return messageSource.getMessage(code, args, Locale.getDefault());
+    }
+    
+    public Object checkForNull(Object obj) {
+        return obj == null ? StringConstants.EMPTY : obj;
     }
     
     public abstract String handleField(HttpServletRequest request, FieldVO fieldVO);

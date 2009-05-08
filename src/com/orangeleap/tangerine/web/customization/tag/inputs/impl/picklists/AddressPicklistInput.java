@@ -1,15 +1,14 @@
-package com.orangeleap.tangerine.web.customization.tag.inputs.impl;
+package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Component;
 
-import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
@@ -25,9 +24,9 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
             logger.trace("handleField: field.fieldName = " + fieldVO.getFieldName());
         }
         StringBuilder sb = new StringBuilder();
-        createBeginSelect(request, fieldVO, sb);
+        createBeginSelect(request, fieldVO, sb, NEW_ADDRESS_REF);
         createNoneOption(request, fieldVO, sb);
-        createNewOption(request, fieldVO, sb, ((AddressAware)fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
+        createNewOption(request, fieldVO, sb, ((NewAddressAware)fieldVO.getModel()).getAddress(), NEW_ADDRESS_REF);
         
         List<Address> addresses = (List<Address>)request.getAttribute(StringConstants.ADDRESSES);
         createBeginOptGroup(request, fieldVO, sb, addresses);
@@ -39,15 +38,11 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
         return sb.toString();
     }
     
-    protected void createBeginSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "' class='picklist " + fieldVO.getEntityAttributes() + "' references='" + NEW_ADDRESS_REF + "'>");
-    }
-    
     protected void createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List<Address> addresses) {
         if (addresses != null) {
             for (Address address : addresses) {
                 sb.append("<option value='" + address.getId() + "'");
-                checkIfSelected(fieldVO.getModel(), address, sb);
+                checkIfExistingOptionSelected(fieldVO.getModel(), address, sb);
                 sb.append(">");
                 sb.append(address.getShortDisplay());
                 
@@ -59,25 +54,23 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
         }
     }
     
-    protected void checkIfSelected(Object model, Address address, StringBuilder sb) {
-        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(model);
-        Address thisAddress = (Address)bw.getPropertyValue(StringConstants.ADDRESS);
-        Address selectedAddress = (Address)bw.getPropertyValue(StringConstants.SELECTED_ADDRESS);
-        if (thisAddress != null && thisAddress.isUserCreated() == false && selectedAddress != null && address.getId().equals(selectedAddress.getId())) {
+    protected void checkIfExistingOptionSelected(Object model, Address addressToCheck, StringBuilder sb) {
+        NewAddressAware aware = (NewAddressAware) model;
+        if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getAddress() != null && 
+                aware.getAddress().isUserCreated() == false && aware.getSelectedAddress() != null && 
+                addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
             sb.append(" selected='selected'");
         }
     }
     
-    protected void createEndSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("</select>");
-    }
-    
     protected void createSelectedRef(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        AddressAware aware = (AddressAware)fieldVO.getModel();
         String selectedRef = null;
-        if (aware.getAddress().isUserCreated() || (fieldVO.isRequired() && selectedRef == null)) {
-            selectedRef = NEW_ADDRESS_REF;
+        if (fieldVO.getModel() instanceof NewAddressAware) {
+            NewAddressAware aware = (NewAddressAware)fieldVO.getModel();
+            if (aware.getAddress().isUserCreated() || (fieldVO.isRequired() && selectedRef == null)) {
+                selectedRef = NEW_ADDRESS_REF;
+            }
         }
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + (selectedRef == null ? StringConstants.EMPTY : selectedRef) + "</div>");
+        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + checkForNull(selectedRef) + "</div>");
     }
 }

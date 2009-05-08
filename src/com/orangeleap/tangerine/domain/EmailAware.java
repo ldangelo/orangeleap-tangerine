@@ -5,10 +5,6 @@ import com.orangeleap.tangerine.type.FormBeanType;
 
 public interface EmailAware {
 
-    public Email getEmail();
-
-    public void setEmail(Email email);
-
     public Email getSelectedEmail();
 
     public void setSelectedEmail(Email email);

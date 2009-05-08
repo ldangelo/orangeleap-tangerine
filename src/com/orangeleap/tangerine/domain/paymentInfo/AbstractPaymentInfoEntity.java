@@ -11,12 +11,12 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.AddressAware;
-import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -25,7 +25,7 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings({ "unchecked" })
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, AddressAware, PhoneAware, EmailAware  {
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware, NewEmailAware  {
     private static final long serialVersionUID = 1L;
 
     protected String comments;

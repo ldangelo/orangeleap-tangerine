@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Email;
 
@@ -32,8 +32,8 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
     	if (target instanceof Email) {
     		email = (Email) target;
     	} 
-    	else if (target instanceof EmailAware) {
-    		email = ((EmailAware) target).getEmail();
+    	else if (target instanceof NewEmailAware) {
+    		email = ((NewEmailAware) target).getEmail();
     		errors.setNestedPath("email");
     	}
         else if (target instanceof AbstractCommunicatorEntity) {

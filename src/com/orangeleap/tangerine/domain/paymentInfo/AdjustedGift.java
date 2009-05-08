@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings("serial")
@@ -39,6 +40,13 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         setOriginalGiftId(originalGift.getId());
         setPerson(originalGift.getPerson());
         setAdjustedTransactionDate(Calendar.getInstance(Locale.getDefault()).getTime());
+        setSelectedPaymentSource(originalGift.getSelectedPaymentSource());
+        setPaymentSourceType(FormBeanType.EXISTING);
+        setSelectedAddress(originalGift.getSelectedAddress());
+        setAddressType(FormBeanType.EXISTING);
+        setSelectedPhone(originalGift.getSelectedPhone());
+        setPhoneType(FormBeanType.EXISTING);
+        setPaymentType(originalGift.getPaymentType());
         
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         if (originalGift.getDistributionLines() != null) {

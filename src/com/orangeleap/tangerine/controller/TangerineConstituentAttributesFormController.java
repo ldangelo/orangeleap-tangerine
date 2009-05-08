@@ -23,6 +23,9 @@ import com.orangeleap.tangerine.controller.communication.phone.PhoneEditor;
 import com.orangeleap.tangerine.controller.payment.PaymentSourceEditor;
 import com.orangeleap.tangerine.domain.AddressAware;
 import com.orangeleap.tangerine.domain.EmailAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
+import com.orangeleap.tangerine.domain.NewEmailAware;
+import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
@@ -224,15 +227,21 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         String selectedAddress = request.getParameter(StringConstants.SELECTED_ADDRESS);
         if (StringConstants.NEW.equals(selectedAddress)) {
             addressAware.setAddressType(FormBeanType.NEW);
-            addressAware.getAddress().setUserCreated(true);
+            if (addressAware instanceof NewAddressAware) {
+                ((NewAddressAware)addressAware).getAddress().setUserCreated(true);
+            }
         }
         else if (StringConstants.NONE.equals(selectedAddress)) {
             addressAware.setAddressType(FormBeanType.NONE);
-            addressAware.getAddress().setUserCreated(false);
+            if (addressAware instanceof NewAddressAware) {
+                ((NewAddressAware)addressAware).getAddress().setUserCreated(false);
+            }
         }
         else {
             addressAware.setAddressType(FormBeanType.EXISTING);
-            addressAware.getAddress().setUserCreated(false);
+            if (addressAware instanceof NewAddressAware) {
+                ((NewAddressAware)addressAware).getAddress().setUserCreated(false);
+            }
         }
     }
 
@@ -240,15 +249,21 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         String selectedPhone = request.getParameter(StringConstants.SELECTED_PHONE);
         if (StringConstants.NEW.equals(selectedPhone)) {
             phoneAware.setPhoneType(FormBeanType.NEW);
-            phoneAware.getPhone().setUserCreated(true);
+            if (phoneAware instanceof NewPhoneAware) {
+                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(true);
+            }
         }
         else if (StringConstants.NONE.equals(selectedPhone)) {
             phoneAware.setPhoneType(FormBeanType.NONE);
-            phoneAware.getPhone().setUserCreated(false);
+            if (phoneAware instanceof NewPhoneAware) {
+                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(false);
+            }
         }
         else {
             phoneAware.setPhoneType(FormBeanType.EXISTING);
-            phoneAware.getPhone().setUserCreated(false);
+            if (phoneAware instanceof NewPhoneAware) {
+                ((NewPhoneAware)phoneAware).getPhone().setUserCreated(false);
+            }
         }
     }
 
@@ -256,15 +271,21 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         String selectedEmail = request.getParameter(StringConstants.SELECTED_EMAIL);
         if (StringConstants.NEW.equals(selectedEmail)) {
             emailAware.setEmailType(FormBeanType.NEW);
-            emailAware.getEmail().setUserCreated(true);
+            if (emailAware instanceof NewEmailAware) {
+                ((NewEmailAware)emailAware).getEmail().setUserCreated(true);
+            }
         }
         else if (StringConstants.NONE.equals(selectedEmail)) {
             emailAware.setEmailType(FormBeanType.NONE);
-            emailAware.getEmail().setUserCreated(false);
+            if (emailAware instanceof NewEmailAware) {
+                ((NewEmailAware)emailAware).getEmail().setUserCreated(false);
+            }
         }
         else {
             emailAware.setEmailType(FormBeanType.EXISTING);
-            emailAware.getEmail().setUserCreated(false);
+            if (emailAware instanceof NewEmailAware) {
+                ((NewEmailAware)emailAware).getEmail().setUserCreated(false);
+            }
         }
     }
     

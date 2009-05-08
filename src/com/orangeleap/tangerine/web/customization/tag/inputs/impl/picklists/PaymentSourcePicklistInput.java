@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.web.customization.tag.inputs.impl;
+package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,7 +30,7 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
     
     protected void createHiddenField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         sb.append("<input type='hidden' name='" + fieldVO.getFieldName() + "'");
-        sb.append(" id='" + fieldVO.getFieldId() + "' value='" + ((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource().getId() + "'/>");
+        sb.append(" id='" + fieldVO.getFieldId() + "' value='" + checkForNull(((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource().getId()) + "'/>");
     }
     
     protected List<PaymentSource> getSources(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, Map<String, List<PaymentSource>> paymentSources, String key) {
@@ -57,7 +57,7 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
         
         if (achSources != null) {
             for (PaymentSource thisAchSrc : achSources) {
-                sb.append("<option value='" + thisAchSrc.getId() + "' address='" + thisAchSrc.getSelectedAddress().getId() + "' phone='" + thisAchSrc.getSelectedPhone().getId() + "'");
+                sb.append("<option value='" + thisAchSrc.getId() + "' address='" + checkForNull(thisAchSrc.getSelectedAddress().getId()) + "' phone='" + checkForNull(thisAchSrc.getSelectedPhone().getId()) + "'");
                 sb.append(" achholder='" + thisAchSrc.getAchHolderName() + "' routing='" + thisAchSrc.getAchRoutingNumberDisplay() + "' acct='" + thisAchSrc.getAchAccountNumberDisplay() + "'");
                 if (paymentSource.isUserCreated() == false && thisAchSrc.getId().equals(selectedPaymentSource.getId())) {
                     sb.append(" selected='selected'");
@@ -92,7 +92,7 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
         SimpleDateFormat sdf = new SimpleDateFormat("MM / yyyy");
         if (ccSources != null) {
             for (PaymentSource thisCcSrc : ccSources) {
-                sb.append("<option value='" + thisCcSrc.getId() + "' address='" + thisCcSrc.getSelectedAddress().getId() + "' phone='" + thisCcSrc.getSelectedPhone().getId() + "'");
+                sb.append("<option value='" + thisCcSrc.getId() + "' address='" + checkForNull(thisCcSrc.getSelectedAddress().getId()) + "' phone='" + checkForNull(thisCcSrc.getSelectedPhone().getId()) + "'");
                 sb.append(" cardholder='" + thisCcSrc.getCreditCardHolderName() + "' cardType='" + thisCcSrc.getCreditCardType() + "' number='" + thisCcSrc.getCreditCardNumberDisplay() + "'");
                 sb.append(" exp='" + sdf.format(thisCcSrc.getCreditCardExpiration()) + "'");
                 if (paymentSource.isUserCreated() == false && thisCcSrc.getId().equals(selectedPaymentSource.getId())) {

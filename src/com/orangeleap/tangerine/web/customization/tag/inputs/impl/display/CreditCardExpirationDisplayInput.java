@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.web.customization.tag.inputs.impl;
+package com.orangeleap.tangerine.web.customization.tag.inputs.impl.display;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

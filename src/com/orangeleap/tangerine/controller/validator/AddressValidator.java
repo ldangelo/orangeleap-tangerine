@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-import com.orangeleap.tangerine.domain.AddressAware;
+import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
 
@@ -32,8 +32,8 @@ public class AddressValidator extends AbstractCommunicationValidator<Address> {
         if (target instanceof Address) {
             address = (Address) target;
         } 
-        else if (target instanceof AddressAware) {
-            address = ((AddressAware) target).getAddress();
+        else if (target instanceof NewAddressAware) {
+            address = ((NewAddressAware) target).getAddress();
             errors.setNestedPath("address");
         }
         else if (target instanceof AbstractCommunicatorEntity) {

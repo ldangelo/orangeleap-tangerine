@@ -193,12 +193,13 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             
     		errorLogService.addErrorMessage(message, "gift.rules");
 
-    		FileWriter out = new FileWriter("rules-errors.log");
-    		try {
-    			out.write(message);
-    		} finally {
-    			out.close();
-    		}
+//    		FileWriter out = new FileWriter("rules-errors.log");
+//    		try {
+//    			out.write(message);
+//    		} finally {
+//    			out.close();
+//    		}
+    		
     	} catch (Exception e) {
     		logger.error("Unable to write to rules error log file: "+message);
     	}

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="orangeleap" basedir=".." default="usage">
+<project name="tangerine-build" basedir=".." default="usage">
 
 	<property file="${basedir}/build/build.properties" />
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 	<tstamp prefix="build" />
-
 
 	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 
@@ -14,12 +13,28 @@
 		</classpath>
 	</taskdef>
 
-	<target name="build">
-		<antcall target="build-integrated-war" />
+	<!-- Integrated targets -->
+	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
+
+	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-integrated-war, copy-tangerine.properties">
+		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
 
-	<target name="setup" depends="clean-build, resolve">
+	<target name="deploy-exploded-war" depends="resolve, clean-build, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-exploded-war, copy-tangerine.properties">
+		<copy todir="${deploy.path}/${war.name}">
+			<fileset dir="${stage.dir}/${war.name}.war" />
+		</copy>
+		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
+	</target>
+
+	<target name="compress-build" depends="resolve, optimize-release" description="Compress CSS and JS files, creates timestamped CSS/JS files"/>
+	
+	<target name="compress-dev" depends="resolve, optimize-dev" description="Compress CSS and JS files, does NOT create timestamped CSS/JS files"/>
+	
+	<!-- Singular targets -->
+	<target name="setup">
 		<echo>Setting up for environment = ${build.env}</echo>
+
 		<mkdir dir="${stage.dir}" />
 		<if>
 			<equals arg1="${build.env}" arg2="dev" />
@@ -36,15 +51,53 @@
 				<property name="debug.compile" value="false" />
 			</else>
 		</if>
+
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		
+		<echo>Compiling with debug=${debug.compile}</echo>
+		<javac destdir="${classes.dir}" srcdir="${src.dir}" memoryInitialSize="128m" memoryMaximumSize="1024m" fork="true"
+			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
 	</target>
 
-	<target name="classes-jar" depends="setup">
-		<mkdir dir="${classes.dir}" />
+	<target name="setup-war">
+		<mkdir dir="${stage.dir}/war" />
+		<mkdir dir="${stage.dir}/war/META-INF" />
+		<mkdir dir="${stage.dir}/war/WEB-INF" />
+		<mkdir dir="${stage.dir}/war/WEB-INF/lib" />
+		<mkdir dir="${stage.dir}/war/WEB-INF/classes" />
 
-		<echo>Compiling with debug=${debug.compile}</echo>
-		<javac destdir="${stage.dir}/classes-jar" srcdir="${src.dir}" 
-			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
+		<copy todir="${stage.dir}/war" includeemptydirs="true">
+			<fileset dir="${war.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
 
+		<replace file="${stage.dir}/war/login.jsp" token="$${build.version}" value="${build.TODAY}"/>
+		<replace file="${stage.dir}/war/login.jsp" token="$${build.time}" value="${build.DSTAMP} ${build.TSTAMP}"/>
+	</target>
+
+	<target name="jspc"> 
+		<taskdef resource="org/apache/catalina/ant/catalina.tasks">
+			<classpath>
+				<pathelement path="${compile.lib}"/>
+				<pathelement path="${war.lib}"/>
+				<pathelement path="${classes.dir}"/>
+			</classpath>
+		</taskdef>
+
+	    <jasper validateXml="false" uriroot="${stage.dir}/war" webXmlFragment="${stage.dir}/war/WEB-INF/generated_web.xml" addWebXmlMappings="true" 
+	    	outputDir="${stage.dir}/war/WEB-INF/src" /> 
+
+		<javac destdir="${classes.dir}" optimize="on" debug="off" memoryInitialSize="128m" memoryMaximumSize="2048m" fork="true"
+	    	failonerror="false" srcdir="${stage.dir}/war/WEB-INF/src" classpathref="compile.path"/>
+
+		<delete dir="${stage.dir}/war/WEB-INF/src" />
+	</target> 
+
+	<target name="jar">
 		<copy todir="${classes.dir}">
 			<fileset dir="${src.dir}">
 				<include name="**/*.*" />
@@ -74,19 +127,7 @@
 		<delete dir="${classes.dir}" />
 	</target>
 
-	<target name="setup-war" depends="classes-jar">
-		<mkdir dir="${stage.dir}/war" />
-		<mkdir dir="${stage.dir}/war/META-INF" />
-		<mkdir dir="${stage.dir}/war/WEB-INF" />
-		<mkdir dir="${stage.dir}/war/WEB-INF/lib" />
-		<mkdir dir="${stage.dir}/war/WEB-INF/classes" />
-
-		<copy todir="${stage.dir}/war" includeemptydirs="true">
-			<fileset dir="${war.dir}">
-				<include name="**/*.*" />
-			</fileset>
-		</copy>
-
+	<target name="copy-jars-to-war">
 		<copy todir="${stage.dir}/war/WEB-INF/lib">
 			<fileset dir="${stage.dir}">
 				<include name="${app.name}.jar" />
@@ -98,20 +139,16 @@
 				<pathelement path="${war.lib}"/> <!-- war.lib from ivyBuild.xml -->
 		    </path>
 		</copy>
-
-		<replace file="${stage.dir}/war/login.jsp" token="$${build.version}" value="${build.TODAY}"/>
-		<replace file="${stage.dir}/war/login.jsp" token="$${build.time}" value="${build.DSTAMP} ${build.TSTAMP}"/>
-
 	</target>
 
-	<target name="build-integrated-war" depends="setup-war">
+	<target name="build-integrated-war">
 		<war destfile="${stage.dir}/${war.name}.war" basedir="${stage.dir}/war">
 			<include name="**/*.*" />
 		</war>
 		<delete dir="${stage.dir}/war" />
 	</target>
 
-	<target name="build-exploded-war" depends="setup-war">
+	<target name="build-exploded-war">
 		<mkdir dir="${stage.dir}/${war.name}.war" />
 		<copy todir="${stage.dir}/${war.name}.war">
 			<fileset dir="${stage.dir}/war">
@@ -124,6 +161,8 @@
 	<target name="copy-tangerine.properties">
 		<!-- Only copy if tangerine.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
+		<copy todir="${deploy.lib.dir}" file="${basedir}/tangerine.properties" />
+		<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
 			<equals arg1="${tangerine.properties.present}" arg2="true" />
@@ -132,18 +171,6 @@
 				<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 			</else>
 		</if>
-	
-	</target>
-	
-	<target name="deploy-integrated-war" depends="build-integrated-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
-	</target>
-
-	<target name="deploy-exploded-war" depends="build-exploded-war, copy-tangerine.properties">
-		<copy todir="${deploy.path}/${war.name}">
-			<fileset dir="${stage.dir}/${war.name}.war" />
-		</copy>
-		<delete dir="${stage.dir}/${war.name}.war" quiet="true" />
 	</target>
 
 	<target name="undeploy-war">
@@ -174,13 +201,36 @@
 
 	<target name="app.synch">
 		<echo>Synchronizing App</echo>
-		<sync todir="${deploy.path}/${war.name}/css">
+
+		<mkdir dir="${stage.dir}/war" />
+		<mkdir dir="${stage.dir}/war/css" />
+		<mkdir dir="${stage.dir}/war/js" />
+
+		<copy todir="${stage.dir}/war/css" includeemptydirs="true">
 			<fileset dir="${war.dir}/css">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<copy todir="${stage.dir}/war/js" includeemptydirs="true">
+			<fileset dir="${war.dir}/js">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<antcall target="compress-dev"/>
+
+		<sync todir="${deploy.path}/${war.name}/css">
+			<fileset dir="${stage.dir}/war/css">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
 		<sync todir="${deploy.path}/${war.name}/js">
-			<fileset dir="${war.dir}/js">
+			<fileset dir="${stage.dir}/war/js">
+				<include name="**/*.*"/>
+			</fileset>
+		</sync>
+		<sync todir="${deploy.path}/${war.name}/xml">
+			<fileset dir="${war.dir}/xml">
 				<include name="**/*.*"/>
 			</fileset>
 		</sync>
@@ -199,80 +249,186 @@
 				<include name="*.jsp"/>
 			</fileset>
 		</copy>
+
+		<delete dir="${stage.dir}/war" />
 	</target>
 	
-	<target name="optimization" depends="resolve">
+	<target name="optimize-dev">
 		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
-			<classpath path="${war.lib}"/>
+			<classpath path="${compile.lib}"/>
 		</taskdef>
 		
 		<css-optimization
 			minify="true" 
 			gZip="true" 
-			destFile="${war.dir}/css/tangerine.css" 
+			destFile="${stage.dir}/war/css/tangerine.css" 
 			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="true">
+			verbose="false">
 	
 			<!--	
 				Defines the set of files that will be concatenated and
 				then optimized. All the files need to be css files or 
 				errors will occur.
 			-->
-            <fileset dir="${war.dir}/css" includes="tablesorter.css" />
-            <fileset dir="${war.dir}/css" includes="jquery.tooltip.css" />
-            <fileset dir="${war.dir}/css" includes="datePicker.css" />
-            <fileset dir="${war.dir}/css" includes="jqModal.css" />
-            <fileset dir="${war.dir}/css" includes="jquery.autocomplete.css" />
-            <fileset dir="${war.dir}/css" includes="jquery.cluetip.css" />
-            <fileset dir="${war.dir}/css" includes="master.css" />
-            <fileset dir="${war.dir}/css" includes="navigation.css" />
-            <fileset dir="${war.dir}/css" includes="forms.css" />
-            <fileset dir="${war.dir}/css" includes="pages.css" />
-            <fileset dir="${war.dir}/js/extjs/resources/css" includes="ext-all.css" />
-            <fileset dir="${war.dir}/js/extjs/resources/css" includes="xtheme-gray.css" />
-            <fileset dir="${war.dir}/css" includes="orange-theme.css" />
-            <fileset dir="${war.dir}/css" includes="ext-styles.css" />
+            <fileset dir="${stage.dir}/war/css" includes="tablesorter.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.tooltip.css" />
+            <fileset dir="${stage.dir}/war/css" includes="datePicker.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jqModal.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.autocomplete.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.cluetip.css" />
+            <fileset dir="${stage.dir}/war/css" includes="master.css" />
+            <fileset dir="${stage.dir}/war/css" includes="navigation.css" />
+            <fileset dir="${stage.dir}/war/css" includes="forms.css" />
+            <fileset dir="${stage.dir}/war/css" includes="pages.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="ext-all.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="xtheme-gray.css" />
+            <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
+            <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
 		</css-optimization>
 
 		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
-			<classpath path="${war.lib}"/>
+			<classpath path="${compile.lib}"/>
 		</taskdef>
 
 		<javascript-optimization
 			minify="true" 
 			yCompressor="true" 
 			gZip="false" 
-			destFile="${war.dir}/js/tangerine.js" 
+			destFile="${stage.dir}/war/js/tangerine.js" 
 			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
-			verbose="true">
+			verbose="false">
 
 			<!--	
 				Defines the set of files that will be concatenated and
 				then optimized. All the files need to be JavaScript files
 				or errors will occur.
 			-->
-            <fileset dir="${war.dir}/js" includes="jquery/jquery-1.3.2.min.js" />
-            <fileset dir="${war.dir}/js" includes="extjs/ext-jquery-adapter.js" />
-            <fileset dir="${war.dir}/js" includes="extjs/ext-all.js" />
-            <fileset dir="${war.dir}/js" includes="extjs/ext-ajax-queue.js" />
-            <fileset dir="${war.dir}/js" includes="jquery.bgiframe.js" />
-            <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.hoverIntent.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery.cluetip.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery.selectboxes.js" />
-	        <fileset dir="${war.dir}/js" includes="jqModal.js" />
-	        <fileset dir="${war.dir}/js" includes="jqDnR.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.numeric.pack.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.fade.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
-	        <fileset dir="${war.dir}/js" includes="jquery/plugins/jquery.autocomplete.js" />
-	        <fileset dir="${war.dir}/js" includes="date.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery.bgiframe.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery.cluetip.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery.selectboxes.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jqModal.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jqDnR.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="date.js" />
 		</javascript-optimization>
 
 	</target>
+
+	
+	<target name="optimize-release">
+		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
+			<classpath path="${compile.lib}"/>
+		</taskdef>
 		
-	<target name="usage">
-		<echo>This is the internal build file for Tangerine.</echo>
-		<echo>Please use build.xml</echo>
+		<tstamp>
+			<format property="now.time" pattern="yyyyMMddkkmm"/>
+		</tstamp>
+
+		<css-optimization
+			minify="true" 
+			gZip="true" 
+			destFile="${stage.dir}/war/css/tangerine${now.time}.css" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="false">
+	
+			<!--	
+				Defines the set of files that will be concatenated and
+				then optimized. All the files need to be css files or 
+				errors will occur.
+			-->
+            <fileset dir="${stage.dir}/war/css" includes="tablesorter.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.tooltip.css" />
+            <fileset dir="${stage.dir}/war/css" includes="datePicker.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jqModal.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.autocomplete.css" />
+            <fileset dir="${stage.dir}/war/css" includes="jquery.cluetip.css" />
+            <fileset dir="${stage.dir}/war/css" includes="master.css" />
+            <fileset dir="${stage.dir}/war/css" includes="navigation.css" />
+            <fileset dir="${stage.dir}/war/css" includes="forms.css" />
+            <fileset dir="${stage.dir}/war/css" includes="pages.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="ext-all.css" />
+            <fileset dir="${stage.dir}/war/js/extjs/resources/css" includes="xtheme-gray.css" />
+            <fileset dir="${stage.dir}/war/css" includes="orange-theme.css" />
+            <fileset dir="${stage.dir}/war/css" includes="ext-styles.css" />
+		</css-optimization>
+
+		<taskdef classname="com.rockstarapps.jslex.ant.JavaScriptOptimization" name="javascript-optimization">
+			<classpath path="${compile.lib}"/>
+		</taskdef>
+
+		<javascript-optimization
+			minify="true" 
+			yCompressor="true" 
+			gZip="false" 
+			destFile="${stage.dir}/war/js/tangerine${now.time}.js" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="false">
+
+			<!--	
+				Defines the set of files that will be concatenated and
+				then optimized. All the files need to be JavaScript files
+				or errors will occur.
+			-->
+            <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
+            <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery.bgiframe.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery.cluetip.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery.selectboxes.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jqModal.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jqDnR.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.autocomplete.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="date.js" />
+		</javascript-optimization>
+
+		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="tangerine.css.min.css" value="tangerine${now.time}.css.min.css"/>
+		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="tangerine.js.ycomp.js" value="tangerine${now.time}.js.ycomp.js"/>
+
+		<javascript-optimization
+			minify="false" 
+			yCompressor="false" 
+			gZip="false" 
+			destFile="${stage.dir}/war/js/sidebar${now.time}.js" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="false">
+            <fileset dir="${war.dir}/js" includes="sidebar.js" />
+		</javascript-optimization>
+		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="sidebar.js" value="sidebar${now.time}.js"/>
+
+		<javascript-optimization
+			minify="false" 
+			yCompressor="false" 
+			gZip="false" 
+			destFile="${stage.dir}/war/js/history${now.time}.js" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="false">
+            <fileset dir="${war.dir}/js" includes="history.js" />
+		</javascript-optimization>
+		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="history.js" value="history${now.time}.js"/>
+
+		<javascript-optimization
+			minify="false" 
+			yCompressor="false" 
+			gZip="false" 
+			destFile="${stage.dir}/war/js/orangeleap${now.time}.js" 
+			optimizationLibraryPath="${lib.dir}/jslex-optimization-1.2b.jar"
+			verbose="false">
+            <fileset dir="${war.dir}/js" includes="orangeleap.js" />
+		</javascript-optimization>
+		<replace file="${stage.dir}/war/WEB-INF/jsp/layouts/headContent.jsp" token="orangeleap.js" value="orangeleap${now.time}.js"/>
 	</target>
 
 </project>

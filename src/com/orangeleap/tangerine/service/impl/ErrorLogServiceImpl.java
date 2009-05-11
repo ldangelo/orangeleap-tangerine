@@ -36,4 +36,9 @@ public class ErrorLogServiceImpl extends AbstractTangerineService implements Err
     	}
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void removeErrorMessagesOlderThanDays(int days) {
+    	errorLogDao.removeErrorMessagesOlderThanDays(days);
+    }
 }

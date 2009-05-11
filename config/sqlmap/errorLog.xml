@@ -35,5 +35,13 @@
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
 	</insert>
+	
+	<delete id="DELETE_ERROR_LOG" parameterClass="map">
+		delete from ERROR_LOG 
+		where
+		SITE_NAME = #siteName#
+		and CREATE_DATE &lt; #cutoffdate#
+	</delete>
+	
 
 </sqlMap>

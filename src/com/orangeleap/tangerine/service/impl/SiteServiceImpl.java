@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
 import com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.VersionService;
 import com.orangeleap.tangerine.service.customization.FieldService;
@@ -68,8 +69,13 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     @Resource(name = "versionService")
     private VersionService versionService;
     
+    @Resource(name = "errorLogService")
+    private ErrorLogService errorLogService;
+    
     @Resource(name = "tangerineUserHelper")
     private TangerineUserHelper tangerineUserHelper;
+    
+    private static final int OLDEST_LOG_MESSAGE_DAYS = 31;  // TODO make configurable by site
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -77,6 +83,8 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     	if (logger.isTraceEnabled()) {
     	    logger.trace("createSiteAndUserIfNotExist: siteName = " + siteName);
     	}
+    	
+    	errorLogService.removeErrorMessagesOlderThanDays(OLDEST_LOG_MESSAGE_DAYS);
     	
     	versionService.checkOrangeLeapSchemaCompatible();
     	

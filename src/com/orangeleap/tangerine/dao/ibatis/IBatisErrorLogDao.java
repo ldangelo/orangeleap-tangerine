@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -35,6 +37,18 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
         params.put("createDate", new java.util.Date());
         getSqlMapClientTemplate().insert("INSERT_ERROR_LOG", params);
         
+	}
+
+	@Override
+	public void removeErrorMessagesOlderThanDays(int days) {
+        Map<String, Object> params = setupParams();
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -days);
+        Date cutoffdate = cal.getTime();
+        
+        params.put("cutoffdate", cutoffdate);
+		getSqlMapClientTemplate().delete("DELETE_ERROR_LOG", params);
 	}
 	
 }

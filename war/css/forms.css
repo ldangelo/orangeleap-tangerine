@@ -260,11 +260,8 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
 	font-size:14px;
 	font-weight:bold;
 }
-ul.formFields li input.textError {
-	background:#fed;
-	border:1px solid #d00;
-}
-ul.formFields li textarea.textError {
+ul.formFields li input.textError, 
+	ul.formFields li textarea.textError {
 	background:#fed;
 	border:1px solid #d00;
 }
@@ -472,6 +469,11 @@ a.hideText {
 
 li.multiOptionLi { padding-right: 0; position: relative; }
 div.lookupScrollTop, div.lookupScrollBottom, div.lookupScrollLeft, div.lookupScrollRight { position: relative; background-color: #7F9DB9; }
+div.lookupScrollTop.textError, 
+	div.lookupScrollBottom.textError, 
+	div.lookupScrollContainer.textError div.lookupScrollLeft, 
+	div.lookupScrollContainer.textError div.lookupScrollRight { background-color: #D00; } 
+div.lookupScrollContainer.textError div.multiLookupField { background-color: #FED; } 
 div.lookupScrollTop, div.lookupScrollBottom { height:1px; left:121px; width:249px; z-index:1; } 
 div.lookupScrollBottom { top:-1px; }
 div.lookupScrollTop { top:1px; } 

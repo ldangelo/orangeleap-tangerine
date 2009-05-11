@@ -2,12 +2,14 @@ package com.orangeleap.tangerine.controller.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class EmailValidator extends AbstractCommunicationValidator<Email> {
 
@@ -23,10 +25,10 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
     @Override
     public void validate(Object target, Errors errors) {
         logger.trace("in EmailValidator");
-        validateEMail(target, errors);
+        validateEmail(target, errors);
     }
     
-    public void validateEMail(Object target, Errors errors) {
+    public void validateEmail(Object target, Errors errors) {
     	Email email = null;
     	String inPath = errors.getNestedPath();
     	if (target instanceof Email) {
@@ -41,6 +43,9 @@ public class EmailValidator extends AbstractCommunicationValidator<Email> {
             errors.setNestedPath("primaryEmail");
         }
 
+        if (StringUtils.hasText(email.getCustomFieldValue(StringConstants.EMAIL_TYPE)) == false) {
+            errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + StringConstants.EMAIL_TYPE + StringConstants.CUSTOM_FIELD_MAP_END, "errorEmailTypeRequired");
+        }
     	ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "invalidEmailAddress", "Email Address is required");
     	validateDates(email, errors);
     	errors.setNestedPath(inPath);

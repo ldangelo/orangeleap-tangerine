@@ -86,6 +86,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 --INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPaymentSource.creditCardExpiration', 'recurringGift', 'selectedPaymentSource', 'Expiration', 'CC_EXPIRATION_DISPLAY'); --TODO: put back?
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress', 'recurringGift', 'selectedAddress', 'Billing Address', 'ADDRESS_PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.customFieldMap[addressType]', 'recurringGift', 'address', 'Address Type', 'MULTI_PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.addressLine1', 'recurringGift', 'address', 'Address Line 1', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.addressLine2', 'recurringGift', 'address', 'Address Line 2', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.addressLine3', 'recurringGift', 'address', 'Address Line 3', 'TEXT');
@@ -94,6 +95,7 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.postalCode', 'recurringGift', 'address', 'Zip/Postal Code', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.address.country', 'recurringGift', 'address', 'Country', 'PICKLIST');
 
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress.customFieldMap[addressTypeReadOnly]', 'recurringGift', 'selectedAddress', 'Address Type', 'MULTI_PICKLIST_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress.addressLine1ReadOnly', 'recurringGift', 'selectedAddress', 'Address Line 1', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress.addressLine2ReadOnly', 'recurringGift', 'selectedAddress', 'Address Line 2', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress.addressLine3ReadOnly', 'recurringGift', 'selectedAddress', 'Address Line 3', 'READ_ONLY_TEXT');
@@ -103,8 +105,10 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedAddress.countryReadOnly', 'recurringGift', 'selectedAddress', 'Country', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPhone', 'recurringGift', 'selectedPhone', 'Billing Phone', 'PHONE_PICKLIST');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.phone.customFieldMap[phoneType]', 'recurringGift', 'phone', 'Phone Type', 'MULTI_PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.phone.number', 'recurringGift', 'phone', 'Phone Number', 'TEXT');
 
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPhone.customFieldMap[phoneTypeReadOnly]', 'recurringGift', 'selectedPhone', 'Phone Type', 'MULTI_PICKLIST_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPhone.numberReadOnly', 'recurringGift', 'selectedPhone', 'Phone Number', 'READ_ONLY_TEXT');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedEmail', 'recurringGift', 'selectedEmail', 'Receipt EMail', 'EMAIL_PICKLIST');

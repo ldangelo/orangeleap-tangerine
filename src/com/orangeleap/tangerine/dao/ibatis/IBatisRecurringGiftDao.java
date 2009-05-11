@@ -82,6 +82,8 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         if (recurringGift != null) {
             recurringGift.setAssociatedGiftIds(readAssociatedGiftIdsForRecurringGift(recurringGift.getId()));
             loadCustomFields(recurringGift.getPerson());
+            loadCustomFields(recurringGift.getSelectedAddress());
+            loadCustomFields(recurringGift.getSelectedPhone());
         }
         return recurringGift;
     }

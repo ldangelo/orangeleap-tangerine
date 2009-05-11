@@ -107,8 +107,10 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     }
     
     public final void loadCustomFields(AbstractCustomizableEntity entity) {
-        Map<String, CustomField> customFieldMap = getCustomFieldHelper().readCustomFields(entity);
-        entity.setCustomFieldMap(customFieldMap);
+        if (entity != null && entity.getId() != null && entity.getId() > 0) {
+            Map<String, CustomField> customFieldMap = getCustomFieldHelper().readCustomFields(entity);
+            entity.setCustomFieldMap(customFieldMap);
+        }
     }
     
     protected IBatisCustomFieldHelper getCustomFieldHelper() {

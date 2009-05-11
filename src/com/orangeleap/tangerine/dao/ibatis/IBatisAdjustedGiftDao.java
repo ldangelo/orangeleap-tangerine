@@ -51,6 +51,8 @@ public class IBatisAdjustedGiftDao extends AbstractPaymentInfoEntityDao<Adjusted
         if (adjustedGift != null) {
             loadDistributionLinesCustomFields(adjustedGift);
             loadCustomFields(adjustedGift.getPerson());
+            loadCustomFields(adjustedGift.getSelectedAddress());
+            loadCustomFields(adjustedGift.getSelectedPhone());
         }
         return adjustedGift;
     }

@@ -65,7 +65,11 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
     }
-    
+
+    public boolean isFieldEntered() {
+        return StringUtils.hasText(number) || StringUtils.hasText(getCustomFieldValue(StringConstants.PHONE_TYPE));
+     }
+
     @Override
     public String getAuditShortDesc() {
     	return getNumber();

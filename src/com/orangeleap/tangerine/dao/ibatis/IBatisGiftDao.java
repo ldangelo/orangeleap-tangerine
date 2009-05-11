@@ -70,6 +70,8 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
                 gift.setAssociatedRecurringGiftIds(new ArrayList<Long>(0)); // default set
             }
             loadCustomFields(gift.getPerson());
+            loadCustomFields(gift.getSelectedAddress());
+            loadCustomFields(gift.getSelectedPhone());
         }
         return gift;
     }

@@ -124,11 +124,6 @@ public class Address extends AbstractCommunicationEntity {
         return shortDisplay;
     }
 
-    public boolean isFieldEntered() {
-        return StringUtils.hasText(addressLine1) || StringUtils.hasText(addressLine2) || StringUtils.hasText(addressLine3) || StringUtils.hasText(city) || 
-            StringUtils.hasText(stateProvince) || StringUtils.hasText(postalCode) || StringUtils.hasText(country);
-     }
-
     /**
      * Check if this is a dummy object; This is not a dummy object all required fields (addressLine1, city, stateProvince, postalCode, country) are populated
      * @return true if this Address has all required fields populated
@@ -140,6 +135,11 @@ public class Address extends AbstractCommunicationEntity {
                 StringUtils.hasText(stateProvince) &&
                 StringUtils.hasText(postalCode) &&
                 StringUtils.hasText(country));
+    }
+
+    public boolean isFieldEntered() {
+        return StringUtils.hasText(addressLine1) || StringUtils.hasText(addressLine2) || StringUtils.hasText(addressLine3) || StringUtils.hasText(city) || 
+            StringUtils.hasText(stateProvince) || StringUtils.hasText(postalCode) || StringUtils.hasText(country) || StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE));
     }
     
     @Override

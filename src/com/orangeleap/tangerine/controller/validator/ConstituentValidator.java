@@ -19,6 +19,12 @@ public class ConstituentValidator implements Validator {
     @Resource(name="addressValidator")
     private AddressValidator addressValidator;
 
+    @Resource(name="phoneValidator")
+    private PhoneValidator phoneValidator;
+
+    @Resource(name="emailValidator")
+    private EmailValidator emailValidator;
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
@@ -29,12 +35,26 @@ public class ConstituentValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Person constituent = (Person)target;
         validateConstituentAddress(constituent, errors);
+        validateConstituentPhone(constituent, errors);
+        validateConstituentEmail(constituent, errors);
         validateOrganization(constituent, errors);
     }
     
     private void validateConstituentAddress(Person constituent, Errors errors) {
         if (constituent.getPrimaryAddress() != null && constituent.getPrimaryAddress().isFieldEntered()) {
             addressValidator.validateAddress(constituent, errors);
+        }
+    }
+    
+    private void validateConstituentPhone(Person constituent, Errors errors) {
+        if (constituent.getPrimaryPhone() != null && constituent.getPrimaryPhone().isFieldEntered()) {
+            phoneValidator.validatePhone(constituent, errors);
+        }
+    }
+    
+    private void validateConstituentEmail(Person constituent, Errors errors) {
+        if (constituent.getPrimaryEmail() != null && constituent.getPrimaryEmail().isFieldEntered()) {
+            emailValidator.validateEmail(constituent, errors);
         }
     }
     

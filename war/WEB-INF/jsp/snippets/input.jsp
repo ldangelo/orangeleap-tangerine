@@ -78,9 +78,9 @@
 					</c:if>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
-					<div class="lookupScrollTop"></div>
-					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">readOnly</c:if>">
+				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
+					<div class="lookupScrollTop<c:out value=' ${errorClass}'/>"></div>
+					<div class="lookupScrollContainer <c:if test="${fieldVO.fieldType eq 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">readOnly</c:if><c:out value=' ${errorClass}'/>">
 					    <div class="multiPicklist multiLookupField <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
 					    	references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
 							<div class="lookupScrollLeft"></div>
@@ -90,7 +90,7 @@
 								<div class='multiPicklistOption multiOption' style='<c:if test="${fieldVO.hasField == false}">display:none</c:if>' 
 									id="option-<c:out value='${code}'/>" selectedId="<c:out value='${code}'/>" reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>">
 									<c:out value='${fieldVO.displayValues[status.index]}'/>
-									<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
+									<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' && fieldVO.fieldType != 'MULTI_PICKLIST_DISPLAY'}">
 										<a href="javascript:void(0)" onclick="Lookup.deleteOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
 									</c:if>
 								</div>
@@ -116,7 +116,7 @@
 										</div>
 									</c:forEach>
 								</div>
-								<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
+								<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' && fieldVO.fieldType != 'MULTI_PICKLIST_DISPLAY'}">
 									<div class='multiPicklistOption multiOption noDisplay clone' id=""> 
 										<span></span>
 										<a href="javascript:void(0)" onclick="Lookup.deleteAdditionalOption(this)" class="deleteOption"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a>
@@ -129,9 +129,9 @@
 					    <%-- The following hidden field must not lie within the multiPicklist div above --%>
 						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValuesString}'/>" additionalFieldId="<c:out value='${fieldVO.additionalFieldId}'/>"/>
 					</div>
-					<div class="lookupScrollBottom"></div>
+					<div class="lookupScrollBottom<c:out value=' ${errorClass}'/>"></div>
 					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
-					<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
+					<c:if test="${fieldVO.fieldType != 'MULTI_PICKLIST_ADDITIONAL_DISPLAY' && fieldVO.fieldType != 'MULTI_PICKLIST_DISPLAY'}">
 				        <a href="javascript:void(0)" <c:choose><c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL'}">onclick="Lookup.loadMultiPicklist(this, true)"</c:when><c:otherwise>onclick="Lookup.loadMultiPicklist(this)"</c:otherwise></c:choose> class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				    </c:if>
 				</c:when>
@@ -352,7 +352,7 @@
 				<c:when test="${fieldVO.fieldType == 'SPACER'}">
 					&nbsp;
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'PICKLIST_DISPLAY' or fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY'}">
+				<c:when test="${fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
 				    <div class="readOnlyField multiPicklist <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
 				    	references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
 						<c:set var="selectedRef" value="" scope="page"/>

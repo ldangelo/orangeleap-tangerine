@@ -48,7 +48,8 @@ public class GenericFieldHandler implements FieldHandler {
     public String getFieldPropertyName(SectionField sectionField) {
         String fieldPropertyName = sectionField.getFieldPropertyName();
 
-        if (sectionField.getFieldDefinition().isCustom()) {
+        if ((sectionField.isCompoundField() && sectionField.getSecondaryFieldDefinition().isCustom()) || 
+                (sectionField.isCompoundField() == false && sectionField.getFieldDefinition().isCustom())) {
             fieldPropertyName += ".value";
         }
         return fieldPropertyName;

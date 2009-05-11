@@ -154,7 +154,7 @@ public class EntityValidator implements Validator {
         if (target instanceof EmailAware) {
             EmailAware obj = (EmailAware) target;
             if (FormBeanType.NEW.equals(obj.getEmailType()) && obj instanceof NewEmailAware) {
-                emailValidator.validateEMail(target, errors);
+                emailValidator.validateEmail(target, errors);
             }
             else if (FormBeanType.EXISTING.equals(obj.getEmailType())) {
                 // TODO: validate ID > 0

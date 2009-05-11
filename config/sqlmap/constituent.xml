@@ -71,7 +71,7 @@
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        and p.ACCOUNT_NUMBER between #fromId# and #toId#
+        and STRCMP(p.ACCOUNT_NUMBER,#fromId#) &gt;= 0 and STRCMP(p.ACCOUNT_NUMBER,#toId#) &lt;=0
         order by p.ACCOUNT_NUMBER
         limit 5001
     </select>

@@ -36,6 +36,10 @@ public interface ConstituentService {
 
 	public List<Person> readAllConstituentsByIdRange(String fromId, String toId);
 
-	boolean hasReceivedCommunication(Long constituentId, String commType);
+/*	boolean hasReceivedCommunication(Long constituentId, String commType);
+
+*/	
+	boolean hasReceivedCommunication(Long constituentId, String commType,
+			int number, String timeUnits);
 	
 }

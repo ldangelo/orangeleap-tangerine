@@ -13,8 +13,11 @@ import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.SchemaService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.TangerineDataSource;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class JobSchemaIterator extends QuartzJobBean {
 
@@ -50,7 +53,15 @@ public class JobSchemaIterator extends QuartzJobBean {
 		}
 		
 		if (!ds.isSplitDatabases()) {
-			executeInternalForSchema(context, applicationContext);
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+			TangerineUserHelper th = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+			List<Site> siteList = ss.readSites();
+			
+			for (Site s : siteList) {
+				th.setSystemUserAndSiteName(s.getName());
+
+				executeInternalForSchema(context, applicationContext);
+			}
 			return;
 		}
 

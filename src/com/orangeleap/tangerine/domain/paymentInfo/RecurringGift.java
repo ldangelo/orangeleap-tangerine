@@ -69,7 +69,7 @@ public class RecurringGift extends Commitment {
     @Override
     public void prePersist() {
         super.prePersist();
-        setAutoPay(true);
+
     }
 
     @Override

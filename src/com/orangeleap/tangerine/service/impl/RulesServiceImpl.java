@@ -58,23 +58,18 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 
 		try {
 
-			SiteService ss = (SiteService) applicationContext
-					.getBean("siteService");
 			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 			GiftService   gs = (GiftService) applicationContext.getBean("giftService");
 			MailService   ms = (MailService) applicationContext.getBean("mailService");
-			TangerineUserHelper th = (TangerineUserHelper) applicationContext
-					.getBean("tangerineUserHelper");
-			List<Site> siteList = ss.readSites();
 			Calendar today = Calendar.getInstance();
 			today.add(Calendar.DATE, -1);
 			Date yesterday = new java.sql.Date(today.getTimeInMillis());
 			
-			for (Site s : siteList) {
-				SortInfo si = new SortInfo();
+
+
 				
 				
-				th.setSystemUserAndSiteName(s.getName());
+
 				List<Person> peopleList = constituentService.readAllConstituentsBySite();
 				
 
@@ -126,7 +121,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 					}
 					workingMemory.fireAllRules();
 					workingMemory.dispose();
-				}
+
 		} catch (Throwable t) {
 			logger.error(t);
 			t.printStackTrace();

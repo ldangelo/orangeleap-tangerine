@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -288,7 +289,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituentDao.getConstituentCountBySite();
     }
     
-    @Override
+ /*   @Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public boolean hasReceivedCommunication(Long constituentId, String commType) {
     	SortInfo sortInfo = new SortInfo();
@@ -296,7 +297,45 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	List<CommunicationHistory> list = results.getRows();
     	
     	for (CommunicationHistory ch: list) {
-    		if (ch.getComments().contains(commType)) return true;
+			if (ch.getCustomFieldValue("template").compareTo(commType) == 0) return true;
+    	}
+    	
+    	return false;
+    }*/
+    
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+	public boolean hasReceivedCommunication(Long constituentId, String commType,int number,String timeUnit) {
+    	SortInfo sortInfo = new SortInfo();
+    	Calendar cal = Calendar.getInstance();
+    	StringBuilder args = new StringBuilder(timeUnit.toUpperCase());
+    	if (args.toString().equals("DAYS") || args.toString().equals("WEEKS") || args.toString().equals("MONTHS") || args.toString().equals("YEARS")) {
+    		args.deleteCharAt(args.length()-1);
+    	}
+    	if (args.toString().equals("DAY")) {
+    		cal.add(Calendar.DAY_OF_YEAR, -(number));
+    	}
+    	if (args.toString().equals("WEEK")) {
+    		cal.add(Calendar.WEEK_OF_YEAR, -(number));
+    	}
+    	if (args.toString().equals("MONTH")) {
+    		cal.add(Calendar.MONTH, -(number));
+    	}
+    	if (args.toString().equals("YEAR")) {
+    		cal.add(Calendar.YEAR, -(number));
+    	}
+
+
+    	sortInfo.setSort("CONSTITUENT_ID");
+    	
+    	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId,sortInfo);
+    	List<CommunicationHistory> list = results.getRows();
+    	
+    	
+    	
+    	for (CommunicationHistory ch: list) {
+			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
+					ch.getCreateDate().compareTo(cal.getTime()) > 0) return true;
     	}
     	
     	return false;

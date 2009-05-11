@@ -91,19 +91,10 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRecurringGift: recurringGift = " + recurringGift);
         }
-        if (recurringGift.isAutoPay()) {
-            if (recurringGift == null) {
-                recurringGift = new RecurringGift();
-            }
-            recurringGift.setNextRunDate(getNextGiftDate(recurringGift));
-        } 
-        else {
-// TODO: is this necessary?            
-//            if (recurringGift != null) {
-//                recurringGiftDao.removeRecurringGift(recurringGift);
-//                recurringGift = null;
-//            }
-        }
+
+        recurringGift.setAutoPay(true);
+        recurringGift.setNextRunDate(getNextGiftDate(recurringGift));
+
         recurringGift.filterValidDistributionLines();
         return save(recurringGift);
     }

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -253,6 +254,24 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     		if (s!= null && s.length() > 0) list.add(new GrantedAuthorityImpl(s));
     	}
     	return (GrantedAuthority[])list.toArray(new GrantedAuthority[list.size()]);
+    }
+    
+    @Override
+    public AbstractEntity populateDefaultEntityEditorMaps(AbstractEntity entity) {
+
+    	PageType pageType = PageType.valueOf(entity.getType());
+        List<String> roles = tangerineUserHelper.lookupUserRoles();
+        
+        Map<String, String> fieldLabelMap = readFieldLabels(pageType, roles, Locale.getDefault());
+        entity.setFieldLabelMap(fieldLabelMap);
+
+        Map<String, Object> valueMap = readFieldValues(pageType, roles, entity);
+        entity.setFieldValueMap(valueMap);
+
+        Map<String, FieldDefinition> typeMap = readFieldTypes(pageType, roles);
+        entity.setFieldTypeMap(typeMap);
+
+    	return entity;
     }
 
     

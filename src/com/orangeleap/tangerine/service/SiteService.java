@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.security.GrantedAuthority;
 
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
@@ -21,6 +22,13 @@ public interface SiteService {
     public Site createSiteAndUserIfNotExist(String siteName);
     
     public GrantedAuthority[] readDistinctRoles();
+    
+    /**
+     * Populate field maps on entity for non-gui processes.
+     * There must be a current 'logged-in' user defined in TangerineUserHelper for this to function correctly.
+     * @return
+     */
+    public AbstractEntity populateDefaultEntityEditorMaps(AbstractEntity entity);
     
     /**
      * Return field required

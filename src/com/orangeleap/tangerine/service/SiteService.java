@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.springframework.security.GrantedAuthority;
+
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
@@ -17,6 +19,8 @@ public interface SiteService {
     public Site readSite(String siteName);
 
     public Site createSiteAndUserIfNotExist(String siteName);
+    
+    public GrantedAuthority[] readDistinctRoles();
     
     /**
      * Return field required

@@ -48,6 +48,10 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     @Autowired
     private TangerineUserHelper tangerineUserHelper;
 
+    public List<String> readDistintSectionDefinitionsRoles() {
+        return sectionDao.readDistintSectionDefinitionsRoles();
+    }
+    
     /*
      * (non-Javadoc)
      * @see com.orangeleap.tangerine.service.customization.PageCustomizationService#readSectionDefinitionsByPageTypeRoles(com.orangeleap.tangerine.type.PageType, java.util.List)

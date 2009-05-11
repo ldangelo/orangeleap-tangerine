@@ -24,6 +24,12 @@
 		sd.SECTION_ORDER as SEC_DEF_SECTION_ORDER, sd.SITE_NAME as SEC_DEF_SITE_NAME
 	</sql>
 	
+	<select id="SELECT_DISTINCT_ROLES" resultClass="java.lang.String"  >
+		select 
+		distinct ROLE 
+		from SECTION_DEFINITION sd
+	</select>
+	
 	<select id="SELECT_BY_PAGE_TYPE_SITE_ROLES" resultMap="SECTION_DEFINITION_RESULT" parameterClass="map" >
 		select 
 		<include refid="SECTION_DEF_COLS_FRAGMENT"/>

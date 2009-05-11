@@ -28,6 +28,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
     public IBatisSectionDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
     }
+    
+    @SuppressWarnings("unchecked")
+	public List<String> readDistintSectionDefinitionsRoles() {
+        return getSqlMapClientTemplate().queryForList("SELECT_DISTINCT_ROLES");
+    }
 
     @SuppressWarnings("unchecked")
     @Override

@@ -15,6 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -242,4 +244,16 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         }
         return returnMap;
     }
+
+    @Override
+    public GrantedAuthority[] readDistinctRoles() {
+    	List<String> roles = pageCustomizationService.readDistintSectionDefinitionsRoles();
+    	List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+    	for (String s: roles) {
+    		if (s!= null && s.length() > 0) list.add(new GrantedAuthorityImpl(s));
+    	}
+    	return (GrantedAuthority[])list.toArray(new GrantedAuthority[list.size()]);
+    }
+
+    
 }

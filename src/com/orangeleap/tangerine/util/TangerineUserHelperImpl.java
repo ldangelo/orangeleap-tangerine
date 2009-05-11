@@ -5,17 +5,32 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
 
 import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.RoleType;
 
-public final class TangerineUserHelperImpl implements TangerineUserHelper {
+public final class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    private ApplicationContext applicationContext;
+
+    
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+
     
     @Override
     public TangerineAuthenticationToken getToken() {
@@ -89,7 +104,10 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper {
     // Used by nightly scheduled job functions
     @Override
     public void setSystemUserAndSiteName(String siteName) {
-    	TangerineAuthenticationToken token = new TangerineAuthenticationToken("system", "", siteName);
+    	// Give system user all roles used by screen definitions
+    	SiteService siteservice = (SiteService) applicationContext.getBean("siteService");
+    	GrantedAuthority[] ga = siteservice.readDistinctRoles();
+    	TangerineAuthenticationToken token = new TangerineAuthenticationToken("system", "", siteName, ga);
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 

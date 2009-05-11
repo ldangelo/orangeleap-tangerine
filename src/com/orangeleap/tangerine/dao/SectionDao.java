@@ -11,4 +11,5 @@ public interface SectionDao {
     public List<SectionDefinition> readSectionDefinitions(PageType pageType, List<String> roles);
     public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName);
     public List<SectionField> readCustomizedSectionFields(Long sectionDefinitionId);
+    public List<String> readDistintSectionDefinitionsRoles();
 }

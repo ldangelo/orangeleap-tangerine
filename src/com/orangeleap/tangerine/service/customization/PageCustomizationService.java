@@ -31,4 +31,12 @@ public interface PageCustomizationService {
      * @return
      */
     public Map<String, AccessType> readPageAccess(List<String> roles);
+    
+    /**
+     * Returns all distinct roles (used by system processes)
+     * @return
+     */
+    public List<String> readDistintSectionDefinitionsRoles();
+    
+    
 }

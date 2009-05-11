@@ -39,7 +39,7 @@ public class QueryUtil {
                     if (GenericValidator.isBlankOrNull((String) value) || value.equals("null")) {
                         continue;
                     }
-                    value = ((String)value).replace('\'', ' ').replace('\"', ' ');
+                    value = ((String)value).replace('\'', ' ').replace('\"', ' ').replace('\\', ' ');
                 } 
                 else {
                     if (value == null) {

@@ -62,14 +62,21 @@
 	-->
     <bean id="messageSource" class="com.orangeleap.tangerine.controller.validator.TangerineMessageSource">
         <property name="messageService" ref="messageService"/>
-        <property name="staticMessageSource" ref="staticMessageSource"/>
+        <property name="bundleMessageSource" ref="bundleMessageSource"/>
 	</bean>
 	
-	<bean id="staticMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
  		<property name="basename" value="tangerine-messages" />
 		<property name="useCodeAsDefaultMessage" value="false" />
 	</bean>
 
+	<!-- this is not a bean, this is a static library initialization -->
+	<bean id="tangerineMessageAccessor" class="com.orangeleap.tangerine.util.TangerineMessageAccessor" factory-method="setMessageSource">
+		<constructor-arg>
+			<ref local="bundleMessageSource"/>
+		</constructor-arg>
+	</bean>
+	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource">
 			<ref local="dataSource"/>

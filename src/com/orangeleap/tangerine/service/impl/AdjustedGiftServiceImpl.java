@@ -13,9 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
 import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
+import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.type.PaymentHistoryType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 @Service("adjustedGiftService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -29,6 +33,9 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
     
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+
+    @Resource(name = "paymentHistoryService")
+    private PaymentHistoryService paymentHistoryService;
     
     @Override
     public AdjustedGift createdDefaultAdjustedGift(Long originalGiftId) {
@@ -51,9 +58,28 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
             logger.trace("maintainAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
         }
         maintainEntityChildren(adjustedGift, adjustedGift.getPerson());
-        return adjustedGiftDao.maintainAdjustedGift(adjustedGift);
+        adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
+        if (adjustedGift.isAdjustedPaymentRequired()) {
+            paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
+        }
+        auditService.auditObject(adjustedGift, adjustedGift.getPerson());
+        return adjustedGift;
     }
 
+    private PaymentHistory createPaymentHistoryForAdjustedGift(AdjustedGift adjustedGift) {
+        PaymentHistory paymentHistory = new PaymentHistory();
+        paymentHistory.setAmount(adjustedGift.getAdjustedAmount());
+        paymentHistory.setCurrencyCode(adjustedGift.getCurrencyCode());
+//        paymentHistory.setGift(adjustedGift.getOr);
+        paymentHistory.setPerson(adjustedGift.getPerson());
+        paymentHistory.setPaymentHistoryType(PaymentHistoryType.ADJUSTED_GIFT);
+        paymentHistory.setPaymentType(adjustedGift.getPaymentType());
+        paymentHistory.setTransactionDate(adjustedGift.getAdjustedTransactionDate());
+        paymentHistory.setTransactionId(StringConstants.EMPTY);
+        paymentHistory.setDescription(getPaymentDescription(adjustedGift));
+        return paymentHistory;
+    }
+    
     @Override
     public AdjustedGift readAdjustedGiftById(Long adjustedGiftId) {
         if (logger.isTraceEnabled()) {

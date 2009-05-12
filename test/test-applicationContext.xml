@@ -76,44 +76,28 @@
 		<property name="useCodeAsDefaultMessage" value="false" />
 	</bean>
 
-   <!--
-      The following beans were created and used in the JMS/MOM poc shown during
-      Iteration 6.  These beans can be removed but are being left right now as
-      an example of how to use Spring with JMS/MOM
-
-	<bean id="connectionFactory"  class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL" value="tcp://10.0.2.133:61616" />
+	<bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+ 		<property name="basename" value="tangerine-messages" />
+		<property name="useCodeAsDefaultMessage" value="false" />
 	</bean>
 
-	<bean id="testDestination" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg index="0" value="test.mpower.queue" />
+	<!-- this is not a bean, this is a static library initialization -->
+	<bean id="tangerineMessageAccessor" class="com.orangeleap.tangerine.util.TangerineMessageAccessor" factory-method="setMessageSource">
+		<constructor-arg>
+			<ref local="bundleMessageSource"/>
+		</constructor-arg>
 	</bean>
-
-	<bean id="testDestinationTopic" class="org.apache.activemq.command.ActiveMQTopic">
-		<constructor-arg index="0" value="test.mpower.topic" />
-	</bean>
-
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-	  	<property name="connectionFactory" ref="connectionFactory" />
-	  	<property name="defaultDestination" ref="testDestination" />
-	  	<property name="receiveTimeout" value="60000" />
-	</bean>
-
-	<bean id="creditGateway" class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl">
-	  	<property name="jmsTemplate" ref="jmsTemplate" />
-	</bean>
-	-->
 	
-		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
-			<property name="configFile" value="config/linehandler.properties"/>
-		</bean>
+	<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
+		<property name="configFile" value="config/linehandler.properties"/>
+	</bean>
 
-		<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
-		  <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
-		</bean>
+	<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
+	  <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
+	</bean>
 
-		<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
-		  <property name="checkService" ref="checkService"/>
-		</bean>
+	<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
+	  <property name="checkService" ref="checkService"/>
+	</bean>
 	
 </beans>

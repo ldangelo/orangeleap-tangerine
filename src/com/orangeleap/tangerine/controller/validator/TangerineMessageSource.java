@@ -13,20 +13,20 @@ import com.orangeleap.tangerine.service.customization.MessageService;
 import com.orangeleap.tangerine.type.MessageResourceType;
 
 /**
- * Messages can be obtained either from the database or from a static message resource bundle.
+ * Messages can be obtained either from the database or from a message resource bundle.
  * Checks the message bundle first before looking at the DB for messages.
  */
 public class TangerineMessageSource extends AbstractMessageSource implements ResourceLoaderAware {
 
     private MessageService messageService;
-    private AbstractMessageSource staticMessageSource;
+    private AbstractMessageSource bundleMessageSource;
 
     public void setMessageService(MessageService messageService) {
         this.messageService = messageService;
     }
 
-    public void setStaticMessageSource(AbstractMessageSource staticMessageSource) {
-        this.staticMessageSource = staticMessageSource;
+    public void setBundleMessageSource(AbstractMessageSource bundleMessageSource) {
+        this.bundleMessageSource = bundleMessageSource;
     }
     
     private static Locale checkLocale(Locale locale) {
@@ -42,7 +42,7 @@ public class TangerineMessageSource extends AbstractMessageSource implements Res
         
         locale = checkLocale(locale);
         try {
-            message = staticMessageSource.getMessage(code, null, locale); // check the message bundle first for the key
+            message = bundleMessageSource.getMessage(code, null, locale); // check the message bundle first for the key
         }
         catch (NoSuchMessageException ne) { }
 

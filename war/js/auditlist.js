@@ -106,6 +106,9 @@ Audit.navigate = function(id) {
         case 'gift':
             window.location.href= 'giftView.htm?giftId=' + id + '&personId=' + rec.data.personId;
             break;
+        case 'adjustedgift':
+            window.location.href= 'giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.personId;
+            break;
         case 'address':
             window.location.href= 'addressManager.htm?personId=' + rec.data.personId;
             break;

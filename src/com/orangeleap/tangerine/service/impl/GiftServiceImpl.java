@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +14,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
-import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -48,7 +43,6 @@ import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
@@ -81,8 +75,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
-    
-
 
     private ApplicationContext context;
 
@@ -214,56 +206,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	paymentHistory.setPaymentHistoryType(PaymentHistoryType.GIFT);
     	paymentHistory.setPaymentType(gift.getPaymentType());
     	paymentHistory.setTransactionDate(gift.getTransactionDate());
-    	paymentHistory.setTransactionId("");
-    	String desc = getGiftDescription(gift);
+    	paymentHistory.setTransactionId(StringConstants.EMPTY);
+    	String desc = getPaymentDescription(gift);
     	paymentHistory.setDescription(desc);
     	return paymentHistory;
     }
     
-    private String getGiftDescription(Gift gift) {
-    	StringBuilder sb = new StringBuilder();
-
-    	// TODO: localize
-    	if (PaymentSource.ACH.equals(gift.getPaymentType())) {
-    	    sb.append("ACH Number: ").append(gift.getSelectedPaymentSource().getAchAccountNumberDisplay());
-    	}
-    	if (PaymentSource.CREDIT_CARD.equals(gift.getPaymentType())) {
-    		sb.append("Credit Card Number: ").append(gift.getSelectedPaymentSource().getCreditCardType()).append(" ").append(gift.getSelectedPaymentSource().getCreditCardNumberDisplay());
-    		sb.append(" ");
-    		sb.append(gift.getSelectedPaymentSource().getCreditCardExpirationMonth());
-    		sb.append(" / ");
-    		sb.append(gift.getSelectedPaymentSource().getCreditCardExpirationYear());
-    		sb.append(" ");
-    		sb.append(gift.getSelectedPaymentSource().getCreditCardHolderName());
-    	}
-    	if (PaymentSource.CHECK.equals(gift.getPaymentType())) {
-    		sb.append("\nCheck Number: ");
-    		sb.append(gift.getCheckNumber());
-    	}
-    	if (FormBeanType.NONE.equals(gift.getAddressType()) == false) {
-        	Address address = gift.getSelectedAddress();
-        	if (address != null) {
-            	sb.append("\nAddress: ");
-        		sb.append(StringUtils.trimToEmpty(address.getAddressLine1())); 
-        		sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine2()));
-                sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine3()));
-                sb.append(" ").append(StringUtils.trimToEmpty(address.getCity()));
-                String state = StringUtils.trimToEmpty(address.getStateProvince());
-                sb.append((state.length() == 0  ? "" : (", " + state))).append(" ");
-                sb.append(" ").append(StringUtils.trimToEmpty(address.getCountry()));
-                sb.append(" ").append(StringUtils.trimToEmpty(address.getPostalCode()));
-        	}
-    	}
-        if (FormBeanType.NONE.equals(gift.getPhoneType()) == false) {
-        	Phone phone = gift.getSelectedPhone();
-        	if (phone != null) {
-            	sb.append("\nPhone: ");
-        		sb.append(StringUtils.trimToEmpty(phone.getNumber()));
-        	}
-        }
-    	return sb.toString();
-    }
-
     @Override
     public Gift readGiftById(Long giftId) {
         if (logger.isTraceEnabled()) {

@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,12 +19,14 @@ import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 
 public abstract class AbstractPaymentService extends AbstractTangerineService {
 
@@ -169,5 +172,56 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 paymentSourceAware.setPaymentSource(paymentSourceAware.getSelectedPaymentSource());
             }
         }
+    }
+    
+    protected String getPaymentDescription(AbstractPaymentInfoEntity entity) {
+        StringBuilder sb = new StringBuilder();
+
+        if (PaymentSource.ACH.equals(entity.getPaymentType())) {
+            sb.append(TangerineMessageAccessor.getMessage("achNumberColon"));
+            sb.append(" ").append(entity.getSelectedPaymentSource().getAchAccountNumberDisplay());
+        }
+        if (PaymentSource.CREDIT_CARD.equals(entity.getPaymentType())) {
+            sb.append(TangerineMessageAccessor.getMessage("creditCardNumberColon"));
+            sb.append(" ").append(entity.getSelectedPaymentSource().getCreditCardType()).append(" ").append(entity.getSelectedPaymentSource().getCreditCardNumberDisplay());
+            sb.append(" ");
+            sb.append(entity.getSelectedPaymentSource().getCreditCardExpirationMonth());
+            sb.append(" / ");
+            sb.append(entity.getSelectedPaymentSource().getCreditCardExpirationYear());
+            sb.append(" ");
+            sb.append(entity.getSelectedPaymentSource().getCreditCardHolderName());
+        }
+        if (PaymentSource.CHECK.equals(entity.getPaymentType())) {
+            sb.append("\n");
+            sb.append(TangerineMessageAccessor.getMessage("checkNumberColon"));
+            sb.append(" ");
+            sb.append(entity.getCheckNumber());
+        }
+        if (FormBeanType.NONE.equals(entity.getAddressType()) == false) {
+            Address address = entity.getSelectedAddress();
+            if (address != null) {
+                sb.append("\n");
+                sb.append(TangerineMessageAccessor.getMessage("addressColon"));
+                sb.append(" ");
+                sb.append(StringUtils.trimToEmpty(address.getAddressLine1())); 
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine2()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getAddressLine3()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getCity()));
+                String state = StringUtils.trimToEmpty(address.getStateProvince());
+                sb.append((state.length() == 0  ? "" : (", " + state))).append(" ");
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getCountry()));
+                sb.append(" ").append(StringUtils.trimToEmpty(address.getPostalCode()));
+            }
+        }
+        if (FormBeanType.NONE.equals(entity.getPhoneType()) == false) {
+            Phone phone = entity.getSelectedPhone();
+            if (phone != null) {
+                sb.append("\n");
+                sb.append(TangerineMessageAccessor.getMessage("phoneColon"));
+                sb.append(" ");
+                sb.append(StringUtils.trimToEmpty(phone.getNumber()));
+            }
+        }
+        return sb.toString();
     }
 }

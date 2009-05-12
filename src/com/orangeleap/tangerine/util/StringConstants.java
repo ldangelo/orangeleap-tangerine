@@ -100,4 +100,5 @@ public final class StringConstants {
     
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";
+    public static final String ERROR_CLASS = "errorClass";
 }

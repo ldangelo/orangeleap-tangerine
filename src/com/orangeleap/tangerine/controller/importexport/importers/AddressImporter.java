@@ -17,6 +17,7 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.PageType;
 
@@ -28,12 +29,14 @@ public class AddressImporter extends EntityImporter {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private AddressService addressService;
+    private SiteService siteService;
     private ConstituentService constituentService;
 
 	public AddressImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
 		super(importRequest, applicationContext);
 		addressService = (AddressService)applicationContext.getBean("addressService");
 		constituentService = (ConstituentService)applicationContext.getBean("constituentService");
+		siteService = (SiteService)applicationContext.getBean("siteService");
 	}
 	
 	@Override
@@ -103,6 +106,7 @@ public class AddressImporter extends EntityImporter {
 			if (address == null || constituentService.readConstituentById(address.getPersonId()) == null) {
                 throw new RuntimeException(getIdField() + " " + id + " not found.");
 			}
+			siteService.populateDefaultEntityEditorMaps(address);
 			logger.debug("Importing constituent "+id+"...");
 			
 		}

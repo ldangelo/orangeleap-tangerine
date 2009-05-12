@@ -428,24 +428,28 @@ public class FieldVO {
         return getDelimitedString(getIds(), NORMAL_DELIMITER);
     }
 
-    @SuppressWarnings("unchecked")
     public boolean isHasField() {
+        return isHasField(this.fieldToCheck);
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean isHasField(Object myField) {
         boolean fieldFound = false;
-        if ((fieldValues == null || fieldValues.isEmpty()) && fieldToCheck == null) {
+        if ((fieldValues == null || fieldValues.isEmpty()) && myField == null) {
             fieldFound = true;
         }
-        else if (fieldValues == null || fieldValues.isEmpty() || fieldToCheck == null) {
+        else if (fieldValues == null || fieldValues.isEmpty() || myField == null) {
             fieldFound = false;
         }
         else {
             for (Object thisFieldValue : fieldValues) {
                 Class thisClazz = thisFieldValue.getClass();
-                Class checkClazz = fieldToCheck.getClass();
+                Class checkClazz = myField.getClass();
                 if (thisClazz.equals(checkClazz)) {
-                    fieldFound = thisFieldValue.equals(fieldToCheck);
+                    fieldFound = thisFieldValue.equals(myField);
                 }
                 else {
-                    fieldFound = thisFieldValue.toString().equals(fieldToCheck.toString());
+                    fieldFound = thisFieldValue.toString().equals(myField.toString());
                 }
                 if (fieldFound) {
                     break;

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.springframework.stereotype.Component;
 
@@ -17,7 +19,7 @@ import com.orangeleap.tangerine.web.customization.FieldVO;
 public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInput {
 
     @Override
-    public String handleField(HttpServletRequest request, FieldVO fieldVO) {
+    public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         if (logger.isTraceEnabled()) {
             logger.trace("handleField: field.fieldName = " + fieldVO.getFieldName());
         }

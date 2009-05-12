@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +22,7 @@ public class AdjustedGiftPaymentSourcePicklistInput extends PaymentSourcePicklis
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    public String handleField(HttpServletRequest request, FieldVO fieldVO) {
+    public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         if (logger.isTraceEnabled()) {
             logger.trace("handleField: field.fieldName = " + fieldVO.getFieldName());
         }

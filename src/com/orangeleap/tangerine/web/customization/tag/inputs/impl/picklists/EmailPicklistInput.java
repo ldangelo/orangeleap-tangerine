@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.web.customization.tag.inputs.impl.picklists;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
 
     @SuppressWarnings("unchecked")
     @Override
-    public String handleField(HttpServletRequest request, FieldVO fieldVO) {
+    public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         if (logger.isTraceEnabled()) {
             logger.trace("handleField: field.fieldName = " + fieldVO.getFieldName());
         }

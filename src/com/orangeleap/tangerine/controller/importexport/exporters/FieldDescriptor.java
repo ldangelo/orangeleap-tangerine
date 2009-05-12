@@ -131,7 +131,7 @@ public class FieldDescriptor {
 	
 	private String getSubField(String name) {
 		int j = name.indexOf("]");
-		if (j < 0) {
+		if (j < 0 || j == name.length()-1) {
             return "";
         }
 		return name.substring(j+2);

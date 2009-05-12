@@ -326,16 +326,21 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	}
 
 
+    	
     	sortInfo.setSort("CONSTITUENT_ID");
     	
     	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId,sortInfo);
     	List<CommunicationHistory> list = results.getRows();
     	
     	
-    	
-    	for (CommunicationHistory ch: list) {
-			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
+    	while (list != null) {
+    		for (CommunicationHistory ch: list) {
+    			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
 					ch.getCreateDate().compareTo(cal.getTime()) > 0) return true;
+    		}
+    		sortInfo.setStart(sortInfo.getStart() + sortInfo.getLimit());
+    		results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);
+    		list = results.getRows();
     	}
     	
     	return false;

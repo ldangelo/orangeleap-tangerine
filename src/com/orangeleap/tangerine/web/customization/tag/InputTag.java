@@ -82,7 +82,7 @@ public class InputTag extends RequestContextAwareTag {
         if (inputName != null) {
             AbstractInput input = getInputBean(inputName);
             if (input != null) {
-                html = input.handleField(getRequest(), field);
+                html = input.handleField(getRequest(), getResponse(), pageContext, field);
             }
         }
         return html;

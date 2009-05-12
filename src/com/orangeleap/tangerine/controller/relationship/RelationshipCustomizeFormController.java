@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -85,10 +86,10 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		}
 	}
 	
-	private CustomField getCustomField(Person person, Long customFieldId) {
-		Iterator<Map.Entry<String, CustomField>> it = person.getCustomFieldMap().entrySet().iterator();
+	private CustomField getCustomField(List<CustomField> list, Long customFieldId) {
+		Iterator<CustomField> it = list.iterator();
 		while (it.hasNext()) {
-			CustomField cf = it.next().getValue();
+			CustomField cf = it.next();
 			if (cf.getId().equals(customFieldId)) {
 				return cf;
 			}
@@ -106,9 +107,9 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 		Long customFieldId = new Long(request.getParameter("customFieldId"));
-		CustomField cf = getCustomField(person, customFieldId);
+		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
+		CustomField cf = getCustomField(savedlist, customFieldId);
 		
-
         ConstituentCustomFieldRelationship constituentCustomFieldRelationship = 
         	constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(constituentId, fieldDefinitionId, cf.getValue(), cf.getStartDate());
         
@@ -148,7 +149,8 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 		Long customFieldId = new Long(request.getParameter("customFieldId"));
-		CustomField cf = getCustomField(person, customFieldId);
+		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
+		CustomField cf = getCustomField(savedlist, customFieldId);
 
         ConstituentCustomFieldRelationship constituentCustomFieldRelationship = 
         	constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(constituentId, fieldDefinitionId, cf.getValue(), cf.getStartDate());

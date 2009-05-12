@@ -87,6 +87,7 @@ public class RelationshipFormController extends SimpleFormController {
 
     	try {
     		
+    		// TODO if any start date has changed, adjust the start dates on the corresponding ccrs before saving.
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
     		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
     		person = constituentService.readConstituentById(personId);

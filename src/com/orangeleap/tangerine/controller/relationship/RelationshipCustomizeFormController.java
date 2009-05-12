@@ -193,7 +193,7 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 			if (blank) defaultValue = "";
 			String value = ccr.getCustomFieldValue(name);
 			if (value == null || value.equals("")) {
-				ccr.setCustomFieldValue(defaultValue);
+				ccr.setCustomFieldValue(name, defaultValue);
 			}
 		}
 	}

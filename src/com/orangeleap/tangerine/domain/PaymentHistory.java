@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.springframework.core.style.ToStringCreator;
 
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -26,7 +25,8 @@ public class PaymentHistory implements GeneratedId, Serializable {
     // CC# and ACH# must be stored in masked format
     private String description = StringConstants.EMPTY;
     private Person person;
-    private Gift gift;
+    private Long giftId;
+    private Long adjustedGiftId;
     
     public PaymentHistory() {  }
 
@@ -100,21 +100,29 @@ public class PaymentHistory implements GeneratedId, Serializable {
 		return currencyCode;
 	}
 
-	public void setGift(Gift gift) {
-		this.gift = gift;
-	}
-
-	public Gift getGift() {
-		return gift;
-	}
-
-	public void setPaymentHistoryType(PaymentHistoryType paymentHistoryType) {
+    public void setPaymentHistoryType(PaymentHistoryType paymentHistoryType) {
 		this.paymentHistoryType = paymentHistoryType;
 	}
 
 	public PaymentHistoryType getPaymentHistoryType() {
 		return paymentHistoryType;
 	}
+
+    public Long getGiftId() {
+        return giftId;
+    }
+
+    public void setGiftId(Long giftId) {
+        this.giftId = giftId;
+    }
+
+    public Long getAdjustedGiftId() {
+        return adjustedGiftId;
+    }
+
+    public void setAdjustedGiftId(Long adjustedGiftId) {
+        this.adjustedGiftId = adjustedGiftId;
+    }
 
     public Site getSite() {
         return person.getSite();
@@ -126,7 +134,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
             append(super.toString()).append("transactionId", transactionId).append("transactionDate", transactionDate).
             append(super.toString()).append("amount", amount).append("currencyCode", currencyCode).
             append(super.toString()).append("paymentType", paymentType).append("description", description).
-            append(super.toString()).append("person", person).append("gift", gift).
+            append(super.toString()).append("person", person).
             toString();
     }
 }

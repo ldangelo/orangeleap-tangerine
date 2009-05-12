@@ -201,7 +201,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	PaymentHistory paymentHistory = new PaymentHistory();
     	paymentHistory.setAmount(gift.getAmount());
     	paymentHistory.setCurrencyCode(gift.getCurrencyCode());
-    	paymentHistory.setGift(gift);
+    	paymentHistory.setGiftId(gift.getId());
     	paymentHistory.setPerson(gift.getPerson());
     	paymentHistory.setPaymentHistoryType(PaymentHistoryType.GIFT);
     	paymentHistory.setPaymentType(gift.getPaymentType());

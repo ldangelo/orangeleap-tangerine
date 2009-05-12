@@ -10,7 +10,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.PaymentHistoryDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -44,9 +43,7 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
     	constituent.setId(PERSON_ID);
     	paymentHistory.setPerson(constituent);
     	
-    	Gift gift = new Gift();
-    	gift.setId(GIFT_ID);
-    	paymentHistory.setGift(gift);
+    	paymentHistory.setGiftId(GIFT_ID);
     	paymentHistory = paymentHistoryDao.addPaymentHistory(paymentHistory);
     	assert paymentHistory.getId() > 0;
     } 
@@ -63,9 +60,8 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
         Person constituent = history.getPerson();
         IBatisConstituentDaoTest.testConstituentId100(constituent);
         
-        assert history.getGift() != null;
-        IBatisGiftDaoTest.testGiftId100(history.getGift());
-        assert history.getGift().getDistributionLines() == null;        
+        assert history.getGiftId() != null;
+        assert 100L == history.getGiftId();
     }
 
     @Test(groups = { "testReadPaymentHistoryEntries" }, dependsOnGroups = { "testCreatePaymentHistoryEntry" })
@@ -98,12 +94,7 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
                     assert "Cash".equals(history.getPaymentType());
                     assert history.getTransactionDate() != null;
                     assert "123456789".equals(history.getTransactionId());
-                    assert history.getGift() != null && history.getGift().getId() == 600L;
-                    assert history.getGift().getPerson() != null && history.getGift().getPerson().getId() == 300L;
-                    assert history.getGift().getSelectedAddress() != null && history.getGift().getSelectedAddress().getId() == null;
-                    assert history.getGift().getSelectedPhone() != null && history.getGift().getSelectedPhone().getId() == null;
-                    assert history.getGift().getSelectedEmail() != null && history.getGift().getSelectedEmail().getId() == null;
-                    assert history.getGift().getSelectedPaymentSource() != null && history.getGift().getSelectedPaymentSource().getId() == null;
+                    assert history.getGiftId() == 600L;
                     assert history.getPerson() != null && history.getPerson().getId() == 300L;
                     IBatisConstituentDaoTest.testConstituentId300(history.getPerson());
                     break;

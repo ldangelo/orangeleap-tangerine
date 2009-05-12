@@ -11,7 +11,8 @@
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="transactionDate" column="TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionId" column="TRANSACTION_ID" jdbcType="VARCHAR" />
-		<result property="gift" resultMap="GIFT.GIFT_RESULT_NO_DISTRO_LINES" />
+		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
+		<result property="adjustedGiftId" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
@@ -19,21 +20,11 @@
 		select
 		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
 		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
-
-		<include refid="GIFT_COLS_FRAGMENT" />,
-		<include refid="ADDRESS_COLS_FRAGMENT" />,
-		<include refid="PHONE_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
-		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from PAYMENT_HISTORY phis
 		inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join GIFT g on phis.GIFT_ID = g.GIFT_ID 
-		left outer join ADDRESS addr on g.ADDRESS_ID = addr.ADDRESS_ID
-		left outer join PHONE ph on g.PHONE_ID = ph.PHONE_ID
-		left outer join EMAIL e on g.EMAIL_ID = e.EMAIL_ID
-		left outer join PAYMENT_SOURCE ps on g.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
 		where
 		p.SITE_NAME= #siteName#
 	</sql>
@@ -82,10 +73,10 @@
 
 	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.orangeleap.tangerine.domain.PaymentHistory">
 		insert into PAYMENT_HISTORY (AMOUNT, CURRENCY_CODE, PAYMENT_DESC,
-		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, CONSTITUENT_ID)
+		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, ADJUSTED_GIFT_ID, CONSTITUENT_ID)
 		values (#amount#, #currencyCode#, #description#,
 		#paymentHistoryType:VARCHAR#, #paymentType#,
-		#transactionDate#, #transactionId#, #gift.id#, #person.id#)
+		#transactionDate#, #transactionId#, #giftId#, #adjustedGiftId#, #person.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

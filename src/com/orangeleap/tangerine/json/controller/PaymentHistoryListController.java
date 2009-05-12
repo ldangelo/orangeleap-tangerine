@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
@@ -89,7 +88,7 @@ public class PaymentHistoryListController {
         if (GenericValidator.isBlankOrNull(personId)) {
             result = paymentHistoryService.readPaymentHistoryBySite(sortInfo); 
         } else {
-                result = paymentHistoryService.readPaymentHistory(Long.valueOf(personId), sortInfo); 
+            result = paymentHistoryService.readPaymentHistory(Long.valueOf(personId), sortInfo); 
         }
 
         List<PaymentHistory> list = result.getRows();

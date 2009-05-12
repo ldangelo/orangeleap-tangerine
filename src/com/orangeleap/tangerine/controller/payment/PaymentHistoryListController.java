@@ -11,15 +11,11 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.PaymentHistoryService;
 
 public class PaymentHistoryListController extends ParameterizableViewController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    @Resource(name="paymentHistoryService")
-    private PaymentHistoryService paymentHistoryService;
     
     @Resource(name="constituentService")
     private ConstituentService constituentService;

@@ -70,7 +70,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         PaymentHistory paymentHistory = new PaymentHistory();
         paymentHistory.setAmount(adjustedGift.getAdjustedAmount());
         paymentHistory.setCurrencyCode(adjustedGift.getCurrencyCode());
-//        paymentHistory.setGift(adjustedGift.getOr);
+        paymentHistory.setAdjustedGiftId(adjustedGift.getId());
         paymentHistory.setPerson(adjustedGift.getPerson());
         paymentHistory.setPaymentHistoryType(PaymentHistoryType.ADJUSTED_GIFT);
         paymentHistory.setPaymentType(adjustedGift.getPaymentType());

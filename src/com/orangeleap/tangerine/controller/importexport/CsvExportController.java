@@ -83,6 +83,8 @@ public class CsvExportController extends SimpleFormController {
 			out.flush();
 			return null;
 		} catch (Exception e) {
+			logger.debug(e);
+			e.printStackTrace();
 			ModelAndView mav = new ModelAndView("redirect:/importexport.htm");
 			mav.addObject("exportmessage", e.getMessage());
 			return mav;

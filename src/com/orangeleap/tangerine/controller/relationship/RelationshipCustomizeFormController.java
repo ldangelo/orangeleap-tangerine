@@ -55,6 +55,20 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         return "";
     }
+
+	
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+    	return handleRequest(request, false);
+    }
+    
+    
+	@Override
+    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
+    	return handleRequest(request, true);
+    }
+
 	
 	protected Map<String, String> getMap(Map<String, CustomField> map) {
 		Map<String, String> result = new TreeMap<String, String>();
@@ -98,10 +112,8 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		return null;
 	}
 	
-    @SuppressWarnings("unchecked")
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
-    	
+	private ModelAndView handleRequest(HttpServletRequest request, boolean isSubmit) {
+		
 		Long constituentId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(constituentId);
 		if (person == null) return null;
@@ -127,11 +139,17 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
         }
         
+        if (isSubmit) {
+	        updateCustomFieldMap(getMap(request), constituentCustomFieldRelationship);
+	        constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
+        }
+        
+        
         Map<String, String> stringmap = getMap(constituentCustomFieldRelationship.getCustomFieldMap());
 
 		if (stringmap.size() == 0) stringmap.put("", "");
 		
-		ModelAndView mav = super.showForm(request, response, errors, controlModel);
+		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.addObject("map", stringmap);
 		mav.addObject("person", person);
 		mav.addObject("fieldDefinition", fieldDefinition);
@@ -139,46 +157,8 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		mav.addObject("constituentCustomFieldRelationship", constituentCustomFieldRelationship);
 		mav.addObject("refvalue", request.getParameter("refvalue"));
         return mav;
-    }
-    
-    
-    // TODO combine with showform
-	@Override
-    public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
-    	
-		Long constituentId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(constituentId);
-		if (person == null) return null;
-		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
-		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
-		Long customFieldId = new Long(request.getParameter("customFieldId"));
-		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
-		CustomField cf = getCustomField(savedlist, customFieldId);
 
-        ConstituentCustomFieldRelationship constituentCustomFieldRelationship = 
-        	constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(constituentId, masterfieldDefinitionId, cf.getValue(), cf.getStartDate());
-     
-        Map<String, String> stringmap = getMap(request);
-
-        updateCustomFieldMap(stringmap, constituentCustomFieldRelationship);
-         
-        constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
-        
-        ModelAndView mav = new ModelAndView(getSuccessView());
-        stringmap = getMap(constituentCustomFieldRelationship.getCustomFieldMap());
-		
-        if (stringmap.size() == 0) stringmap.put("", "");
-        
-		mav.addObject("map", stringmap);
-		mav.addObject("person", person);
-		mav.addObject("fieldDefinition", fieldDefinition);
-		mav.addObject("customField", cf);
-		mav.addObject("constituentCustomFieldRelationship", constituentCustomFieldRelationship);
-		mav.addObject("refvalue", request.getParameter("refvalue"));
-        return mav;
-        
-    }
+	}
 	
     // Add default custom fields and values on constituentCustomFieldRelationship from customFieldRelationship if they dont exist
 	private void ensureDefaultFieldsAndValuesExist(ConstituentCustomFieldRelationship ccr) {
@@ -198,6 +178,5 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		}
 	}
 	    
-
 	
 }

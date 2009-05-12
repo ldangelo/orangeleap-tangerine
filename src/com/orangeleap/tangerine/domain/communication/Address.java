@@ -1,8 +1,6 @@
 package com.orangeleap.tangerine.domain.communication;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -138,8 +136,12 @@ public class Address extends AbstractCommunicationEntity {
     }
 
     public boolean isFieldEntered() {
+        return isAddressEntered() || StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE));
+    }
+    
+    public boolean isAddressEntered() {
         return StringUtils.hasText(addressLine1) || StringUtils.hasText(addressLine2) || StringUtils.hasText(addressLine3) || StringUtils.hasText(city) || 
-            StringUtils.hasText(stateProvince) || StringUtils.hasText(postalCode) || StringUtils.hasText(country) || StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE));
+            StringUtils.hasText(stateProvince) || StringUtils.hasText(postalCode) || StringUtils.hasText(country);
     }
     
     @Override
@@ -150,11 +152,8 @@ public class Address extends AbstractCommunicationEntity {
     @Override
     public void prePersist() {
         super.prePersist();
-        if (StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE)) == false) {
+        if (isAddressEntered() && StringUtils.hasText(getCustomFieldValue(StringConstants.ADDRESS_TYPE)) == false) {
             setCustomFieldValue(StringConstants.ADDRESS_TYPE, StringConstants.UNKNOWN_LOWER_CASE);
-            if (getEffectiveDate() == null) {
-                setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
-            }
         }
     }
 

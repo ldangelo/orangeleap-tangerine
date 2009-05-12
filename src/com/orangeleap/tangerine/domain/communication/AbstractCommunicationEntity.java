@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.domain.communication;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.springframework.core.style.ToStringCreator;
 
@@ -103,12 +105,6 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     }
 
     public Date getEffectiveDate() {
-        //TANGERINE-203, for a new, permanent contact, use Today as default
-        if((id == null || id == 0) && effectiveDate  == null
-                && ActivationType.permanent.equals(getActivationStatus())) {
-            this.effectiveDate = new Date();
-        }
-
         return effectiveDate;
     }
 
@@ -143,6 +139,18 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 	}
     
     @Override
+    public void setDefaults() {
+        super.setDefaults();
+
+        if (activationStatus == null) {
+            setActivationStatus(ActivationType.permanent);
+        }
+        if (effectiveDate == null && ActivationType.permanent.equals(getActivationStatus())) {
+            setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
+        }
+    }
+
+    @Override
     public void prePersist() {
         super.prePersist();
         
@@ -152,6 +160,10 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
                 setSeasonalStartDate(null);
                 setTemporaryEndDate(null);
                 setTemporaryStartDate(null);
+                
+                if (effectiveDate == null) {
+                    setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
+                }
             } 
             else if (ActivationType.seasonal.equals(getActivationStatus())) {
                 setEffectiveDate(null);

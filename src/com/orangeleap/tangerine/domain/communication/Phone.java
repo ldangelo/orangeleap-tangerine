@@ -1,8 +1,5 @@
 package com.orangeleap.tangerine.domain.communication;
 
-import java.util.Calendar;
-import java.util.Locale;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
@@ -67,8 +64,12 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     }
 
     public boolean isFieldEntered() {
-        return StringUtils.hasText(number) || StringUtils.hasText(getCustomFieldValue(StringConstants.PHONE_TYPE));
-     }
+        return isPhoneEntered() || StringUtils.hasText(getCustomFieldValue(StringConstants.PHONE_TYPE));
+    }
+    
+    public boolean isPhoneEntered() {
+        return StringUtils.hasText(number);
+    }
 
     @Override
     public String getAuditShortDesc() {
@@ -78,11 +79,8 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     @Override
     public void prePersist() {
         super.prePersist();
-        if (StringUtils.hasText(getCustomFieldValue(StringConstants.PHONE_TYPE)) == false) {
+        if (isPhoneEntered() && StringUtils.hasText(getCustomFieldValue(StringConstants.PHONE_TYPE)) == false) {
             setCustomFieldValue(StringConstants.PHONE_TYPE, StringConstants.UNKNOWN_LOWER_CASE);
-            if (getEffectiveDate() == null) {
-                setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
-            }
         }
     }
 

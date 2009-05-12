@@ -137,14 +137,14 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		// Overridden, site-specific picklists
 		List<Picklist> result = new ArrayList<Picklist>();
 		for (Picklist picklist : list) {
-			if (picklist.getSite() != null) {
+			if (picklist.getSite() != null && picklist.getPicklistName().length() > 0) {
 				result.add(picklist);
 			}
 		}
 		
 		// Non-overriden, global picklists
 		for (Picklist picklist : list) {
-			if (picklist.getSite() == null) {
+			if (picklist.getSite() == null && picklist.getPicklistName().length() > 0) {
 				boolean found = false;
 				for (Picklist apicklist : result) {
                     if (apicklist.getPicklistDesc().equals(picklist.getPicklistDesc())) {

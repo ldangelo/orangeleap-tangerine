@@ -58,11 +58,24 @@
 
     <select id="SELECT_LIMITED_CONSTITUENTS_BY_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
         select
-        <include refid="CONSTITUENT_COLS_FRAGMENT"/>
-        , ISDONORTYPE(p.CONSTITUENT_ID,'majorDonor') as MAJOR_DONOR, ISDONORTYPE(p.CONSTITUENT_ID,'lapsedDonor') as LAPSED_DONOR
+        <include refid="CONSTITUENT_COLS_FRAGMENT"/>,
+        ISDONORTYPE(p.CONSTITUENT_ID,'majorDonor') as MAJOR_DONOR, ISDONORTYPE(p.CONSTITUENT_ID,'lapsedDonor') as LAPSED_DONOR
+        <dynamic prepend=",">
+        	<isNotEqual property="sortColumn" compareValue="major_donor">
+	        	<isNotEqual property="sortColumn" compareValue="lapsed_donor">
+        			IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+        		</isNotEqual>
+        	</isNotEqual>
+        </dynamic>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        order by $sortColumn$ $sortDir$
+        order by 
+       	<isNotEqual property="sortColumn" compareValue="major_donor">
+        	<isNotEqual property="sortColumn" compareValue="lapsed_donor">
+				isnull ASC, 
+       		</isNotEqual>
+       	</isNotEqual>
+		$sortColumn$ + '0' $sortDir$, $sortColumn$ $sortDir$ 
         limit $offset$,$limit$
     </select>
     

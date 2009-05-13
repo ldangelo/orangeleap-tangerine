@@ -96,13 +96,16 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
         TangerineAuthenticationToken authentication = tangerineUserHelper.getToken();
         
   	    if (tangerineUserHelper.lookupUserId() == null) {
-          	Person constituent = constituentService.readConstituentByLoginId(tangerineUserHelper.lookupUserName());
+  	    	String name = tangerineUserHelper.lookupUserName();
+  	    	logger.debug("Looking up login record "+ name);
+          	Person constituent = constituentService.readConstituentByLoginId(name);
           	if (constituent == null) {
+      	    	logger.debug("Login record "+ name + " not found, creating.");
           	    try {
 					constituent = createPerson(authentication, siteName);
 				} 
           	    catch (Exception e) {
-					e.printStackTrace();
+					logger.error(e);
 					throw new RuntimeException("Unable to create new user record.");
 				}
           	} 
@@ -113,12 +116,15 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     
     // Create a Person object row corresponding to the login user.
     private Person createPerson(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, javax.naming.NamingException {
+        logger.info("Creating user for login id: "+authentication.getName());
         Person constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));
         constituent.setLastName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.LAST_NAME));
         constituent.setConstituentIndividualRoles("user");
         constituent.setLoginId(authentication.getName());
-        return constituentService.maintainConstituent(constituent);
+        constituent = constituentService.maintainConstituent(constituent);
+        logger.info("Created user for login id: "+authentication.getName());
+        return constituent;
     }
      
     @Override

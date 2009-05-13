@@ -52,7 +52,8 @@
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
         <property name="defaultTargetUrl" value="/index.jsp"/>
-        <property name="filterProcessesUrl" value="/loginProcess"/>
+		<property name="alwaysUseDefaultTargetUrl" value="true"/>
+		<property name="filterProcessesUrl" value="/loginProcess"/>
         <property name="pageCustomizationService" ref="pageCustomizationService"/>
         <sec:custom-filter position="AUTHENTICATION_PROCESSING_FILTER"/>
     </bean>

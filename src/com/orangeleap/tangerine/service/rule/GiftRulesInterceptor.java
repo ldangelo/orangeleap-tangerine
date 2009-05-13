@@ -16,6 +16,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.RuleTask;
@@ -51,6 +52,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		SiteService ss = (SiteService) applicationContext.getBean("siteService");
+		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 		
 		String site = null;
 
@@ -86,6 +88,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 
 			} catch (Exception ex) {
 				logger.error(ex.getMessage());
+				errorLogService.addErrorMessage(ex.getMessage(), "gift.rule.setup");
 			}
 
 			if (site == null) {
@@ -104,6 +107,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		} catch (Exception e) {
 			logger.error("*** exception firing rules - make sure rule base exists and global variable is set: ");
 			logger.error(e);
+			errorLogService.addErrorMessage(e.getMessage(), "gift.rule.fire");
 		}
 	}
 

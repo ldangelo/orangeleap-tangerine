@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.paymentech.orbital.sdk.configurator.Configurator;
@@ -34,11 +35,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 	}
 
 	void Initialize() {
+		ErrorLogService errorLogServce = (ErrorLogService)applicationContext.getBean("errorLogService");
+		
 		try {
 			configurator = Configurator.getInstance(configFile);
 		} catch (InitializationException ie) {
 			if (logger.isErrorEnabled()) {
 				logger.error("Configurator initialization failed.");
+				errorLogServce.addErrorMessage(ie.getMessage(), "OrbitalPaymentGateway.config");
 			}
 		}
 
@@ -47,6 +51,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		} catch (InitializationException iex) {
 			if (logger.isErrorEnabled()) {
 				logger.error(iex.getMessage());
+				errorLogServce.addErrorMessage(iex.getMessage(), "OrbitalPaymentGateway.initialize");
 			}
 		}
 	}

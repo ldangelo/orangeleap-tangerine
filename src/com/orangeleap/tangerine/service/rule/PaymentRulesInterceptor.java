@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationListener;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 
 public class PaymentRulesInterceptor implements ApplicationContextAware,
@@ -38,6 +39,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 				.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext
 				.getBean("giftService");
+		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
 		String site = null;
 		try {
@@ -67,6 +69,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 
 		} catch (Exception ex) {
 			logger.info(ex.getMessage());
+			errorLogService.addErrorMessage(ex.getMessage(), "payment.rule.setup");
 		}
 
 		try {
@@ -80,6 +83,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 			logger
 					.info("*** exception firing rules - make sure rule base exists and global variable is set: ");
 			logger.info(e);
+			errorLogService.addErrorMessage(e.getMessage(), "payment.rule.fire");
 		}
 	}
 

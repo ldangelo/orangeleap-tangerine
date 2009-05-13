@@ -46,7 +46,6 @@ public class MyAccountsController {
 
         List<Map> response = new ArrayList<Map>();
 
-        siteService.createSiteAndUserIfNotExist(tangerineUserHelper.lookupUserSiteName());
         Person constituent = constituentService.readConstituentById(tangerineUserHelper.lookupUserId());
         if (constituent == null) {
             return new ModelMap();

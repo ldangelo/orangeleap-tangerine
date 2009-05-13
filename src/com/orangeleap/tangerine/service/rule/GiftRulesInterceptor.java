@@ -61,6 +61,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				}
 				workingMemory.setFocus(site+"gift");
 				
+				ss.populateDefaultEntityEditorMaps(gift);
 				workingMemory.insert(gift);
 				
 				/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId()); 
@@ -74,7 +75,10 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				person.setGifts(gs.readMonetaryGifts(person));
 				person.setSite(ss.readSite(person.getSite().getName()));
 
+				ss.populateDefaultEntityEditorMaps(person);
+
 				TaskStack.push(new RuleTask(applicationContext,site + "email",person,gift));
+
 				workingMemory.insert(person);
 
 			} catch (Exception ex) {

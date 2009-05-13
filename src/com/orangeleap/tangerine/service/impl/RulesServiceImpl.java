@@ -61,6 +61,8 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 			ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 			GiftService   gs = (GiftService) applicationContext.getBean("giftService");
 			MailService   ms = (MailService) applicationContext.getBean("mailService");
+			SiteService ss = (SiteService) applicationContext.getBean("siteService");
+
 			Calendar today = Calendar.getInstance();
 			today.add(Calendar.DATE, -1);
 			Date yesterday = new java.sql.Date(today.getTimeInMillis());
@@ -115,6 +117,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						}
 						if (updated) {
 							p.setGifts(giftList);
+							ss.populateDefaultEntityEditorMaps(p);
 							FactHandle pfh = workingMemory.insert(p);
 						}
 
@@ -195,6 +198,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						}
 						if (updated) {
 							p.setGifts(giftList);
+							ss.populateDefaultEntityEditorMaps(p);
 							FactHandle pfh = workingMemory.insert(p);
 						}
 
@@ -275,6 +279,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						}
 						if (updated) {
 							p.setGifts(giftList);
+							ss.populateDefaultEntityEditorMaps(p);
 							FactHandle pfh = workingMemory.insert(p);
 						}
 

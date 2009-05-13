@@ -54,7 +54,7 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
                 String code = augmentedCodes.get(i);
                 sb.append("<option value='" + code + "'");
 
-                String reference = (references == null ? StringConstants.EMPTY : references.get(i));
+                String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
                 if (StringUtils.hasText(reference)) {
                     sb.append(" reference='" + reference + "'");
                 }
@@ -65,7 +65,7 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
                     }
                 }
                 sb.append(">");
-                sb.append(displayValues == null ? StringConstants.EMPTY : displayValues.get(i));
+                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : displayValues.get(i));
                 sb.append("</option>");
             }
         }

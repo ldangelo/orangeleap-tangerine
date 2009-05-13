@@ -55,7 +55,7 @@ public class AdjustedGiftPaymentTypePicklistInput extends PicklistInput {
                                 adjustedGift.getSelectedPaymentSource().getId() > 0 && adjustedGift.getSelectedPaymentSource().getPaymentType().equals(code))) {
                     sb.append("<option value='" + code + "'");
     
-                    String reference = (references == null ? StringConstants.EMPTY : references.get(i));
+                    String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
                     if (StringUtils.hasText(reference)) {
                         sb.append(" reference='" + reference + "'");
                     }
@@ -64,7 +64,7 @@ public class AdjustedGiftPaymentTypePicklistInput extends PicklistInput {
                         selectedRef = reference;
                     }
                     sb.append(">");
-                    sb.append(displayValues == null ? StringConstants.EMPTY : displayValues.get(i));
+                    sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : displayValues.get(i));
                     sb.append("</option>");
                 }
             }

@@ -29,8 +29,22 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
     // Call the service method, not this method, in order to get a new transaction.
 	@Override
 	public void addErrorMessage(String message, String context, Long constituentId) {
+	
+		if (message == null) message = "";
 		
         Map<String, Object> params = setupParams();
+
+        Long lastid = (Long)getSqlMapClientTemplate().queryForObject("GET_LAST_ERROR_ID", params);
+        params.put("id", lastid);
+        String lastmessage = (String)getSqlMapClientTemplate().queryForObject("GET_ERROR_MESSAGE_BY_ID", params);
+        if (message.equals(lastmessage))
+        {
+        	// Don't repeat same message twice in a row.
+        	logger.debug("Skipping duplicate log table message for: "+message);
+        	return;
+        }
+
+        params = setupParams();
         params.put("message", message);
         params.put("context", context);
         params.put("constituentId", constituentId);

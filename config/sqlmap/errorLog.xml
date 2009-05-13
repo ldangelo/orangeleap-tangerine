@@ -27,6 +27,14 @@
 		order by el.CREATE_DATE desc
 	</select>
 
+	<select id="GET_LAST_ERROR_ID" resultClass="Long" parameterClass="map">
+		select max(ERROR_LOG_ID) from ERROR_LOG where SITE_NAME = #siteName#
+	</select>
+	
+	<select id="GET_ERROR_MESSAGE_BY_ID" resultClass="java.lang.String" parameterClass="map">
+		select MESSAGE from ERROR_LOG where ERROR_LOG_ID = #id# and SITE_NAME = #siteName#
+	</select>
+	
 
 	<insert id="INSERT_ERROR_LOG" parameterClass="map">
 		insert into ERROR_LOG (SITE_NAME, CONSTITUENT_ID, CONTEXT, MESSAGE, CREATE_DATE)

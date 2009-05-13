@@ -333,7 +333,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	List<CommunicationHistory> list = results.getRows();
     	
     	
-    	while (list != null) {
+    	while (list != null && list.size() > 0) {
     		for (CommunicationHistory ch: list) {
     			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
 					ch.getCreateDate().compareTo(cal.getTime()) > 0) return true;

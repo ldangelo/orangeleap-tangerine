@@ -60,6 +60,9 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 					site =gift.getSite().getName();
 				}
 				workingMemory.setFocus(site+"gift");
+				workingMemory.setGlobal("applicationContext", applicationContext);
+				workingMemory.setGlobal("personService", ps);
+				workingMemory.setGlobal("giftService",gs);
 				
 				ss.populateDefaultEntityEditorMaps(gift);
 				workingMemory.insert(gift);
@@ -90,9 +93,6 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 			}
 
 		try {
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("personService", ps);
-			workingMemory.setGlobal("giftService",gs);
 			logger.info("*** firing all rules");
 
 			workingMemory.fireAllRules();

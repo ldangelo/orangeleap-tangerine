@@ -77,6 +77,9 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		
 		String site = null;
 
+		workingMemory.setGlobal("applicationContext", applicationContext);
+		workingMemory.setGlobal("personService", ps);
+		workingMemory.setGlobal("giftService",gs);
 
 			try {
 				if (site == null) {
@@ -102,9 +105,6 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 			}
 
 		try {
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("personService", ps);
-			workingMemory.setGlobal("giftService",gs);
 
 			logger.info("*** firing all rules");
 

@@ -42,6 +42,9 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 		String site = null;
 		try {
 
+			workingMemory.setGlobal("applicationContext", applicationContext);
+			workingMemory.setGlobal("personService", ps);
+			workingMemory.setGlobal("giftService",gs);
 
 			if (site == null) {
 				site = gift.getSite().getName();
@@ -67,9 +70,6 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 		}
 
 		try {
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("personService", ps);
-			workingMemory.setGlobal("giftService",gs);
 			
 			logger.info("*** firing all rules");
 

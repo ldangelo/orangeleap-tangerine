@@ -39,6 +39,9 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
 		String site = null;
+		workingMemory.setGlobal("applicationContext", applicationContext);
+		workingMemory.setGlobal("personService", ps);
+		workingMemory.setGlobal("giftService",gs);
 			workingMemory.insert(gift);
 
 			try {
@@ -60,9 +63,6 @@ public class PersonRulesInterceptor implements ApplicationContextAware, Applicat
 		}
 
 		try {
-			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("personService", ps);
-			workingMemory.setGlobal("giftService",gs);
 			logger.info("*** firing all rules");
 			workingMemory.setFocus(site+"person");
 			workingMemory.fireAllRules();

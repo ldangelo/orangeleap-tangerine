@@ -13,7 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ErrorLogDao;
 
 /** 
- * Corresponds to the AUDIT table
+ * Corresponds to the ERROR_LOG table
  */
 @Repository("errorLogDAO")
 public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao {

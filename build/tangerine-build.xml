@@ -161,8 +161,6 @@
 	<target name="copy-tangerine.properties">
 		<!-- Only copy if tangerine.properties does not already exist.  This is necessary to preserve the different values in the different deployment instances -->
 		<property name="deploy.lib.dir" location="${deploy.path}/../lib" />
-		<copy todir="${deploy.lib.dir}" file="${basedir}/tangerine.properties" />
-		<echo message="Copied tangerine.properties to ${deploy.lib.dir}"/>
 		<available file="${deploy.lib.dir}/tangerine.properties" property="tangerine.properties.present"/>
 		<if>
 			<equals arg1="${tangerine.properties.present}" arg2="true" />

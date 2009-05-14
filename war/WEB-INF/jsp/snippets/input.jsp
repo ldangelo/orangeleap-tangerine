@@ -10,7 +10,15 @@
 			<c:if test="${commandObject != null}">
 				<spring:hasBindErrors name="${commandObject}">
 					<c:forEach items="${errors.fieldErrors}" var="error">
-						<c:if test="${error.field == fieldVO.fieldName}"><c:set scope="page" var="errorClass" value="textError" /></c:if>
+						<c:choose>
+							<c:when test="${fn:startsWith(error.field, 'customFieldMap[') && fn:endsWith(error.field, ']')}">
+								<c:set var="thisError" value="${error.field}.value" scope="page"/>
+							</c:when>
+							<c:otherwise>
+								<c:set var="thisError" value="${error.field}" scope="page"/>
+							</c:otherwise>
+						</c:choose>
+						<c:if test="${thisError == fieldVO.fieldName}"><c:set scope="page" var="errorClass" value="textError" /></c:if>
 					</c:forEach> 
 				</spring:hasBindErrors>
 			</c:if>

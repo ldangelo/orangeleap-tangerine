@@ -68,6 +68,20 @@
 		
 		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
 		
+		<property name="overrideUrl5" value="jdbc:mysql://localhost:${mysql.port}/demo?${mysql.opts}" />
+        <script language="javascript"> <![CDATA[
+           self.getProject().setProperty("mysql.db.url", overrideUrl5);
+        ]]> </script>
+		
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
+		
+		<property name="overrideUrl6" value="jdbc:mysql://localhost:${mysql.port}/sandbox?${mysql.opts}" />
+	    <script language="javascript"> <![CDATA[
+	        self.getProject().setProperty("mysql.db.url", overrideUrl6);
+	    ]]> </script>
+			
+		<ant antfile="${build.deploy.data.file}" target="deploy-data" />
+			
 		
 		
 		

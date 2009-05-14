@@ -28,6 +28,7 @@ import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipServic
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
 
 public class RelationshipCustomizeFormController extends SimpleFormController {
 
@@ -43,6 +44,9 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
+    
+    @Resource(name = "siteService")
+    private SiteService siteService;
     
     @Resource(name="customFieldRelationshipService")
     protected CustomFieldRelationshipService customFieldRelationshipService;
@@ -144,6 +148,7 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         
         if (isSubmit) {
         	clearFieldsOnReverseRelationship(reverseConstituentCustomFieldRelationship);
+        	siteService.populateDefaultEntityEditorMaps(constituentCustomFieldRelationship);
 	        updateCustomFieldMap(getMap(request), constituentCustomFieldRelationship);
 	        constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
         } else {

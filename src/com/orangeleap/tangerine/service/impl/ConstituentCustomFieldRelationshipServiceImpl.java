@@ -52,7 +52,7 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	    if (null == constituentDao.readConstituentById(constituentCustomFieldRelationship.getConstituentId())) return null;
         constituentCustomFieldRelationship = constituentCustomFieldRelationshipDao.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
         
-        //auditService.auditObject(constituentCustomFieldRelationship, constituentCustomFieldRelationship);  // TODO
+        auditService.auditObject(constituentCustomFieldRelationship); 
         return constituentCustomFieldRelationship;
     }
 

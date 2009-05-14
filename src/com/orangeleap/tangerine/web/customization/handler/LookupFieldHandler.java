@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.web.customization.handler;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +42,7 @@ public class LookupFieldHandler extends GenericFieldHandler {
         boolean isCustom = currentField.getFieldDefinition().isCustom();
         Object propertyValue = super.getPropertyValue(model, fieldVO);
 
-        if (propertyValue != null && isCustom) {
+        if (propertyValue != null && isCustom && propertyValue instanceof String) {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
 
             String[] ids = ((String)propertyValue).split(",");
@@ -51,9 +52,11 @@ public class LookupFieldHandler extends GenericFieldHandler {
                     if (sb.length() > 0) {
                         sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
                     }
-                    Long longId = Long.valueOf(id);
-                    sb.append(resolve(longId, referenceType));
-                    fieldVO.addId(longId);
+                    if (NumberUtils.isDigits(id)) {
+                        Long longId = Long.valueOf(id);
+                        sb.append(resolve(longId, referenceType));
+                        fieldVO.addId(longId);
+                    }
                 }
             }
             fieldVO.setDisplayValue(sb.toString());

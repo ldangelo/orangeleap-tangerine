@@ -41,7 +41,10 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 		if (communicationHistory.getPerson() == null) {
             return null;
         }
-        communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());
+		Long lookupUserId = tangerineUserHelper.lookupUserId();
+		if (lookupUserId != null) {
+		    communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());
+		}
 		CommunicationHistory savedHistory = communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
 		auditService.auditObject(savedHistory, communicationHistory.getPerson());
 		return savedHistory;

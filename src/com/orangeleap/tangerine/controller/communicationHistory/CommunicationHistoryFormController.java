@@ -13,6 +13,7 @@ import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormCon
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class CommunicationHistoryFormController extends TangerineConstituentAttributesFormController {
@@ -23,9 +24,12 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     @Resource(name="communicationHistoryService")
     protected CommunicationHistoryService communicationHistoryService;
 
+    @Resource(name="sessionService")
+    private SessionService sessionService;
+
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        // TODO: if the user navigates directly to CommunicationHistory.htm with no personId, we should redirect to CommunicationHistorySearch.htm
+        sessionService.lookupSite(); // call lookupSite to make sure TangerineAuthenticationToken has the personId set
         return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getConstituent(request));
     }
 

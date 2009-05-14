@@ -49,7 +49,8 @@ public enum PageType {
     communicationHistoryList("/communicationHistoryList.htm"),
     communicationHistorySearch("/communicationHistorySearch.htm"),
     communicationHistorySearchResults("/communicationHistorySearchResults.htm"),
-    communicationHistoryView("/communicationHistoryView.htm")
+    communicationHistoryView("/communicationHistoryView.htm"),
+    constituentcustomfieldrelationship("/relationshipCustomize.htm")
     ;
 
     private String pageName;

@@ -148,7 +148,6 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         
         if (isSubmit) {
         	clearFieldsOnReverseRelationship(reverseConstituentCustomFieldRelationship);
-        	siteService.populateDefaultEntityEditorMaps(constituentCustomFieldRelationship);
 	        updateCustomFieldMap(getMap(request), constituentCustomFieldRelationship);
 	        constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
         } else {

@@ -135,7 +135,7 @@ public class MailService {
 			ch.setPerson(person);
 			ch.setSystemGenerated(true);
 			ch.setComments("Generated mailing using template named " + getTemplateName());
-			ch.setEntryType("Email");
+			ch.setEntryType("Mail");
 			ch.setRecordDate(new Date());
 			ch.setCustomFieldValue("template", getTemplateName());
 

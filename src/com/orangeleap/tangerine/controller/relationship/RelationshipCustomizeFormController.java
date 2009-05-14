@@ -146,12 +146,21 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
         }
         
+        
+        // This logic syncs the forward and reverse fields so they show the same on each side.  
+        // They could be maintained separately if directionality is required (e.g. "blocked communication" friend).
         if (isSubmit) {
-        	clearFieldsOnReverseRelationship(reverseConstituentCustomFieldRelationship);
+        	
 	        updateCustomFieldMap(getMap(request), constituentCustomFieldRelationship);
 	        constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
+
+	        updateCustomFieldMap(getMap(request), reverseConstituentCustomFieldRelationship);
+	        reverseConstituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(reverseConstituentCustomFieldRelationship);
+	        
         } else {
+        	
             mergeFieldsFromReverseRelationship(constituentCustomFieldRelationship, reverseConstituentCustomFieldRelationship);
+            
         }
         
         

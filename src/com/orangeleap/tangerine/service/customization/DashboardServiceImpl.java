@@ -95,7 +95,7 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
         	data.getColumnTypes().add("number");
         	
         	// Some data points may be missing from some datasets
-        	List<DashboardItemDataValue> values = dashboardDao.getDashboardQueryResults(ds);
+        	List<DashboardItemDataValue> values = dashboardDao.getDashboardQueryResults(ds, tangerineUserHelper.lookupUserId());
         	if (values.size() > DATA_POINT_LIMIT) {
                 values.subList(DATA_POINT_LIMIT, values.size()).clear();
             }

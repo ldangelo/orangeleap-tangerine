@@ -62,7 +62,7 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds) {
+	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds, Long userid) {
         if (logger.isTraceEnabled()) {
             logger.trace("getDashboardQueryResults");
         }
@@ -72,6 +72,7 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
             return new ArrayList<DashboardItemDataValue>();
         }
         sql = sql.replaceAll("#siteName#", "'"+this.getSiteName()+"'");
+        sql = sql.replaceAll("#userId#", ""+userid);
 
         Map<String, Object> params = setupParams();
         params.put("sql", sql);

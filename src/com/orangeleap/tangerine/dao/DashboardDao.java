@@ -9,6 +9,6 @@ import com.orangeleap.tangerine.domain.customization.DashboardItemDataset;
 public interface DashboardDao {
 	
 	public List<DashboardItem> getDashboard();
-	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds);
+	public List<DashboardItemDataValue> getDashboardQueryResults(DashboardItemDataset ds, Long userid);
 	
 }

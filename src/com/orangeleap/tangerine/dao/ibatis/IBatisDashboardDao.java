@@ -57,6 +57,10 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
 						break;
 					}
 				}
+			} else {
+				if ("None".equalsIgnoreCase(di.getType())) {
+					it.remove();
+				}
 			}
 		}
 	}

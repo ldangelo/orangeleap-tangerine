@@ -47,6 +47,8 @@ public class EntityValidator implements Validator {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    private static final String EXTENSIONS = "extensions:";
 
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
@@ -246,9 +248,8 @@ public class EntityValidator implements Validator {
                 	// 'required' is validated in validateRequiredFields()
                 	valid = true;
                 } else {
-                	String validator = "extensions:";
-                	if (regex.startsWith(validator)) {
-                		valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(validator.length()));
+                	if (regex.startsWith(EXTENSIONS)) {
+                		valid = new ExtendedValidationSupport().validate(propertyString, regex.substring(EXTENSIONS.length()));
                 	}
                 	else {
                 		valid = propertyString.matches(regex);

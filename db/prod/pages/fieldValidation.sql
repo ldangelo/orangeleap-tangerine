@@ -27,6 +27,8 @@ INSERT INTO FIELD_REQUIRED (FIELD_REQUIRED_ID, SITE_NAME, SECTION_NAME, FIELD_DE
 
 -- Add email syntax validation 
 INSERT INTO FIELD_VALIDATION (VALIDATION_ID, SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES (1001000, null, 'person.contactInfo', 'person.primaryEmail', 'email.emailAddress', 'extensions:isEmail');
+INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('email.info', 'email.emailAddress', 'extensions:isEmail');
+INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('email.edit', 'email.emailAddress', 'extensions:isEmail');
 
 -- Add credit card number validation 
 -- A test credit card number is Visa 4111111111111111

@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.controller.relationship;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -133,18 +134,8 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         ConstituentCustomFieldRelationship reverseConstituentCustomFieldRelationship = 
         	constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(new Long(cf.getValue()), masterfieldDefinitionId, constituentId.toString(), cf.getStartDate());
         
-        
-        if (constituentCustomFieldRelationship == null) {
-        	constituentCustomFieldRelationship = new ConstituentCustomFieldRelationship();
-        	constituentCustomFieldRelationship.setConstituentId(constituentId);
-        	constituentCustomFieldRelationship.setCustomFieldStartDate(cf.getStartDate());
-        	constituentCustomFieldRelationship.setCustomFieldValue(cf.getValue());
-        	constituentCustomFieldRelationship.setMasterFieldDefinitionId(masterfieldDefinitionId);
-        	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
-        	constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
-        } else {
-        	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
-        }
+        constituentCustomFieldRelationship = init(constituentCustomFieldRelationship, constituentId, masterfieldDefinitionId, cf.getStartDate(), cf.getValue());
+        reverseConstituentCustomFieldRelationship = init(reverseConstituentCustomFieldRelationship, new Long(cf.getValue()), masterfieldDefinitionId, cf.getStartDate(), constituentId.toString());
         
         
         // This logic syncs the forward and reverse fields so they show the same on each side.  
@@ -177,6 +168,21 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		mav.addObject("refvalue", request.getParameter("refvalue"));
         return mav;
 
+	}
+	
+	private ConstituentCustomFieldRelationship init(ConstituentCustomFieldRelationship constituentCustomFieldRelationship, Long constituentId, String masterfieldDefinitionId, Date startDate, String cfvalue) {
+        if (constituentCustomFieldRelationship == null) {
+        	constituentCustomFieldRelationship = new ConstituentCustomFieldRelationship();
+        	constituentCustomFieldRelationship.setConstituentId(constituentId);
+        	constituentCustomFieldRelationship.setCustomFieldStartDate(startDate);
+        	constituentCustomFieldRelationship.setCustomFieldValue(cfvalue);
+        	constituentCustomFieldRelationship.setMasterFieldDefinitionId(masterfieldDefinitionId);
+        	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
+        	constituentCustomFieldRelationship = constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(constituentCustomFieldRelationship);
+        } else {
+        	ensureDefaultFieldsAndValuesExist(constituentCustomFieldRelationship);
+        }
+        return constituentCustomFieldRelationship;
 	}
 	
 	private void mergeFieldsFromReverseRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship, ConstituentCustomFieldRelationship reverseConstituentCustomFieldRelationship) {

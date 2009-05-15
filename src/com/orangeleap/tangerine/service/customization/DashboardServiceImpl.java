@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.service.customization;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,6 +19,7 @@ import com.orangeleap.tangerine.domain.customization.DashboardItem;
 import com.orangeleap.tangerine.domain.customization.DashboardItemDataValue;
 import com.orangeleap.tangerine.domain.customization.DashboardItemDataset;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 @Service("dashboardService")
 public class DashboardServiceImpl extends AbstractTangerineService implements DashboardService {
@@ -29,14 +31,44 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
 
     @Resource(name = "dashboardDAO")
     private DashboardDao dashboardDao;
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
     
     @Override
     public List<DashboardItem> getDashboard() {
         if (logger.isTraceEnabled()) {
             logger.trace("getDashboard");
         }
-        return dashboardDao.getDashboard();
+        
+        List<DashboardItem> list = dashboardDao.getDashboard();
+
+        List<String> roles = tangerineUserHelper.lookupUserRoles();
+        
+        filterForRole(list, roles);
+        
+        return list;
     }
+    
+	private void filterForRole(List<DashboardItem> rows, List<String> roles) {
+		Iterator<DashboardItem> it = rows.iterator();
+		while (it.hasNext()) {
+			DashboardItem di = it.next();
+			String itemroles = di.getRoles();
+			if (itemroles != null) {
+				boolean ok = false;
+				for (String userrole : roles) {
+					if (itemroles.contains(userrole)) {
+						ok = true;
+						break;
+					}
+				}
+				if (!ok) it.remove();
+			}
+		}
+	}
+	
+
 
     @Override
     public DashboardData getDashboardQueryContent(DashboardItem item) {

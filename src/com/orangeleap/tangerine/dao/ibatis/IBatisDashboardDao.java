@@ -36,8 +36,6 @@ public class IBatisDashboardDao extends AbstractIBatisDao implements DashboardDa
         }
         Map<String, Object> params = setupParams();
 
-        // TODO could add filter for logged-in user/roles if desired
-
         List<DashboardItem> rows = getSqlMapClientTemplate().queryForList("SELECT_DASHBOARD_ITEM", params);
         
         filterForSiteOverride(rows);

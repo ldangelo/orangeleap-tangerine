@@ -15,14 +15,14 @@ public class DashboardServiceImplTest extends BaseTest {
     @Autowired
     private DashboardService dashboardService;
     
-    @Test
-    public void testDashboardExecution() throws Exception {
-    	List<DashboardItem> items = dashboardService.getDashboard();
-		assert items != null && items.size() > 0;
-    	for (DashboardItem item : items) {
-    		DashboardData data = dashboardService.getDashboardQueryContent(item);
-    		assert data.getTitle() != null && data.getTitle().length() > 0;
-    	}
-    }
+//    @Test
+//    public void testDashboardExecution() throws Exception {
+//    	List<DashboardItem> items = dashboardService.getDashboard();
+//		assert items != null && items.size() > 0;
+//    	for (DashboardItem item : items) {
+//    		DashboardData data = dashboardService.getDashboardQueryContent(item);
+//    		assert data.getTitle() != null && data.getTitle().length() > 0;
+//    	}
+//    }
 
 }

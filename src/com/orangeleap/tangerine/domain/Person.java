@@ -19,11 +19,61 @@ public class Person extends AbstractCommunicatorEntity {
     public static final String FORMAL_SALUTATION = "formalSalutation";
     public static final String INFORMAL_SALUTATION = "informalSalutation";
     public static final String HEAD_OF_HOUSEHOLD_SALUTATION = "headOfHouseholdSalutation";
-    public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
     public static final String DONOR_PROFILES = "donorProfiles";
+    
+    public static final String CONSTITUENT_INDIVIDUAL_ROLES = "constituentIndividualRoles";
+    public static final String CONSTITUENT_ORGANIZATION_ROLES = "constituentOrganizationRoles";
+    public static final String INDIVIDUAL_SPOUSE = "individual.spouse";
+    public static final String INDIVIDUAL_BIRTH_DATE = "individual.birthDate";
+    public static final String INDIVIDUAL_DECEASED = "individual.deceased";
+    public static final String INDIVIDUAL_GENDER = "individual.gender";
+    public static final String INDIVIDUAL_RACE = "individual.race";
+    public static final String INDIVIDUAL_MILITARY = "individual.military";
+    
+    public static final String ORGANIZATION_WEBSITE = "organization.website";
+    public static final String ORGANIZATION_TAX_ID = "organization.taxid";
+    public static final String ORGANIZATION_ELIGIBILITY = "organization.eligibility";
     public static final String ORGANIZATION_MINIMUM_GIFT_MATCH = "organization.minimumGiftMatch";
     public static final String ORGANIZATION_MAXIMUM_GIFT_MATCH = "organization.maximumGiftMatch";
+    public static final String ORGANIZATION_MATCHING = "organization.matching";
+    public static final String ORGANIZATION_PERCENT_MATCH = "organization.percentMatch";
+    public static final String ORGANIZATION_MAXIMUM_ANNUAL_LIMIT = "organization.maximumAnnualLimit";
+    public static final String ORGANIZATION_TOTAL_EMPLOYEE_PER_YEAR = "organization.totalPerEmployeePerYear";
+    public static final String ORGANIZATION_ELIGIBLE_FUNDS = "organization.eligibleFunds";
+    public static final String ORGANIZATION_ADDITIONAL_ELIGIBLE_FUNDS = "organization.additional_eligibleFunds";
+    public static final String ORGANIZATION_ELIGIBLE_ORGANIZATIONS = "organization.eligibleOrganizations";
+    public static final String ORGANIZATION_ADDITIONAL_ELIGIBLE_ORGANIZATIONS = "organization.additional_eligibleOrganizations";
+    public static final String ORGANIZATION_INELIGIBLE_ORGANIZATIONS = "organization.ineligibleOrganizations";
+    public static final String ORGANIZATION_ADDITIONAL_INELIGIBLE_ORGANIZATIONS = "organization.additional_ineligibleOrganizations";
+    public static final String ORGANIZATION_ONLINE_MATCHING_GIFT_FORM = "organization.onlineMatchingGiftForm";
+    public static final String ORGANIZATION_PROGRAM_START_MONTH = "organization.programStartMonth";
+    public static final String ORGANIZATION_PROGRAM_CONTACT = "organization.programContact";
+    public static final String ORGANIZATION_OTHER_PROGRAM_CONTACT = "organization.other_programContact";
+    public static final String ORGANIZATION_PROCEDURE_FOR_REQUESTING_MATCH = "organization.procedureForRequestingMatch";
 
+    public static final String INDIVIDUAL_ORGANIZATIONS = "individual.organizations";
+    public static final String INDIVIDUAL_EMPLOYMENT_TITLE = "individual.employmentTitle";
+    public static final String INDIVIDUAL_HEAD_OF_HOUSEHOLD = "individual.headofhousehold";
+    public static final String HEAD_OF_HOUSEHOLD_HOUSEHOLD_MEMBERS = "headofhousehold.householdMembers";
+    public static final String INDIVIDUAL_ACCOUNT_MANAGER_FOR = "individual.accountManagerFor";
+    public static final String INDIVIDUAL_PRIMARY_CONTACT_FOR = "individual.primaryContactFor";
+    public static final String INDIVIDUAL_BILLING_CONTACT_FOR = "individual.billingContactFor";
+    public static final String INDIVIDUAL_SALES_CONTACT_FOR = "individual.salesContactFor";
+    public static final String INDIVIDUAL_PUBLIC_RELATIONS_CONTACT_FOR = "individual.publicRelationsContactFor";
+    public static final String INDIVIDUAL_PROGRAM_CONTACT_FOR = "individual.programContactFor";
+    public static final String INDIVIDUAL_PARENTS = "individual.parents";
+    public static final String INDIVIDUAL_CHILDREN = "individual.children";
+    public static final String INDIVIDUAL_SIBLINGS = "individual.siblings";
+    public static final String INDIVIDUAL_FRIENDS = "individual.friends";
+    
+    public static final String ORGANIZATION_EMPLOYEES = "organization.employees";
+    public static final String ORGANIZATION_PARENT = "organization.parent";
+    public static final String ORGANIZATION_SUBSIDIARY_LIST = "organization.subsidiaryList";
+    public static final String ORGANIZATION_PRIMARY_CONTACTS = "organization.primaryContacts";
+    public static final String ORGANIZATION_BILLING_CONTACTS = "organization.billingContacts";
+    public static final String ORGANIZATION_SALES_CONTACTS = "organization.salesContacts";
+    public static final String ORGANIZATION_PUBLIC_RELATIONS_CONTACTS = "organization.publicRelationsContacts";
+    
     private Site site;
     private String constituentType = INDIVIDUAL;
     private String title;
@@ -99,7 +149,9 @@ public class Person extends AbstractCommunicatorEntity {
     public String createName(boolean lastFirst) {
         StringBuilder sb = new StringBuilder();
         if (lastFirst) {
-            sb.append(lastName == null ? "" : lastName).append(", ");
+            if (lastName != null) {
+                sb.append(lastName).append(", ");
+            }
         }
         sb.append(firstName == null ? "" : firstName);
         if (middleName != null && middleName.length() > 0) {
@@ -259,21 +311,29 @@ public class Person extends AbstractCommunicatorEntity {
     }
 
     public void setConstituentIndividualRoles(String constituentIndividualRoles) {
-    	setCustomFieldValue("constituentIndividualRoles", constituentIndividualRoles);
+    	setCustomFieldValue(CONSTITUENT_INDIVIDUAL_ROLES, constituentIndividualRoles);
     }
 
     public String getConstituentIndividualRoles() {
-        String result = getCustomFieldValue("constituentIndividualRoles");
-        if (result == null) return ""; else return result;
+        String result = getCustomFieldValue(CONSTITUENT_INDIVIDUAL_ROLES);
+        if (result == null) {
+            return "";
+        } else {
+            return result;
+        }
     }
 
     public void setConstituentOrganizationRoles(String constituentOrganizationRoles) {
-    	setCustomFieldValue("constituentOrganizationRoles", constituentOrganizationRoles);
+    	setCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES, constituentOrganizationRoles);
     }
 
     public String getConstituentOrganizationRoles() {
-    	String result = getCustomFieldValue("constituentOrganizationRoles");
-        if (result == null) return ""; else return result;
+    	String result = getCustomFieldValue(CONSTITUENT_ORGANIZATION_ROLES);
+        if (result == null) {
+            return "";
+        } else {
+            return result;
+        }
     }
 
     public void removeConstituentIndividualRoles(String role) {
@@ -432,8 +492,19 @@ public class Person extends AbstractCommunicatorEntity {
     @Override
     public void prePersist() {
         super.prePersist();
-        if (isOrganization() && StringUtils.isBlank(getLegalName())) {
-            setLegalName(getOrganizationName());
+        if (isOrganization()) {
+            clearIndividual();
+            setConstituentOrganizationRoles(StringUtils.trimToEmpty(getConstituentOrganizationRoles()).toLowerCase());
+            if (StringUtils.isBlank(getLegalName())) {
+                setLegalName(getOrganizationName());
+            }
+        }
+        else if (isIndividual()) {
+            clearOrganization();
+            setConstituentIndividualRoles(StringUtils.trimToEmpty(getConstituentIndividualRoles()).toLowerCase());
+            if (StringUtils.isBlank(getCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION))) {
+                setCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION, getFirstLast());
+            }
         }
         if (StringUtils.isBlank(getRecognitionName())) {
             if (isIndividual()) { 
@@ -464,11 +535,73 @@ public class Person extends AbstractCommunicatorEntity {
                 setCustomFieldValue(INFORMAL_SALUTATION, getFirstLast());
             }
         }
-        if (isIndividual() && StringUtils.isBlank(getCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION))) {
-            setCustomFieldValue(HEAD_OF_HOUSEHOLD_SALUTATION, getFirstLast());
-        }
         setConstituentType(StringUtils.trimToEmpty(getConstituentType()).toLowerCase());
-        setConstituentIndividualRoles(StringUtils.trimToEmpty(getConstituentIndividualRoles()).toLowerCase());
-        setConstituentOrganizationRoles(StringUtils.trimToEmpty(getConstituentOrganizationRoles()).toLowerCase());
+    }
+    
+    public void clearIndividual() {
+        setTitle(null);
+        setSuffix(null);
+        setFirstName(null);
+        setLastName(null);
+        setMiddleName(null);
+        setMaritalStatus(null);
+        removeCustomField(CONSTITUENT_INDIVIDUAL_ROLES);
+        removeCustomField(HEAD_OF_HOUSEHOLD_SALUTATION);
+        removeCustomField(INDIVIDUAL_BIRTH_DATE);
+        removeCustomField(INDIVIDUAL_DECEASED);
+        removeCustomField(INDIVIDUAL_GENDER);
+        removeCustomField(INDIVIDUAL_MILITARY);
+        removeCustomField(INDIVIDUAL_RACE);
+        removeCustomField(INDIVIDUAL_SPOUSE);
+        
+        removeCustomField(INDIVIDUAL_ORGANIZATIONS);
+        removeCustomField(INDIVIDUAL_EMPLOYMENT_TITLE);
+        removeCustomField(INDIVIDUAL_HEAD_OF_HOUSEHOLD);
+        removeCustomField(HEAD_OF_HOUSEHOLD_HOUSEHOLD_MEMBERS);
+        removeCustomField(INDIVIDUAL_ACCOUNT_MANAGER_FOR);
+        removeCustomField(INDIVIDUAL_PRIMARY_CONTACT_FOR);
+        removeCustomField(INDIVIDUAL_BILLING_CONTACT_FOR);
+        removeCustomField(INDIVIDUAL_SALES_CONTACT_FOR);
+        removeCustomField(INDIVIDUAL_PUBLIC_RELATIONS_CONTACT_FOR);
+        removeCustomField(INDIVIDUAL_PROGRAM_CONTACT_FOR);
+        removeCustomField(INDIVIDUAL_PARENTS);
+        removeCustomField(INDIVIDUAL_CHILDREN);
+        removeCustomField(INDIVIDUAL_SIBLINGS);
+        removeCustomField(INDIVIDUAL_FRIENDS);
+    }
+    
+    public void clearOrganization() {
+        setOrganizationName(null);
+        setLegalName(null);
+        setNcaisCode(null);
+        removeCustomField(CONSTITUENT_ORGANIZATION_ROLES);
+        removeCustomField(ORGANIZATION_ADDITIONAL_ELIGIBLE_FUNDS);
+        removeCustomField(ORGANIZATION_ADDITIONAL_ELIGIBLE_ORGANIZATIONS);
+        removeCustomField(ORGANIZATION_ADDITIONAL_INELIGIBLE_ORGANIZATIONS);
+        removeCustomField(ORGANIZATION_ELIGIBILITY);
+        removeCustomField(ORGANIZATION_ELIGIBLE_FUNDS);
+        removeCustomField(ORGANIZATION_ELIGIBLE_ORGANIZATIONS);
+        removeCustomField(ORGANIZATION_INELIGIBLE_ORGANIZATIONS);
+        removeCustomField(ORGANIZATION_MATCHING);
+        removeCustomField(ORGANIZATION_MAXIMUM_ANNUAL_LIMIT);
+        removeCustomField(ORGANIZATION_MAXIMUM_GIFT_MATCH);
+        removeCustomField(ORGANIZATION_MINIMUM_GIFT_MATCH);
+        removeCustomField(ORGANIZATION_ONLINE_MATCHING_GIFT_FORM);
+        removeCustomField(ORGANIZATION_OTHER_PROGRAM_CONTACT);
+        removeCustomField(ORGANIZATION_PERCENT_MATCH);
+        removeCustomField(ORGANIZATION_PROCEDURE_FOR_REQUESTING_MATCH);
+        removeCustomField(ORGANIZATION_PROGRAM_CONTACT);
+        removeCustomField(ORGANIZATION_TAX_ID);
+        removeCustomField(ORGANIZATION_TOTAL_EMPLOYEE_PER_YEAR);
+        removeCustomField(ORGANIZATION_WEBSITE);
+        removeCustomField(ORGANIZATION_PROGRAM_START_MONTH);
+
+        removeCustomField(ORGANIZATION_EMPLOYEES);
+        removeCustomField(ORGANIZATION_PARENT);
+        removeCustomField(ORGANIZATION_SUBSIDIARY_LIST);
+        removeCustomField(ORGANIZATION_PRIMARY_CONTACTS);
+        removeCustomField(ORGANIZATION_BILLING_CONTACTS);
+        removeCustomField(ORGANIZATION_SALES_CONTACTS);
+        removeCustomField(ORGANIZATION_PUBLIC_RELATIONS_CONTACTS);
     }
 }

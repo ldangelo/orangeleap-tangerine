@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.util.StringConstants;
 
 /**
  * Extends AbstractEntity to include methods needed on Entities which
@@ -121,8 +122,21 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         }
     }
     
-    //
-    // if the custom field contains the 'value' then remove it
+    /**
+     * Remove the custom field
+     * @param fieldName the custom field to be removed
+     */
+    public void removeCustomField(String fieldName) {
+        if (getCustomFieldMap().containsKey(fieldName)) {
+            getCustomFieldMap().remove(fieldName);
+        }
+    }
+    
+    /**
+     * If the custom field contains the 'value' then remove the value
+     * @param fieldName the custom field to check the value for
+     * @param value value to remove
+     */
     public void removeCustomFieldValue(String fieldName, String value) {
     	
     	String existingValue = getCustomFieldValue(fieldName);
@@ -139,7 +153,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     	// then set the field value to an empty string (remove it)
     	if (existingValue.contains(",") == false) {
     		if (existingValue.compareTo(value) == 0) {
-                setCustomFieldValue(fieldName,"");
+                setCustomFieldValue(fieldName, StringConstants.EMPTY);
             }
     	} else {
     		//

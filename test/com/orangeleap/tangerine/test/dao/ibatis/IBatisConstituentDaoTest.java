@@ -101,7 +101,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent != null;
         assert "Lady".equals(readConstituent.getTitle());
         assert "joe@bob.com".equals(readConstituent.getLoginId());
-        assert "huh".equals(readConstituent.getNcaisCode());
+        assert readConstituent.getNcaisCode() == null;
         
         assert constituent.getFirstName().equals(readConstituent.getFirstName());
         assert constituent.getLastName().equals(readConstituent.getLastName());

@@ -34,15 +34,15 @@ public class GiftListController {
     static {
         NAME_MAP.put("id", "id");
         NAME_MAP.put("date", "date");
-        NAME_MAP.put("constituentId", "constituentId");
+        NAME_MAP.put("constituentId", "constituentid");
         NAME_MAP.put("amount", "amount");
-        NAME_MAP.put("currencyCode", "currencyCode");
+        NAME_MAP.put("currencycode", "currencycode");
         NAME_MAP.put("type", "type");
         NAME_MAP.put("status", "status");
         NAME_MAP.put("comments", "comments");
-        NAME_MAP.put("refNumber", "refNumber");
-        NAME_MAP.put("authCode", "authCode");
-        NAME_MAP.put("giftType", "giftType");
+        NAME_MAP.put("refnumber", "refnumber");
+        NAME_MAP.put("authcode", "authcode");
+        NAME_MAP.put("gifttype", "gifttype");
     }
     
     @Resource(name="giftService")

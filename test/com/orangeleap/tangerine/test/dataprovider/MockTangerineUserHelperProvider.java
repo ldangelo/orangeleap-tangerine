@@ -17,6 +17,8 @@ public class MockTangerineUserHelperProvider {
         final TangerineUserHelper tangerineUserHelper = tangerineUserHelperMock.mock(TangerineUserHelper.class);
 
         tangerineUserHelperMock.checking(new Expectations() {{
+            allowing (tangerineUserHelper).lookupUserId(); will(returnValue(new Long(1)));
+            allowing (tangerineUserHelper).lookupUserName(); will(returnValue("nryan"));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
             allowing (tangerineUserHelper).lookupUserPassword(); will(returnValue("password"));
         }});

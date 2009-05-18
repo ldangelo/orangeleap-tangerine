@@ -31,7 +31,12 @@
 	<aop:aspectj-autoproxy />
 	
 	<import resource="applicationContext-integration-test.xml"/>
-	
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource"/>
+		</property>
+	</bean>
 	
 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
@@ -45,9 +50,8 @@
 		<property name="password" value="orangeleap"/>
 	</bean>
 	
-	<!-- TODO: to be replaced with mock -->
-	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
-
+	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.test.dataprovider.MockTangerineUserHelperProvider" factory-method="createMockUserHelper" />
+	
     <!-- Load EHCache bean here, since it is needed by messageSource -->
     <bean id="cacheManager"
           class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"

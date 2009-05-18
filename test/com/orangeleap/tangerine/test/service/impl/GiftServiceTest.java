@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
@@ -26,7 +25,6 @@ import com.orangeleap.tangerine.test.BaseTest;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class GiftServiceTest extends BaseTest {
 
@@ -38,14 +36,6 @@ public class GiftServiceTest extends BaseTest {
     
     @Autowired
     private ConstituentService constituentService;
-    
-    @Autowired
-    private TangerineUserHelper tangerineUserHelper;
- 
-    @BeforeMethod
-    public void setup() {
-    	tangerineUserHelper.setSystemUserAndSiteName("company1");
-    }
     
     @SuppressWarnings("unchecked")
     private List<DistributionLine> initLazyListDistributionLines() {

@@ -42,19 +42,6 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
     private RelationshipService relationshipService;
 
 
-    // Used for adding / deleting custom field instances and updating date ranges.  
-    // Adds or updates items in place, validates date ranges and deletes any existing custom fields not in the passed list.
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-	public List<CustomFieldRelationship> maintainCustomFieldRelationships(List<CustomFieldRelationship> CustomFieldRelationships) {
-	    
-    	
-        // TODO
-    	
-        //relationshipService.maintainRelationships();
-        //auditService.auditObject(CustomFieldRelationship, CustomFieldRelationship);  // TODO
-        return CustomFieldRelationships;
-    }
     
     // Used for custom field maintenance 
     @Override

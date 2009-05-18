@@ -41,7 +41,9 @@
 		<br/>
 
 		</div>
-		
+     
+		<strong><a class="action" href="relationship.htm?personId=${person.id}&fieldDefinitionId=${fieldDefinition.id}">&laquo;Back</a></strong>
+	
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

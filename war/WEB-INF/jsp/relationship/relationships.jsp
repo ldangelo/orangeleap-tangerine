@@ -43,6 +43,8 @@
 		</script>
 
 		</div>
+		
+		<strong><a class="action" href="person.htm?personId=${person.id}">&laquo;Back</a></strong>
 
 		</div>
 		

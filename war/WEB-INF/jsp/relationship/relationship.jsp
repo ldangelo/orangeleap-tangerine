@@ -91,5 +91,8 @@
 
 		</script>
 		
+	    <strong><a class="action" href="relationships.htm?personId=${person.id}">&laquo;Back</a></strong>
+		
+		
 	</tiles:putAttribute>
 </tiles:insertDefinition>

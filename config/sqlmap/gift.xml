@@ -105,7 +105,11 @@
 	</select>
 	
 	<select id="SELECT_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultClass="java.util.HashMap" parameterClass="map">
-		select g.GIFT_ID as id, g.DONATION_DATE as date, g.CONSTITUENT_ID as constituentid, g.AMOUNT as amount, g.CURRENCY_CODE as currencycode, 
+		select a.id, a.date, a.constituentid, a.amount, a.currencycode, a.type, a.status, a.comments, a.refnumber, 
+		a.authcode, a.gifttype, a.txndt, IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+ 		from 
+		
+		(select g.GIFT_ID as id, g.DONATION_DATE as date, g.CONSTITUENT_ID as constituentid, g.AMOUNT as amount, g.CURRENCY_CODE as currencycode, 
 		g.PAYMENT_TYPE as type, g.PAYMENT_STATUS as status, g.COMMENTS as comments, g.PAYMENT_TXREFNUM as refnumber, g.AUTH_CODE as authcode, 'MONETARY' as gifttype, 
 		g.TRANSACTION_DATE as txndt
 		from GIFT g
@@ -123,9 +127,10 @@
 		inner join CONSTITUENT p on ag.CONSTITUENT_ID = p.CONSTITUENT_ID
 		inner join GIFT g2 on ag.GIFT_ID = g2.GIFT_ID
 		where p.SITE_NAME = #siteName#
-		and ag.CONSTITUENT_ID = #constituentId#
+		and ag.CONSTITUENT_ID = #constituentId#) as a
 		
 		order by
+		isnull ASC,
 		$sortColumn$ $sortDir$, txndt desc
         limit $offset$,$limit$
 	</select>

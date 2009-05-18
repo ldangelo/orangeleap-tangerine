@@ -47,7 +47,7 @@ Ext.onReady(function() {
 
         store: GiftList.store,
         columns: [
-            {header: '', width: 30, dataIndex: 'id', sortable: true, renderer: GiftList.entityViewRenderer},
+            {header: '', width: 30, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: GiftList.entityViewRenderer},
             {header: 'Donation Dt', width: 80, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Amount', width: 50, dataIndex: 'amount', sortable: true},
             {header: 'Curr', width: 40, dataIndex: 'currencycode', sortable: true},

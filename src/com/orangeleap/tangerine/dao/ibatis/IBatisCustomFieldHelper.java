@@ -205,6 +205,7 @@ public class IBatisCustomFieldHelper {
     }
     
     private void deleteCCRs(CustomField cf) {
+    	if (!cf.getEntityType().equals("person")) return;
     	// Will not delete orphans if id doesn't use the standard pattern - ideally should convert to use numeric id in DATA_TYPE
     	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId("person.customFieldMap["+cf.getName()+"]"); 
     	if (masterFieldDefinitionId != null  && StringUtils.trimToNull(cf.getValue()) != null)  {

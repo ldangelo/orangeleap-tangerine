@@ -84,8 +84,8 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
     	FieldDefinition fd = fieldDao.readFieldDefinition(id);
     	List<FieldRelationship> frs = fieldDao.readMasterFieldRelationships(fd.getId());
     	if (frs.size() == 0) frs = fieldDao.readDetailFieldRelationships(fd.getId());
-    	FieldRelationship fr = frs.get(0);
     	if (frs.size() == 0)  return null;
+    	FieldRelationship fr = frs.get(0);
     	return fr.getMasterRecordField().getId();
 	}
 

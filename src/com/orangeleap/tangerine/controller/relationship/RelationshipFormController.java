@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,10 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
@@ -37,6 +40,9 @@ public class RelationshipFormController extends SimpleFormController {
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;
+
+    @Resource(name="constituentCustomFieldRelationshipService")
+    protected ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
     
     @Resource(name="customFieldRelationshipService")
     protected CustomFieldRelationshipService customFieldRelationshipService;
@@ -87,7 +93,9 @@ public class RelationshipFormController extends SimpleFormController {
 
     	try {
     		
-    		// TODO if any start date has changed, adjust the start dates on the corresponding ccrs before saving.
+    		List<CustomField> existing = relationshipService.readCustomFieldsByConstituentAndFieldName(personId, fieldName);
+    		adjustCCRs(existing, list, fieldDefinition.getId());
+    		
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
     		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
     		person = constituentService.readConstituentById(personId);
@@ -108,6 +116,27 @@ public class RelationshipFormController extends SimpleFormController {
         mav.addObject("person", person);
         return mav;
         
+    }
+    
+	// If any start date has changed, adjust the start dates on the corresponding ccrs before saving.
+    // CCRs link to custom fields by start date rather than custom field id since the custom field ids change with each save in IBatisCustomFieldHelper.
+    private void adjustCCRs(List<CustomField> oldlist, List<CustomField> newlist, String fieldDefinitionId) {
+    	for (CustomField oldcf: oldlist) {
+        	for (CustomField newcf: newlist) {
+        		if (oldcf.getId().equals(newcf.getId()) && oldcf.getValue().equals(newcf.getValue())) {
+        			if (!oldcf.getStartDate().equals(newcf.getStartDate())) {
+        				updateStartDate(newcf.getEntityId(), fieldDefinitionId, oldcf.getValue(), oldcf.getStartDate(), newcf.getStartDate());
+        				updateStartDate(new Long(oldcf.getValue()),  fieldDefinitionId, ""+newcf.getEntityId(), oldcf.getStartDate(), newcf.getStartDate());
+        			}
+        		}
+        	}
+    	}
+    }
+    
+    private void updateStartDate(Long entityid, String  fieldDefinitionId, String value, Date oldStartDate, Date newStartDate) {
+		ConstituentCustomFieldRelationship ccr = constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(entityid, fieldDefinitionId, value, oldStartDate);
+		ccr.setCustomFieldStartDate(newStartDate);
+		constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(ccr);
     }
     
     private CustomField getCustomFieldId(CustomField customizeCf, List<CustomField> savedlist) {
@@ -174,6 +203,8 @@ public class RelationshipFormController extends SimpleFormController {
 				cf.setEntityId(personId);
 				cf.setEntityType("person");
 				cf.setName(fieldName);
+				String id = request.getParameter("cfId"+fieldnum);
+				if (id != null && id.length() > 0) cf.setId(new Long(id));
 				cf.setValue(request.getParameter(parm).trim());
 				cf.setSequenceNumber(ifieldnum-1);
 				if (cf.getValue().length() > 0) {

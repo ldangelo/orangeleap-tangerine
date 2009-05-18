@@ -8,6 +8,7 @@
 		<result property="value" column="CUS_FLD_FIELD_VALUE" jdbcType="LONGVARCHAR" />
         <result property="entityType" column="ENTITY_TYPE" jdbcType="VARCHAR" />
         <result property="entityId" column="ENTITY_ID" jdbcType="BIGINT"/>
+		<result property="dataType" column="DATA_TYPE" jdbcType="BIGINT" />
         <result property="startDate" column="START_DATE" jdbcType="TIMESTAMP"/>
         <result property="endDate" column="END_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>

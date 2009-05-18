@@ -99,19 +99,29 @@ public class CheckServiceImpl extends AbstractTangerineService implements CheckS
             Document doc = postString(payload);
             Element root = doc.getRootElement();
             Element loadReturn = root.element("Body").element("DataLoadResponse").element("DataLoadReturn");
-            SAXReader reader = new SAXReader();
-            doc = reader.read(new StringReader(loadReturn.getText()));
-            root = doc.getRootElement();
+            String responseText = loadReturn.getText();
 
-            Element node = root.element("detail");
+            // ensure we have a nested XML document
+            if (responseText.toUpperCase().indexOf("<BATCH") > -1) {
+                SAXReader reader = new SAXReader();
+                doc = reader.read(new StringReader(responseText));
+                root = doc.getRootElement();
 
-            String auth = node.elementText("Auth");
-            int authNumber = Integer.parseInt(auth);
-            String msg = node.elementText("Message").trim();
-            String txn = node.elementText("TXNNBR");
-            response = new Response(authNumber, txn, msg);
+                Element node = root.element("detail");
 
-            return response;
+                String auth = node.elementText("Auth");
+                int authNumber = Integer.parseInt(auth);
+                String msg = node.elementText("Message").trim();
+                String txn = node.elementText("TXNNBR");
+                response = new Response(authNumber, txn, msg);
+
+                return response;
+
+            } else {
+                // we have a raw String in the SOAP response, which means a error, so
+                // grab the text and pitch it as an error
+                throw new PaymentProcessorException(responseText);
+            }
 
         } catch (JAXBException ex) {
             throw new PaymentProcessorException("Could not marshall Batch to XML", ex);

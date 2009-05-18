@@ -11,4 +11,8 @@ public class PaymentProcessorException extends NestedRuntimeException {
     public PaymentProcessorException(String msg, Throwable cause) {
         super(msg, cause);
     }
+
+    public PaymentProcessorException(String msg) {
+        super(msg);
+    }
 }

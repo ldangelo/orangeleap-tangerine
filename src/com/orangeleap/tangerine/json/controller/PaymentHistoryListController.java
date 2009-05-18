@@ -38,12 +38,12 @@ public class PaymentHistoryListController {
     static {
         NAME_MAP.put("id", "phis.PAYMENT_HISTORY_ID");
         NAME_MAP.put("date", "phis.TRANSACTION_DATE");
-        NAME_MAP.put("personId", "phis.PERSON_ID");
+        NAME_MAP.put("personid", "phis.PERSON_ID");
         NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
-        NAME_MAP.put("paymentType", "phis.PAYMENT_TYPE");
+        NAME_MAP.put("paymenttype", "phis.PAYMENT_TYPE");
         NAME_MAP.put("description", "phis.PAYMENT_DESC");
         NAME_MAP.put("amount", "phis.AMOUNT");
-        NAME_MAP.put("currencyCode", "phis.CURRENCY_CODE");
+        NAME_MAP.put("currencycode", "phis.CURRENCY_CODE");
     }
     
     private Map<String,Object> paymentHistoryToMap(PaymentHistory ph) {
@@ -53,12 +53,12 @@ public class PaymentHistoryListController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", ph.getId());
         map.put("date", formatter.format(ph.getTransactionDate()) );
-        map.put("personId", ph.getPerson().getId());
+        map.put("personid", ph.getPerson().getId());
         map.put("type", ph.getPaymentHistoryType().name());
-        map.put("paymentType", ph.getPaymentType());
+        map.put("paymenttype", ph.getPaymentType());
         map.put("description", ExtUtil.scrub(ph.getDescription()));
         map.put("amount", ph.getAmount());
-        map.put("currencyCode", ph.getCurrencyCode());
+        map.put("currencycode", ph.getCurrencyCode());
 
         return map;
 

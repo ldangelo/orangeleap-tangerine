@@ -21,12 +21,12 @@ Ext.onReady(function() {
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
             {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'personId', mapping: 'personId', type: 'string'},
+            {name: 'personId', mapping: 'personid', type: 'string'},
             {name: 'type', mapping: 'type', type: 'string'},
-            {name: 'paymentType', mapping: 'paymentType', type: 'string'},
+            {name: 'paymentType', mapping: 'paymenttype', type: 'string'},
             {name: 'description', mapping: 'description', type: 'string'},
             {name: 'amount', mapping: 'amount', type: 'float'},
-            {name: 'currencyCode', mapping: 'currencyCode', type: 'string'}
+            {name: 'currencyCode', mapping: 'currencycode', type: 'string'}
         ],
         sortInfo:{field: 'date', direction: "DESC"},
         remoteSort: true,

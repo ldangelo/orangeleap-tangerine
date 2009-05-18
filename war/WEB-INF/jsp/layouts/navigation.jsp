@@ -87,6 +87,13 @@
    						   <a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 						</c:if>
 					</li> 
+					<%-- 
+			  		<li>
+			            <c:if test="${pageAccess['/fieldRelationshipCustomize.htm']=='ALLOWED'}">
+   						   <a href="relationships.htm"><spring:message code="manageRelationshipFields"/></a>
+						</c:if>
+					</li>
+					--%> 
 					<li>
 					<%
 					String contextPrefix = System.getProperty("contextPrefix");

@@ -50,7 +50,8 @@ public enum PageType {
     communicationHistorySearch("/communicationHistorySearch.htm"),
     communicationHistorySearchResults("/communicationHistorySearchResults.htm"),
     communicationHistoryView("/communicationHistoryView.htm"),
-    constituentcustomfieldrelationship("/relationshipCustomize.htm")
+    constituentcustomfieldrelationship("/relationshipCustomize.htm"),
+    fieldRelationshipCustomize("/fieldRelationshipCustomize.htm"),
     ;
 
     private String pageName;

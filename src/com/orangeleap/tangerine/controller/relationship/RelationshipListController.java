@@ -56,8 +56,12 @@ public class RelationshipListController extends SimpleFormController {
 		
 		ModelAndView mav = super.showForm(request, response, errors, controlModel);
 		
-		Long personId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(personId);
+		String sPersonId = request.getParameter("personId");
+		Person person = null;
+		if (sPersonId != null) {
+			Long personId = new Long(sPersonId);
+			person = constituentService.readConstituentById(personId);
+		}
 		
 		// Return all field definitions for the constituent maintenance page that are involved in a relationship.
 		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());

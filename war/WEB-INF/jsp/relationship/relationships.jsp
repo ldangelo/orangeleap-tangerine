@@ -16,7 +16,7 @@
 
 		<div class="simplebox">
 		
-		<form method="post" action="relationships.htm">
+		<form id="form" method="post" action="relationships.htm">
 		   <input type=hidden name="personId" value="${person.id}" />
 		   <input type=hidden id="customize" name="customize" value="" />
 			<h4>Relationship to Manage</h4>
@@ -27,25 +27,32 @@
 			   </c:forEach>
 			</select>&nbsp;&nbsp;&nbsp;
 		   <span id="actions" style="display:none">
-		  	   <input type=submit value="Edit" />
-			   &nbsp;&nbsp;&nbsp;
-			   <a id="customizeLink" href="#"  >+</a> 
+		  	   <input id="editbutton" type=submit value="Edit" />
 		   </span>
 		</form>
 		
-		<script>
-		function changeSelection(id) {
-			if (id != '') { $('#actions').show(); setLink(id); } else $('#actions').hide();
-		}
-		function setLink(id) {
-			$("#customizeLink").attr("href", "fieldRelationshipCustomize.htm?personId=${person.id}&fieldDefinitionId="+id);
-		}
-		</script>
+		 <c:choose>
+      	 <c:when test="${person == null}">
+			<script>
+			function changeSelection(id) {
+				if (id != '') {
+					this.window.location="fieldRelationshipCustomize.htm?fieldDefinitionId="+id;
+				}
+			}
+			</script>
+         </c:when>
+         <c:otherwise>
+			<script>
+			function changeSelection(id) {
+				if (id != '') { $('#actions').show(); } else $('#actions').hide();
+			}
+			</script>
+     		<strong><a class="action" href="person.htm?personId=${person.id}">&laquo;Back</a></strong>
+         </c:otherwise>
+         </c:choose>
 
 		</div>
 		
-		<strong><a class="action" href="person.htm?personId=${person.id}">&laquo;Back</a></strong>
-
 		</div>
 		
 	</tiles:putAttribute>

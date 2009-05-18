@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -29,6 +30,7 @@ import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.type.AccessType;
 
 public class FieldRelationshipCustomizeFormController extends SimpleFormController {
 
@@ -81,10 +83,19 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static boolean editAllowed(HttpServletRequest request) {
+		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
+		return pageAccess.get("/fieldRelationshipCustomize.htm") == AccessType.ALLOWED;
+	}
+
+	
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
      
+    	if (!editAllowed(request)) return null;
+    	
     	String fieldDefinitionId = request.getParameter("fieldDefinitionId");
     	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
 

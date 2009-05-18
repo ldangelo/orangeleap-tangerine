@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -21,6 +20,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.service.QueryLookupService;
+import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 
 public class QueryLookupController extends SimpleFormController {
 
@@ -108,7 +108,7 @@ public class QueryLookupController extends SimpleFormController {
         
         Boolean sortAscending = new Boolean(true);
         MutableSortDefinition sortDef = new MutableSortDefinition(searchOption, true, sortAscending);
-        PagedListHolder pagedListHolder = new PagedListHolder(objects, sortDef);
+        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(objects, sortDef);
         pagedListHolder.resort();
 
         request.setAttribute("results", pagedListHolder.getSource());

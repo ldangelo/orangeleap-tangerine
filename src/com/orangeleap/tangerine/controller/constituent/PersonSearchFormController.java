@@ -14,9 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +25,7 @@ import com.orangeleap.tangerine.controller.NoneStringTrimmerEditor;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SessionService;
+import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 
 public class PersonSearchFormController extends SimpleFormController {
 
@@ -60,7 +60,7 @@ public class PersonSearchFormController extends SimpleFormController {
             logger.trace("onSubmit:");
         }
         Person person = (Person) command;
-        BeanWrapper bw = new BeanWrapperImpl(person);
+        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(person);
         Map<String, Object> params = new HashMap<String, Object>();
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
@@ -82,7 +82,7 @@ public class PersonSearchFormController extends SimpleFormController {
             sortAscending = new Boolean(true);
         }
         MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
-        PagedListHolder pagedListHolder = new PagedListHolder(constituentList,sortDef);
+        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(constituentList, sortDef);
         pagedListHolder.resort();
         pagedListHolder.setMaxLinkedPages(3);
         pagedListHolder.setPageSize(10);

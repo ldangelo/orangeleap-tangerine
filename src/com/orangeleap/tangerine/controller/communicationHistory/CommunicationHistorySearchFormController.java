@@ -17,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -26,6 +25,7 @@ import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.SessionService;
+import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 
 public class CommunicationHistorySearchFormController extends SimpleFormController {
 
@@ -78,8 +78,8 @@ public class CommunicationHistorySearchFormController extends SimpleFormControll
         } else {
             sortAscending = new Boolean(true);
         }
-        MutableSortDefinition sortDef = new MutableSortDefinition(sort,true,sortAscending);
-        PagedListHolder pagedListHolder = new PagedListHolder(communicationHistoryList,sortDef);
+        MutableSortDefinition sortDef = new MutableSortDefinition(sort, true, sortAscending);
+        TangerinePagedListHolder pagedListHolder = new TangerinePagedListHolder(communicationHistoryList, sortDef);
         pagedListHolder.resort();
         pagedListHolder.setMaxLinkedPages(3);
         pagedListHolder.setPageSize(10);

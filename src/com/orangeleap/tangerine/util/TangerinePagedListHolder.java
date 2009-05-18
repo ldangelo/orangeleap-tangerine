@@ -8,7 +8,6 @@ import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.beans.support.SortDefinition;
 
-import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.util.comparator.NaturalOrderBeanOrMapComparator;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -19,8 +18,9 @@ public class TangerinePagedListHolder extends PagedListHolder {
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    public TangerinePagedListHolder(List<Person> constituentList, MutableSortDefinition sortDef) {
-        super(constituentList, sortDef);
+    @SuppressWarnings("unchecked")
+    public TangerinePagedListHolder(List list, MutableSortDefinition sortDef) {
+        super(list, sortDef);
     }
 
     @SuppressWarnings("unchecked")

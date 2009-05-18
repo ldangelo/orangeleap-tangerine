@@ -142,6 +142,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		try {
 			response = tp.process(request);
 		} catch (Exception text) {
+			gift.setPaymentStatus("Error");
+			gift.setPaymentMessage(text.getMessage());
+			GiftService gs = (GiftService) applicationContext.getBean("giftService");
+			gs.maintainGift(gift);
+
 			if (logger.isErrorEnabled()) {
 				logger.error("Request: "+ text.getMessage());
 			}

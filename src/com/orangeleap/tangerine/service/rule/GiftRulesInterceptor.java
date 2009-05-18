@@ -20,6 +20,7 @@ import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.RuleTask;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
@@ -52,6 +53,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		ConstituentService ps = (ConstituentService) applicationContext.getBean("constituentService");
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		SiteService ss = (SiteService) applicationContext.getBean("siteService");
+		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 		
 		String site = null;
@@ -65,6 +67,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				workingMemory.setGlobal("applicationContext", applicationContext);
 				workingMemory.setGlobal("personService", ps);
 				workingMemory.setGlobal("giftService",gs);
+				workingMemory.setGlobal("userHelper",uh);
 				
 				workingMemory.insert(ss.readSite(site));
 				

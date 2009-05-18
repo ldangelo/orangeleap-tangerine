@@ -85,6 +85,8 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	            
 	        } catch(PaymentProcessorException exception) {
 	        	logger.error(exception.getMessage());
+	        	g.setPaymentStatus("Error");
+	        	g.setPaymentMessage(exception.getMessage());
 	        }
 	        GiftService gs = (GiftService) applicationContext.getBean("giftService");
 	        gs.maintainGift(g);

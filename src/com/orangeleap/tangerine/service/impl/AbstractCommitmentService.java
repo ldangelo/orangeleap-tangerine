@@ -232,12 +232,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         else if (Commitment.STATUS_ACTIVE.equals(status)) {
             nextGiftDate = calculateNextRunDate(commitment);
         }
-        /*
-         * If the status is FULFILLED then we set the nextGiftDate to NULL so it stops charging 
-         
-        else if (Commitment.STATUS_FULFILLED.equals(status)) {
-            nextGiftDate = calculateNextRunDate(commitment);
-        }*/ 
         else {
             nextGiftDate = null;
         }
@@ -260,6 +254,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         nextRun.setTimeInMillis(commitment.getStartDate().getTime());
         logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
         Calendar today = getToday();
+        
         if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
             Calendar startDateCal = new GregorianCalendar();
             startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
@@ -297,7 +292,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
                 }
             }
         } else {
-            while ((nextRun != null) && (nextRun.before(today) || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate())))) {
                 if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
                     nextRun.add(Calendar.WEEK_OF_MONTH, 1);
                 } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
@@ -311,7 +305,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
                 } else {
                     nextRun = null;
                 }
-            }
         }
         if (nextRun == null || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
             nextRun = null;

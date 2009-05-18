@@ -108,7 +108,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 						// gifts have been...
 						if (!updated) {
 							for (Gift g: giftList) {
-								if (g.getCreateDate().compareTo(yesterday) > 0) {
+								if (g.getCreateDate() != null && g.getCreateDate().compareTo(yesterday) > 0) {
 									updated = true;
 									break;
 								}

@@ -109,6 +109,7 @@ public class RelationshipFormController extends SimpleFormController {
     		
     		
     	} catch (Exception e) {
+    		logger.debug(e);
     		message = e.getMessage();
     	}
     	
@@ -142,8 +143,10 @@ public class RelationshipFormController extends SimpleFormController {
     
     private void updateStartDate(Long entityid, String  masterfieldDefinitionId, String value, Date oldStartDate, Date newStartDate) {
 		ConstituentCustomFieldRelationship ccr = constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(entityid, masterfieldDefinitionId, value, oldStartDate);
-		ccr.setCustomFieldStartDate(newStartDate);
-		constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(ccr);
+		if (ccr != null) {
+			ccr.setCustomFieldStartDate(newStartDate);
+			constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(ccr);
+		}
     }
     
     private void delete(Long entityid, String  masterfieldDefinitionId, String value, Date oldStartDate) {

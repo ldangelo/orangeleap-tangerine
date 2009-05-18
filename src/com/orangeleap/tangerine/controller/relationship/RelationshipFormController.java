@@ -109,7 +109,7 @@ public class RelationshipFormController extends SimpleFormController {
     		
     		
     	} catch (Exception e) {
-    		logger.debug(e);
+    		logger.error(e);
     		message = e.getMessage();
     	}
     	

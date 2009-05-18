@@ -65,7 +65,6 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
         }
         CustomFieldRelationship = customFieldRelationshipDao.maintainCustomFieldRelationship(CustomFieldRelationship);
         
-        //relationshipService.maintainRelationships();
         //auditService.auditObject(CustomFieldRelationship, CustomFieldRelationship);  // TODO
         return CustomFieldRelationship;
     }
@@ -86,6 +85,7 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
     	List<FieldRelationship> frs = fieldDao.readMasterFieldRelationships(fd.getId());
     	if (frs.size() == 0) frs = fieldDao.readDetailFieldRelationships(fd.getId());
     	FieldRelationship fr = frs.get(0);
+    	if (frs.size() == 0)  return null;
     	return fr.getMasterRecordField().getId();
 	}
 

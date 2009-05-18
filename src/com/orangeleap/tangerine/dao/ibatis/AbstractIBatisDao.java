@@ -95,16 +95,6 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     	}
     }
 
-    /**
-     * Used to delete the custom fields associated with an Entity. This method
-     * should be called when a delete operation is called and the paramater does
-     * not contain the AbstractCustomizableEntity. Implementations need to call
-     * this method to avoid creating orphan record in the Custom Field table
-     * @param entity the Entity that is being deleted
-     */
-    public final void deleteCustomFields(AbstractCustomizableEntity entity) {
-        getCustomFieldHelper().deleteCustomFields(entity);
-    }
     
     public final void loadCustomFields(AbstractCustomizableEntity entity) {
         if (entity != null && entity.getId() != null && entity.getId() > 0) {

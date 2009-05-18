@@ -16,6 +16,9 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
+import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
+import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.type.FieldType;
 
 /**
@@ -31,10 +34,17 @@ public class IBatisCustomFieldHelper {
 
     private SqlMapClientTemplate template;
     private FieldDao fieldDao;  
+    private CustomFieldRelationshipService customFieldRelationshipService;
+    private ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
+
 
     public IBatisCustomFieldHelper(SqlMapClientTemplate template, ApplicationContext applicationContext) {
         this.template = template;
-        if (applicationContext != null) fieldDao = (FieldDao)applicationContext.getBean("fieldDAO");
+        if (applicationContext != null) {
+        	fieldDao = (FieldDao)applicationContext.getBean("fieldDAO");
+        	customFieldRelationshipService = (CustomFieldRelationshipService)applicationContext.getBean("customFieldRelationshipService");
+        	constituentCustomFieldRelationshipService = (ConstituentCustomFieldRelationshipService)applicationContext.getBean("constituentCustomFieldRelationshipService");
+        }
     }
 
     /**
@@ -178,6 +188,7 @@ public class IBatisCustomFieldHelper {
  
         // Only need to maintain the adds and deletes. Keep the existing date ranges on the unchanged ones.
         for (CustomField cf : deletes) {
+        	deleteCCRs(cf);
         	deleteCustomField(cf);
         }
         
@@ -190,6 +201,15 @@ public class IBatisCustomFieldHelper {
         	addCustomField(cf, allOldCustomFields, isSingleValuedAndDateRanged);
         }
     	
+    }
+    
+    private void deleteCCRs(CustomField cf) {
+    	// Will not delete orphans if id doesn't use the standard pattern - ideally should convert to use numeric id in DATA_TYPE
+    	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId("person.customFieldMap["+cf.getName()+"]"); 
+    	if (masterFieldDefinitionId != null) {
+    		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(cf.getEntityId(), masterFieldDefinitionId, cf.getValue(), cf.getStartDate());
+    		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(new Long(cf.getValue()), masterFieldDefinitionId, ""+cf.getEntityId(), cf.getStartDate());
+    	}
     }
     
     

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -206,9 +207,13 @@ public class IBatisCustomFieldHelper {
     private void deleteCCRs(CustomField cf) {
     	// Will not delete orphans if id doesn't use the standard pattern - ideally should convert to use numeric id in DATA_TYPE
     	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId("person.customFieldMap["+cf.getName()+"]"); 
-    	if (masterFieldDefinitionId != null) {
-    		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(cf.getEntityId(), masterFieldDefinitionId, cf.getValue(), cf.getStartDate());
-    		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(new Long(cf.getValue()), masterFieldDefinitionId, ""+cf.getEntityId(), cf.getStartDate());
+    	if (masterFieldDefinitionId != null  && StringUtils.trimToNull(cf.getValue()) != null)  {
+    		try {
+    			constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(cf.getEntityId(), masterFieldDefinitionId, cf.getValue(), cf.getStartDate());
+    			constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(new Long(cf.getValue()), masterFieldDefinitionId, ""+cf.getEntityId(), cf.getStartDate());
+    		} catch (Exception e) {
+    			// reverse link may not exist
+    		}
     	}
     }
     

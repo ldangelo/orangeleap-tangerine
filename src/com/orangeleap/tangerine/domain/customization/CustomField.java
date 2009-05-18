@@ -27,6 +27,7 @@ public class CustomField implements GeneratedId, Serializable {
     private Long entityId;
     
     private int sequenceNumber;
+    private Long dataType = new Long(0);
     private Date startDate = PAST_DATE;
     private Date endDate = FUTURE_DATE;
 
@@ -162,6 +163,14 @@ public class CustomField implements GeneratedId, Serializable {
 				}
 			}
 		
+	}
+
+	public void setDataType(Long dataType) {
+		this.dataType = dataType;
+	}
+
+	public Long getDataType() {
+		return dataType;
 	}
 
 }

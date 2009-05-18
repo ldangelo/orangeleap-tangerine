@@ -15,6 +15,7 @@ public class FieldDefinition implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
+    private int numericId;
     private EntityType entityType;
     private ReferenceType referenceType;
     private String fieldName;
@@ -120,5 +121,13 @@ public class FieldDefinition implements Serializable {
         return new ToStringCreator(this).append("id", id).append("fieldName", fieldName).append("defaultLabel", defaultLabel).append("fieldType", fieldType).
                 append("entityType", entityType).append("referenceType", referenceType).append("entityAttributes", entityAttributes).append("site", site).toString();
     }
+
+	public void setNumericId(int numericId) {
+		this.numericId = numericId;
+	}
+
+	public int getNumericId() {
+		return numericId;
+	}
 
 }

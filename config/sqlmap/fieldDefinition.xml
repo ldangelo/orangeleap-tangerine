@@ -8,6 +8,7 @@
 
 	<resultMap id="FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="numericId" column="NUMERIC_ID" jdbcType="BIGINT" />
 		<result property="defaultLabel" column="FLD_DEF_DEFAULT_LABEL" jdbcType="VARCHAR" />
 		<result property="entityAttributes" column="FLD_DEF_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
 		<result property="entityType" column="FLD_DEF_ENTITY_TYPE" jdbcType="VARCHAR" />
@@ -24,6 +25,7 @@
 
 	<resultMap id="SECONDARY_FIELD_DEFINITION_RESULT" class="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		<result property="id" column="SECONDARY_FIELD_DEFINITION_ID" jdbcType="VARCHAR" />
+		<result property="numericId" column="SECONDARY_NUMERIC_ID" jdbcType="BIGINT" />
 		<result property="defaultLabel" column="SECONDARY_DEFAULT_LABEL" jdbcType="VARCHAR" />
 		<result property="entityAttributes" column="SECONDARY_ENTITY_ATTRIBUTES" jdbcType="VARCHAR" />
 		<result property="entityType" column="SECONDARY_ENTITY_TYPE" jdbcType="VARCHAR" />
@@ -35,13 +37,13 @@
 	</resultMap>	
 	
 	<sql id="FIELD_DEF_COLS_FRAGMENT">
-		fd.FIELD_DEFINITION_ID, fd.DEFAULT_LABEL as FLD_DEF_DEFAULT_LABEL, fd.ENTITY_ATTRIBUTES as FLD_DEF_ENTITY_ATTRIBUTES, 
+		fd.FIELD_DEFINITION_ID, fd.NUMERIC_ID, fd.DEFAULT_LABEL as FLD_DEF_DEFAULT_LABEL, fd.ENTITY_ATTRIBUTES as FLD_DEF_ENTITY_ATTRIBUTES, 
 		fd.ENTITY_TYPE as FLD_DEF_ENTITY_TYPE, fd.FIELD_INFO as FLD_DEF_FIELD_INFO, fd.FIELD_NAME as FLD_DEF_FIELD_NAME, 
 		fd.FIELD_TYPE as FLD_DEF_FIELD_TYPE, fd.REFERENCE_TYPE as FLD_DEF_REFERENCE_TYPE, fd.SITE_NAME as FLD_DEF_SITE_NAME
 	</sql>
 	
 	<sql id="SEC_FIELD_DEF_COLS_FRAGMENT">
-		sfd.FIELD_DEFINITION_ID as SECONDARY_FIELD_DEFINITION_ID, sfd.DEFAULT_LABEL as SECONDARY_DEFAULT_LABEL, sfd.ENTITY_ATTRIBUTES as SECONDARY_ENTITY_ATTRIBUTES, 
+		sfd.FIELD_DEFINITION_ID as SECONDARY_FIELD_DEFINITION_ID, sfd.NUMERIC_ID as SECONDARY_NUMERIC_ID, sfd.DEFAULT_LABEL as SECONDARY_DEFAULT_LABEL, sfd.ENTITY_ATTRIBUTES as SECONDARY_ENTITY_ATTRIBUTES, 
 		sfd.ENTITY_TYPE as SECONDARY_ENTITY_TYPE, sfd.FIELD_INFO as SECONDARY_FIELD_INFO, sfd.FIELD_NAME as SECONDARY_FIELD_NAME, 
 		sfd.FIELD_TYPE as SECONDARY_FIELD_TYPE, sfd.REFERENCE_TYPE as SECONDARY_REFERENCE_TYPE, sfd.SITE_NAME as SECONDARY_SITE_NAME
 	</sql>
@@ -63,16 +65,17 @@
 	</select>
 	
 	<insert id="INSERT_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
-		insert into FIELD_DEFINITION (DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
-		values (#defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
-		<selectKey keyProperty="id" resultClass="long">
+		insert into FIELD_DEFINITION (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
+		values (#id#, #defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
+		<selectKey keyProperty="numericId" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
 	</insert>
 	
 	<update id="UPDATE_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		update FIELD_DEFINITION
-		set DEFAULT_LABEL = #defaultLabel#,
+		set 
+		DEFAULT_LABEL = #defaultLabel#,
 		ENTITY_ATTRIBUTES = #entityAttributes#,
 		ENTITY_TYPE = #entityType#,
 		FIELD_INFO = #fieldInfo#,

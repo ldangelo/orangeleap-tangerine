@@ -49,6 +49,7 @@ public class Site implements Serializable {
     private String  smtpAccountName;
     private String  smtpPassword;
     private String  smtpFromAddress;
+    private Integer majorDonorAccountManagerId;
     
     public Locale getLocale() {
     	return localeString == null?Locale.getDefault():new Locale(localeString);
@@ -212,6 +213,14 @@ public class Site implements Serializable {
 
 	public Integer getAchTestMode() {
 		return achTestMode;
+	}
+
+	public Integer getMajorDonorAccountManagerId() {
+		return majorDonorAccountManagerId;
+	}
+
+	public void setMajorDonorAccountManagerId(Integer majorDonorAccountManagerId) {
+		this.majorDonorAccountManagerId = majorDonorAccountManagerId;
 	}
 
 

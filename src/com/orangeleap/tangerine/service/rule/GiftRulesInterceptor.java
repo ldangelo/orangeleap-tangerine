@@ -66,6 +66,8 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				workingMemory.setGlobal("personService", ps);
 				workingMemory.setGlobal("giftService",gs);
 				
+				workingMemory.insert(ss.readSite(site));
+				
 				ss.populateDefaultEntityEditorMaps(gift);
 				workingMemory.insert(gift);
 				

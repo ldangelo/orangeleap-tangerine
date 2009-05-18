@@ -158,7 +158,7 @@ function editInPlace(elem) {
 	return false;
 };
 function getPage(elem) {
-		var queryString = $(".searchForm").find("input").serialize();
+		var queryString = $(".searchForm").find("input, select, textarea").serialize();
 		var baseUrl = $(elem).attr("href");
 		$.ajax({
 			type: "POST",

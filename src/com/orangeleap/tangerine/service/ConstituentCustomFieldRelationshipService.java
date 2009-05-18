@@ -12,4 +12,6 @@ public interface ConstituentCustomFieldRelationshipService {
 	  
 	  public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship);
 	  
+	  public void deleteConstituentCustomFieldRelationship(Long entityId, String masterFieldDefinitionId, String value, Date startDate);
+	  
 }

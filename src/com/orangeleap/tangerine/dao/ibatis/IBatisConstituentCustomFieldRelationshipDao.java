@@ -59,6 +59,17 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
         params.put("customFieldStartDate", customFieldStartDate);
         return (ConstituentCustomFieldRelationship)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_CONSTITUENT_AND_FIELD_DEFINITION_AND_CUSTOM_FIELD", params);
 	}
+
+
+	@Override
+	public void deleteConstituentCustomFieldRelationship(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
+        Map<String, Object> params = setupParams();
+        params.put("constituentId", constituentId);
+        params.put("fieldDefinitionId", fieldDefinitionId);
+        params.put("customFieldValue", customFieldValue);
+        params.put("customFieldStartDate", customFieldStartDate);
+        getSqlMapClientTemplate().delete("DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP", params);
+	}
    
 
 }

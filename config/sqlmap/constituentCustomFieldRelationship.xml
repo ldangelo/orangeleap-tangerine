@@ -104,5 +104,15 @@
 		SITE_NAME = #siteName# and
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#
 	</update>
+
+	<delete id="DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"  parameterClass="map">
+		delete from CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP 
+		where SITE_NAME = #siteName#
+		and CONSTITUENT_ID = #constituentId#	
+		and MASTER_FIELD_DEFINITION_ID = #fieldDefinitionId#
+		and CUSTOM_FIELD_VALUE = #customFieldValue#
+		and CUSTOM_FIELD_START_DATE = #customFieldStartDate#
+	</delete>
+
 	
 </sqlMap>

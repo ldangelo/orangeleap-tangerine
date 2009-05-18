@@ -82,6 +82,7 @@ public class RelationshipFormController extends SimpleFormController {
 		if (person == null) return null;
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
 		String fieldName = fieldDefinition.getCustomFieldName();
     	List<CustomField> list = getMap(request, personId, fieldName);
 
@@ -94,7 +95,7 @@ public class RelationshipFormController extends SimpleFormController {
     	try {
     		
     		List<CustomField> existing = relationshipService.readCustomFieldsByConstituentAndFieldName(personId, fieldName);
-    		adjustCCRs(existing, list, fieldDefinition.getId());
+    		adjustCCRs(existing, list, masterfieldDefinitionId);
     		
     		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
     		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
@@ -120,23 +121,33 @@ public class RelationshipFormController extends SimpleFormController {
     
 	// If any start date has changed, adjust the start dates on the corresponding ccrs before saving.
     // CCRs link to custom fields by start date rather than custom field id since the custom field ids change with each save in IBatisCustomFieldHelper.
-    private void adjustCCRs(List<CustomField> oldlist, List<CustomField> newlist, String fieldDefinitionId) {
+    private void adjustCCRs(List<CustomField> oldlist, List<CustomField> newlist, String masterfieldDefinitionId) {
     	for (CustomField oldcf: oldlist) {
+    		boolean found = false;
         	for (CustomField newcf: newlist) {
         		if (oldcf.getId().equals(newcf.getId()) && oldcf.getValue().equals(newcf.getValue())) {
+        			found = true;
         			if (!oldcf.getStartDate().equals(newcf.getStartDate())) {
-        				updateStartDate(newcf.getEntityId(), fieldDefinitionId, oldcf.getValue(), oldcf.getStartDate(), newcf.getStartDate());
-        				updateStartDate(new Long(oldcf.getValue()),  fieldDefinitionId, ""+newcf.getEntityId(), oldcf.getStartDate(), newcf.getStartDate());
+        				updateStartDate(oldcf.getEntityId(), masterfieldDefinitionId, oldcf.getValue(), oldcf.getStartDate(), newcf.getStartDate());
+        				updateStartDate(new Long(oldcf.getValue()),  masterfieldDefinitionId, ""+oldcf.getEntityId(), oldcf.getStartDate(), newcf.getStartDate());
         			}
         		}
+        	}
+        	if (!found) {
+				delete(oldcf.getEntityId(), masterfieldDefinitionId, oldcf.getValue(), oldcf.getStartDate());
+				delete(new Long(oldcf.getValue()), masterfieldDefinitionId, ""+oldcf.getEntityId(), oldcf.getStartDate());
         	}
     	}
     }
     
-    private void updateStartDate(Long entityid, String  fieldDefinitionId, String value, Date oldStartDate, Date newStartDate) {
-		ConstituentCustomFieldRelationship ccr = constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(entityid, fieldDefinitionId, value, oldStartDate);
+    private void updateStartDate(Long entityid, String  masterfieldDefinitionId, String value, Date oldStartDate, Date newStartDate) {
+		ConstituentCustomFieldRelationship ccr = constituentCustomFieldRelationshipService.readByConstituentFieldDefinitionCustomFieldIds(entityid, masterfieldDefinitionId, value, oldStartDate);
 		ccr.setCustomFieldStartDate(newStartDate);
 		constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(ccr);
+    }
+    
+    private void delete(Long entityid, String  masterfieldDefinitionId, String value, Date oldStartDate) {
+		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(entityid, masterfieldDefinitionId, value, oldStartDate);
     }
     
     private CustomField getCustomFieldId(CustomField customizeCf, List<CustomField> savedlist) {

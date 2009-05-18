@@ -55,6 +55,12 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
         auditService.auditObject(constituentCustomFieldRelationship); 
         return constituentCustomFieldRelationship;
     }
+    
+    public void deleteConstituentCustomFieldRelationship(Long entityId, String masterFieldDefinitionId, String value, Date startDate) {
+	    if (null == constituentDao.readConstituentById(entityId)) return;
+        constituentCustomFieldRelationshipDao.deleteConstituentCustomFieldRelationship(entityId, masterFieldDefinitionId, value, startDate);
+    }
+
 
     @Override
 	public ConstituentCustomFieldRelationship readById(Long id) {

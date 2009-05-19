@@ -115,12 +115,12 @@
 				<include name="**/testng.xml"/>
 			</fileset>
 		</copy>
-
-		<!--<delete dir="${stage.dir}/test-folder"/>-->
-		
 	</target>
 
     <target name="runall" depends="buildall">
+
+    	<delete dir="${stage.dir}/test-folder"/>
+    	
     	<path id="test-lib-path">
 			<pathelement path="${compile.lib}"/>
 			<pathelement path="${test.lib}"/>

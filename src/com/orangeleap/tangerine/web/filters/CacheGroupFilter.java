@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.util;
+package com.orangeleap.tangerine.web.filters;
 
 
 import java.io.IOException;

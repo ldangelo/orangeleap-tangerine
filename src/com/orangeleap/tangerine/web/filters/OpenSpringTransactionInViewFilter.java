@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.util;
+package com.orangeleap.tangerine.web.filters;
 
 
 import java.io.IOException;
@@ -19,6 +19,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.orangeleap.tangerine.util.RulesStack;
+import com.orangeleap.tangerine.util.TaskStack;
 
 public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 	

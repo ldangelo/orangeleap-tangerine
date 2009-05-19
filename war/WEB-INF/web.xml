@@ -26,11 +26,11 @@
 	</filter>
 	<filter>
         <filter-name>openSpringTransactionInView</filter-name>
-        <filter-class>com.orangeleap.tangerine.util.OpenSpringTransactionInViewFilter</filter-class>
+        <filter-class>com.orangeleap.tangerine.web.filters.OpenSpringTransactionInViewFilter</filter-class>
     </filter>
 	<filter>
         <filter-name>cacheGroup</filter-name>
-        <filter-class>com.orangeleap.tangerine.util.CacheGroupFilter</filter-class>
+        <filter-class>com.orangeleap.tangerine.web.filters.CacheGroupFilter</filter-class>
     </filter>
 	<filter>
 		<filter-name>gzipFilter</filter-name>

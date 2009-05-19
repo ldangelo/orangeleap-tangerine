@@ -16,6 +16,8 @@
 	<!-- Integrated targets -->
 	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
 
+	<target name="dirty" depends="resolve, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a build of only changed Java files"/>
+
 	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-integrated-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
@@ -251,6 +253,17 @@
 		<delete dir="${stage.dir}/war" />
 	</target>
 	
+	<target name="jsp.synch">
+		<echo>Synchronizing JSPs</echo>
+
+		<sync todir="${deploy.path}/${war.name}/WEB-INF/jsp">
+			<fileset dir="${war.dir}/WEB-INF/jsp">
+				<include name="**/*.*"/>
+			</fileset>
+		</sync>
+	</target>
+	
+	
 	<target name="optimize-dev">
 		<taskdef classname="com.rockstarapps.jslex.ant.CSSOptimization" name="css-optimization">
 			<classpath path="${compile.lib}"/>
@@ -305,12 +318,12 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
-            <fileset dir="${stage.dir}/war/js" includes="jquery.bgiframe.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery.cluetip.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery.selectboxes.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jqModal.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jqDnR.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />
@@ -379,12 +392,12 @@
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
-            <fileset dir="${stage.dir}/war/js" includes="jquery.bgiframe.js" />
+            <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery.cluetip.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jquery.selectboxes.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jqModal.js" />
-	        <fileset dir="${stage.dir}/war/js" includes="jqDnR.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.cluetip.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.selectboxes.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqModal.js" />
+	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jqDnR.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.numeric.pack.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.fade.js" />
 	        <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.ajaxQueue.js" />

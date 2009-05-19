@@ -43,7 +43,7 @@ Ext.onReady(function() {
 
         store: RecurringGiftList.store,
         columns: [
-            {header: '', width: 65, dataIndex: 'id', sortable: true, renderer: RecurringGiftList.entityViewRenderer},
+            {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: RecurringGiftList.entityViewRenderer},
             {header: 'Status', width: 100, dataIndex: 'status', sortable: true},
             {header: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true},
             {header: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true},

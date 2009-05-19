@@ -43,7 +43,7 @@ Ext.onReady(function() {
 
         store: GiftInKindList.store,
         columns: [
-            {header: '', width: 65, dataIndex: 'id', sortable: true, renderer: GiftInKindList.entityViewRenderer},
+            {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: GiftInKindList.entityViewRenderer},
             {header: 'Transaction Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Fair Market Value', width: 65, dataIndex: 'fairmarketvalue', sortable: true},
             {header: 'Currency Code', width: 65, dataIndex: 'currencycode', sortable: true},

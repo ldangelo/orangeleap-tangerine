@@ -157,7 +157,7 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
         
         Map<String, String> stringmap = getMap(constituentCustomFieldRelationship.getCustomFieldMap());
 
-		if (stringmap.size() == 0) stringmap.put("", "");
+		//if (stringmap.size() == 0) stringmap.put("", "");
 		
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.addObject("map", stringmap);

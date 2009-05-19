@@ -22,7 +22,9 @@ public interface ConstituentDao {
     public List<Person> readConstituentsByIds(List<Long> ids);
 
     public Person maintainConstituent(Person constituent);
-    
+
+    public List<Person> searchConstituents(Map<String, Object> params);
+
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
 	public List<Person> readAllConstituentsByIdRange(String fromId, String toId);

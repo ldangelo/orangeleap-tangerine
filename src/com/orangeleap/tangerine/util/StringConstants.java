@@ -98,7 +98,16 @@ public final class StringConstants {
     public static final String MAXIMUM_REMINDERS = "maximumReminders";
     public static final String REMINDER_INTERVAL = "reminderInterval";
     
+    public static final String ORGANIZATION = "organization";
+    public static final String INDIVIDUAL = "individual";
+    
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";
     public static final String ERROR_CLASS = "errorClass";
+    
+    public static final String SEARCH_OPTION = "searchOption";
+    public static final String FIELD_DEF = "fieldDef";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String ORGANIZATION_NAME = "organizationName";
 }

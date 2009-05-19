@@ -203,7 +203,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params);
         }
-        return constituentDao.searchConstituents(params, null);
+        return constituentDao.searchConstituents(params);
     }
 
     @Override
@@ -336,7 +336,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	while (list != null && list.size() > 0) {
     		for (CommunicationHistory ch: list) {
     			if (ch.getCustomFieldValue("template").compareTo(commType) == 0 &&
-					ch.getCreateDate().compareTo(cal.getTime()) > 0) return true;
+					ch.getCreateDate().compareTo(cal.getTime()) > 0) {
+                    return true;
+                }
     		}
     		sortInfo.setStart(sortInfo.getStart() + sortInfo.getLimit());
     		results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId, sortInfo);

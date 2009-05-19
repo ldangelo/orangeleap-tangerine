@@ -11,7 +11,9 @@ public class RelationshipForm {
 	private FieldDefinition fieldDefinition;
 	private Person person;
 	private List<CustomField> customFieldList;
+	private List<String> relationshipNames;
 	private String fieldLabel;
+	private String fieldType;
 	
 	public void setFieldDefinition(FieldDefinition fieldDefinition) {
 		this.fieldDefinition = fieldDefinition;
@@ -37,4 +39,16 @@ public class RelationshipForm {
 	public String getFieldLabel() {
 		return fieldLabel;
 	}
+	public void setFieldType(String fieldType) {
+	    this.fieldType = fieldType;
+	}
+    public String getFieldType() {
+        return fieldType;
+    }
+    public void setRelationshipNames(List<String> relationshipNames) {
+        this.relationshipNames = relationshipNames;
+    }
+    public List<String> getRelationshipNames() {
+        return relationshipNames;
+    }
 }

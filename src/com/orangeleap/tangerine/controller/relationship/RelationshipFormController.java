@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
@@ -27,6 +28,7 @@ import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipServic
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.util.StringConstants;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -46,7 +48,7 @@ public class RelationshipFormController extends SimpleFormController {
     
     @Resource(name="customFieldRelationshipService")
     protected CustomFieldRelationshipService customFieldRelationshipService;
-
+    
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
  
@@ -79,7 +81,9 @@ public class RelationshipFormController extends SimpleFormController {
 
 		Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
-		if (person == null) return null;
+		if (person == null) {
+            return null;
+        }
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
@@ -88,7 +92,9 @@ public class RelationshipFormController extends SimpleFormController {
 
     	int customizeIndex = getIndex(request.getParameter("customizeIndex"));
         CustomField customizeCf = null;
-        if (list.size() > 0 && customizeIndex > -1) customizeCf = list.get(customizeIndex);
+        if (list.size() > 0 && customizeIndex > -1) {
+            customizeCf = list.get(customizeIndex);
+        }
         
         String message = "";
 
@@ -177,7 +183,9 @@ public class RelationshipFormController extends SimpleFormController {
 		
         Long personId = new Long(request.getParameter("personId"));
 		Person person = constituentService.readConstituentById(personId);
-		if (person == null) return null;
+		if (person == null) {
+            return null;
+        }
 
         String fieldDefinitionId = request.getParameter("fieldDefinitionId");
         FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
@@ -196,12 +204,33 @@ public class RelationshipFormController extends SimpleFormController {
         
         RelationshipForm form = new RelationshipForm();
         form.setCustomFieldList(list);
+        form.setRelationshipNames(resolveConstituentRelationship(list));
         form.setPerson(person);
         form.setFieldDefinition(fieldDefinition);
         form.setFieldLabel(fieldlabel);
+        form.setFieldType(relationshipService.isIndividualOrganizationRelationship(fieldDefinitionId));
         
         return form;
         
+	}
+	
+	private List<String> resolveConstituentRelationship(List<CustomField> fields) {
+	    List<String> constituentNames = new ArrayList<String>();
+	    for (CustomField customField : fields) {
+	        if (NumberUtils.isDigits(customField.getValue())) {
+	            Person constituent = constituentService.readConstituentById(Long.parseLong(customField.getValue()));
+	            if (constituent == null) {
+	                constituentNames.add(StringConstants.EMPTY);
+	            }
+	            else {
+	                constituentNames.add(constituent.getDisplayValue());
+	            }
+	        }
+	        else {
+	            constituentNames.add(StringConstants.EMPTY);
+	        }
+        }
+	    return constituentNames;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -218,7 +247,9 @@ public class RelationshipFormController extends SimpleFormController {
 				cf.setEntityType("person");
 				cf.setName(fieldName);
 				String id = request.getParameter("cfId"+fieldnum);
-				if (id != null && id.length() > 0) cf.setId(new Long(id));
+				if (id != null && id.length() > 0) {
+                    cf.setId(new Long(id));
+                }
 				cf.setValue(request.getParameter(parm).trim());
 				cf.setSequenceNumber(ifieldnum-1);
 				if (cf.getValue().length() > 0) {

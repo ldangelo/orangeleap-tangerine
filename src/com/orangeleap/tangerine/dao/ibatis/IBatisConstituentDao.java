@@ -147,5 +147,9 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	return persons;
     }
    
+    @Override
+    public List<Person> searchConstituents(Map<String, Object> searchparams) {
+        return searchConstituents(searchparams, null);
+    }
 
 }

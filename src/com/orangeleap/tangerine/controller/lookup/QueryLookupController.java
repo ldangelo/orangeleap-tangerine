@@ -68,7 +68,7 @@ public class QueryLookupController extends SimpleFormController {
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
         String fieldDef = findFieldDef(request);
-        QueryLookup queryLookup = doQueryLookup(request, fieldDef);
+        doQueryLookup(request, fieldDef);
         if (logger.isDebugEnabled()) {
             logger.debug("showForm: fieldDef = " + fieldDef );
         }

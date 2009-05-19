@@ -190,6 +190,7 @@ var GenericCustomizer = {
 				$field.attr("class", "");
 				$field.removeAttr("readonly");
 			});
+		$newRow.find("div.lookupWrapper div.lookupField div.queryLookupOption").remove();
 		$("table.customFields", "form").append($newRow);
 	}
 };
@@ -875,27 +876,28 @@ var Lookup = {
 		});
 	},
 	
-	loadQueryLookup: function(elem, showOtherField) {
+	loadQueryLookup: function(elem, showOtherField, url) {
 		if (!showOtherField) {
 			showOtherField = false;
 		}
 		this.lookupCaller = $(elem).parent();		
 		var fieldDef = $(elem).attr("fieldDef");
-		$.ajax({
-			type: "GET",
-			url: "queryLookup.htm",
-			data: "fieldDef=" + fieldDef + "&showOtherField=" + showOtherField,
-			success: function(html){
-				$("#dialog").html(html);
+		if (!url) {
+			url = "queryLookup.htm";
+		}
+		$.get(url, "fieldDef=" + fieldDef + "&showOtherField=" + showOtherField, function(html, textStatus) {
+			var $dialogElem = $("#dialog");
+			if ($dialogElem) {
+				$dialogElem.html(html);
 				Lookup.singleCommonBindings();
 				Lookup.queryLookupBindings();
-				$("#dialog").jqmShow();
-			},
-			error: function(html) {
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
+				$dialogElem.jqmShow();
 			}
 		});
+	},
+	
+	loadRelationshipQueryLookup: function(elem) {
+		this.loadQueryLookup(elem, null, "relationshipQueryLookup.htm");
 	},
 	
 	singleCommonBindings: function() {

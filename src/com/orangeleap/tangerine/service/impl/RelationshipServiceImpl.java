@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,10 +21,13 @@ import org.springframework.util.StringUtils;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.CustomFieldDao;
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.service.QueryLookupService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
@@ -34,6 +36,7 @@ import com.orangeleap.tangerine.service.relationship.TooManyLevelsException;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.RelationshipDirection;
 import com.orangeleap.tangerine.type.RelationshipType;
+import com.orangeleap.tangerine.util.StringConstants;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -56,6 +59,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     @Resource(name = "customFieldDAO")
     private CustomFieldDao customFieldDao;
     
+    @Resource(name="queryLookupService")
+    protected QueryLookupService queryLookupService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
@@ -112,9 +117,13 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	for (Long oldid : oldids) {
     		boolean found = false;
         	for (Long newid : newids) {
-        		if (oldid.equals(newid)) found = true;
+        		if (oldid.equals(newid)) {
+                    found = true;
+                }
     		}
-        	if (!found) result.add(oldid);
+        	if (!found) {
+                result.add(oldid);
+            }
     	}
     	return result;
     }
@@ -368,7 +377,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndFieldName: personId = " + personId);
 	    }
-	    if (null == constituentDao.readConstituentById(personId)) return null;
+	    if (null == constituentDao.readConstituentById(personId)) {
+            return null;
+        }
 	    return customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldName);
     }
 
@@ -380,9 +391,13 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: personId = " + personId);
 	    }
-	    if (null == constituentDao.readConstituentById(personId)) throw new RuntimeException("Invalid constituent id");
+	    if (null == constituentDao.readConstituentById(personId)) {
+            throw new RuntimeException("Invalid constituent id");
+        }
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-	    if (null == fieldDefinition) throw new RuntimeException("Invalid Field Definition id");
+	    if (null == fieldDefinition) {
+            throw new RuntimeException("Invalid Field Definition id");
+        }
 
 	    validateNoSelfReference(personId, list, fieldDefinition);
 	    // TODO check hierarchy recursion
@@ -461,7 +476,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				while (it.hasNext()) {
 					CustomField refcf = it.next();
 		        	Long backref = new Long(refcf.getValue());
-					if (backref.equals(cf1.getEntityId())) it.remove();
+					if (backref.equals(cf1.getEntityId())) {
+                        it.remove();
+                    }
 				}
 				
 				for (CustomField cf: alist) {
@@ -536,7 +553,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     private FieldDefinition getCorrespondingField(FieldDefinition fd) {
 		List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fd.getId()); 
 		FieldDefinition result = searchRelationships(fd, masters);
-		if (result != null) return result;
+		if (result != null) {
+            return result;
+        }
 		List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fd.getId()); 
 		result = searchRelationships(fd, details);
 		return result;
@@ -544,8 +563,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     private FieldDefinition searchRelationships(FieldDefinition fd, List<FieldRelationship> list) {
 		for (FieldRelationship fr : list) {
-			if (fr.getMasterRecordField().getId().equals(fd.getId())) return fr.getDetailRecordField();
-			if (fr.getDetailRecordField().getId().equals(fd.getId())) return fr.getMasterRecordField();
+			if (fr.getMasterRecordField().getId().equals(fd.getId())) {
+                return fr.getDetailRecordField();
+            }
+			if (fr.getDetailRecordField().getId().equals(fd.getId())) {
+                return fr.getMasterRecordField();
+            }
 		}
 		return null;
     }
@@ -565,8 +588,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	
     	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
     	FieldType ft = fd.getFieldType();
-    	if (ft.equals(FieldType.QUERY_LOOKUP) || ft.equals(FieldType.PICKLIST)) isMultiValued = false;
-    	if (ft.equals(FieldType.MULTI_PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) isMultiValued = true;
+    	if (ft.equals(FieldType.QUERY_LOOKUP) || ft.equals(FieldType.PICKLIST)) {
+            isMultiValued = false;
+        }
+    	if (ft.equals(FieldType.MULTI_PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) {
+            isMultiValued = true;
+        }
     
     	return validateDateRangesDoNotOverlap(list, isMultiValued);
     	    
@@ -580,7 +607,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	for (CustomField cf : list) {
     		
     		String value = cf.getValue();
-    		if (!multiValued) value = "";
+    		if (!multiValued) {
+                value = "";
+            }
     		
     		List<CustomField> alist = exclusivelists.get(value);
     		if (alist == null) {
@@ -592,7 +621,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	
     	for (Map.Entry<String, List<CustomField>> me : exclusivelists.entrySet()) {
     		List<CustomField> alist = me.getValue();
-    		if (!checkList(alist)) return false;
+    		if (!checkList(alist)) {
+                return false;
+            }
     	}
     	
     	
@@ -614,4 +645,54 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	return true;
     }
     
+    @Override
+    public List<Person> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("executeRelationshipQueryLookup: fieldType = " + fieldType + " searchOption = " + searchOption + " searchValue = " + searchValue);
+        }
+        List<Person> constituents = null;
+        if (StringConstants.LAST_NAME.equals(searchOption) || 
+                StringConstants.FIRST_NAME.equals(searchOption) || 
+                StringConstants.ORGANIZATION_NAME.equals(searchOption)) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put(searchOption, searchValue);
+            
+            if (StringConstants.INDIVIDUAL.equals(fieldType)) {
+                params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
+            }
+            else {
+                params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
+            }
+            constituents = constituentDao.searchConstituents(params);
+        }
+        else {
+            if (logger.isWarnEnabled()) {
+                logger.warn("executeRelationshipQueryLookup: Unknown searchOption = " + searchOption);
+            }
+        }
+        return constituents;
+    }
+    
+    @Override
+    public String isIndividualOrganizationRelationship(String fieldDefinitionId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("isIndividualOrganizationRelationship: fieldDefinitionId = " + fieldDefinitionId);
+        }
+        String relationship = null;
+        if (fieldDefinitionId != null) {
+            QueryLookup queryLookup = queryLookupService.readQueryLookup(fieldDefinitionId);
+            if (queryLookup != null && queryLookup.getSqlWhere() != null) {
+                if (queryLookup.getSqlWhere().indexOf(StringConstants.INDIVIDUAL) > -1) {
+                    relationship = StringConstants.INDIVIDUAL;
+                }
+                else if (queryLookup.getSqlWhere().indexOf(StringConstants.ORGANIZATION) > -1) {
+                    relationship = StringConstants.ORGANIZATION;
+                }
+            }
+        }
+        if (relationship == null) {
+            throw new IllegalArgumentException("Invalid field - " + fieldDefinitionId);
+        }
+        return relationship;
+    }
 }

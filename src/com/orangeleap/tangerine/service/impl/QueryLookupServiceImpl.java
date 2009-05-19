@@ -93,7 +93,7 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
             if (where != null && where.trim().length() > 0) {
                 filterparms.put(QueryUtil.ADDITIONAL_WHERE, where);
             }
-        	List<Person> persons = constituentDao.searchConstituents(filterparms, null);
+        	List<Person> persons = constituentDao.searchConstituents(filterparms);
         	result.addAll(persons);
         	
         }

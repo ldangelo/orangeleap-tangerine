@@ -29,14 +29,16 @@ public class IBatisQueryLookupDao extends AbstractIBatisDao implements QueryLook
     @SuppressWarnings("unchecked")
 	@Override
     public QueryLookup readQueryLookup(String fieldDefinitionId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
+        if (logger.isTraceEnabled()) {
+            logger.trace("readQueryLookup: fieldDefinitionId = " + fieldDefinitionId);
         }
         Map<String, Object> params = setupParams();
         params.put("fieldDefinitionId", fieldDefinitionId);
         // There should only be 0, 1, or 2 records (one this site and one null site) returned from this query.
         List<QueryLookup> list = getSqlMapClientTemplate().queryForList("SELECT_QUERY_LOOKUP_BY_SITE_FLD_DEF_ID", params);
-        if (list.size() == 0) return null;
+        if (list.isEmpty()) {
+            return null;
+        }
         for (QueryLookup ql : list) {
         	if (ql.getSite() != null) {
         		return ql;

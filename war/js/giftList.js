@@ -88,15 +88,15 @@ GiftList.navigate = function(id) {
 	var rec = GiftList.grid.getSelectionModel().getSelected();
 	GiftList.grid.getGridEl().mask('Loading Record');
 	
-	switch (rec.data.giftType) {
+	switch (rec.data.gifttype) {
 		case 'MONETARY':
-		    window.location.href='giftView.htm?giftId=' + id + '&personId=' + rec.data.constituentId;
+		    window.location.href='giftView.htm?giftId=' + id + '&personId=' + rec.data.constituentid;
 			break;
 		case 'ADJUSTED':
-			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.constituentId;
+			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.constituentid;
 			break;
         default:
-            window.location.href= 'person.htm?personid=' + rec.data.constituentId;
+            window.location.href= 'person.htm?personid=' + rec.data.constituentid;
 	}
 	return false;
 };

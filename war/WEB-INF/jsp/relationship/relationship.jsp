@@ -12,6 +12,7 @@
 			table.customFields a.lookupLink, table.customFields div.lookupField a.hideText { padding: 1px; } 
 			form#form { padding-bottom: 7px; }
 			col.lookup { width: 225px; }
+			a.action { margin-top: 15px; } 
 		</style>
 	</tiles:putAttribute>	
 	<tiles:putAttribute name="primaryNav" value="People" />
@@ -121,9 +122,9 @@
 				
 						decorateDateInputs();
 					</script>
+					<strong><a class="action" href="relationships.htm?personId=${person.id}">&laquo;<spring:message code='back'/></a></strong>
 				</div>
 			</div>	
 		</div>
-		<strong><a class="action" href="relationships.htm?personId=${person.id}">&laquo;<spring:message code='back'/></a></strong>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

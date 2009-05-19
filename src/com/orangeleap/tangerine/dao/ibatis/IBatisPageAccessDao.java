@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,12 @@ public class IBatisPageAccessDao extends AbstractIBatisDao implements PageAccess
         if (logger.isTraceEnabled()) {
             logger.trace("readPageAccess: roles = " + roles);
         }
+        
+        // User has no roles set up
+        if (roles == null || roles.size() == 0) {
+        	return new ArrayList<PageAccess>();
+        }
+        
         Map<String, Object> params = setupParams();
         params.put("roleNames", roles);
         return getSqlMapClientTemplate().queryForList("SELECT_PAGE_ACCESS_BY_SITE_ROLES", params);

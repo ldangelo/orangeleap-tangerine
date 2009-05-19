@@ -121,6 +121,8 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
 	@Override
     public ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException {
 
+    	if (!editAllowed(request)) return null;
+    	
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
     	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
 

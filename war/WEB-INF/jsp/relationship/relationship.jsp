@@ -10,9 +10,8 @@
 			table.customFields { margin-bottom: 15px; }
 			table.customFields div.lookupField { min-height: 18px; padding: 0; }
 			table.customFields a.lookupLink, table.customFields div.lookupField a.hideText { padding: 1px; } 
-			form#form { padding-bottom: 7px; }
-			col.lookup { width: 225px; }
-			a.action { margin-top: 15px; } 
+			form#form { padding-bottom: 15px; }
+			col.lookup { width: 225px; }		 
 		</style>
 	</tiles:putAttribute>	
 	<tiles:putAttribute name="primaryNav" value="People" />

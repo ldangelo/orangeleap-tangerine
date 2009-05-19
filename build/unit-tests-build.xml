@@ -116,7 +116,7 @@
 			</fileset>
 		</copy>
 
-		<delete dir="${stage.dir}/test-folder"/>
+		<!--<delete dir="${stage.dir}/test-folder"/>-->
 		
 	</target>
 

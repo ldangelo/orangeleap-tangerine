@@ -161,7 +161,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 			for (String key : requiredFieldMap.keySet()) {
 				if (bw.isReadableProperty(key)) {
 					Object ovalue = bw.getPropertyValue(key);
-					String svalue = ovalue == null ? null : ovalue.toString();
+					String svalue = ovalue.toString();
 					if (ovalue instanceof CustomField) {
 						svalue = ((CustomField)ovalue).getValue();
 					}

@@ -86,6 +86,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				person.setSite(ss.readSite(person.getSite().getName()));
 				
 				ss.populateDefaultEntityEditorMaps(person);
+				person.setSuppressValidation(true);
 
 				TaskStack.push(new RuleTask(applicationContext,site + "email",person,gift));
 

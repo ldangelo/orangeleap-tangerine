@@ -200,6 +200,9 @@
 	</target>
 
 	<target name="app.synch">
+    </target>
+
+	<target name="xapp.synch">
 		<echo>Synchronizing App</echo>
 
 		<mkdir dir="${stage.dir}/war" />

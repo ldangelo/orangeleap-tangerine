@@ -907,6 +907,11 @@ var Lookup = {
 		$("div.modalContent form", $("#dialog")).bind("submit", function() {
 			return false;
 		});
+		$("div.modalContent").keydown(function(event) {
+			if (event.keyCode == 27) {
+				$("#dialog").jqmHide();					
+			}
+		});
 		$("input.defaultText", $("#dialog")).bind("focus", function() {
 			var $elem = $(this);
 			if ($elem.val() == $elem.attr("defaultValue")) {
@@ -1295,6 +1300,11 @@ var Lookup = {
 		});
 		$("div.modalContent form", $("#dialog")).bind("submit", function() {
 			return false;
+		});
+		$("div.modalContent").keydown(function(event) {
+			if (event.keyCode == 27) {
+				$("#dialog").jqmHide();					
+			}
 		});
 		$("div.modalContent input#cancelButton", $("#dialog")).bind("click", function() {
 			$("#dialog").jqmHide();					

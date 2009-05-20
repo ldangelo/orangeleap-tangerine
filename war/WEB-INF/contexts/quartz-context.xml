@@ -40,8 +40,8 @@
   		<property name="jobDetail" ref="nightlyBatchJob" />
   		 <!-- run every morning at 3 AM  -->   
   	     <property name="cronExpression" value="0 0 3 * * ?" />
-  		 <!-- run every minute for testing 
-  		<property name="cronExpression" value="0 * * * * ?" /> -->  
+  		 <!-- run every 10 minutes for testing 
+  		<property name="cronExpression" value="* 0/5 * * * ?" />-->   
   	</bean>
 
   	<bean id="weeklyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

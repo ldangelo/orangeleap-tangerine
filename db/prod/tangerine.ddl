@@ -10,6 +10,7 @@ CREATE TABLE `SITE` (
   `SITE_NAME` varchar(255) NOT NULL,
   `MERCHANT_NUMBER` varchar(255) default NULL,
   `MERCHANT_BIN` varchar(255) default NULL,
+  `MERCHANT_TERMINAL_ID` varchar(8) default NULL,
   `LOCALE` varchar(255) default NULL,
   `TIME_ZONE` varchar(255) default NULL,
   `ACTIVE` char(1) default '1',

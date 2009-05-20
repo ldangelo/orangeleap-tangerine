@@ -11,7 +11,10 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +33,13 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.integration.NewConstituent;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
+import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
@@ -42,16 +47,20 @@ import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("constituentService")
-public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService {
+public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService,ApplicationContextAware {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Resource(name = "errorLogService")
+    private ErrorLogService errorLogService;
 
     @Resource(name="siteService")
     protected SiteService siteService;
@@ -95,6 +104,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     
     @Resource(name = "communicationHistoryService")
     private CommunicationHistoryService communicationHistoryService;
+
+	private ApplicationContext context;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
@@ -142,7 +153,49 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
         relationshipService.maintainRelationships(constituent);
         auditService.auditObject(constituent, constituent);
+        
+        routeConstituent(constituent);
+        
         return constituent;
+    }
+    
+    private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
+    void routeConstituent(Person constituent) throws ConstituentValidationException {
+        
+    	RulesStack.push(ROUTE_METHOD);
+        try {
+        	
+	        try {
+	            NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
+	            newConstituent.routePerson(constituent);
+	        } 
+	        catch (ConstituentValidationException cve) {
+	        	throw cve;
+	        }
+	        catch (Exception ex) {
+	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
+	            writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+	        } 
+        } finally {
+        	RulesStack.pop(ROUTE_METHOD);
+        }
+    }
+    
+    private synchronized void writeRulesFailureLog(String message) {
+    	try {
+            
+    		errorLogService.addErrorMessage(message, "gift.rules");
+
+//    		FileWriter out = new FileWriter("rules-errors.log");
+//    		try {
+//    			out.write(message);
+//    		} finally {
+//    			out.close();
+//    		}
+    		
+    	} catch (Exception e) {
+    		logger.error("Unable to write to rules error log file: "+message);
+    	}
     }
     
     @Transactional(propagation = Propagation.REQUIRED)
@@ -249,7 +302,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
         return constituentDao.searchConstituents(params, ignoreIds);
     }
-    
+
+    @Override
+    public List<Person> findConstituents(Map<String, Object> params, List<Long> ignoreIds) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findConstituents: params = " + params + " ignoreIds = " + ignoreIds);
+        }
+        return constituentDao.findConstituents(params, ignoreIds);
+    }
+
     @Override
     public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
         if (logger.isTraceEnabled()) {
@@ -383,4 +444,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	
     	return false;
     }
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.context = applicationContext;
+		
+	}
 }

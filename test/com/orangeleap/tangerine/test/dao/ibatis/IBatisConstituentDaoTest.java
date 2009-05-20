@@ -187,5 +187,28 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
             assert constituent.getFirstName().equals("Pablo");
             assert constituent.getId().longValue() != ignoreId;
         }
-    }    
+    }
+    
+    @Test(groups = {"testFindPersons"})
+    public void testFindPersons() throws Exception {
+    	Map<String,Object> params = new HashMap<String, Object>();
+    	List<Long> ignoreIds = new ArrayList<Long>();
+    	long ignoreId = 1001;
+    	ignoreIds.add(ignoreId);
+    	
+    	params.put("firstName", "Pablo");
+//    	params.put("phoneMap[home].number", "214-113-2542");
+//    	params.put("addressMap[home].addressLine1", "ACORN");
+//    	params.put("emailMap[home].email","pablo@company1.com");
+    	
+    	List<Person> constituents = constituentDao.findConstituents(params,ignoreIds);
+    	assert constituents != null && constituents.size() >0;
+    	for (Person constituent: constituents) {
+    			System.out.println(constituents);
+    			assert constituent.getFirstName().equals("Pablo");
+    			assert constituent.getId().longValue() != ignoreId;
+    	}
+    }
+    
+ 
 }

@@ -1,8 +1,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="tangerine">
-  <test verbose="2" name="com.orangeleap.tangerine.test.service.payments.OrbitalPaymentGatewayTest" annotations="JDK">
+  <test verbose="2" name="com.orangeleap.tangerine.test.service.impl.ConstituentServiceTest" annotations="JDK">
     <classes>
-      <class name="com.orangeleap.tangerine.test.service.payments.OrbitalPaymentGatewayTest"/>
+      <class name="com.orangeleap.tangerine.test.service.impl.ConstituentServiceTest"/>
     </classes>
   </test>
 </suite>

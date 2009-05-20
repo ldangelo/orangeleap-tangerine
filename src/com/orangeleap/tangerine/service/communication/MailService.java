@@ -138,6 +138,7 @@ public class MailService {
 			ch.setEntryType("Mail");
 			ch.setRecordDate(new Date());
 			ch.setCustomFieldValue("template", getTemplateName());
+			ch.setSelectedAddress(person.getPrimaryAddress());
 
 			communicationHistoryService.maintainCommunicationHistory(ch);
 		}

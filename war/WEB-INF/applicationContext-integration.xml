@@ -25,8 +25,14 @@
   </beans:bean>
 
   <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
-    <beans:constructor-arg value="queue.tangerine.gift"/>
+    <beans:constructor-arg value="queue.orangeleap.tangerine.gift"/>
   </beans:bean>
+  
+  <beans:bean id="ConstituentDestination" class="org.apache.activemq.command.ActiveMQQueue">
+  	<beans:constructor-arg value="queue.orangeleap.tangerine.constituent"/>
+  </beans:bean>
+  
+  <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
   
   <gateway id="newGift" service-interface="com.orangeleap.tangerine.integration.NewGift"/>
 <!--  <gateway id="newConstituent" service-interface="com.orangeleap.tangerine.integration.NewConstituent"/>
@@ -36,13 +42,26 @@
   <channel id="newConstituentChannel"/>
   <channel id="newAddressChannel"/>
   <channel id="gift_drools_channel"/>
+  <channel id="constituent_drools_channel"/>
   <channel id="gift_jms_channel"/>
+  <channel id="constituent_jms_channel"/>
   <channel id="payment_drools_channel"/>
 
   <service-activator input-channel="gift_drools_channel" ref="GiftDrools" method="doApplyRules"/>
   <service-activator input-channel="payment_drools_channel" ref="PaymentDrools" method="doApplyRules"/>
-
+  <service-activator input-channel="person_drools_channel" ref="PersonDrools" method="doApplyRules"/>
+  <!--  <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/> -->
+  
   <router id="routerEndpoint" input-channel="newGiftChannel" ref="giftRouter"/>
+  <router id="routerEndpointConstituents" input-channel="newConstituentChannel" ref="constituentRouter"/>
+  
+  <beans:bean id="constituentRouter" class="org.springframework.integration.router.RecipientListRouter">
+  	<beans:property name="channels">
+  		<beans:list>
+  			<beans:ref bean="person_drools_channel"/>
+  		</beans:list>
+  	</beans:property>
+  </beans:bean>
   
   <beans:bean id="giftRouter" class="org.springframework.integration.router.RecipientListRouter">
     <beans:property name="channels">
@@ -63,6 +82,8 @@
 
   <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor"/>
   
+  <beans:bean id="PersonDrools" class="com.orangeleap.tangerine.service.rule.PersonRulesInterceptor"/>
+  
   <beans:bean id="emailInterceptor" class="com.orangeleap.tangerine.service.rule.EmailRulesInterceptor">
   	<beans:property name="agendaGroup" value="email"/>
   </beans:bean>
@@ -73,7 +94,7 @@
     <beans:constructor-arg value="${drools.packagedir}" index="2" />
   </beans:bean>
 
-
+  <jms:outbound-gateway id="ConstituentJms" request-channel="constituent_jms_channel" request-destination="ConstituentDestination" />
   <jms:outbound-gateway id="GiftJms" request-channel="gift_jms_channel" request-destination="GiftDestination" />
 
 	<poller id="poller" default="true">

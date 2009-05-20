@@ -23,6 +23,8 @@ public interface ConstituentService {
 	public List<Person> searchConstituents(Map<String, Object> params);
 
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    
+    public List<Person> findConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
     public Person createDefaultConstituent();
 

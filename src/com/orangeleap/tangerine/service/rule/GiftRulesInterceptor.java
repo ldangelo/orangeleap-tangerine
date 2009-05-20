@@ -84,7 +84,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				
 				person.setGifts(gs.readMonetaryGifts(person));
 				person.setSite(ss.readSite(person.getSite().getName()));
-
+				
 				ss.populateDefaultEntityEditorMaps(person);
 
 				TaskStack.push(new RuleTask(applicationContext,site + "email",person,gift));

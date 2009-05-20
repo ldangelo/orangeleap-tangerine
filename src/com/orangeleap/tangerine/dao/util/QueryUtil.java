@@ -21,6 +21,10 @@ public class QueryUtil {
     public static final String ADDITIONAL_WHERE = "additionalWhere";
     
     public static Map<String, Object> translateSearchParamsToIBatisParams(Map<String, Object> searchparams, Map<String, Object> fieldparams, Map<String, String> fieldMap) {
+    	return translateSearchParamsToIBatisParams(searchparams,fieldparams,fieldMap,true);
+    }
+    
+    public static Map<String, Object> translateSearchParamsToIBatisParams(Map<String, Object> searchparams, Map<String, Object> fieldparams, Map<String, String> fieldMap,boolean useLike) {
         Map<String, Object> refConstituentParams = new HashMap<String, Object>();
         Map<String, Object> addressParams = new HashMap<String, Object>();
         Map<String, Object> phoneParams = new HashMap<String, Object>();
@@ -28,6 +32,10 @@ public class QueryUtil {
         Map<String, String> customParams = new HashMap<String, String>();
         Map<String, String> stringParams = new HashMap<String, String>();
         Map<String, Object> nonStringParams = new HashMap<String, Object>();
+        String quote = "";
+        
+        if (useLike == true) quote = "%";
+        else quote = "";
         
         if (searchparams != null) {
             for (Map.Entry<String, Object> pair : searchparams.entrySet()) {
@@ -56,33 +64,33 @@ public class QueryUtil {
                 
                 
                 if (key.startsWith("person.")) {
-                	refConstituentParams.put(key, "%" + value + "%");
+                	refConstituentParams.put(key, quote + value + quote);
                 }
                 else if (key.startsWith("primaryAddress")) {
-                	addressParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                	addressParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 }
                 else if (key.startsWith("primaryPhone")) {
-                	phoneParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                	phoneParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 }
                 else if (key.startsWith("primaryEmail")) {
-                	emailParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                	emailParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 }
                 else if (key.startsWith("addressMap[")) {
-                    addressParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                    addressParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 } 
                 else if (key.startsWith("phoneMap[")) {
-                    phoneParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                    phoneParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 } 
                 else if (key.startsWith("emailMap[")) {
-                    emailParams.put(key.substring(key.indexOf('.') + 1), "%" + value + "%");
+                    emailParams.put(key.substring(key.indexOf('.') + 1), quote + value + quote);
                 } 
                 else if (key.startsWith("customFieldMap[")) {
-                    customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), "%" + value + "%");
+                    customParams.put(key.substring(key.indexOf('[') + 1, key.indexOf(']')), quote + value + quote);
                 } 
                 else {
                     if (isString) {
                     	// These use LIKE
-                    	stringParams.put(key, "%" + value + "%");
+                    	stringParams.put(key, quote + value + quote);
                     } else {
                     	// These use =
                     	nonStringParams.put(key, value);

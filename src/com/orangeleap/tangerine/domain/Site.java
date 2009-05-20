@@ -34,6 +34,7 @@ public class Site implements Serializable {
     private String name;
     private String merchantNumber;
     private String merchantBin;
+    private String merchantTerminalId;
     private String localeString;
     private String timeZoneString;
     private boolean active = true;
@@ -221,6 +222,14 @@ public class Site implements Serializable {
 
 	public void setMajorDonorAccountManagerId(Integer majorDonorAccountManagerId) {
 		this.majorDonorAccountManagerId = majorDonorAccountManagerId;
+	}
+
+	public String getMerchantTerminalId() {
+		return merchantTerminalId;
+	}
+
+	public void setMerchantTerminalId(String merchantTerminalId) {
+		this.merchantTerminalId = merchantTerminalId;
 	}
 
 

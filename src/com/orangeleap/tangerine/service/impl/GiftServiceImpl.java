@@ -161,7 +161,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";
     
     private void routeGift(Gift gift) {
-    
+        
     	RulesStack.push(ROUTE_METHOD);
         try {
         	

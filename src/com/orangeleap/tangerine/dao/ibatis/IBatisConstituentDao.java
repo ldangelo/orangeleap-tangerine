@@ -146,6 +146,21 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
     	return persons;
     }
+
+	@Override
+	public List<Person> findConstituents(Map<String, Object> findparams,
+			List<Long> ignoreIds) {
+    	Map<String, Object> params = setupParams();
+    	if (ignoreIds == null) {
+            ignoreIds = new ArrayList<Long>();
+        }
+    	if (ignoreIds.size() > 0) {
+            params.put("ignoreIds", ignoreIds);
+        }
+    	QueryUtil.translateSearchParamsToIBatisParams(findparams, params, new SearchFieldMapperFactory().getMapper(EntityType.person).getMap(),false);
+    	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_FIND_TERMS", params);
+		return persons;
+	}
    
     @Override
     public List<Person> searchConstituents(Map<String, Object> searchparams) {

@@ -89,6 +89,7 @@ public class Person extends AbstractCommunicatorEntity {
     private String preferredPhoneType;
     private String loginId;
     private String accountNumber;
+    private Boolean byPassDuplicateDetection = false;
     
     private List<Gift> gifts;
     private List<RecurringGift> recurringGifts;
@@ -604,4 +605,12 @@ public class Person extends AbstractCommunicatorEntity {
         removeCustomField(ORGANIZATION_SALES_CONTACTS);
         removeCustomField(ORGANIZATION_PUBLIC_RELATIONS_CONTACTS);
     }
+
+	public Boolean getByPassDuplicateDetection() {
+		return byPassDuplicateDetection;
+	}
+
+	public void setByPassDuplicateDetection(Boolean byPassDuplicateDetection) {
+		this.byPassDuplicateDetection = byPassDuplicateDetection;
+	}
 }

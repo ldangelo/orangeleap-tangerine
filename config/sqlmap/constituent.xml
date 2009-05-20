@@ -198,4 +198,69 @@
 		limit 200
 	</statement>
 
+	<statement id="SELECT_CONSTITUENT_BY_FIND_TERMS" resultMap="CONSTITUENT_RESULT" parameterClass="map">
+	    select
+		<include refid="CONSTITUENT_COLS_FRAGMENT"/> 
+		from CONSTITUENT p
+		where 
+		p.SITE_NAME = #siteName#
+		<isNotNull property="ignoreIds"> 
+	       and p.CONSTITUENT_ID not in 
+		   <iterate property="ignoreIds" conjunction="," open="(" close=")">
+		      #ignoreIds[]#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="stringParams"> 
+		   <iterate property="stringParams" conjunction="and" open="and" close="">
+		   p.$stringParams[].key$ = #stringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="nonStringParams"> 
+		   <iterate property="nonStringParams" conjunction="and" open="and" close="">
+		   p.$nonStringParams[].key$ = #nonStringParams[].value#
+		   </iterate>
+		</isNotNull>
+		<isNotNull property="phoneParams"> 
+		   and exists (
+		    select * from PHONE ph where 
+		    ph.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="phoneParams" conjunction="and" open="and" close="">
+		    ph.$phoneParams[].key$ = #phoneParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="addressParams"> 
+		   and exists (
+		    select * from ADDRESS saddr where 
+		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="addressParams" conjunction="and" open="and" close="">
+		    saddr.$addressParams[].key$ = #addressParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="emailParams"> 
+		   and exists (
+		    select * from EMAIL e where 
+		    e.CONSTITUENT_ID = p.CONSTITUENT_ID
+		    <iterate property="emailParams" conjunction="and" open="and" close="">
+		    e.$emailParams[].key$ = #emailParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="customParams"> 
+		   and exists (
+		    select * from CUSTOM_FIELD cf where 
+		    cf.ENTITY_ID = p.CONSTITUENT_ID
+		    and cf.ENTITY_TYPE = 'person'
+		    <iterate property="customParams" conjunction="and" open="and" close="">
+		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE = #customParams[].value#
+		    </iterate>
+		   )
+		</isNotNull>
+		<isNotNull property="additionalWhere"> 
+			and $additionalWhere$
+		</isNotNull>
+		limit 200
+	</statement>
+
 </sqlMap>

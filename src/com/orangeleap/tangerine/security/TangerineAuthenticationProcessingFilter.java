@@ -23,6 +23,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.ldap.LdapService;
+import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.util.HttpUtil;
 
@@ -38,9 +39,11 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
     public static final String FULLNAME_KEY = "j_fullname";
 
     private final String fullNameParameter = FULLNAME_KEY;
-    
 
     private PageCustomizationService pageCustomizationService;
+
+    @Autowired
+    private SessionService sessionService;
 
     public void setPageCustomizationService(PageCustomizationService pageCustomizationService) {
         this.pageCustomizationService = pageCustomizationService;
@@ -99,6 +102,11 @@ public class TangerineAuthenticationProcessingFilter extends AuthenticationProce
         WebUtils.setSessionAttribute(request, "pageAccess", pageAccess);
         ((TangerineAuthenticationToken) authResult).setPageAccess(pageAccess);
         logger.trace(pageAccess);
+
+        // Call to ensure user is setup in the database. This comes into play
+        // when a user is in LDAP but not in the database yet. Calling this
+        // method will create the user record and associate with the correct site
+        sessionService.lookupSite();
 
         WebUtils.setSessionAttribute(request, "passwordChangeRequired", ldapService.isPasswordChangeRequired(60));
         WebUtils.setSessionAttribute(request, "lastLoginDate", ldapService.getLastLogin());

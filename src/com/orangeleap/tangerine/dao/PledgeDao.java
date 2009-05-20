@@ -23,4 +23,6 @@ public interface PledgeDao {
     public List<Pledge> searchPledges(Map<String, Object> params);
 
 	public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo);
+	
+	public void readAmountPaidForPledge(List<Pledge> pledges);
 }

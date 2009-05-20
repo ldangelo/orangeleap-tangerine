@@ -93,8 +93,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
 
         recurringGift.setAutoPay(true);
-        if (recurringGift.getNextRunDate() == null) recurringGift.setNextRunDate(recurringGift.getStartDate());
-        else recurringGift.setNextRunDate(getNextGiftDate(recurringGift));
+        if (recurringGift.getNextRunDate() == null) {
+            recurringGift.setNextRunDate(recurringGift.getStartDate());
+        }
+        else {
+            recurringGift.setNextRunDate(getNextGiftDate(recurringGift));
+        }
 
         recurringGift.filterValidDistributionLines();
         return save(recurringGift);

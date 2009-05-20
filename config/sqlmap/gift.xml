@@ -23,7 +23,6 @@
         <result property="sendAcknowledgment" column="GIFT_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
-		<result property="pledgeId" column="GIFT_PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="GIFT_RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
@@ -45,7 +44,7 @@
 		g.PAYMENT_MESSAGE as GIFT_PAYMENT_MESSAGE,
 		g.PAYMENT_STATUS as GIFT_PAYMENT_STATUS, g.PAYMENT_TYPE as GIFT_PAYMENT_TYPE, g.POSTMARK_DATE as GIFT_POSTMARK_DATE,
 		g.SEND_ACKNOWLEDGMENT as GIFT_SEND_ACKNOWLEDGMENT, g.TRANSACTION_DATE as GIFT_TRANSACTION_DATE, g.PAYMENT_TXREFNUM as GIFT_PAYMENT_TXREFNUM, 
-		g.PLEDGE_ID as GIFT_PLEDGE_ID, g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID,
+		g.RECURRING_GIFT_ID as GIFT_RECURRING_GIFT_ID,
 		g.UPDATE_DATE as GIFT_UPDATE_DATE, g.CREATE_DATE as GIFT_CREATE_DATE
 	</sql>
 	
@@ -155,21 +154,6 @@
 		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 	</select>
 
-	<select id="READ_GIFTS_RECEIVED_SUM_BY_PLEDGE_ID" parameterClass="map" resultClass="decimal">
-		select SUM(g.AMOUNT)
-		from GIFT g
-		inner join CONSTITUENT p on g.CONSTITUENT_ID = p.CONSTITUENT_ID
-		where p.SITE_NAME = #siteName#
-		and g.PLEDGE_ID = #pledgeId#
-		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-	</select>
-
-	<select id="SELECT_GIFTS_BY_PLEDGE_ID" resultMap="GIFT_RESULT" parameterClass="map">
-		<include refid="GIFT_QUERY_FRAGMENT" />
-		and g.PLEDGE_ID = #pledgeId#
-		order by g.TRANSACTION_DATE desc
-	</select>
-
 	<select id="ANALYZE_FOR_MAJOR_DONOR" parameterClass="map" resultClass="decimal">
 		select SUM(g.AMOUNT)
 		from GIFT g
@@ -196,7 +180,7 @@
 		CURRENCY_CODE, DEDUCTIBLE, DEDUCTIBLE_AMOUNT, DONATION_DATE, ENTRY_TYPE,
 		PAYMENT_MESSAGE, PAYMENT_STATUS, PAYMENT_TYPE, POSTMARK_DATE,  
 		SEND_ACKNOWLEDGMENT, TRANSACTION_DATE, PAYMENT_TXREFNUM,
-		ADDRESS_ID, PLEDGE_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
+		ADDRESS_ID, RECURRING_GIFT_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
 		values (#giftStatus#, #giftType#, #acknowledgmentDate#, #amount#, #authCode#,
@@ -205,7 +189,7 @@
 		#paymentMessage#, #paymentStatus#,
 		#paymentType#, #postmarkDate#,
 		#sendAcknowledgment#, #transactionDate#, #txRefNum#, 
-		#selectedAddress.id#, #pledgeId#, #recurringGiftId#, #selectedEmail.id#,
+		#selectedAddress.id#, #recurringGiftId#, #selectedEmail.id#,
 		#selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -235,7 +219,6 @@
 		g.TRANSACTION_DATE = #transactionDate#,
 		g.PAYMENT_TXREFNUM = #txRefNum#,
 		g.ADDRESS_ID = #selectedAddress.id#,
-		g.PLEDGE_ID = #pledgeId#,
 		g.RECURRING_GIFT_ID = #recurringGiftId#,
 		g.EMAIL_ID = #selectedEmail.id#,
 		g.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,

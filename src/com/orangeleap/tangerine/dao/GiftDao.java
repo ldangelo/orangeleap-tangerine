@@ -23,10 +23,6 @@ public interface GiftDao {
     public List<Gift> readGiftsByRecurringGiftId(Long recurringGiftId);
 
     public BigDecimal readGiftsReceivedSumByRecurringGiftId(Long recurringGiftId);
-    
-    public List<Gift> readGiftsByPledgeId(Long pledgeId);
-    
-    public BigDecimal readGiftsReceivedSumByPledgeId(Long pledgeId);
 
 	public List<Gift> readAllGiftsBySite();
 	

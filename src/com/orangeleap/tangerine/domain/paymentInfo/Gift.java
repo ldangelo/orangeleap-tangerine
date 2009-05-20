@@ -21,7 +21,6 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String giftStatus;
     private GiftType giftType;
     private Long recurringGiftId;
-    private Long pledgeId;
     private BigDecimal amount;
     private BigDecimal deductibleAmount;
     private Date donationDate = new Date();
@@ -41,19 +40,6 @@ public class Gift extends AbstractPaymentInfoEntity {
     
     public Gift() { 
         super();
-    }
-
-    public Gift(Commitment commitment, Date transactionDate) {
-        this();
-        if (commitment instanceof RecurringGift) {
-            this.recurringGiftId = commitment.getId();
-        }
-        else if (commitment instanceof Pledge) {
-            this.pledgeId = commitment.getId();
-        }
-        this.person = commitment.getPerson();
-        this.transactionDate = transactionDate;
-        this.amount = commitment.getAmountPerGift();
     }
     
     public Gift(GiftInKind giftInKind) {
@@ -83,14 +69,6 @@ public class Gift extends AbstractPaymentInfoEntity {
 
     public void setRecurringGiftId(Long recurringGiftId) {
         this.recurringGiftId = recurringGiftId;
-    }
-
-    public Long getPledgeId() {
-        return pledgeId;
-    }
-
-    public void setPledgeId(Long pledgeId) {
-        this.pledgeId = pledgeId;
     }
 
     public BigDecimal getAmount() {
@@ -269,7 +247,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("giftStatus", giftStatus).append("giftType", giftType).append("recurringGiftId", recurringGiftId).
-            append("amount", amount).append("pledgeId", pledgeId).
+            append("amount", amount).
             append(super.toString()).append("deductibleAmount", deductibleAmount).append("transactionDate", transactionDate).
             append(super.toString()).append("donationDate", donationDate).append("postmarkDate", postmarkDate).
             append(super.toString()).append("authCode", authCode).

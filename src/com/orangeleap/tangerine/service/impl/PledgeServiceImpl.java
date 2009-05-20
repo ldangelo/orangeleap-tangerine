@@ -134,7 +134,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         return pledgeDao.readPaginatedPledgesByConstituentId(constituentId, sortinfo);
     }
 
-
     @Override
     public List<Pledge> searchPledges(Map<String, Object> params) {
         if (logger.isTraceEnabled()) {

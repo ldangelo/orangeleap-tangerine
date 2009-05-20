@@ -6,9 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -33,7 +31,6 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
-import com.orangeleap.tangerine.util.StringConstants;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -79,31 +76,11 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         if (commitment instanceof RecurringGift) {
             return giftDao.readGiftsReceivedSumByRecurringGiftId(commitment.getId());
         }
-        else if (commitment instanceof Pledge) {
-            return giftDao.readGiftsReceivedSumByPledgeId(commitment.getId());
-        }
         else {
-            throw new IllegalArgumentException("Commitment is neither a RecurringGift nor a Pledge");
+            throw new IllegalArgumentException("Commitment is not a RecurringGift");
         }
     }
     
-    public void findGiftSum(Map<String, Object> refData, T commitment) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("findGiftSum: refData = " + refData + " commitment = " + commitment);
-        }
-        if (commitment != null) {
-            List<Gift> gifts = getCommitmentGifts(commitment);
-            refData.put(StringConstants.GIFTS, gifts);
-            Iterator<Gift> giftIter = gifts.iterator();
-            BigDecimal giftSum = new BigDecimal(0);
-            while (giftIter.hasNext()) {
-                giftSum = giftSum.add(giftIter.next().getAmount());
-            }
-            refData.put("giftSum", giftSum);
-            refData.put("giftsReceivedSum", getAmountReceived(commitment));
-        }
-    }
-
     // TODO: refactor; this method is a mess!!!
     public List<Calendar> getCommitmentGiftDates(T commitment) {
         if (logger.isTraceEnabled()) {
@@ -175,26 +152,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
             }
         }
         return giftDates;
-    }
-
-    public List<Gift> getCommitmentGifts(T commitment) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("getCommitmentGifts: commitment = " + commitment);
-        }
-        List<Calendar> giftDates = getCommitmentGiftDates(commitment);
-        if (giftDates != null) {
-            List<Gift> gifts = new ArrayList<Gift>();
-            for (Calendar cal : giftDates) {
-                gifts.add(createGift(commitment, cal));
-            }
-            return gifts;
-        }
-        return new ArrayList<Gift>();
-    }
-
-    public Gift createGift(T commitment, Calendar giftCal) { 
-        logger.debug("Creating gift for " + commitment.getAmountPerGift() + ", on " + giftCal.getTime());
-        return new Gift(commitment, giftCal.getTime());
     }
     
     public Calendar createGiftDate(Calendar giftCal) {

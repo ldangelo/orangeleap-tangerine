@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -86,13 +87,13 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		params.put("constituentId", constituentId);
 
         List rows = getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED", params);
+        readAmountPaidForPledge(rows);
         Long count = (Long)getSqlMapClientTemplate().queryForObject("PLEDGES_BY_CONSTITUENT_ID_ROWCOUNT",params);
         PaginatedResult resp = new PaginatedResult();
         resp.setRows(rows);
         resp.setRowCount(count);
         return resp;
     }
-
     
     @SuppressWarnings("unchecked")
     @Override
@@ -136,5 +137,38 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         Map<String, Object> paramMap = setupParams();
         paramMap.put("pledgeId", pledgeId);
         return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_GIFT_BY_PLEDGE_ID", paramMap);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public void readAmountPaidForPledge(List<Pledge> pledges) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAmountPaidForPledge:");
+        }
+        if (pledges != null) {
+            Map<String, Object> paramMap = setupParams();
+            paramMap.put("pledges", pledges);
+            
+            Map pledgePaidAmounts = getSqlMapClientTemplate().queryForMap("SELECT_PAID_AMOUNT_BY_PLEDGE_ID", paramMap, "pledgeId", "amountPaid"); 
+            Map pledgeAdjustedAmounts = getSqlMapClientTemplate().queryForMap("SELECT_ADJUSTED_AMOUNT_BY_PLEDGE_ID", paramMap, "pledgeId", "amountPaid");
+            
+            for (Pledge thisPledge : pledges) {
+                BigDecimal paidAmount = null;
+                BigDecimal adjustedAmount = null;
+                if (pledgePaidAmounts != null && pledgePaidAmounts.containsKey(thisPledge.getId())) {
+                    paidAmount = (BigDecimal)pledgePaidAmounts.get(thisPledge.getId());
+                }
+                if (pledgeAdjustedAmounts != null && pledgeAdjustedAmounts.containsKey(thisPledge.getId())) {
+                    adjustedAmount = (BigDecimal)pledgeAdjustedAmounts.get(thisPledge.getId());
+                }
+                if (paidAmount == null) {
+                    paidAmount = BigDecimal.ZERO;
+                }
+                if (adjustedAmount == null) {
+                    adjustedAmount = BigDecimal.ZERO;
+                }
+                thisPledge.setAmountPaid(paidAmount.add(adjustedAmount));
+            }
+        }
     }
 }

@@ -532,24 +532,6 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         }
     }
     
-    @Test(groups = { "testCommitmentForGift" })
-    public void testReadGiftsReceivedSumByPledgeId() throws Exception {
-        assert BigDecimal.ZERO.equals(giftDao.readGiftsReceivedSumByPledgeId(0L));
-        assert 100299 == giftDao.readGiftsReceivedSumByPledgeId(900L).intValue();
-    }
-    
-    @Test(groups = { "testCommitmentForGift" })
-    public void testReadGiftsByPledgeId() throws Exception {
-        List<Gift> gifts = giftDao.readGiftsByPledgeId(0L);
-        assert gifts != null && gifts.isEmpty();
-        gifts = giftDao.readGiftsByPledgeId(900L);
-        
-        assert gifts.size() == 2;
-        for (Gift gift : gifts) {
-            assert gift.getId() == 300L || gift.getId() == 400L;
-        }
-    }
-    
     @Test(groups = { "testSearchGifts" })
     public void testSearchGifts() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();

@@ -195,31 +195,6 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
         }
         return result;
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Gift> readGiftsByPledgeId(Long pledgeId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsByPledgeId: pledgeId = " + pledgeId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("pledgeId", pledgeId);
-        return getSqlMapClientTemplate().queryForList("SELECT_GIFTS_BY_PLEDGE_ID", params);
-    }
-
-    @Override
-    public BigDecimal readGiftsReceivedSumByPledgeId(Long pledgeId) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsReceivedSumByPledgeId: pledgeId = " + pledgeId);
-        }
-        Map<String, Object> params = setupParams();
-        params.put("pledgeId", pledgeId);
-        BigDecimal result = (BigDecimal) getSqlMapClientTemplate().queryForObject("READ_GIFTS_RECEIVED_SUM_BY_PLEDGE_ID", params);
-        if (result == null) {
-            result = BigDecimal.ZERO;
-        }
-        return result;
-    }
     
     @SuppressWarnings("unchecked")
     protected List<Long> readAssociatedPledgeIdsForGift(Long giftId) {

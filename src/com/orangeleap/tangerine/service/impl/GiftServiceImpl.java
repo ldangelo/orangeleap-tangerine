@@ -34,7 +34,6 @@ import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.integration.NewGift;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -161,7 +160,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";
     
     private void routeGift(Gift gift) {
-        
+    
     	RulesStack.push(ROUTE_METHOD);
         try {
         	
@@ -221,10 +220,10 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId, String pledgeId) {
+    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId + " recurringGiftId = " + recurringGiftId + 
-                    "pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
+                    " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Gift gift = null;
         if (giftId == null) {
@@ -236,15 +235,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
                     return gift;
                 }
                 gift = this.createGift(recurringGift, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
-            }
-            else if (pledgeId != null) {
-                Pledge pledge = null;
-                pledge = pledgeService.readPledgeById(Long.parseLong(pledgeId));
-                if (pledge == null) {
-                    logger.error("readGiftByIdCreateIfNull: pledge not found for pledgeId = " + pledgeId);
-                    return gift;
-                }
-                gift = this.createGift(pledge, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
             }
             if (gift == null) {
                 if (constituent != null) {
@@ -322,9 +312,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (commitment instanceof RecurringGift) {
             gift.setRecurringGiftId(commitment.getId());
         }
-        else if (commitment instanceof Pledge) {
-            gift.setPledgeId(commitment.getId());
-        }
         gift.setComments(commitment.getComments());
         gift.setAmount(commitment.getAmountPerGift());
         gift.setPaymentType(commitment.getPaymentType());
@@ -368,15 +355,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.trace("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGift.getId());
         }
         return giftDao.readGiftsByRecurringGiftId(recurringGift.getId());
-    }
-
-    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
-    @Override
-    public List<Gift> readGiftsByPledgeId(Pledge pledge) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsByPledgeId: pledgeId = " + pledge.getId());
-        }
-        return giftDao.readGiftsByPledgeId(pledge.getId());
     }
 
 	@Override

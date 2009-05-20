@@ -103,8 +103,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         }
 
         assert readPledge.getGifts() != null && readPledge.getGifts().isEmpty();
-        assert BigDecimal.ZERO.equals(readPledge.getAmountPaid());
-        assert 150 == readPledge.getAmountRemaining().intValue();
         assert readPledge.getAmountPerGift() == null;
         assert readPledge.getStartDate() == null;
         assert readPledge.getEndDate() == null;
@@ -148,8 +146,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getPerson() != null && readPledge.getPerson().getId() == 100L;
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
         assert readPledge.getGifts() != null && readPledge.getGifts().isEmpty();
-        assert BigDecimal.ZERO.equals(readPledge.getAmountPaid());
-        assert readPledge.getAmountRemaining() == null;
         assert readPledge.getStartDate() == null;
         assert readPledge.getEndDate() == null;
         assert readPledge.getPledgeDate() != null;
@@ -208,8 +204,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getSelectedEmail() != null && pledge.getSelectedEmail().getId() == null;
         assert pledge.getGifts() != null && pledge.getGifts().isEmpty();
         assert pledge.getAmountPerGift() == null;
-        assert BigDecimal.ZERO.equals(pledge.getAmountPaid());
-        assert 25 == pledge.getAmountRemaining().intValue();
         assert pledge.getStartDate() == null;
         assert pledge.getEndDate() == null;
         assert pledge.getPledgeDate() == null;
@@ -337,6 +331,21 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
             assert pledge.getAmountTotal().compareTo(new BigDecimal("3.99")) == 0;
         }
     }   
+    
+    @Test(groups = { "testReadPledge" })
+    public void testReadAmountPaidForPledge() throws Exception {
+        List<Pledge> pledges = new ArrayList<Pledge>();
+        pledges.add(new Pledge(700L));
+        
+        pledgeDao.readAmountPaidForPledge(pledges);
+        assert new BigDecimal("119").compareTo(pledges.get(0).getAmountPaid()) == 0;
+        
+        pledges = new ArrayList<Pledge>();
+        pledges.add(new Pledge(600L));
+        
+        pledgeDao.readAmountPaidForPledge(pledges);
+        assert BigDecimal.ZERO.compareTo(pledges.get(0).getAmountPaid()) == 0;
+    }
     
     private void testPledge(Pledge pledge) {
         switch (pledge.getId().intValue()) {

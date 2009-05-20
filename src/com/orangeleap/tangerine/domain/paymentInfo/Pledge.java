@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
@@ -15,7 +16,14 @@ public class Pledge extends Commitment {
     private String pledgeStatus = STATUS_PENDING;
     private boolean recurring = false;
     private Date projectedDate;
+    private BigDecimal amountPaid;
 
+    public Pledge() {}
+    
+    public Pledge(Long id) {
+        setId(id);
+    }
+    
     public boolean isRecurring() {
         return recurring;
     }
@@ -62,6 +70,32 @@ public class Pledge extends Commitment {
 
     public String getPledgeCancelReason() {
     	return pledgeCancelReason;
+    }
+
+    @Override
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    @Override
+    public BigDecimal getAmountRemaining() {
+        BigDecimal amountRemaining = null;
+        if (isRecurring() == false) {
+            amountRemaining = super.getAmountRemaining();
+        }
+        else {
+            if (getAmountPerGift() != null) {
+                amountRemaining = getAmountPerGift().subtract(getAmountPaid());
+                if (amountRemaining.compareTo(BigDecimal.ZERO) < 0) {
+                    amountRemaining = BigDecimal.ZERO;
+                }
+            }
+        }
+        return amountRemaining;
     }
 
     public String getShortDescription() {

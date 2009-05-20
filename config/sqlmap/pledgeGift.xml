@@ -14,6 +14,37 @@
 		where pg.PLEDGE_ID = #pledgeId#
 	</select>
 
+	<select id="SELECT_PAID_AMOUNT_BY_PLEDGE_ID" parameterClass="map" resultClass="java.util.HashMap">
+		select pg.PLEDGE_ID as pledgeId, SUM(g.AMOUNT) as amountPaid
+		from GIFT g
+		inner join PLEDGE_GIFT pg on pg.GIFT_ID = g.GIFT_ID
+		inner join CONSTITUENT p on p.CONSTITUENT_ID = g.CONSTITUENT_ID 
+		where p.SITE_NAME = #siteName#
+		and pg.PLEDGE_ID IN 
+		<iterate property="pledges" conjunction="," open="(" close=")">
+			#pledges[].id#
+		</iterate>
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+		and g.GIFT_STATUS = 'Paid'
+		group by PLEDGE_ID
+	</select>
+	
+	<select id="SELECT_ADJUSTED_AMOUNT_BY_PLEDGE_ID" parameterClass="map" resultClass="java.util.HashMap">
+		select pg.PLEDGE_ID as pledgeId, SUM(ag.ADJUSTED_AMOUNT) as amountPaid
+		from ADJUSTED_GIFT ag
+		inner join GIFT g on g.GIFT_ID = ag.GIFT_ID
+		inner join PLEDGE_GIFT pg on pg.GIFT_ID = g.GIFT_ID
+		inner join CONSTITUENT p on  p.CONSTITUENT_ID = g.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+		and pg.PLEDGE_ID IN 
+		<iterate property="pledges" conjunction="," open="(" close=")">
+			#pledges[].id#
+		</iterate>
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
+		and g.GIFT_STATUS = 'Paid'
+		group by PLEDGE_ID
+	</select>
+
 	<insert id="INSERT_PLEDGE_GIFT" parameterClass="java.util.Map">
 		insert into PLEDGE_GIFT (GIFT_ID, PLEDGE_ID)
 		values (#giftId#, #pledgeId#)

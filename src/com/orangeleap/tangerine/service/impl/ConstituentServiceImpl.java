@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -29,16 +30,23 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PhoneService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -51,6 +59,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="siteService")
+    protected SiteService siteService;
+   
+    @Resource(name="picklistItemService")
+    protected PicklistItemService picklistItemService;
+   
     @Resource(name="personEntityValidator")
     protected EntityValidator entityValidator;
    
@@ -99,6 +113,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }    	
         
         if (constituent.getFieldLabelMap() != null) {
+
+        	setPicklistDefaultsForRequiredFields(constituent);
+        	
 	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
 	        BindException errors = new BindException(br);
 	      
@@ -135,6 +152,43 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         auditService.auditObject(constituent, constituent);
         return constituent;
     }
+    
+	private void setPicklistDefaultsForRequiredFields(Person entity) {
+		
+		Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(PageType.person, tangerineUserHelper.lookupUserRoles());
+		if (requiredFieldMap != null) {
+			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
+			for (String key : requiredFieldMap.keySet()) {
+				if (bw.isReadableProperty(key)) {
+					Object ovalue = bw.getPropertyValue(key);
+					String svalue = ovalue.toString();
+					if (ovalue instanceof CustomField) {
+						svalue = ((CustomField)ovalue).getValue();
+					}
+					if (StringUtils.trimToNull(""+svalue) == null) {		                			
+						FieldRequired fr = requiredFieldMap.get(key);
+						if (fr.isRequired()) {
+							if (fr.getFieldDefinition().getFieldType().equals(FieldType.PICKLIST)) {
+								Picklist picklist = picklistItemService.getPicklist(fr.getFieldDefinition().getFieldName());
+								if (picklist != null) {
+									List<PicklistItem> items = picklist.getActivePicklistItems();
+									if (items.size() > 0) {
+										String defaultvalue = items.get(0).getItemName();
+										if (ovalue instanceof CustomField) {
+											((CustomField)ovalue).setValue(defaultvalue);
+										} else {
+											bw.setPropertyValue(key, defaultvalue);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
     
     @Transactional(propagation = Propagation.REQUIRED)
     public void maintainCorrespondence(Person constituent) {

@@ -391,6 +391,7 @@
             <fileset dir="${stage.dir}/war/js" includes="jquery/jquery-1.3.2.min.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-jquery-adapter.js" />
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-all.js" />
+            <fileset dir="${stage.dir}/war/js" includes="init.js" />            
             <fileset dir="${stage.dir}/war/js" includes="extjs/ext-ajax-queue.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.bgiframe.js" />
             <fileset dir="${stage.dir}/war/js" includes="jquery/plugins/jquery.hoverIntent.js" />

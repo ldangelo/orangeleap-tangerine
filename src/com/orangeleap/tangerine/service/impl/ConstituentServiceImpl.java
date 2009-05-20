@@ -106,7 +106,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             throw new ConstituentValidationException(); 
         }    	
         
-        if (constituent.getFieldLabelMap() != null) {
+        if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
 
 	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
 	        BindException errors = new BindException(br);

@@ -114,7 +114,7 @@ public class EntityValidator implements Validator {
         // used to know that a field already has an error, so don't add another
 
         // first, validate required fields
-        validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
+        if (!entity.isSuppressValidation()) validateRequiredFields(entity, errors, fieldLabelMap, fieldValueMap, errorSet);
 
         // next, validate custom validation (regex)  
         validateRegex(entity, errors, fieldLabelMap, fieldValueMap, errorSet);

@@ -24,6 +24,8 @@
 		</property>
 	</bean>
            
+    <import resource="validator-context.xml"/>
+           
 	<context:component-scan base-package="com.orangeleap.tangerine">
 		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
 	</context:component-scan>

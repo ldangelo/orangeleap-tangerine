@@ -4,13 +4,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface ConstituentService {
 
-    public Person maintainConstituent(Person constituent) throws ConstituentValidationException;
+    public Person maintainConstituent(Person constituent) throws ConstituentValidationException, BindException;
 
     public Person readConstituentById(Long id);
 

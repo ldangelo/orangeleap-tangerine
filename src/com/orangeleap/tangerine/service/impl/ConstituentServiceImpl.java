@@ -15,7 +15,12 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
@@ -34,6 +39,7 @@ import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -45,6 +51,13 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Resource(name="personEntityValidator")
+    protected EntityValidator entityValidator;
+   
+    @Resource(name="constituentValidator")
+    protected ConstituentValidator constituentValidator;
+
+    
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
 
@@ -76,14 +89,28 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     private CommunicationHistoryService communicationHistoryService;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
-    public Person maintainConstituent(Person constituent) throws ConstituentValidationException {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
+    public Person maintainConstituent(Person constituent) throws ConstituentValidationException, BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituent: constituent = " + constituent);
         }
         if (constituent.getSite() == null || tangerineUserHelper.lookupUserSiteName().equals(constituent.getSite().getName()) == false) {
             throw new ConstituentValidationException(); 
         }    	
+        
+        if (constituent.getFieldLabelMap() != null) {
+	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
+	        BindException errors = new BindException(br);
+	      
+	        constituentValidator.validate(constituent, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+	        
+	        entityValidator.setPageType(PageType.person);
+	        entityValidator.validate(constituent, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+        }
+        
+        
         constituent = constituentDao.maintainConstituent(constituent);
         maintainCorrespondence(constituent);
         

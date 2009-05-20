@@ -58,6 +58,10 @@ public class PersonFormController extends TangerineFormController {
             saved = false;
         	current = p;
             e.createMessages(errors);
+        } catch (BindException e) {
+            saved = false;
+            current = p;
+            errors.addAllErrors(e);
         }
 
         ModelAndView mav = null;

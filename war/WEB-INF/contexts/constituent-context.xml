@@ -19,7 +19,7 @@
     <bean id="person" class="com.orangeleap.tangerine.controller.constituent.PersonFormController" parent="tangerineFormController">
         <property name="commandName" value="person"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.Person"/>
-        <property name="validators">
+ <!--        <property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
 			        <property name="pageType" value="person"/>
@@ -27,6 +27,7 @@
 	            <ref bean="constituentValidator"/>
 	    	</list>
         </property>
+	    	 -->
         <property name="formView" value="constituent/person" />
         <property name="successView" value="redirect:/person.htm" />
     </bean>

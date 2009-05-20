@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.controller.importexport.ExportRequest;
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
@@ -64,7 +65,7 @@ public abstract class EntityImporter {
 	}
 	
 	
-	public abstract void importValueMap(String action, Map<String, String> m) throws ConstituentValidationException;
+	public abstract void importValueMap(String action, Map<String, String> m) throws ConstituentValidationException, BindException;
 	public abstract String getIdField();
 	protected abstract PageType getPageType();
 

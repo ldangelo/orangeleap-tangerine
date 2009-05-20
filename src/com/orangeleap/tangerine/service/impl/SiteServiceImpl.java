@@ -20,6 +20,7 @@ import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
@@ -106,6 +107,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 				} 
           	    catch (Exception e) {
 					logger.error(e);
+					e.printStackTrace();
 					throw new RuntimeException("Unable to create new user record.");
 				}
           	} 
@@ -115,7 +117,7 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     }
     
     // Create a Person object row corresponding to the login user.
-    private Person createPerson(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, javax.naming.NamingException {
+    private Person createPerson(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
         logger.info("Creating user for login id: "+authentication.getName());
         Person constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));

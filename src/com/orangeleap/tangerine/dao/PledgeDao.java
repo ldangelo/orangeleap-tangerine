@@ -27,5 +27,5 @@ public interface PledgeDao {
 	
 	public BigDecimal readAmountPaidForPledgeId(Long pledgeId);
 	
-	public void maintainPledgeAmountPaidRemaining(Pledge pledge);
+	public void maintainPledgeAmountPaidRemainingStatus(Pledge pledge);
 }

@@ -38,6 +38,8 @@ public class PledgeListController {
         NAME_MAP.put("status", "c.PLEDGE_STATUS");
         NAME_MAP.put("amountpergift", "c.AMOUNT_PER_GIFT");
         NAME_MAP.put("amounttotal", "c.AMOUNT_TOTAL");
+        NAME_MAP.put("amountpaid", "c.AMOUNT_PAID");
+        NAME_MAP.put("amountremaining", "c.AMOUNT_REMAINING");
     }
     
     private Map<String,Object> pledgeToMap(Pledge c) {

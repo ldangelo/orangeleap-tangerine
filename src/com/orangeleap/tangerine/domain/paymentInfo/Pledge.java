@@ -126,6 +126,9 @@ public class Pledge extends Commitment {
             if (getAmountRemaining() == null) {
                 setAmountRemaining(getAmountPerGift());
             }
+            else {
+                setAmountRemaining(getAmountPerGift().subtract(getAmountPaid()));
+            }
         } 
         else {
             setStartDate(null);
@@ -134,6 +137,9 @@ public class Pledge extends Commitment {
             setFrequency(null);
             if (getAmountRemaining() == null) {
                 setAmountRemaining(getAmountTotal());
+            }
+            else {
+                setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
             }
         }
     }

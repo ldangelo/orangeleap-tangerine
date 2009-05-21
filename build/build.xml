@@ -183,6 +183,19 @@
 		<antcall target="9. Load Data"/>
 	</target>
 
+	<target name="reloadBetaDb">
+		<antcall target="9.3 Load Schema"/>
+		<antcall target="9.2 Load Base Data Only"/>
+		<antcall target="9.4 Load Sample Merchant Ids"/>
+	</target>
+
+	<target name="reloadSandboxDb">
+		<antcall target="9.1. Clear Schema"/>
+		<antcall target="9.3 Load Schema"/>
+		<antcall target="9.2 Load Base Data Only"/>
+		<antcall target="9.4 Load Sample Merchant Ids"/>
+	</target>
+
 	<target name="usage">
 		<echo>This is the build file for Orange Leap</echo>
 		<echo>Use "clean" to delete the temporary build directories in the project.</echo>

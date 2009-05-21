@@ -599,6 +599,8 @@ CREATE TABLE `PLEDGE` (
   `ACKNOWLEDGMENT_DATE` datetime default NULL,
   `AMOUNT_PER_GIFT` decimal(19,2) default NULL,
   `AMOUNT_TOTAL` decimal(19,2) default NULL,
+  `AMOUNT_PAID` decimal(19,2) default NULL,
+  `AMOUNT_REMAINING` decimal(19,2) default NULL,
   `COMMENTS` varchar(255) default NULL,
   `CURRENCY_CODE` varchar(255) default NULL,
   `END_DATE` datetime default NULL,

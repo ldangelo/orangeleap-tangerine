@@ -7,12 +7,14 @@
 		<li>
 			<span id="greeting"><spring:message code="loggedInto"/>&nbsp;<strong><security:authentication property="site" /></strong> <spring:message code="as"/>&nbsp;<strong><security:authentication property="principal.username" /></strong></span>
 		</li>
+		<%-- 
 		<li>
 			<a href="account.htm"><spring:message code="myAccount"/></a>
 		</li>
 		<li>
 			<a href="#"><spring:message code="help"/></a>
 		</li>
+		 --%>
 		<li>
 			<a href="logout"><spring:message code="logout"/></a>
 		</li>

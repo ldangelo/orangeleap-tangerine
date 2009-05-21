@@ -46,15 +46,16 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 	}
 	
 	/**
-	 * Updates the pledge AMOUNT_PAID and AMOUNT_REMAINING fields ONLY
+	 * Updates the pledge AMOUNT_PAID, AMOUNT_REMAINING, and PLEDGE_STATUS fields ONLY
 	 * @param pledge
 	 */
 	@Override
-	public void maintainPledgeAmountPaidRemaining(Pledge pledge) {
+	public void maintainPledgeAmountPaidRemainingStatus(Pledge pledge) {
         if (logger.isTraceEnabled()) {
-            logger.trace("maintainPledgeAmountPaidRemaining: pledgeId = " + pledge.getId() + " amountPaid = " + pledge.getAmountPaid() + " amountRemaining = " + pledge.getAmountRemaining());
+            logger.trace("maintainPledgeAmountPaidRemainingStatus: pledgeId = " + pledge.getId() + " amountPaid = " + pledge.getAmountPaid() + 
+                    " amountRemaining = " + pledge.getAmountRemaining() + " pledgeStatus = " + pledge.getPledgeStatus());
         }
-	    getSqlMapClientTemplate().update("UPDATE_PLEDGE_AMOUNT_PAID_REMAINING", pledge);
+	    getSqlMapClientTemplate().update("UPDATE_PLEDGE_AMOUNT_PAID_REMAINING_STATUS", pledge);
 	}
 
 	@Override

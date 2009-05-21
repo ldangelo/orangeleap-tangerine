@@ -151,11 +151,12 @@
 		where PLEDGE_ID = #id#
 	</update>
 	
-	<update id="UPDATE_PLEDGE_AMOUNT_PAID_REMAINING" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
+	<update id="UPDATE_PLEDGE_AMOUNT_PAID_REMAINING_STATUS" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
 		update PLEDGE
 		set 
 		AMOUNT_PAID = #amountPaid#,
 		AMOUNT_REMAINING = #amountRemaining#,
+		PLEDGE_STATUS = #pledgeStatus#,
 		UPDATE_DATE = now()
 		where PLEDGE_ID = #id#
 	</update>

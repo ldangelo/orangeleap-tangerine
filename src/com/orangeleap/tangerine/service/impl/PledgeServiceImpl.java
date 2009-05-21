@@ -215,7 +215,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
                         BigDecimal amountPaid = pledgeDao.readAmountPaidForPledgeId(pledgeId);
                         setPledgeAmounts(pledge, amountPaid);
                         setPledgeStatus(pledge);
-                        pledgeDao.maintainPledgeAmountPaidRemaining(pledge);
+                        pledgeDao.maintainPledgeAmountPaidRemainingStatus(pledge);
                     }
                 }
             }

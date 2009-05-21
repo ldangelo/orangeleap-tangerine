@@ -6,6 +6,8 @@
 		<result property="id" column="PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
 		<result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
+		<result property="amountPaid" column="AMOUNT_PAID" jdbcType="DECIMAL" />
+		<result property="amountRemaining" column="AMOUNT_REMAINING" jdbcType="DECIMAL" />
 		<result property="pledgeDate" column="PLEDGE_DATE" jdbcType="TIMESTAMP" />
 		<result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
 		<result property="recurring" column="RECURRING" jdbcType="CHAR" />
@@ -31,7 +33,7 @@
 	</resultMap>
 	
 	<sql id="PLEDGE_COLS_FRAGMENT">
-		c.PLEDGE_ID, c.ACKNOWLEDGMENT_DATE, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, 
+		c.PLEDGE_ID, c.ACKNOWLEDGMENT_DATE, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AMOUNT_PAID, c.AMOUNT_REMAINING, 
 		c.COMMENTS, c.CREATE_DATE, c.END_DATE, c.FREQUENCY,
 		c.LAST_ENTRY_DATE, c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
 		c.PROJECTED_DATE, c.RECURRING, c.SEND_ACKNOWLEDGMENT, 
@@ -93,7 +95,7 @@
 	
 	<select id="SELECT_NOT_CANCELLED_PLEDGES" resultMap="MIN_PLEDGE_RESULT" parameterClass="map">
 		select
-		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.PLEDGE_DATE, c.PLEDGE_STATUS, c.RECURRING,
+		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AMOUNT_PAID, c.AMOUNT_REMAINING, c.PLEDGE_DATE, c.PLEDGE_STATUS, c.RECURRING,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
 		from PLEDGE c
@@ -109,11 +111,11 @@
 	</statement>
 
 	<insert id="INSERT_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
-		insert into PLEDGE (ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, CURRENCY_CODE, 
+		insert into PLEDGE (ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, CURRENCY_CODE, 
 		COMMENTS, CREATE_DATE, END_DATE, FREQUENCY, LAST_ENTRY_DATE, PLEDGE_CANCEL_DATE,
 		PLEDGE_CANCEL_REASON, PLEDGE_DATE, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT,
 		START_DATE,	PLEDGE_STATUS, UPDATE_DATE, EMAIL_ID, CONSTITUENT_ID)
-		values (#acknowledgmentDate#, #amountPerGift#, #amountTotal#, #currencyCode#, 
+		values (#acknowledgmentDate#, #amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, #currencyCode#, 
 		#comments#, now(), #endDate#,
 		#frequency#, #lastEntryDate#, #pledgeCancelDate#, 
 		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, #sendAcknowledgment#,
@@ -128,6 +130,8 @@
 		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		AMOUNT_PER_GIFT = #amountPerGift#,
 		AMOUNT_TOTAL = #amountTotal#,
+		AMOUNT_PAID = #amountPaid#,
+		AMOUNT_REMAINING = #amountRemaining#,
 		COMMENTS = #comments#,
 		CURRENCY_CODE = #currencyCode#,
 		END_DATE = #endDate#,
@@ -144,6 +148,15 @@
 		UPDATE_DATE = now(),
 		EMAIL_ID = #selectedEmail.id#,
 		CONSTITUENT_ID = #person.id#
+		where PLEDGE_ID = #id#
+	</update>
+	
+	<update id="UPDATE_PLEDGE_AMOUNT_PAID_REMAINING" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
+		update PLEDGE
+		set 
+		AMOUNT_PAID = #amountPaid#,
+		AMOUNT_REMAINING = #amountRemaining#,
+		UPDATE_DATE = now()
 		where PLEDGE_ID = #id#
 	</update>
 	

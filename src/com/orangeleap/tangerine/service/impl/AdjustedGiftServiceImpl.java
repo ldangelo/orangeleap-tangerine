@@ -18,6 +18,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -36,6 +37,9 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
 
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
+
+    @Resource(name = "pledgeService")
+    private PledgeService pledgeService;
     
     @Override
     public AdjustedGift createdDefaultAdjustedGift(Long originalGiftId) {
@@ -59,6 +63,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         }
         maintainEntityChildren(adjustedGift, adjustedGift.getPerson());
         adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
+        pledgeService.updatePledgeForAdjustedGift(adjustedGift);       
         if (adjustedGift.isAdjustedPaymentRequired()) {
             paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
         }

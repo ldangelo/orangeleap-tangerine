@@ -18,6 +18,8 @@ import com.orangeleap.tangerine.util.StringConstants;
 public class Gift extends AbstractPaymentInfoEntity { 
 
     private static final long serialVersionUID = 1L;
+    public static final String PAID = "Paid";
+    public static final String NOT_PAID = "Not Paid";
     private String giftStatus;
     private GiftType giftType;
     private Long recurringGiftId;

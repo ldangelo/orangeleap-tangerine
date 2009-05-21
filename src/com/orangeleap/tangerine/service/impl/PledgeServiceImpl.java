@@ -1,7 +1,9 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -18,11 +21,14 @@ import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -43,18 +49,6 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         if (logger.isTraceEnabled()) {
             logger.trace("maintainPledge: pledge = " + pledge);
         }
-		if (pledge.getGifts() == null || pledge.getGifts().size() == 0) {
-			if (Commitment.STATUS_FULFILLED.equals(pledge.getPledgeStatus()) || Commitment.STATUS_IN_PROGRESS.equals(pledge.getPledgeStatus())) {
-				pledge.setPledgeStatus(Commitment.STATUS_PENDING);
-			}
-		} 
-		else {
-			if (Commitment.STATUS_FULFILLED.equals(pledge.getPledgeStatus())) {
-				if (!pledge.getAmountPaid().equals(pledge.getAmountTotal())) {
-					pledge.setPledgeStatus(Commitment.STATUS_IN_PROGRESS);
-				}
-			}
-		}
         pledge.filterValidDistributionLines();
         return save(pledge);
     }
@@ -183,5 +177,77 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
             logger.trace("canApplyPayment: pledge.id = " + pledge.getId() + " status = " + pledge.getPledgeStatus());
         }
         return pledge.getId() != null && pledge.getId() > 0 && Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus()) == false;
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updatePledgeForGift(Gift gift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updatePledgeForGift: gift.id = " + gift.getId());
+        }
+        updatePledgeStatusAmountPaid(gift.getDistributionLines());
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updatePledgeForAdjustedGift(AdjustedGift adjustedGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updatePledgeForAdjustedGift: adjustedGift.id = " + adjustedGift.getId());
+        }
+        updatePledgeStatusAmountPaid(adjustedGift.getDistributionLines());
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    private void updatePledgeStatusAmountPaid(List<DistributionLine> lines) {
+        Set<Long> pledgeIds = new HashSet<Long>();
+        if (lines != null) {
+            for (DistributionLine thisLine : lines) {
+                if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID))) {
+                    Long pledgeId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_PLEDGE_ID));
+                    pledgeIds.add(pledgeId);
+                }
+            }
+    
+            if (pledgeIds.isEmpty() == false) {
+                for (Long pledgeId : pledgeIds) {
+                    Pledge pledge = readPledgeById(pledgeId);
+                    if (pledge != null) {
+                        BigDecimal amountPaid = pledgeDao.readAmountPaidForPledgeId(pledgeId);
+                        setPledgeAmounts(pledge, amountPaid);
+                        setPledgeStatus(pledge);
+                        pledgeDao.maintainPledgeAmountPaidRemaining(pledge);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void setPledgeAmounts(Pledge pledge, BigDecimal amountPaid) {
+        if (amountPaid == null || amountPaid.compareTo(BigDecimal.ZERO) == -1) {
+            amountPaid = BigDecimal.ZERO;
+        }
+        pledge.setAmountPaid(amountPaid);
+
+        if (pledge.isRecurring() == false) {
+            if (pledge.getAmountTotal() != null) {
+                pledge.setAmountRemaining(pledge.getAmountTotal().subtract(pledge.getAmountPaid()));
+            }
+        }
+        else {
+            if (pledge.getAmountPerGift() != null) {
+                pledge.setAmountRemaining(pledge.getAmountPerGift().subtract(pledge.getAmountPaid()));
+            }
+        }
+    }
+    
+    private void setPledgeStatus(Pledge pledge) {
+        if (pledge.getAmountPaid() != null && pledge.getAmountTotal() != null) {
+            if (pledge.getAmountTotal().equals(pledge.getAmountPaid())) {
+                pledge.setPledgeStatus(Commitment.STATUS_FULFILLED);
+            }
+            else if (pledge.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                pledge.setPledgeStatus(Commitment.STATUS_IN_PROGRESS);
+            }
+        }
     }
 }

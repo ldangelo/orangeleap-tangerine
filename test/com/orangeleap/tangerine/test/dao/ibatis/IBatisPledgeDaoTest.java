@@ -332,21 +332,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         }
     }   
     
-    @Test(groups = { "testReadPledge" })
-    public void testReadAmountPaidForPledge() throws Exception {
-        List<Pledge> pledges = new ArrayList<Pledge>();
-        pledges.add(new Pledge(700L));
-        
-        pledgeDao.readAmountPaidForPledge(pledges);
-        assert new BigDecimal("119").compareTo(pledges.get(0).getAmountPaid()) == 0;
-        
-        pledges = new ArrayList<Pledge>();
-        pledges.add(new Pledge(600L));
-        
-        pledgeDao.readAmountPaidForPledge(pledges);
-        assert BigDecimal.ZERO.compareTo(pledges.get(0).getAmountPaid()) == 0;
-    }
-    
     private void testPledge(Pledge pledge) {
         switch (pledge.getId().intValue()) {
             case 600:

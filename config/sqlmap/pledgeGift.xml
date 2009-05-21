@@ -14,35 +14,24 @@
 		where pg.PLEDGE_ID = #pledgeId#
 	</select>
 
-	<select id="SELECT_PAID_AMOUNT_BY_PLEDGE_ID" parameterClass="map" resultClass="java.util.HashMap">
-		select pg.PLEDGE_ID as pledgeId, SUM(g.AMOUNT) as amountPaid
-		from GIFT g
-		inner join PLEDGE_GIFT pg on pg.GIFT_ID = g.GIFT_ID
-		inner join CONSTITUENT p on p.CONSTITUENT_ID = g.CONSTITUENT_ID 
-		where p.SITE_NAME = #siteName#
-		and pg.PLEDGE_ID IN 
-		<iterate property="pledges" conjunction="," open="(" close=")">
-			#pledges[].id#
-		</iterate>
-		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-		and g.GIFT_STATUS = 'Paid'
-		group by PLEDGE_ID
-	</select>
-	
-	<select id="SELECT_ADJUSTED_AMOUNT_BY_PLEDGE_ID" parameterClass="map" resultClass="java.util.HashMap">
-		select pg.PLEDGE_ID as pledgeId, SUM(ag.ADJUSTED_AMOUNT) as amountPaid
-		from ADJUSTED_GIFT ag
-		inner join GIFT g on g.GIFT_ID = ag.GIFT_ID
-		inner join PLEDGE_GIFT pg on pg.GIFT_ID = g.GIFT_ID
+	<select id="SELECT_AMOUNT_PAID_BY_PLEDGE_ID" parameterClass="map" resultClass="java.math.BigDecimal">
+		select sum(a.amount) as amountPaid from 
+		
+		(select dl.AMOUNT as amount, dl.DISTRO_LINE_ID as lineId
+		from DISTRO_LINE dl
+		inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME = 'associatedPledgeId' and cf.ENTITY_TYPE = 'distributionline' and cf.FIELD_VALUE = #pledgeId# 
+		inner join GIFT g on g.GIFT_ID = dl.GIFT_ID and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE != 'GIFT_IN_KIND'
 		inner join CONSTITUENT p on  p.CONSTITUENT_ID = g.CONSTITUENT_ID
 		where p.SITE_NAME = #siteName#
-		and pg.PLEDGE_ID IN 
-		<iterate property="pledges" conjunction="," open="(" close=")">
-			#pledges[].id#
-		</iterate>
-		and g.GIFT_TYPE != 'GIFT_IN_KIND'
-		and g.GIFT_STATUS = 'Paid'
-		group by PLEDGE_ID
+		
+		union 
+		
+		select dl.AMOUNT as amount, dl.DISTRO_LINE_ID as lineId
+		from DISTRO_LINE dl
+		inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME = 'associatedPledgeId' and cf.ENTITY_TYPE = 'distributionline' and cf.FIELD_VALUE = #pledgeId# 
+		inner join ADJUSTED_GIFT ag on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID and ag.ADJUSTED_STATUS = 'Paid'
+		inner join CONSTITUENT p on p.CONSTITUENT_ID = ag.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#) a
 	</select>
 
 	<insert id="INSERT_PLEDGE_GIFT" parameterClass="java.util.Map">

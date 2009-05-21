@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +25,7 @@ public interface PledgeDao {
 
 	public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo);
 	
-	public void readAmountPaidForPledge(List<Pledge> pledges);
+	public BigDecimal readAmountPaidForPledgeId(Long pledgeId);
+	
+	public void maintainPledgeAmountPaidRemaining(Pledge pledge);
 }

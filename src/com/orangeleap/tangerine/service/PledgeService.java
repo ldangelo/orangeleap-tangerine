@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -35,4 +37,8 @@ public interface PledgeService extends CommitmentService<Pledge> {
     public List<DistributionLine> findDistributionLinesForPledges(Set<String> pledgeIds);
     
     public boolean canApplyPayment(Pledge pledge);
+    
+    public void updatePledgeForGift(Gift gift);
+    
+    public void updatePledgeForAdjustedGift(AdjustedGift adjustedGift);
 }

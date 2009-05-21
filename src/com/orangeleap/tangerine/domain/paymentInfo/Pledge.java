@@ -17,6 +17,7 @@ public class Pledge extends Commitment {
     private boolean recurring = false;
     private Date projectedDate;
     private BigDecimal amountPaid;
+    private BigDecimal amountRemaining;
 
     public Pledge() {}
     
@@ -83,19 +84,14 @@ public class Pledge extends Commitment {
 
     @Override
     public BigDecimal getAmountRemaining() {
-        BigDecimal amountRemaining = null;
-        if (isRecurring() == false) {
-            amountRemaining = super.getAmountRemaining();
-        }
-        else {
-            if (getAmountPerGift() != null) {
-                amountRemaining = getAmountPerGift().subtract(getAmountPaid());
-                if (amountRemaining.compareTo(BigDecimal.ZERO) < 0) {
-                    amountRemaining = BigDecimal.ZERO;
-                }
-            }
-        }
         return amountRemaining;
+    }
+
+    public void setAmountRemaining(BigDecimal amountRemaining) {
+        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) < 0) {
+            amountRemaining = BigDecimal.ZERO;
+        }
+        this.amountRemaining = amountRemaining;
     }
 
     public String getShortDescription() {
@@ -121,15 +117,24 @@ public class Pledge extends Commitment {
     public void prePersist() {
         super.prePersist();
         
+        if (getAmountPaid() == null) {
+            setAmountPaid(BigDecimal.ZERO);
+        }
         if (isRecurring()) {
             setProjectedDate(null);
             setAmountTotal(null);
+            if (getAmountRemaining() == null) {
+                setAmountRemaining(getAmountPerGift());
+            }
         } 
         else {
             setStartDate(null);
             setEndDate(null);
             setAmountPerGift(null);
             setFrequency(null);
+            if (getAmountRemaining() == null) {
+                setAmountRemaining(getAmountTotal());
+            }
         }
     }
 

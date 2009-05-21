@@ -44,6 +44,18 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 
         return aPledge;
 	}
+	
+	/**
+	 * Updates the pledge AMOUNT_PAID and AMOUNT_REMAINING fields ONLY
+	 * @param pledge
+	 */
+	@Override
+	public void maintainPledgeAmountPaidRemaining(Pledge pledge) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainPledgeAmountPaidRemaining: pledgeId = " + pledge.getId() + " amountPaid = " + pledge.getAmountPaid() + " amountRemaining = " + pledge.getAmountRemaining());
+        }
+	    getSqlMapClientTemplate().update("UPDATE_PLEDGE_AMOUNT_PAID_REMAINING", pledge);
+	}
 
 	@Override
 	public Pledge readPledgeById(Long pledgeId) {
@@ -87,7 +99,6 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
 		params.put("constituentId", constituentId);
 
         List rows = getSqlMapClientTemplate().queryForList("SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED", params);
-        readAmountPaidForPledge(rows);
         Long count = (Long)getSqlMapClientTemplate().queryForObject("PLEDGES_BY_CONSTITUENT_ID_ROWCOUNT",params);
         PaginatedResult resp = new PaginatedResult();
         resp.setRows(rows);
@@ -139,36 +150,13 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         return getSqlMapClientTemplate().queryForList("SELECT_PLEDGE_GIFT_BY_PLEDGE_ID", paramMap);
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    public void readAmountPaidForPledge(List<Pledge> pledges) {
+    public BigDecimal readAmountPaidForPledgeId(Long pledgeId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAmountPaidForPledge:");
+            logger.trace("readAmountPaidForPledgeId: pledgeId = " + pledgeId);
         }
-        if (pledges != null) {
-            Map<String, Object> paramMap = setupParams();
-            paramMap.put("pledges", pledges);
-            
-            Map pledgePaidAmounts = getSqlMapClientTemplate().queryForMap("SELECT_PAID_AMOUNT_BY_PLEDGE_ID", paramMap, "pledgeId", "amountPaid"); 
-            Map pledgeAdjustedAmounts = getSqlMapClientTemplate().queryForMap("SELECT_ADJUSTED_AMOUNT_BY_PLEDGE_ID", paramMap, "pledgeId", "amountPaid");
-            
-            for (Pledge thisPledge : pledges) {
-                BigDecimal paidAmount = null;
-                BigDecimal adjustedAmount = null;
-                if (pledgePaidAmounts != null && pledgePaidAmounts.containsKey(thisPledge.getId())) {
-                    paidAmount = (BigDecimal)pledgePaidAmounts.get(thisPledge.getId());
-                }
-                if (pledgeAdjustedAmounts != null && pledgeAdjustedAmounts.containsKey(thisPledge.getId())) {
-                    adjustedAmount = (BigDecimal)pledgeAdjustedAmounts.get(thisPledge.getId());
-                }
-                if (paidAmount == null) {
-                    paidAmount = BigDecimal.ZERO;
-                }
-                if (adjustedAmount == null) {
-                    adjustedAmount = BigDecimal.ZERO;
-                }
-                thisPledge.setAmountPaid(paidAmount.add(adjustedAmount));
-            }
-        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("pledgeId", pledgeId);
+        return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_AMOUNT_PAID_BY_PLEDGE_ID", paramMap);
     }
 }

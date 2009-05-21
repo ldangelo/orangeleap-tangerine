@@ -98,6 +98,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        maintainEntityChildren(gift, gift.getPerson());
 	        setDefaultDates(gift);
 	        gift = giftDao.maintainGift(gift);
+	        pledgeService.updatePledgeForGift(gift);
 	        if (!reentrant) {
 	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
 	        }
@@ -144,6 +145,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        
 	        maintainEntityChildren(gift, gift.getPerson());
 	        gift = giftDao.maintainGift(gift);
+            pledgeService.updatePledgeForGift(gift);
 	        if (!reentrant) {
 	        	routeGift(gift);
 	        }

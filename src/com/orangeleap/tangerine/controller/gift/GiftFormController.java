@@ -41,9 +41,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-        return giftService.readGiftByIdCreateIfNull(super.getConstituent(request), request.getParameter(StringConstants.GIFT_ID), 
-                request.getParameter(StringConstants.RECURRING_GIFT_ID));
+        return giftService.createDefaultGift(super.getConstituent(request));
     }
 
     @SuppressWarnings("unchecked")

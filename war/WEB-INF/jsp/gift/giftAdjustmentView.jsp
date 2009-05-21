@@ -21,6 +21,8 @@
 			</c:if>
 
 			<form:form method="post" commandName="adjustedGift">
+				<spring:message code='adjustGift' var="submitText" />
+
 				<c:if test="${hideAdjustGiftButton == false}">
 					<spring:message code='enterNewAdjustment' var="newAdjustText" />
 				</c:if>
@@ -28,6 +30,7 @@
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
                     <jsp:param name="routeButtonText" value="${newAdjustText}" />
 					<jsp:param name="routeUrl" value="giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}" />
+					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -100,6 +103,7 @@
 					<c:if test="${hideAdjustGiftButton == false}">
 					    <input type="button" value="<c:out value='${newAdjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${adjustedGift.originalGiftId}&personId=${person.id}')"/>
 					</c:if>
+					<input type="submit" value="<spring:message code='adjustGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
 					</c:if>

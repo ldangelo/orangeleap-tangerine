@@ -53,7 +53,10 @@
     </bean>
     
     <bean id="giftAdjustmentViewController" class="com.orangeleap.tangerine.controller.gift.GiftAdjustmentViewController">
-    	<property name="viewName" value="gift/giftAdjustmentView"/>
+        <property name="commandName" value="adjustedGift"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift"/>
+        <property name="formView" value="gift/giftAdjustmentView"/>
+        <property name="successView" value="redirect:/giftAdjustmentView.htm"/>
     </bean>
 
     <bean id="giftSearchController" class="com.orangeleap.tangerine.controller.gift.GiftSearchFormController">

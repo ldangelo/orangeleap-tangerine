@@ -116,6 +116,42 @@ $(document).ready(function() {
 		}
 		target.prevAll("label.desc").removeClass("inFocus");
 	});
+	
+	(function focusFirst() {
+		var formLen = document.forms.length;
+		if (formLen > 0) {
+			var isFound = false;
+			for (var y = 0; y < formLen; y++) {
+				var thisForm = document.forms[y];
+				if (thisForm.id != "searchForm") {
+					var $elems = $("input, select, textarea, a.lookupLink, a.hideText", $(thisForm));
+					if ($elems && $elems.length > 0) {
+						var elemLen = $elems.length;
+						for (var x = 0; x < elemLen; x++) {
+							var thisElem = $elems[x];
+							if (!thisElem.disabled) {
+								if (thisElem.tagName.toLowerCase() == "input") {
+									if (thisElem.type != "hidden" && thisElem.type != "submit" && thisElem.type != "button" && thisElem.type != "reset") {
+										thisElem.focus();
+										isFound = true;
+										break;
+									}
+								}
+								else {
+									thisElem.focus();
+									isFound = true;
+									break;
+								}
+							}
+						}
+						if (isFound) {
+							break;
+						}
+					}
+				}		
+			}
+		}
+	})();
 });
 function saveInPlace(elem, baseUrl) {
 	var queryString = $(elem).parent().parent().find("input").serialize();

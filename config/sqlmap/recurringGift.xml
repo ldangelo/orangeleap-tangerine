@@ -77,9 +77,31 @@
 	</select>
 	
 	<select id="SELECT_RECURRING_GIFTS_BY_CONSTITUENT_ID_PAGINATED" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
-		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />
+		select 
+		<include refid="RECURRING_GIFT_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />	,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />,
+		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+		
+		from RECURRING_GIFT rg
+		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on rg.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
+		left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
+		left outer join DISTRO_LINE dl on rg.RECURRING_GIFT_ID = dl.RECURRING_GIFT_ID
+
+		where
+		p.SITE_NAME= #siteName#
 		and rg.CONSTITUENT_ID = #constituentId#
-		order by $sortColumn$ $sortDir$
+
+		order by 
+		isnull ASC,
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 	
@@ -87,9 +109,6 @@
         <include refid="RECURRING_GIFT_ROWCOUNT_FRAGMENT"/>
 		and rg.CONSTITUENT_ID = #constituentId#
     </select>
-	
-	
-	
 
 	<select id="SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE" resultMap="RECURRING_GIFT_RESULT" parameterClass="map">
 		<include refid="SELECT_RECURRING_GIFT_FRAGMENT" />

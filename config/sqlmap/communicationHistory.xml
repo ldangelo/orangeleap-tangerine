@@ -45,8 +45,6 @@
 		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
         where p.SITE_NAME = #siteName#
     </sql>
-	
-	
 
 	<select id="SELECT_COMMUNICATION_HISTORY_BY_ID" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
 		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
@@ -59,9 +57,29 @@
 	</select>
 	
 	<select id="SELECT_COMMUNICATION_HISTORY_FOR_CONSTITUENT_ID_PAGINATED" resultMap="COMMUNICATION_HISTORY_RESULT" parameterClass="map">
-		<include refid="SELECT_COMMUNICATION_HISTORY_FRAGMENT" />
+		select
+		ch.COMMUNICATION_HISTORY_ID, ch.COMMUNICATION_TYPE, ch.ENTRY_TYPE, ch.CREATE_DATE, ch.RECORD_DATE,
+		ch.SYSTEM_GENERATED, ch.UPDATE_DATE, ch.COMMENTS, ch.GIFT_ID, ch.PLEDGE_ID, ch.RECURRING_GIFT_ID,
+
+		<include refid="ADDRESS_COLS_FRAGMENT" />,
+		<include refid="PHONE_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+
+		from COMMUNICATION_HISTORY ch
+		inner join CONSTITUENT p on ch.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on ch.EMAIL_ID = e.EMAIL_ID
+		left outer join PHONE ph on ch.PHONE_ID = ph.PHONE_ID
+		left outer join ADDRESS addr on ch.ADDRESS_ID = addr.ADDRESS_ID
+
+		where
+		p.SITE_NAME= #siteName#
 		and ch.CONSTITUENT_ID = #constituentId#
-		order by $sortColumn$ $sortDir$
+
+		order by 
+		isnull ASC,
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 	
@@ -69,8 +87,6 @@
         <include refid="COMMUNICATION_HISTORY_ROWCOUNT_FRAGMENT"/>
 		and ch.CONSTITUENT_ID = #constituentId#
     </select>
-	
-	
 
 	<insert id="INSERT_COMMUNICATION_HISTORY" parameterClass="com.orangeleap.tangerine.domain.CommunicationHistory">
 		insert into COMMUNICATION_HISTORY (COMMUNICATION_TYPE, ENTRY_TYPE, CREATE_DATE,

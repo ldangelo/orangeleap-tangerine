@@ -81,9 +81,25 @@
 	</select>
 	
 	<select id="SELECT_PLEDGES_BY_CONSTITUENT_ID_PAGINATED" resultMap="PLEDGE_RESULT" parameterClass="map">
-		<include refid="SELECT_PLEDGE_FRAGMENT_BY_SITE" />
+		select
+		<include refid="PLEDGE_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="DISTRO_LINE_COLS_FRAGMENT" />, 
+		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+
+		from PLEDGE c
+		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
+		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
+		
+		where
+		p.SITE_NAME= #siteName#
 		and c.CONSTITUENT_ID = #constituentId#
-		order by $sortColumn$ $sortDir$
+		
+		order by 
+		isnull ASC,
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 	

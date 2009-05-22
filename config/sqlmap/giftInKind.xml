@@ -68,9 +68,24 @@
 	</select>
 	
 	<select id="SELECT_GIFTS_IN_KIND_BY_CONSTITUENT_ID_PAGINATED" resultMap="GIFT_IN_KIND_RESULT" parameterClass="map">
-		<include refid="GIFT_IN_KIND_QUERY_FRAGMENT" />
+		select
+		<include refid="GIFT_IN_KIND_COLS_FRAGMENT" />,
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		<include refid="EMAIL_COLS_FRAGMENT" />,
+		<include refid="GIFT_IN_KIND_DETAIL_COLS_FRAGMENT" />,
+		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+		
+		from GIFT_IN_KIND gik
+		inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
+		left outer join EMAIL e on gik.EMAIL_ID = e.EMAIL_ID
+		left outer join GIFT_IN_KIND_DETAIL gikd on gik.GIFT_IN_KIND_ID = gikd.GIFT_IN_KIND_ID
+		
+		where p.SITE_NAME = #siteName#
 		and gik.CONSTITUENT_ID = #constituentId#
-		order by $sortColumn$ $sortDir$
+
+		order by
+		isnull ASC, 
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 	
@@ -78,8 +93,6 @@
         <include refid="GIFTS_IN_KIND_ROWCOUNT_FRAGMENT"/>
 		and gik.CONSTITUENT_ID = #constituentId#
     </select>
-	
-	
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
 		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, OTHER_MOTIVATION, 

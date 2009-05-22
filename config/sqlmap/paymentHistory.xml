@@ -35,7 +35,20 @@
 		inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
         where p.SITE_NAME = #siteName#
     </sql>
-	
+
+	<sql id="SELECT_SORT_NULL_LAST_PAYMENT_HISTORY_FRAGMENT">
+		select
+		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
+		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
+		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
+		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
+		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
+
+		from PAYMENT_HISTORY phis
+		inner join CONSTITUENT p on phis.CONSTITUENT_ID = p.CONSTITUENT_ID
+		where
+		p.SITE_NAME= #siteName#
+	</sql>
 
 	<select id="SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
 		<include refid="SELECT_PAYMENT_HISTORY_FRAGMENT" />
@@ -44,9 +57,12 @@
 	</select>
 	
 	<select id="SELECT_PAYMENT_HISTORY_FOR_CONSTITUENT_ID_PAGINATED" resultMap="PAYMENT_HISTORY_RESULT" parameterClass="map">
-		<include refid="SELECT_PAYMENT_HISTORY_FRAGMENT" />
+		<include refid="SELECT_SORT_NULL_LAST_PAYMENT_HISTORY_FRAGMENT" />
 		and p.CONSTITUENT_ID = #constituentId#
-		order by $sortColumn$ $sortDir$
+
+		order by
+		isnull ASC, 
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 
@@ -56,8 +72,11 @@
 	</select>
 	
 	<select id="SELECT_PAYMENT_HISTORY_FOR_SITE_PAGINATED" resultMap="PAYMENT_HISTORY_RESULT"	parameterClass="map">
-		<include refid="SELECT_PAYMENT_HISTORY_FRAGMENT" />
-		order by $sortColumn$ $sortDir$
+		<include refid="SELECT_SORT_NULL_LAST_PAYMENT_HISTORY_FRAGMENT" />
+
+		order by 
+		isnull ASC, 
+		$sortColumn$ $sortDir$
         limit $offset$,$limit$
 	</select>
 	

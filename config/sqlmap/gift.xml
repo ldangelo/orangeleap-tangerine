@@ -233,6 +233,7 @@
 	
 	<statement id="SELECT_GIFT_BY_SEARCH_TERMS" resultMap="GIFT_RESULT" parameterClass="map">
 		<include refid="GIFT_QUERY_FRAGMENT"/>
+		and g.GIFT_TYPE != 'GIFT_IN_KIND'
 		<isNotNull property="stringParams"> 
 		   <iterate property="stringParams" conjunction="and" open="and" close="">
 		   g.$stringParams[].key$ like #stringParams[].value#

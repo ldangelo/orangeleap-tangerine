@@ -38,8 +38,6 @@ import com.orangeleap.tangerine.service.ConstituentService;
 public class MailService {
 	protected final Log logger = LogFactory.getLog(getClass());
 	private JServer jserver = null;
-	private String userName = null;
-	private String password = null;
 	private String uri = null;
 	private String templateName = null;
 	private String labelTemplateName = null;
@@ -58,8 +56,8 @@ public class MailService {
 	private File runReport() {
 		File temp = null;
 		jserver = new JServer();
-		jserver.setUsername(userName);
-		jserver.setPassword(password);
+		jserver.setUsername(site.getJasperUserId());
+		jserver.setPassword(site.getJasperPassword());
 		jserver.setUrl(uri);
 		try {
 			WSClient client = jserver.getWSClient();
@@ -89,8 +87,8 @@ public class MailService {
 	private File runLabels() {
 		File temp = null;
 		jserver = new JServer();
-		jserver.setUsername(userName);
-		jserver.setPassword(password);
+		jserver.setUsername(site.getJasperUserId());
+		jserver.setPassword(site.getJasperPassword());
 		jserver.setUrl(uri);
 		try {
 			WSClient client = jserver.getWSClient();
@@ -270,22 +268,6 @@ public class MailService {
 
 	private JServer getServer() {
 		return jserver;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getUri() {

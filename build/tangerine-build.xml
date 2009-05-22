@@ -64,6 +64,12 @@
 			debug="${debug.compile}" classpathref="compile.path"/> <!-- compile.path is set in ivyBuild.xml -->
 	</target>
 
+	<target name="generate.schema">
+		<schemagen srcdir="${src.dir}" destdir="build/schemas" classpath="${compile.path}">
+			<include name="**/Person.java"/>
+		</schemagen>
+	</target>
+			
 	<target name="setup-war">
 		<mkdir dir="${stage.dir}/war" />
 		<mkdir dir="${stage.dir}/war/META-INF" />

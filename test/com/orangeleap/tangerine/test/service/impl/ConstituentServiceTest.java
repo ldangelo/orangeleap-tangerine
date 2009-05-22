@@ -25,7 +25,7 @@ public class ConstituentServiceTest extends BaseTest {
 	    	p.setConstituentType("individual");
 	    
 	    	try {
-	    	constituentService.maintainConstituent(p);
+	    		constituentService.maintainConstituent(p);
 	    	} catch (ConstituentValidationException ex) {
 	    		assert true;
 	    		return;

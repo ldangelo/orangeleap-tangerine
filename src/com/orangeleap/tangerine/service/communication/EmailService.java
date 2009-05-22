@@ -24,6 +24,9 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -40,9 +43,10 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 //@Service("emailSendingService")
-public class EmailService {
+public class EmailService implements ApplicationContextAware {
 	protected final Log logger = LogFactory.getLog(getClass());
 	private JServer jserver = null;
 	private String userName = null;
@@ -53,14 +57,15 @@ public class EmailService {
 	private CommunicationHistoryService communicationHistoryService;
 	private java.util.Map map = new HashMap();
 	private Site site;
-	
+	private ApplicationContext applicationContext;
 	private JasperPrint print;
 
 	private File runReport() {
 		File temp = null;
+		TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		jserver = new JServer();
-		jserver.setUsername(userName);
-		jserver.setPassword(password);
+		jserver.setUsername(tuh.lookupUserName() + "@" + site.getName());
+		jserver.setPassword(tuh.lookupUserPassword());
 		jserver.setUrl(uri);
 		try {
 			WSClient client = jserver.getWSClient();
@@ -142,6 +147,11 @@ public class EmailService {
 		// message
 		JavaMailSenderImpl sender = new JavaMailSenderImpl();
 		sender.setHost(site.getSmtpServerName());
+		
+		if (site.getSmtpAccountName() != null)
+			sender.setUsername(site.getSmtpAccountName());
+		if (site.getSmtpPassword() != null)
+			sender.setPassword(site.getSmtpPassword());
 		
 		MimeMessage message = sender.createMimeMessage();
 		MimeMessageHelper helper;
@@ -297,5 +307,12 @@ public class EmailService {
 	public void setCommunicationHistoryService(
 			CommunicationHistoryService communicationHistoryService) {
 		this.communicationHistoryService = communicationHistoryService;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
+		
 	}
 }

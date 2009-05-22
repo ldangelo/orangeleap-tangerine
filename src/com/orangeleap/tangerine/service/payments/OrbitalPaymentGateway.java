@@ -162,11 +162,13 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
+			gift.setGiftStatus("Paid");
 			gift.setPaymentStatus("Approved");
 //			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
 		} else {
+			gift.setGiftStatus("Not Paid");
 			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
@@ -277,9 +279,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
+			gift.setGiftStatus("Paid");
 			gift.setPaymentStatus("Approved");
 			gift.setPaymentMessage(response.getMessage());
 		} else {
+			gift.setGiftStatus("Not Paid");
 			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
 		}
@@ -360,9 +364,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
+			gift.setGiftStatus("Paid");
 			gift.setPaymentStatus("Approved");
 			gift.setPaymentMessage(response.getMessage());
 		} else {
+			gift.setGiftStatus("Not Paid");
 			gift.setPaymentStatus("Declined");
 			gift.setPaymentMessage(response.getMessage());
 		}

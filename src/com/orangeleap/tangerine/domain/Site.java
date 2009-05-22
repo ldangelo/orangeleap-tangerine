@@ -51,6 +51,8 @@ public class Site implements Serializable {
     private String  smtpPassword;
     private String  smtpFromAddress;
     private Integer majorDonorAccountManagerId;
+    private String  jasperUserId;
+    private String  jasperPassword;
     
     public Locale getLocale() {
     	return localeString == null?Locale.getDefault():new Locale(localeString);
@@ -230,6 +232,22 @@ public class Site implements Serializable {
 
 	public void setMerchantTerminalId(String merchantTerminalId) {
 		this.merchantTerminalId = merchantTerminalId;
+	}
+
+	public String getJasperUserId() {
+		return jasperUserId;
+	}
+
+	public void setJasperUserId(String jasperUserId) {
+		this.jasperUserId = jasperUserId;
+	}
+
+	public String getJasperPassword() {
+		return jasperPassword;
+	}
+
+	public void setJasperPassword(String jasperPassword) {
+		this.jasperPassword = jasperPassword;
 	}
 
 

@@ -88,7 +88,7 @@ public class Person extends AbstractCommunicatorEntity {
     private String maritalStatus = "Unknown";
     private String preferredPhoneType;
     private String loginId;
-    private String accountNumber;
+    private Long accountNumber;
     private Boolean byPassDuplicateDetection = false;
     
     private List<Gift> gifts;
@@ -468,11 +468,11 @@ public class Person extends AbstractCommunicatorEntity {
         return INDIVIDUAL.equals(getConstituentType());
     }
 
-    public String getAccountNumber() {
+    public Long getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(String accountNumber) {
+    public void setAccountNumber(Long accountNumber) {
         this.accountNumber = accountNumber;
     }
     

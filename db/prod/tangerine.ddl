@@ -64,7 +64,7 @@ DROP TABLE IF EXISTS `CONSTITUENT`;
 
 CREATE TABLE `CONSTITUENT` (
   `CONSTITUENT_ID` bigint(20) NOT NULL auto_increment,
-  `ACCOUNT_NUMBER` varchar(255) default NULL,
+  `ACCOUNT_NUMBER` bigint(20) default NULL,
   `CONSTITUENT_TYPE` varchar(255) default NULL,
   `FIRST_NAME` varchar(255) default NULL,
   `LAST_NAME` varchar(255) default NULL,

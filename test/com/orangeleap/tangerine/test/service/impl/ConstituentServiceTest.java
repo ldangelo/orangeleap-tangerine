@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.test.BaseTest;
 
@@ -19,7 +18,7 @@ public class ConstituentServiceTest extends BaseTest {
 	    private ConstituentService constituentService;
 	    
 	    @Test
-	    public void testDuplicatPerson() throws Exception {
+	    public void testDuplicatePerson() throws Exception {
 	    	Person p = constituentService.createDefaultConstituent();
 	    	p.setFirstName("Pablo");
 	    	p.setLastName("Picasso");

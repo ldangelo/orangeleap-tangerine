@@ -19,7 +19,7 @@
 		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="VARCHAR" />
+		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="BIGINT" />
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
 
 	</resultMap>
@@ -84,7 +84,7 @@
         <include refid="CONSTITUENT_COLS_FRAGMENT"/>
         from CONSTITUENT p
         where p.SITE_NAME = #siteName#
-        and STRCMP(p.ACCOUNT_NUMBER,#fromId#) &gt;= 0 and STRCMP(p.ACCOUNT_NUMBER,#toId#) &lt;=0
+        and p.ACCOUNT_NUMBER &gt;= #fromId# and p.ACCOUNT_NUMBER &lt;= #toId# 
         order by p.ACCOUNT_NUMBER
         limit 5001
     </select>

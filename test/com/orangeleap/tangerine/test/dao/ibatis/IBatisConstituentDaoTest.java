@@ -34,7 +34,8 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert "Billy".equals(constituent.getFirstName());
         assert constituent.getMiddleName() == null;
         assert constituent.getSuffix() == null;
-        assert "company1".equals(constituent.getSite().getName());        
+        assert "company1".equals(constituent.getSite().getName());    
+        assert 1000000L == constituent.getAccountNumber();
     }
     
     public static void testConstituentId200(Person constituent) {
@@ -45,6 +46,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert constituent.getMiddleName() == null;
         assert "Sr".equals(constituent.getSuffix());
         assert "company1".equals(constituent.getSite().getName());
+        assert 2000000L == constituent.getAccountNumber();
     }
 
     public static void testConstituentId300(Person constituent) {
@@ -55,6 +57,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert constituent.getMiddleName() == null;
         assert constituent.getSuffix() == null;
         assert "company1".equals(constituent.getSite().getName());
+        assert 3000000L == constituent.getAccountNumber();
     }
 
     @Test(groups = { "testMaintainConstituent" }, dependsOnGroups = { "testReadConstituent" })
@@ -66,6 +69,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         constituent.setSite(new Site("company1"));
         constituent.setConstituentType(Person.INDIVIDUAL);
         constituent.setTitle("Sir");
+        constituent.setAccountNumber(4000000L);
         
         constituent = constituentDao.maintainConstituent(constituent);
         assert constituent.getId() > 0;
@@ -77,6 +81,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert constituent.getSite().getName().equals(readConstituent.getSite().getName());
         assert constituent.getConstituentType().equals(readConstituent.getConstituentType());
         assert constituent.getTitle().equals(readConstituent.getTitle());
+        assert constituent.getAccountNumber().equals(readConstituent.getAccountNumber());
         
         assert StringConstants.EMPTY.equals(readConstituent.getConstituentIndividualRoles());
         assert StringConstants.EMPTY.equals(readConstituent.getConstituentOrganizationRoles());
@@ -101,6 +106,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent != null;
         assert "Lady".equals(readConstituent.getTitle());
         assert "joe@bob.com".equals(readConstituent.getLoginId());
+        assert 4000000L == readConstituent.getAccountNumber();
         assert readConstituent.getNcaisCode() == null;
         
         assert constituent.getFirstName().equals(readConstituent.getFirstName());
@@ -210,5 +216,25 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     	}
     }
     
- 
+    @Test(groups = { "testSearchPersons" })
+    public void testReadAllConstituentsByIdRange() throws Exception {
+        List<Person> constituents = constituentDao.readAllConstituentsByIdRange("1000000", "2000000");
+        assert constituents.size() == 2;
+        for (Person constituent : constituents) {
+            assert constituent.getId() == 100L || constituent.getId() == 200L;
+        }
+
+        constituents = constituentDao.readAllConstituentsByIdRange("1000001", "1000001");
+        assert constituents.isEmpty();
+
+        constituents = constituentDao.readAllConstituentsByIdRange("1000000", "1000000");
+        assert constituents.size() == 1;
+        assert constituents.get(0).getId() == 100L;
+
+        constituents = constituentDao.readAllConstituentsByIdRange("1000000", "3000000");
+        assert constituents.size() == 3;
+        for (Person constituent : constituents) {
+            assert constituent.getId() == 100L || constituent.getId() == 200L || constituent.getId() == 300L;
+        }
+    }
 }

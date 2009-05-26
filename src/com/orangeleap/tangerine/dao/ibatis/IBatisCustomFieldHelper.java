@@ -189,7 +189,6 @@ public class IBatisCustomFieldHelper {
  
         // Only need to maintain the adds and deletes. Keep the existing date ranges on the unchanged ones.
         for (CustomField cf : deletes) {
-        	deleteCCRs(cf);
         	deleteCustomField(cf);
         }
         
@@ -202,20 +201,6 @@ public class IBatisCustomFieldHelper {
         	addCustomField(cf, allOldCustomFields, isSingleValuedAndDateRanged);
         }
     	
-    }
-    
-    private void deleteCCRs(CustomField cf) {
-    	if (!cf.getEntityType().equals("person")) return;
-    	// Will not delete orphans if id doesn't use the standard pattern - ideally should convert to use numeric id in DATA_TYPE
-    	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId("person.customFieldMap["+cf.getName()+"]"); 
-    	if (masterFieldDefinitionId != null  && StringUtils.trimToNull(cf.getValue()) != null)  {
-    		try {
-    			constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(cf.getEntityId(), masterFieldDefinitionId, cf.getValue(), cf.getStartDate());
-    			constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(new Long(cf.getValue()), masterFieldDefinitionId, ""+cf.getEntityId(), cf.getStartDate());
-    		} catch (Exception e) {
-    			// reverse link may not exist
-    		}
-    	}
     }
     
     

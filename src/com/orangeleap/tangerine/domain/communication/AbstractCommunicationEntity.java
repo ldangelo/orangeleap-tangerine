@@ -27,7 +27,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     private boolean undeliverable = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
-    protected Date effectiveDate; 
+    protected Date effectiveDate = new java.util.Date(); 
     protected boolean userCreated = false;
 
     public Long getPersonId() {

@@ -73,7 +73,7 @@ public class RelationshipListController extends SimpleFormController {
 			String fieldDefinitionid = fd.getId();
 			List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fieldDefinitionid);
 			List<FieldRelationship> frdetail = fieldDao.readDetailFieldRelationships(fieldDefinitionid);
-			if (frmaster.size() > 0 || frdetail.size() > 0) {
+			if (frmaster.size() > 0 || (sPersonId != null && frdetail.size() > 0)) {
 				fds.add(fd);
 			}
 		}

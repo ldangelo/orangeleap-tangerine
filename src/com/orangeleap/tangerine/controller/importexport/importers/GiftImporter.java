@@ -91,7 +91,14 @@ public class GiftImporter extends EntityImporter {
 		
 		mapValuesToObject(values, gift);
 		
-		if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) gift.setGiftStatus("Processed");
+		if (
+				PaymentSource.CASH.equals(paymentType) ||
+				PaymentSource.CHECK.equals(paymentType)
+		) {
+			if (gift.getGiftStatus() == null || gift.getGiftStatus().length() == 0) {
+				gift.setGiftStatus("Processed");
+			}
+		}
 		
 		DistributionLine dl = new DistributionLine();
 		dl.setAmount(gift.getAmount());

@@ -22,6 +22,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
     private BigDecimal amount;
     private String currencyCode;
     private String paymentType = PaymentSource.CREDIT_CARD;
+    private String paymentStatus;
     // CC# and ACH# must be stored in masked format
     private String description = StringConstants.EMPTY;
     private Person person;
@@ -100,6 +101,14 @@ public class PaymentHistory implements GeneratedId, Serializable {
 		return currencyCode;
 	}
 
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
     public void setPaymentHistoryType(PaymentHistoryType paymentHistoryType) {
 		this.paymentHistoryType = paymentHistoryType;
 	}
@@ -133,7 +142,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
         return new ToStringCreator(this).append("id", id).append("paymentHistoryType", paymentHistoryType).
             append(super.toString()).append("transactionId", transactionId).append("transactionDate", transactionDate).
             append(super.toString()).append("amount", amount).append("currencyCode", currencyCode).
-            append(super.toString()).append("paymentType", paymentType).append("description", description).
+            append(super.toString()).append("paymentType", paymentType).append("paymentStatus", paymentStatus).append("description", description).
             append(super.toString()).append("person", person).
             toString();
     }

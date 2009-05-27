@@ -27,7 +27,6 @@
 	<import resource="contexts/picklist-context.xml"/>
 	<import resource="contexts/phone-context.xml"/>
 	<import resource="contexts/pledge-context.xml"/>
-	<import resource="contexts/quartz-context.xml"/>
 	<import resource="contexts/recurringGift-context.xml"/>
 	<import resource="contexts/emailsending-context.xml"/>
 	<import resource="contexts/relationship-context.xml"/>

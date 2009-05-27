@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
@@ -93,7 +94,9 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
 
         recurringGift.setAutoPay(true);
-        if (recurringGift.getNextRunDate() == null && recurringGift.getRecurringGiftStatus().equals(recurringGift.STATUS_ACTIVE)) recurringGift.setNextRunDate(recurringGift.getStartDate());
+        if (recurringGift.getNextRunDate() == null && recurringGift.getRecurringGiftStatus().equals(recurringGift.STATUS_ACTIVE)) {
+            recurringGift.setNextRunDate(recurringGift.getStartDate());
+        }
 
 
         recurringGift.filterValidDistributionLines();
@@ -221,7 +224,6 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    // TODO: fix IBatisRecurringDao Status, map to RecurringStatus, fix in general
     public void processRecurringGifts() {
         if (logger.isTraceEnabled()) {
             logger.trace("processRecurringGifts:");
@@ -234,18 +236,20 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                 if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
                     createAutoGift(recurringGift);
                     nextDate = getNextGiftDate(recurringGift);
-                    if (nextDate != null) {
 
+                    if (nextDate != null) {
                         recurringGift.setNextRunDate(nextDate);
                         recurringGiftDao.maintainRecurringGift(recurringGift);
                     }
                 }
-                // TODO: is this necessary?
-//                if (nextDate == null) {
-//                    recurringGiftDao.removeRecurringGift(recurringGift);
-//                    recurringGift = null;
-//                }
             }
         }
+    }
+
+    protected void createAutoGift(RecurringGift recurringGift) {
+        Gift gift = new Gift(recurringGift);
+//        commitment.addGift(gift);
+        gift = giftService.maintainGift(gift);
+        recurringGift.setLastEntryDate(gift.getTransactionDate());
     }
 }

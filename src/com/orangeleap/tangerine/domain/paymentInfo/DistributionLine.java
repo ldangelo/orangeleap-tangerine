@@ -33,10 +33,11 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.other_motivationCode = other_motivationCode;
     }
     
-    public DistributionLine(DistributionLine otherLine, Long giftId) {
+    public DistributionLine(DistributionLine otherLine, RecurringGift recurringGift) {
         this(otherLine.getAmount(), otherLine.getPercentage(), otherLine.getProjectCode(), otherLine.getMotivationCode(), otherLine.getOther_motivationCode());
         this.person = otherLine.getPerson();
-        this.giftId = giftId;
+        setCustomFieldMap(otherLine.getCustomFieldMap());
+        setCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID, recurringGift.getId().toString());
     }
 
     public DistributionLine(Person person) {

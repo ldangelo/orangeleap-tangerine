@@ -65,7 +65,7 @@ public class GiftImporter extends EntityImporter {
         }
 		logger.debug("Importing gift for constituent "+id+"...");
 		
-		Gift gift = giftservice.readGiftByIdCreateIfNull(constituent, null, null);
+		Gift gift = giftservice.readGiftByIdCreateIfNull(constituent, null);
 		
 		mapValuesToObject(values, gift);
 		

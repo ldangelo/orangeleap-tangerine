@@ -6,12 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -23,7 +20,7 @@ public interface GiftService {
     
     public Gift readGiftById(Long giftId);
 
-    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId);
+    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId);
 
     public List<Gift> readMonetaryGifts(Person constituent);
 
@@ -38,8 +35,6 @@ public interface GiftService {
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
     public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent);
-
-    public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType);
 
     public List<Gift> readGiftsByRecurringGiftId(RecurringGift recurringGift);
 

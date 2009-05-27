@@ -48,6 +48,11 @@ public class Gift extends AbstractPaymentInfoEntity {
         this();
         setGiftForGiftInKind(giftInKind);
     }
+    
+    public Gift(RecurringGift recurringGift) {
+        this();
+        setGiftForRecurringGift(recurringGift);
+    }
 
     public String getGiftStatus() {
         return giftStatus;
@@ -224,6 +229,35 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.transactionDate = giftInKind.getTransactionDate();
         this.person = giftInKind.getPerson();
         this.selectedEmail = giftInKind.getSelectedEmail();
+	}
+	
+	public void setGiftForRecurringGift(RecurringGift recurringGift) {
+        this.setPerson(recurringGift.getPerson());
+        this.addAssociatedRecurringGiftId(recurringGift.getId());
+
+        this.setComments(recurringGift.getComments());
+        this.setAmount(recurringGift.getAmountPerGift());
+        this.setPaymentType(recurringGift.getPaymentType());
+        this.setGiftType(GiftType.MONETARY_GIFT);
+        this.setEntryType(GiftEntryType.AUTO);
+        this.setGiftStatus(Commitment.STATUS_PENDING);
+        
+        if (recurringGift.getDistributionLines() != null) {
+            List<DistributionLine> list = new ArrayList<DistributionLine>();
+            for (DistributionLine oldLine : recurringGift.getDistributionLines()) {
+                DistributionLine newLine = new DistributionLine(oldLine, recurringGift);
+                list.add(newLine);
+            }
+            this.setDistributionLines(list);
+        }
+        this.setAcknowledgmentDate(recurringGift.getAcknowledgmentDate());
+        this.setSendAcknowledgment(recurringGift.isSendAcknowledgment());
+        this.setCurrencyCode(recurringGift.getCurrencyCode());
+        
+        this.setSelectedPaymentSource(recurringGift.getSelectedPaymentSource());
+        this.setSelectedAddress(recurringGift.getSelectedAddress());
+        this.setSelectedPhone(recurringGift.getSelectedPhone());
+        this.setSelectedEmail(recurringGift.getSelectedEmail());
 	}
 	
 	public String getShortDescription() {

@@ -41,6 +41,7 @@ public class PaymentHistoryListController {
         NAME_MAP.put("personid", "phis.PERSON_ID");
         NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
         NAME_MAP.put("paymenttype", "phis.PAYMENT_TYPE");
+        NAME_MAP.put("paymentstatus", "phis.PAYMENT_STATUS");
         NAME_MAP.put("description", "phis.PAYMENT_DESC");
         NAME_MAP.put("amount", "phis.AMOUNT");
         NAME_MAP.put("currencycode", "phis.CURRENCY_CODE");
@@ -56,6 +57,7 @@ public class PaymentHistoryListController {
         map.put("personid", ph.getPerson().getId());
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymenttype", ph.getPaymentType());
+        map.put("paymentstatus", ph.getPaymentStatus());
         map.put("description", ExtUtil.scrub(ph.getDescription()));
         map.put("amount", ph.getAmount());
         map.put("currencycode", ph.getCurrencyCode());

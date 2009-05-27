@@ -29,6 +29,18 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
     public IBatisRecurringGiftDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
     }
+    
+    private void loadCustomFieldsForEntities(RecurringGift recurringGift) {
+        if (recurringGift != null) {
+            loadDistributionLinesCustomFields(recurringGift);
+            if (recurringGift.getId() != null) {
+                recurringGift.setAssociatedGiftIds(readAssociatedGiftIdsForRecurringGift(recurringGift.getId()));
+            }
+            loadCustomFields(recurringGift.getPerson());
+            loadCustomFields(recurringGift.getSelectedAddress());
+            loadCustomFields(recurringGift.getSelectedPhone());
+        }
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -40,7 +52,13 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         params.put("date", date);
         params.put("statuses", statuses);
 
-        return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE", params);
+        List<RecurringGift> recurringGifts = getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFTS_ON_OR_AFTER_DATE", params);
+        if (recurringGifts != null) {
+            for (RecurringGift recurringGift : recurringGifts) {
+                loadCustomFieldsForEntities(recurringGift);
+            }
+        }
+        return recurringGifts;
     }
 
     @Override
@@ -78,13 +96,7 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         Map<String, Object> params = setupParams();
         params.put("id", recurringGiftId);
         RecurringGift recurringGift = (RecurringGift) getSqlMapClientTemplate().queryForObject("SELECT_RECURRING_GIFT_BY_ID", params);
-        loadDistributionLinesCustomFields(recurringGift);
-        if (recurringGift != null) {
-            recurringGift.setAssociatedGiftIds(readAssociatedGiftIdsForRecurringGift(recurringGift.getId()));
-            loadCustomFields(recurringGift.getPerson());
-            loadCustomFields(recurringGift.getSelectedAddress());
-            loadCustomFields(recurringGift.getSelectedPhone());
-        }
+        loadCustomFieldsForEntities(recurringGift);
         return recurringGift;
     }
 

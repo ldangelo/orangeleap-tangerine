@@ -31,7 +31,6 @@ import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -42,8 +41,6 @@ import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -99,9 +96,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        setDefaultDates(gift);
 	        gift = giftDao.maintainGift(gift);
 	        pledgeService.updatePledgeForGift(gift);
-	        if (!reentrant) {
-	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
-	        }
 	        auditService.auditObject(gift, gift.getPerson());
 	
 	        //
@@ -109,6 +103,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        // in order for rules to work properly.
 	        if (!reentrant) {
 	        	routeGift(gift);
+	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
 	        }
 	        
 	        return gift;
@@ -208,6 +203,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	paymentHistory.setPaymentType(gift.getPaymentType());
     	paymentHistory.setTransactionDate(gift.getTransactionDate());
     	paymentHistory.setTransactionId(StringConstants.EMPTY);
+    	paymentHistory.setPaymentStatus(gift.getPaymentStatus());
     	String desc = getPaymentDescription(gift);
     	paymentHistory.setDescription(desc);
     	return paymentHistory;
@@ -222,26 +218,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId, String recurringGiftId) {
+    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId + " recurringGiftId = " + recurringGiftId + 
+            logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId +  
                     " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
         Gift gift = null;
         if (giftId == null) {
-            if (recurringGiftId != null) {
-                RecurringGift recurringGift = null;
-                recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(recurringGiftId));
-                if (recurringGift == null) {
-                    logger.error("readGiftByIdCreateIfNull: recurringGift not found for recurringGiftId = " + recurringGiftId);
-                    return gift;
-                }
-                gift = this.createGift(recurringGift, GiftType.MONETARY_GIFT, GiftEntryType.MANUAL);
-            }
-            if (gift == null) {
-                if (constituent != null) {
-                    gift = this.createDefaultGift(constituent);
-                }
+            if (constituent != null) {
+                gift = this.createDefaultGift(constituent);
             }
         }
         else {
@@ -301,35 +286,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         gift.setDistributionLines(lines);
 
         // TODO: consider caching techniques for the default Gift
-        return gift;
-    }
-
-    @Override
-    public Gift createGift(Commitment commitment, GiftType giftType, GiftEntryType giftEntryType) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("createGift: commitment = " + commitment + " giftType = " + giftType + " giftEntryType = " + giftEntryType);
-        }
-        Gift gift = new Gift();
-        gift.setPerson(commitment.getPerson());
-        if (commitment instanceof RecurringGift) {
-            gift.setRecurringGiftId(commitment.getId());
-        }
-        gift.setComments(commitment.getComments());
-        gift.setAmount(commitment.getAmountPerGift());
-        gift.setPaymentType(commitment.getPaymentType());
-        gift.setPaymentSource(commitment.getPaymentSource());
-        gift.setGiftType(giftType);
-        gift.setEntryType(giftEntryType);
-        if (commitment.getDistributionLines() != null) {
-            List<DistributionLine> list = new ArrayList<DistributionLine>();
-            for (DistributionLine oldLine : commitment.getDistributionLines()) {
-                DistributionLine newLine = new DistributionLine(oldLine, gift.getId());
-                list.add(newLine);
-            }
-            gift.setDistributionLines(list);
-        }
-        gift.setAddress(commitment.getAddress());
-        gift.setPhone(commitment.getPhone());
         return gift;
     }
 

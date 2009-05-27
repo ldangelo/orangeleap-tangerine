@@ -64,10 +64,12 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         maintainEntityChildren(adjustedGift, adjustedGift.getPerson());
         adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
         pledgeService.updatePledgeForAdjustedGift(adjustedGift);       
+        auditService.auditObject(adjustedGift, adjustedGift.getPerson());
+        
+        // TODO: route adjustedGift
         if (adjustedGift.isAdjustedPaymentRequired()) {
             paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
         }
-        auditService.auditObject(adjustedGift, adjustedGift.getPerson());
         return adjustedGift;
     }
 
@@ -79,6 +81,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         paymentHistory.setPerson(adjustedGift.getPerson());
         paymentHistory.setPaymentHistoryType(PaymentHistoryType.ADJUSTED_GIFT);
         paymentHistory.setPaymentType(adjustedGift.getPaymentType());
+        paymentHistory.setPaymentStatus(adjustedGift.getPaymentStatus());
         paymentHistory.setTransactionDate(adjustedGift.getAdjustedTransactionDate());
         paymentHistory.setTransactionId(StringConstants.EMPTY);
         paymentHistory.setDescription(getPaymentDescription(adjustedGift));

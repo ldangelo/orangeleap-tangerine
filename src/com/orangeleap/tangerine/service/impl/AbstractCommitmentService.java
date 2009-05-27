@@ -24,13 +24,10 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.GiftEntryType;
-import com.orangeleap.tangerine.type.GiftType;
 
 @Service("commitmentService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -40,7 +37,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     protected final static Log logger = LogFactory.getLog(AbstractCommitmentService.class);
 
     @Resource(name = "giftService")
-    private GiftService giftService;
+    protected GiftService giftService;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -197,13 +194,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
             logger.debug("it is currently, " + Calendar.getInstance().getTime() + ", running again at " + nextGiftDate);
         }
         return nextGiftDate;
-    }
-
-    protected void createAutoGift(T commitment) {
-        Gift gift = giftService.createGift(commitment, GiftType.MONETARY_GIFT, GiftEntryType.AUTO);
-        commitment.addGift(gift);
-        gift = giftService.maintainGift(gift);
-        commitment.setLastEntryDate(gift.getTransactionDate());
     }
     
     protected Date calculateNextRunDate(T commitment) {

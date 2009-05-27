@@ -9,6 +9,7 @@
 		<result property="description" column="PAYMENT_DESC" jdbcType="LONGVARCHAR" />
 		<result property="paymentHistoryType" column="PAYMENT_HISTORY_TYPE"	jdbcType="VARCHAR" />
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
+		<result property="paymentStatus" column="PAYMENT_STATUS" jdbcType="VARCHAR" />
 		<result property="transactionDate" column="TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionId" column="TRANSACTION_ID" jdbcType="VARCHAR" />
 		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
@@ -19,7 +20,8 @@
 	<sql id="SELECT_PAYMENT_HISTORY_FRAGMENT">
 		select
 		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
-		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
+		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.PAYMENT_STATUS,  
+		phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
 		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />
 
@@ -39,7 +41,8 @@
 	<sql id="SELECT_SORT_NULL_LAST_PAYMENT_HISTORY_FRAGMENT">
 		select
 		phis.PAYMENT_HISTORY_ID, phis.AMOUNT, phis.CURRENCY_CODE, phis.PAYMENT_DESC,
-		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
+		phis.PAYMENT_HISTORY_TYPE, phis.PAYMENT_TYPE, phis.PAYMENT_STATUS, 
+		phis.TRANSACTION_DATE, phis.TRANSACTION_ID, 
 		phis.GIFT_ID, phis.ADJUSTED_GIFT_ID, 
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
@@ -92,9 +95,9 @@
 
 	<insert id="INSERT_PAYMENT_HISTORY" parameterClass="com.orangeleap.tangerine.domain.PaymentHistory">
 		insert into PAYMENT_HISTORY (AMOUNT, CURRENCY_CODE, PAYMENT_DESC,
-		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, ADJUSTED_GIFT_ID, CONSTITUENT_ID)
+		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, PAYMENT_STATUS, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, ADJUSTED_GIFT_ID, CONSTITUENT_ID)
 		values (#amount#, #currencyCode#, #description#,
-		#paymentHistoryType:VARCHAR#, #paymentType#,
+		#paymentHistoryType:VARCHAR#, #paymentType#, #paymentStatus#, 
 		#transactionDate#, #transactionId#, #giftId#, #adjustedGiftId#, #person.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value

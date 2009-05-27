@@ -103,7 +103,9 @@
 						<a href="../${contextPrefix}jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
-						<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
+			            <c:if test="${pageAccess['/siteAudit.htm']=='ALLOWED'}">
+							<a href="siteAudit.htm"><spring:message code="siteAudit"/></a>
+						</c:if>
 					</li>
 					<li>
 			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">

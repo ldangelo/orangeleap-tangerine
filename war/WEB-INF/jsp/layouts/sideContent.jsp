@@ -62,7 +62,9 @@
 			            	<a class="${sidebarNav=='communicationHistoryList'?'active':''}" href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="communicationHistoryEntries"/></a>
 						</span>
 					</div>					
-					<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>
+					<c:if test="${pageAccess['/audit.htm']=='ALLOWED'}">
+						<a class="${sidebarNav=='Audit'?'active':''}" href="audit.htm?object=person&id=${person.id}"><spring:message code='audit'/></a>
+				    </c:if>
 				</div>
 			</c:if>
 			<%--

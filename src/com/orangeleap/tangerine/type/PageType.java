@@ -52,6 +52,8 @@ public enum PageType {
     communicationHistoryView("/communicationHistoryView.htm"),
     constituentcustomfieldrelationship("/relationshipCustomize.htm"),
     fieldRelationshipCustomize("/fieldRelationshipCustomize.htm"),
+    audit("/audit.htm"),
+    siteAudit("/siteAudit.htm")
     ;
 
     private String pageName;

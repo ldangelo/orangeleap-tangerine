@@ -16,9 +16,11 @@ import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -48,10 +50,18 @@ public class AuditListController {
 
     @Resource(name="auditService")
     private AuditService auditService;
+    
+	@SuppressWarnings("unchecked")
+	public static boolean accessAllowed(HttpServletRequest request) {
+		Map<String, AccessType> pageAccess = (Map<String, AccessType>)WebUtils.getSessionAttribute(request, "pageAccess");
+		return pageAccess.get("/siteAudit.htm") == AccessType.ALLOWED;
+	}
 
     @SuppressWarnings("unchecked")
     @RequestMapping("/auditList.json")
     public ModelMap getAuditEvents(HttpServletRequest request, SortInfo sortInfo) {
+    	
+    	if (!accessAllowed(request)) return null; 
 
         List<Map> rows = new ArrayList<Map>();
 

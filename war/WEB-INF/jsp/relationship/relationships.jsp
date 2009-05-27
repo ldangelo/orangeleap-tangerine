@@ -17,31 +17,26 @@
 
 		<div class="simplebox">
 		
-		<form id="form" method="post" action="relationships.htm">
-		   <input type=hidden name="personId" value="${person.id}" />
-		   <input type=hidden id="customize" name="customize" value="" />
+		 <form id="form" action="#">
 
-		 <c:choose>
-      	 <c:when test="${person == null}">
-			<h4>Select Master Constituent Record Field</h4>
-			<br/>
-         </c:when>
-         <c:otherwise>
-			<h4>Relationship to Manage</h4>
-         </c:otherwise>
-         </c:choose>
+  		   <c:choose>
+      	   <c:when test="${person == null}">
+			  <h4>Select Master Constituent Record Field</h4>
+		      <br/>
+           </c:when>
+           <c:otherwise>
+			  <h4>Relationship to Manage</h4>
+           </c:otherwise>
+           </c:choose>
 
-
-			<select id="fieldDefinitionId" name="fieldDefinitionId" onchange="changeSelection(this.form.fieldDefinitionId.value);">
+		   <select id="fieldDefinitionId" name="fieldDefinitionId" onchange="changeSelection(this.form.fieldDefinitionId.value);">
 		  	  <option value="" >Select...</option>
 			   <c:forEach var="fieldDefinition" items="${fieldDefinitions}">
 			     <option value="<c:out value='${fieldDefinition.id}'/>" ><c:out value='${fieldDefinition.defaultLabel}'/></option>
 			   </c:forEach>
-			</select>&nbsp;&nbsp;&nbsp;
-		   <span id="actions" style="display:none">
-		  	   <input id="editbutton" type=submit value="Edit" />
-		   </span>
-		</form>
+		   </select>&nbsp;&nbsp;&nbsp;
+			
+		 </form>
 		
 		 <c:choose>
       	 <c:when test="${person == null}">
@@ -56,7 +51,9 @@
          <c:otherwise>
 			<script>
 			function changeSelection(id) {
-				if (id != '') { $('#actions').show(); } else $('#actions').hide();
+				if (id != '') {
+					this.window.location="relationship.htm?fieldDefinitionId="+id+"&personId="+${person.id};
+				}
 			}
 			</script>
      		<strong><a class="action" href="person.htm?personId=${person.id}">&laquo;Back</a></strong>

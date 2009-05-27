@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller.importexport.importers;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -8,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
+import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -41,8 +43,24 @@ public class GiftImporter extends EntityImporter {
 	    return PageType.gift;
 	}
 
+	@Override
+	protected List<FieldDescriptor> getFieldDescriptors() {
 
+		List<FieldDescriptor> list = super.getFieldDescriptors();
+		
+		list.add(new FieldDescriptor("paymentSource.creditCardType", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.creditCardType")));
+		list.add(new FieldDescriptor("paymentSource.creditCardHolderName", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.creditCardHolderName")));
+		list.add(new FieldDescriptor("paymentSource.creditCardNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.creditCardNumber")));
+		list.add(new FieldDescriptor("paymentSource.creditCardExpiration", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.creditCardExpiration")));
+		list.add(new FieldDescriptor("paymentSource.creditCardSecurityCode", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.creditCardSecurityCode")));
 
+		list.add(new FieldDescriptor("paymentSource.achHolderName", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.achHolderName")));
+		list.add(new FieldDescriptor("paymentSource.achRoutingNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.achRoutingNumber")));
+		list.add(new FieldDescriptor("paymentSource.achAccountNumber", FieldDescriptor.PAYMENTTYPE, fieldDao.readFieldDefinition("gift.paymentSource.achAccountNumber")));
+
+		return list;
+	}
+	
 	@Override
 	public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException {
 		
@@ -51,8 +69,12 @@ public class GiftImporter extends EntityImporter {
 		} 
 		
 		String paymentType = values.get("paymentType");
-		if (!PaymentSource.CASH.equals(paymentType) && !PaymentSource.CHECK.equals(paymentType)) {
-			throw new RuntimeException("Gift payment type must be Cash or Check for import.");
+		if (!PaymentSource.CASH.equals(paymentType) 
+			&& !PaymentSource.CHECK.equals(paymentType)
+			&& !PaymentSource.CREDIT_CARD.equals(paymentType)
+			&& !PaymentSource.ACH.equals(paymentType)
+				) {
+			throw new RuntimeException("Invalid Gift payment type for import: "+paymentType);
 		}
 		
 		String id = values.get(getIdField());

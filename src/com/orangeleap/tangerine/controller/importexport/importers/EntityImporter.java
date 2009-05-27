@@ -18,6 +18,7 @@ import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.EntityExporterFactory;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
@@ -39,6 +40,8 @@ public abstract class EntityImporter {
 	protected ImportRequest importRequest;
 	protected ApplicationContext applicationContext;
 	protected SiteService siteservice;
+	protected FieldDao fieldDao;
+
 	protected TangerineUserHelper tangerineUserHelper;
 
 	protected List<FieldDescriptor> fieldDescriptors; 
@@ -47,6 +50,7 @@ public abstract class EntityImporter {
 	protected EntityImporter(ImportRequest importRequest, ApplicationContext applicationContext) {
 		this.importRequest = importRequest;
 		this.applicationContext = applicationContext;
+		fieldDao = (FieldDao)applicationContext.getBean("fieldDAO");
 		tangerineUserHelper = (TangerineUserHelper)applicationContext.getBean("tangerineUserHelper");
 
 		siteservice = (SiteService)applicationContext.getBean("siteService");

@@ -86,7 +86,7 @@
 		        <select id="importEntity" name="entity" onchange="Import_hideShow( $('#importEntity').val() );" >
 		          <option value="">Select...</option>
 		          <option value="person">Constituents</option>
- 		          <option value="gift">Gifts: Cash and Checks</option> 
+ 		          <option value="gift">Gifts</option> 
  		          <option value="address">NCOA Addresses</option>   
 		        </select>            
 	            <input type="file" name="file"/>

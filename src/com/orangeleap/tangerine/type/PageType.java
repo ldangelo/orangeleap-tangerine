@@ -53,7 +53,8 @@ public enum PageType {
     constituentcustomfieldrelationship("/relationshipCustomize.htm"),
     fieldRelationshipCustomize("/fieldRelationshipCustomize.htm"),
     audit("/audit.htm"),
-    siteAudit("/siteAudit.htm")
+    siteAudit("/siteAudit.htm"),
+    customField("/customField.htm")
     ;
 
     private String pageName;

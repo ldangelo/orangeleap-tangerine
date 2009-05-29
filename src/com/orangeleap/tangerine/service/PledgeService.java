@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -14,7 +16,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface PledgeService extends CommitmentService<Pledge> {
 
-    public Pledge maintainPledge(Pledge pledge);
+    public Pledge maintainPledge(Pledge pledge) throws BindException;
 
     public Pledge editPledge(Pledge pledge);
 

@@ -18,7 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
@@ -42,17 +48,45 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
 
     @Resource(name = "pledgeDAO")
     private PledgeDao pledgeDao;
+    
+    @Resource(name="pledgeEntityValidator")
+    protected EntityValidator entityValidator;
 
+    @Resource(name="codeValidator")
+    protected CodeValidator codeValidator;
+    
+    @Resource(name="distributionLinesValidator")
+    protected DistributionLinesValidator distributionLinesValidator;
+
+
+
+    // Used for create new only
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Pledge maintainPledge(Pledge pledge) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public Pledge maintainPledge(Pledge pledge) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainPledge: pledge = " + pledge);
         }
+        
+        if (pledge.getFieldLabelMap() != null && !pledge.isSuppressValidation()) {
+
+	        BindingResult br = new BeanPropertyBindingResult(pledge, "pledge");
+	        BindException errors = new BindException(br);
+	      
+	        codeValidator.validate(pledge, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+	        distributionLinesValidator.validate(pledge, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+	        
+	        entityValidator.validate(pledge, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+        }
+        
         pledge.filterValidDistributionLines();
         return save(pledge);
     }
 
+    // Used for modify existing only
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Pledge editPledge(Pledge pledge) {

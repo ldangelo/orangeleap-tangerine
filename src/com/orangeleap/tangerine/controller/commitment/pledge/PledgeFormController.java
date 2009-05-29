@@ -43,7 +43,7 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     }
 
     @Override
-    protected Pledge maintainCommitment(Pledge entity) {
+    protected Pledge maintainCommitment(Pledge entity) throws BindException {
         return pledgeService.maintainPledge(entity);
     }
 

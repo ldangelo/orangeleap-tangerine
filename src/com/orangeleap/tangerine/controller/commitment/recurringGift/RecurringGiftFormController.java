@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
 import com.orangeleap.tangerine.controller.commitment.CommitmentFormController;
@@ -29,7 +30,7 @@ public class RecurringGiftFormController extends CommitmentFormController<Recurr
     }
 
     @Override
-    protected RecurringGift maintainCommitment(RecurringGift entity) {
+    protected RecurringGift maintainCommitment(RecurringGift entity) throws BindException {
         return recurringGiftService.maintainRecurringGift(entity);
     }
 

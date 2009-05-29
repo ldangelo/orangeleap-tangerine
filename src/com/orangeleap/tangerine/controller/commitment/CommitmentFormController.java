@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -52,16 +53,36 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         T commitment = (T) command;        
-        T current = maintainCommitment(commitment);
   
-        return new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        boolean saved = true;
+        T current = null;
+        try {
+            current = maintainCommitment(commitment);
+        } catch (BindException e) {
+            saved = false;
+            current = commitment;
+            errors.addAllErrors(e);
+        }
+
+        ModelAndView mav = null;
+        if (saved) {
+            mav = new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+            mav = super.onSubmit(command, errors);
+            mav.setViewName(super.getFormView());
+            mav.addObject(StringUtils.uncapitalize(current.getClass().getSimpleName()), current);
+        }
+        return mav;
+        
+
     }
     
     protected String getReturnView(T entity) {
         return formUrl;
     }
     
-    protected abstract T maintainCommitment(T entity); 
+    protected abstract T maintainCommitment(T entity) throws BindException; 
     
     protected abstract String getParamId();
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -21,7 +23,7 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
     public RecurringGift createDefaultRecurringGift(Person constituent);
 
-    public RecurringGift maintainRecurringGift(RecurringGift recurringGift);
+    public RecurringGift maintainRecurringGift(RecurringGift recurringGift) throws BindException;
 
     public RecurringGift editRecurringGift(RecurringGift recurringGift);
     

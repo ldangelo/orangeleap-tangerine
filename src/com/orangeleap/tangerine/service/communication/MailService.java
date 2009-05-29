@@ -21,6 +21,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty;
@@ -138,7 +139,14 @@ public class MailService {
 			ch.setCustomFieldValue("template", getTemplateName());
 			ch.setSelectedAddress(person.getPrimaryAddress());
 
-			communicationHistoryService.maintainCommunicationHistory(ch);
+			ch.setSuppressValidation(true);
+			try {
+				communicationHistoryService.maintainCommunicationHistory(ch);
+			} catch (BindException e1) {
+				// Should not happen when setSuppressValidation = true;
+				logger.error(e1);
+			}
+
 		}
 		//
 		// first we run the report passing in the person.id as a parameter

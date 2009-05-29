@@ -1,10 +1,7 @@
 package com.orangeleap.tangerine.service.communication;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -30,7 +27,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.validation.BindException;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceProperty;
@@ -204,7 +201,14 @@ public class EmailService implements ApplicationContextAware {
 				ch.setSelectedEmail(e);
 				ch.setCustomFieldValue("template", getTemplateName());
 
-				communicationHistoryService.maintainCommunicationHistory(ch);
+				ch.setSuppressValidation(true);
+				try {
+					communicationHistoryService.maintainCommunicationHistory(ch);
+				} catch (BindException e1) {
+					// Should not happen when setSuppressValidation = true;
+					logger.error(e1);
+				}
+			
 			}
 			tempFile.delete();
 		} catch (MessagingException e1) {

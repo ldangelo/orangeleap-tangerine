@@ -7,7 +7,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
@@ -32,15 +36,33 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 	
     @Resource(name = "auditService")
     protected AuditService auditService;
+    
+    @Resource(name="communicationHistoryEntityValidator")
+    protected EntityValidator entityValidator;
+
+
 
 	@Override
-	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+	public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
         }
 		if (communicationHistory.getPerson() == null) {
             return null;
         }
+		
+        if (communicationHistory.getFieldLabelMap() != null && !communicationHistory.isSuppressValidation()) {
+
+	        BindingResult br = new BeanPropertyBindingResult(communicationHistory, "communicationHistory");
+	        BindException errors = new BindException(br);
+	      
+	        entityValidator.validate(communicationHistory, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+        }
+
+
+		
 		Long lookupUserId = tangerineUserHelper.lookupUserId();
 		if (lookupUserId != null) {
 		    communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());

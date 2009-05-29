@@ -8,13 +8,6 @@
 	<bean id="communicationHistoryFormController" class="com.orangeleap.tangerine.controller.communicationHistory.CommunicationHistoryFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="communicationHistory"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.CommunicationHistory"/>
-		<property name="validators">
-			<list>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="communicationHistory"/>
-	            </bean>
-	        </list>
-        </property>
         <property name="formView" value="communicationHistory/communicationHistory" />
         <property name="successView" value="redirect:/communicationHistoryView.htm" />
     </bean>

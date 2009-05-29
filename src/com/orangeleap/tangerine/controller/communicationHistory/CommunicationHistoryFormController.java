@@ -36,8 +36,27 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         CommunicationHistory communicationHistory = (CommunicationHistory) command;
-        CommunicationHistory current = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        
+        boolean saved = true;
+        CommunicationHistory current = null;
+        try {
+            current = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
+        } catch (BindException e) {
+            saved = false;
+            current = communicationHistory;
+            errors.addAllErrors(e);
+        }
+
+        ModelAndView mav = null;
+        if (saved) {
+            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        }
+        else {
+            mav = super.onSubmit(command, errors);
+            mav.setViewName(super.getFormView());
+            mav.addObject("communicationHistory", current);
+        }
+        return mav;
     }
     
 }

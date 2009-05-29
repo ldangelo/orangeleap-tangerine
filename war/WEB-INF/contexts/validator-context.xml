@@ -33,8 +33,13 @@
         <property name="paymentSourceService" ref="paymentSourceService" />
 	</bean>
 
-     <bean id="personEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+
+    <bean id="personEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
          <property name="pageType" value="person"/>
+	</bean>
+	
+    <bean id="giftEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="gift"/>
 	</bean>
 
 

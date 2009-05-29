@@ -11,15 +11,6 @@
         <property name="formView" value="gift/gift" />
         <property name="successView" value="redirect:/giftView.htm" />
         <property name="bindEmail" value="false"/>
-		<property name="validators">
-			<list>
-	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-			        <property name="pageType" value="gift"/>
-	            </bean>
-	            <ref bean="codeValidator"/>	            
-	            <ref bean="distributionLinesValidator"/>	            
-	        </list>
-        </property>
     </bean>
 
     <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="tangerineConstituentAttributesFormController">

@@ -123,7 +123,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
             pageCustomizationService.maintainFieldDefinition(newFieldDefinition);
             pageCustomizationService.maintainSectionField(newSectionField);
-            if (fieldValidation.getRegex() != null) pageCustomizationService.maintainFieldValidation(fieldValidation);
+            if (StringUtils.trimToNull(fieldValidation.getRegex()) != null) pageCustomizationService.maintainFieldValidation(fieldValidation);
             
     		// TODO modify clementine views to support new custom field
     		

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public void addCustomField(CustomFieldRequest customFieldRequest) {
+    	
+    		if (StringUtils.trimToNull(customFieldRequest.getLabel()) == null || StringUtils.trimToNull(customFieldRequest.getFieldName()) == null) {
+    			throw new RuntimeException("Field name and label are required");
+    		}
 		
             List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(customFieldRequest.getEntityType()), tangerineUserHelper.lookupUserRoles());
             Collections.sort(definitions, new Comparator<SectionDefinition>() {
@@ -109,8 +114,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             fieldValidation.setSectionName(defaultSection.getSectionName());
             String regex = null;
         	String type = customFieldRequest.getValidationType();
-        	if (type.equals("email")) regex = "extensions:email";
-        	if (type.equals("url")) regex = "extensions:url";
+        	if (type.equals("email")) regex = "extensions:isEmail";
+        	if (type.equals("url")) regex = "extensions:isUrl";
         	if (type.equals("numeric")) regex = "^[0-9]*$";
         	if (type.equals("alphanumeric")) regex = "^[a-zA-Z0-9]*$";
         	if (type.equals("regex")) regex = customFieldRequest.getRegex().trim();

@@ -40,7 +40,27 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         GiftInKind giftInKind = (GiftInKind) command;
-        GiftInKind current = giftInKindService.maintainGiftInKind(giftInKind);
-        return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_IN_KIND_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        
+        boolean saved = true;
+        GiftInKind current = null;
+        try {
+        	current = giftInKindService.maintainGiftInKind(giftInKind);
+        } catch (BindException e) {
+            saved = false;
+            current = giftInKind;
+            errors.addAllErrors(e);
+        }
+
+        ModelAndView mav = null;
+        if (saved) {
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_IN_KIND_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+            mav = super.onSubmit(command, errors);
+            mav.setViewName(super.getFormView());
+            mav.addObject("giftInKind", current);
+        }
+        return mav;
+
     }
 }

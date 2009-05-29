@@ -11,7 +11,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.Person;
@@ -34,13 +40,40 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
+    
+    @Resource(name="giftEntityValidator")
+    protected EntityValidator entityValidator;
+
+    @Resource(name="codeValidator")
+    protected CodeValidator codeValidator;
+
+    @Resource(name="giftInKindDetailsValidator")
+    protected GiftInKindDetailsValidator giftInKindDetailsValidator;
+
+
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public GiftInKind maintainGiftInKind(GiftInKind giftInKind) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public GiftInKind maintainGiftInKind(GiftInKind giftInKind) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainGiftInKind: giftInKind = " + giftInKind);
         }
+        
+        if (giftInKind.getFieldLabelMap() != null && !giftInKind.isSuppressValidation()) {
+
+	        BindingResult br = new BeanPropertyBindingResult(giftInKind, "giftInKind");
+	        BindException errors = new BindException(br);
+	      
+	        codeValidator.validate(giftInKind, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+	        giftInKindDetailsValidator.validate(giftInKind, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+	        
+	        entityValidator.validate(giftInKind, errors);
+	        if (errors.getAllErrors().size() > 0) throw errors;
+        }
+
+        
         maintainEntityChildren(giftInKind, giftInKind.getPerson());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
         Gift gift = createGiftForGiftInKind(giftInKind);

@@ -68,16 +68,6 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         binder.registerCustomEditor(List.class, "associatedPledgeIds", new AssociationEditor());
         binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
     }
-    
-    @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && errors.hasErrors()) {
-            Gift gift = (Gift) command;
-            gift.removeEmptyMutableDistributionLines();
-            checkAssociations(gift);
-        }
-        super.onBindAndValidate(request, command, errors);
-    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
@@ -101,9 +91,9 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
             mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
         }
         else {
-            mav = super.onSubmit(command, errors);
-            mav.setViewName(super.getFormView());
-            mav.addObject("gift", current);
+			current.removeEmptyMutableDistributionLines();
+			checkAssociations(current);
+			mav = showForm(request, errors, getFormView());
         }
         return mav;
         

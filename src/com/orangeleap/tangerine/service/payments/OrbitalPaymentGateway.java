@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -145,7 +146,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setPaymentStatus("Error");
 			gift.setPaymentMessage(text.getMessage());
 			GiftService gs = (GiftService) applicationContext.getBean("giftService");
-			gs.maintainGift(gift);
+
+			gift.setSuppressValidation(true);
+	        try {
+	        	gs.maintainGift(gift);
+	        } catch (BindException e) {
+	        	// Should not happen with suppressValidation = true.
+	        	logger.error(e);
+	        }
 
 			if (logger.isErrorEnabled()) {
 				logger.error("Request: "+ text.getMessage());
@@ -174,7 +182,15 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 //			gift.setComments(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		gs.maintainGift(gift);
+
+        gift.setSuppressValidation(true);
+        try {
+        	gs.maintainGift(gift);
+        } catch (BindException e) {
+        	// Should not happen with suppressValidation = true.
+        	logger.error(e);
+        }
+
 
 	}
 
@@ -289,7 +305,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		}
 		
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		gs.maintainGift(gift);
+		
+        gift.setSuppressValidation(true);
+        try {
+        	gs.maintainGift(gift);
+        } catch (BindException e) {
+        	// Should not happen with suppressValidation = true.
+        	logger.error(e);
+        }
 
 
 	}
@@ -373,8 +396,15 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setPaymentMessage(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
-		gs.maintainGift(gift);
-		
+	
+        gift.setSuppressValidation(true);
+        try {
+        	gs.maintainGift(gift);
+        } catch (BindException e) {
+        	// Should not happen with suppressValidation = true.
+        	logger.error(e);
+        }
+
 	}
 
 	@Override

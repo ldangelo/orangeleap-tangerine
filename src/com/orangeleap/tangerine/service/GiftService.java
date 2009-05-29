@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.validation.BindException;
+
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -13,7 +15,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface GiftService {
 
-    public Gift maintainGift(Gift gift);
+    public Gift maintainGift(Gift gift) throws BindException;
     
     public Gift editGift(Gift gift);
     

@@ -393,6 +393,7 @@ public class GiftServiceTest extends BaseTest {
     @Test
     public void testMaintainGiftMajorDonor() throws Exception {
         Gift gift = getGift();
+        gift.setSuppressValidation(true);
     	giftService.maintainGift(gift);
     	Person person = constituentService.readConstituentById(gift.getPerson().getId());
     	//assert person.isMajorDonor();

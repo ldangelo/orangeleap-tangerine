@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 
 
 import com.orangeleap.tangerine.domain.Site;
@@ -91,7 +92,15 @@ public class EchexPaymentGateway implements ACHPaymentGateway {
 	        	g.setPaymentMessage(exception.getMessage());
 	        }
 	        GiftService gs = (GiftService) applicationContext.getBean("giftService");
-	        gs.maintainGift(g);
+
+	        g.setSuppressValidation(true);
+	        try {
+	        	gs.maintainGift(g);
+	        } catch (BindException e) {
+	        	// Should not happen with suppressValidation = true.
+	        	logger.error(e);
+	        }
+
 	}
 
 	@Override

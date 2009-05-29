@@ -25,7 +25,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
@@ -40,6 +46,7 @@ import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -70,6 +77,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
+    
+    @Resource(name="giftEntityValidator")
+    protected EntityValidator entityValidator;
+
+    @Resource(name="codeValidator")
+    protected CodeValidator codeValidator;
+    
+    @Resource(name="distributionLinesValidator")
+    protected DistributionLinesValidator distributionLinesValidator;
 
     private ApplicationContext context;
 
@@ -80,9 +96,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     private final static String MAINTAIN_METHOD = "GiftServiceImpl.maintainGift";
     
+    // Used for create only.
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public Gift maintainGift(Gift gift) {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
+    public Gift maintainGift(Gift gift) throws BindException
+    {
 
     	boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
@@ -90,6 +108,24 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             if (logger.isTraceEnabled()) {
                 logger.trace("maintainGift: gift = " + gift);
             }
+            
+            
+            if (gift.getFieldLabelMap() != null && !gift.isSuppressValidation()) {
+
+    	        BindingResult br = new BeanPropertyBindingResult(gift, "gift");
+    	        BindException errors = new BindException(br);
+    	      
+    	        codeValidator.validate(gift, errors);
+    	        if (errors.getAllErrors().size() > 0) throw errors;
+    	        distributionLinesValidator.validate(gift, errors);
+    	        if (errors.getAllErrors().size() > 0) throw errors;
+    	        
+    	        entityValidator.setPageType(PageType.gift);
+    	        entityValidator.validate(gift, errors);
+    	        if (errors.getAllErrors().size() > 0) throw errors;
+            }
+
+            
             
 	        maintainEntityChildren(gift, gift.getPerson());
 	        setDefaultDates(gift);
@@ -127,6 +163,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     private final static String EDIT_METHOD = "GiftServiceImpl.editGift";
     
+    // Used for update only.
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) {

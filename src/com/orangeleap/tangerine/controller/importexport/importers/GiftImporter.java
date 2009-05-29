@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
@@ -62,7 +63,7 @@ public class GiftImporter extends EntityImporter {
 	}
 	
 	@Override
-	public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException {
+	public void importValueMap(String action, Map<String, String> values) throws ConstituentValidationException, BindException {
 		
 		if (!action.equals(EntityImporter.ACTION_ADD)) {
 			throw new RuntimeException("Gifts can only be ADDed.");

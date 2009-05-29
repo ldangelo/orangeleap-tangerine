@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
@@ -312,7 +313,15 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     protected void createAutoGift(RecurringGift recurringGift) {
         Gift gift = new Gift(recurringGift);
         recurringGift.addGift(gift);
-        gift = giftService.maintainGift(gift);
+        
+        gift.setSuppressValidation(true);
+        try {
+        	gift = giftService.maintainGift(gift);
+        } catch (BindException e) {
+        	// Should not happen with suppressValidation = true.
+        	logger.error(e);
+        }
+        
         recurringGift.setLastEntryDate(gift.getTransactionDate());
     }
 }

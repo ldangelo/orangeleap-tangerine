@@ -34,6 +34,7 @@ public class Gift extends AbstractPaymentInfoEntity {
     private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
     private GiftEntryType entryType = GiftEntryType.MANUAL;
+    private boolean suppressValidation = false;
     
     private List<Long> associatedPledgeIds;
     private List<Long> associatedRecurringGiftIds;

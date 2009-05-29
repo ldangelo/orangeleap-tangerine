@@ -17,12 +17,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class GiftFormController extends TangerineConstituentAttributesFormController {
@@ -81,11 +83,32 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Gift gift = (Gift) command;
+     
+    	Gift gift = (Gift) command;
         checkAssociations(gift);
         gift.filterValidDistributionLines();
-        Gift current = giftService.maintainGift(gift);
-        return new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        
+        boolean saved = true;
+        Gift current = null;
+        try {
+        	current = giftService.maintainGift(gift);
+        } catch (BindException e) {
+            saved = false;
+            current = gift;
+            errors.addAllErrors(e);
+        }
+
+        ModelAndView mav = null;
+        if (saved) {
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+        }
+        else {
+            mav = super.onSubmit(command, errors);
+            mav.setViewName(super.getFormView());
+            mav.addObject("gift", current);
+        }
+        return mav;
+        
     }
     
     protected void checkAssociations(Gift gift) {

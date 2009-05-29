@@ -2,10 +2,10 @@ package com.orangeleap.tangerine.controller.customField;
 
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
@@ -13,13 +13,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
+import com.orangeleap.tangerine.service.customization.CustomFieldMaintenanceService;
 import com.orangeleap.tangerine.type.AccessType;
 
 public class CustomFieldController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
+    @Resource(name="customFieldMaintenanceService")
+    private CustomFieldMaintenanceService customFieldMaintenanceService;
+
 
 	@SuppressWarnings("unchecked")
 	public static boolean accessAllowed(HttpServletRequest request) {
@@ -47,35 +51,14 @@ public class CustomFieldController extends SimpleFormController {
 
 		if (!accessAllowed(request)) return null; 
 		
-		CustomFieldRequest cfr = (CustomFieldRequest)command;
+		CustomFieldRequest customFieldRequest = (CustomFieldRequest)command;
 		
 		String message = "";
 		String errormessage = "";
 		
 		try {
 		
-			// TODO move to service method
-			
-			if (cfr.getConstituentType().equals("organization")) throw new RuntimeException("test");
-			
-			
-			if ("".equals(StringUtils.trimToNull(cfr.getSection()) == null)) {
-				// TODO read first section for entity
-			}
-			
-		// INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) 
-		// VALUES ('person.customFieldMap[organization.website]', 'person', 'customFieldMap[organization.website]', 'Web Site', 'TEXT', 'organization');
-
-        // INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('email.info', 'email.emailAddress', 'extensions:isEmail');
-
-		//	INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000001, 'person.customFieldMap[organization.website]', 30080);
-
-			
-			// TODO check for duplicate existing field name
-			
-			// TODO modify clementine views
-			
-			// TODO flush cache here
+			customFieldMaintenanceService.addCustomField(customFieldRequest);
 
 			message = "New custom field successfully created.";
 

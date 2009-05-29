@@ -46,6 +46,7 @@ public class CacheGroupFilter extends OncePerRequestFilter {
 			if (!suppressCacheCheck(request)) {
 				
 				Cache picklistCache = (Cache)getBean(request, "picklistCache");
+				Cache pageCustomizationCache = (Cache)getBean(request, "pageCustomizationCache");
 				// Add others here...
 
 				
@@ -57,10 +58,17 @@ public class CacheGroupFilter extends OncePerRequestFilter {
 						CacheGroup memoryCacheGroup = s_cacheGroups.get(key);
 						if (memoryCacheGroup != null) {
 							if (!memoryCacheGroup.getUpdateDate().equals(dbCacheGroup.getUpdateDate())) {
+
 								if (key.equals(CacheGroupType.PICKLIST.toString())) {
 									logger.debug("Update detected, clearing PICKLIST cache.");
 									picklistCache.removeAll();
 								}
+								
+								if (key.equals(CacheGroupType.PAGE_CUSTOMIZATION.toString())) {
+									logger.debug("Update detected, clearing PAGE_CUSTOMIZATION cache.");
+									pageCustomizationCache.removeAll();
+								}
+								
 							}
 						}
 						s_cacheGroups.put(key, dbCacheGroup);

@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.type;
 
 public enum CacheGroupType {
-    PICKLIST
+    PICKLIST,
+    PAGE_CUSTOMIZATION
 }

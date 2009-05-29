@@ -7,7 +7,6 @@ public class CustomFieldRequest {
 	private String label;
 	private String entityType;
 	private String constituentType;
-	private String section;
 	private String fieldName;
 	private FieldType fieldType;
 	private String validationType;
@@ -37,14 +36,6 @@ public class CustomFieldRequest {
 
 	public String getConstituentType() {
 		return constituentType;
-	}
-
-	public void setSection(String section) {
-		this.section = section;
-	}
-
-	public String getSection() {
-		return section;
 	}
 
 	public void setFieldName(String fieldName) {

@@ -22,78 +22,75 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 /**
- * This controller handles JSON requests for populating
- * the grid of gifts.
+ * This controller handles JSON requests for populating the grid of gifts.
  * @version 1.0
  */
 @Controller
 public class GiftInKindListController {
 
-    /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+	/** Logger for this class and subclasses */
+	protected final Log logger = LogFactory.getLog(getClass());
 
-    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
+	private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
 
-    static {
-        NAME_MAP.put("id", "gik.GIFT_ID");
-        NAME_MAP.put("date", "gik.TRANSACTION_DATE");
-        NAME_MAP.put("personId", "gik.CONSTITUENT_ID");
-        NAME_MAP.put("fairmarketvalue", "gik.FAIR_MARKET_VALUE");
-        NAME_MAP.put("currencycode", "gik.CURRENCY_CODE");
-        NAME_MAP.put("donationdate", "gik.DONATION_DATE");
-        NAME_MAP.put("motivationcode", "gik.MOTIVATION_CODE");
-    }
-    
-    private Map<String,Object> giftInKindToMap(GiftInKind gik) {
+	static {
+		NAME_MAP.put("id", "gik.GIFT_ID");
+		NAME_MAP.put("personId", "gik.CONSTITUENT_ID");
+		NAME_MAP.put("fairmarketvalue", "gik.FAIR_MARKET_VALUE");
+		NAME_MAP.put("currencycode", "gik.CURRENCY_CODE");
+		NAME_MAP.put("donationdate", "gik.DONATION_DATE");
+		NAME_MAP.put("motivationcode", "gik.MOTIVATION_CODE");
+		NAME_MAP.put("othermotivation", "gik.OTHER_MOTIVATION");
+	}
 
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	private Map<String, Object> giftInKindToMap(GiftInKind gik) {
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", gik.getId());
-        map.put("date", formatter.format(gik.getTransactionDate()) );
-        map.put("personId", gik.getPerson().getId());
-        map.put("fairmarketvalue", gik.getFairMarketValue());
-        map.put("currencycode", gik.getCurrencyCode());
-        map.put("donationdate", gik.getDonationDate());
-        map.put("motivationcode", gik.getMotivationCode());
-    
-        return map;
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    }
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", gik.getId());
+		map.put("personId", gik.getPerson().getId());
+		map.put("fairmarketvalue", gik.getFairMarketValue());
+		map.put("currencycode", gik.getCurrencyCode());
+		map.put("donationdate", formatter.format(gik.getDonationDate()));
+		map.put("motivationcode", gik.getMotivationCode());
+		map.put("othermotivation", gik.getOther_motivationCode());
 
-    @Resource(name="giftInKindService")
-    private GiftInKindService giftInKindService;
+		return map;
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping("/giftInKindList.json")
-    public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
+	}
 
-        List<Map> rows = new ArrayList<Map>();
+	@Resource(name = "giftInKindService")
+	private GiftInKindService giftInKindService;
 
-        // if we're not getting back a valid column name, possible SQL injection,
-        // so send back an empty list.
-        if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
-            logger.warn("getGiftInKindList called with invalid sort column: [" + sortInfo.getSort() + "]");
-            return new ModelMap("rows", rows);
-        }
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/giftInKindList.json")
+	public ModelMap getGiftList(HttpServletRequest request, SortInfo sortInfo) {
 
-        // set the sort to the valid column name, based on the map
-        sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
+		List<Map> rows = new ArrayList<Map>();
 
-        String personId = request.getParameter("personId");
-        PaginatedResult result = giftInKindService.readPaginatedGiftsInKindByConstituentId(Long.valueOf(personId), sortInfo); 
+		// if we're not getting back a valid column name, possible SQL injection,
+		// so send back an empty list.
+		if (!sortInfo.validateSortField(NAME_MAP.keySet())) {
+			logger.warn("getGiftInKindList called with invalid sort column: [" + sortInfo.getSort() + "]");
+			return new ModelMap("rows", rows);
+		}
 
-        List<GiftInKind> list = result.getRows();
+		// set the sort to the valid column name, based on the map
+		sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
 
-        for(GiftInKind g : list) {
-            rows.add( giftInKindToMap(g) );
-        }
+		String personId = request.getParameter("personId");
+		PaginatedResult result = giftInKindService.readPaginatedGiftsInKindByConstituentId(Long.valueOf(personId), sortInfo);
 
-        ModelMap map = new ModelMap("rows", rows);
-        map.put("totalRows", result.getRowCount());
-        return map;
-    }
-    
+		List<GiftInKind> list = result.getRows();
 
+		for (GiftInKind g : list) {
+			rows.add(giftInKindToMap(g));
+		}
+
+		ModelMap map = new ModelMap("rows", rows);
+		map.put("totalRows", result.getRowCount());
+		return map;
+	}
 
 }

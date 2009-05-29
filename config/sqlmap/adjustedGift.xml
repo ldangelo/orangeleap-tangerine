@@ -14,6 +14,7 @@
 		<result property="authCode" column="ADJUSTED_AUTH_CODE" jdbcType="VARCHAR" />
 		<result property="checkNumber" column="ADJUSTED_CHECK_NUMBER" jdbcType="INTEGER" />
 		<result property="comments" column="ADJUSTED_COMMENTS" jdbcType="VARCHAR" />
+		<result property="currencyCode" column="ADJUSTED_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="originalAmount" column="ORIGINAL_AMOUNT" jdbcType="BIGINT" />
 		<result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
 		<result property="paymentMessage" column="ADJUSTED_PAYMENT_MESSAGE" jdbcType="VARCHAR" />
@@ -38,7 +39,7 @@
 		ag.AUTH_CODE as ADJUSTED_AUTH_CODE, ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER,
 		ag.COMMENTS as ADJUSTED_COMMENTS, ag.GIFT_ID as ORIGINAL_GIFT_ID, ag.PAYMENT_MESSAGE as ADJUSTED_PAYMENT_MESSAGE,
 		ag.PAYMENT_STATUS as ADJUSTED_PAYMENT_STATUS, ag.PAYMENT_TXREFNUM as ADJUSTED_PAYMENT_TXREFNUM, ag.PAYMENT_TYPE as ADJUSTED_PAYMENT_TYPE, 
-		ag.CREATE_DATE as ADJUSTED_CREATE_DATE, ag.UPDATE_DATE as ADJUSTED_UPDATE_DATE, g2.AMOUNT as ORIGINAL_AMOUNT
+		ag.CREATE_DATE as ADJUSTED_CREATE_DATE, ag.UPDATE_DATE as ADJUSTED_UPDATE_DATE, g2.AMOUNT as ORIGINAL_AMOUNT, g2.CURRENCY_CODE as ADJUSTED_CURRENCY_CODE
 	</sql>
 	
 	<sql id="ADJUSTED_GIFT_QUERY_FRAGMENT">

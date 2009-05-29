@@ -19,14 +19,14 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'personId', mapping: 'personId', type: 'string'},
+            {name: 'donationdate', mapping: 'donationdate', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'fairmarketvalue', mapping: 'fairmarketvalue', type: 'float'},
             {name: 'currencycode', mapping: 'currencycode', type: 'string'},
-            {name: 'donationdate', mapping: 'donationdate', type: 'date', dateFormat: 'Y-m-d'},
-            {name: 'motivationcode', mapping: 'motivationcode', type: 'string'}
+            {name: 'motivationcode', mapping: 'motivationcode', type: 'string'},
+            {name: 'othermotivation', mapping: 'othermotivation', type: 'string'}
         ],
-        sortInfo:{field: 'date', direction: "DESC"},
+        sortInfo:{field: 'donationdate', direction: "DESC"},
         remoteSort: true,
         baseParams: baseParams
     });
@@ -44,11 +44,10 @@ Ext.onReady(function() {
         store: GiftInKindList.store,
         columns: [
             {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: GiftInKindList.entityViewRenderer},
-            {header: 'Transaction Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'Donation Date', width: 100, dataIndex: 'donationdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Fair Market Value', width: 65, dataIndex: 'fairmarketvalue', sortable: true},
             {header: 'Currency Code', width: 65, dataIndex: 'currencycode', sortable: true},
-            //{header: 'Donation Date', width: 100, dataIndex: 'donationdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
-            {header: 'Motivation Code', width: 65, dataIndex: 'motivationcode', sortable: true}
+            {header: 'Motivation Code', width: 65, dataIndex: 'motivationcode', sortable: true, renderer: GiftInKindList.motivationRender}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {
@@ -64,18 +63,27 @@ Ext.onReady(function() {
         renderTo: 'giftInKindGrid'
     });
 
-    GiftInKindList.store.load({params: {start: 0, limit: 100, sort: 'date', dir: 'DESC'}});
+    GiftInKindList.store.load({params: {start: 0, limit: 100, sort: 'donationdate', dir: 'DESC'}});
 
 });
 
 GiftInKindList.entityViewRenderer = function(val, meta, record) {
-	   return '<a href="javascript:GiftInKindList.navigate(' + record.data.id + ')" title="View">View</a>';
+	return '<a href="javascript:GiftInKindList.navigate(' + record.data.id + ')" title="View">View</a>';
+};
+
+GiftInKindList.motivationRender = function(val, meta, record) {
+	if ((!record.data.motivationcode || record.data.motivationcode === '') && record.data.othermotivation) {
+		return record.data.othermotivation;
+	} 
+	else {
+		return record.data.motivationcode; 
+	}
 };
 
 GiftInKindList.navigate = function(id) {
-	    var rec = GiftInKindList.grid.getSelectionModel().getSelected();
-	    GiftInKindList.grid.getGridEl().mask('Loading Record');
-        window.location.href='giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
+	var rec = GiftInKindList.grid.getSelectionModel().getSelected();
+	GiftInKindList.grid.getGridEl().mask('Loading Record');
+	window.location.href='giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
 };
 
 

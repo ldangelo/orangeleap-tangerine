@@ -49,42 +49,23 @@
                         </script>
                     </div>
                 </c:when>
-				<c:when test="${fieldVO.fieldType == 'DATE_DISPLAY' || fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST' || fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY' || 
+				<c:when test="${fieldVO.fieldType == 'DATE_DISPLAY' || fieldVO.fieldType == 'PAYMENT_SOURCE_PICKLIST' || 
+								fieldVO.fieldType == 'CC_EXPIRATION' || fieldVO.fieldType == 'CC_EXPIRATION_DISPLAY' || 
+								fieldVO.fieldType == 'LONG_TEXT' ||
+								fieldVO.fieldType == 'CHECKBOX' || 
 								fieldVO.fieldType == 'ADDRESS_PICKLIST' || fieldVO.fieldType == 'EXISTING_ADDRESS_PICKLIST' ||
 								fieldVO.fieldType == 'PHONE_PICKLIST' || fieldVO.fieldType == 'EXISTING_PHONE_PICKLIST' || 
 								fieldVO.fieldType == 'EMAIL_PICKLIST' || fieldVO.fieldType == 'EXISTING_EMAIL_PICKLIST' ||  
-								fieldVO.fieldType == 'PICKLIST' || 
+								fieldVO.fieldType == 'PICKLIST' ||
+								fieldVO.fieldType == 'SPACER' ||  
+								fieldVO.fieldType == 'TEXT' || fieldVO.fieldType == 'LOOKUP' || fieldVO.fieldType == 'DATE_TIME' || 
+								fieldVO.fieldType == 'ADDRESS' || fieldVO.fieldType == 'PHONE' || fieldVO.fieldType == 'NUMBER' || 
+								fieldVO.fieldType == 'PERCENTAGE' ||
+								fieldVO.fieldType == 'PREFERRED_PHONE_TYPES' ||
+								fieldVO.fieldType == 'CODE' || fieldVO.fieldType == 'CODE_OTHER' || fieldVO.fieldType == 'CODE_OTHER_DISPLAY' || 
+								fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT' || 
 								fieldVO.fieldType == 'ADJUSTED_GIFT_PAYMENT_SOURCE_PICKLIST' || fieldVO.fieldType == 'ADJUSTED_GIFT_PAYMENT_TYPE_PICKLIST'}">
 					<mp:input field="${fieldVO}"/>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'PREFERRED_PHONE_TYPES'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>" class="<c:if test="${fieldVO.cascading}">picklist </c:if><c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"
-						references="<c:out value='${fieldVO.uniqueReferenceValues}'/>">
-						<c:set var="selectedRef" value="" scope="page"/>
-						<c:if test="${fieldVO.required != 'true'}">
-							<option value="none"><spring:message code="none"/></option>
-						</c:if>
-						<c:forEach var="code" varStatus="status" items="${fieldVO.codes}">
-							<c:set var="reference" value="${fieldVO.referenceValues[status.index]}" scope="request" />
-							<c:choose>
-								<c:when test="${fieldVO.fieldValue eq code}">
-									<c:set var="selected" value="selected" scope="page" />
-									<c:set var="selectedRef" value="${fn:trim(fieldVO.referenceValues[status.index])}" scope="page"/>
-								</c:when>
-								<c:otherwise>
-									<c:set var="selected" value="" scope="page"/>
-									<c:set var="selectedRef" value="" scope="page"/>
-								</c:otherwise>
-							</c:choose>
-							<option <c:if test="${!empty reference}">reference="<c:out value='${fieldVO.referenceValues[status.index]}'/>"</c:if>value="<c:out value='${code}'/>" <c:out value='${selected}'/>>
-								<c:out value='${fieldVO.displayValues[status.index]}'/>
-							</option>
-						</c:forEach>
-					</select>
-					<c:if test="${fieldVO.required && selectedRef eq ''}">
-						<c:set var="selectedRef" value="${not empty fieldVO.referenceValues ? fn:trim(fieldVO.referenceValues[0]) : ''}" scope="page"/>
-					</c:if>
-					<div style="display:none" id="selectedRef-<c:out value='${fieldVO.fieldId}'/>"><c:out value='${selectedRef}'/></div>
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'MULTI_PICKLIST' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL' || fieldVO.fieldType == 'MULTI_PICKLIST_DISPLAY' || fieldVO.fieldType == 'MULTI_PICKLIST_ADDITIONAL_DISPLAY'}">
 					<div class="lookupScrollTop<c:out value=' ${errorClass}'/>"></div>
@@ -242,63 +223,6 @@
 				        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="<c:out value='${sectionField.fieldDefinition.id}'/>" class="multiLookupLink hideText" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
 				    </c:if>
 				</c:when>
-				<c:when test="${fieldVO.fieldType == 'CC_EXPIRATION'}">
-					<select name="<c:out value='${fieldVO.fieldName}'/>Month" id="<c:out value='${fieldVO.fieldId}'/>Month" class="expMonth <c:out value='${fieldVO.entityAttributes}'/>">
-						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationMonthList}">
-							<c:set var="expirationMonth" scope="request" value="${paymentSource.creditCardExpirationMonthText}" />
-							<c:if test="${empty expirationMonth}">
-								<c:set var="now" value="<%=new java.util.Date()%>"/>
-								<fmt:formatDate var="expirationMonth" scope="request" value="${now}" pattern="MM" />
-							</c:if>
-							<c:choose>
-								<c:when test="${opt == expirationMonth}">
-									<option value="<c:out value='${opt}'/>" selected="selected"><c:out value='${opt}'/></option>
-								</c:when>
-								<c:otherwise>
-									<option value="<c:out value='${opt}'/>"><c:out value='${opt}'/></option>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</select>
-					<select name="<c:out value='${fieldVO.fieldName}'/>Year" id="<c:out value='${fieldVO.fieldId}'/>Year" class="expYear <c:out value='${fieldVO.entityAttributes}'/>">
-						<c:forEach var="opt" varStatus="status" items="${paymentSource.expirationYearList}">
-							<c:set var="expirationYear" scope="request" value="${paymentSource.creditCardExpirationYear}" />
-							<c:if test="${empty expirationYear}">
-								<c:set var="now" value="<%=new java.util.Date()%>"/>
-								<fmt:formatDate var="expirationYear" scope="request" value="${now}" pattern="yyyy" />
-							</c:if>
-							<c:choose>
-								<c:when test="${opt == expirationYear}">
-									<option value="<c:out value='${opt}'/>" selected="selected"><c:out value='${opt}'/></option>
-								</c:when>
-								<c:otherwise>
-									<option value="<c:out value='${opt}'/>"><c:out value='${opt}'/></option>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</select>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'CODE' || fieldVO.fieldType == 'CODE_OTHER'}">
-					<div class="lookupWrapper">
-						<input value="<c:out value='${fieldVO.displayValue}'/>" 
-							<c:if test="${fieldVO.fieldType == 'CODE_OTHER'}">
-								otherFieldId="<c:out value='${fieldVO.otherFieldId}'/>"
-							</c:if> 
-							class="text code <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" lookup="<c:out value='${fieldVO.fieldName}'/>" 
-							codeType="<c:out value='${fieldVO.fieldName}'/>" name="display-<c:out value='${fieldVO.fieldName}'/>" id="display-<c:out value='${fieldVO.fieldId}'/>" />
-						<input type="hidden" name="<c:out value='${fieldVO.fieldName}'/>" id="hidden-<c:out value='${fieldVO.fieldId}'/>" value="<c:out value='${fieldVO.fieldValue}'/>"/>
-						<a class="lookupLink" href="javascript:void(0)" 
-							<c:choose>
-								<c:when test="${fieldVO.fieldType == 'CODE_OTHER'}">
-									onclick="Lookup.loadCodePopup(this, true)" 
-								</c:when>
-								<c:otherwise>
-									onclick="Lookup.loadCodePopup(this)" 
-								</c:otherwise>
-							</c:choose> 
-							alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
-					</div>
-				</c:when>
 				<c:when test="${fieldVO.fieldType == 'MULTI_CODE_ADDITIONAL'}">
 					<div class="lookupScrollTop"></div>
 					<div class="lookupScrollContainer">
@@ -331,34 +255,6 @@
 					</div>
 					<div class="lookupScrollBottom"></div>
 			        <a href="javascript:void(0)" onclick="Lookup.loadCodeAdditionalPopup(this)" class="multiLookupLink hideText" lookup="<c:out value='${fieldVO.fieldName}'/>" alt="<spring:message code='lookup'/>" title="<spring:message code='lookup'/>"><spring:message code='lookup'/></a>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'CHECKBOX'}">
-		            <input type="hidden" name="_<c:out value="${fieldVO.fieldName}"/>" />
-		            <input type="checkbox" value="true" 
-		                   class="checkbox <c:out value='${fieldVO.entityAttributes}'/>" 
-		                   name="<c:out value='${fieldVO.fieldName}'/>" 
-		                   id="<c:out value='${fieldVO.fieldId}'/>"  
-		                   <c:if test="${fieldVO.fieldValue == 'true'}">checked="true"</c:if> 
-		                   <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
-		            />
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'READ_ONLY_TEXT' || fieldVO.fieldType == 'PAYMENT_TYPE_READ_ONLY_TEXT'}">
-					<div id="<c:out value='${fieldVO.fieldId}'/>" class="readOnlyField <c:out value='${fieldVO.entityAttributes}'/>"><c:choose><c:when test="${empty fieldVO.displayValue}">&nbsp;</c:when><c:otherwise><c:out value="${fieldVO.displayValue}"/></c:otherwise></c:choose></div>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'LONG_TEXT'}">
-					<textarea rows="5" cols="30" class="text <c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>" 
-	                    <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
-						name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>"><c:out value='${fieldVO.displayValue}'/></textarea>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'TEXT' || fieldVO.fieldType == 'LOOKUP' || fieldVO.fieldType == 'DATE_TIME' || fieldVO.fieldType == 'ADDRESS' || fieldVO.fieldType == 'PHONE' || fieldVO.fieldType == 'NUMBER' || fieldVO.fieldType == 'PERCENTAGE'}">
-					<input value="<c:out value='${fieldVO.fieldValue}'/>" class="text <c:if test="${fieldVO.fieldType == 'LOOKUP'}">lookup </c:if> <c:if test="${fieldVO.fieldType == 'NUMBER'}">number </c:if><c:if test="${fieldVO.fieldType == 'PERCENTAGE'}">percentage </c:if><c:out value='${fieldVO.entityAttributes}'/> <c:out value=' ${errorClass}'/>"
-						<c:if test="${fieldVO.fieldType == 'DATE_TIME'}">size="16" </c:if> 
-	                    <c:if test="${fieldVO.disabled}">disabled="true"</c:if> 
-						name="<c:out value='${fieldVO.fieldName}'/>" id="<c:out value='${fieldVO.fieldId}'/>" type="text"/>
-						<c:if test="${fieldVO.fieldType == 'LOOKUP'}"><a class="lookupLink jqModal" href="javascript:void(0)"><spring:message code='lookup'/></a></c:if>
-				</c:when>
-				<c:when test="${fieldVO.fieldType == 'SPACER'}">
-					&nbsp;
 				</c:when>
 				<c:when test="${fieldVO.fieldType == 'PICKLIST_DISPLAY'}">
 				    <div class="readOnlyField multiPicklist <c:out value='${fieldVO.entityAttributes}'/>" id="<c:out value='${fieldVO.fieldId}'/>"

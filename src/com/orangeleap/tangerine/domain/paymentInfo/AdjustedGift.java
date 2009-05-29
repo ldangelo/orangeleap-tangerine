@@ -2,7 +2,6 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -206,7 +205,6 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
     
     public String getShortDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());
         sb.append(getAdjustedAmount()).append(", "); 
         sb.append(getAdjustedStatus()).append(", ");
         sb.append(DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(getAdjustedTransactionDate()));

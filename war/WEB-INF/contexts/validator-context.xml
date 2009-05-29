@@ -42,5 +42,21 @@
          <property name="pageType" value="gift"/>
 	</bean>
 
+    <bean id="giftInKindEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="giftInKind"/>
+	</bean>
+
+    <bean id="pledgeEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="pledge"/>
+	</bean>
+
+    <bean id="recurringGiftEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="recurringGift"/>
+	</bean>
+
+    <bean id="communicationHistoryEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="communicationHistory"/>
+	</bean>
+
 
 </beans>

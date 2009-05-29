@@ -110,21 +110,18 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             fieldValidation.setSectionName(defaultSection.getSectionName());
             String regex = null;
         	String type = customFieldRequest.getValidationType();
-        	if (type.equals("email")) regex = "extenstions:email";
-        	if (type.equals("url")) regex = "extenstions:url";
+        	if (type.equals("email")) regex = "extensions:email";
+        	if (type.equals("url")) regex = "extensions:url";
         	if (type.equals("numeric")) regex = "^[0-9]*$";
         	if (type.equals("alphanumeric")) regex = "^[a-zA-Z0-9]*$";
         	if (type.equals("regex")) regex = customFieldRequest.getRegex().trim();
             fieldValidation.setRegex(regex);
 
-        	// INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE, ENTITY_ATTRIBUTES) 
-        	// VALUES ('person.customFieldMap[organization.website]', 'person', 'customFieldMap[organization.website]', 'Web Site', 'TEXT', 'organization');
-
-            // INSERT INTO FIELD_VALIDATION (SECTION_NAME, FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('email.info', 'email.emailAddress', 'extensions:isEmail');
-
-        	//	INSERT INTO SECTION_FIELD (SECTION_DEFINITION_ID, FIELD_DEFINITION_ID, FIELD_ORDER) VALUES (1000001, 'person.customFieldMap[organization.website]', 30080);
-
-    		// TODO modify clementine views
+            pageCustomizationService.maintainFieldDefinition(newFieldDefinition);
+            pageCustomizationService.maintainSectionField(newSectionField);
+            pageCustomizationService.maintainFieldValidation(fieldValidation);
+            
+    		// TODO modify clementine views to support new custom field
     		
     		// Flush section/field definition cache for all tomcat instances
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);

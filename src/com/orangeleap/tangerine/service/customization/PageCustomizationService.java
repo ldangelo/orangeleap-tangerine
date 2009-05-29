@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.service.customization;
 import java.util.List;
 import java.util.Map;
 
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.AccessType;
@@ -38,5 +40,10 @@ public interface PageCustomizationService {
      */
     public List<String> readDistintSectionDefinitionsRoles();
     
+    public void maintainFieldDefinition(FieldDefinition fieldDefinition);
     
+    public void maintainSectionField(SectionField sectionField);
+
+    public void maintainFieldValidation(FieldValidation fieldValidation);
+
 }

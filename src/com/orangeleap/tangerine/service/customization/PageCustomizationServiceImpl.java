@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.PageAccess;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
@@ -185,4 +187,20 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
         }
         return accessMap;
     }
+
+	@Override
+	public void maintainFieldDefinition(FieldDefinition fieldDefinition) {
+		
+	}
+
+	@Override
+	public void maintainFieldValidation(FieldValidation fieldValidation) {
+		
+	}
+
+	@Override
+	public void maintainSectionField(SectionField sectionField) {
+		
+	}
+
 }

@@ -68,4 +68,13 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
         params.put("pageType", pageType);
         return getSqlMapClientTemplate().queryForList("SELECT_OUT_OF_BOX_SEC_FLDS", params);
     }
+    
+    @Override
+    public SectionField maintainSectionField(SectionField sectionField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainSectionField: sectionField = " + sectionField.getId());
+        }
+        return (SectionField)insertOrUpdate(sectionField, "SECTION_FIELD");
+    }
+
 }

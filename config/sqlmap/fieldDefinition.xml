@@ -64,7 +64,7 @@
 	    and fd.FIELD_DEFINITION_ID = #id#
 	</select>
 	
-	<insert id="INSERT_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
+	<insert id="INSERT_FIELD_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		insert into FIELD_DEFINITION (FIELD_DEFINITION_ID, DEFAULT_LABEL, ENTITY_ATTRIBUTES, ENTITY_TYPE, FIELD_INFO, FIELD_NAME, FIELD_TYPE, REFERENCE_TYPE, SITE_NAME)
 		values (#id#, #defaultLabel#, #entityAttributes#, #entityType#, #fieldInfo#, #fieldName#, #fieldType#, #referenceType#, #site.name#)
 		<selectKey keyProperty="numericId" resultClass="long">
@@ -72,7 +72,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="UPDATE_FIELD_DEF" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
+	<update id="UPDATE_FIELD_DEFINITION" parameterClass="com.orangeleap.tangerine.domain.customization.FieldDefinition">
 		update FIELD_DEFINITION
 		set 
 		DEFAULT_LABEL = #defaultLabel#,

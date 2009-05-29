@@ -15,4 +15,7 @@ public interface FieldDao {
     public FieldDefinition readFieldDefinition(String id);
     public List<FieldRelationship> readMasterFieldRelationships(String masterFieldDefId);
     public List<FieldRelationship> readDetailFieldRelationships(String detailFieldDefId);
+    public FieldDefinition maintainFieldDefinition(FieldDefinition fieldDefinition);
+    public FieldValidation maintainFieldValidation(FieldValidation fieldValidation);
+
 }

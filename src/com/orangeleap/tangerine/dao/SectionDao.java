@@ -12,4 +12,6 @@ public interface SectionDao {
     public List<SectionField> readOutOfBoxSectionFields(PageType pageType, String sectionName);
     public List<SectionField> readCustomizedSectionFields(Long sectionDefinitionId);
     public List<String> readDistintSectionDefinitionsRoles();
+    public SectionField maintainSectionField(SectionField sectionField);
+
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
@@ -134,6 +135,43 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
         return list;
     }
+    
+    @Override
+    public FieldDefinition maintainFieldDefinition(FieldDefinition fieldDefinition) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainFieldDefinition: maintainFieldDefinitionId = " + fieldDefinition.getId());
+        }
+        return (FieldDefinition)insertOrUpdateFieldDefinition(fieldDefinition);
+    }
+    
+    @Override
+    public FieldValidation maintainFieldValidation(FieldValidation fieldValidation) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainFieldValidation: FieldValidationId = " + fieldValidation.getId());
+        }
+        return (FieldValidation)insertOrUpdate(fieldValidation, "FIELD_VALIDATION");
+    }
+    
+    private FieldDefinition insertOrUpdateFieldDefinition(final FieldDefinition o) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("insertOrUpdateFieldDefinition: id = " + o.getId());
+        }
+        Site site = new Site(getSiteName());
+    	o.setSite(site);
+
+        if (o.getNumericId() <= 0) {
+            Long generatedId = (Long)getSqlMapClientTemplate().insert("INSERT_FIELD_DEFINITION", o);
+            if (logger.isDebugEnabled()) {
+                logger.debug("insertOrUpdate: generatedId = " + generatedId + " for o = " + o.getClass().getName());
+            }
+            o.setNumericId(generatedId);
+        }
+        else {
+            getSqlMapClientTemplate().update("UPDATE_FIELD_DEFINITION", o);
+        }
+        return o;
+    }
+    
 
 
 }

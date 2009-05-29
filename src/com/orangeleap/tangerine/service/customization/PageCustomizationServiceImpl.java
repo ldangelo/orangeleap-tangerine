@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.SectionDao;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -38,13 +39,16 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     private static final Integer ZERO = Integer.valueOf(0);
 
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
+
     @Resource(name = "sectionDAO")
     private SectionDao sectionDao;
 
     @Resource(name = "pageAccessDAO")
     private PageAccessDao pageAccessDao;
 
-     @Resource(name = "pageCustomizationCache")
+    @Resource(name = "pageCustomizationCache")
     private Cache pageCustomizationCache;
 
     @Autowired
@@ -190,17 +194,17 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
 	@Override
 	public void maintainFieldDefinition(FieldDefinition fieldDefinition) {
-		
+		fieldDao.maintainFieldDefinition(fieldDefinition);
 	}
 
 	@Override
 	public void maintainFieldValidation(FieldValidation fieldValidation) {
-		
+		fieldDao.maintainFieldValidation(fieldValidation);
 	}
 
 	@Override
 	public void maintainSectionField(SectionField sectionField) {
-		
+		sectionDao.maintainSectionField(sectionField);
 	}
 
 }

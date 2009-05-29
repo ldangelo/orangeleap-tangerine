@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.service.impl;
+package com.orangeleap.tangerine.service.customization;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,8 +22,7 @@ import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.service.customization.CustomFieldMaintenanceService;
-import com.orangeleap.tangerine.service.customization.PageCustomizationService;
+import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PageType;

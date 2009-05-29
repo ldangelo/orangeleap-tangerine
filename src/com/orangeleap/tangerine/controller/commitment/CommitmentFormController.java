@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,16 +40,6 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (handleEmptyDistributionLines && isFormSubmission(request) && errors.hasErrors()) {
-            T entity = (T) command;
-            entity.removeEmptyMutableDistributionLines();
-        }
-        super.onBindAndValidate(request, command, errors);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         T commitment = (T) command;        
   
@@ -58,7 +47,8 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
         T current = null;
         try {
             current = maintainCommitment(commitment);
-        } catch (BindException e) {
+        } 
+        catch (BindException e) {
             saved = false;
             current = commitment;
             errors.addAllErrors(e);
@@ -69,13 +59,12 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
             mav = new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
         }
         else {
-            mav = super.onSubmit(command, errors);
-            mav.setViewName(super.getFormView());
-            mav.addObject(StringUtils.uncapitalize(current.getClass().getSimpleName()), current);
+            if (handleEmptyDistributionLines) {
+                current.removeEmptyMutableDistributionLines();
+            }
+			mav = showForm(request, errors, getFormView());
         }
         return mav;
-        
-
     }
     
     protected String getReturnView(T entity) {

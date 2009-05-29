@@ -69,9 +69,7 @@ public class PersonFormController extends TangerineFormController {
             mav = new ModelAndView(super.appendSaved(new StringBuilder(super.getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(current.getId()).toString()));
         }
         else {
-            mav = super.onSubmit(command, errors);
-            mav.setViewName(super.getFormView());
-            mav.addObject("person", current);
+            mav = showForm(request, errors, getFormView());
         }
         return mav;
     }

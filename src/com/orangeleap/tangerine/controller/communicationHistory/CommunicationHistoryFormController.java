@@ -52,9 +52,7 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
             mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
         }
         else {
-            mav = super.onSubmit(command, errors);
-            mav.setViewName(super.getFormView());
-            mav.addObject("communicationHistory", current);
+            mav = super.showForm(request, errors, getFormView());
         }
         return mav;
     }

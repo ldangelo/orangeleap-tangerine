@@ -29,15 +29,6 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
     }
 
     @Override
-    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors) throws Exception {
-        if (isFormSubmission(request) && errors.hasErrors()) {
-            GiftInKind giftInKind = (GiftInKind) command;
-            giftInKind.removeEmptyMutableDetails();
-        }
-        super.onBindAndValidate(request, command, errors);
-    }
-
-    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         GiftInKind giftInKind = (GiftInKind) command;
         
@@ -45,7 +36,8 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
         GiftInKind current = null;
         try {
         	current = giftInKindService.maintainGiftInKind(giftInKind);
-        } catch (BindException e) {
+        } 
+        catch (BindException e) {
             saved = false;
             current = giftInKind;
             errors.addAllErrors(e);
@@ -56,11 +48,9 @@ public class GiftInKindFormController extends TangerineConstituentAttributesForm
             mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_IN_KIND_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
         }
         else {
-            mav = super.onSubmit(command, errors);
-            mav.setViewName(super.getFormView());
-            mav.addObject("giftInKind", current);
+			current.removeEmptyMutableDetails();
+			mav = showForm(request, errors, getFormView());
         }
         return mav;
-
     }
 }

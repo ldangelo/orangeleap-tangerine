@@ -49,7 +49,6 @@ import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -130,7 +129,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	        constituentValidator.validate(constituent, errors);
 	        if (errors.getAllErrors().size() > 0) throw errors;
 	        
-	        entityValidator.setPageType(PageType.person);
 	        entityValidator.validate(constituent, errors);
 	        if (errors.getAllErrors().size() > 0) throw errors;
         }

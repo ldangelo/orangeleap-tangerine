@@ -46,7 +46,6 @@ import com.orangeleap.tangerine.service.PaymentHistoryService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -120,7 +119,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	        distributionLinesValidator.validate(gift, errors);
     	        if (errors.getAllErrors().size() > 0) throw errors;
     	        
-    	        entityValidator.setPageType(PageType.gift);
     	        entityValidator.validate(gift, errors);
     	        if (errors.getAllErrors().size() > 0) throw errors;
             }

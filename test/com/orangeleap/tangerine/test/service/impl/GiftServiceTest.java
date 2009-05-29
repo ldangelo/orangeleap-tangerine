@@ -402,7 +402,6 @@ public class GiftServiceTest extends BaseTest {
     	 // Insert
         Gift gift = new Gift();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        gift.setAcknowledgmentDate(sdf.parse("01/01/2001"));
         gift.setDonationDate(sdf.parse("10/31/1999"));
         gift.setEntryType(GiftEntryType.AUTO);
         gift.setAmount(new BigDecimal(100000.00));

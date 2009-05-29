@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,19 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         /* Then Insert DistributionLines */
         insertDistributionLines(aRecurringGift, "recurringGiftId");
         return aRecurringGift;
+    }
+    
+    /**
+     * Updates the recurringGift AMOUNT_PAID, AMOUNT_REMAINING, and RECURRING_GIFT_STATUS fields ONLY
+     * @param recurringGift
+     */
+    @Override
+    public void maintainRecurringGiftAmountPaidRemainingStatus(RecurringGift recurringGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainRecurringGiftAmountPaidRemainingStatus: recurringGiftId = " + recurringGift.getId() + " amountPaid = " + recurringGift.getAmountPaid() + 
+                    " amountRemaining = " + recurringGift.getAmountRemaining() + " recurringGiftStatus = " + recurringGift.getRecurringGiftStatus());
+        }
+        getSqlMapClientTemplate().update("UPDATE_RECURRING_GIFT_AMOUNT_PAID_REMAINING_STATUS", recurringGift);
     }
 
     @Override
@@ -162,5 +176,15 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         Map<String, Object> paramMap = setupParams();
         paramMap.put("recurringGiftId", recurringGiftId);
         return getSqlMapClientTemplate().queryForList("SELECT_RECURRING_GIFT_GIFT_BY_RECURRING_GIFT_ID", paramMap);
+    }
+    
+    @Override
+    public BigDecimal readAmountPaidForRecurringGiftId(Long recurringGiftId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readAmountPaidForRecurringGiftId: recurringGiftId = " + recurringGiftId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("recurringGiftId", recurringGiftId);
+        return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_AMOUNT_PAID_BY_RECURRING_GIFT_ID", paramMap);
     }
 }

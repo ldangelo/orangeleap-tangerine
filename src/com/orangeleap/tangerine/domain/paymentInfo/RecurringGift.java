@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Date;
@@ -69,7 +70,22 @@ public class RecurringGift extends Commitment {
     @Override
     public void prePersist() {
         super.prePersist();
-
+        
+        if (getAmountPaid() == null) {
+            setAmountPaid(BigDecimal.ZERO);
+        }
+        if (getEndDate() != null) {
+            if (getAmountTotal() != null && getAmountPaid() != null) {
+                setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
+            }
+            else {
+                setAmountRemaining(getAmountTotal());
+            }
+        }
+        else {
+            setAmountRemaining(null);
+            setAmountTotal(null);
+        }
     }
 
     @Override

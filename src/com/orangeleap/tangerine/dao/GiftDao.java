@@ -1,6 +1,5 @@
 package com.orangeleap.tangerine.dao;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,6 @@ public interface GiftDao {
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
     public List<Gift> searchGifts(Map<String, Object> params);
-
-    public List<Gift> readGiftsByRecurringGiftId(Long recurringGiftId);
-
-    public BigDecimal readGiftsReceivedSumByRecurringGiftId(Long recurringGiftId);
 
 	public List<Gift> readAllGiftsBySite();
 	

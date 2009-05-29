@@ -160,4 +160,14 @@ public class IBatisPledgeDao extends AbstractPaymentInfoEntityDao<Pledge> implem
         paramMap.put("pledgeId", pledgeId);
         return (BigDecimal) getSqlMapClientTemplate().queryForObject("SELECT_AMOUNT_PAID_BY_PLEDGE_ID", paramMap);
     }
+    
+    @Override
+    public Long readPaymentsAppliedToPledgeId(Long pledgeId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPaymentsAppliedToPledgeId: pledgeId = " + pledgeId);
+        }
+        Map<String, Object> paramMap = setupParams();
+        paramMap.put("pledgeId", pledgeId);
+        return (Long) getSqlMapClientTemplate().queryForObject("SELECT_PAYMENTS_APPLIED_TO_PLEDGE_ID", paramMap);
+    }
 }

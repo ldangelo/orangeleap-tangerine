@@ -9,6 +9,7 @@
         <property name="pageType" value="recurringGift"/>
         <property name="commandName" value="recurringGift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift"/>
+        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <ref bean="recurringGiftValidator"/>
@@ -28,6 +29,7 @@
         <property name="formView" value="gift/recurringGiftView" />
         <property name="successView" value="redirect:/recurringGiftView.htm" />
     	<property name="handleEmptyDistributionLines" value="false"/>
+        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <ref bean="recurringGiftValidator"/>

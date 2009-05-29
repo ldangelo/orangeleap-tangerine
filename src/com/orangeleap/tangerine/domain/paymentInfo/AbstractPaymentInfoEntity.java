@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,28 +11,24 @@ import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.NewAddressAware;
-import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings({ "unchecked" })
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware, NewEmailAware  {
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware  {
     private static final long serialVersionUID = 1L;
 
     protected String comments;
     protected String currencyCode = StringConstants.USD;
     protected String paymentType;
     protected Integer checkNumber;
-    protected boolean sendAcknowledgment = false;
-    protected Date acknowledgmentDate;
     
     protected Person person;
     /** Form bean representation of the DistributionLines */
@@ -53,17 +48,14 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     private FormBeanType addressType;
     private FormBeanType phoneType;
-    private FormBeanType emailType;
     private FormBeanType paymentSourceType;
 
     protected Address address = new Address();
     protected Phone phone = new Phone();
-    protected Email email = new Email();
     protected PaymentSource paymentSource = new PaymentSource(person);
     
     protected Address selectedAddress = new Address();
     protected Phone selectedPhone = new Phone();
-    protected Email selectedEmail = new Email();
     protected PaymentSource selectedPaymentSource = new PaymentSource(person);
 
     public AbstractPaymentInfoEntity() {
@@ -126,22 +118,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public Integer getCheckNumber() {
         return checkNumber;
-    }
-
-    public boolean isSendAcknowledgment() {
-        return sendAcknowledgment;
-    }
-
-    public void setSendAcknowledgment(boolean sendAcknowledgment) {
-        this.sendAcknowledgment = sendAcknowledgment;
-    }
-
-    public Date getAcknowledgmentDate() {
-        return acknowledgmentDate;
-    }
-
-    public void setAcknowledgmentDate(Date acknowledgmentDate) {
-        this.acknowledgmentDate = acknowledgmentDate;
     }
 
     public List<DistributionLine> getDistributionLines() {
@@ -213,16 +189,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     @Override
-    public FormBeanType getEmailType() {
-        return this.emailType;
-    }
-
-    @Override
-    public void setEmailType(FormBeanType type) {
-        this.emailType = type;
-    }
-
-    @Override
     public FormBeanType getPaymentSourceType() {
         return this.paymentSourceType;
     }
@@ -263,16 +229,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     @Override
-    public Email getEmail() {
-        return email;
-    }
-
-    @Override
-    public void setEmail(Email email) {
-        this.email = email;
-    }
-
-    @Override
     public PaymentSource getSelectedPaymentSource() {
         if (selectedPaymentSource == null) {
             selectedPaymentSource = new PaymentSource(); // created only because spring needs to bind to it
@@ -306,18 +262,6 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     public void setSelectedPhone(Phone selectedPhone) {
         this.selectedPhone = selectedPhone;
-    }
-
-    @Override
-    public Email getSelectedEmail() {
-        if (selectedEmail == null) {
-            selectedEmail = new Email(); // created only because spring needs to bind to it
-        }
-        return selectedEmail;
-    }
-
-    public void setSelectedEmail(Email selectedEmail) {
-        this.selectedEmail = selectedEmail;
     }
 
     public Site getSite() {
@@ -360,11 +304,9 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
-            append("checkNumber", checkNumber).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).append("comments", comments).
-            append("address", address).append("phone", phone).append("email", email).append("paymentSource", paymentSource).
+            append("checkNumber", checkNumber).append("comments", comments).
             append("paymentSourceType", paymentSourceType).
-            append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).append("selectedEmail", selectedEmail).append("selectedPaymentSource", selectedPaymentSource).
-            append("emailType", emailType).append("phoneType", phoneType).append("addressType", addressType).append("person", person).
+            append("phoneType", phoneType).append("addressType", addressType).
             toString();
     }
 }

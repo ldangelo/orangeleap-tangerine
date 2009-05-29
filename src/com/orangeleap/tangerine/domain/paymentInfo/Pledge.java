@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
+
 public class Pledge extends Commitment {
     private static final long serialVersionUID = 1L;
 
@@ -16,8 +18,6 @@ public class Pledge extends Commitment {
     private String pledgeStatus = STATUS_PENDING;
     private boolean recurring = false;
     private Date projectedDate;
-    private BigDecimal amountPaid;
-    private BigDecimal amountRemaining;
 
     public Pledge() {}
     
@@ -73,27 +73,6 @@ public class Pledge extends Commitment {
     	return pledgeCancelReason;
     }
 
-    @Override
-    public BigDecimal getAmountPaid() {
-        return amountPaid;
-    }
-
-    public void setAmountPaid(BigDecimal amountPaid) {
-        this.amountPaid = amountPaid;
-    }
-
-    @Override
-    public BigDecimal getAmountRemaining() {
-        return amountRemaining;
-    }
-
-    public void setAmountRemaining(BigDecimal amountRemaining) {
-        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) < 0) {
-            amountRemaining = BigDecimal.ZERO;
-        }
-        this.amountRemaining = amountRemaining;
-    }
-
     public String getShortDescription() {
         StringBuilder sb = new StringBuilder();
         sb.append((new DecimalFormatSymbols(Locale.getDefault())).getCurrencySymbol());
@@ -105,10 +84,10 @@ public class Pledge extends Commitment {
         }
         sb.append(DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(pledgeDate)).append(", ");
         if (isRecurring()) {
-            sb.append(" Recurring"); // TODO: localize 'recurring'
+            sb.append(TangerineMessageAccessor.getMessage("recurring"));
         }
         else {
-            sb.append(" Not Recurring"); // TODO: localize
+            sb.append(TangerineMessageAccessor.getMessage("notRecurring"));
         }
         return sb.toString();
     }
@@ -122,12 +101,17 @@ public class Pledge extends Commitment {
         }
         if (isRecurring()) {
             setProjectedDate(null);
-            setAmountTotal(null);
-            if (getAmountRemaining() == null) {
-                setAmountRemaining(getAmountPerGift());
+            if (getEndDate() != null) {
+                if (getAmountTotal() != null && getAmountPaid() != null) {
+                    setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
+                }
+                else {
+                    setAmountRemaining(getAmountTotal());
+                }
             }
             else {
-                setAmountRemaining(getAmountPerGift().subtract(getAmountPaid()));
+                setAmountRemaining(null);
+                setAmountTotal(null);
             }
         } 
         else {
@@ -135,11 +119,11 @@ public class Pledge extends Commitment {
             setEndDate(null);
             setAmountPerGift(null);
             setFrequency(null);
-            if (getAmountRemaining() == null) {
-                setAmountRemaining(getAmountTotal());
+            if (getAmountTotal() != null && getAmountPaid() != null) {
+                setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
             }
             else {
-                setAmountRemaining(getAmountTotal().subtract(getAmountPaid()));
+                setAmountRemaining(getAmountTotal());
             }
         }
     }

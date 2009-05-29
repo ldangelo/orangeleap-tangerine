@@ -224,11 +224,8 @@ public class Gift extends AbstractPaymentInfoEntity {
         this.giftType = GiftType.GIFT_IN_KIND;
         this.currencyCode = giftInKind.getCurrencyCode();
         this.donationDate = giftInKind.getDonationDate();
-        this.sendAcknowledgment = giftInKind.isSendAcknowledgment();
-        this.acknowledgmentDate = giftInKind.getAcknowledgmentDate();
         this.transactionDate = giftInKind.getTransactionDate();
         this.person = giftInKind.getPerson();
-        this.selectedEmail = giftInKind.getSelectedEmail();
 	}
 	
 	public void setGiftForRecurringGift(RecurringGift recurringGift) {
@@ -250,14 +247,11 @@ public class Gift extends AbstractPaymentInfoEntity {
             }
             this.setDistributionLines(list);
         }
-        this.setAcknowledgmentDate(recurringGift.getAcknowledgmentDate());
-        this.setSendAcknowledgment(recurringGift.isSendAcknowledgment());
         this.setCurrencyCode(recurringGift.getCurrencyCode());
         
         this.setSelectedPaymentSource(recurringGift.getSelectedPaymentSource());
         this.setSelectedAddress(recurringGift.getSelectedAddress());
         this.setSelectedPhone(recurringGift.getSelectedPhone());
-        this.setSelectedEmail(recurringGift.getSelectedEmail());
 	}
 	
 	public String getShortDescription() {

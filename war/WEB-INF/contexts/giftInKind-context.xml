@@ -8,6 +8,7 @@
 	<bean id="giftInKindFormController" class="com.orangeleap.tangerine.controller.giftInKind.GiftInKindFormController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="giftInKind"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind"/>
+        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">

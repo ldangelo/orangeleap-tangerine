@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -42,4 +44,10 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     public List<DistributionLine> findDistributionLinesForRecurringGifts(Set<String> recurringGiftIds);
 
     public boolean canApplyPayment(RecurringGift recurringGift); 
+    
+    public void updateRecurringGiftForGift(Gift gift);
+    
+    public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift);
+    
+    public void setRecurringGiftStatus(RecurringGift recurringGift);
 }

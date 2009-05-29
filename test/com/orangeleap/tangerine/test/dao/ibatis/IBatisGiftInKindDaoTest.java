@@ -11,10 +11,8 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
@@ -30,7 +28,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
     public void testMaintainGiftInKind() throws Exception {
         // Insert
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        GiftInKind giftInKind = new GiftInKind(new BigDecimal(4.45), "USD", sdf.parse("02/01/2008"), "999", null, false, "Hi mom", false, null, FormBeanType.NONE);
+        GiftInKind giftInKind = new GiftInKind(new BigDecimal(4.45), "USD", sdf.parse("02/01/2008"), "999", null, false, "Hi mom");
         giftInKind.setPerson(new Person(200L, new Site("company1")));
         
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
@@ -46,10 +44,7 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert readGiftInKind.getOther_motivationCode() == null;
         assert readGiftInKind.isAnonymous() == false;
         assert "Hi mom".equals(readGiftInKind.getRecognitionName());
-        assert readGiftInKind.isSendAcknowledgment() == false;
         assert readGiftInKind.getGiftId() == null;
-        assert readGiftInKind.getAcknowledgmentDate() == null;
-        assert readGiftInKind.getSelectedEmail() != null && readGiftInKind.getSelectedEmail().getId() == null;
         assert readGiftInKind.getPerson() != null && readGiftInKind.getPerson().getId() == 200L;
         IBatisConstituentDaoTest.testConstituentId200(readGiftInKind.getPerson());
         assert readGiftInKind.getDetails() != null && readGiftInKind.getDetails().isEmpty();
@@ -61,9 +56,6 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         giftInKind.setDonationDate(null);
         giftInKind.setAnonymous(true);
         giftInKind.setRecognitionName(null);
-        Email email = new Email();
-        email.setId(100L);
-        giftInKind.setSelectedEmail(email);
         
         GiftInKindDetail detail = new GiftInKindDetail(new BigDecimal(.50), "my description", "xyz", false, giftInKind.getId(), null, "joe", new Integer(3)); 
         List<GiftInKindDetail> list = new ArrayList<GiftInKindDetail>();
@@ -81,9 +73,6 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert readGiftInKind.isAnonymous();
         assert readGiftInKind.getGiftId() == null;
         assert readGiftInKind.getRecognitionName().equals(StringConstants.ANONYMOUS_CAMEL_CASE);
-        assert readGiftInKind.isSendAcknowledgment() == false;
-        assert readGiftInKind.getAcknowledgmentDate() == null;
-        assert readGiftInKind.getSelectedEmail() != null && readGiftInKind.getSelectedEmail().getId() == 100L;
         assert readGiftInKind.getPerson() != null && readGiftInKind.getPerson().getId() == 200L;
         IBatisConstituentDaoTest.testConstituentId200(readGiftInKind.getPerson());
         assert readGiftInKind.getDetails() != null && readGiftInKind.getDetails().size() == 1;
@@ -116,12 +105,8 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
         assert giftInKind.getOther_motivationCode() == null;
         assert giftInKind.isAnonymous();
         assert giftInKind.getRecognitionName() == null;
-        assert giftInKind.isSendAcknowledgment() == false;
-        assert giftInKind.getAcknowledgmentDate() == null;
         assert giftInKind.getPerson() != null && giftInKind.getPerson().getId() == 100L;
         IBatisConstituentDaoTest.testConstituentId100(giftInKind.getPerson());
-        assert giftInKind.getSelectedEmail() != null && giftInKind.getSelectedEmail().getId() == 100L;
-        IBatisEmailDaoTest.testEmailId100(giftInKind.getSelectedEmail());
         assert giftInKind.getDetails() != null && giftInKind.getDetails().isEmpty();
     }
     
@@ -136,7 +121,6 @@ public class IBatisGiftInKindDaoTest extends AbstractIBatisTest {
             assert gik.getId() == 200L || gik.getId() == 300L;
             assert 0.99 == gik.getFairMarketValue().doubleValue() || 50 == gik.getFairMarketValue().doubleValue();
             assert 300L == gik.getPerson().getId();
-            assert 400L == gik.getSelectedEmail().getId();
             
             switch (gik.getId().intValue()) {
                 case 200:

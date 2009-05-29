@@ -11,12 +11,9 @@
 		<result property="other_motivationCode" column="GIFT_IN_KIND_OTHER_MOTIVATION_CODE" jdbcType="VARCHAR" />
 		<result property="anonymous" column="GIFT_IN_KIND_ANONYMOUS" jdbcType="CHAR" />
 		<result property="recognitionName" column="GIFT_IN_KIND_RECOGNITION_NAME" jdbcType="VARCHAR" />
-		<result property="sendAcknowledgment" column="GIFT_IN_KIND_SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
-		<result property="acknowledgmentDate" column="GIFT_IN_KIND_ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionDate" column="GIFT_IN_KIND_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="giftId" column="GIFT_IN_KIND_GIFT_ID" jdbcType="BIGINT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
-		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
         <result property="createDate" column="GIFT_IN_KIND_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="GIFT_IN_KIND_UPDATE_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
@@ -29,8 +26,7 @@
 		gik.GIFT_IN_KIND_ID, gik.FAIR_MARKET_VALUE as GIFT_IN_KIND_FAIR_MARKET_VALUE, gik.CURRENCY_CODE as GIFT_IN_KIND_CURRENCY_CODE,
 		gik.DONATION_DATE as GIFT_IN_KIND_DONATION_DATE, gik.MOTIVATION_CODE as GIFT_IN_KIND_MOTIVATION_CODE, 
 		gik.OTHER_MOTIVATION as GIFT_IN_KIND_OTHER_MOTIVATION_CODE, gik.ANONYMOUS as GIFT_IN_KIND_ANONYMOUS,
-		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.SEND_ACKNOWLEDGMENT as GIFT_IN_KIND_SEND_ACKNOWLEDGMENT, 
-		gik.ACKNOWLEDGMENT_DATE as GIFT_IN_KIND_ACKNOWLEDGMENT_DATE, gik.TRANSACTION_DATE as GIFT_IN_KIND_TRANSACTION_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID,
+		gik.RECOGNITION_NAME as GIFT_IN_KIND_RECOGNITION_NAME, gik.TRANSACTION_DATE as GIFT_IN_KIND_TRANSACTION_DATE, gik.GIFT_ID as GIFT_IN_KIND_GIFT_ID,
 		gik.UPDATE_DATE as GIFT_IN_KIND_UPDATE_DATE, gik.CREATE_DATE as GIFT_IN_KIND_CREATE_DATE
 		
 	</sql>
@@ -39,11 +35,9 @@
 		select
 		<include refid="GIFT_IN_KIND_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="GIFT_IN_KIND_DETAIL_COLS_FRAGMENT" />
 		from GIFT_IN_KIND gik
 		inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on gik.EMAIL_ID = e.EMAIL_ID
 		left outer join GIFT_IN_KIND_DETAIL gikd on gik.GIFT_IN_KIND_ID = gikd.GIFT_IN_KIND_ID
 		where p.SITE_NAME = #siteName#
 	</sql>
@@ -71,13 +65,11 @@
 		select
 		<include refid="GIFT_IN_KIND_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="GIFT_IN_KIND_DETAIL_COLS_FRAGMENT" />,
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
 		
 		from GIFT_IN_KIND gik
 		inner join CONSTITUENT p on gik.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on gik.EMAIL_ID = e.EMAIL_ID
 		left outer join GIFT_IN_KIND_DETAIL gikd on gik.GIFT_IN_KIND_ID = gikd.GIFT_IN_KIND_ID
 		
 		where p.SITE_NAME = #siteName#
@@ -96,11 +88,10 @@
 
 	<insert id="INSERT_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
 		insert into GIFT_IN_KIND (FAIR_MARKET_VALUE, CURRENCY_CODE, DONATION_DATE, MOTIVATION_CODE, OTHER_MOTIVATION, 
-		ANONYMOUS, RECOGNITION_NAME, SEND_ACKNOWLEDGMENT, ACKNOWLEDGMENT_DATE, TRANSACTION_DATE, CONSTITUENT_ID, EMAIL_ID, GIFT_ID,
-		CREATE_DATE, UPDATE_DATE
-		)
-		values (#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#, #other_motivationCode#, 
-		#anonymous#, #recognitionName#, #sendAcknowledgment#, #acknowledgmentDate#, #transactionDate#, #person.id#, #selectedEmail.id#, #giftId#, now(), now())
+		ANONYMOUS, RECOGNITION_NAME, TRANSACTION_DATE, CONSTITUENT_ID, GIFT_ID,	CREATE_DATE, UPDATE_DATE)
+		values 
+		(#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#, #other_motivationCode#, 
+		#anonymous#, #recognitionName#, #transactionDate#, #person.id#, #giftId#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -108,18 +99,16 @@
 	
 	<update id="UPDATE_GIFT_IN_KIND" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.GiftInKind">
 		update GIFT_IN_KIND gik, CONSTITUENT p
-		set gik.FAIR_MARKET_VALUE = #fairMarketValue#,
+		set 
+		gik.FAIR_MARKET_VALUE = #fairMarketValue#,
 		gik.CURRENCY_CODE = #currencyCode#,
 		gik.DONATION_DATE = #donationDate#,
 		gik.MOTIVATION_CODE = #motivationCode#,
 		gik.OTHER_MOTIVATION = #other_motivationCode#,
 		gik.ANONYMOUS = #anonymous#,
 		gik.RECOGNITION_NAME = #recognitionName#,
-		gik.SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
-		gik.ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		gik.TRANSACTION_DATE = #transactionDate#,
 		gik.CONSTITUENT_ID = #person.id#,
-		gik.EMAIL_ID = #selectedEmail.id#,
 		gik.GIFT_ID = #giftId#,
 		gik.UPDATE_DATE = now()
 		where 

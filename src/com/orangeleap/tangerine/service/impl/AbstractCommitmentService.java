@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
@@ -38,9 +37,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     @Resource(name = "giftService")
     protected GiftService giftService;
-
-    @Resource(name = "giftDAO")
-    private GiftDao giftDao;
 
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
@@ -64,18 +60,6 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         lines.add(line);
         commitment.setDistributionLines(lines);
         commitment.setPerson(constituent);
-    }
-
-    public BigDecimal getAmountReceived(T commitment) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("getAmountReceived: commitmentId = " + commitment.getId());
-        }
-        if (commitment instanceof RecurringGift) {
-            return giftDao.readGiftsReceivedSumByRecurringGiftId(commitment.getId());
-        }
-        else {
-            throw new IllegalArgumentException("Commitment is not a RecurringGift");
-        }
     }
     
     // TODO: refactor; this method is a mess!!!
@@ -259,6 +243,20 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
             return null;
         }
         return nextRun.getTime();
+    }
+    
+    protected void setCommitmentStatus(T commitment, String statusPropertyName) {
+        if (commitment.getAmountPaid() != null && commitment.getAmountTotal() != null) {
+            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
+            if (bw.isWritableProperty(statusPropertyName)) {
+                if (commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 0 || commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 1) {
+                    bw.setPropertyValue(statusPropertyName, Commitment.STATUS_FULFILLED);
+                }
+                else if (commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                    bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
+                }
+            }
+        }
     }
 
     protected Calendar getToday() {

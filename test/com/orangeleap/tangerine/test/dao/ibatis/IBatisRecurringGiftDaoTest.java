@@ -46,17 +46,11 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert 550 == recurringGift.getAmountPerGift().intValue();
         assert Pledge.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
 
-        assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == 100L;
-        assert "hobo@gmail.com".equals(recurringGift.getSelectedEmail().getEmailAddress());
-        assert recurringGift.getSelectedEmail().isInactive() == false;
-
         assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 100L;
         assert "Billy Graham Ministries".equals(recurringGift.getPerson().getOrganizationName());
         assert "Graham".equals(recurringGift.getPerson().getLastName());
         assert "Billy".equals(recurringGift.getPerson().getFirstName());
 
-        assert recurringGift.getGifts() != null && recurringGift.getGifts().isEmpty();
-        assert BigDecimal.ZERO.equals(recurringGift.getAmountPaid());
         assert recurringGift.getStartDate() == null;
         assert recurringGift.getEndDate() == null;
         assert recurringGift.getCreateDate() == null;
@@ -65,8 +59,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getLastEntryDate() == null;
         assert recurringGift.getDistributionLines() != null && recurringGift.getDistributionLines().isEmpty();
         assert StringConstants.USD.equals(recurringGift.getCurrencyCode());
-        assert recurringGift.isSendAcknowledgment() == false;
-        assert recurringGift.getAcknowledgmentDate() == null;
     }
     
     public static void testId300L(RecurringGift recurringGift) throws Exception {
@@ -76,7 +68,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert RecurringGift.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
         assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
         assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
-        assert recurringGift.getSelectedEmail() != null && recurringGift.getSelectedEmail().getId() == null;
         assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
         assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 200L;
         IBatisConstituentDaoTest.testConstituentId200(recurringGift.getPerson());
@@ -187,7 +178,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         params.put("accountNumber", new Long(200));
         params.put("phoneMap[home].number", "214-113-2542");
         params.put("addressMap[home].addressLine1", "ACORN");
-        params.put("emailMap[home].email", "");
         params.put("amountPerGift", new BigDecimal(10));
         
         List<RecurringGift> recurringGifts = recurringGiftDao.searchRecurringGifts(params);

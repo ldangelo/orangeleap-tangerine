@@ -4,10 +4,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.controller.commitment.CommitmentFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
@@ -29,6 +32,17 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     }
 
     @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+        ModelAndView mv = super.showForm(request, response, errors);
+        Pledge pledge = (Pledge)formBackingObject(request);
+        
+        if (usePledgeView(pledge)) {
+            mv = new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + pledge.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        }
+        return mv;
+    }
+
+    @Override
     protected Pledge maintainCommitment(Pledge entity) {
         return pledgeService.maintainPledge(entity);
     }
@@ -44,5 +58,18 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
     @Override
     protected String getParamId() {
         return StringConstants.PLEDGE_ID;
+    }
+    
+    @Override
+    protected String getReturnView(Pledge pledge) {
+        String url = formUrl;
+        if (usePledgeView(pledge)) {
+            url = getSuccessView();
+        }
+        return url;
+    }
+    
+    protected boolean usePledgeView(Pledge pledge) {
+        return pledgeService.arePaymentsAppliedToPledge(pledge);
     }
 }

@@ -2,7 +2,6 @@ package com.orangeleap.tangerine.test.dao.ibatis;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.util.StringConstants;
@@ -59,9 +57,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
     	pledge.setCurrencyCode(StringConstants.USD);
     	pledge.setAmountTotal(new BigDecimal(150));
     	pledge.setRecurring(false);
-    	Email email = new Email();
-    	email.setId(100L);
-    	pledge.setSelectedEmail(email);
         Site site = new Site("company1");
     	Person person = new Person();
         person.setId(100L);
@@ -79,7 +74,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert StringConstants.USD.equals(readPledge.getCurrencyCode());
         assert 150 == readPledge.getAmountTotal().intValue();
         
-        assert readPledge.getSelectedEmail() != null && readPledge.getSelectedEmail().getId() == 100L;
         assert readPledge.getPerson() != null && readPledge.getPerson().getId() == 100L;
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
         for (DistributionLine line : readPledge.getDistributionLines()) {
@@ -102,7 +96,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert readPledge.getGifts() != null && readPledge.getGifts().isEmpty();
         assert readPledge.getAmountPerGift() == null;
         assert readPledge.getStartDate() == null;
         assert readPledge.getEndDate() == null;
@@ -116,19 +109,14 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getLastEntryDate() == null;
         assert readPledge.isRecurring() == false;
         assert readPledge.getProjectedDate() == null;
-        assert readPledge.isSendAcknowledgment() == false;
-        assert readPledge.getAcknowledgmentDate() == null;
         
         // Update
         pledge = readPledge;
-        pledge.setAcknowledgmentDate(new Date());
-        pledge.setSendAcknowledgment(true);
         pledge.setRecurring(false);
         pledge.setAmountTotal(null);
         pledge.setAmountPerGift(new BigDecimal(12));
         pledge.setRecurring(true);
         pledge.setPhone(null);
-        pledge.setSelectedEmail(null);
         
         pledge = pledgeDao.maintainPledge(pledge);
         readPledge = pledgeDao.readPledgeById(pledge.getId());
@@ -138,14 +126,10 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert 12 == readPledge.getAmountPerGift().intValue();
         assert StringConstants.USD.equals(readPledge.getCurrencyCode());
         assert readPledge.getAmountTotal() == null;
-        assert readPledge.isSendAcknowledgment();
-        assert readPledge.getAcknowledgmentDate() != null;
         assert readPledge.isRecurring();
 
-        assert readPledge.getSelectedEmail() != null && readPledge.getSelectedEmail().getId() == null;
         assert readPledge.getPerson() != null && readPledge.getPerson().getId() == 100L;
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
-        assert readPledge.getGifts() != null && readPledge.getGifts().isEmpty();
         assert readPledge.getStartDate() == null;
         assert readPledge.getEndDate() == null;
         assert readPledge.getPledgeDate() != null;
@@ -166,7 +150,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert "Thank you for your pledge".equals(pledge.getComments());
         assert 25 == pledge.getAmountTotal().intValue();
         assert "Pending".equals(pledge.getPledgeStatus());
-        assert pledge.isSendAcknowledgment();
         assert pledge.isRecurring();
         
         assert pledge.getPerson() != null && pledge.getPerson().getId() == 300L;
@@ -201,8 +184,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
             }
         }
 
-        assert pledge.getSelectedEmail() != null && pledge.getSelectedEmail().getId() == null;
-        assert pledge.getGifts() != null && pledge.getGifts().isEmpty();
         assert pledge.getAmountPerGift() == null;
         assert pledge.getStartDate() == null;
         assert pledge.getEndDate() == null;
@@ -215,7 +196,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getLastEntryDate() == null;
         assert pledge.getProjectedDate() == null;
         assert StringConstants.USD.equals(pledge.getCurrencyCode());
-        assert pledge.getAcknowledgmentDate() == null;
     }
     
     @Test(groups = { "testReadPledge" })
@@ -320,7 +300,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         params.put("accountNumber", new Long(200));
         params.put("phoneMap[home].number", "214-113-2542");
         params.put("addressMap[home].addressLine1", "ACORN");
-        params.put("emailMap[home].email", "");
         params.put("amountTotal", new BigDecimal("3.99"));
     	
         List<Pledge> pledges = pledgeDao.searchPledges(params);

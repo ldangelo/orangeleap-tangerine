@@ -53,9 +53,12 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         T commitment = (T) command;        
         T current = maintainCommitment(commitment);
-        
-        String url = current.getGifts().isEmpty() ? formUrl : getSuccessView();
-        return new ModelAndView(super.appendSaved(url + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+  
+        return new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+    }
+    
+    protected String getReturnView(T entity) {
+        return formUrl;
     }
     
     protected abstract T maintainCommitment(T entity); 

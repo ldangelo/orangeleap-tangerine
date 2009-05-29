@@ -12,15 +12,12 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @SuppressWarnings("unchecked")
-public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAware {
+public class GiftInKind extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;
     
     private BigDecimal fairMarketValue;
@@ -30,16 +27,10 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
     private String other_motivationCode;
     private boolean anonymous = false;
     private String recognitionName;
-    private boolean sendAcknowledgment = false;
-    private Date acknowledgmentDate;
     private Date transactionDate;
    
     private Long giftId;
     private Person person;
-
-    private FormBeanType emailType;
-    private Email email = new Email();
-    private Email selectedEmail = new Email();
 
     /** Form bean representation of the GiftInKindDetails */
     protected List<GiftInKindDetail> mutableDetails = LazyList.decorate(new ArrayList<GiftInKindDetail>(), new Factory() {
@@ -64,7 +55,7 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
     }
 
     public GiftInKind(BigDecimal fairMarketValue, String currencyCode, Date donationDate, String motivationCode, String other_motivationCode, 
-                        boolean anonymous, String recognitionName, boolean sendAcknowledgment, Date acknowledgmentDate, FormBeanType emailType) {
+                        boolean anonymous, String recognitionName) {
         this();
         this.fairMarketValue = fairMarketValue;
         this.currencyCode = currencyCode;
@@ -73,9 +64,6 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
         this.other_motivationCode = other_motivationCode;
         this.anonymous = anonymous;
         this.recognitionName = recognitionName;
-        this.sendAcknowledgment = sendAcknowledgment;
-        this.acknowledgmentDate = acknowledgmentDate;
-        this.emailType = emailType;
     }
 
     public BigDecimal getFairMarketValue() {
@@ -134,22 +122,6 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
         this.recognitionName = recognitionName;
     }
 
-    public boolean isSendAcknowledgment() {
-        return sendAcknowledgment;
-    }
-
-    public void setSendAcknowledgment(boolean sendAcknowledgment) {
-        this.sendAcknowledgment = sendAcknowledgment;
-    }
-
-    public Date getAcknowledgmentDate() {
-        return acknowledgmentDate;
-    }
-
-    public void setAcknowledgmentDate(Date acknowledgmentDate) {
-        this.acknowledgmentDate = acknowledgmentDate;
-    }
-
     public Long getGiftId() {
         return giftId;
     }
@@ -172,33 +144,6 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
 
     public void setPerson(Person person) {
         this.person = person;
-    }
-
-    public FormBeanType getEmailType() {
-        return emailType;
-    }
-
-    public void setEmailType(FormBeanType emailType) {
-        this.emailType = emailType;
-    }
-
-    public Email getEmail() {
-        return email;
-    }
-
-    public void setEmail(Email email) {
-        this.email = email;
-    }
-
-    public Email getSelectedEmail() {
-        if (selectedEmail == null) {
-            selectedEmail = new Email(); // created only because spring needs to bind to it
-        }
-        return selectedEmail;
-    }
-
-    public void setSelectedEmail(Email selectedEmail) {
-        this.selectedEmail = selectedEmail;
     }
 
     public List<GiftInKindDetail> getDetails() {
@@ -274,9 +219,9 @@ public class GiftInKind extends AbstractCustomizableEntity implements NewEmailAw
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
-            append("donationDate", donationDate).append("sendAcknowledgment", sendAcknowledgment).append("acknowledgmentDate", acknowledgmentDate).
+            append("donationDate", donationDate).
             append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
-            append("constituent", person).append("selectedEmail", selectedEmail).append("giftId", giftId).append("transactionDate", transactionDate).
+            append("constituent", person).append("giftId", giftId).append("transactionDate", transactionDate).
             toString();
     }
 }

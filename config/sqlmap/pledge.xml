@@ -15,7 +15,6 @@
 	</resultMap>
 
 	<resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
-		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
 		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -25,18 +24,16 @@
 		<result property="pledgeCancelDate" column="PLEDGE_CANCEL_DATE"	jdbcType="TIMESTAMP" />
 		<result property="pledgeCancelReason" column="PLEDGE_CANCEL_REASON"	jdbcType="VARCHAR" />
 		<result property="projectedDate" column="PROJECTED_DATE" jdbcType="TIMESTAMP" />
-		<result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
-		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 	
 	<sql id="PLEDGE_COLS_FRAGMENT">
-		c.PLEDGE_ID, c.ACKNOWLEDGMENT_DATE, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AMOUNT_PAID, c.AMOUNT_REMAINING, 
+		c.PLEDGE_ID, c.AMOUNT_PER_GIFT, c.AMOUNT_TOTAL, c.AMOUNT_PAID, c.AMOUNT_REMAINING, 
 		c.COMMENTS, c.CREATE_DATE, c.END_DATE, c.FREQUENCY,
 		c.LAST_ENTRY_DATE, c.PLEDGE_CANCEL_DATE, c.PLEDGE_CANCEL_REASON, c.PLEDGE_DATE,
-		c.PROJECTED_DATE, c.RECURRING, c.SEND_ACKNOWLEDGMENT, 
+		c.PROJECTED_DATE, c.RECURRING,  
 		c.START_DATE, c.PLEDGE_STATUS, c.UPDATE_DATE, c.CURRENCY_CODE
 	</sql>
 
@@ -44,13 +41,11 @@
 		select
 		<include refid="PLEDGE_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 
 		from PLEDGE c
 
 		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
 		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
 	</sql>
 
@@ -84,13 +79,11 @@
 		select
 		<include refid="PLEDGE_COLS_FRAGMENT" />,
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />, 
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
 
 		from PLEDGE c
 		inner join CONSTITUENT p on c.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on c.EMAIL_ID = e.EMAIL_ID
 		left outer join DISTRO_LINE dl on c.PLEDGE_ID = dl.PLEDGE_ID
 		
 		where
@@ -127,15 +120,15 @@
 	</statement>
 
 	<insert id="INSERT_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
-		insert into PLEDGE (ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, CURRENCY_CODE, 
+		insert into PLEDGE (AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, CURRENCY_CODE, 
 		COMMENTS, CREATE_DATE, END_DATE, FREQUENCY, LAST_ENTRY_DATE, PLEDGE_CANCEL_DATE,
-		PLEDGE_CANCEL_REASON, PLEDGE_DATE, PROJECTED_DATE, RECURRING, SEND_ACKNOWLEDGMENT,
-		START_DATE,	PLEDGE_STATUS, UPDATE_DATE, EMAIL_ID, CONSTITUENT_ID)
-		values (#acknowledgmentDate#, #amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, #currencyCode#, 
+		PLEDGE_CANCEL_REASON, PLEDGE_DATE, PROJECTED_DATE, RECURRING, 
+		START_DATE,	PLEDGE_STATUS, UPDATE_DATE, CONSTITUENT_ID)
+		values (#amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, #currencyCode#, 
 		#comments#, now(), #endDate#,
 		#frequency#, #lastEntryDate#, #pledgeCancelDate#, 
-		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, #sendAcknowledgment#,
-		#startDate#, #pledgeStatus#, now(), #selectedEmail.id#, #person.id#)
+		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, 
+		#startDate#, #pledgeStatus#, now(), #person.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -143,7 +136,7 @@
 
 	<update id="UPDATE_PLEDGE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.Pledge">
 		update PLEDGE
-		set ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
+		set 
 		AMOUNT_PER_GIFT = #amountPerGift#,
 		AMOUNT_TOTAL = #amountTotal#,
 		AMOUNT_PAID = #amountPaid#,
@@ -159,10 +152,8 @@
 		PLEDGE_STATUS = #pledgeStatus#,
 		PROJECTED_DATE = #projectedDate#,
 		RECURRING = #recurring#,
-		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
 		START_DATE = #startDate#,
 		UPDATE_DATE = now(),
-		EMAIL_ID = #selectedEmail.id#,
 		CONSTITUENT_ID = #person.id#
 		where PLEDGE_ID = #id#
 	</update>
@@ -209,15 +200,6 @@
 		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ like #addressParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="emailParams"> 
-		   and exists (
-		    select * from EMAIL se where 
-		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="emailParams" conjunction="and" open="and" close="">
-		    se.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>

@@ -31,6 +31,8 @@ public interface PledgeService extends CommitmentService<Pledge> {
 	public PaginatedResult readPaginatedPledgesByConstituentId(Long constituentId, SortInfo sortinfo);
     
     public List<Pledge> searchPledges(Map<String, Object> params);
+    
+    public boolean arePaymentsAppliedToPledge(Pledge pledge);
 
     public Map<String, List<Pledge>> findNotCancelledPledges(Long constituentId, String selectedPledgeIds);
     

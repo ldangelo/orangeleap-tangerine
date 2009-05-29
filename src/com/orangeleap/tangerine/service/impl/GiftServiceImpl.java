@@ -33,7 +33,6 @@ import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.integration.NewGift;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -57,11 +56,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Resource(name = "paymentHistoryService")
     private PaymentHistoryService paymentHistoryService;
 
-    @Resource(name = "recurringGiftService")
-    private RecurringGiftService recurringGiftService;
-
     @Resource(name = "pledgeService")
     private PledgeService pledgeService;
+
+    @Resource(name = "recurringGiftService")
+    private RecurringGiftService recurringGiftService;
 
     @Resource(name = "giftDAO")
     private GiftDao giftDao;
@@ -96,6 +95,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        setDefaultDates(gift);
 	        gift = giftDao.maintainGift(gift);
 	        pledgeService.updatePledgeForGift(gift);
+	        recurringGiftService.updateRecurringGiftForGift(gift);
 	        auditService.auditObject(gift, gift.getPerson());
 	
 	        //
@@ -141,6 +141,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        maintainEntityChildren(gift, gift.getPerson());
 	        gift = giftDao.maintainGift(gift);
             pledgeService.updatePledgeForGift(gift);
+            recurringGiftService.updateRecurringGiftForGift(gift);
 	        if (!reentrant) {
 	        	routeGift(gift);
 	        }
@@ -304,15 +305,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             logger.trace("readMonetaryGiftsByConstituentId: constituentId = " + constituentId);
         }
         return giftDao.readMonetaryGiftsByConstituentId(constituentId);
-    }
-
-    // THIS METHOD IS NOT USED ANYWHERE TODO: remove?
-    @Override
-    public List<Gift> readGiftsByRecurringGiftId(RecurringGift recurringGift) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("readGiftsByRecurringGiftId: recurringGiftId = " + recurringGift.getId());
-        }
-        return giftDao.readGiftsByRecurringGiftId(recurringGift.getId());
     }
 
 	@Override

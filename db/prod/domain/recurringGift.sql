@@ -10,9 +10,11 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, REFERENCE_TYPE, 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.recurringGiftStatus', 'recurringGift', 'recurringGiftStatus', 'Status', 'PICKLIST');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[initialReminder]', 'recurringGift', 'customFieldMap[initialReminder]', 'Initial Reminder (days)', 'NUMBER');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[maximumReminders]', 'recurringGift', 'customFieldMap[maximumReminders]', 'Maximum Reminders', 'NUMBER');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[reminderInterval]', 'recurringGift', 'customFieldMap[reminderInterval]', 'Reminder interval (days)', 'NUMBER');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.customFieldMap[reminderInterval]', 'recurringGift', 'customFieldMap[reminderInterval]', 'Reminder Interval (days)', 'NUMBER');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.amountPerGiftReadOnly', 'recurringGift', 'amountPerGift', 'Amount Per Gift', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.amountPaidReadOnly', 'recurringGift', 'amountPaid', 'Amount Paid', 'READ_ONLY_TEXT');
+INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.amountRemainingReadOnly', 'recurringGift', 'amountRemaining', 'Amount Remaining', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.frequencyReadOnly', 'recurringGift', 'frequency', 'Frequency', 'READ_ONLY_TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.startDateReadOnly', 'recurringGift', 'startDate', 'Start Date', 'DATE_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.endDateReadOnly', 'recurringGift', 'endDate', 'End Date', 'DATE_DISPLAY');
@@ -111,11 +113,6 @@ INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFA
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPhone.customFieldMap[phoneTypeReadOnly]', 'recurringGift', 'selectedPhone', 'Phone Type', 'MULTI_PICKLIST_DISPLAY');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedPhone.numberReadOnly', 'recurringGift', 'selectedPhone', 'Phone Number', 'READ_ONLY_TEXT');
-
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.selectedEmail', 'recurringGift', 'selectedEmail', 'Receipt EMail', 'EMAIL_PICKLIST');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.email.emailAddress', 'recurringGift', 'email', 'Email', 'TEXT');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.sendAcknowledgment', 'recurringGift', 'sendAcknowledgment', 'Send Acknowledgment', 'CHECKBOX');
-INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.acknowledgmentDate', 'recurringGift', 'acknowledgmentDate', 'Acknowledgment Date', 'DATE');
 
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.amountTotal', 'recurringGift', 'amountTotal', 'Amount Total', 'TEXT');
 INSERT INTO FIELD_DEFINITION (FIELD_DEFINITION_ID, ENTITY_TYPE, FIELD_NAME, DEFAULT_LABEL, FIELD_TYPE) VALUES ('recurringGift.amountPaid', 'recurringGift', 'amountPaid', 'Amount Paid', 'TEXT');

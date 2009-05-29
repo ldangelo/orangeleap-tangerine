@@ -179,6 +179,21 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         return pledge.getId() != null && pledge.getId() > 0 && Commitment.STATUS_CANCELLED.equals(pledge.getPledgeStatus()) == false;
     }
     
+    @Override
+    public boolean arePaymentsAppliedToPledge(Pledge pledge) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("arePaymentsAppliedToPledge: pledge.id = " + pledge.getId());
+        }
+        boolean areApplied = false;
+        if (pledge.getId() != null && pledge.getId() > 0) {
+            Long paymentsAppliedCount = pledgeDao.readPaymentsAppliedToPledgeId(pledge.getId());
+            if (paymentsAppliedCount != null && paymentsAppliedCount > 0) {
+                areApplied = true;
+            }
+        }
+        return areApplied;
+    }
+    
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updatePledgeForGift(Gift gift) {
@@ -214,7 +229,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
                     if (pledge != null) {
                         BigDecimal amountPaid = pledgeDao.readAmountPaidForPledgeId(pledgeId);
                         setPledgeAmounts(pledge, amountPaid);
-                        setPledgeStatus(pledge);
+                        setCommitmentStatus(pledge, "pledgeStatus");
                         pledgeDao.maintainPledgeAmountPaidRemainingStatus(pledge);
                     }
                 }
@@ -228,25 +243,9 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         }
         pledge.setAmountPaid(amountPaid);
 
-        if (pledge.isRecurring() == false) {
-            if (pledge.getAmountTotal() != null) {
+        if (pledge.getAmountTotal() != null) {
+            if (pledge.isRecurring() == false || (pledge.isRecurring() && pledge.getEndDate() != null)) {
                 pledge.setAmountRemaining(pledge.getAmountTotal().subtract(pledge.getAmountPaid()));
-            }
-        }
-        else {
-            if (pledge.getAmountPerGift() != null) {
-                pledge.setAmountRemaining(pledge.getAmountPerGift().subtract(pledge.getAmountPaid()));
-            }
-        }
-    }
-    
-    private void setPledgeStatus(Pledge pledge) {
-        if (pledge.getAmountPaid() != null && pledge.getAmountTotal() != null) {
-            if (pledge.getAmountTotal().equals(pledge.getAmountPaid())) {
-                pledge.setPledgeStatus(Commitment.STATUS_FULFILLED);
-            }
-            else if (pledge.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
-                pledge.setPledgeStatus(Commitment.STATUS_IN_PROGRESS);
             }
         }
     }

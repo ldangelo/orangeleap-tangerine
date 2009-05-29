@@ -34,6 +34,26 @@
 		where p.SITE_NAME = #siteName#) a
 	</select>
 
+	<select id="SELECT_PAYMENTS_APPLIED_TO_PLEDGE_ID" parameterClass="map" resultClass="java.lang.Long">
+		select count(a.lineId) as totalPayments from 
+		
+		(select dl.DISTRO_LINE_ID as lineId
+		from DISTRO_LINE dl
+		inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME = 'associatedPledgeId' and cf.ENTITY_TYPE = 'distributionline' and cf.FIELD_VALUE = #pledgeId# 
+		inner join GIFT g on g.GIFT_ID = dl.GIFT_ID and g.GIFT_STATUS = 'Paid' and g.GIFT_TYPE != 'GIFT_IN_KIND'
+		inner join CONSTITUENT p on  p.CONSTITUENT_ID = g.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#
+		
+		union 
+		
+		select dl.DISTRO_LINE_ID as lineId
+		from DISTRO_LINE dl
+		inner join CUSTOM_FIELD cf on cf.ENTITY_ID = dl.DISTRO_LINE_ID and cf.FIELD_NAME = 'associatedPledgeId' and cf.ENTITY_TYPE = 'distributionline' and cf.FIELD_VALUE = #pledgeId# 
+		inner join ADJUSTED_GIFT ag on ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID and ag.ADJUSTED_STATUS = 'Paid'
+		inner join CONSTITUENT p on p.CONSTITUENT_ID = ag.CONSTITUENT_ID
+		where p.SITE_NAME = #siteName#) a
+	</select>
+
 	<insert id="INSERT_PLEDGE_GIFT" parameterClass="java.util.Map">
 		insert into PLEDGE_GIFT (GIFT_ID, PLEDGE_ID)
 		values (#giftId#, #pledgeId#)

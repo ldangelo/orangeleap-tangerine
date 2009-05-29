@@ -7,7 +7,8 @@
 		<result property="nextRunDate" column="NEXT_RUN_DATE" jdbcType="TIMESTAMP" />
 		<result property="amountPerGift" column="AMOUNT_PER_GIFT" jdbcType="DECIMAL" />
 		<result property="amountTotal" column="AMOUNT_TOTAL" jdbcType="DECIMAL" />
-		<result property="acknowledgmentDate" column="ACKNOWLEDGMENT_DATE" jdbcType="TIMESTAMP" />
+		<result property="amountPaid" column="AMOUNT_PAID" jdbcType="DECIMAL" />
+		<result property="amountRemaining" column="AMOUNT_REMAINING" jdbcType="DECIMAL" />
 		<result property="autoPay" column="AUTO_PAY" jdbcType="CHAR" />
 		<result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
 		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
@@ -17,22 +18,20 @@
 		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
 		<result property="lastEntryDate" column="LAST_ENTRY_DATE" jdbcType="TIMESTAMP" />
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
-		<result property="sendAcknowledgment" column="SEND_ACKNOWLEDGMENT" jdbcType="CHAR" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
 		<result property="recurringGiftStatus" column="RECURRING_GIFT_STATUS" jdbcType="VARCHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
 		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
-		<result property="selectedEmail" resultMap="EMAIL.EMAIL_RESULT" />
 		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="distributionLines" resultMap="DISTRO_LINE.DISTRO_LINE_RESULT" />
 	</resultMap>
 	
 	<sql id="RECURRING_GIFT_COLS_FRAGMENT">
-		rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE, rg.ACKNOWLEDGMENT_DATE, rg.AMOUNT_PER_GIFT, rg.AMOUNT_TOTAL, rg.AUTO_PAY,
+		rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE, rg.AMOUNT_PER_GIFT, rg.AMOUNT_TOTAL, rg.AMOUNT_PAID, rg.AMOUNT_REMAINING, rg.AUTO_PAY,
 		rg.CHECK_NUMBER, rg.COMMENTS, rg.CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY,
-		rg.LAST_ENTRY_DATE, rg.PAYMENT_TYPE, rg.SEND_ACKNOWLEDGMENT, rg.START_DATE,
+		rg.LAST_ENTRY_DATE, rg.PAYMENT_TYPE, rg.START_DATE,
 		rg.RECURRING_GIFT_STATUS, rg.UPDATE_DATE
 	</sql>
 	
@@ -42,13 +41,11 @@
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
 		<include refid="ADDRESS_COLS_FRAGMENT" />,
 		<include refid="PHONE_COLS_FRAGMENT" />	,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />
 		
 		from RECURRING_GIFT rg
 		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on rg.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
 		left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
@@ -82,14 +79,12 @@
 		<include refid="CONSTITUENT_COLS_FRAGMENT" />,
 		<include refid="ADDRESS_COLS_FRAGMENT" />,
 		<include refid="PHONE_COLS_FRAGMENT" />	,
-		<include refid="EMAIL_COLS_FRAGMENT" />,
 		<include refid="PAYMENT_SRC_COLS_FRAGMENT" />,
 		<include refid="DISTRO_LINE_COLS_FRAGMENT" />,
 		IF ($sortColumn$ IS NULL or $sortColumn$ = '', 1, 0) AS isnull
 		
 		from RECURRING_GIFT rg
 		inner join CONSTITUENT p on rg.CONSTITUENT_ID = p.CONSTITUENT_ID
-		left outer join EMAIL e on rg.EMAIL_ID = e.EMAIL_ID
 		left outer join PHONE ph on rg.PHONE_ID = ph.PHONE_ID
 		left outer join ADDRESS addr on rg.ADDRESS_ID = addr.ADDRESS_ID
 		left outer join PAYMENT_SOURCE ps on rg.PAYMENT_SOURCE_ID = ps.PAYMENT_SOURCE_ID
@@ -121,16 +116,16 @@
 	</select>
   
 	<insert id="INSERT_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
-		insert into RECURRING_GIFT (NEXT_RUN_DATE, ACKNOWLEDGMENT_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL,
+		insert into RECURRING_GIFT (NEXT_RUN_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, 
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, CREATE_DATE, CURRENCY_CODE,
 		END_DATE, FREQUENCY, LAST_ENTRY_DATE, PAYMENT_TYPE,  
-		SEND_ACKNOWLEDGMENT, START_DATE, RECURRING_GIFT_STATUS, UPDATE_DATE, 
-		ADDRESS_ID, EMAIL_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
-		values (#nextRunDate#, #acknowledgmentDate#, #amountPerGift#, #amountTotal#,
+		START_DATE, RECURRING_GIFT_STATUS, UPDATE_DATE, 
+		ADDRESS_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
+		values (#nextRunDate#, #amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, 
 		#autoPay#, #checkNumber#, #comments#, now(), #currencyCode#, 
 		#endDate#, #frequency#, #lastEntryDate#, #paymentType#,  
-		#sendAcknowledgment#, #startDate#, #recurringGiftStatus#, now(), 
-		#selectedAddress.id#, #selectedEmail.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
+		#startDate#, #recurringGiftStatus#, now(), 
+		#selectedAddress.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -139,9 +134,10 @@
 	<update id="UPDATE_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
 		update RECURRING_GIFT
 		set NEXT_RUN_DATE = #nextRunDate#,
-		ACKNOWLEDGMENT_DATE = #acknowledgmentDate#,
 		AMOUNT_PER_GIFT = #amountPerGift#,
 		AMOUNT_TOTAL = #amountTotal#,
+		AMOUNT_PAID = #amountPaid#,
+		AMOUNT_REMAINING = #amountRemaining#,
 		AUTO_PAY = #autoPay#,
 		CHECK_NUMBER = #checkNumber#,
 		COMMENTS = #comments#,
@@ -151,14 +147,22 @@
 		LAST_ENTRY_DATE = #lastEntryDate#,
 		PAYMENT_TYPE = #paymentType#,
 		RECURRING_GIFT_STATUS = #recurringGiftStatus#,
-		SEND_ACKNOWLEDGMENT = #sendAcknowledgment#,
 		START_DATE = #startDate#,
 		UPDATE_DATE = now(),
 		ADDRESS_ID = #selectedAddress.id#,
-		EMAIL_ID = #selectedEmail.id#,
 		PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		CONSTITUENT_ID = #person.id#,
 		PHONE_ID = #selectedPhone.id#		
+		where RECURRING_GIFT_ID = #id#
+	</update>
+	
+	<update id="UPDATE_RECURRING_GIFT_AMOUNT_PAID_REMAINING_STATUS" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
+		update RECURRING_GIFT
+		set 
+		AMOUNT_PAID = #amountPaid#,
+		AMOUNT_REMAINING = #amountRemaining#,
+		RECURRING_GIFT_STATUS = #recurringGiftStatus#,
+		UPDATE_DATE = now()
 		where RECURRING_GIFT_ID = #id#
 	</update>
   
@@ -199,15 +203,6 @@
 		    saddr.CONSTITUENT_ID = p.CONSTITUENT_ID
 		    <iterate property="addressParams" conjunction="and" open="and" close="">
 		    saddr.$addressParams[].key$ like #addressParams[].value#
-		    </iterate>
-		   )
-		</isNotNull>
-		<isNotNull property="emailParams"> 
-		   and exists (
-		    select * from EMAIL se where 
-		    se.CONSTITUENT_ID = p.CONSTITUENT_ID
-		    <iterate property="emailParams" conjunction="and" open="and" close="">
-		    se.$emailParams[].key$ like #emailParams[].value#
 		    </iterate>
 		   )
 		</isNotNull>

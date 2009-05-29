@@ -15,9 +15,14 @@
 			<form:form method="post" commandName="pledge">
 				<spring:message code='viewPledge' var="titleText" />
 				<spring:message code='submitPledge' var="submitText" />
+				<c:if test="${requestScope.canApplyPayment}">
+					<spring:message var="applyPaymentText" code="applyPayment"/>
+				</c:if>
 				<jsp:include page="../snippets/personHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
+					<jsp:param name="routeButtonText" value="${applyPaymentText}" />
+					<jsp:param name="routeUrl" value="gift.htm?personId=${person.id}&selectedPledgeId=${pledge.id}" />
 				</jsp:include>
 				
 			    <c:set var="gridCollectionName" value="distributionLines" scope="request" />
@@ -107,30 +112,16 @@
 				
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
 				<div class="formButtonFooter personFormButtons">
+					<c:if test="${requestScope.canApplyPayment}">
+						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&selectedPledgeId=${pledge.id}')"/>
+					</c:if>
 					<input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" />
 		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
 					</c:if>
 					<a class="newAccountButton" href="pledge.htm?personId=${person.id}"><spring:message code='enterNewPledge'/></a>
 				</div>
-				
-				
-<%-- TODO: put back below
-				<div class="formButtonFooter">
-					<input type="button" value="<spring:message code='receiveGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&pledgeId=${pledge.id}')"/>
-					<c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='viewPledgeHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
-					</c:if>
-					<input type="button" value="<spring:message code='enterNewPledge'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledge.htm?personId=${person.id}')"/>
-				</div>
---%>				
 			</form:form>
-
-<%-- TODO: put back below
-			<c:forEach var="gift" items="${gifts}">
-				<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />
-			</c:forEach>
---%>				
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -1,10 +1,12 @@
 package com.orangeleap.tangerine.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateMidnight;
@@ -22,12 +25,14 @@ import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -221,6 +226,64 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         rGifts.add(recurringGift);
         return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
     }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateRecurringGiftForGift(Gift gift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateRecurringGiftForGift: gift.id = " + gift.getId());
+        }
+        updateRecurringGiftStatusAmountPaid(gift.getDistributionLines());
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("updateRecurringGiftForAdjustedGift: adjustedGift.id = " + adjustedGift.getId());
+        }
+        updateRecurringGiftStatusAmountPaid(adjustedGift.getDistributionLines());
+    }
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines) {
+        Set<Long> recurringGiftIds = new HashSet<Long>();
+        if (lines != null) {
+            for (DistributionLine thisLine : lines) {
+                if (NumberUtils.isDigits(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID))) {
+                    Long recurringGiftId = Long.parseLong(thisLine.getCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID));
+                    recurringGiftIds.add(recurringGiftId);
+                }
+            }
+    
+            if (recurringGiftIds.isEmpty() == false) {
+                for (Long recurringGiftId : recurringGiftIds) {
+                    RecurringGift recurringGift = readRecurringGiftById(recurringGiftId);
+                    if (recurringGift != null) {
+                        BigDecimal amountPaid = recurringGiftDao.readAmountPaidForRecurringGiftId(recurringGiftId);
+                        setRecurringGiftAmounts(recurringGift, amountPaid);
+                        setRecurringGiftStatus(recurringGift);
+                        recurringGiftDao.maintainRecurringGiftAmountPaidRemainingStatus(recurringGift);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void setRecurringGiftAmounts(RecurringGift recurringGift, BigDecimal amountPaid) {
+        if (amountPaid == null || amountPaid.compareTo(BigDecimal.ZERO) == -1) {
+            amountPaid = BigDecimal.ZERO;
+        }
+        recurringGift.setAmountPaid(amountPaid);
+        if (recurringGift.getAmountTotal() != null && recurringGift.getEndDate() != null) {
+            recurringGift.setAmountRemaining(recurringGift.getAmountTotal().subtract(recurringGift.getAmountPaid()));
+        }
+    }
+    
+    @Override
+    public void setRecurringGiftStatus(RecurringGift recurringGift) {
+        setCommitmentStatus(recurringGift, "recurringGiftStatus");
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -248,7 +311,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     protected void createAutoGift(RecurringGift recurringGift) {
         Gift gift = new Gift(recurringGift);
-//        commitment.addGift(gift);
+        recurringGift.addGift(gift);
         gift = giftService.maintainGift(gift);
         recurringGift.setLastEntryDate(gift.getTransactionDate());
     }

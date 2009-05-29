@@ -12,6 +12,7 @@
         <property name="bindAddress" value="false"/>
         <property name="bindPaymentSource" value="false"/>
         <property name="bindPhone" value="false"/>
+        <property name="bindEmail" value="false"/>
         <property name="validators">
 			<list>
 	            <ref bean="pledgeValidator"/>
@@ -27,9 +28,14 @@
         <property name="formUrl" value="redirect:/pledge.htm" />
     </bean>
 
-    <bean id="pledgeViewController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeViewController" parent="pledgeFormController">
-        <property name="formView" value="pledge/pledgeView" />
-        <property name="successView" value="redirect:/pledgeView.htm" />
+    <bean id="pledgeViewController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeViewController" parent="commitmentFormController">
+        <property name="pageType" value="pledge"/>
+        <property name="commandName" value="pledge"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Pledge"/>
+        <property name="bindAddress" value="false"/>
+        <property name="bindPaymentSource" value="false"/>
+        <property name="bindPhone" value="false"/>
+        <property name="bindEmail" value="false"/>
     	<property name="handleEmptyDistributionLines" value="false"/>
         <property name="validators">
 			<list>
@@ -40,6 +46,8 @@
 	            <ref bean="codeValidator"/>	            
 			</list>
         </property>
+        <property name="formView" value="pledge/pledgeView" />
+        <property name="successView" value="redirect:/pledgeView.htm" />
     </bean>
 
     <bean id="pledgeSearchController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeSearchFormController">

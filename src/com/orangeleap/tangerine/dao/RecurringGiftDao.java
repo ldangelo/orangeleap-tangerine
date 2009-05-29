@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ public interface RecurringGiftDao {
     public List<RecurringGift> readRecurringGifts(Date date, List<String> statuses);
 
     public RecurringGift maintainRecurringGift(RecurringGift rg);
+    
+    public void maintainRecurringGiftAmountPaidRemainingStatus(RecurringGift recurringGift);
 
     public void removeRecurringGift(RecurringGift rg);
     
@@ -26,4 +29,6 @@ public interface RecurringGiftDao {
 	public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo);
 	
 	public List<DistributionLine> findDistributionLinesForRecurringGifts(List<String> recurringGiftIds);
+	
+	public BigDecimal readAmountPaidForRecurringGiftId(Long recurringGiftId);
 }

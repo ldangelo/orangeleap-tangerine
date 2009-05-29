@@ -35,8 +35,10 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     public static final String FREQUENCY_UNSPECIFIED = "unspecified";
 
     private CommitmentType commitmentType;
-    private BigDecimal amountTotal = null;
+    protected BigDecimal amountTotal = null;
     protected BigDecimal amountPerGift;
+    protected BigDecimal amountPaid;
+    protected BigDecimal amountRemaining;
     protected Date startDate = Calendar.getInstance().getTime();
     protected Date endDate;
     protected String frequency;
@@ -62,45 +64,43 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     }
     
     public BigDecimal getAmountTotal() {
-        if (amountTotal == null) {
-            if (startDate != null && endDate != null && amountPerGift != null && frequency != null) {
-                DateTime dtStart = new DateTime( startDate.getTime() );
-                DateTime dtEnd = new DateTime( endDate.getTime() );
-                int multiplier = 1; // there is always at least one payment
-    
-                //TODO: this is pretty ugly. Move to a typesafe enum at some point
-                //NOTE: we skip FREQUENCY_ONE_TIME, as it means a multiplier of 1
-                if (frequency.equals(FREQUENCY_WEEKLY)) {
-                    Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
-                    multiplier += weeks.getWeeks();
-                } 
-                else if (frequency.equals(FREQUENCY_TWICE_MONTHLY)) {
-                    // this is the only one that can be a bit tricky, given a month
-                    // can potentially have more than 4 weeks. Use for now
-                    Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
-                    multiplier += weeks.getWeeks() / 2;
-                } 
-                else if (frequency.equals(FREQUENCY_MONTHLY)) {
-                    Months months = Months.monthsBetween(dtStart,dtEnd);
-                    multiplier += months.getMonths();
-                } 
-                else if (frequency.equals(FREQUENCY_QUARTERLY)) {
-                    Months months = Months.monthsBetween(dtStart,dtEnd);
-                    multiplier += months.getMonths() / 3;
-                } 
-                else if (frequency.equals(FREQUENCY_TWICE_ANNUALLY)) {
-                    Months months = Months.monthsBetween(dtStart,dtEnd);
-                    multiplier += months.getMonths() / 6;
-                } 
-                else if (frequency.equals(FREQUENCY_ANNUALLY)) {
-                    Months months = Months.monthsBetween(dtStart,dtEnd);
-                    multiplier += months.getMonths() / 12;
-                } 
-                else if (frequency.equals(FREQUENCY_UNSPECIFIED)) {
-                    multiplier = 0;
-                }
-                amountTotal = amountPerGift.multiply(new BigDecimal(multiplier));
+        if (startDate != null && endDate != null && amountPerGift != null && frequency != null) {
+            DateTime dtStart = new DateTime( startDate.getTime() );
+            DateTime dtEnd = new DateTime( endDate.getTime() );
+            int multiplier = 1; // there is always at least one payment
+
+            //TODO: this is pretty ugly. Move to a typesafe enum at some point
+            //NOTE: we skip FREQUENCY_ONE_TIME, as it means a multiplier of 1
+            if (frequency.equals(FREQUENCY_WEEKLY)) {
+                Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
+                multiplier += weeks.getWeeks();
+            } 
+            else if (frequency.equals(FREQUENCY_TWICE_MONTHLY)) {
+                // this is the only one that can be a bit tricky, given a month
+                // can potentially have more than 4 weeks. Use for now
+                Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
+                multiplier += weeks.getWeeks() / 2;
+            } 
+            else if (frequency.equals(FREQUENCY_MONTHLY)) {
+                Months months = Months.monthsBetween(dtStart,dtEnd);
+                multiplier += months.getMonths();
+            } 
+            else if (frequency.equals(FREQUENCY_QUARTERLY)) {
+                Months months = Months.monthsBetween(dtStart,dtEnd);
+                multiplier += months.getMonths() / 3;
+            } 
+            else if (frequency.equals(FREQUENCY_TWICE_ANNUALLY)) {
+                Months months = Months.monthsBetween(dtStart,dtEnd);
+                multiplier += months.getMonths() / 6;
+            } 
+            else if (frequency.equals(FREQUENCY_ANNUALLY)) {
+                Months months = Months.monthsBetween(dtStart,dtEnd);
+                multiplier += months.getMonths() / 12;
+            } 
+            else if (frequency.equals(FREQUENCY_UNSPECIFIED)) {
+                multiplier = 0;
             }
+            amountTotal = amountPerGift.multiply(new BigDecimal(multiplier));
         }
         return amountTotal;
     }
@@ -115,6 +115,25 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
 
     public void setAmountPerGift(BigDecimal amountPerGift) {
         this.amountPerGift = amountPerGift;
+    }
+
+    public BigDecimal getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(BigDecimal amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public BigDecimal getAmountRemaining() {
+        return amountRemaining;
+    }
+
+    public void setAmountRemaining(BigDecimal amountRemaining) {
+        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) < 0) {
+            amountRemaining = BigDecimal.ZERO;
+        }
+        this.amountRemaining = amountRemaining;
     }
 
     public Date getStartDate() {
@@ -140,17 +159,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     public void setFrequency(String frequency) {
         this.frequency = frequency;
     }
-
-//    public boolean canRecur() {
-//        boolean recur = true;
-//        if (getEndDate() != null && getEndDate().before(Calendar.getInstance().getTime())) {
-//            recur = false;
-//        } 
-//        else if (STATUS_CANCELLED.equals(getStatus()) || STATUS_EXPIRED.equals(getStatus())) { // TODO: fix to look at recurringGiftStatus or pledgeStatus
-//            recur = false;
-//        }
-//        return recur;
-//    }
 
     public Date getLastEntryDate() {
         return lastEntryDate;
@@ -185,27 +193,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         this.associatedGiftIds = associatedGiftIds;
     }
     
-    public BigDecimal getAmountPaid() {
-        BigDecimal amount = BigDecimal.ZERO;
-        if (getGifts() != null) {
-            for (Gift gift : getGifts()) {
-                amount = amount.add(gift.getAmount());
-            }
-        }
-        return amount;
-    }
-
-    public BigDecimal getAmountRemaining() {
-        BigDecimal amount = getAmountTotal();
-        if (amount != null) {
-            amount = amount.subtract(getAmountPaid());
-            if (amount.compareTo(BigDecimal.ZERO) < 0) {
-                amount = BigDecimal.ZERO;
-            }
-        }
-        return amount;
-    }
-
     @Override
     public void setDefaults() {
         super.setDefaults();

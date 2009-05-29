@@ -82,7 +82,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             });
             int fieldOrder = 0;
             if (sectionFields.size() > 0) {
-            	fieldOrder = sectionFields.get(0).getFieldOrder().intValue() + 1000;
+            	fieldOrder = sectionFields.get(sectionFields.size()-1).getFieldOrder().intValue() + 1000;
             }
             
             Site site = new Site(tangerineUserHelper.lookupUserSiteName());
@@ -90,7 +90,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             FieldDefinition newFieldDefinition = new FieldDefinition();
             newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
             newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
-            if (customFieldRequest.equals("person")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
+            if (customFieldRequest.getEntityType().equals("person")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
             newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
             newFieldDefinition.setSite(site);
             String fieldName = "customFieldMap["+ customFieldRequest.getFieldName()+"]";
@@ -118,7 +118,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
             pageCustomizationService.maintainFieldDefinition(newFieldDefinition);
             pageCustomizationService.maintainSectionField(newSectionField);
-            pageCustomizationService.maintainFieldValidation(fieldValidation);
+            if (fieldValidation.getRegex() != null) pageCustomizationService.maintainFieldValidation(fieldValidation);
             
     		// TODO modify clementine views to support new custom field
     		

@@ -39,7 +39,7 @@ public class PersonExporter extends EntityExporter {
 	@Override
 	protected boolean exclude(String name, FieldDefinition fd) {
 		return super.exclude(name, fd) 
-		|| fd.getFieldType() == FieldType.QUERY_LOOKUP;
+		|| fd.getFieldType() == FieldType.QUERY_LOOKUP || fd.getFieldType() == FieldType.MULTI_QUERY_LOOKUP;
 	}
 
 	@Override

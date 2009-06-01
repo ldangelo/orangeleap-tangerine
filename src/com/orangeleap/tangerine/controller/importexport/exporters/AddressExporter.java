@@ -34,7 +34,7 @@ public class AddressExporter extends EntityExporter {
 	protected List readAll() {
 		// Export as a constituent to get the extra readonly info fields and import as an address to avoid updating the constituent.
 		List result = new ArrayList();
-		List<Person> constituents = constituentService.readAllConstituentsByIdRange(er.getFromId(), er.getToId());
+		List<Person> constituents = constituentService.readAllConstituentsByAccountRange(er.getFromAccount(), er.getToAccount());
 		// Need a separate row for all active addresses on person not just the original 'primary' one.
 		for (Person constituent : constituents) {
 			for (Address address: constituent.getAddresses()) {

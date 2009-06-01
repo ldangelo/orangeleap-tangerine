@@ -28,7 +28,7 @@ public class PersonExporter extends EntityExporter {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List readAll() {
-		return constituentService.readAllConstituentsByIdRange(er.getFromId(), er.getToId());
+		return constituentService.readAllConstituentsByAccountRange(er.getFromAccount(), er.getToAccount());
 	}
 
 	@Override

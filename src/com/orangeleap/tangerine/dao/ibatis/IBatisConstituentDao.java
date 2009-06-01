@@ -100,7 +100,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
     @Override
-	public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
+	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsByIdRange:");
         }

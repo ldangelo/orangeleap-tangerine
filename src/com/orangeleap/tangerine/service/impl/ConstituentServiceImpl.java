@@ -317,11 +317,11 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public List<Person> readAllConstituentsByIdRange(String fromId, String toId) {
+    public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsByIdRange: " + fromId + " " + toId);
         }
-        return constituentDao.readAllConstituentsByIdRange(fromId, toId);
+        return constituentDao.readAllConstituentsByAccountRange(fromId, toId);
     }
     
 	

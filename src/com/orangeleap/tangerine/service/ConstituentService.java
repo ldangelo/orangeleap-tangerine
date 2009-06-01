@@ -38,7 +38,7 @@ public interface ConstituentService {
 
     public int getConstituentCountBySite();
 
-	public List<Person> readAllConstituentsByIdRange(String fromId, String toId);
+	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId);
 
 /*	boolean hasReceivedCommunication(Long constituentId, String commType);
 

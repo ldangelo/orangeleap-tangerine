@@ -27,7 +27,7 @@ public interface ConstituentDao {
 
     public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
-	public List<Person> readAllConstituentsByIdRange(String fromId, String toId);
+	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId);
 
 	public List<Person> findConstituents(Map<String, Object> params,
 			List<Long> ignoreIds);

@@ -7,8 +7,8 @@ public class ExportRequest {
 	private String entity;
 	private Date fromDate;
 	private Date toDate;
-	private String fromId;
-	private String toId;
+	private Long fromAccount;
+	private Long toAccount;
 	
 	
 	public void setEntity(String entity) {
@@ -31,17 +31,17 @@ public class ExportRequest {
 		return toDate;
 	}
 	
-	public void setFromId(String fromId) {
-		this.fromId = fromId;
+	public void setFromAccount(Long fromAccount) {
+		this.fromAccount = fromAccount;
 	}
-	public String getFromId() {
-		return fromId;
+	public Long getFromAccount() {
+		return fromAccount;
 	}
-	public void setToId(String toId) {
-		this.toId = toId;
+	public void setToAccount(Long toAccount) {
+		this.toAccount = toAccount;
 	}
-	public String getToId() {
-		return toId;
+	public Long getToAccount() {
+		return toAccount;
 	}
 	
 	

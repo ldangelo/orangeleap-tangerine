@@ -218,20 +218,20 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testSearchPersons" })
     public void testReadAllConstituentsByIdRange() throws Exception {
-        List<Person> constituents = constituentDao.readAllConstituentsByIdRange("1000000", "2000000");
+        List<Person> constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 2000000L);
         assert constituents.size() == 2;
         for (Person constituent : constituents) {
             assert constituent.getId() == 100L || constituent.getId() == 200L;
         }
 
-        constituents = constituentDao.readAllConstituentsByIdRange("1000001", "1000001");
+        constituents = constituentDao.readAllConstituentsByAccountRange(1000001L, 1000001L);
         assert constituents.isEmpty();
 
-        constituents = constituentDao.readAllConstituentsByIdRange("1000000", "1000000");
+        constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 1000000L);
         assert constituents.size() == 1;
         assert constituents.get(0).getId() == 100L;
 
-        constituents = constituentDao.readAllConstituentsByIdRange("1000000", "3000000");
+        constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 3000000L);
         assert constituents.size() == 3;
         for (Person constituent : constituents) {
             assert constituent.getId() == 100L || constituent.getId() == 200L || constituent.getId() == 300L;

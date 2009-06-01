@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	   targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0"
+	   xmlns:tns="http://www.orangeleap.com/orangeleap/services/1.0"
+	   elementFormDefault="qualified">
+  
+  
+  <xs:complexType name="customField">
+    <xs:sequence>
+      <xs:element name="dataType" type="xs:long" minOccurs="0"/>
+      <xs:element name="displayEndDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="displayStartDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="entityId" type="xs:long" minOccurs="0"/>
+      <xs:element name="entityType" type="xs:string" minOccurs="1"/>
+      <xs:element name="id" type="xs:long" minOccurs="1"/>
+      <xs:element name="name" type="xs:string" minOccurs="1"/>
+      <xs:element name="sequenceNumber" type="xs:int" minOccurs="1"/>
+      <xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="value" type="xs:string" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCustomizableEntity" abstract="true">
+    <xs:sequence>
+	<xs:element name="customFieldMap">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+		<xs:complexType>
+		  <xs:sequence>
+		    <xs:element name="key" minOccurs="1" maxOccurs="1" type="xs:string"/>
+		    <xs:element name="value" minOccurs="1" maxOccurs="1" type="tns:customField"/>
+		  </xs:sequence>
+		</xs:complexType>
+	      </xs:element>
+	    </xs:sequence>
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="address">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+	<xs:sequence>
+	  <xs:element name="addressLine1" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="addressLine2" type="xs:string" minOccurs="0" maxOccurs="1"/>
+	  <xs:element name="addressLine3" type="xs:string" minOccurs="0" maxOccurs="1"/>
+	  <xs:element name="city" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="country" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="postalCode" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="stateProvince" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="activationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="permanent"/>
+      <xs:enumeration value="temporary"/>
+      <xs:enumeration value="seasonal"/>
+      <xs:enumeration value="unknown"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+    <xs:complexType name="abstractCommunicationEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="activationStatus" type="tns:activationType" minOccurs="0"/>
+          <xs:element name="comments" type="xs:string" minOccurs="0"/>
+          <xs:element name="effectiveDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="inactive" type="xs:boolean"/>
+          <xs:element name="personId" type="xs:long" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="primary" type="xs:boolean"/>
+          <xs:element name="receiveCorrespondence" type="xs:boolean"/>
+          <xs:element name="seasonalEndDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="seasonalStartDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="temporaryEndDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="temporaryStartDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="undeliverable" type="xs:boolean"/>
+          <xs:element name="userCreated" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="email">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+        <xs:sequence>
+          <xs:element name="emailAddress" type="xs:string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="emailDisplay" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="distributionLine">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="adjustedGiftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="giftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="motivationCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="other_motivationCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="percentage" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="pledgeId" type="xs:long" minOccurs="0"/>
+          <xs:element name="projectCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="paymentSource">
+        <xs:sequence>
+          <xs:element name="achAccountNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="achAccountNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="achAccountNumberEncrypted" type="xs:string" minOccurs="0"/>
+          <xs:element name="achHolderName" type="xs:string" minOccurs="0"/>
+          <xs:element name="achRoutingNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="achRoutingNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="address" type="tns:address" minOccurs="0"/>
+          <xs:element name="creditCardExpiration" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="creditCardExpirationMonth" type="xs:int" minOccurs="0"/>
+          <xs:element name="creditCardExpirationYear" type="xs:int" minOccurs="0"/>
+          <xs:element name="creditCardHolderName" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumberEncrypted" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardSecurityCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardType" type="xs:string" minOccurs="0"/>
+          <xs:element name="inactive" type="xs:boolean"/>
+          <xs:element name="lastFourDigits" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentType" type="tns:PaymentType" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="phone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="profile" type="xs:string" minOccurs="0"/>
+          <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="selectedPhone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="userCreated" type="xs:boolean"/>
+        </xs:sequence>
+  </xs:complexType>
+	  <xs:simpleType name="PaymentType">
+	    <xs:restriction base="xs:string">
+	      <xs:enumeration value="ACH"/>
+	      <xs:enumeration value="Credit Card"/>
+	      <xs:enumeration value="Cash"/>
+	      <xs:enumeration value="Check"/>
+	    </xs:restriction>
+	  </xs:simpleType>
+
+  <xs:complexType name="abstractPaymentInfoEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="acknowledgmentDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="address" type="tns:address" minOccurs="0"/>
+          <xs:element name="checkNumber" type="xs:int" minOccurs="0"/>
+          <xs:element name="comments" type="xs:string" minOccurs="0"/>
+          <xs:element name="currencyCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="distributionLines" type="tns:distributionLine" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="email" type="tns:email" minOccurs="0"/>
+          <xs:element name="paymentSource" type="tns:paymentSource" minOccurs="0"/>
+          <xs:element name="paymentType" type="xs:string" minOccurs="0"/>
+          <xs:element name="personId" type="xs:long" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="phone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="selectedEmail" type="tns:email" minOccurs="0"/>
+          <xs:element name="selectedPaymentSource" type="tns:paymentSource" minOccurs="0"/>
+          <xs:element name="selectedPhone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="sendAcknowledgment" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="phone">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+        <xs:sequence>
+          <xs:element name="number" type="xs:string" minOccurs="0"/>
+          <xs:element name="provider" type="xs:string" minOccurs="0"/>
+          <xs:element name="sms" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gift">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPaymentInfoEntity">
+        <xs:sequence>
+          <xs:element name="amount" type="xs:decimal" minOccurs="1"/>
+          <xs:element name="authCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="deductible" type="xs:boolean"/>
+          <xs:element name="deductibleAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="donationDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="giftStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentMessage" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="postmarkDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="transactionDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="txRefNum" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="constituent">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+	<xs:sequence>
+	  <xs:element name="accountNumber" type="xs:long" minOccurs="0" maxOccurs="1"/>
+	  <xs:element name="firstName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="lastName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	  <xs:element name="title" type="xs:string" minOccurs="0" maxOccurs="1"/>
+	  <xs:element name="addresses" type="tns:address" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element name="emails" type="tns:email" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element name="phones" type="tns:phone" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+	  <xs:element name="primaryAddress" type="tns:address" minOccurs="0"/>
+	  <xs:element name="primaryEmail" type="tns:email" minOccurs="0"/>
+	  <xs:element name="primaryPhone" type="tns:phone" minOccurs="0"/>
+	  <xs:element name="organizationName" type="xs:string" minOccurs="0"/>
+	  <xs:element name="constituentAttributes" type="xs:string" minOccurs="0"/>
+	  <xs:element name="constituentIndividualRoles" type="xs:string" minOccurs="0"/>
+	  <xs:element name="constituentOrganizationRoles" type="xs:string" minOccurs="0"/>
+	  <xs:element name="constituentType" type="xs:string" minOccurs="0"/>
+	  <xs:element name="preferredPhoneType" type="xs:string" minOccurs="0"/>
+	</xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  
+ <xs:element name="SaveOrUpdateConstituentRequest">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="constituent" type="tns:constituent"/>
+  	</xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="CreateDefaultConstituentRequest">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="dummy" type="xs:string"/>
+  	</xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="ConstituentResponse">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="constituent" type="tns:constituent" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="FindConstituentsRequest">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="constituent" type="tns:constituent" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="SearchConstituentsRequest">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="constituent" type="tns:constituent" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="SaveOrUpdateGiftRequest">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="constituentId" type="xs:long"/>
+      <xs:element name="gift" type="tns:gift" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="GetConstituentGiftRequest">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="constituentId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="GiftResponse">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="gift" type="tns:gift" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="GetSegmentationRequest">
+  <xs:complexType>
+    <xs:sequence>
+    <xs:element name="segmentation" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

@@ -227,6 +227,11 @@
 			<artifact name="spring-integration-core" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 
+        <dependency org="org.springframework.integration" name="spring-integration-xml" transitive="false" rev="1.0.1.RELEASE">
+            <artifact name="spring-integration-xml" type="jar"/>
+            <artifact name="spring-integration-xml" type="source" ext="jar" classifier="sources" conf="sources"/>			
+        </dependency>
+
 		<dependency org="org.springframework.integration" name="spring-integration-jms" transitive="false" rev="1.0.1.RELEASE">
 			<artifact name="spring-integration-jms" type="jar"/>
 			<artifact name="spring-integration-jms" type="source" ext="jar" classifier="sources" conf="sources"/>			

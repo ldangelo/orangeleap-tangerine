@@ -13,9 +13,7 @@ import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.Picklist;
@@ -84,7 +82,14 @@ public class PersonImporter extends EntityImporter {
 			mapValuesToObject(values, constituent);
 		}
 		
+		if (action.equals(EntityImporter.ACTION_ADD)) {
+			constituent.setId(null);
+		}
+
 		constituent.setSuppressValidationForRequired(true);
+		constituent.getPrimaryAddress().setSuppressValidation(true);
+		constituent.getPrimaryEmail().setSuppressValidation(true);
+		constituent.getPrimaryPhone().setSuppressValidation(true);
 		
 		constituentService.maintainConstituent(constituent);
 		

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:sws="http://www.springframework.org/schema/web-services"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	 http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd
+	 http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-1.5.xsd">
+
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+
+    <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
+
+	<bean id="orangeleap"
+		class="org.springframework.ws.wsdl.wsdl11.DynamicWsdl11Definition">
+		<property name="builder">
+			<bean
+				class="org.springframework.ws.wsdl.wsdl11.builder.XsdBasedSoap11Wsdl4jDefinitionBuilder">
+				<property name="schema" value="/WEB-INF/orangeleap.xsd" />
+				<property name="portTypeName" value="OrangeLeap" />
+				<property name="locationUri" value="http://localhost:8080/orangeleap/services/1.0/" />
+			</bean>
+		</property>	
+	</bean>
+
+	<bean id="schema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+    	<property name="xsd" value="/WEB-INF/orangeleap.xsd"/>
+	</bean>
+
+    <bean id="constituentEndpoint" class="com.orangeleap.tangerine.service.ws.OrangeLeapWS">
+    	
+        <constructor-arg ref="constituentService"/>
+    </bean>
+
+
+    <bean class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
+        <constructor-arg ref="marshaller"/>
+    </bean>
+
+     <sws:marshalling-endpoints/>
+ 
+    <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="classesToBeBound">
+            <list>
+                <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateConstituentRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</value>
+                <value>com.orangeleap.tangerine.ws.schema.CreateDefaultConstituentRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GiftResponse</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateGiftRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.SearchConstituentsRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</value>
+            </list>
+        </property> 
+    </bean>
+
+
+     <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping"/>
+
+
+</beans>

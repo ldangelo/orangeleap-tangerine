@@ -65,9 +65,14 @@
 	</target>
 
 	<target name="generate.schema">
-		<schemagen srcdir="${src.dir}" destdir="build/schemas" classpath="${compile.path}">
+		<schemagen srcdir="${src.dir}" destdir="war/WEB-INF" classpath="${compile.path}">
 			<include name="**/Person.java"/>
+			<schema namespace="http://www.orangeleap.com/orangeleap/schemas" file="orangeleap-types.xsd" />
 		</schemagen>
+	</target>
+	
+	<target name="xjc.generate">
+		<xjc schema="war/WEB-INF/orangeleap.xsd" destdir="src" package="com.orangeleap.tangerine.ws.schema"/>
 	</target>
 			
 	<target name="setup-war">

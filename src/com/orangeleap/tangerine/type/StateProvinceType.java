@@ -99,7 +99,7 @@ public enum StateProvinceType {
 			return null;
 		}
 		StateProvinceType[] types = StateProvinceType.values();
-		for (int i = 0; i < types.length; i++) {
+		for (int i = 0; types.length > i; i++) {
 			if (types[i].stateProviceCode.equals(stateProvinceCode) && types[i].getCountry().equals(country)) {
 				return types[i];
 			}

@@ -8,5 +8,5 @@ public enum PaymentHistoryType {
     GIFT,
     ADJUSTED_GIFT,
     MEMBERSHIP,
-    ORDER;
+    ORDER
 }

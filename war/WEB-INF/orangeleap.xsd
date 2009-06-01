@@ -255,7 +255,7 @@
   </xs:complexType>
 </xs:element>
 
-<xs:element name="ConstituentResponse">
+<xs:element name="CreateDefaultConstituentResponse">
   <xs:complexType>
   	<xs:sequence>
   		<xs:element name="constituent" type="tns:constituent" minOccurs="0" maxOccurs="unbounded"/>
@@ -271,11 +271,27 @@
   </xs:complexType>
 </xs:element>
 
+<xs:element name="FindConstituentsResponse">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="constituent" type="tns:constituent" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
+  </xs:complexType>
+</xs:element>
+    
 <xs:element name="SearchConstituentsRequest">
   <xs:complexType>
     <xs:sequence>
       <xs:element name="constituent" type="tns:constituent" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="SearchConstituentsResponse">
+  <xs:complexType>
+  	<xs:sequence>
+  		<xs:element name="constituent" type="tns:constituent" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
   </xs:complexType>
 </xs:element>
 
@@ -296,7 +312,7 @@
   </xs:complexType>
 </xs:element>
 
-<xs:element name="GiftResponse">
+<xs:element name="GetConstituentGiftResponse">
   <xs:complexType>
   	<xs:sequence>
   		<xs:element name="gift" type="tns:gift" minOccurs="0" maxOccurs="unbounded"/>
@@ -312,4 +328,11 @@
   </xs:complexType>
 </xs:element>
 
+<xs:element name="GetSegmentationResponse">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="constituent" type="tns:constituent" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
 </xs:schema>

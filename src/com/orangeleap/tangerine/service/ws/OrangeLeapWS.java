@@ -29,8 +29,8 @@ public class OrangeLeapWS {
 	}
 	
 	@PayloadRoot(localPart="CreateDefaultConstituentRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-	public ConstituentResponse createDefaultConstituent(CreateDefaultConstituentRequest cdcr) {
-		ConstituentResponse cr = new ConstituentResponse();
+	public CreateDefaultConstituentResponse createDefaultConstituent(CreateDefaultConstituentRequest cdcr) {
+		CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
 		Person p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
@@ -47,8 +47,8 @@ public class OrangeLeapWS {
 	}
 
     @PayloadRoot(localPart="FindConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public ConstituentResponse findConstituent(FindConstituentsRequest request) {
-		ConstituentResponse cr = new ConstituentResponse();
+    public FindConstituentsResponse findConstituent(FindConstituentsRequest request) {
+		FindConstituentsResponse cr = new FindConstituentsResponse();
 		Person p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
@@ -61,8 +61,8 @@ public class OrangeLeapWS {
     }
 
     @PayloadRoot(localPart="SearchConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public ConstituentResponse findConstituent(SearchConstituentsRequest request) {
-		ConstituentResponse cr = new ConstituentResponse();
+    public SearchConstituentsResponse searchConstituent(SearchConstituentsRequest request) {
+		SearchConstituentsResponse cr = new SearchConstituentsResponse();
 		Person p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
@@ -78,7 +78,13 @@ public class OrangeLeapWS {
     }
 
     @PayloadRoot(localPart="GetConstituentGiftRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public GiftResponse getConstituentsGifts(GetConstituentGiftRequest request) {
+    public GetConstituentGiftResponse getConstituentsGifts(GetConstituentGiftRequest request) {
 	return null;
+    }
+
+    @PayloadRoot(localPart="GetSegmentationRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetSegmentationResponse getSegmentation(GetSegmentationRequest req)
+    {
+        return null;
     }
 }

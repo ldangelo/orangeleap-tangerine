@@ -33,7 +33,7 @@ public class QueryUtil {
         Map<String, Object> nonStringParams = new HashMap<String, Object>();
         String quote = "";
         
-        if (useLike == true) quote = "%";
+        if (useLike) quote = "%";
         else quote = "";
         
         if (searchparams != null) {

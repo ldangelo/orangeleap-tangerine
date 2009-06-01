@@ -105,6 +105,24 @@
 		<load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>spring-ws</servlet-name>
+        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/contexts/webservice-context.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>spring-ws</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+
+	<servlet-mapping>
+        <servlet-name>spring-ws</servlet-name>
+        <url-pattern>*.wsdl</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>orangeleap</servlet-name>

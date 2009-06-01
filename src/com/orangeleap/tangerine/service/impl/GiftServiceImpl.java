@@ -347,7 +347,15 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (logger.isTraceEnabled()) {
             logger.trace("readAllGiftsByDateRange:");
         }
-        return giftDao.readAllGiftsByDateRange(fromDate, toDate);
+        List<Gift> list = giftDao.readAllGiftsByDateRange(fromDate, toDate);
+        // Need to ensure address and payment source are populated for export.
+        for (int i = 0; i < list.size(); i++) {
+        	Gift g = readGiftById(list.get(i).getId());
+        	g.setAddress(g.getSelectedAddress());
+        	g.setPaymentSource(g.getSelectedPaymentSource());
+        	list.set(i, g);
+        }
+        return list;
 	}
 
 	@Override

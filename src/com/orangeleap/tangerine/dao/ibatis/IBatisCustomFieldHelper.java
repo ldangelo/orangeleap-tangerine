@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +18,6 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
-import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.type.FieldType;
 
 /**
@@ -189,18 +187,30 @@ public class IBatisCustomFieldHelper {
  
         // Only need to maintain the adds and deletes. Keep the existing date ranges on the unchanged ones.
         for (CustomField cf : deletes) {
-        	deleteCustomField(cf);
+        	deleteCustomField(cf, isPersonSingleValuedDateRanged(cf));
         }
         
         for (CustomField cf : adds) {
-        	boolean isSingleValuedAndDateRanged = false;
-        	if (cf.getEntityType().equals("person") && fieldDao != null) {
-        		FieldDefinition fd = fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
-        		if (fd != null && (fd.getFieldType().equals(FieldType.QUERY_LOOKUP) || fd.getFieldType().equals(FieldType.PICKLIST))) isSingleValuedAndDateRanged = true;
-        	}
-        	addCustomField(cf, allOldCustomFields, isSingleValuedAndDateRanged);
+        	addCustomField(cf, allOldCustomFields, isPersonSingleValuedDateRanged(cf));
         }
     	
+    }
+    
+    private boolean isPersonSingleValuedDateRanged(CustomField cf) {
+    	return isPerson(cf) && isSingleValuedAndDateRanged(getFieldDefinition(cf));
+    }
+    
+    private boolean isPerson(CustomField cf) {
+    	return cf.getEntityType().equals("person");
+    }
+    
+    private FieldDefinition getFieldDefinition(CustomField cf) {
+    	if (fieldDao == null) return new FieldDefinition();
+    	return fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
+    }
+    
+    private boolean isSingleValuedAndDateRanged(FieldDefinition fd) {
+    	return fd != null && (fd.getFieldType().equals(FieldType.QUERY_LOOKUP) || fd.getFieldType().equals(FieldType.PICKLIST));
     }
     
     
@@ -235,20 +245,26 @@ public class IBatisCustomFieldHelper {
 
     }
 
-	private void deleteCustomField(CustomField customField) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("entityId", customField.getEntityId());
-        params.put("entityType", customField.getEntityType());
-        params.put("id", customField.getId());
-        template.delete("DELETE_CUSTOM_FIELD", params);
+	private void deleteCustomField(CustomField customField, boolean isSingleValuedAndDateRanged) {
+		Date endDate = addDay(stripTime(new java.util.Date()),-1);
+		if (isSingleValuedAndDateRanged && customField.getStartDate().before(endDate)) {
+			customField.setEndDate(endDate);
+			template.update("UPDATE_CUSTOM_FIELD", customField);
+		} else {
+	        Map<String, Object> params = new HashMap<String, Object>();
+	        params.put("entityId", customField.getEntityId());
+	        params.put("entityType", customField.getEntityType());
+	        params.put("id", customField.getId());
+	        template.delete("DELETE_CUSTOM_FIELD", params);
+		}
 	}
 
 	private void addCustomField(CustomField customField, List<CustomField> existingFields, boolean isSingleValuedAndDateRanged) {
-		existingFields = filterByName(existingFields, customField);
-		if (existingFields.size() > 0 && isSingleValuedAndDateRanged) {
+		if (isSingleValuedAndDateRanged) {
 			// Need to fit in between existing date ranged values.
-			customField.setStartDate(addDay(getLatestEndDateBefore(existingFields),1));
-			customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));
+			customField.setStartDate(stripTime(new java.util.Date()));
+			existingFields = filterByName(existingFields, customField);
+			if (existingFields.size() > 0) customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));
 		}
         template.insert("INSERT_CUSTOM_FIELD", customField);
 	}
@@ -281,7 +297,7 @@ public class IBatisCustomFieldHelper {
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
 		return cal.getTime();
 	}
 	

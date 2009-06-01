@@ -71,5 +71,20 @@
         and CUSTOM_FIELD_ID = #id#
         </isNotNull>
     </delete>
+    
+    <update id="UPDATE_CUSTOM_FIELD" parameterClass="com.orangeleap.tangerine.domain.customization.CustomField">
+		update CUSTOM_FIELD
+		set 
+		FIELD_NAME = #name#, 
+		FIELD_VALUE = #value#, 
+		ENTITY_TYPE = #entityType#, 
+		ENTITY_ID = #entityId#, 
+		SEQUENCE_NUM = #sequenceNumber#, 
+		DATA_TYPE = #dataType#, 
+		START_DATE = #startDate#, 
+		END_DATE = #endDate#
+		where CUSTOM_FIELD_ID = #id#
+	</update>
+    
 
 </sqlMap>

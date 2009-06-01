@@ -35,6 +35,12 @@ public class PersonExporter extends EntityExporter {
 	protected PageType getPageType() {
 	    return PageType.person;
 	}
+	
+	@Override
+	protected boolean exclude(String name, FieldDefinition fd) {
+		return super.exclude(name, fd) 
+		|| fd.getFieldType() == FieldType.QUERY_LOOKUP;
+	}
 
 	@Override
 	public List<FieldDescriptor> getExportFieldDescriptors() {

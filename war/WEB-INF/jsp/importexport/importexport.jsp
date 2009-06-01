@@ -11,6 +11,8 @@
 		    function Export_hideShow(val) {
 		    	if ( val === 'person' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
 		    	if ( val === 'gift' || val === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }
+		    	if ( val === 'address' )  { $('#exportNcoaCassDate').show(); } else { $('#exportNcoaCassDate').hide(); }
+		    	
 		    }
 		    </script>
 		
@@ -38,6 +40,29 @@
 					  From constituent account number: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
 					  &nbsp;&nbsp;&nbsp;To constituent account number: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
 		         </div>
+		        </div>
+
+	           <div id="exportNcoaCassDate" style="display:none">
+		         <div>
+					  Before NCOA date: <input id="exportNcoaDate" name="ncoaDate" size="16" maxlength="10" class="text date" type="text" />
+		         </div>
+		         <div>
+					  Before CASS date: <input id="exportCassDate" name="cassDate" size="16" maxlength="10" class="text date" type="text" />
+		         </div>
+                    <script type="text/javascript">
+                        new Ext.form.DateField({
+                            applyTo: 'exportNcoaDate',
+                            id: "exportNcoaDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                        new Ext.form.DateField({
+                            applyTo: 'exportCassDate',
+                            id: "exportCassDate-wrapper",
+                            format: 'm/d/Y',
+                            width: 250
+                        });
+                    </script>
 		        </div>
 
 

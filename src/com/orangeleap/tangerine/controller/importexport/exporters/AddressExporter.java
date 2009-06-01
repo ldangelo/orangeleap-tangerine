@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.controller.importexport.exporters;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,15 +39,32 @@ public class AddressExporter extends EntityExporter {
 		// Need a separate row for all active addresses on person not just the original 'primary' one.
 		for (Person constituent : constituents) {
 			for (Address address: constituent.getAddresses()) {
-				Person aconstituent = (Person)constituent.createCopy();
-				aconstituent.setPrimaryAddress(address);
-				result.add(aconstituent);
+				if (address.getAddressLine1() != null && checkNcoaAndCassDates(address)) {
+					Person aconstituent = (Person)constituent.createCopy();
+					aconstituent.setPrimaryAddress(address);
+					result.add(aconstituent);
+				}
 			}
 		}
 		return result;
 	}
-
-
+	
+	private boolean checkNcoaAndCassDates(Address address) {
+		if (er.getExportNcoaDate() == null && er.getExportCassDate() == null) return true;
+		boolean result = false;
+		if (er.getExportNcoaDate() != null) {
+			result = checkDate(er.getExportNcoaDate(), address.getNcoaDate());
+		}
+		if (er.getExportCassDate() != null) {
+			result = result || checkDate(er.getExportCassDate(), address.getCassDate());
+		}
+		return result;
+	}
+	
+	private boolean checkDate(Date cutoff, Date value) {
+		return value == null || value.before(cutoff);
+	}
+	
 	@Override
 	protected PageType getPageType() {
 	    return PageType.person; // need person info on addresses export

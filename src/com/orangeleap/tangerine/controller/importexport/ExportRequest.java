@@ -9,6 +9,8 @@ public class ExportRequest {
 	private Date toDate;
 	private Long fromAccount;
 	private Long toAccount;
+	private Date exportNcoaDate;
+	private Date exportCassDate;
 	
 	
 	public void setEntity(String entity) {
@@ -42,6 +44,18 @@ public class ExportRequest {
 	}
 	public Long getToAccount() {
 		return toAccount;
+	}
+	public void setExportNcoaDate(Date exportNcoaDate) {
+		this.exportNcoaDate = exportNcoaDate;
+	}
+	public Date getExportNcoaDate() {
+		return exportNcoaDate;
+	}
+	public void setExportCassDate(Date exportCassDate) {
+		this.exportCassDate = exportCassDate;
+	}
+	public Date getExportCassDate() {
+		return exportCassDate;
 	}
 	
 	

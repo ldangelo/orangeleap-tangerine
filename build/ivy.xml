@@ -272,6 +272,11 @@
 			<artifact name="spring-ws-support" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
 		
+		<dependency org="org.springframework.ws" name="spring-xml" transitive="false" rev="1.5.6">
+			<artifact name="spring-xml" type="jar"/>
+			<artifact name="spring-xml" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+		
 		<!-- Mvel -->
     	<dependency org="org.mvel" name="mvel" transitive="false" rev="1.3.1-java1.4">
 			<artifact name="mvel" type="jar" />

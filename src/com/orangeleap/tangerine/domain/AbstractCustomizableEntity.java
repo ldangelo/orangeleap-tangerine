@@ -3,7 +3,7 @@ package com.orangeleap.tangerine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.xml.bind.annotation.XmlRootElement;
+
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -148,14 +148,14 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     	//
     	// if the custom field value does not contain the value
     	// we are removing simply return
-    	if (existingValue.contains(value) == false) {
+    	if (!existingValue.contains(value)) {
             return;
         }
-    	
+
     	//
     	// if the existing value is equal to the value we are removing
     	// then set the field value to an empty string (remove it)
-    	if (existingValue.contains(",") == false) {
+    	if (!existingValue.contains(",")) {
     		if (existingValue.compareTo(value) == 0) {
                 setCustomFieldValue(fieldName, StringConstants.EMPTY);
             }
@@ -165,18 +165,18 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     		// then find the value we are removing in the string and remove it
     		// then reset the field value
     		String[] values = existingValue.split(",");
-    		
+
     		StringBuilder sb = new StringBuilder();
     		for (int i = 0; i < values.length; i++) {
-    			if (values[i].equals(value) == false) {
+    			if (!values[i].equals(value)) {
                     sb.append(values[i]);
                 }
-    			
+
     			if (i != (values.length - 1)) {
                     sb.append(",");
                 }
     		}
-    		
+
     			setCustomFieldValue(fieldName,sb.toString());
     	}
     }
@@ -184,8 +184,8 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     /**
      * Check if a value already exists for a fieldName.  If so, append to the existing value, else
      * set the value to the specified value 
-     * @param fieldName
-     * @param value
+     * @param fieldName - name of the custom field to add
+     * @param value - value of the custom field to set
      */
     public void addCustomFieldValue(String fieldName, String value) {
         String existingValue = getCustomFieldValue(fieldName);
@@ -200,9 +200,9 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     /**
      * Check if a value for a fieldName has the specified value.  If this is a multi-valued custom field,
      * split the values by ',' and check each individually against the specified value 
-     * @param fieldName
+     * @param fieldName - name of the custom field to test
      * @param value specified value to compare against.
-     * @return
+     * @return  true or false
      */
     public boolean hasCustomFieldValue(String fieldName, String value) {
         boolean hasValue = false;
@@ -226,6 +226,7 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     
     /**
      * Clones custom fields as well as object.
+     * @return AbscractCustomizableEntity
      */
 	public AbstractCustomizableEntity createCopy() {
 		AbstractCustomizableEntity e2;

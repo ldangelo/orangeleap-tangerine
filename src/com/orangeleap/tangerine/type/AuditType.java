@@ -6,5 +6,5 @@ import javax.xml.bind.annotation.XmlType;
 public enum AuditType {
     CREATE,
     UPDATE,
-    DELETE;
+    DELETE
 }

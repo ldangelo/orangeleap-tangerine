@@ -8,6 +8,12 @@
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 	<property name="build.env" value="dev"/>
 
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	  <classpath>
+	    <fileset dir="/Users/ldangelo/Downloads/axis2-1.4/lib" includes="*.jar" />
+	  </classpath>
+	</taskdef>
+
 	<taskdef name="schemagen" classname="com.sun.tools.jxc.SchemaGenTask">
 	  <classpath>
 	    <fileset dir="/Users/ldangelo/Downloads/axis2-1.4/lib" includes="*.jar" />
@@ -191,6 +197,10 @@
 
 	<target name="9.5 Generate XML Schema">
 		 <antcall target="generate.schema" />
+	</target>
+
+	<target name="9.6 Generate xjc.generate">
+		 <antcall target="xjc.generate" />
 	</target>
 
 	<target name="reloadBetaDb">

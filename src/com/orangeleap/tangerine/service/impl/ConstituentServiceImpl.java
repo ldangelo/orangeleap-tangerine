@@ -21,9 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.ws.server.endpoint.annotation.Endpoint;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.XPathParam;
 
 import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
@@ -55,7 +52,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
-@Endpoint
+
 @Service("constituentService")
 public class ConstituentServiceImpl extends AbstractTangerineService implements ConstituentService,ApplicationContextAware {
 
@@ -110,7 +107,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 	private ApplicationContext context;
 
-	@PayloadRoot(localPart = "person",namespace="http://orangeleap.com/tangerine")
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
     public Person maintainConstituent(Person constituent) throws ConstituentValidationException, BindException {
@@ -252,9 +249,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
     }
 
-	@PayloadRoot(localPart = "person",namespace="http://orangeleap.com/tangerine")
+
     @Override
-    public Person readConstituentById(@XPathParam("/s:person/@loginId") Long id) {
+    public Person readConstituentById(Long id) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentById: id = " + id);
         }
@@ -263,9 +260,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
 
-	@PayloadRoot(localPart = "person",namespace="http://orangeleap.com/tangerine")
+
     @Override
-    public Person readConstituentByAccountNumber(@XPathParam("/s:person/@accountnumber") String accountNumber) {
+    public Person readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByAccountNumber: accountNumber = " + accountNumber);
         }
@@ -282,9 +279,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }
     }
 
-	@PayloadRoot(localPart = "person",namespace="http://orangeleap.com/tangerine")
+
     @Override
-    public Person readConstituentByLoginId(@XPathParam("/s:person/@loginId") String loginId) {
+    public Person readConstituentByLoginId(String loginId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByLoginId: loginId = " + loginId);
         }

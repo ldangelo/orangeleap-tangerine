@@ -36,7 +36,7 @@ public class GiftImporter extends EntityImporter {
 	
 	@Override
 	public String getIdField() {
-		return "person.accountNumber";
+		return "accountNumber";
 	}
 	
 	@Override
@@ -90,6 +90,7 @@ public class GiftImporter extends EntityImporter {
 		
 		Gift gift = giftservice.readGiftByIdCreateIfNull(constituent, null);
 		
+		values.remove(getIdField());
 		mapValuesToObject(values, gift);
 		
 		if (

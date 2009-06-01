@@ -84,15 +84,14 @@ public class PersonImporter extends EntityImporter {
 			mapValuesToObject(values, constituent);
 		}
 		
-		setPicklistDefaultsForRequiredFields(constituent);
-		constituent.setSuppressValidation(true);
+		constituent.setSuppressValidationForRequired(true);
 		
 		constituentService.maintainConstituent(constituent);
 		
 	}
 	
-
 	
+	// This causes issues with dependent fields being triggered for validation (e.g. matching max/min amount)
 	private void setPicklistDefaultsForRequiredFields(Person entity) {
 		
 		Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(PageType.person, tangerineUserHelper.lookupUserRoles());

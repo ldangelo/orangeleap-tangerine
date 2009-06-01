@@ -88,7 +88,8 @@ public class ImportHandler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg = "Error in import file line "+linenumber+": "+e.getMessage();
+			String msg = translate(e.getMessage());
+			msg = "Error in import file line "+linenumber+": "+msg;
 			logger.error(msg);
 			if (errors.size() < MAX_ERRORS) {
 				errors.add(msg);
@@ -97,6 +98,16 @@ public class ImportHandler {
 			}
 		}
 
+	}
+	
+	private String translate(String msg) {
+		if (msg.contains("fieldValidationFailure")) {
+			msg = msg.substring(msg.indexOf("arguments"));
+			msg = msg.substring(msg.indexOf("[")+1);
+			msg = msg.substring(0,msg.indexOf("]"));
+			msg = "Invalid value: "+msg;
+		}
+		return msg;
 	}
 
 	public int getAdds() {

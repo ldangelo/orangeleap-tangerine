@@ -28,6 +28,7 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
     protected Date updateDate;
     
     private transient boolean suppressValidation = false;
+    private transient boolean suppressValidationForRequired = false;
     
     /**
      * Returns the ID, or null if the ID has not been set
@@ -191,6 +192,15 @@ public abstract class AbstractEntity implements GeneratedId, Serializable {
 
 	public boolean isSuppressValidation() {
 		return suppressValidation;
+	}
+
+	public void setSuppressValidationForRequired(
+			boolean suppressValidationForRequired) {
+		this.suppressValidationForRequired = suppressValidationForRequired;
+	}
+
+	public boolean isSuppressValidationForRequired() {
+		return suppressValidationForRequired;
 	}
 
 }

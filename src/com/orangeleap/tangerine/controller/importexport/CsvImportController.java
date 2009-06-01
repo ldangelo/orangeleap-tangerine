@@ -94,7 +94,7 @@ public class CsvImportController extends SimpleFormController {
 		
         ModelAndView mav = super.onSubmit(request, response, command, errors);
         mav.addObject(IMPORT_RESULT, result);
-        WebUtils.setSessionAttribute(request, IMPORT_RESULT, result);
+        WebUtils.setSessionAttribute(request, IMPORT_RESULT, new ImportResult(result));
         return mav;
 
 	}

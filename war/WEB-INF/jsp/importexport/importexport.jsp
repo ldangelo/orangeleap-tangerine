@@ -149,7 +149,7 @@
 	        </form>
 	        
         	<div id="importResult">
-                <c:forEach var="line" items="${importResult}">
+                <c:forEach var="line" items="${importResult.result}">
 			    	<c:out value="${line}"/><br/>
          	    </c:forEach>
      		</div>

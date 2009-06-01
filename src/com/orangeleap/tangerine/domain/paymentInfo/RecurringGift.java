@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlType;
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class RecurringGift extends Commitment {
 
 	private static final long serialVersionUID = 1L;

@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.springframework.core.style.ToStringCreator;
+import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.core.style.ToStringCreator;
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Site implements Serializable {
 
     private static final long serialVersionUID = 1L;

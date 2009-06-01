@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
@@ -13,7 +15,7 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.AES;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class PaymentSource extends AbstractEntity implements Inactivatible, Creatable, NewAddressAware, NewPhoneAware {
 
     private static final long serialVersionUID = 1L;

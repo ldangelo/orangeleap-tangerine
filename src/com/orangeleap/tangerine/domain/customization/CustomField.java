@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -12,6 +14,7 @@ import com.orangeleap.tangerine.domain.GeneratedId;
  * Implementation of a Custom Field which tracks the Entity it
  * is associated with via the Enitity ID and Type.
  */
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("deprecation")
 public class CustomField implements GeneratedId, Serializable {
 

@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -11,7 +13,7 @@ import com.orangeleap.tangerine.domain.Creatable;
 import com.orangeleap.tangerine.domain.Inactivatible;
 import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible, Creatable {
 
@@ -27,7 +29,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     private boolean undeliverable = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
-    protected Date effectiveDate = new java.util.Date(); 
+    protected Date effectiveDate = new java.util.Date();
     protected boolean userCreated = false;
 
     public Long getPersonId() {

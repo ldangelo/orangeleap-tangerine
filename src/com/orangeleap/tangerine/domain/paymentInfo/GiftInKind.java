@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.list.UnmodifiableList;
@@ -15,7 +17,7 @@ import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("unchecked")
 public class GiftInKind extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;

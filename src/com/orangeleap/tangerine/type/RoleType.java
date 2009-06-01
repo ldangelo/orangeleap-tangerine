@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.type;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public enum RoleType {
 	ROLE_SUPER_ADMIN(6000),
 	ROLE_ADMIN(5000),

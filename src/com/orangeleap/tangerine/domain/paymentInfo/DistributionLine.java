@@ -2,13 +2,15 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class DistributionLine extends AbstractCustomizableEntity {  
  
     private static final long serialVersionUID = 1L;

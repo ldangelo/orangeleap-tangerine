@@ -7,13 +7,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.GiftEntryType;
 import com.orangeleap.tangerine.type.GiftType;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Gift extends AbstractPaymentInfoEntity {
 
 	private static final long serialVersionUID = 1L;

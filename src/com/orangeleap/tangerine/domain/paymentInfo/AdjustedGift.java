@@ -8,8 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.xml.bind.annotation.XmlType;
 
+import com.orangeleap.tangerine.util.StringConstants;
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public class AdjustedGift extends AbstractPaymentInfoEntity {
 

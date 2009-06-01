@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.type;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public enum CommitmentType {
     RECURRING_GIFT("recurring gift"),
     PLEDGE("pledge"),

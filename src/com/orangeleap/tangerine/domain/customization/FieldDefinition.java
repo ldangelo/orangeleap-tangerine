@@ -2,6 +2,8 @@ package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.Site;
@@ -9,7 +11,7 @@ import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class FieldDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;

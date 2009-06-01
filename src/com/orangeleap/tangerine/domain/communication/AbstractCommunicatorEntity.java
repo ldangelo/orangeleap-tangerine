@@ -7,6 +7,8 @@ package com.orangeleap.tangerine.domain.communication;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
@@ -14,7 +16,7 @@ import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.PhoneService;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractCommunicatorEntity extends AbstractCustomizableEntity {
 	

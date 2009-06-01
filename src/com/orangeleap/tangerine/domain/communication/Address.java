@@ -2,6 +2,8 @@ package com.orangeleap.tangerine.domain.communication;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
@@ -9,7 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Address extends AbstractCommunicationEntity {
     
     private static final long serialVersionUID = 1L;

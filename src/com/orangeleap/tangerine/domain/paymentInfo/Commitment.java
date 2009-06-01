@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -13,7 +15,7 @@ import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.type.CommitmentType;
 import com.orangeleap.tangerine.util.StringConstants;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public abstract class Commitment extends AbstractPaymentInfoEntity {  
 
     private static final long serialVersionUID = 1L;

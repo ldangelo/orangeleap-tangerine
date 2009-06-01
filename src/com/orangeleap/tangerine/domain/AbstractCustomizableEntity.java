@@ -3,6 +3,9 @@ package com.orangeleap.tangerine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -13,6 +16,7 @@ import com.orangeleap.tangerine.util.StringConstants;
  * can be customized via Custom Fields.
  * @version 1.0
  */
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractCustomizableEntity extends AbstractEntity {
 

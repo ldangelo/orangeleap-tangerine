@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -13,6 +15,7 @@ import com.orangeleap.tangerine.domain.customization.FieldDefinition;
  * for keeping track of the ID value and returning the type.
  * @version 1.0
  */
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 @SuppressWarnings("serial")
 public abstract class AbstractEntity implements GeneratedId, Serializable {
 

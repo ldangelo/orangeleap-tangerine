@@ -2,11 +2,13 @@ package com.orangeleap.tangerine.domain.paymentInfo;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlType;
+
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-
+@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class GiftInKindDetail extends AbstractCustomizableEntity {
     private static final long serialVersionUID = 1L;
 

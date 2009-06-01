@@ -2,7 +2,7 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -12,7 +12,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.StringConstants;
 
-@XmlRootElement (name="Constituent")
+@XmlType (name="constituent", namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class Person extends AbstractCommunicatorEntity {
 
     private static final long serialVersionUID = 1L;

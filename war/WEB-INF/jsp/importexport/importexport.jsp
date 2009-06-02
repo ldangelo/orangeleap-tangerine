@@ -37,8 +37,8 @@
 
 		        <div id="nameRange" style="display:none">
 		         <div>
-					  From constituent account number: <input id="fromId" name="fromId" size="16" maxlength="10" type="text" />
-					  &nbsp;&nbsp;&nbsp;To constituent account number: <input id="toId" name="toId" size="16" maxlength="10" type="text" />
+					  From constituent account number: <input id="fromAccount" name="fromAccount" size="16" maxlength="10" type="text" />
+					  &nbsp;&nbsp;&nbsp;To constituent account number: <input id="toAccount" name="toAccount" size="16" maxlength="10" type="text" />
 		         </div>
 		        </div>
 

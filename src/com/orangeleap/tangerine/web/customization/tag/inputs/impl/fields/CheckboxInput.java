@@ -24,7 +24,8 @@ public class CheckboxInput extends AbstractInput {
         sb.append("<input type=\"hidden\" name=\"_" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\"/>");
         sb.append("<input type=\"checkbox\" value=\"true\" class=\"checkbox " + checkForNull(fieldVO.getEntityAttributes()) + "\" name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" ");
         sb.append("id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" ");
-        if ("true".equals(fieldVO.getFieldValue())) {
+        if (fieldVO.getFieldValue() != null && 
+        		((fieldVO.getFieldValue() instanceof Boolean && Boolean.TRUE.equals(fieldVO.getFieldValue())) || "true".equalsIgnoreCase(fieldVO.getFieldValue().toString()))) {
             sb.append("checked=\"true\" ");
         }
         if (fieldVO.isDisabled()) {

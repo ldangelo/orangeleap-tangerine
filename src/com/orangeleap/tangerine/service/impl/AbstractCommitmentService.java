@@ -246,13 +246,22 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     }
     
     protected void setCommitmentStatus(T commitment, String statusPropertyName) {
-        if (commitment.getAmountPaid() != null && commitment.getAmountTotal() != null) {
+        if (commitment.getAmountPaid() != null) {
             BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
             if (bw.isWritableProperty(statusPropertyName)) {
-                if (commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 0 || commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 1) {
-                    bw.setPropertyValue(statusPropertyName, Commitment.STATUS_FULFILLED);
+            	if (commitment.getAmountTotal() != null) {
+            		if (commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 0 || commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 1) {
+            			bw.setPropertyValue(statusPropertyName, Commitment.STATUS_FULFILLED);
+            		}
+            		else if (bw.isReadableProperty(statusPropertyName) && 
+                    		Commitment.STATUS_FULFILLED.equals(bw.getPropertyValue(statusPropertyName)) && 
+                    		commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == -1) {
+                        bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
+            		}
                 }
-                else if (commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                else if (bw.isReadableProperty(statusPropertyName) && 
+                		Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) && 
+                		commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
                     bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
                 }
             }

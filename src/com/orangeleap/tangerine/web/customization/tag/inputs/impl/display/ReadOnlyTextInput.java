@@ -21,7 +21,7 @@ public class ReadOnlyTextInput extends AbstractInput {
     @Override
     public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div id='" + fieldVO.getFieldId() + "' class='readOnlyField " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
+        sb.append("<div id=\"" + fieldVO.getFieldId() + "\" class=\"readOnlyField " + checkForNull(fieldVO.getEntityAttributes()) + "\">");
         if (fieldVO.getDisplayValue() == null || StringUtils.hasText(fieldVO.getDisplayValue().toString()) == false) {
             sb.append("&nbsp;");
         }

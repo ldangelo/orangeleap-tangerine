@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class CreditCardExpirationInput extends AbstractInput {
     }
 
     protected void createMonthSelect(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb, PaymentSource paymentSource) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "Month' id='" + fieldVO.getFieldId() + "Month' class='expMonth " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
+        sb.append("<select name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "Month\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "Month\" class=\"expMonth " + checkForNull(fieldVO.getEntityAttributes()) + "\">");
         if (paymentSource != null) {
             String expirationMonth = paymentSource.getCreditCardExpirationMonthText();
             if (StringUtils.hasText(expirationMonth) == false) {
@@ -43,9 +44,9 @@ public class CreditCardExpirationInput extends AbstractInput {
             List<String> months = paymentSource.getExpirationMonthList();
             if (months != null) {
                 for (String thisMonth : months) {
-                    sb.append("<option value='" + thisMonth + "'");
+                    sb.append("<option value=\"" + thisMonth + "\"");
                     if (thisMonth.equals(expirationMonth)) {
-                        sb.append(" selected='selected'");
+                        sb.append(" selected=\"selected\"");
                     }
                     sb.append(">" + thisMonth + "</option>");
                 }
@@ -55,7 +56,7 @@ public class CreditCardExpirationInput extends AbstractInput {
     }
 
     protected void createYearSelect(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb, PaymentSource paymentSource) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "Year' id='" + fieldVO.getFieldId() + "Year' class='expYear " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
+        sb.append("<select name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "Year\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "Year\" class=\"expYear " + checkForNull(fieldVO.getEntityAttributes()) + "\">");
         if (paymentSource != null) {
             Integer expirationYear = paymentSource.getCreditCardExpirationYear();
             if (expirationYear == null || expirationYear <= 0) {
@@ -64,9 +65,9 @@ public class CreditCardExpirationInput extends AbstractInput {
             List<String> years = paymentSource.getExpirationYearList();
             if (years != null) {
                 for (String thisYear : years) {
-                    sb.append("<option value='" + thisYear + "'");
+                    sb.append("<option value=\"" + thisYear + "\"");
                     if (thisYear.equals(expirationYear.toString())) {
-                        sb.append(" selected='selected'");
+                        sb.append(" selected=\"selected\"");
                     }
                     sb.append(">" + thisYear + "</option>");
                 }

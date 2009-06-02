@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -26,14 +27,14 @@ public class TextInput extends AbstractInput {
     }
 
     protected void createInput(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<input value='" + checkForNull(fieldVO.getFieldValue()) + "' class='" + getCssClass() + " " + checkForNull(fieldVO.getEntityAttributes()));
+        sb.append("<input value=\"" + checkForNull(fieldVO.getFieldValue()) + "\" class=\"" + StringEscapeUtils.escapeHtml(getCssClass()) + " " + checkForNull(fieldVO.getEntityAttributes()));
         writeErrorClass(request, pageContext, sb);
-        sb.append("' ");
+        sb.append("\" ");
         if (fieldVO.isDisabled()) {
-            sb.append("disabled='true' ");
+            sb.append("disabled=\"true\" ");
         }
-        sb.append("size='" + getSize() + "' maxLength='" + getMaxLength() + "' ");
-        sb.append("name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "' type='text'/>");
+        sb.append("size=\"" + getSize() + "\" maxLength=\"" + getMaxLength() + "\" ");
+        sb.append("name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" type=\"text\"/>");
     }
     
     protected String getCssClass() {

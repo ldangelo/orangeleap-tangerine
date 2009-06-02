@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
@@ -31,8 +32,8 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
     }
     
     protected void createHiddenField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<input type='hidden' name='" + fieldVO.getFieldName() + "'");
-        sb.append(" id='" + fieldVO.getFieldId() + "' value='" + checkForNull(((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource().getId()) + "'/>");
+        sb.append("<input type=\"hidden\" name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\"");
+        sb.append(" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" value=\"" + checkForNull(((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource().getId()) + "\"/>");
     }
     
     protected List<PaymentSource> getSources(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, Map<String, List<PaymentSource>> paymentSources, String key) {
@@ -45,7 +46,7 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
 
     @SuppressWarnings("unchecked")
     protected void createAchSelectField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<select name='ach-" + fieldVO.getFieldName() + "' id='ach-" + fieldVO.getFieldId() + "' class='" + fieldVO.getEntityAttributes() + "' style='display:none'>");
+        sb.append("<select name=\"ach-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"ach-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"" + checkForNull(fieldVO.getEntityAttributes()) + "\" style=\"display:none\">");
         
         PaymentSource paymentSource = ((PaymentSourceAware)fieldVO.getModel()).getPaymentSource();
         PaymentSource selectedPaymentSource = ((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource();
@@ -59,10 +60,10 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
         
         if (achSources != null) {
             for (PaymentSource thisAchSrc : achSources) {
-                sb.append("<option value='" + thisAchSrc.getId() + "' address='" + checkForNull(thisAchSrc.getSelectedAddress().getId()) + "' phone='" + checkForNull(thisAchSrc.getSelectedPhone().getId()) + "'");
-                sb.append(" achholder='" + thisAchSrc.getAchHolderName() + "' routing='" + thisAchSrc.getAchRoutingNumberDisplay() + "' acct='" + thisAchSrc.getAchAccountNumberDisplay() + "'");
+                sb.append("<option value=\"" + thisAchSrc.getId() + "\" address=\"" + checkForNull(thisAchSrc.getSelectedAddress().getId()) + "\" phone=\"" + checkForNull(thisAchSrc.getSelectedPhone().getId()) + "\"");
+                sb.append(" achholder=\"" + StringEscapeUtils.escapeHtml(thisAchSrc.getAchHolderName()) + "\" routing=\"" + StringEscapeUtils.escapeHtml(thisAchSrc.getAchRoutingNumberDisplay()) + "\" acct=\"" + StringEscapeUtils.escapeHtml(thisAchSrc.getAchAccountNumberDisplay()) + "\"");
                 if (paymentSource.isUserCreated() == false && thisAchSrc.getId().equals(selectedPaymentSource.getId())) {
-                    sb.append(" selected='selected'");
+                    sb.append(" selected=\"selected\"");
                 }
                 sb.append(">");
                 sb.append(thisAchSrc.getProfile());
@@ -79,7 +80,7 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
     
     @SuppressWarnings("unchecked")
     protected void createCreditCardSelectField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<select name='creditCard-" + fieldVO.getFieldName() + "' id='creditCard-" + fieldVO.getFieldId() + "' class='" + fieldVO.getEntityAttributes() + "' style='display:none'>");
+        sb.append("<select name=\"creditCard-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"creditCard-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"" + checkForNull(fieldVO.getEntityAttributes()) + "\" style=\"display:none\">");
         
         PaymentSource paymentSource = ((PaymentSourceAware)fieldVO.getModel()).getPaymentSource();
         PaymentSource selectedPaymentSource = ((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource();
@@ -94,11 +95,11 @@ public class PaymentSourcePicklistInput extends AbstractSingleValuedPicklistInpu
         SimpleDateFormat sdf = new SimpleDateFormat("MM / yyyy");
         if (ccSources != null) {
             for (PaymentSource thisCcSrc : ccSources) {
-                sb.append("<option value='" + thisCcSrc.getId() + "' address='" + checkForNull(thisCcSrc.getSelectedAddress().getId()) + "' phone='" + checkForNull(thisCcSrc.getSelectedPhone().getId()) + "'");
-                sb.append(" cardholder='" + thisCcSrc.getCreditCardHolderName() + "' cardType='" + thisCcSrc.getCreditCardType() + "' number='" + thisCcSrc.getCreditCardNumberDisplay() + "'");
-                sb.append(" exp='" + sdf.format(thisCcSrc.getCreditCardExpiration()) + "'");
+                sb.append("<option value=\"" + thisCcSrc.getId() + "\" address=\"" + checkForNull(thisCcSrc.getSelectedAddress().getId()) + "\" phone=\"" + checkForNull(thisCcSrc.getSelectedPhone().getId()) + "\"");
+                sb.append(" cardholder=\"" + StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardHolderName()) + "\" cardType=\"" + StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardType()) + "\" number=\"" + StringEscapeUtils.escapeHtml(thisCcSrc.getCreditCardNumberDisplay()) + "\"");
+                sb.append(" exp=\"" + sdf.format(thisCcSrc.getCreditCardExpiration()) + "\"");
                 if (paymentSource.isUserCreated() == false && thisCcSrc.getId().equals(selectedPaymentSource.getId())) {
-                    sb.append(" selected='selected'");
+                    sb.append(" selected=\"selected\"");
                 }
                 sb.append(">");
                 sb.append(thisCcSrc.getProfile());

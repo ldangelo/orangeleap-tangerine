@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -36,11 +37,11 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
 
     @Override
     protected void createBeginSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, String references) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "' class='");
+        sb.append("<select name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"");
         if (fieldVO.isCascading()) {
             sb.append("picklist ");
         }
-        sb.append(fieldVO.getEntityAttributes() + "' references='" + references + "'>");
+        sb.append(checkForNull(fieldVO.getEntityAttributes()) + "\" references=\"" + checkForNull(references) + "\">");
     }
     
     protected String createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
@@ -52,20 +53,20 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
             List<Object> displayValues = fieldVO.getDisplayValues();
             for (int i = 0; i < augmentedCodes.size(); i++) {
                 String code = augmentedCodes.get(i);
-                sb.append("<option value='" + code + "'");
+                sb.append("<option value=\"" + StringEscapeUtils.escapeHtml(code) + "\"");
 
                 String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
                 if (StringUtils.hasText(reference)) {
-                    sb.append(" reference='" + reference + "'");
+                    sb.append(" reference=\"" + reference + "\"");
                 }
                 if (fieldVO.getFieldValue() != null) {
                     if (code.equals(fieldVO.getFieldValue().toString())) {
-                        sb.append(" selected='selected'");
+                        sb.append(" selected=\"selected\"");
                         selectedRef = reference;
                     }
                 }
                 sb.append(">");
-                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : displayValues.get(i));
+                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(displayValues.get(i).toString()));
                 sb.append("</option>");
             }
         }
@@ -74,12 +75,12 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
     
     protected void createSelectedRef(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, String selectedRef) {
         if (fieldVO.isRequired() && StringUtils.hasText(selectedRef) == false) {
-            selectedRef = fieldVO.getReferenceValues() == null ? StringConstants.EMPTY : fieldVO.getReferenceValues().get(0);
+            selectedRef = fieldVO.getReferenceValues() == null ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(fieldVO.getReferenceValues().get(0));
         }
         if (selectedRef == null) {
             selectedRef = StringConstants.EMPTY;
         }
         selectedRef = selectedRef.trim();
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + selectedRef + "</div>");
+        sb.append("<div style=\"display:none\" id=\"selectedRef-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">" + selectedRef + "</div>");
     }
 }

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,8 @@ public abstract class AbstractInput {
         return TangerineMessageAccessor.getMessage(code, args);
     }
     
-    public Object checkForNull(Object obj) {
-        return obj == null ? StringConstants.EMPTY : obj;
+    public String checkForNull(Object obj) {
+        return obj == null ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(obj.toString());
     }
     
     public void writeErrorClass(HttpServletRequest request, PageContext pageContext, StringBuilder sb) {

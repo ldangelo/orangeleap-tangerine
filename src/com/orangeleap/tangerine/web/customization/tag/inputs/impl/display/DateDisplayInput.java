@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class DateDisplayInput extends AbstractInput {
     @Override
     public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div id='" + fieldVO.getFieldId() + "' class='readOnlyField " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
+        sb.append("<div id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"readOnlyField " + checkForNull(fieldVO.getEntityAttributes()) + "\">");
         SimpleDateFormat sdf = new SimpleDateFormat(getDateFormat());
         
         boolean isSet = false;

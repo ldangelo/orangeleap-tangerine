@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -20,14 +21,14 @@ public class TextAreaInput extends AbstractInput {
     @Override
     public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<textarea rows='5' cols='30' class='text ");
+        sb.append("<textarea rows=\"5\" cols=\"30\" class=\"text ");
         sb.append(checkForNull(fieldVO.getEntityAttributes()));
         writeErrorClass(request, pageContext, sb);
-        sb.append("' ");
+        sb.append("\" ");
         if (fieldVO.isDisabled()) {
-            sb.append("disabled='true' ");
+            sb.append("disabled=\"true\" ");
         }
-        sb.append("name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "'>");
+        sb.append("name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">");
         sb.append(checkForNull(fieldVO.getDisplayValue()));
         sb.append("</textarea>");
         return sb.toString();

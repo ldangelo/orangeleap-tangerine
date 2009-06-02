@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -44,10 +45,10 @@ public class AdjustedGiftPaymentSourcePicklistInput extends PaymentSourcePicklis
     protected void createAchSelectField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         PaymentSource selectedPaymentSource = ((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource();
 
-        sb.append("<select name='ach-" + fieldVO.getFieldName() + "' id='ach-" + fieldVO.getFieldId() + "' class='" + fieldVO.getEntityAttributes() + "'>");
-        sb.append("<option value='" + selectedPaymentSource.getId() + "' address='" + checkForNull(selectedPaymentSource.getSelectedAddress().getId()) + "' phone='" + checkForNull(selectedPaymentSource.getSelectedPhone().getId()) + "'");
-        sb.append(" achholder='" + selectedPaymentSource.getAchHolderName() + "' routing='" + selectedPaymentSource.getAchRoutingNumberDisplay() + "' acct='" + selectedPaymentSource.getAchAccountNumberDisplay() + "'");
-        sb.append(" selected='selected'");
+        sb.append("<select name=\"ach-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"ach-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"" + checkForNull(fieldVO.getEntityAttributes()) + "\">");
+        sb.append("<option value=\"" + selectedPaymentSource.getId() + "\" address=\"" + checkForNull(selectedPaymentSource.getSelectedAddress().getId()) + "\" phone=\"" + checkForNull(selectedPaymentSource.getSelectedPhone().getId()) + "\"");
+        sb.append(" achholder=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getAchHolderName()) + "\" routing=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getAchRoutingNumberDisplay()) + "\" acct=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getAchAccountNumberDisplay()) + "\"");
+        sb.append(" selected=\"selected\"");
         sb.append(">");
         sb.append(selectedPaymentSource.getProfile());
         if (selectedPaymentSource.isInactive()) {
@@ -61,13 +62,13 @@ public class AdjustedGiftPaymentSourcePicklistInput extends PaymentSourcePicklis
     protected void createCreditCardSelectField(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         PaymentSource selectedPaymentSource = ((PaymentSourceAware)fieldVO.getModel()).getSelectedPaymentSource();
 
-        sb.append("<select name='creditCard-" + fieldVO.getFieldName() + "' id='creditCard-" + fieldVO.getFieldId() + "' class='" + fieldVO.getEntityAttributes() + "'>");
+        sb.append("<select name=\"creditCard-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"creditCard-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"" + checkForNull(fieldVO.getEntityAttributes()) + "\">");
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM / yyyy");
-        sb.append("<option value='" + selectedPaymentSource.getId() + "' address='" + checkForNull(selectedPaymentSource.getSelectedAddress().getId()) + "' phone='" + checkForNull(selectedPaymentSource.getSelectedPhone().getId()) + "'");
-        sb.append(" cardholder='" + selectedPaymentSource.getCreditCardHolderName() + "' cardType='" + selectedPaymentSource.getCreditCardType() + "' number='" + selectedPaymentSource.getCreditCardNumberDisplay() + "'");
-        sb.append(" exp='" + sdf.format(selectedPaymentSource.getCreditCardExpiration()) + "'");
-        sb.append(" selected='selected'");
+        sb.append("<option value=\"" + selectedPaymentSource.getId() + "\" address=\"" + checkForNull(selectedPaymentSource.getSelectedAddress().getId()) + "\" phone=\"" + checkForNull(selectedPaymentSource.getSelectedPhone().getId()) + "\"");
+        sb.append(" cardholder=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getCreditCardHolderName()) + "\" cardType=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getCreditCardType()) + "\" number=\"" + StringEscapeUtils.escapeHtml(selectedPaymentSource.getCreditCardNumberDisplay()) + "\"");
+        sb.append(" exp=\"" + sdf.format(selectedPaymentSource.getCreditCardExpiration()) + "\"");
+        sb.append(" selected=\"selected\"");
         sb.append(">");
         sb.append(selectedPaymentSource.getProfile());
         if (selectedPaymentSource.isInactive()) {

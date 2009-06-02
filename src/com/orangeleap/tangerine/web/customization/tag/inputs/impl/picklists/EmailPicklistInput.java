@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.domain.NewEmailAware;
@@ -43,7 +44,7 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
     protected void createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List<Email> emails) {
         if (emails != null) {
             for (Email email : emails) {
-                sb.append("<option value='" + email.getId() + "'");
+                sb.append("<option value=\"" + email.getId() + "\"");
                 checkIfExistingOptionSelected(fieldVO.getModel(), email, sb);
                 sb.append(">");
                 sb.append(email.getEmailAddress());
@@ -61,7 +62,7 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
         if (FormBeanType.EXISTING.equals(aware.getEmailType()) && aware.getEmail() != null && 
                 aware.getEmail().isUserCreated() == false && aware.getSelectedEmail() != null && 
                 emailToCheck.getId().equals(aware.getSelectedEmail().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
     
@@ -73,6 +74,6 @@ public class EmailPicklistInput extends AbstractSingleValuedPicklistInput {
                 selectedRef = NEW_EMAIL_REF;
             }
         }
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + checkForNull(selectedRef) + "</div>");
+        sb.append("<div style=\"display:none\" id=\"selectedRef-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">" + checkForNull(selectedRef) + "</div>");
     }
 }

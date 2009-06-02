@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -32,17 +33,17 @@ public class PreferredPhoneTypesInput extends AbstractInput {
     }
 
     protected void createSelectBegin(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "' class='");
+        sb.append("<select name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" class=\"");
         if (fieldVO.isCascading()) {
             sb.append("picklist ");
         }
         sb.append(checkForNull(fieldVO.getEntityAttributes()));
-        sb.append("' id='" + fieldVO.getFieldId() + "' references='" + checkForNull(fieldVO.getUniqueReferenceValues()) + "'>");
+        sb.append("\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" references=\"" + checkForNull(fieldVO.getUniqueReferenceValues()) + "\">");
     }
     
     protected String createOptions(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
         if (fieldVO.isRequired() == false) {
-            sb.append("<option value='none'>").append(getMessage("none")).append("</option>");
+            sb.append("<option value=\"none\">").append(getMessage("none")).append("</option>");
         }
         String selectedRef = StringConstants.EMPTY;
         List<String> codes = fieldVO.getCodes();
@@ -51,12 +52,12 @@ public class PreferredPhoneTypesInput extends AbstractInput {
         if (codes != null) {
             for (int i = 0; i < codes.size(); i++) {
                 String thisCode = codes.get(i);
-                sb.append("<option value='" + thisCode + "' ");
+                sb.append("<option value=\"" + StringEscapeUtils.escapeHtml(thisCode) + "\" ");
                 if (refValues != null && i >= 0 && i < refValues.size()) {
-                    sb.append("reference='" + refValues.get(i) + "' ");
+                    sb.append("reference=\"" + StringEscapeUtils.escapeHtml(refValues.get(i)) + "\" ");
                 }
                 if (thisCode.equals(fieldVO.getFieldValue())) {
-                    sb.append("selected='selected' ");
+                    sb.append("selected=\"selected\" ");
                     if (refValues != null && i >= 0 && i < refValues.size()) {
                         selectedRef = refValues.get(i);
                     }
@@ -64,7 +65,7 @@ public class PreferredPhoneTypesInput extends AbstractInput {
                 sb.append(">");
                 
                 if (displayValues != null && i >= 0 && i < displayValues.size()) {
-                    sb.append(displayValues.get(i));
+                    sb.append(StringEscapeUtils.escapeHtml(displayValues.get(i).toString()));
                 }
                 sb.append("</option>");
             }
@@ -77,7 +78,7 @@ public class PreferredPhoneTypesInput extends AbstractInput {
     }
     
     protected void createSelectedRef(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb, String selectedRef) {
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>");
+        sb.append("<div style=\"display:none\" id=\"selectedRef-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">");
         
         if (fieldVO.isRequired() && StringUtils.hasText(selectedRef) == false) {
             List<String> refValues = fieldVO.getReferenceValues();
@@ -85,7 +86,7 @@ public class PreferredPhoneTypesInput extends AbstractInput {
                 selectedRef = refValues.get(0);
             }
             if (StringUtils.hasText(selectedRef)) {
-                sb.append(selectedRef);
+                sb.append(StringEscapeUtils.escapeHtml(selectedRef));
             }
         }
         sb.append("</div>");

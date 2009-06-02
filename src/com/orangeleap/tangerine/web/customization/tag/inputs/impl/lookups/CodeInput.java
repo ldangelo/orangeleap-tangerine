@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -29,25 +30,25 @@ public class CodeInput extends AbstractInput {
     }
 
     protected void createLookupWrapperBegin(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<div class='lookupWrapper'>");
+        sb.append("<div class=\"lookupWrapper\">");
     }
     
     protected void createDisplayInput(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<input value='" + checkForNull(fieldVO.getDisplayValue()) + "' class='text code " + checkForNull(fieldVO.getEntityAttributes()));
+        sb.append("<input value=\"" + checkForNull(fieldVO.getDisplayValue()) + "\" class=\"text code " + checkForNull(fieldVO.getEntityAttributes()));
         writeErrorClass(request, pageContext, sb);
-        sb.append("' " + getDisplayAttributes(fieldVO));
-        sb.append("name='display-" + fieldVO.getFieldName() + "' id='display-" + fieldVO.getFieldId() + "'/>");
+        sb.append("\" " + getDisplayAttributes(fieldVO));
+        sb.append("name=\"display-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"display-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\"/>");
     }
     
     protected void createHiddenInput(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<input type='hidden' name='" + fieldVO.getFieldName() + "' id='hidden-" + fieldVO.getFieldId() + "' value='" + checkForNull(fieldVO.getFieldValue()) + "'/>");
+        sb.append("<input type=\"hidden\" name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"hidden-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" value=\"" + checkForNull(fieldVO.getFieldValue()) + "\"/>");
     }
     
     protected void createLookup(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<a class='lookupLink' href='javascript:void(0)' ");
-        sb.append("onclick='" + getLookupClickHandler() + "' ");
+        sb.append("<a class=\"lookupLink\" href=\"javascript:void(0)\" ");
+        sb.append("onclick=\"" + getLookupClickHandler() + "\" ");
         String lookupMsg = getMessage("lookup");
-        sb.append("alt='").append(lookupMsg).append("' title='").append(lookupMsg).append("'>").append(lookupMsg).append("</a>");
+        sb.append("alt=\"").append(lookupMsg).append("\" title=\"").append(lookupMsg).append("\">").append(lookupMsg).append("</a>");
     }
     
     protected void createLookupWrapperEnd(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
@@ -59,6 +60,6 @@ public class CodeInput extends AbstractInput {
     }
     
     protected String getDisplayAttributes(FieldVO fieldVO) {
-        return "lookup='" + fieldVO.getFieldName() + "' codeType='" + fieldVO.getFieldName() + "' ";
+        return "lookup=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" codeType=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" ";
     }
 }

@@ -42,7 +42,7 @@ public class ExistingPhonePicklistInput extends PhonePicklistInput {
         PhoneAware aware = (PhoneAware) model;
         if (FormBeanType.EXISTING.equals(aware.getPhoneType()) && aware.getSelectedPhone() != null && 
                 phoneToCheck.getId().equals(aware.getSelectedPhone().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
 }

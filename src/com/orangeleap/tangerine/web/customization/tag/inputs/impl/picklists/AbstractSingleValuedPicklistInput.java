@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.Creatable;
@@ -14,17 +15,17 @@ public abstract class AbstractSingleValuedPicklistInput extends AbstractInput {
 
     protected void createNoneOption(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {
         if (fieldVO.isRequired() == false) {
-            sb.append("<option value='none'>").append(getMessage("none")).append("</option>");
+            sb.append("<option value=\"none\">").append(getMessage("none")).append("</option>");
         }
     }
 
     protected void createNewOption(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, Creatable creatable, String reference) {
-        sb.append("<option value='new'");
+        sb.append("<option value=\"new\"");
         if (StringUtils.hasText(reference)) {
-            sb.append(" reference='").append(reference).append("'");
+            sb.append(" reference=\"").append(StringEscapeUtils.escapeHtml(reference)).append("\"");
         }
         if (creatable.isUserCreated()) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
         sb.append(">").append(getMessage("createNew")).append("</option>");
     }
@@ -32,7 +33,7 @@ public abstract class AbstractSingleValuedPicklistInput extends AbstractInput {
     @SuppressWarnings("unchecked")
     protected void createBeginOptGroup(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List list) {
         if (list != null && list.isEmpty() == false) {
-            sb.append("<optgroup label='").append(getMessage("orChoose")).append("'>");
+            sb.append("<optgroup label=\"").append(getMessage("orChoose")).append("\">");
         }
     }
 
@@ -44,7 +45,7 @@ public abstract class AbstractSingleValuedPicklistInput extends AbstractInput {
     }
     
     protected void createBeginSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, String references) {
-        sb.append("<select name='" + fieldVO.getFieldName() + "' id='" + fieldVO.getFieldId() + "' class='picklist " + checkForNull(fieldVO.getEntityAttributes()) + "' references='" + checkForNull(references) + "'>");
+        sb.append("<select name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"picklist " + checkForNull(fieldVO.getEntityAttributes()) + "\" references=\"" + checkForNull(references) + "\">");
     }
     
     protected void createEndSelect(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb) {

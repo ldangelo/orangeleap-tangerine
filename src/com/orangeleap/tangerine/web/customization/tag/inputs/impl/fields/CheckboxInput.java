@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -20,14 +21,14 @@ public class CheckboxInput extends AbstractInput {
     @Override
     public String handleField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<input type='hidden' name='_" + fieldVO.getFieldName() + "'/>");
-        sb.append("<input type='checkbox' value='true' class='checkbox " + checkForNull(fieldVO.getEntityAttributes()) + "' name='" + fieldVO.getFieldName() + "' ");
-        sb.append("id='" + fieldVO.getFieldId() + "' ");
+        sb.append("<input type=\"hidden\" name=\"_" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\"/>");
+        sb.append("<input type=\"checkbox\" value=\"true\" class=\"checkbox " + checkForNull(fieldVO.getEntityAttributes()) + "\" name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" ");
+        sb.append("id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" ");
         if ("true".equals(fieldVO.getFieldValue())) {
-            sb.append("checked='true' ");
+            sb.append("checked=\"true\" ");
         }
         if (fieldVO.isDisabled()) {
-            sb.append("disabled='true' ");
+            sb.append("disabled=\"true\" ");
         }
         sb.append("/>");
         return sb.toString();

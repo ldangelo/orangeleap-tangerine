@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -53,18 +54,18 @@ public class AdjustedGiftPaymentTypePicklistInput extends PicklistInput {
                 if (PaymentSource.CASH.equals(code) || PaymentSource.CHECK.equals(code) || 
                         (adjustedGift.getSelectedPaymentSource() != null && adjustedGift.getSelectedPaymentSource().getId() != null && 
                                 adjustedGift.getSelectedPaymentSource().getId() > 0 && adjustedGift.getSelectedPaymentSource().getPaymentType().equals(code))) {
-                    sb.append("<option value='" + code + "'");
+                    sb.append("<option value=\"" + code + "\"");
     
                     String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
                     if (StringUtils.hasText(reference)) {
-                        sb.append(" reference='" + reference + "'");
+                        sb.append(" reference=\"" + StringEscapeUtils.escapeHtml(reference) + "\"");
                     }
                     if (code.equals(adjustedGift.getPaymentType())) {
-                        sb.append(" selected='selected'");
+                        sb.append(" selected=\"selected\"");
                         selectedRef = reference;
                     }
                     sb.append(">");
-                    sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : displayValues.get(i));
+                    sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(displayValues.get(i).toString()));
                     sb.append("</option>");
                 }
             }

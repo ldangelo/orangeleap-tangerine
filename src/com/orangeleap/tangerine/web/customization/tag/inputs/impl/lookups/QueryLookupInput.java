@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
@@ -27,19 +28,19 @@ public class QueryLookupInput extends AbstractInput {
     }
 
     protected void createLookupWrapperBegin(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<div class='lookupWrapper'>");
+        sb.append("<div class=\"lookupWrapper\">");
     }
     
     protected void createLookupFieldBegin(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<div class='lookupField " + checkForNull(fieldVO.getEntityAttributes()) + "'>");
+        sb.append("<div class=\"lookupField " + checkForNull(fieldVO.getEntityAttributes()) + "\">");
     }
     
     protected void createLookupOptionBegin(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<div id='lookup-" + fieldVO.getFieldId() + "' class='queryLookupOption' selectedId='" + checkForNull(fieldVO.getId()) + "'>");
+        sb.append("<div id=\"lookup-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" class=\"queryLookupOption\" selectedId=\"" + checkForNull(fieldVO.getId()) + "\">");
     }
         
     protected String createOptionText(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        String displayValue = fieldVO.getDisplayValue() != null ? fieldVO.getDisplayValue().toString().trim() : StringConstants.EMPTY;
+        String displayValue = fieldVO.getDisplayValue() != null ? StringEscapeUtils.escapeHtml(fieldVO.getDisplayValue().toString().trim()) : StringConstants.EMPTY;
         sb.append("<span>");
         if (fieldVO.getId() != null && fieldVO.getId() > 0 && fieldVO.getReferenceType() != null) {
             StringBuilder linkSb = new StringBuilder();
@@ -49,12 +50,12 @@ public class QueryLookupInput extends AbstractInput {
             else {
                 linkSb.append(fieldVO.getReferenceType().toString()).append(".htm?");
             }
-            linkSb.append(fieldVO.getReferenceType().toString()).append("Id=" + fieldVO.getId());
+            linkSb.append(fieldVO.getReferenceType().toString()).append("Id=" + checkForNull(fieldVO.getId()));
             if (ReferenceType.person.equals(fieldVO.getReferenceType()) == false) {
                 linkSb.append("&" + StringConstants.PERSON_ID + "=" + request.getParameter(StringConstants.PERSON_ID));
             }
             String linkMsg = getMessage("gotoLink");
-            sb.append("<a href='" + linkSb.toString() + "' target='_blank' alt='" + linkMsg + "' title='" + linkMsg + "'>");
+            sb.append("<a href=\"" + linkSb.toString() + "\" target=\"_blank\" alt=\"" + linkMsg + "\" title=\"" + linkMsg + "\">");
             sb.append(displayValue);
             sb.append("</a>");
         }
@@ -68,7 +69,7 @@ public class QueryLookupInput extends AbstractInput {
     protected void createDeleteOption(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb, String displayValue) {
         if (StringUtils.hasText(displayValue)) {
             String removeMsg = getMessage("removeThisOption");
-            sb.append("<a href='javascript:void(0)' onclick='" + getDeleteClickHandler() + "' class='deleteOption'><img src='images/icons/deleteRow.png' alt='" + removeMsg + "' title='" + removeMsg + "'/></a>");
+            sb.append("<a href=\"javascript:void(0)\" onclick=\"" + getDeleteClickHandler() + "\" class=\"deleteOption\"><img src=\"images/icons/deleteRow.png\" alt=\"" + removeMsg + "\" title=\"" + removeMsg + "\"/></a>");
         }
     }
     
@@ -81,14 +82,14 @@ public class QueryLookupInput extends AbstractInput {
     }
     
     protected void createLookupLink(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<a href='javascript:void(0)' onclick='" + getQueryClickHandler() + "' fieldDef='");
+        sb.append("<a href=\"javascript:void(0)\" onclick=\"" + getQueryClickHandler() + "\" fieldDef=\"");
         
         SectionField sectionField = (SectionField)request.getAttribute("sectionField");
         if (sectionField != null && sectionField.getFieldDefinition() != null && sectionField.getFieldDefinition().getId() != null) {
-            sb.append(sectionField.getFieldDefinition().getId());
+            sb.append(StringEscapeUtils.escapeHtml(sectionField.getFieldDefinition().getId()));
         }
         String lookupMsg = getMessage("lookup");
-        sb.append("' class='hideText' alt='" + lookupMsg + "' title='" + lookupMsg + "'>" + lookupMsg + "</a>");
+        sb.append("\" class=\"hideText\" alt=\"" + lookupMsg + "\" title=\"" + lookupMsg + "\">" + lookupMsg + "</a>");
     }
     
     protected String getQueryClickHandler() {
@@ -100,26 +101,26 @@ public class QueryLookupInput extends AbstractInput {
     }
     
     protected void createHiddenField(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
-        sb.append("<input type='hidden' name='" + fieldVO.getFieldName() + "' value='" + checkForNull(fieldVO.getId()) + "' id='" + fieldVO.getFieldId() + "'/>");
+        sb.append("<input type=\"hidden\" name=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\" value=\"" + checkForNull(fieldVO.getId()) + "\" id=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\"/>");
     }
     
     protected void createCloneable(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
         String removeMsg = getMessage("removeThisOption");
-        sb.append("<div class='queryLookupOption noDisplay clone'>");
-        sb.append("<span><a href='' target='_blank'></a></span>");
-        sb.append("<a href='javascript:void(0)' onclick='" + getDeleteClickHandler() + "' class='deleteOption'>");
-        sb.append("<img src='images/icons/deleteRow.png' alt='" + removeMsg + "' title='" + removeMsg + "'/>");
+        sb.append("<div class=\"queryLookupOption noDisplay clone\">");
+        sb.append("<span><a href=\"\" target=\"_blank\"></a></span>");
+        sb.append("<a href=\"javascript:void(0)\" onclick=\"" + getDeleteClickHandler() + "\" class=\"deleteOption\">");
+        sb.append("<img src=\"images/icons/deleteRow.png\" alt=\"" + removeMsg + "\" title=\"" + removeMsg + "\"/>");
         sb.append("</a>");
         sb.append("</div>");
     }
     
     protected void createHiearchy(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
         if (fieldVO.isHierarchy()) {
-            sb.append("<a href='javascript:void(0)' onclick='Lookup.loadTreeView(this)' divid='treeview-" + fieldVO.getFieldId() + "' "); 
-            sb.append("personid='" + request.getParameter(StringConstants.PERSON_ID) + "' fieldDef='" + fieldVO.getFieldName() + "'>");
+            sb.append("<a href=\"javascript:void(0)\" onclick=\"Lookup.loadTreeView(this)\" divid=\"treeview-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" "); 
+            sb.append("personid=\"" + request.getParameter(StringConstants.PERSON_ID) + "\" fieldDef=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\">");
             sb.append(getMessage("viewHierarchy"));
             sb.append("</a>");
-            sb.append("<div id='treeview-" + fieldVO.getFieldId() + "'></div>");
+            sb.append("<div id=\"treeview-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\"></div>");
         }
     }
 }

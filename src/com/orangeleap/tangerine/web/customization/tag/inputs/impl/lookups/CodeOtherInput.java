@@ -1,5 +1,6 @@
 package com.orangeleap.tangerine.web.customization.tag.inputs.impl.lookups;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ public class CodeOtherInput extends CodeInput {
 
     @Override
     protected String getDisplayAttributes(FieldVO fieldVO) {
-        return super.getDisplayAttributes(fieldVO) + " otherFieldId='" + fieldVO.getOtherFieldId() + "' ";
+        return super.getDisplayAttributes(fieldVO) + " otherFieldId=\"" + StringEscapeUtils.escapeHtml(fieldVO.getOtherFieldId()) + "\" ";
     }
 
     @Override

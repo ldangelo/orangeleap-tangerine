@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.domain.NewAddressAware;
@@ -43,7 +44,7 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
     protected void createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List<Address> addresses) {
         if (addresses != null) {
             for (Address address : addresses) {
-                sb.append("<option value='" + address.getId() + "'");
+                sb.append("<option value=\"" + address.getId() + "\"");
                 checkIfExistingOptionSelected(fieldVO.getModel(), address, sb);
                 sb.append(">");
                 sb.append(address.getShortDisplay());
@@ -61,7 +62,7 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
         if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getAddress() != null && 
                 aware.getAddress().isUserCreated() == false && aware.getSelectedAddress() != null && 
                 addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
     
@@ -73,6 +74,6 @@ public class AddressPicklistInput extends AbstractSingleValuedPicklistInput {
                 selectedRef = NEW_ADDRESS_REF;
             }
         }
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + checkForNull(selectedRef) + "</div>");
+        sb.append("<div style=\"display:none\" id=\"selectedRef-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">" + checkForNull(selectedRef) + "</div>");
     }
 }

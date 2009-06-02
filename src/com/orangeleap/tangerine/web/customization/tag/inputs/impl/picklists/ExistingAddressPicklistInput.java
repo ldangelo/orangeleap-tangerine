@@ -42,7 +42,7 @@ public class ExistingAddressPicklistInput extends AddressPicklistInput {
         AddressAware aware = (AddressAware) model;
         if (FormBeanType.EXISTING.equals(aware.getAddressType()) && aware.getSelectedAddress() != null && 
                 addressToCheck.getId().equals(aware.getSelectedAddress().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
 }

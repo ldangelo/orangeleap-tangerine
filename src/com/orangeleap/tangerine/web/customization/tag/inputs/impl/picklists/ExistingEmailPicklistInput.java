@@ -42,7 +42,7 @@ public class ExistingEmailPicklistInput extends EmailPicklistInput {
         EmailAware aware = (EmailAware) model;
         if (FormBeanType.EXISTING.equals(aware.getEmailType()) && aware.getSelectedEmail() != null && 
                 emailToCheck.getId().equals(aware.getSelectedEmail().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
 }

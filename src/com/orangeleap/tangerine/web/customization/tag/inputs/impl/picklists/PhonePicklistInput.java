@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.domain.NewPhoneAware;
@@ -43,7 +44,7 @@ public class PhonePicklistInput extends AbstractSingleValuedPicklistInput {
     protected void createOptions(HttpServletRequest request, FieldVO fieldVO, StringBuilder sb, List<Phone> phones) {
         if (phones != null) {
             for (Phone phone : phones) {
-                sb.append("<option value='" + phone.getId() + "'");
+                sb.append("<option value=\"" + phone.getId() + "\"");
                 checkIfExistingOptionSelected(fieldVO.getModel(), phone, sb);
                 sb.append(">");
                 sb.append(phone.getNumber());
@@ -61,7 +62,7 @@ public class PhonePicklistInput extends AbstractSingleValuedPicklistInput {
         if (FormBeanType.EXISTING.equals(aware.getPhoneType()) && aware.getPhone() != null && 
                 aware.getPhone().isUserCreated() == false && aware.getSelectedPhone() != null && 
                 phoneToCheck.getId().equals(aware.getSelectedPhone().getId())) {
-            sb.append(" selected='selected'");
+            sb.append(" selected=\"selected\"");
         }
     }
     
@@ -73,6 +74,6 @@ public class PhonePicklistInput extends AbstractSingleValuedPicklistInput {
                 selectedRef = NEW_PHONE_REF;
             }
         }
-        sb.append("<div style='display:none' id='selectedRef-" + fieldVO.getFieldId() + "'>" + checkForNull(selectedRef) + "</div>");
+        sb.append("<div style=\"display:none\" id=\"selectedRef-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\">" + checkForNull(selectedRef) + "</div>");
     }
 }

@@ -124,10 +124,14 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	        BindException errors = new BindException(br);
 	      
 	        constituentValidator.validate(constituent, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        if (errors.getAllErrors().size() > 0) {
+				throw errors;
+			}
 	        
 	        entityValidator.validate(constituent, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        if (errors.getAllErrors().size() > 0) {
+				throw errors;
+			}
         }
         
         
@@ -225,7 +229,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
                 addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
             }
 
-            // Phone
+            // Phone (Call)
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.PHONE_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
@@ -234,6 +238,17 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             else {
                 phoneService.maintainResetReceiveCorrespondence(constituent.getId());
                 phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+            }
+
+            // Phone Text (SMS)
+            if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.TEXT_CAMEL_CASE) ||
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
+                    constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
+                // do nothing
+            }
+            else {
+                phoneService.maintainResetReceiveCorrespondenceText(constituent.getId());
+                phoneService.resetReceiveCorrespondenceText(constituent.getPrimaryPhone());
             }
             
             // Email
@@ -403,7 +418,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	return false;
     }*/
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public boolean hasReceivedCommunication(Long constituentId, String commType,int number,String timeUnit) {
     	SortInfo sortInfo = new SortInfo();

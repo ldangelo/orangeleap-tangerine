@@ -17,6 +17,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     private String number;
     private String provider;
     private String sms;
+    private boolean receiveCorrespondenceText = false;
 
     public Phone() { }
 
@@ -54,12 +55,18 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         this.sms = sms;
     }
 
-    /**
+    public boolean isReceiveCorrespondenceText() {
+		return receiveCorrespondenceText;
+	}
+
+	public void setReceiveCorrespondenceText(boolean receiveCorrespondenceText) {
+		this.receiveCorrespondenceText = receiveCorrespondenceText;
+	}
+
+	/**
      * Check if this is a dummy object; This is not a dummy object all required fields (number) are populated
      * @return true if this Address has all required fields populated
      */
-    // @Override
-    // TODO: put back for IBatis
     @Override
     public boolean isValid() {
         return (org.springframework.util.StringUtils.hasText(number));
@@ -106,7 +113,7 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
     
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("number", number).append("provider", provider).append("sms", sms).toString();
+        return new ToStringCreator(this).append(super.toString()).append("number", number).append("provider", provider).append("sms", sms).append("receiveCorrespondenceText", receiveCorrespondenceText).toString();
     }
 
 }

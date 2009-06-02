@@ -268,6 +268,7 @@ CREATE TABLE `PHONE` (
   `NUMBER` varchar(255) default NULL,
   `PROVIDER` varchar(255) default NULL,
   `RECEIVE_CORRESPONDENCE` char(1) NOT NULL default '0',
+  `RECEIVE_CORRESPONDENCE_TEXT` char(1) NOT NULL default '0',
   `SEASONAL_END_DATE` datetime default NULL,
   `SEASONAL_START_DATE` datetime default NULL,
   `SMS` varchar(255) default NULL,

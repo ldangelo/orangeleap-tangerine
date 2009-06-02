@@ -10,7 +10,8 @@
 		<result property="inactive" column="PHONE_INACTIVE" jdbcType="CHAR" />
 		<result property="number" column="PHONE_NUMBER" jdbcType="VARCHAR" />
 		<result property="provider" column="PHONE_PROVIDER" jdbcType="VARCHAR" />
-		<result property="receiveCorrespondence" column="PHONE_RECEIVE_CORRESPONDENCE" jdbcType="CHAR" />
+		<result property="receiveCorrespondence" column="PHONE_RECEIVE_CORRESPONDENCE_CALL" jdbcType="CHAR" />
+		<result property="receiveCorrespondenceText" column="PHONE_RECEIVE_CORRESPONDENCE_TEXT" jdbcType="CHAR" />
 		<result property="seasonalEndDate" column="PHONE_SEASONAL_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="seasonalStartDate" column="PHONE_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="sms" column="PHONE_SMS" jdbcType="VARCHAR" />
@@ -27,8 +28,9 @@
 		ph.PHONE_ID, ph.ACTIVATION_STATUS as PHONE_ACTIVATION_STATUS, ph.COMMENT as PHONE_COMMENT, 
 		ph.CREATE_DATE as PHONE_CREATE_DATE, ph.EFFECTIVE_DATE as PHONE_EFFECTIVE_DATE,
 		ph.INACTIVE as PHONE_INACTIVE, ph.NUMBER as PHONE_NUMBER, ph.PROVIDER as PHONE_PROVIDER, 
-		ph.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE, ph.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE,
-		ph.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, ph.SMS as PHONE_SMS, ph.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
+		ph.RECEIVE_CORRESPONDENCE as PHONE_RECEIVE_CORRESPONDENCE_CALL, ph.RECEIVE_CORRESPONDENCE_TEXT as PHONE_RECEIVE_CORRESPONDENCE_TEXT, 
+		ph.SEASONAL_END_DATE as PHONE_SEASONAL_END_DATE, ph.SEASONAL_START_DATE as PHONE_SEASONAL_START_DATE, 
+		ph.SMS as PHONE_SMS, ph.TEMPORARY_END_DATE as PHONE_TEMPORARY_END_DATE, 
 		ph.TEMPORARY_START_DATE as PHONE_TEMPORARY_START_DATE, ph.UPDATE_DATE as PHONE_UPDATE_DATE, ph.CONSTITUENT_ID as PHONE_CONSTITUENT_ID,
 	    ph.IS_PRIMARY as PHONE_IS_PRIMARY, ph.UNDELIVERABLE as PHONE_UNDELIVERABLE
 	</sql>
@@ -61,11 +63,11 @@
 
 	<insert id="INSERT_PHONE" parameterClass="com.orangeleap.tangerine.domain.communication.Phone">
 		insert into PHONE (ACTIVATION_STATUS, COMMENT, CREATE_DATE, EFFECTIVE_DATE, INACTIVE,
-		NUMBER, PROVIDER, RECEIVE_CORRESPONDENCE, SEASONAL_END_DATE, SEASONAL_START_DATE,
+		NUMBER, PROVIDER, RECEIVE_CORRESPONDENCE, RECEIVE_CORRESPONDENCE_TEXT, SEASONAL_END_DATE, SEASONAL_START_DATE,
 		SMS, TEMPORARY_END_DATE, TEMPORARY_START_DATE, UPDATE_DATE, CONSTITUENT_ID, IS_PRIMARY, UNDELIVERABLE)
 		values (#activationStatus#, #comments#, now(),
 		#effectiveDate#, #inactive#, #number#, 
-		#provider#, #receiveCorrespondence#, #seasonalEndDate#,
+		#provider#, #receiveCorrespondence#, #receiveCorrespondenceText#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
 		#temporaryStartDate#, now(), #personId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -82,6 +84,7 @@
 		NUMBER = #number#,
 		PROVIDER = #provider#,
 		RECEIVE_CORRESPONDENCE = #receiveCorrespondence#,
+		RECEIVE_CORRESPONDENCE_TEXT = #receiveCorrespondenceText#,
 		SEASONAL_END_DATE = #seasonalEndDate#,
 		SEASONAL_START_DATE = #seasonalStartDate#,
 		SMS = #sms#,

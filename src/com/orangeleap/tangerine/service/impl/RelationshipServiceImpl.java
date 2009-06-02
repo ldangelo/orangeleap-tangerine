@@ -691,7 +691,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             }
         }
         if (relationship == null) {
-            throw new IllegalArgumentException("Invalid field - " + fieldDefinitionId);
+        	// 'AccountMangerFor', for example is only for certain roles ('individual' is not listed in entity attributes).
+        	relationship = StringConstants.INDIVIDUAL;
         }
         return relationship;
     }

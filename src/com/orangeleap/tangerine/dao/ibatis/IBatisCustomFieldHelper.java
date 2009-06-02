@@ -185,19 +185,20 @@ public class IBatisCustomFieldHelper {
         List<CustomField> adds = subtract(currentNewCustomFields, currentOldCustomFields);
         List<CustomField> deletes = subtract(currentOldCustomFields, currentNewCustomFields);
  
+        
         // Only need to maintain the adds and deletes. Keep the existing date ranges on the unchanged ones.
         for (CustomField cf : deletes) {
-        	deleteCustomField(cf, isPersonSingleValuedDateRanged(cf));
+        	deleteCustomField(cf, useDateRanges(cf));
         }
         
         for (CustomField cf : adds) {
-        	addCustomField(cf, allOldCustomFields, isPersonSingleValuedDateRanged(cf));
+        	addCustomField(cf, allOldCustomFields, useDateRanges(cf));
         }
     	
     }
     
-    private boolean isPersonSingleValuedDateRanged(CustomField cf) {
-    	return isPerson(cf) && isSingleValuedAndDateRanged(getFieldDefinition(cf));
+    private boolean useDateRanges(CustomField cf) {
+    	return isPerson(cf) && isReferenceType(getFieldDefinition(cf));
     }
     
     private boolean isPerson(CustomField cf) {
@@ -209,8 +210,8 @@ public class IBatisCustomFieldHelper {
     	return fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
     }
     
-    private boolean isSingleValuedAndDateRanged(FieldDefinition fd) {
-    	return fd != null && (fd.getFieldType().equals(FieldType.QUERY_LOOKUP) || fd.getFieldType().equals(FieldType.PICKLIST));
+    private boolean isReferenceType(FieldDefinition fd) {
+    	return fd != null && (fd.getFieldType().equals(FieldType.QUERY_LOOKUP) || fd.getFieldType().equals(FieldType.MULTI_QUERY_LOOKUP));
     }
     
     
@@ -245,9 +246,9 @@ public class IBatisCustomFieldHelper {
 
     }
 
-	private void deleteCustomField(CustomField customField, boolean isSingleValuedAndDateRanged) {
+	private void deleteCustomField(CustomField customField, boolean useDateRanges) {
 		Date endDate = addDay(stripTime(new java.util.Date()),-1);
-		if (isSingleValuedAndDateRanged && customField.getStartDate().before(endDate)) {
+		if (useDateRanges && customField.getStartDate().before(endDate)) {
 			customField.setEndDate(endDate);
 			template.update("UPDATE_CUSTOM_FIELD", customField);
 		} else {
@@ -259,8 +260,8 @@ public class IBatisCustomFieldHelper {
 		}
 	}
 
-	private void addCustomField(CustomField customField, List<CustomField> existingFields, boolean isSingleValuedAndDateRanged) {
-		if (isSingleValuedAndDateRanged) {
+	private void addCustomField(CustomField customField, List<CustomField> existingFields, boolean useDateRanges) {
+		if (useDateRanges) {
 			// Need to fit in between existing date ranged values.
 			customField.setStartDate(stripTime(new java.util.Date()));
 			existingFields = filterByName(existingFields, customField);

@@ -88,10 +88,13 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public
-	PicklistItem getPicklistItem(String picklistNameId, String picklistItemName) {
-		PicklistItem picklistitem = picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
-		return picklistitem;
+	public PicklistItem getPicklistItem(String picklistNameId, String picklistItemName) {
+		return picklistDao.readPicklistItemByName(picklistNameId, picklistItemName);
+	}
+	
+	@Override
+	public PicklistItem getPicklistItemByDefaultDisplayValue(String picklistNameId, String defaultDisplayValue) {
+		return picklistDao.readPicklistItemByDefaultValue(picklistNameId, defaultDisplayValue);
 	}
 	
 	@Override
@@ -120,7 +123,38 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		}
 		return result;
 	}
-
+	
+	@Override
+	public List<PicklistItem> findCodeByDescription(String picklistNameId, String description, Boolean showInactive) {
+		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		List<PicklistItem> result = new ArrayList<PicklistItem>();
+		for (PicklistItem item : picklist.getPicklistItems()) {
+			if (showInactive || !item.isInactive()) {
+				if (description != null && item.getLongDescription() != null) {
+					if (item.getLongDescription().toUpperCase().contains(description.toUpperCase())) {
+						result.add(item);
+					}
+				} 
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public List<PicklistItem> findCodeByValue(String picklistNameId, String value, Boolean showInactive) {
+		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		List<PicklistItem> result = new ArrayList<PicklistItem>();
+		for (PicklistItem item : picklist.getPicklistItems()) {
+			if (showInactive || !item.isInactive()) {
+				if (value != null && item.getDefaultDisplayValue() != null) {
+					if (item.getDefaultDisplayValue().toUpperCase().contains(value.toUpperCase())) {
+						result.add(item);
+					}
+				} 
+			}
+		}
+		return result;
+	}
     
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -202,7 +236,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     }
     
     private void validate(Picklist picklist) {
-    	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) throw new RuntimeException("Cannot update non-site-specific entry for Picklist "+picklist.getId());
+    	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) {
+			throw new RuntimeException("Cannot update non-site-specific entry for Picklist "+picklist.getId());
+		}
     }
     
     // Since this is now auto-generated based on the display value, ensure it's unique
@@ -218,7 +254,9 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     @Transactional(propagation = Propagation.REQUIRED)
     public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {
     	
-		if (StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) throw new RuntimeException("Blank values not allowed");
+		if (StringUtils.trimToNull(picklistItem.getDefaultDisplayValue()) == null) {
+			throw new RuntimeException("Blank values not allowed");
+		}
     
     	// Sanity checks
     	if (picklistItem == null || picklistItem.getPicklistId() == null) {

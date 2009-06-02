@@ -10,7 +10,7 @@
 		<result property="amountPaid" column="AMOUNT_PAID" jdbcType="DECIMAL" />
 		<result property="amountRemaining" column="AMOUNT_REMAINING" jdbcType="DECIMAL" />
 		<result property="autoPay" column="AUTO_PAY" jdbcType="CHAR" />
-		<result property="checkNumber" column="CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="checkNumber" column="CHECK_NUMBER" jdbcType="VARCHAR" />
 		<result property="comments" column="COMMENTS" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />

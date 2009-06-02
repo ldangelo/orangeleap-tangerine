@@ -44,7 +44,7 @@
       <c:param name="itemName" value="${picklistItemName}" />
       <c:param name="view" value="inPlace" />
     </c:url>
-	<td class="action"><c:if test="${!picklistItem.readOnly}"><a class="editInPlace" onclick="return editInPlace(this);" href="${picklistItemUrl}">Edit</a></c:if>
+	<td class="action"><c:if test="${!picklistItem.readOnly}"><a class="editInPlace" onclick="return editInPlace(this);" href="${picklistItemUrl}">Edit</a></c:if></td>
 	<td class="codeValue"><c:out value='${picklistItem.defaultDisplayValue}'/></td>
 	<td class="codeDescription"><c:out value='${picklistItem.longDescription}'/></td>
     <td><input disabled="disabled" name="inactive" type="checkbox" ${picklistItem.inactive?'checked':''}/></td> 

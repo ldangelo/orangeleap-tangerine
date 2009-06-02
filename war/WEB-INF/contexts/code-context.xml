@@ -8,7 +8,6 @@
     <bean id="codeHelperController" class="com.orangeleap.tangerine.controller.code.CodeHelperController">
         <property name="viewName" value="code/codeHelper"/>
         <property name="resultsOnlyView" value="code/codeHelperResults"/>
-        <property name="tableView" value="code/codeTable"/>
         <property name="autoCompleteView" value="code/codeAutoComplete"/>
     </bean>
 

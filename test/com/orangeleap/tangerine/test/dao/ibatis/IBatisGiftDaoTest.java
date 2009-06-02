@@ -276,7 +276,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         // Update
         gift = readGift;
         gift.setPaymentMessage("Hi mom");
-        gift.setCheckNumber(111);
+        gift.setCheckNumber("111");
         gift.setEntryType(GiftEntryType.MANUAL);
         gift.setCurrencyCode("USD");
         gift.setGiftStatus(Commitment.STATUS_FULFILLED);
@@ -316,7 +316,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert StringConstants.EMPTY.equals(readGift.getAuthCode());
         assert readGift.getPaymentStatus().isEmpty();
         assert "Hi mom".equals(readGift.getPaymentMessage());
-        assert readGift.getCheckNumber() == 111;
+        assert readGift.getCheckNumber().equals("111");
 
         for (DistributionLine line : readGift.getDistributionLines()) {
             assert readGift.getId().equals(line.getGiftId());

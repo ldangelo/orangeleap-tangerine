@@ -76,11 +76,6 @@ $(document).ready(function() {
 
 	$('#dialog').jqm({overlay: 50, onShow: OrangeLeap.centerDialog}).jqDrag('.dragHandle');
 
-	$(".filters :input").bind("keyup change",function(){
-		var queryString = $(".filters :input").serialize();
-		$(".codeList").load("codeHelper.htm?view=table&"+queryString);
-	});
-
 	$(".picklistItemFilters :input").bind("keyup change",function(){
 		var queryString = $(".picklistItemFilters :input").serialize();
 		$(".picklistItemList").load("picklistItemHelper.htm?view=table&"+queryString);
@@ -685,7 +680,10 @@ var Lookup = {
 	},
 		
 	formatItem: function(row) {
-		return row[0] + (row[1] ? "<span> - " + row[1].toString().replace("&nbsp;", "") + "</span>" : "");
+		var thisCode = row[0];
+		var thisDesc = (row[1] && $.trim(row[1].toString()) != '' && $.trim(row[1].toString()) != '&nbsp;' ? "<span> - " + row[1].toString().replace("&nbsp;", "") + "</span>" : "");
+		
+		return thisCode + thisDesc;
 	},
 		
 	codeAutoCompleteCallback: function(itemSelected, $input) {
@@ -805,7 +803,11 @@ var Lookup = {
 		if (selectedVal) {
 			$("#" + Lookup.lookupCaller.attr("otherFieldId")).val("");
 			Lookup.lookupCaller.siblings("input:hidden").val(selectedVal);
-			Lookup.lookupCaller.val(selectedVal + " - " + description);
+			var thisVal = selectedVal;
+			if (description && description != '') {
+				thisVal += " - " + description;
+			}
+			Lookup.lookupCaller.val(thisVal);
 			Lookup.lookupCaller.vkfade(true);
 		}
 		else {
@@ -844,7 +846,11 @@ var Lookup = {
 			var $cloned = $toBeCloned.clone(true);
 			$cloned.attr("id", "option-" + codes[x]);
 			$cloned.attr("code", codes[x]);
-			$cloned.find("span").text(codes[x] + " - " + descriptions[x]);			
+			var thisVal = codes[x];
+			if (descriptions[x] && descriptions[x] != '') {
+				thisVal += " - " + descriptions[x];
+			}
+			$cloned.find("span").text(thisVal);			
 			$cloned.removeClass("clone").removeClass("noDisplay");
 			$cloned.prependTo(Lookup.lookupCaller);
 			$cloned.vkfade(true);

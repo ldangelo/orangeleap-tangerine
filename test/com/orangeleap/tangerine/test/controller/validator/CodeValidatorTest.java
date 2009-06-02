@@ -39,11 +39,11 @@ public class CodeValidatorTest extends BaseTest {
     @BeforeMethod
     public void setupMocks() {
         projCode = new PicklistItem();
-        projCode.setItemName("001000");
+        projCode.setDefaultDisplayValue("001000");
         motivationCode = new PicklistItem();
-        motivationCode.setItemName("0201");
+        motivationCode.setDefaultDisplayValue("0201");
         currencyCode = new PicklistItem();
-        currencyCode.setItemName("USD");
+        currencyCode.setDefaultDisplayValue("USD");
         validator = new CodeValidator();
         mockery = new Mockery();
         final PicklistItemService picklistItemService = mockery.mock(PicklistItemService.class);
@@ -52,15 +52,15 @@ public class CodeValidatorTest extends BaseTest {
         validator.setTangerineUserHelper(tangerineUserHelper);
 
         mockery.checking(new Expectations() {{
-            allowing (picklistItemService).getPicklistItem("currencyCode", "USD"); will(returnValue(currencyCode));
-            allowing (picklistItemService).getPicklistItem("currencyCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItem("currencyCode", " "); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItem("projectCode", "001000"); will(returnValue(projCode));
-            allowing (picklistItemService).getPicklistItem("projectCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItem("projectCode", " "); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItem("motivationCode", "0201"); will(returnValue(motivationCode));
-            allowing (picklistItemService).getPicklistItem("motivationCode", "foo"); will(returnValue(null));
-            allowing (picklistItemService).getPicklistItem("motivationCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", "USD"); will(returnValue(currencyCode));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("currencyCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", "001000"); will(returnValue(projCode));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("projectCode", " "); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", "0201"); will(returnValue(motivationCode));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", "foo"); will(returnValue(null));
+            allowing (picklistItemService).getPicklistItemByDefaultDisplayValue("motivationCode", " "); will(returnValue(null));
             allowing (tangerineUserHelper).lookupUserSiteName(); will(returnValue("company1"));
         }});
 

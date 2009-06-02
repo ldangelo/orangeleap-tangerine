@@ -22,5 +22,10 @@ public interface PicklistItemService {
 	PicklistItem getPicklistItem(Long picklistItemId);
 	
 	List<PicklistItem> getPicklistItems(String picklistNameId, String picklistItemName, String description, Boolean showInactive);
+	
+	public PicklistItem getPicklistItemByDefaultDisplayValue(String picklistNameId, String defaultDisplayValue);
 
+	public List<PicklistItem> findCodeByDescription(String picklistNameId, String description, Boolean showInactive);
+	
+	public List<PicklistItem> findCodeByValue(String picklistNameId, String value, Boolean showInactive);
 }

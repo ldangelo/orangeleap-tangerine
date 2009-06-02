@@ -31,7 +31,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String comments;
     protected String currencyCode = StringConstants.USD;
     protected String paymentType;
-    protected Integer checkNumber;
+    protected String checkNumber;
     
     protected Person person;
     /** Form bean representation of the DistributionLines */
@@ -115,11 +115,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
         return paymentType;
     }
 
-    public void setCheckNumber(Integer checkNumber) {
+    public void setCheckNumber(String checkNumber) {
         this.checkNumber = checkNumber;
     }
 
-    public Integer getCheckNumber() {
+    public String getCheckNumber() {
         return checkNumber;
     }
 

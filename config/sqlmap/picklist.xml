@@ -77,6 +77,13 @@
         and ITEM_NAME = #picklistItemName#
         order by P.SITE_NAME
     </select>
+
+    <select id="SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_DEFAULT_DISPLAY_VALUE" resultMap="PICKLIST_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_PICKLIST_FRAGMENT"/>
+        and PICKLIST_NAME_ID = #picklistNameId#
+        and DEFAULT_DISPLAY_VALUE = #picklistDefaultDisplayValue#
+        order by P.SITE_NAME
+    </select>
     
     <update id="UPDATE_PICKLIST" parameterClass="com.orangeleap.tangerine.domain.customization.Picklist">
         update PICKLIST 

@@ -12,7 +12,7 @@
 		<result property="adjustedPaymentRequired" column="ADJUSTED_PAYMENT_REQUIRED" jdbcType="CHAR"/>
 		<result property="adjustedPaymentTo" column="ADJUSTED_PAYMENT_TO" jdbcType="VARCHAR"/>
 		<result property="authCode" column="ADJUSTED_AUTH_CODE" jdbcType="VARCHAR" />
-		<result property="checkNumber" column="ADJUSTED_CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="checkNumber" column="ADJUSTED_CHECK_NUMBER" jdbcType="VARCHAR" />
 		<result property="comments" column="ADJUSTED_COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="ADJUSTED_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="originalAmount" column="ORIGINAL_AMOUNT" jdbcType="BIGINT" />

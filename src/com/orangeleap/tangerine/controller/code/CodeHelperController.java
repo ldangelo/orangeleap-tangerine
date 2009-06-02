@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class CodeHelperController extends ParameterizableViewController {
 
@@ -25,13 +26,8 @@ public class CodeHelperController extends ParameterizableViewController {
 
     @Resource(name="picklistItemService")
     private PicklistItemService picklistItemService;
-    private String tableView;
     private String autoCompleteView;
     private String resultsOnlyView;
-
-    public void setTableView(String tableView) {
-        this.tableView = tableView;
-    }
 
     public void setAutoCompleteView(String autoCompleteView) {
         this.autoCompleteView = autoCompleteView;
@@ -43,7 +39,7 @@ public class CodeHelperController extends ParameterizableViewController {
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String searchString = request.getParameter("q");
+        String codeValue = request.getParameter("q");
         Boolean showInactive;
         if (StringUtils.equalsIgnoreCase(request.getParameter("inactive"), "all")) {
             showInactive = null;
@@ -51,28 +47,25 @@ public class CodeHelperController extends ParameterizableViewController {
         else {
             showInactive = Boolean.valueOf(request.getParameter("inactive"));
         }
-        if (GenericValidator.isBlankOrNull(searchString)) {
-            searchString = request.getParameter("value");
+        if (GenericValidator.isBlankOrNull(codeValue)) {
+            codeValue = request.getParameter("value");
         }
-        if (searchString == null) {
-            searchString = "";
+        if (codeValue == null) {
+            codeValue = StringConstants.EMPTY;
         }
-        String description = request.getParameter("description");
+        String codeDescription = request.getParameter("description");
         String codeType = request.getParameter("type");
         if (logger.isTraceEnabled()) {
-            logger.trace("handleRequestInternal: searchString = " + searchString + " showInactive = " + showInactive + " description = " + description + " codeType = " + codeType);
+            logger.trace("handleRequestInternal: codeValue = " + codeValue + " showInactive = " + showInactive + " codeDescription = " + codeDescription + " codeType = " + codeType);
         }
         List<PicklistItem> items;
-        if (description != null) {
-        	items = picklistItemService.getPicklistItems(codeType, searchString, description, showInactive);
+        if (codeDescription != null) {
+        	items = picklistItemService.findCodeByDescription(codeType, codeDescription, showInactive);
         } 
         else {
-        	items = picklistItemService.getPicklistItems(codeType, searchString, "", showInactive);
+        	items = picklistItemService.findCodeByValue(codeType, codeValue, showInactive);
         }
         String view = super.getViewName();
-        if ("table".equals(request.getParameter(VIEW))) {
-            view = this.tableView;
-        }
         if ("autoComplete".equals(request.getParameter(VIEW))) {
             view = this.autoCompleteView;
         }

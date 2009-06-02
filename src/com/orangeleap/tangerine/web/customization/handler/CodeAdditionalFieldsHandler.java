@@ -53,7 +53,7 @@ public class CodeAdditionalFieldsHandler extends GenericFieldHandler {
             if (itemNames != null) {
                 for (PicklistItem code : picklist.getPicklistItems()) { // TODO: does this need to check for active picklist items?
                     if (itemNames.contains(code.getItemName())) {
-                        fieldVO.addDisplayValue(new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString());
+                        fieldVO.addDisplayValue(code.getValueDescription());
                     }
                 }
             }

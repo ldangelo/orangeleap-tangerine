@@ -8,7 +8,7 @@
 		<result property="giftType" column="GIFT_TYPE" jdbcType="VARCHAR" />
 		<result property="amount" column="GIFT_AMOUNT" jdbcType="DECIMAL" />
 		<result property="authCode" column="GIFT_AUTH_CODE" jdbcType="VARCHAR" />
-		<result property="checkNumber" column="GIFT_CHECK_NUMBER" jdbcType="INTEGER" />
+		<result property="checkNumber" column="GIFT_CHECK_NUMBER" jdbcType="VARCHAR" />
 		<result property="comments" column="GIFT_COMMENTS" jdbcType="VARCHAR" />
 		<result property="currencyCode" column="GIFT_CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="deductibleAmount" column="GIFT_DEDUCTIBLE_AMOUNT" jdbcType="DECIMAL" />

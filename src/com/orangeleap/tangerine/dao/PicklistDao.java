@@ -24,4 +24,5 @@ public interface PicklistDao {
 	
 	public PicklistItem readPicklistItemByName(String picklistNameId, String picklistItemName);
 	
+	public PicklistItem readPicklistItemByDefaultValue(String picklistNameId, String defaultDisplayValue);
 }

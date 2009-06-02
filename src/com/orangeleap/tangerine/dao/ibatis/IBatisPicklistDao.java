@@ -130,20 +130,31 @@ public class IBatisPicklistDao extends AbstractIBatisDao implements PicklistDao 
         return (PicklistItem) getSqlMapClientTemplate().queryForObject("SELECT_PICKLIST_ITEM_BY_ID", params);
     }
     
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
     public PicklistItem readPicklistItemByName(String picklistNameId, String picklistItemName) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistItemByName: picklistNameId = " + picklistNameId + " picklistItemName = " + picklistItemName);
+        }
         Map<String, Object> params = setupParams();
         params.put("picklistNameId", picklistNameId);
         params.put("picklistItemName", picklistItemName);
-        List<PicklistItem> list = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME", params);
-        if (list.size() == 0) {
-            return null;
-        }
-        return list.get(list.size()-1);
-        
+        List<PicklistItem> l = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_ITEM_NAME", params);
+        return (l.isEmpty() ? null : l.get(l.size() - 1));
     }
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public PicklistItem readPicklistItemByDefaultValue(String picklistNameId, String defaultDisplayValue) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPicklistItemByDefaultValue: picklistNameId = " + picklistNameId + " defaultDisplayValue = " + defaultDisplayValue);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("picklistNameId", picklistNameId);
+        params.put("picklistDefaultDisplayValue", defaultDisplayValue);
+        List<PicklistItem> l = getSqlMapClientTemplate().queryForList("SELECT_PICKLIST_ITEM_BY_PICKLIST_NAME_ID_AND_DEFAULT_DISPLAY_VALUE", params);
+        return (l.isEmpty() ? null : l.get(l.size() - 1));
+    }
 
     @Override
 	public PicklistItem maintainPicklistItem(PicklistItem picklistItem) {

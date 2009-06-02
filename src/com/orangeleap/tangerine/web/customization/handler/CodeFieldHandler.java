@@ -31,14 +31,14 @@ public class CodeFieldHandler extends GenericFieldHandler {
         return fieldVO;
     }
     
-    private String resolve(String picklistNameId, String itemName) {
+    private String resolve(String picklistNameId, String defaultDisplayValue) {
         if (logger.isTraceEnabled()) {
-            logger.trace("resolve: picklistNameId = " + picklistNameId + " itemName = " + itemName);
+            logger.trace("resolve: picklistNameId = " + picklistNameId + " defaultDisplayValue = " + defaultDisplayValue);
         }
-        String val = itemName;
-        PicklistItem code = picklistItemService.getPicklistItem(picklistNameId, itemName);
+        String val = defaultDisplayValue;
+        PicklistItem code = picklistItemService.getPicklistItemByDefaultDisplayValue(picklistNameId, defaultDisplayValue);
         if (code != null) {
-            val = new StringBuilder(code.getValue()).append(" - ").append(code.getDefaultDisplayValue()).toString();
+            val = code.getValueDescription();
         }
         return val;
     }

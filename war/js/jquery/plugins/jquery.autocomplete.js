@@ -229,7 +229,12 @@ $.Autocompleter = function(input, options) {
 		previousValue = v;
 		
 		if (options.showValueAndDesc) {
-			v = selected.result + " - " + selected.data[1].replace("&nbsp;", "");	
+			v = selected.result;
+
+			var thisDesc = selected.data[1].replace("&nbsp;", "");
+			if (thisDesc && $.trim(thisDesc) != '') {
+				v += " - " + thisDesc;
+			}	
 		}
 		
 		if ( options.multiple ) {

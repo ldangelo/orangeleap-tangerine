@@ -109,8 +109,8 @@ public class CodeValidator implements Validator {
         
         if (propertyValue != null) {
             String codeValue = (String)propertyValue;
-            PicklistItem item = picklistItemService.getPicklistItem(key, codeValue);
-            if (item != null && codeValue.equals(item.getItemName())) {
+            PicklistItem item = picklistItemService.getPicklistItemByDefaultDisplayValue(key, codeValue);
+            if (item != null && codeValue.equals(item.getDefaultDisplayValue())) {
                 isValid = true;
             }
         }

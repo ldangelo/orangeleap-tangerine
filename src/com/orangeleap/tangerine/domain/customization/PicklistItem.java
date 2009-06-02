@@ -2,6 +2,8 @@ package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
 
+import org.springframework.util.StringUtils;
+
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Auditable;
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -93,11 +95,16 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
         return defaultDisplayValue;
     }
     
-    public String getDescription() {
-        return defaultDisplayValue;
+    public String getValueDescription() {
+    	StringBuilder sb = new StringBuilder(defaultDisplayValue);
+    	if (StringUtils.hasText(longDescription)) {
+    		sb.append(" - ").append(longDescription);
+    	}
+    	return sb.toString();
     }
     
-    public String toString() {
+    @Override
+	public String toString() {
     	return this.itemName + ":" + this.itemOrder;
     }
 
@@ -121,6 +128,4 @@ public class PicklistItem extends AbstractCustomizableEntity implements Auditabl
 	public String getLongDescription() {
 		return longDescription;
 	}
-
-	
 }

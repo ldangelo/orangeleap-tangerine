@@ -8,8 +8,8 @@
 	<c:otherwise>
 		<c:forEach items="${requestScope.availableCodes}" var="code">
 			<li id="<c:out value='${code.value}'/>-li">
-				<input type="checkbox" name="<c:out value='${code.value}'/>" id="<c:out value='${code.value}'/>" title="<spring:message code='clickToSelect'/>" value="<c:out value='${code.value}'/>" displayvalue="<c:out value='${code.description}'/>" />
-				<c:out value='${code.value}'/> - <c:out value='${code.description}'/>
+				<input type="checkbox" name="<c:out value='${code.defaultDisplayValue}'/>" id="<c:out value='${code.defaultDisplayValue}'/>" title="<spring:message code='clickToSelect'/>" value="<c:out value='${code.defaultDisplayValue}'/>" displayvalue="<c:out value='${code.longDescription}'/>" />
+				<c:out value='${code.valueDescription}'/>
 			</li>
 		</c:forEach>
 		<script type="text/javascript">

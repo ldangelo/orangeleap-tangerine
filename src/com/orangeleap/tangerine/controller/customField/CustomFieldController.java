@@ -59,9 +59,9 @@ public class CustomFieldController extends SimpleFormController {
 		
 		try {
 			
-			if (StringUtils.trimToNull(customFieldRequest.getEntityType()) != null) throw new RuntimeException("Entity type required.");
+			if (StringUtils.trimToNull(customFieldRequest.getEntityType()) == null) throw new RuntimeException("Entity type required.");
 			if (!customFieldRequest.getFieldName().matches("^[a-z][a-z0-9]*$")) throw new RuntimeException("Invalid field name.");
-			if (StringUtils.trimToNull(customFieldRequest.getLabel()) != null) throw new RuntimeException("Label required.");
+			if (StringUtils.trimToNull(customFieldRequest.getLabel()) == null) throw new RuntimeException("Label required.");
 		
 			customFieldMaintenanceService.addCustomField(customFieldRequest);
 

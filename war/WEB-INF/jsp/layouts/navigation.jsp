@@ -89,13 +89,13 @@
    						   <a href="picklistItems.htm"><spring:message code="managePicklistItems"/></a>
 						</c:if>
 					</li> 
-					<%-- 		
+							
 			 		<li>
 			            <c:if test="${pageAccess['/fieldRelationshipCustomize.htm']=='ALLOWED'}">
    						   <a href="relationships.htm"><spring:message code="manageRelationshipFields"/></a>
 						</c:if>
 					</li>
-					 --%>
+					 
 			  		<li>
 			            <c:if test="${pageAccess['/customField.htm']=='ALLOWED'}">
    						   <a href="customField.htm"><spring:message code="customFieldWizard"/></a>

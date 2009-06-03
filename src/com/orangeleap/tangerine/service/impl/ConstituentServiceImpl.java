@@ -443,7 +443,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 
     	
-    	sortInfo.setSort("CONSTITUENT_ID");
+    	sortInfo.setSort("p.CONSTITUENT_ID");
     	
     	PaginatedResult results = communicationHistoryService.readCommunicationHistoryByConstituent(constituentId,sortInfo);
     	List<CommunicationHistory> list = results.getRows();

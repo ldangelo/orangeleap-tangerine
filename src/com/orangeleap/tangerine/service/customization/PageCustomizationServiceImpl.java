@@ -32,6 +32,7 @@ import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RoleType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
+@Transactional
 @Service("pageCustomizationService")
 public class PageCustomizationServiceImpl implements PageCustomizationService {
 

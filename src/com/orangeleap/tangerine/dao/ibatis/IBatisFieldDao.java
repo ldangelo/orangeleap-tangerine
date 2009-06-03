@@ -13,7 +13,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
@@ -28,7 +35,7 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
  * Corresponds to the FIELD tables
  */
 @Repository("fieldDAO")
-public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
+public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao, ApplicationContextAware {
     
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -36,6 +43,11 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     @Autowired
     public IBatisFieldDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);
+    }
+    
+    private ApplicationContext applicationContext;
+    public void setApplicationContext(ApplicationContext applicationContext) {
+    	this.applicationContext = applicationContext;
     }
     
     private Map<String, Object> setupFieldParams(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
@@ -222,12 +234,7 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     		String reportfieldName = customFieldRequest.getLabel().toUpperCase().replace(" ", "").replace("\'", "");
     		
     		
-    		Connection connection = getSqlMapClient().getCurrentConnection();
-    		if (connection == null) {
-    			getSqlMapClient().startTransaction();
-        		connection = getSqlMapClient().getCurrentConnection();
-    		}
-    		
+    		Connection connection = getDataSource().getConnection();
     		try {
 
     			Statement stat = connection.createStatement();
@@ -271,5 +278,6 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     	}
     	
     }
+    
 
 }

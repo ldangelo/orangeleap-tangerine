@@ -258,6 +258,11 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
                     		commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == -1) {
                         bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
             		}
+                    else if (bw.isReadableProperty(statusPropertyName) && 
+                    		Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) && 
+                    		commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                        bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
+                    }
                 }
                 else if (bw.isReadableProperty(statusPropertyName) && 
                 		Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) && 

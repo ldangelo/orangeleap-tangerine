@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlType;
 
+import org.joda.time.DateMidnight;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
@@ -29,7 +30,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     private boolean undeliverable = false;
     protected String comments;
     // only meaningful for Permanent emails, and indicates when date becomes effective (ex. they are moving the first of next month)
-    protected Date effectiveDate = new java.util.Date();
+    protected Date effectiveDate;
     protected boolean userCreated = false;
 
     public Long getPersonId() {
@@ -156,27 +157,28 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     public void prePersist() {
         super.prePersist();
         
-        if (activationStatus != null) {
-            if (ActivationType.permanent.equals(getActivationStatus())) {
-                setSeasonalEndDate(null);
-                setSeasonalStartDate(null);
-                setTemporaryEndDate(null);
-                setTemporaryStartDate(null);
-                
-                if (effectiveDate == null) {
-                    setEffectiveDate(Calendar.getInstance(Locale.getDefault()).getTime());
-                }
-            } 
-            else if (ActivationType.seasonal.equals(getActivationStatus())) {
-                setEffectiveDate(null);
-                setTemporaryEndDate(null);
-                setTemporaryStartDate(null);
-            } 
-            else if (ActivationType.temporary.equals(getActivationStatus())) {
-                setEffectiveDate(null);
-                setSeasonalEndDate(null);
-                setSeasonalStartDate(null);
+        if (activationStatus == null) {
+        	activationStatus = ActivationType.permanent;
+        }
+        if (ActivationType.permanent.equals(getActivationStatus())) {
+            setSeasonalEndDate(null);
+            setSeasonalStartDate(null);
+            setTemporaryEndDate(null);
+            setTemporaryStartDate(null);
+            
+            if (effectiveDate == null) {
+                setEffectiveDate(new DateMidnight().toDate());
             }
+        } 
+        else if (ActivationType.seasonal.equals(getActivationStatus())) {
+            setEffectiveDate(null);
+            setTemporaryEndDate(null);
+            setTemporaryStartDate(null);
+        } 
+        else if (ActivationType.temporary.equals(getActivationStatus())) {
+            setEffectiveDate(null);
+            setSeasonalEndDate(null);
+            setSeasonalStartDate(null);
         }
     }
 

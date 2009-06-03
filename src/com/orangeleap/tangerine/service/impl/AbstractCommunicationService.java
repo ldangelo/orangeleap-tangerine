@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateMidnight;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -257,23 +258,23 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         // create an ordered map of "status" -> (ordered map of "activationType" -> entity)
         Map<ActivationType, LinkedHashMap<String, List<T>>> statusMap = new LinkedHashMap<ActivationType, LinkedHashMap<String, List<T>>>();
         Set<String> communicationTypeSet = new LinkedHashSet<String>(); // store types of entities
-        Date nowDate = getNowDate();
 
         for (T entity : entities) {
             if (ActivationType.temporary.equals(entity.getActivationStatus())) {
+            	DateMidnight nowDate = new DateMidnight();
                 if (entity.getTemporaryStartDate() != null && entity.getTemporaryEndDate() != null && 
-                    !nowDate.before(entity.getTemporaryStartDate()) && !nowDate.after(entity.getTemporaryEndDate())) {
+                    !nowDate.isBefore(new DateMidnight(entity.getTemporaryStartDate())) && !nowDate.isAfter(new DateMidnight(entity.getTemporaryEndDate()))) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.temporary, entity);
                 }
             } 
             else if (ActivationType.seasonal.equals(entity.getActivationStatus())) {
                 SeasonalDateSpan dateSpan = new SeasonalDateSpan(entity.getSeasonalStartDate(), entity.getSeasonalEndDate());
-                if (dateSpan.contains(nowDate)) {
+                if (dateSpan.contains(new Date())) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.seasonal, entity);
                 }
             } 
             else if (ActivationType.permanent.equals(entity.getActivationStatus())) {
-                if (entity.getEffectiveDate() == null || !entity.getEffectiveDate().after(nowDate)) {
+                if (entity.getEffectiveDate() == null || !new DateMidnight(entity.getEffectiveDate()).isAfter(new DateMidnight())) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.permanent, entity);
                 }
             }
@@ -291,10 +292,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
             if (tempMap != null && tempMap.get(communicationType) != null) {
                 newList.addAll(tempMap.get(communicationType));
             } 
-            else if (seasonalMap != null && seasonalMap.get(communicationType) != null) {
+            if (seasonalMap != null && seasonalMap.get(communicationType) != null) {
                 newList.addAll(seasonalMap.get(communicationType));
             } 
-            else if (permanentMap != null && permanentMap.get(communicationType) != null) {
+            if (permanentMap != null && permanentMap.get(communicationType) != null) {
                 newList.addAll(permanentMap.get(communicationType));
             }
         }

@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.BindException;
@@ -57,6 +58,10 @@ public class CustomFieldController extends SimpleFormController {
 		String errormessage = "";
 		
 		try {
+			
+			if (StringUtils.trimToNull(customFieldRequest.getEntityType()) != null) throw new RuntimeException("Entity type required.");
+			if (!customFieldRequest.getFieldName().matches("^[a-z][a-z0-9]*$")) throw new RuntimeException("Invalid field name.");
+			if (StringUtils.trimToNull(customFieldRequest.getLabel()) != null) throw new RuntimeException("Label required.");
 		
 			customFieldMaintenanceService.addCustomField(customFieldRequest);
 

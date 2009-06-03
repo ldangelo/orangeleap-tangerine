@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateMidnight;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.CommunicationDao;
@@ -133,14 +134,14 @@ public class AbstractCommunicationServiceTest extends BaseTest {
         }
 
         @Override
-        public Date getNowDate() {
+        public DateMidnight getNowDateMidnight() {
             final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             Date d = null;
             try {
                 d = sdf.parse("01/02/2009");
             }
             catch (ParseException pe) {}
-            return d;           
+            return new DateMidnight(d);           
         }
     }
 }

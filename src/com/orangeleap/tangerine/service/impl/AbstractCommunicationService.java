@@ -1,13 +1,10 @@
 package com.orangeleap.tangerine.service.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -235,10 +232,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
    
     /**
      * Method that can be overridden in unit tests
-     * @return today's date
+     * @return today's date as midnight
      */
-    protected Date getNowDate() {
-        return Calendar.getInstance(Locale.getDefault()).getTime();
+    protected DateMidnight getNowDateMidnight() {
+        return new DateMidnight();
     }
     
     protected List<T> filterValidEntities(final List<T> entities) {
@@ -258,10 +255,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         // create an ordered map of "status" -> (ordered map of "activationType" -> entity)
         Map<ActivationType, LinkedHashMap<String, List<T>>> statusMap = new LinkedHashMap<ActivationType, LinkedHashMap<String, List<T>>>();
         Set<String> communicationTypeSet = new LinkedHashSet<String>(); // store types of entities
-
+        DateMidnight nowDate = getNowDateMidnight();
+        
         for (T entity : entities) {
             if (ActivationType.temporary.equals(entity.getActivationStatus())) {
-            	DateMidnight nowDate = new DateMidnight();
                 if (entity.getTemporaryStartDate() != null && entity.getTemporaryEndDate() != null && 
                     !nowDate.isBefore(new DateMidnight(entity.getTemporaryStartDate())) && !nowDate.isAfter(new DateMidnight(entity.getTemporaryEndDate()))) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.temporary, entity);
@@ -269,12 +266,12 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
             } 
             else if (ActivationType.seasonal.equals(entity.getActivationStatus())) {
                 SeasonalDateSpan dateSpan = new SeasonalDateSpan(entity.getSeasonalStartDate(), entity.getSeasonalEndDate());
-                if (dateSpan.contains(new Date())) {
+                if (dateSpan.contains(nowDate.toDate())) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.seasonal, entity);
                 }
             } 
             else if (ActivationType.permanent.equals(entity.getActivationStatus())) {
-                if (entity.getEffectiveDate() == null || !new DateMidnight(entity.getEffectiveDate()).isAfter(new DateMidnight())) {
+                if (entity.getEffectiveDate() == null || !new DateMidnight(entity.getEffectiveDate()).isAfter(nowDate)) {
                     addToMap(statusMap, communicationTypeSet, ActivationType.permanent, entity);
                 }
             }

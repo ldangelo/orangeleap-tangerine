@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PageAccessDao;
 import com.orangeleap.tangerine.dao.SectionDao;
@@ -193,18 +194,28 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
     }
 
 	@Override
+    @Transactional
 	public void maintainFieldDefinition(FieldDefinition fieldDefinition) {
 		fieldDao.maintainFieldDefinition(fieldDefinition);
 	}
 
 	@Override
+    @Transactional
 	public void maintainFieldValidation(FieldValidation fieldValidation) {
 		fieldDao.maintainFieldValidation(fieldValidation);
 	}
 
 	@Override
+    @Transactional
 	public void maintainSectionField(SectionField sectionField) {
 		sectionDao.maintainSectionField(sectionField);
 	}
+	
+	@Override
+    @Transactional
+    public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest) {
+    	fieldDao.maintainCustomFieldGuruData(customFieldRequest);
+    }
+
 
 }

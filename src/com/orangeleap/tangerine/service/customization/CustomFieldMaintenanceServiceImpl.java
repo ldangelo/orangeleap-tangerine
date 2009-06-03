@@ -89,7 +89,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     
 	// Modify the guru elements to support new custom field
     private void updateTheGuru(CustomFieldRequest customFieldRequest) {
-    	// TODO
+    	pageCustomizationService.maintainCustomFieldGuruData(customFieldRequest);
     }
     
     private void addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {

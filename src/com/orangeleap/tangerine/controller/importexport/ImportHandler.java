@@ -48,6 +48,7 @@ public class ImportHandler {
 			String[] line = data.get(linenumber); // Excel numbers starting at 1
 			if (header == null) {
 				header = line; // First line in CSV file is field name header
+				for (int i = 0; i < header.length; i++) header[i] = header[i].trim();
 			} else {
 				processLine(linenumber + 1, header, line);
 			}

@@ -169,6 +169,10 @@ public class FieldDescriptor {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	
+	public String toString() {
+		return getName();
+	}
 		
 	
 }

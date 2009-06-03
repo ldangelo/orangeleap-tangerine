@@ -66,71 +66,114 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     		if (StringUtils.trimToNull(customFieldRequest.getLabel()) == null || StringUtils.trimToNull(customFieldRequest.getFieldName()) == null) {
     			throw new RuntimeException("Field name and label are required");
     		}
-		
-            List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(PageType.valueOf(customFieldRequest.getEntityType()), tangerineUserHelper.lookupUserRoles());
-            Collections.sort(definitions, new Comparator<SectionDefinition>() {
-				@Override
-				public int compare(SectionDefinition o1, SectionDefinition o2) {
-					return o1.getSectionOrder().compareTo(o2.getSectionOrder());
-				}
-            });
-            if (definitions.size() == 0) throw new RuntimeException("Default page for "+customFieldRequest.getEntityType()+" has no sections");
-            
-            // Default to add to first section after last field.
-            SectionDefinition defaultSection = definitions.get(0);
-            List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(defaultSection);
-            Collections.sort(sectionFields, new Comparator<SectionField>() {
-				@Override
-				public int compare(SectionField o1, SectionField o2) {
-					return o1.getFieldOrder().compareTo(o2.getFieldOrder());
-				}
-            });
-            int fieldOrder = 0;
-            if (sectionFields.size() > 0) {
-            	fieldOrder = sectionFields.get(sectionFields.size()-1).getFieldOrder().intValue() + 1000;
-            }
-            
+    		
             Site site = new Site(tangerineUserHelper.lookupUserSiteName());
-            
-            FieldDefinition newFieldDefinition = new FieldDefinition();
-            newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
-            newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
-            if (customFieldRequest.getEntityType().equals("person")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
-            newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
-            newFieldDefinition.setSite(site);
-            String fieldName = "customFieldMap["+ customFieldRequest.getFieldName()+"]";
-            newFieldDefinition.setFieldName(fieldName);
-            String id = site.getName() + "-" + customFieldRequest.getEntityType() + "." + fieldName;
-            newFieldDefinition.setId(id);
-            
-            SectionField newSectionField = new SectionField();
-            newSectionField.setFieldOrder(fieldOrder);
-            newSectionField.setSectionDefinition(defaultSection);
-            newSectionField.setSite(site);
-            newSectionField.setFieldDefinition(newFieldDefinition);
-            
-            FieldValidation fieldValidation = new FieldValidation();
-            fieldValidation.setFieldDefinition(newFieldDefinition);
-            fieldValidation.setSectionName(defaultSection.getSectionName());
-            String regex = null;
-        	String type = customFieldRequest.getValidationType();
-        	if (type.equals("email")) regex = "extensions:isEmail";
-        	if (type.equals("url")) regex = "extensions:isUrl";
-        	if (type.equals("numeric")) regex = "^[0-9]*$";
-        	if (type.equals("alphanumeric")) regex = "^[a-zA-Z0-9]*$";
-        	if (type.equals("regex")) regex = customFieldRequest.getRegex().trim();
-            fieldValidation.setRegex(regex);
 
-            pageCustomizationService.maintainFieldDefinition(newFieldDefinition);
-            pageCustomizationService.maintainSectionField(newSectionField);
-            if (StringUtils.trimToNull(fieldValidation.getRegex()) != null) pageCustomizationService.maintainFieldValidation(fieldValidation);
+            FieldDefinition fieldDefinition = getFieldDefinition(customFieldRequest, site);
+            pageCustomizationService.maintainFieldDefinition(fieldDefinition);
             
-    		// TODO modify clementine views to support new custom field
+    		PageType editPage = PageType.valueOf(customFieldRequest.getEntityType());
+    		addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
+
+    		if (!customFieldRequest.getEntityType().equals("person")) {
+    			PageType viewPage = PageType.valueOf(customFieldRequest.getEntityType()+"View");
+    			addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
+    		}
+    		
+    		updateTheGuru(customFieldRequest);
     		
     		// Flush section/field definition cache for all tomcat instances
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
             
-		}
+	}
+    
+	// Modify the guru elements to support new custom field
+    private void updateTheGuru(CustomFieldRequest customFieldRequest) {
+    	// TODO
+    }
+    
+    private void addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
+
+        // Default to add to first section after last field.
+    	SectionDefinition sectionDefinition = getDefaultSection(pageType);
+		int fieldOrder = getNextFieldOrder(sectionDefinition);
+        
+        SectionField sectionField = getSectionField(fieldOrder, sectionDefinition, fieldDefinition, site);
+        pageCustomizationService.maintainSectionField(sectionField);
+        
+        FieldValidation fieldValidation = getFieldValidation(customFieldRequest, fieldDefinition, sectionDefinition);
+        
+        if (StringUtils.trimToNull(fieldValidation.getRegex()) != null) {
+        	pageCustomizationService.maintainFieldValidation(fieldValidation);
+        }
+
+    }
+    
+    private SectionField getSectionField(int fieldOrder, SectionDefinition sectionDefinition, FieldDefinition fieldDefinition, Site site) {
+        SectionField sectionField = new SectionField();
+        sectionField.setFieldOrder(fieldOrder);
+        sectionField.setSectionDefinition(sectionDefinition);
+        sectionField.setSite(site);
+        sectionField.setFieldDefinition(fieldDefinition);
+        return sectionField;
+    }
+    
+    private FieldValidation getFieldValidation(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition) {
+        FieldValidation fieldValidation = new FieldValidation();
+        fieldValidation.setFieldDefinition(fieldDefinition);
+        fieldValidation.setSectionName(sectionDefinition.getSectionName());
+        String regex = null;
+    	String type = customFieldRequest.getValidationType();
+    	if (type.equals("email")) regex = "extensions:isEmail";
+    	if (type.equals("url")) regex = "extensions:isUrl";
+    	if (type.equals("numeric")) regex = "^[0-9]*$";
+    	if (type.equals("alphanumeric")) regex = "^[a-zA-Z0-9]*$";
+    	if (type.equals("regex")) regex = customFieldRequest.getRegex().trim();
+        fieldValidation.setRegex(regex);
+        return fieldValidation;
+    }
+    
+    private FieldDefinition getFieldDefinition(CustomFieldRequest customFieldRequest, Site site) {
+        FieldDefinition newFieldDefinition = new FieldDefinition();
+        newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
+        newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
+        if (customFieldRequest.getEntityType().equals("person")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
+        newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
+        newFieldDefinition.setSite(site);
+        String fieldName = "customFieldMap["+ customFieldRequest.getFieldName()+"]";
+        newFieldDefinition.setFieldName(fieldName);
+        String id = site.getName() + "-" + customFieldRequest.getEntityType() + "." + fieldName;
+        newFieldDefinition.setId(id);
+        return newFieldDefinition;
+    }
+    
+    private SectionDefinition getDefaultSection(PageType pageType) {
+        List<SectionDefinition> definitions = pageCustomizationService.readSectionDefinitionsByPageTypeRoles(pageType, tangerineUserHelper.lookupUserRoles());
+        Collections.sort(definitions, new Comparator<SectionDefinition>() {
+			@Override
+			public int compare(SectionDefinition o1, SectionDefinition o2) {
+				return o1.getSectionOrder().compareTo(o2.getSectionOrder());
+			}
+        });
+        if (definitions.size() == 0) throw new RuntimeException("Default page for "+pageType.getName()+" has no sections");
+        return definitions.get(0);
+    }
+    
+    // Get next field on page from end
+    private int getNextFieldOrder(SectionDefinition sectionDefinition) {
+    	List<SectionField> sectionFields = pageCustomizationService.readSectionFieldsBySection(sectionDefinition);
+        Collections.sort(sectionFields, new Comparator<SectionField>() {
+			@Override
+			public int compare(SectionField o1, SectionField o2) {
+				return o1.getFieldOrder().compareTo(o2.getFieldOrder());
+			}
+        });
+        int fieldOrder = 0;
+        if (sectionFields.size() > 0) {
+        	fieldOrder = sectionFields.get(sectionFields.size()-1).getFieldOrder().intValue() + 1000;
+        }
+        return fieldOrder;
+    }
 		
 
 }

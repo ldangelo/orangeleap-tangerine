@@ -24,6 +24,7 @@ Ext.onReady(function() {
             {name: 'personId', mapping: 'personid', type: 'string'},
             {name: 'type', mapping: 'type', type: 'string'},
             {name: 'paymentType', mapping: 'paymenttype', type: 'string'},
+            {name: 'paymentStatus', mapping: 'paymentstatus', type: 'string'},
             {name: 'description', mapping: 'description', type: 'string'},
             {name: 'amount', mapping: 'amount', type: 'float'},
             {name: 'currencyCode', mapping: 'currencycode', type: 'string'}
@@ -48,7 +49,8 @@ Ext.onReady(function() {
         columns: [
             {header: 'Id', width: 65, dataIndex: 'id', sortable: true},
             {header: 'Date', width: 100, dataIndex: 'date', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y g:ia')},
-            {header: 'Payment Type', width: 65, dataIndex: 'paymentType', sortable: true},
+            {header: 'Pay Type', width: 65, dataIndex: 'paymentType', sortable: true},
+            {header: 'Pay Status', width: 65, dataIndex: 'paymentStatus', sortable: true},
             {header: 'Amount', width: 65, dataIndex: 'amount', sortable: true},
             {header: 'Currency', width: 65, dataIndex: 'currencyCode', sortable: true},
             {header: 'Description', width: 200,  dataIndex: 'description', sortable: true, renderer: PaymentHistory.descriptionRenderer}

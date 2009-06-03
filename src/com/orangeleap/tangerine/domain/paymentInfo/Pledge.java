@@ -29,6 +29,12 @@ public class Pledge extends Commitment {
 		setId(id);
 	}
 
+	public Pledge(BigDecimal amountTotal, BigDecimal amountPaid, String pledgeStatus) {
+		setAmountTotal(amountTotal);
+		setAmountPaid(amountPaid);
+		setPledgeStatus(pledgeStatus);
+	}
+
 	public boolean isRecurring() {
 		return recurring;
 	}

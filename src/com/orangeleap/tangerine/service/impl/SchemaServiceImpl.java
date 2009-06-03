@@ -33,7 +33,7 @@ public class SchemaServiceImpl extends AbstractTangerineService implements Schem
     	Iterator<String> it = list.iterator();
     	while (it.hasNext()) {
     		String s = (String)it.next();
-    		if (EXCLUDE_LIST.contains(s)) it.remove();
+    		if (EXCLUDE_LIST.contains(s) || s.endsWith("theguru")) it.remove();
     	}
 		return list;
 	}

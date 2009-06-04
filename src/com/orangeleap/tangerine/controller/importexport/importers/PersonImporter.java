@@ -86,17 +86,13 @@ public class PersonImporter extends EntityImporter {
 			constituent.setId(null);
 		}
 
-		constituent.setSuppressValidationForRequired(true);
-		constituent.getPrimaryAddress().setSuppressValidation(true);
-		constituent.getPrimaryEmail().setSuppressValidation(true);
-		constituent.getPrimaryPhone().setSuppressValidation(true);
+		setPicklistDefaultsForRequiredFields(constituent);
 		
 		constituentService.maintainConstituent(constituent);
 		
 	}
 	
 	
-	// This causes issues with dependent fields being triggered for validation (e.g. matching max/min amount)
 	private void setPicklistDefaultsForRequiredFields(Person entity) {
 		
 		Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(PageType.person, tangerineUserHelper.lookupUserRoles());
@@ -109,10 +105,11 @@ public class PersonImporter extends EntityImporter {
 					if (ovalue instanceof CustomField) {
 						svalue = ((CustomField)ovalue).getValue();
 					}
-					if (StringUtils.trimToNull(""+svalue) == null) {		                			
+					if (svalue == null || StringUtils.trimToNull(""+svalue) == null) {		                			
 						FieldRequired fr = requiredFieldMap.get(key);
 						if (fr.isRequired()) {
-							if (fr.getFieldDefinition().getFieldType().equals(FieldType.PICKLIST)) {
+							FieldType ft = fr.getFieldDefinition().getFieldType();
+							if (ft.equals(FieldType.PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) {
 								Picklist picklist = picklistItemService.getPicklist(fr.getFieldDefinition().getFieldName());
 								if (picklist != null) {
 									List<PicklistItem> items = picklist.getActivePicklistItems();

@@ -104,7 +104,7 @@ public class GiftImporter extends EntityImporter {
 		
 		DistributionLine dl = new DistributionLine();
 		dl.setAmount(gift.getAmount());
-		dl.setPercentage(new BigDecimal(100.00));
+		dl.setPercentage(new BigDecimal("100.00"));
 		gift.getMutableDistributionLines().add(dl);
 		gift.filterValidDistributionLines();
 		

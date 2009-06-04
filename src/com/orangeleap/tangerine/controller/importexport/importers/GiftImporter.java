@@ -108,6 +108,11 @@ public class GiftImporter extends EntityImporter {
 		gift.getMutableDistributionLines().add(dl);
 		gift.filterValidDistributionLines();
 		
+		
+		gift.setSelectedAddress(gift.getAddress());
+		gift.setSelectedPhone(gift.getPhone());
+		gift.setSelectedPaymentSource(gift.getPaymentSource());
+		
 		giftservice.maintainGift(gift);
 		
 	}

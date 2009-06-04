@@ -86,49 +86,9 @@ public class PersonImporter extends EntityImporter {
 			constituent.setId(null);
 		}
 
-		setPicklistDefaultsForRequiredFields(constituent);
 		
 		constituentService.maintainConstituent(constituent);
 		
-	}
-	
-	
-	private void setPicklistDefaultsForRequiredFields(Person entity) {
-		
-		Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(PageType.person, tangerineUserHelper.lookupUserRoles());
-		if (requiredFieldMap != null) {
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(entity);
-			for (String key : requiredFieldMap.keySet()) {
-				if (bw.isReadableProperty(key)) {
-					Object ovalue = bw.getPropertyValue(key);
-					String svalue = ovalue.toString();
-					if (ovalue instanceof CustomField) {
-						svalue = ((CustomField)ovalue).getValue();
-					}
-					if (svalue == null || StringUtils.trimToNull(""+svalue) == null) {		                			
-						FieldRequired fr = requiredFieldMap.get(key);
-						if (fr.isRequired()) {
-							FieldType ft = fr.getFieldDefinition().getFieldType();
-							if (ft.equals(FieldType.PICKLIST) || ft.equals(FieldType.MULTI_PICKLIST)) {
-								Picklist picklist = picklistItemService.getPicklist(fr.getFieldDefinition().getFieldName());
-								if (picklist != null) {
-									List<PicklistItem> items = picklist.getActivePicklistItems();
-									if (items.size() > 0) {
-										String defaultvalue = items.get(0).getItemName();
-										if (ovalue instanceof CustomField) {
-											((CustomField)ovalue).setValue(defaultvalue);
-										} else {
-											bw.setPropertyValue(key, defaultvalue);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
 	}
 	
 	

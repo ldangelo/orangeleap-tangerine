@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
@@ -27,12 +28,17 @@ import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.domain.customization.FieldRequired;
+import com.orangeleap.tangerine.domain.customization.Picklist;
+import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.integration.NewConstituent;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
@@ -46,6 +52,8 @@ import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -62,12 +70,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
 
-    @Resource(name="siteService")
-    protected SiteService siteService;
-   
-    @Resource(name="picklistItemService")
-    protected PicklistItemService picklistItemService;
-   
     @Resource(name="personEntityValidator")
     protected EntityValidator entityValidator;
    
@@ -119,6 +121,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         }    	
         
         if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
+        	
+        	setPicklistDefaultsForRequiredFields(constituent, PageType.person, tangerineUserHelper.lookupUserRoles());
 
 	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
 	        BindException errors = new BindException(br);
@@ -162,6 +166,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         
         return constituent;
     }
+    
     
     private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
     void routeConstituent(Person constituent) throws ConstituentValidationException {

@@ -12,6 +12,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.communication.AbstractCommunicatorEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.Picklist;
@@ -43,6 +44,19 @@ public abstract class AbstractTangerineService {
     }
 
 	protected void setPicklistDefaultsForRequiredFields(AbstractEntity entity, PageType pageType, List<String> userRoles) {
+		
+		if (entity instanceof AbstractCommunicatorEntity) {
+			AbstractCommunicatorEntity ace = (AbstractCommunicatorEntity)entity;
+			if (ace.getPrimaryAddress() != null && ace.getPrimaryAddress().getCustomFieldValue("addressType") == null) {
+				ace.getPrimaryAddress().setCustomFieldValue("addressType", "unknown");
+			}
+			if (ace.getPrimaryEmail() != null && ace.getPrimaryEmail().getCustomFieldValue("emailType") == null) {
+				ace.getPrimaryEmail().setCustomFieldValue("emailType", "unknown");
+			}
+			if (ace.getPrimaryPhone() != null && ace.getPrimaryPhone().getCustomFieldValue("phoneType") == null) {
+				ace.getPrimaryPhone().setCustomFieldValue("phoneType", "unknown");
+			}
+		}
 		
 		Map<String, FieldRequired> requiredFieldMap = siteService.readRequiredFields(pageType, userRoles);
 		if (requiredFieldMap != null) {

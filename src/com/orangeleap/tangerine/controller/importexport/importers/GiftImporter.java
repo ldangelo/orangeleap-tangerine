@@ -18,6 +18,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.type.PageType;
 
 
@@ -112,6 +113,11 @@ public class GiftImporter extends EntityImporter {
 		gift.setSelectedAddress(gift.getAddress());
 		gift.setSelectedPhone(gift.getPhone());
 		gift.setSelectedPaymentSource(gift.getPaymentSource());
+		
+		
+		gift.setPaymentSourceType(FormBeanType.NEW);
+		gift.setAddressType(FormBeanType.NEW);
+		gift.setPhoneType(FormBeanType.NEW);
 		
 		giftservice.maintainGift(gift);
 		

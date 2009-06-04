@@ -19,11 +19,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
 public class AES {
-
+	
     public static Logger logger = Logger.getLogger(AES.class.getName());
 
     /* The file containing the secret key */
-    private static final String KEY_FILE_PATH = "/key.txt";
+    private static final String KEY_FILE_PATH_DEFAULT = "/key.txt";
+    private static final String KEY_FILE_PATH_OVERRIDE = System.getProperty("key.file.path");
+    private static final String KEY_FILE_PATH = (KEY_FILE_PATH_OVERRIDE != null)? KEY_FILE_PATH_OVERRIDE : KEY_FILE_PATH_DEFAULT;
+    static {
+    	logger.info("Using key file path "+KEY_FILE_PATH);
+    }
 
     /* The key of the key/value pair in the secret key file */
     private static final String SECRET_KEY_KEY = "SECRET_KEY";

@@ -239,6 +239,11 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	if (picklist.getSite() == null || !picklist.getSite().getName().equals(getSiteName())) {
 			throw new RuntimeException("Cannot update non-site-specific entry for Picklist "+picklist.getId());
 		}
+    	Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
+        while (it.hasNext()) {
+        	PicklistItem item = it.next();
+        	if (item.getItemName() == null) it.remove();
+        }
     }
     
     // Since this is now auto-generated based on the display value, ensure it's unique

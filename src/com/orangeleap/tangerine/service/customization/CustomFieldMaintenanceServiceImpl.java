@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.CacheGroupDao;
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
@@ -83,19 +85,58 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             }
             
     		PageType editPage = PageType.valueOf(customFieldRequest.getEntityType());
-    		addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
+    		SectionDefinition sectionDefinition = addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
+    		SectionDefinition sectionDefinitionView = null;
 
     		if (!customFieldRequest.getEntityType().equals("person")) {
     			PageType viewPage = PageType.valueOf(customFieldRequest.getEntityType()+"View");
-    			addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
+    			sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
     		}
     		
+            if (customFieldRequest.getFieldType().equals(FieldType.QUERY_LOOKUP) || customFieldRequest.getFieldType().equals(FieldType.MULTI_QUERY_LOOKUP)) {
+            	createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
+            	if (sectionDefinitionView != null) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
+            }
+            
     		updateTheGuru(customFieldRequest);
     		
     		// Flush section/field definition cache for all tomcat instances
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
             
 	}
+    
+    // Creates a constituent lookup (not gift etc. lookup) field.
+    private void createLookupScreenDefsAndQueryLookups(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition) {
+    	boolean isOrganization = customFieldRequest.getConstituentType().equals("organization");
+    	QueryLookup queryLookup = new QueryLookup();
+    	queryLookup.setFieldDefinition(fieldDefinition);
+    	queryLookup.setEntityType(EntityType.person);
+    	queryLookup.setSite(fieldDefinition.getSite());
+    	String sqlWhere = "constituent_type = ";
+    	if (isOrganization) {
+    		sqlWhere += "'organization'";
+    	} else {
+    		sqlWhere += "'individual'";
+    	}
+    	queryLookup.setSqlWhere(sqlWhere);
+    	queryLookup.setSectionName(sectionDefinition.getSectionName());
+    	
+    	if (isOrganization) {
+        	addQueryLookupParam(queryLookup, "organizationName");
+    	} else {
+        	addQueryLookupParam(queryLookup, "firstName");
+        	addQueryLookupParam(queryLookup, "lastName");
+    	}
+    	//pageCustomizationService.maintainQueryLookup(queryLookup); // needs to set parent id on params
+    	
+    	// TODO screen defs
+    }
+    
+    private void addQueryLookupParam(QueryLookup queryLookup, String param) {
+    	QueryLookupParam queryLookupParam = new QueryLookupParam();
+    	queryLookupParam.setName(param);
+    	queryLookup.getQueryLookupParams().add(queryLookupParam);
+    }
     
     private void createPicklist(FieldDefinition fieldDefinition) {
     	Picklist picklist = new Picklist();
@@ -111,7 +152,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	pageCustomizationService.maintainCustomFieldGuruData(customFieldRequest);
     }
     
-    private void addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
+    private SectionDefinition addSectionDefinitionsAndValidations(PageType pageType, CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, Site site) {
 
         // Default to add to first section after last field.
     	SectionDefinition sectionDefinition = getDefaultSection(pageType);
@@ -125,6 +166,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         if (StringUtils.trimToNull(fieldValidation.getRegex()) != null) {
         	pageCustomizationService.maintainFieldValidation(fieldValidation);
         }
+        
+        return sectionDefinition;
 
     }
     

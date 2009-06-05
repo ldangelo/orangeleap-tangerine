@@ -19,7 +19,7 @@ implements Serializable {
     private EntityType entityType;
     private Site site;
     private boolean multiselect;
-    private List<PicklistItem> picklistItems;
+    private List<PicklistItem> picklistItems = new ArrayList<PicklistItem>();
 
     public String getPicklistNameId() {
         return picklistNameId;

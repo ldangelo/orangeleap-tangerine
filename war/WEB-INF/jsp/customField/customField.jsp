@@ -54,6 +54,7 @@
 			    <option value="DATE" >Date</option>
 			    <option value="CHECKBOX" >Checkbox</option>
 			    <option value="LONG_TEXT" >Comments</option>
+			    <option value="PICKLIST" >Picklist</option>
 		   </select>
 		   <br/>
 

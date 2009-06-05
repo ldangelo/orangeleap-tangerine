@@ -18,14 +18,17 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
+import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -58,6 +61,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
     
+    @Resource(name = "picklistItemService")
+    private PicklistItemService picklistItemService;
+    
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -71,6 +77,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 
             FieldDefinition fieldDefinition = getFieldDefinition(customFieldRequest, site);
             pageCustomizationService.maintainFieldDefinition(fieldDefinition);
+            
+            if (customFieldRequest.getFieldType().equals(FieldType.PICKLIST)) createPicklist(fieldDefinition);
             
     		PageType editPage = PageType.valueOf(customFieldRequest.getEntityType());
     		addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
@@ -86,6 +94,15 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
             
 	}
+    
+    private void createPicklist(FieldDefinition fieldDefinition) {
+    	Picklist picklist = new Picklist();
+    	picklist.setSite(fieldDefinition.getSite());
+    	picklist.setPicklistDesc(fieldDefinition.getDefaultLabel());
+    	picklist.setPicklistName(fieldDefinition.getFieldName());
+    	picklist.setPicklistNameId(fieldDefinition.getFieldName());
+    	picklistItemService.maintainPicklist(picklist);
+    }
     
 	// Modify the guru elements to support new custom field
     private void updateTheGuru(CustomFieldRequest customFieldRequest) {

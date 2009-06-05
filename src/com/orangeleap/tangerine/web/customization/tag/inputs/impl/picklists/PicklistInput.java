@@ -59,14 +59,14 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
                 if (StringUtils.hasText(reference)) {
                     sb.append(" reference=\"" + reference + "\"");
                 }
-                if (fieldVO.getFieldValue() != null) {
-                    if (code.equals(fieldVO.getFieldValue().toString())) {
+                if (fieldVO.getFieldValue() != null && code != null) {
+                    if (code.equals(fieldVO.getFieldValue())) {
                         sb.append(" selected=\"selected\"");
                         selectedRef = reference;
                     }
                 }
                 sb.append(">");
-                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml(displayValues.get(i).toString()));
+                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml( (displayValues.get(i) == null) ? "" : displayValues.get(i).toString() ));
                 sb.append("</option>");
             }
         }

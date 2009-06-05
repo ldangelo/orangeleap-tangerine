@@ -47,13 +47,13 @@ public abstract class AbstractTangerineService {
 		
 		if (entity instanceof AbstractCommunicatorEntity) {
 			AbstractCommunicatorEntity ace = (AbstractCommunicatorEntity)entity;
-			if (ace.getPrimaryAddress() != null && ace.getPrimaryAddress().getCustomFieldValue("addressType") == null) {
+			if (ace.getPrimaryAddress() != null && ace.getPrimaryAddress().getAddressLine1() != null && ace.getPrimaryAddress().getCustomFieldValue("addressType") == null) {
 				ace.getPrimaryAddress().setCustomFieldValue("addressType", "unknown");
 			}
-			if (ace.getPrimaryEmail() != null && ace.getPrimaryEmail().getCustomFieldValue("emailType") == null) {
+			if (ace.getPrimaryEmail() != null && ace.getPrimaryEmail().getEmailAddress() != null && ace.getPrimaryEmail().getCustomFieldValue("emailType") == null) {
 				ace.getPrimaryEmail().setCustomFieldValue("emailType", "unknown");
 			}
-			if (ace.getPrimaryPhone() != null && ace.getPrimaryPhone().getCustomFieldValue("phoneType") == null) {
+			if (ace.getPrimaryPhone() != null && ace.getPrimaryPhone().getNumber() != null && ace.getPrimaryPhone().getCustomFieldValue("phoneType") == null) {
 				ace.getPrimaryPhone().setCustomFieldValue("phoneType", "unknown");
 			}
 		}

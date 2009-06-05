@@ -96,7 +96,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			}
 			else amount += "00";
 			
-			request.setFieldValue("Amount", gift.getAmount().toString());
+			request.setFieldValue("Amount", amount);
 
 			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
 			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
@@ -234,7 +234,15 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("OrderID", gift.getId().toString());
 			request.setFieldValue("AccountNum", gift.getSelectedPaymentSource()
 					.getCreditCardNumber());
-			request.setFieldValue("Amount", gift.getAmount().toString());
+
+            String amount = gift.getAmount().toString();
+			if(amount.contains(".")) {
+				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
+
+			}
+			else amount += "00";
+
+			request.setFieldValue("Amount", amount);
 			
 			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
 			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
@@ -344,7 +352,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			request.setFieldValue("BIN", gift.getSite().getMerchantBin());
 			request.setFieldValue("TerminalID", gift.getSite().getMerchantTerminalId());
 			request.setFieldValue("OrderID", gift.getId().toString());
-			request.setFieldValue("Amount", gift.getAmount().toString());
+
+            String amount = gift.getAmount().toString();
+			if(amount.contains(".")) {
+				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
+
+			}
+			else amount += "00";
+			request.setFieldValue("Amount", amount);
 
 			if (logger.isInfoEnabled()) {
 				logger.info(request.getXML());

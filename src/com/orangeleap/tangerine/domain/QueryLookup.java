@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -16,7 +17,7 @@ public class QueryLookup implements GeneratedId, Serializable {
     private String sectionName;
     private EntityType entityType; 
     private String sqlWhere;
-    private List<QueryLookupParam> queryLookupParams;
+    private List<QueryLookupParam> queryLookupParams = new ArrayList<QueryLookupParam>();
 
     @Override
     public Long getId() {

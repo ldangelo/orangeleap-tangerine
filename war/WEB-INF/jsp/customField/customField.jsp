@@ -55,6 +55,7 @@
 			    <option value="CHECKBOX" >Checkbox</option>
 			    <option value="LONG_TEXT" >Comments</option>
 			    <option value="PICKLIST" >Picklist</option>
+			    <option value="MULTI_PICKLIST" >Multiple Selection Picklist</option>
 		   </select>
 		   <br/>
 

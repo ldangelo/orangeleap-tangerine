@@ -78,7 +78,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             FieldDefinition fieldDefinition = getFieldDefinition(customFieldRequest, site);
             pageCustomizationService.maintainFieldDefinition(fieldDefinition);
             
-            if (customFieldRequest.getFieldType().equals(FieldType.PICKLIST)) createPicklist(fieldDefinition);
+            if (customFieldRequest.getFieldType().equals(FieldType.PICKLIST) || customFieldRequest.getFieldType().equals(FieldType.MULTI_PICKLIST)) {
+            	createPicklist(fieldDefinition);
+            }
             
     		PageType editPage = PageType.valueOf(customFieldRequest.getEntityType());
     		addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);

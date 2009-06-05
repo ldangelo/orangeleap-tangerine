@@ -16,6 +16,7 @@
 		<result property="currencyCode" column="CURRENCY_CODE" jdbcType="VARCHAR" />
 		<result property="endDate" column="END_DATE" jdbcType="TIMESTAMP" />
 		<result property="frequency" column="FREQUENCY" jdbcType="VARCHAR" />
+		<result property="activate" column="ACTIVATE" jdbcType="CHAR" />
 		<result property="lastEntryDate" column="LAST_ENTRY_DATE" jdbcType="TIMESTAMP" />
 		<result property="paymentType" column="PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="startDate" column="START_DATE" jdbcType="TIMESTAMP" />
@@ -30,7 +31,7 @@
 	
 	<sql id="RECURRING_GIFT_COLS_FRAGMENT">
 		rg.RECURRING_GIFT_ID, rg.NEXT_RUN_DATE, rg.AMOUNT_PER_GIFT, rg.AMOUNT_TOTAL, rg.AMOUNT_PAID, rg.AMOUNT_REMAINING, rg.AUTO_PAY,
-		rg.CHECK_NUMBER, rg.COMMENTS, rg.CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY,
+		rg.CHECK_NUMBER, rg.COMMENTS, rg.CREATE_DATE, rg.CURRENCY_CODE, rg.END_DATE, rg.FREQUENCY, rg.ACTIVATE, 
 		rg.LAST_ENTRY_DATE, rg.PAYMENT_TYPE, rg.START_DATE,
 		rg.RECURRING_GIFT_STATUS, rg.UPDATE_DATE
 	</sql>
@@ -118,12 +119,12 @@
 	<insert id="INSERT_RECURRING_GIFT" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
 		insert into RECURRING_GIFT (NEXT_RUN_DATE, AMOUNT_PER_GIFT, AMOUNT_TOTAL, AMOUNT_PAID, AMOUNT_REMAINING, 
 		AUTO_PAY, CHECK_NUMBER, COMMENTS, CREATE_DATE, CURRENCY_CODE,
-		END_DATE, FREQUENCY, LAST_ENTRY_DATE, PAYMENT_TYPE,  
+		END_DATE, FREQUENCY, ACTIVATE, LAST_ENTRY_DATE, PAYMENT_TYPE,  
 		START_DATE, RECURRING_GIFT_STATUS, UPDATE_DATE, 
 		ADDRESS_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID)
 		values (#nextRunDate#, #amountPerGift#, #amountTotal#, #amountPaid#, #amountRemaining#, 
 		#autoPay#, #checkNumber#, #comments#, now(), #currencyCode#, 
-		#endDate#, #frequency#, #lastEntryDate#, #paymentType#,  
+		#endDate#, #frequency#, #activate#, #lastEntryDate#, #paymentType#,  
 		#startDate#, #recurringGiftStatus#, now(), 
 		#selectedAddress.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#)
 		<selectKey keyProperty="id" resultClass="long">
@@ -144,6 +145,7 @@
 		CURRENCY_CODE = #currencyCode#,
 		END_DATE = #endDate#,
 		FREQUENCY = #frequency#,
+		ACTIVATE = #activate#,
 		LAST_ENTRY_DATE = #lastEntryDate#,
 		PAYMENT_TYPE = #paymentType#,
 		RECURRING_GIFT_STATUS = #recurringGiftStatus#,

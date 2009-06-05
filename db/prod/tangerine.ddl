@@ -566,6 +566,7 @@ CREATE TABLE `RECURRING_GIFT` (
   `CURRENCY_CODE` varchar(255) default NULL,
   `END_DATE` datetime default NULL,
   `FREQUENCY` varchar(255) default NULL,
+  `ACTIVATE` char(1) NOT NULL default '0',
   `LAST_ENTRY_DATE` datetime default NULL,
   `PAYMENT_TYPE` varchar(255) default NULL,
   `RECURRING_GIFT_STATUS` varchar(255) default NULL,

@@ -14,6 +14,7 @@ public class RecurringGift extends Commitment {
 	private Date nextRunDate;
 	private String recurringGiftStatus = STATUS_PENDING;
 	private boolean autoPay = false;
+	private boolean activate = false;
 
 	public RecurringGift() {
 	}
@@ -51,6 +52,14 @@ public class RecurringGift extends Commitment {
 
 	public void setAutoPay(boolean autoPay) {
 		this.autoPay = autoPay;
+	}
+
+	public boolean isActivate() {
+		return activate;
+	}
+
+	public void setActivate(boolean activate) {
+		this.activate = activate;
 	}
 
 	public String getShortDescription() {

@@ -121,17 +121,23 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 	        BindException errors = new BindException(br);
 	      
 	        codeValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        if (errors.getAllErrors().size() > 0) {
+				throw errors;
+			}
 	        distributionLinesValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        if (errors.getAllErrors().size() > 0) {
+				throw errors;
+			}
 	        
 	        entityValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) throw errors;
+	        if (errors.getAllErrors().size() > 0) {
+				throw errors;
+			}
         }
 
 
         recurringGift.setAutoPay(true);
-        if (recurringGift.getNextRunDate() == null && recurringGift.getRecurringGiftStatus().equals(RecurringGift.STATUS_ACTIVE)) {
+        if (recurringGift.getNextRunDate() == null && recurringGift.isActivate()) {
             recurringGift.setNextRunDate(recurringGift.getStartDate());
         }
 

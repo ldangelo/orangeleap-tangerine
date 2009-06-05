@@ -163,11 +163,13 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 
     protected Date getNextGiftDate(T commitment) {
         Date nextGiftDate = new Date();
-        String status = commitment instanceof Pledge ? ((Pledge)commitment).getPledgeStatus() : ((RecurringGift)commitment).getRecurringGiftStatus();
         if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
             nextGiftDate = null;
         } 
-        else if (Commitment.STATUS_ACTIVE.equals(status)) {
+        else if (commitment instanceof RecurringGift && ((RecurringGift)commitment).isActivate()) {
+            nextGiftDate = calculateNextRunDate(commitment);
+        }
+        else if (commitment instanceof Pledge && Commitment.STATUS_ACTIVE.equals(((Pledge) commitment).getPledgeStatus())) {
             nextGiftDate = calculateNextRunDate(commitment);
         }
         else {

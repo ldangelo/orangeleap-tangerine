@@ -19,3 +19,7 @@ INSERT INTO FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, RELATIONSHIP_TYPE, CHECK_
 INSERT INTO FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES (1000011,'MANY_TO_MANY', FALSE, 'person.customFieldMap[organization.salesContacts]', 'person.customFieldMap[individual.salesContactFor]', null);
 INSERT INTO FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES (1000012,'MANY_TO_MANY', FALSE, 'person.customFieldMap[organization.publicRelationsContacts]', 'person.customFieldMap[individual.publicRelationsContactFor]', null);
 INSERT INTO FIELD_RELATIONSHIP (FIELD_RELATIONSHIP_ID, RELATIONSHIP_TYPE, CHECK_RECURSION, MASTER_FIELD_DEFINITION_ID, DETAIL_FIELD_DEFINITION_ID, SITE_NAME) VALUES (1000013,'MANY_TO_MANY', FALSE, 'person.customFieldMap[individual.programContactFor]', 'person.customFieldMap[organization.programContact]', null);
+
+// Defaults for custom field templates - TODO needs to be copied to site-specific rows during site initialization along with picklists.
+--INSERT INTO CUSTOM_FIELD_RELATIONSHIP (MASTER_FIELD_DEFINITION_ID) VALUES ('person.customFieldMap[organization.employees]');
+--INSERT INTO CUSTOM_FIELD(FIELD_NAME, FIELD_VALUE, ENTITY_TYPE, ENTITY_ID) VALUES ('title','<blank>','customFieldRelationship',LAST_INSERT_ID());

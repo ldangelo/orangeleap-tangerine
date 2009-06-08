@@ -15,6 +15,10 @@
 		
 		<!-- 
 		
+		$${build.version}  <br/>
+		$${build.time}     <br/>
+		<br/>
+		
 <%= com.orangeleap.tangerine.util.DiagUtil.getMemoryStats() %>
 		
 		 -->

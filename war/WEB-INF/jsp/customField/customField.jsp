@@ -57,9 +57,16 @@
   	       <br/>
 		   Display Label: <input id="label" name="label" type="text" />		   
 		   <br/>
+		   
+		   <script>
+		   function changeFieldType(selectedValue) {
+			   if (selectedValue == 'TEXT') { $('#selectValidation').show(); } else { $('#selectValidation').hide();  }
+			   if (selectedValue == 'QUERY_LOOKUP' || selectedValue == 'MULTI_QUERY_LOOKUP') { $('#selectReferenceConstituentType').show(); } else { $('#selectReferenceConstituentType').hide();  }
+		   }
+		   </script>
 		    
 		   Field Type:
-		   <select id="fieldType" name="fieldType" onchange="if (this.value == 'TEXT') { $('#selectValidation').show(); } else { $('#selectValidation').hide();  } ">
+		   <select id="fieldType" name="fieldType" onchange="changeFieldType(this.value);">
 			    <option value="TEXT" >Text</option>
 			    <option value="DATE" >Date</option>
 			    <option value="CHECKBOX" >Checkbox</option>
@@ -70,6 +77,17 @@
 			    <option value="MULTI_QUERY_LOOKUP" >Multiple Selection Constituent Lookup</option>
 		   </select>
 		   <br/>
+		   
+		   <div id="selectReferenceConstituentType"  style="display:none">
+			  Reference constituent type:
+		      <select id="referenceConstituentType" name="referenceConstituentType" ">
+			    <option value="individual" >Individual</option>
+			    <option value="organization" >Organization</option>
+			    <option value="both" >Both</option>
+		      </select>
+  	     	  <br/>
+     	    </div>
+		   
 
 		   <div id="selectValidation"  >
 			  

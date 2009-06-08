@@ -12,6 +12,7 @@ public class CustomFieldRequest {
 	private String validationType;
 	private String regex;
 	private String relateToField;
+	private String referenceConstituentType;
 	
 	
 
@@ -77,6 +78,14 @@ public class CustomFieldRequest {
 
 	public String getRelateToField() {
 		return relateToField;
+	}
+
+	public void setReferenceConstituentType(String referenceConstituentType) {
+		this.referenceConstituentType = referenceConstituentType;
+	}
+
+	public String getReferenceConstituentType() {
+		return referenceConstituentType;
 	}
 
 }

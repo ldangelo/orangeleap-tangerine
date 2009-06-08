@@ -163,7 +163,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     // Creates a constituent lookup (not gift etc. lookup) field.
     private void createLookupScreenDefsAndQueryLookups(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition) {
     	
-    	boolean isOrganization = customFieldRequest.getConstituentType().equals("organization");
+    	boolean isOrganization = customFieldRequest.getReferenceConstituentType().equals("organization");
+    	boolean isIndividual = customFieldRequest.getReferenceConstituentType().equals("individual");
+    	boolean isBoth = customFieldRequest.getReferenceConstituentType().equals("both");
 
     	// Create queries
     	String lookupSectionName = "person."+fieldDefinition.getCustomFieldName();
@@ -172,19 +174,21 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	queryLookup.setFieldDefinition(fieldDefinition);
     	queryLookup.setEntityType(EntityType.person);
     	queryLookup.setSite(fieldDefinition.getSite());
-    	String sqlWhere = "constituent_type = ";
+    	String sqlWhere = "";
     	if (isOrganization) {
-    		sqlWhere += "'organization'";
-    	} else {
-    		sqlWhere += "'individual'";
+    		sqlWhere += "constituent_type = 'organization'";
+    	} 
+    	if (isIndividual) {
+    		sqlWhere += "constituent_type = 'individual'";
     	}
     	queryLookup.setSqlWhere(sqlWhere);
     	queryLookup.setSectionName(lookupSectionName);
     	queryLookup = pageCustomizationService.maintainQueryLookup(queryLookup); 
     	
-    	if (isOrganization) {
+    	if (isOrganization || isBoth) {
         	addQueryLookupParam(queryLookup, "organizationName");
-    	} else {
+    	} 
+    	if (isIndividual || isBoth) {
         	addQueryLookupParam(queryLookup, "firstName");
         	addQueryLookupParam(queryLookup, "lastName");
     	}
@@ -201,9 +205,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	lookupSectionDefinition.setSite(fieldDefinition.getSite());
     	lookupSectionDefinition = pageCustomizationService.maintainSectionDefinition(lookupSectionDefinition); 
     	
-    	if (isOrganization) {
+    	if (isOrganization || isBoth) {
     		addSectionField(lookupSectionDefinition, "person.organizationName", 1000);
-    	} else {
+    	} 
+    	if (isIndividual || isBoth) {
     		addSectionField(lookupSectionDefinition, "person.lastName", 1000);
     		addSectionField(lookupSectionDefinition, "person.firstName", 2000);
     	}

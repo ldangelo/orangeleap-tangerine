@@ -90,6 +90,7 @@ public class CustomFieldController extends SimpleFormController {
 			message = "New custom field successfully created.";
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			errormessage = e.getMessage();
 			if (errormessage.contains("Duplicate entry")) errormessage = "Custom Field name is a duplicate of an existing one.";
 			errors.reject(errormessage, errormessage);

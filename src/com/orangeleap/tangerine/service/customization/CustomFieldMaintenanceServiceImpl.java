@@ -168,7 +168,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	boolean isBoth = customFieldRequest.getReferenceConstituentType().equals("both");
 
     	// Create queries
-    	String lookupSectionName = "person."+fieldDefinition.getCustomFieldName();
+    	String lookupSectionName = sectionDefinition.getPageType() + ".person."+fieldDefinition.getCustomFieldName();
     	
     	QueryLookup queryLookup = new QueryLookup();
     	queryLookup.setFieldDefinition(fieldDefinition);

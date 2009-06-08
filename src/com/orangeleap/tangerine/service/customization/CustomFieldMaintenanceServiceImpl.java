@@ -153,7 +153,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
     
     private boolean isRelationship(CustomFieldRequest customFieldRequest) {
-    	return StringUtils.trimToNull(customFieldRequest.getRelateToField()) != null;
+    	return StringUtils.trimToNull(customFieldRequest.getRelateToField()) != null && customFieldRequest.getEntityType().equals("person");
     }
     
     private boolean isReferenceType(CustomFieldRequest customFieldRequest) {

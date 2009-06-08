@@ -1,18 +1,20 @@
 package com.orangeleap.tangerine.util;
 
+import com.orangeleap.tangerine.security.TangerineAuthenticationDetails;
+
 import java.util.List;
 
-import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
+import org.springframework.security.providers.cas.CasAuthenticationToken;
 
 public interface TangerineUserHelper {
 
-    public TangerineAuthenticationToken getToken();
+    public CasAuthenticationToken getToken();
+
+    public TangerineAuthenticationDetails getDetails();
     
     public String lookupUserSiteName();
 
     public String lookupUserName();
-
-    public String lookupUserPassword();
 
     public List<String> lookupUserRoles();
     

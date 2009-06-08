@@ -14,9 +14,11 @@
 	    <br /><br />
 	    <h1 class="loginHeader">You have successfully logged out.</h1>
 	    <p style="padding:8px;">
-	    <a style="font-size:14px;" href="login.jsp">Return to the login page</a>
+	    <a style="font-size:14px;" href="welcome.htm">Return to the login page</a>
 	    </p>
 	</div>
 </div>
+
+<iframe id="casLogout" src="<%= System.getProperty("cas.logoutUrl") %>" height="0" width="100%" style="display: none"></iframe>
 </body>
 </html>

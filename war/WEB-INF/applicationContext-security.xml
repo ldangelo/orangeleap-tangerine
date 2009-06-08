@@ -1,144 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:sec="http://www.springframework.org/schema/security"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.2.xsd">
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                http://www.springframework.org/schema/security
+                http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
 
-	<sec:global-method-security secured-annotations="enabled"/>
+    <!-- Enable usage of the @Secured annotation, although not thinking we're using it -->
+	<global-method-security secured-annotations="enabled"/>
 
-	<bean id="accessDecisionManager" class="com.orangeleap.tangerine.security.TangerineAffirmativeBased">
-		<property name="allowIfAllAbstainDecisions" value="false"/>
-		<property name="decisionVoters">
-			<list>
-				<bean class="org.springframework.security.vote.RoleVoter"/>
-				<bean class="org.springframework.security.vote.AuthenticatedVoter"/>
-			</list>
-		</property>
-	</bean>
+    <!-- alias to the internal authenticationManager so it can be referenced in bean definitions -->
+    <authentication-manager alias="authenticationManager"/>
 
-    <sec:http entry-point-ref="authenticationProcessingFilterEntryPoint" access-decision-manager-ref="accessDecisionManager">
-        <!-- Restrict URLs based on role -->
-        <sec:intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/logoutSuccess*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/concurrentLogin*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/images/**" filters="none" />
-        <sec:intercept-url pattern="/css/login.css" filters="none" />
-        <sec:intercept-url pattern="/images/signInBox.gif" filters="none" />
-        <sec:intercept-url pattern="/images/orangeleap-logo.jpg" filters="none" />
-        <sec:intercept-url pattern="/images/orangeleap-logo.png" filters="none" />
-        <sec:intercept-url pattern="/images/orangeleap-logo-tag.jpg" filters="none" />
-        <sec:intercept-url pattern="/images/orangeleap-logo-tag.png" filters="none" />
-        <sec:intercept-url pattern="/images/favicon.ico" filters="none" />
-        <sec:intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/js/jquery/jquery*.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <sec:intercept-url pattern="/services/**" filters="none" />
-        <sec:intercept-url pattern="/**" access="ROLE_USER" />
-    </sec:http>
+    <!-- primary configuration for Tangerine -->
+    <http entry-point-ref="casProcessingFilterEntryPoint" access-decision-manager-ref="accessDecisionManager">
+        <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/logoutSuccess.jsp*" filters="none" />
+        <intercept-url pattern="/concurrentLogin.jsp*" filters="none" />
+        <intercept-url pattern="/images/**" filters="none" />
+        <intercept-url pattern="/css/login.css" filters="none" />
+        <intercept-url pattern="/images/signInBox.gif" filters="none" />
+        <intercept-url pattern="/images/orangeleap-logo.jpg" filters="none" />
+        <intercept-url pattern="/images/orangeleap-logo.png" filters="none" />
+        <intercept-url pattern="/images/orangeleap-logo-tag.jpg" filters="none" />
+        <intercept-url pattern="/images/orangeleap-logo-tag.png" filters="none" />
+        <intercept-url pattern="/images/favicon.ico" filters="none" />
+        <intercept-url pattern="/css/main.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/js/jquery/jquery*.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/js/jquery.cookie.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/**" access="ROLE_USER" />
+        <concurrent-session-control max-sessions="1" expired-url="/concurrentLogin.jsp" />
+        <anonymous granted-authority="ROLE_ANONYMOUS" key="anonymous" username="anonymous"/>
+        <logout invalidate-session="true"  logout-success-url="/logoutSuccess.jsp" logout-url="/logout"/>
+    </http>
 
-    <bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
-        <constructor-arg value="/logoutSuccess.jsp"/>
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.ui.logout.SecurityContextLogoutHandler"/>
-            </list>
-        </constructor-arg>
-        <property name="filterProcessesUrl" value="/logout"/>
-        <sec:custom-filter position="LOGOUT_FILTER"/>
-    </bean>
+    <!-- custom AccessDecisionManger that knows how to check PageAccess attributes for a user -->
+    <beans:bean id="accessDecisionManager" class="com.orangeleap.tangerine.security.TangerineAffirmativeBased">
+		<beans:property name="allowIfAllAbstainDecisions" value="false"/>
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.springframework.security.vote.RoleVoter"/>
+				<beans:bean class="org.springframework.security.vote.AuthenticatedVoter"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
 
-    <bean id="tangerineAuthenticationProcessingFilter" class="com.orangeleap.tangerine.security.TangerineAuthenticationProcessingFilter">
-        <property name="authenticationManager" ref="authenticationManager"/>
-        <property name="authenticationFailureUrl" value="/login.jsp?login_error=1"/>
-        <property name="defaultTargetUrl" value="/index.jsp"/>
-		<property name="alwaysUseDefaultTargetUrl" value="true"/>
-		<property name="filterProcessesUrl" value="/loginProcess"/>
-        <property name="pageCustomizationService" ref="pageCustomizationService"/>
-        <sec:custom-filter position="AUTHENTICATION_PROCESSING_FILTER"/>
-    </bean>
+     <!-- BEGIN CAS Authentication configuration -->
+     <beans:bean id="serviceProperties" class="org.springframework.security.ui.cas.ServiceProperties">
+        <beans:property name="service" value="${casClient.serviceUrl}/j_spring_cas_security_check"/>
+        <beans:property name="sendRenew" value="false"/>
+    </beans:bean>
 
-    <bean id="anonymousProcessingFilter" class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
-        <property name="key" value="anonymous"/>
-        <property name="userAttribute" value="anonymous,ROLE_ANONYMOUS"/>
-        <sec:custom-filter position="ANONYMOUS_FILTER"/>
-    </bean>
+    <beans:bean id="casProcessingFilter" class="org.springframework.security.ui.cas.CasProcessingFilter">
+        <custom-filter after="CAS_PROCESSING_FILTER"/>
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="authenticationFailureUrl" value="/casfailed.jsp"/>
+        <beans:property name="defaultTargetUrl" value="/"/>
+        <beans:property name="authenticationDetailsSource" ref="customDetails"/>
+    </beans:bean>
 
-    <bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
-        <property name="loginFormUrl" value="/login.jsp"/>
-        <property name="forceHttps" value="false"/>
-    </bean>
+    <beans:bean id="casProcessingFilterEntryPoint"
+                class="org.springframework.security.ui.cas.CasProcessingFilterEntryPoint">
+        <beans:property name="loginUrl" value="${casClient.serverUrl}/${casClient.serverContextPrefix}${casClient.serverContext}/login"/>
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+    </beans:bean>
 
-    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
-        <property name="providers">
-            <list>
-                <ref local="tangerineAuthenticationProvider"/>
-                <ref local="anonymousAuthenticationProvider"/>
-            </list>
-        </property>
-        <property name="sessionController" ref="concurrentSessionController"/>
-    </bean>
+    <beans:bean id="casAuthenticationProvider"
+                class="org.springframework.security.providers.cas.CasAuthenticationProvider">
+        <custom-authentication-provider/>
+        <beans:property name="userDetailsService" ref="userDetailsService"/>
+        <beans:property name="serviceProperties" ref="serviceProperties"/>
+        <beans:property name="ticketValidator">
+            <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+                <beans:constructor-arg index="0" value="${casClient.serverUrl}/${casClient.serverContextPrefix}${casClient.serverContext}"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="key" value="tangerine-client-key"/>
+    </beans:bean>
+    <!-- END CAS Authentication configuration -->
 
-	<bean id="defaultSpringSecurityContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-    	<constructor-arg value="ldap://${ldap.host}:${ldap.port}/${ldap.root}"/>
-    	<property name="userDn" value="${ldap.userDn}"/>
-    	<property name="password" value="${ldap.password}"/>
-	</bean>
+    <!-- This custom filter populates the HTTP Session with information needed by the Tangerine application -->
+    <beans:bean id="tangerineFilter" class="com.orangeleap.tangerine.security.TangerineSessionInformationFilter">
+        <custom-filter after="EXCEPTION_TRANSLATION_FILTER"/>
+    </beans:bean>
 
-    <bean id="tangerineAuthenticationProvider" class="com.orangeleap.tangerine.security.TangerineAuthenticationProvider">
-    	<constructor-arg ref="bindAuthenticator"/>
-    	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>
-        <sec:custom-authentication-provider/>
-    </bean>
+     <!-- LDAP Configuration for the ContextSource; needed for other LDAP stuff  -->
+    <beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <beans:constructor-arg value="ldap://${ldap.host}:${ldap.port}/${ldap.root}"/>
+        <beans:property name="userDn" value="${ldap.userDn}"/>
+        <beans:property name="password" value="${ldap.password}"/>
+    </beans:bean>
 
-    <bean id="anonymousAuthenticationProvider" class="org.springframework.security.providers.anonymous.AnonymousAuthenticationProvider">
-        <property name="key" value="anonymous"/>
-    </bean>
+    <!-- LDAP UserDetails service used by CAS -->
+     <beans:bean id="userDetailsService" class="org.springframework.security.userdetails.ldap.LdapUserDetailsService">
+        <beans:constructor-arg ref="userSearch"/>
+        <beans:constructor-arg ref="authoritiesPopulator"/>
+    </beans:bean>
 
-	<bean id="ldapUserSearch" class="com.orangeleap.tangerine.security.TangerineLdapUserSearch">
-	  <constructor-arg index="0" value=""/>
-	  <constructor-arg index="1" value="(uid={0})"/>
-	  <constructor-arg index="2" ref="defaultSpringSecurityContextSource" />
-	</bean>
+    <!-- BEGIN Custom Authencation Beans - these are used for LDAP and are needed to
+          be able to handle credentials in the "name@site" format. These beans override default
+          Spring Security beans to correctly parse out the name and site components, and take
+          them into account in the LDAP operations -->
+    <beans:bean id="customDetails" class="com.orangeleap.tangerine.security.TangerineAuthenticationDetailsSource"/>
 
-	<bean id="bindAuthenticator" class="com.orangeleap.tangerine.security.TangerineBindAuthenticator">
-    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
-    	<property name="userSearch" ref="ldapUserSearch"/>
-	</bean>
+    <beans:bean id="userSearch" class="com.orangeleap.tangerine.security.TangerineLdapUserSearch">
+        <beans:constructor-arg value="(uid={0})"/>
+        <beans:constructor-arg ref="contextSource"/>
+    </beans:bean>
 
-	<bean id="defaultLdapAuthoritiesPopulator" class="com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator">
-    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
-    	<constructor-arg value="ou=roles"/>
-    	<property name="searchSubtree" value="true"/>
-	</bean>
+    <beans:bean id="authoritiesPopulator" class="com.orangeleap.tangerine.security.TangerineLdapAuthoritiesPopulator">
+        <beans:constructor-arg ref="contextSource"/>
+        <beans:constructor-arg value="ou=roles"/>
+    </beans:bean>
+    <!-- END Custom Authentication Beans -->
 
-    <!-- This bean definition must be available to ApplicationContext.getBean() so StartupListener
-         can look for it and detect if password encryption is turned on or not
-	-->
-    <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
+    <!-- Ensure passwords are encoded with a hash algorithm (SHA-1 in this case) -->
+    <beans:bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder"/>
 
-    <!-- concurrent session filter -->
-        <!--  having only one user at a time -->
-    <bean id="concurrentSessionFilter" class="org.springframework.security.concurrent.ConcurrentSessionFilter">
-      <property name="expiredUrl" value="/concurrentLogin.jsp"/>
-      <property name="sessionRegistry" ref="sessionRegistry"/>
-      <sec:custom-filter position="CONCURRENT_SESSION_FILTER"/>
-    </bean>
-    
-    <bean id="concurrentSessionController" class="org.springframework.security.concurrent.ConcurrentSessionControllerImpl">
-           <property name="maximumSessions" value="1"/>
-           <property name="sessionRegistry" ref="sessionRegistry"/>
-           <property name="exceptionIfMaximumExceeded" value="false"/>
-    </bean>
-    <bean id="sessionRegistry" class="org.springframework.security.concurrent.SessionRegistryImpl"/>
+    <!-- Beans that make use of the LDAP ContextSource -->
+    <beans:bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+    	<beans:constructor-arg ref="contextSource"/>
+	</beans:bean>
 
-    <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
-    	<constructor-arg ref="defaultSpringSecurityContextSource"/>
-	</bean>
+    <beans:bean id="ldapService" class="com.orangeleap.tangerine.service.ldap.LdapServiceImpl">
+    	<beans:property name="ldapTemplate" ref="ldapTemplate"/>
+	</beans:bean>
 
-    <bean id="ldapService" class="com.orangeleap.tangerine.service.ldap.LdapServiceImpl">
-    	<property name="ldapTemplate" ref="ldapTemplate"/>
-	</bean>
-
-</beans>
+</beans:beans>

@@ -7,8 +7,8 @@
 	<property file="${basedir}/build/build.properties" />
 	<property file="${commonBuild.dir}/commonBuild.properties"/>
 	<property name="build.env" value="dev"/>
-
-	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+    
+	<!--<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
 	  <classpath>
 	    <fileset dir="/Users/ldangelo/Downloads/axis2-1.4/lib" includes="*.jar" />
 	  </classpath>
@@ -18,7 +18,7 @@
 	  <classpath>
 	    <fileset dir="/Users/ldangelo/Downloads/axis2-1.4/lib" includes="*.jar" />
 	  </classpath>
-	</taskdef>
+	</taskdef>-->
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>

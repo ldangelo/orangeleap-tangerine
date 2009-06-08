@@ -222,6 +222,20 @@
 			<artifact name="spring-security-taglibs" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency> 
 		
+        <dependency org="org.springframework.security" name="spring-security-cas-client" transitive="false" rev="2.0.4">
+			<artifact name="spring-security-cas-client" type="jar" />
+			<artifact name="spring-security-cas-client" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+
+         <dependency org="org.jasig.cas" name="cas-client-core" transitive="false" rev="3.1.6">
+			<artifact name="cas-client-core" type="jar" />
+		</dependency>
+
+         <dependency org="org.springframework.ldap" name="spring-ldap" transitive="false" rev="1.3.0.RELEASE">
+			<artifact name="spring-ldap" type="jar" />
+			<artifact name="spring-ldap" type="source" ext="jar" classifier="sources" conf="sources"/>
+		</dependency>
+
 		<dependency org="org.springframework.integration" name="spring-integration-core" transitive="false" rev="1.0.1.RELEASE">
 			<artifact name="spring-integration-core" type="jar"/>
 			<artifact name="spring-integration-core" type="source" ext="jar" classifier="sources" conf="sources"/>

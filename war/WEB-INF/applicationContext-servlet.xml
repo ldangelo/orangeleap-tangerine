@@ -45,9 +45,10 @@
     <bean id="account" class="com.orangeleap.tangerine.controller.AccountFormController">
         <property name="commandName" value="user"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.PasswordChange"/>
-        <property name="validator">
+        <!--TODO - [AUTH] See if we even need this -->
+        <!--<property name="validator">
             <bean class="com.orangeleap.tangerine.controller.validator.PasswordChangeValidator"/>
-        </property>
+        </property>-->
         <property name="formView" value="account" />
         <property name="successView" value="account" />
         <property name="ldapService" ref="ldapService"/>

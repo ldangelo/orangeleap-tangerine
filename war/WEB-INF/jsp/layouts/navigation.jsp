@@ -5,7 +5,7 @@
 <div id="banner">
 	<ol>
 		<li>
-			<span id="greeting"><spring:message code="loggedInto"/>&nbsp;<strong><security:authentication property="site" /></strong> <spring:message code="as"/>&nbsp;<strong><security:authentication property="principal.username" /></strong></span>
+			<span id="greeting"><spring:message code="loggedInto"/>&nbsp;<strong><security:authentication property="details.site" /></strong> <spring:message code="as"/>&nbsp;<strong><security:authentication property="details.userName" /></strong></span>
 		</li>
 		<%-- 
 		<li>
@@ -107,7 +107,7 @@
 					if (contextPrefix == null) contextPrefix = "";
 					pageContext.setAttribute("contextPrefix",contextPrefix);
 					%>
-						<a href="../${contextPrefix}jasperserver/login.html" target="_blank"><spring:message code="reporting"/></a>
+						<a href="../${contextPrefix}jasperserver/" target="_blank"><spring:message code="reporting"/></a>
 					</li>
 					<li>
 			            <c:if test="${pageAccess['/siteAudit.htm']=='ALLOWED'}">

@@ -41,6 +41,16 @@
 			    <option value="organization" >Organization</option>
 		      </select>
   	     	  <br/>
+			  Maintain relationships between this field and:
+		      <select id="relateToField" name="relateToField" >
+		  	  <option value="" >None</option>
+		  	  <option value="_self" >This field</option>
+			   <c:forEach var="fieldDefinition" items="${fieldDefinitions}">
+			     <option value="<c:out value='${fieldDefinition.id}'/>" ><c:out value='${fieldDefinition.defaultLabel}'/></option>
+			   </c:forEach>
+		      </select>
+  	     	  <br/>
+
 		   </div>
 
 		   Custom Field Name: <input id="fieldName" name="fieldName" type="text" />		   

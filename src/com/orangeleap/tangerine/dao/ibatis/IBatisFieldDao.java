@@ -18,8 +18,6 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.QueryLookup;
-import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
@@ -162,6 +160,15 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
         }
         return (FieldValidation)insertOrUpdate(fieldValidation, "FIELD_VALIDATION");
     }
+    
+    @Override
+    public FieldRelationship maintainFieldRelationship(FieldRelationship fieldRelationship) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainFieldRelationship: FieldRelationship = " + fieldRelationship.getId());
+        }
+        return (FieldRelationship)insertOrUpdate(fieldRelationship, "FIELD_RELATIONSHIP");
+    }
+    
     
     private FieldDefinition insertOrUpdateFieldDefinition(final FieldDefinition o) {
         if (logger.isTraceEnabled()) {

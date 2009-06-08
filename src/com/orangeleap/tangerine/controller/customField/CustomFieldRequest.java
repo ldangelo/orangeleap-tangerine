@@ -11,6 +11,7 @@ public class CustomFieldRequest {
 	private FieldType fieldType;
 	private String validationType;
 	private String regex;
+	private String relateToField;
 	
 	
 
@@ -68,6 +69,14 @@ public class CustomFieldRequest {
 
 	public String getRegex() {
 		return regex;
+	}
+
+	public void setRelateToField(String relateToField) {
+		this.relateToField = relateToField;
+	}
+
+	public String getRelateToField() {
+		return relateToField;
 	}
 
 }

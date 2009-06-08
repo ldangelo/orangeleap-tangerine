@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.sf.ehcache.Cache;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,14 +21,12 @@ import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
 import com.orangeleap.tangerine.domain.customization.SectionField;
-import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.PicklistItemService;
-import com.orangeleap.tangerine.service.RelationshipService;
-import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.EntityType;
@@ -34,6 +34,7 @@ import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.type.RelationshipType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -51,9 +52,15 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
+
         
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
+    
+    @Resource(name = "pageCustomizationCache")
+    private Cache pageCustomizationCache;
     
     @Resource(name = "picklistItemService")
     private PicklistItemService picklistItemService;
@@ -66,13 +73,16 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     		if (StringUtils.trimToNull(customFieldRequest.getLabel()) == null || StringUtils.trimToNull(customFieldRequest.getFieldName()) == null) {
     			throw new RuntimeException("Field name and label are required");
     		}
+    		if (isRelationship(customFieldRequest) && !isReferenceType(customFieldRequest)) {
+    			throw new RuntimeException("Only constituent reference field types can be part of a relationship.");
+    		}
     		
             Site site = new Site(tangerineUserHelper.lookupUserSiteName());
 
             FieldDefinition fieldDefinition = getFieldDefinition(customFieldRequest, site);
             pageCustomizationService.maintainFieldDefinition(fieldDefinition);
             
-            if (customFieldRequest.getFieldType().equals(FieldType.PICKLIST) || customFieldRequest.getFieldType().equals(FieldType.MULTI_PICKLIST)) {
+            if (isPicklist(customFieldRequest)) {
             	createPicklist(fieldDefinition);
             }
             
@@ -90,12 +100,61 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             	if (sectionDefinitionView != null) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
             }
             
+            if (isRelationship(customFieldRequest)) {
+            	createRelationship(customFieldRequest, fieldDefinition);
+            }
+            
     		updateTheGuru(customFieldRequest);
     		
     		// Flush section/field definition cache for all tomcat instances
+            pageCustomizationCache.removeAll();
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
             
 	}
+    
+    private void createRelationship(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition) {
+
+    	FieldDefinition otherFieldDefinition;
+    	if (customFieldRequest.getRelateToField().equals("_self")) {
+    		otherFieldDefinition = fieldDefinition;
+    	} else {
+    		otherFieldDefinition = fieldDao.readFieldDefinition(customFieldRequest.getRelateToField());
+    	}
+    	
+    	FieldRelationship fr = new FieldRelationship();
+    	fr.setSite(fieldDefinition.getSite());
+
+    	RelationshipType relationshipType = RelationshipType.ONE_TO_MANY;
+    	if (isMultiValued(fieldDefinition) && isMultiValued(otherFieldDefinition)) relationshipType = RelationshipType.MANY_TO_MANY;
+    	if (!isMultiValued(fieldDefinition) && !isMultiValued(otherFieldDefinition)) relationshipType = RelationshipType.ONE_TO_ONE;
+    	fr.setRelationshipType(relationshipType);
+    	
+    	FieldDefinition master;
+    	FieldDefinition detail;
+    	if (isMultiValued(fieldDefinition)) {
+        	master = fieldDefinition;
+            detail = otherFieldDefinition;
+    	} else {
+        	master = otherFieldDefinition;
+            detail = fieldDefinition;
+    	}
+    	fr.setMasterRecordField(master);
+    	fr.setDetailRecordField(detail);
+    	
+    	fieldDao.maintainFieldRelationship(fr);
+    }
+    
+    private boolean isMultiValued(FieldDefinition fieldDefinition) {
+    	return fieldDefinition.getFieldType() == FieldType.MULTI_QUERY_LOOKUP;
+    }
+    
+    private boolean isPicklist(CustomFieldRequest customFieldRequest) {
+    	return customFieldRequest.getFieldType().equals(FieldType.PICKLIST) || customFieldRequest.getFieldType().equals(FieldType.MULTI_PICKLIST);
+    }
+    
+    private boolean isRelationship(CustomFieldRequest customFieldRequest) {
+    	return StringUtils.trimToNull(customFieldRequest.getRelateToField()) != null;
+    }
     
     private boolean isReferenceType(CustomFieldRequest customFieldRequest) {
     	return customFieldRequest.getFieldType().equals(FieldType.QUERY_LOOKUP) || customFieldRequest.getFieldType().equals(FieldType.MULTI_QUERY_LOOKUP);

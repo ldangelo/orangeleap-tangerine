@@ -1,5 +1,8 @@
 package com.orangeleap.tangerine.controller.customField;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,8 +17,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
 
+import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.customization.CustomFieldMaintenanceService;
 import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class CustomFieldController extends SimpleFormController {
 
@@ -24,6 +34,16 @@ public class CustomFieldController extends SimpleFormController {
 
     @Resource(name="customFieldMaintenanceService")
     private CustomFieldMaintenanceService customFieldMaintenanceService;
+
+    @Resource(name = "fieldDAO")
+    private FieldDao fieldDao;
+
+    @Resource(name = "siteService")
+    private SiteService siteService;
+
+    @Resource(name = "tangerineUserHelper")
+    private TangerineUserHelper tangerineUserHelper;
+
 
 
 	@SuppressWarnings("unchecked")
@@ -44,7 +64,9 @@ public class CustomFieldController extends SimpleFormController {
 		
     	if (!accessAllowed(request)) return null; 
 
-        return super.showForm(request, response, errors, controlModel);
+		ModelAndView mav = super.showForm(request, response, errors, controlModel);
+		mav.addObject("fieldDefinitions", getEligibleFieldDefinitions());
+		return mav;
     }
     
 	@Override
@@ -77,10 +99,29 @@ public class CustomFieldController extends SimpleFormController {
         mav.setViewName(super.getFormView());
         mav.addObject("message", message);
         mav.addObject("errormessage", errormessage);
+		mav.addObject("fieldDefinitions", getEligibleFieldDefinitions());
 		return mav;
 		
-        
     }
 	    
-	
+    private List<FieldDefinition> getEligibleFieldDefinitions() {
+		// Return all field definitions for the constituent maintenance page that are reference types and not involved in a relationship.
+		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
+		List<FieldDefinition> fds = new ArrayList<FieldDefinition>();
+		Iterator<Map.Entry<String, FieldDefinition>> it = fieldDefinitionMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, FieldDefinition> me = it.next();
+			FieldDefinition fd = me.getValue();
+			if (fd.getFieldType() == FieldType.QUERY_LOOKUP || fd.getFieldType() == FieldType.MULTI_QUERY_LOOKUP) {
+				String fieldDefinitionid = fd.getId();
+				List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fieldDefinitionid);
+				List<FieldRelationship> frdetail = fieldDao.readDetailFieldRelationships(fieldDefinitionid);
+				if (frmaster.size() == 0 && frdetail.size() == 0) {
+					fds.add(fd);
+				}
+			}
+		}
+		return fds;
+    }
+
 }

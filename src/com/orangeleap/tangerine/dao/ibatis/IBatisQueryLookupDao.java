@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.QueryLookupDao;
 import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 
 /** 
  * Corresponds to the QUERY_LOOKUP tables
@@ -46,4 +47,17 @@ public class IBatisQueryLookupDao extends AbstractIBatisDao implements QueryLook
         }
         return list.get(0);
     }
+    
+    @Override
+	public QueryLookup maintainQueryLookup(QueryLookup queryLookup) {
+        return (QueryLookup)insertOrUpdate(queryLookup, "QUERY_LOOKUP");
+    }
+    
+    @Override
+	public void maintainQueryLookupParam(QueryLookupParam queryLookupParam) {
+        insertOrUpdate(queryLookupParam, "QUERY_LOOKUP_PARAM");
+    }
+
+    
+
 }

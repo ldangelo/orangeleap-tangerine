@@ -21,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PageAccessDao;
+import com.orangeleap.tangerine.dao.QueryLookupDao;
 import com.orangeleap.tangerine.dao.SectionDao;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.PageAccess;
@@ -43,6 +46,9 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;
+
+    @Resource(name = "queryLookupDAO")
+    private QueryLookupDao queryLookupDao;
 
     @Resource(name = "sectionDAO")
     private SectionDao sectionDao;
@@ -214,9 +220,28 @@ public class PageCustomizationServiceImpl implements PageCustomizationService {
 	
 	@Override
     @Transactional
+	public QueryLookup maintainQueryLookup(QueryLookup queryLookup) {
+		return queryLookupDao.maintainQueryLookup(queryLookup);
+	}
+	
+	@Override
+    @Transactional
+	public void maintainQueryLookupParam(QueryLookupParam queryLookupParam) {
+		queryLookupDao.maintainQueryLookupParam(queryLookupParam);
+	}
+	
+	
+	@Override
+    @Transactional
     public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest) {
     	fieldDao.maintainCustomFieldGuruData(customFieldRequest);
     }
+
+	@Override
+	public SectionDefinition maintainSectionDefinition(
+			SectionDefinition sectionDefinition) {
+		return sectionDao.maintainSectionDefinition(sectionDefinition);
+	}
 
 
 }

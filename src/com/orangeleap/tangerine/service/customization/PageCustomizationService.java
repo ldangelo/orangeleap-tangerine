@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
@@ -43,10 +45,16 @@ public interface PageCustomizationService {
     
     public void maintainFieldDefinition(FieldDefinition fieldDefinition);
     
+    public SectionDefinition maintainSectionDefinition(SectionDefinition sectionDefinition);
+
     public void maintainSectionField(SectionField sectionField);
 
     public void maintainFieldValidation(FieldValidation fieldValidation);
     
     public void maintainCustomFieldGuruData(CustomFieldRequest customFieldRequest);
+
+	public QueryLookup maintainQueryLookup(QueryLookup queryLookup);
+
+	public void maintainQueryLookupParam(QueryLookupParam queryLookupParam);
 
 }

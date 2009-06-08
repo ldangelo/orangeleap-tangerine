@@ -13,5 +13,6 @@ public interface SectionDao {
     public List<SectionField> readCustomizedSectionFields(Long sectionDefinitionId);
     public List<String> readDistintSectionDefinitionsRoles();
     public SectionField maintainSectionField(SectionField sectionField);
+	public SectionDefinition maintainSectionDefinition(SectionDefinition sectionDefinition);
 
 }

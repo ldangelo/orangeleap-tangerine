@@ -56,6 +56,8 @@
 			    <option value="LONG_TEXT" >Comments</option>
 			    <option value="PICKLIST" >Picklist</option>
 			    <option value="MULTI_PICKLIST" >Multiple Selection Picklist</option>
+			    <option value="QUERY_LOOKUP" >Constituent Lookup</option>
+			    <option value="MULTI_QUERY_LOOKUP" >Multiple Selection Constituent Lookup</option>
 		   </select>
 		   <br/>
 

@@ -31,12 +31,15 @@ import com.orangeleap.tangerine.service.impl.AbstractTangerineService;
 import com.orangeleap.tangerine.type.CacheGroupType;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.LayoutType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service("customFieldMaintenanceService")
+@Transactional
 public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService implements CustomFieldMaintenanceService {
 
     /** Logger for this class and subclasses */
@@ -48,18 +51,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     @Resource(name = "cacheGroupDAO")
     private CacheGroupDao cacheGroupDao;
 
-    @Resource(name = "fieldDAO")
-    private FieldDao fieldDao;
-
-    @Resource(name = "auditService")
-    private AuditService auditService;
-
-    @Resource(name = "relationshipService")
-    private RelationshipService relationshipService;
-    
-    @Resource(name = "siteService")
-    private SiteService siteService;
-    
+        
     @Resource(name = "pageCustomizationService")
     private PageCustomizationService pageCustomizationService;
     
@@ -93,7 +85,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     			sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
     		}
     		
-            if (customFieldRequest.getFieldType().equals(FieldType.QUERY_LOOKUP) || customFieldRequest.getFieldType().equals(FieldType.MULTI_QUERY_LOOKUP)) {
+            if (isReferenceType(customFieldRequest)) {
             	createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinition);
             	if (sectionDefinitionView != null) createLookupScreenDefsAndQueryLookups(customFieldRequest, fieldDefinition, sectionDefinitionView);
             }
@@ -105,9 +97,18 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             
 	}
     
+    private boolean isReferenceType(CustomFieldRequest customFieldRequest) {
+    	return customFieldRequest.getFieldType().equals(FieldType.QUERY_LOOKUP) || customFieldRequest.getFieldType().equals(FieldType.MULTI_QUERY_LOOKUP);
+    }
+    
     // Creates a constituent lookup (not gift etc. lookup) field.
     private void createLookupScreenDefsAndQueryLookups(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition, SectionDefinition sectionDefinition) {
+    	
     	boolean isOrganization = customFieldRequest.getConstituentType().equals("organization");
+
+    	// Create queries
+    	String lookupSectionName = "person."+fieldDefinition.getCustomFieldName();
+    	
     	QueryLookup queryLookup = new QueryLookup();
     	queryLookup.setFieldDefinition(fieldDefinition);
     	queryLookup.setEntityType(EntityType.person);
@@ -119,7 +120,8 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     		sqlWhere += "'individual'";
     	}
     	queryLookup.setSqlWhere(sqlWhere);
-    	queryLookup.setSectionName(sectionDefinition.getSectionName());
+    	queryLookup.setSectionName(lookupSectionName);
+    	queryLookup = pageCustomizationService.maintainQueryLookup(queryLookup); 
     	
     	if (isOrganization) {
         	addQueryLookupParam(queryLookup, "organizationName");
@@ -127,15 +129,43 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         	addQueryLookupParam(queryLookup, "firstName");
         	addQueryLookupParam(queryLookup, "lastName");
     	}
-    	//pageCustomizationService.maintainQueryLookup(queryLookup); // needs to set parent id on params
+    
+    	// Create lookup screen defs
     	
-    	// TODO screen defs
+    	SectionDefinition lookupSectionDefinition = new SectionDefinition();
+    	lookupSectionDefinition.setLayoutType(LayoutType.GRID);
+    	lookupSectionDefinition.setPageType(PageType.queryLookup);
+    	lookupSectionDefinition.setSectionName(lookupSectionName);
+    	lookupSectionDefinition.setDefaultLabel("");
+    	lookupSectionDefinition.setRole("ROLE_USER");
+    	lookupSectionDefinition.setSectionOrder(1);
+    	lookupSectionDefinition.setSite(fieldDefinition.getSite());
+    	lookupSectionDefinition = pageCustomizationService.maintainSectionDefinition(lookupSectionDefinition); 
+    	
+    	if (isOrganization) {
+    		addSectionField(lookupSectionDefinition, "person.organizationName", 1000);
+    	} else {
+    		addSectionField(lookupSectionDefinition, "person.lastName", 1000);
+    		addSectionField(lookupSectionDefinition, "person.firstName", 2000);
+    	}
+    
     }
     
     private void addQueryLookupParam(QueryLookup queryLookup, String param) {
     	QueryLookupParam queryLookupParam = new QueryLookupParam();
     	queryLookupParam.setName(param);
-    	queryLookup.getQueryLookupParams().add(queryLookupParam);
+    	queryLookupParam.setQueryLookupId(queryLookup.getId());
+    	pageCustomizationService.maintainQueryLookupParam(queryLookupParam); 
+    }
+    
+    private void addSectionField(SectionDefinition lookupSectionDefinition, String fieldDefintionId, int fieldOrder) {
+    	SectionField sectionField = new SectionField();
+    	sectionField.setSectionDefinition(lookupSectionDefinition);
+    	sectionField.setFieldOrder(fieldOrder);
+    	FieldDefinition fieldDefinition = new FieldDefinition();
+    	fieldDefinition.setId(fieldDefintionId);
+    	sectionField.setFieldDefinition(fieldDefinition);
+    	pageCustomizationService.maintainSectionField(sectionField); 
     }
     
     private void createPicklist(FieldDefinition fieldDefinition) {
@@ -206,6 +236,9 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         newFieldDefinition.setFieldName(fieldName);
         String id = site.getName() + "-" + customFieldRequest.getEntityType() + "." + fieldName;
         newFieldDefinition.setId(id);
+        if (isReferenceType(customFieldRequest)) {
+        	newFieldDefinition.setReferenceType(ReferenceType.person);
+        }
         return newFieldDefinition;
     }
     

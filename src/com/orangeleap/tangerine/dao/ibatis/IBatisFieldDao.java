@@ -13,13 +13,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
 import com.orangeleap.tangerine.dao.FieldDao;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
@@ -30,7 +30,7 @@ import com.orangeleap.tangerine.domain.customization.FieldValidation;
  * Corresponds to the FIELD tables
  */
 @Repository("fieldDAO")
-public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao, ApplicationContextAware {
+public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -40,10 +40,7 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao, Appli
         super(sqlMapClient);
     }
     
-    private ApplicationContext applicationContext;
-    public void setApplicationContext(ApplicationContext applicationContext) {
-    	this.applicationContext = applicationContext;
-    }
+    
     
     private Map<String, Object> setupFieldParams(String sectionName, String fieldDefinitionId, String secondaryFieldDefinitionId) {
         if (logger.isTraceEnabled()) {
@@ -273,6 +270,6 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao, Appli
     	}
     	
     }
-    
+
 
 }

@@ -77,4 +77,11 @@ public class IBatisSectionDao extends AbstractIBatisDao implements SectionDao {
         return (SectionField)insertOrUpdate(sectionField, "SECTION_FIELD");
     }
 
+	@Override
+	public SectionDefinition maintainSectionDefinition(
+			SectionDefinition sectionDefinition) {
+        return (SectionDefinition)insertOrUpdate(sectionDefinition, "SECTION_DEFINITION");
+	}
+    
+
 }

@@ -3,6 +3,8 @@ package com.orangeleap.tangerine.dao;
 import java.util.List;
 
 import com.orangeleap.tangerine.controller.customField.CustomFieldRequest;
+import com.orangeleap.tangerine.domain.QueryLookup;
+import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;

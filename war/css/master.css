@@ -22,7 +22,7 @@ form {
 	padding: 0;
 }
 select, input, textarea {
-	font-family: Verdana, sans-serif;
+	font-family: arial, verdana, sans-serif;
 	font-size: 12px;
 	line-height: normal;
 	padding: 1px;

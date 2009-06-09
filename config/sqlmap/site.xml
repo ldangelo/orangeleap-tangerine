@@ -36,7 +36,28 @@
 	</resultMap>
 
 	<sql id="SITE_COLS_FRAGMENT">
-		SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, MERCHANT_TERMINAL_ID,LOCALE, TIME_ZONE, ACTIVE, UPDATE_DATE, PARENT_SITE_NAME,ACH_SITE_NUMBER,ACH_MERCHANT_ID,ACH_RULE_NUMBER,ACH_COMPANY_NAME,ACH_TEST_MODE,SMTP_SERVER_NAME,SMTP_USER_NAME,SMTP_PASSWORD,SMTP_FROM_ADDRESS,MAJOR_DONOR_ACCOUNT_MANAGER_ID,JASPER_USER_ID,JASPER_PASSWORD
+		SITE_NAME, 
+		CREATE_DATE, 
+		MERCHANT_NUMBER, 
+		MERCHANT_BIN, 
+		MERCHANT_TERMINAL_ID, 
+		LOCALE, 
+		TIME_ZONE, 
+		ACTIVE, 
+		UPDATE_DATE, 
+		PARENT_SITE_NAME,
+		ACH_SITE_NUMBER, 
+		ACH_MERCHANT_ID, 
+		ACH_RULE_NUMBER, 
+		ACH_COMPANY_NAME, 
+		ACH_TEST_MODE,
+		SMTP_SERVER_NAME, 
+		SMTP_USER_NAME, 
+		SMTP_PASSWORD, 
+		SMTP_FROM_ADDRESS,
+		MAJOR_DONOR_ACCOUNT_MANAGER_ID, 
+		JASPER_USER_ID, 
+		JASPER_PASSWORD
 	</sql>
 	
 	<sql id="SELECT_SITE_FRAGMENT">
@@ -59,8 +80,33 @@
 
 	<!-- Inserts/Updates -->
 	<insert id="INSERT_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
-		insert into SITE (SITE_NAME, CREATE_DATE, MERCHANT_NUMBER, MERCHANT_BIN, LOCALE, TIME_ZONE, ACTIVE, UPDATE_DATE, PARENT_SITE_NAME)
-		values (#name#, now(), #merchantNumber#, #merchantBin#, #localeString#, #timeZoneString#, #active#, now(), #parentSite.name#)
+		insert into SITE (
+		<include refid="SITE_COLS_FRAGMENT"/>
+		)
+		values (
+		#name#, 
+		now(), 
+		#merchantNumber#, 
+		#merchantBin#, 
+		#merchantTerminalId#,
+		#localeString#, 
+		#timeZoneString#, 
+		#active#, 
+		now(), 
+		#parentSite.name#,
+		#achSiteNumber#, 
+		#achMerchantId#, 
+		#achRuleNumber#, 
+		#achCompanyName#, 
+		#achTestMode#,
+		#smtpServerName#, 
+		#smtpAccountName#, 
+		#smtpPassword#, 
+		#smtpFromAddress#,
+		#majorDonorAccountManagerId#, 
+		#jasperUserId#, 
+		#jasperPassword#
+		)
 	</insert>
 	
 	<update id="UPDATE_SITE" parameterClass="com.orangeleap.tangerine.domain.Site">
@@ -68,10 +114,23 @@
 		set UPDATE_DATE = now(),
 		MERCHANT_NUMBER = #merchantNumber#,
 		MERCHANT_BIN = #merchantBin#,
+		MERCHANT_TERMINAL_ID = #merchantTerminalId#,
 		LOCALE = #localeString#,
 		TIME_ZONE = #timeZoneString#,
 		ACTIVE = #active#,
-		PARENT_SITE_NAME = #parentSite.name#
+		PARENT_SITE_NAME = #parentSite.name#,
+		ACH_SITE_NUMBER = #achSiteNumber#, 
+		ACH_MERCHANT_ID = #achMerchantId#, 
+		ACH_RULE_NUMBER = #achRuleNumber#, 
+		ACH_COMPANY_NAME = #achCompanyName#, 
+		ACH_TEST_MODE = #achTestMode#,
+		SMTP_SERVER_NAME = #smtpServerName#, 
+		SMTP_USER_NAME = #smtpAccountName#, 
+		SMTP_PASSWORD = #smtpPassword#, 
+		SMTP_FROM_ADDRESS = #smtpFromAddress#,
+		MAJOR_DONOR_ACCOUNT_MANAGER_ID = #majorDonorAccountManagerId#, 
+		JASPER_USER_ID = #jasperUserId#, 
+		JASPER_PASSWORD = #jasperPassword#
 		where SITE_NAME = #name:VARCHAR#
 	</update>
 

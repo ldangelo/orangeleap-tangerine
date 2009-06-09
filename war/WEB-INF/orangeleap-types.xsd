@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://www.orangeleap.com/orangeleap/schemas" xmlns:tns="http://www.orangeleap.com/orangeleap/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="communicationHistory">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="addressType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="comments" type="xs:string" minOccurs="0"/>
+          <xs:element name="communicationHistoryType" type="tns:communicationHistoryType" minOccurs="0"/>
+          <xs:element name="emailType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="entryType" type="xs:string" minOccurs="0"/>
+          <xs:element name="giftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="pledgeId" type="xs:long" minOccurs="0"/>
+          <xs:element name="recordDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="selectedEmail" type="tns:email" minOccurs="0"/>
+          <xs:element name="selectedPhone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="systemGenerated" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCustomizableEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="customFieldMap">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="key" minOccurs="0" type="xs:string"/>
+                      <xs:element name="value" minOccurs="0" type="tns:customField"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity" abstract="true">
+    <xs:sequence>
+      <xs:element name="createDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="fieldLabelMap">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="fieldTypeMap">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="tns:fieldDefinition"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="fieldValueMap">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:anyType"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="suppressValidation" type="xs:boolean"/>
+      <xs:element name="suppressValidationForRequired" type="xs:boolean"/>
+      <xs:element name="updateDate" type="xs:dateTime" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="constituent">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicatorEntity">
+        <xs:sequence>
+          <xs:element name="accountNumber" type="xs:long" minOccurs="0"/>
+          <xs:element name="byPassDuplicateDetection" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="constituentAttributes" type="xs:string" minOccurs="0"/>
+          <xs:element name="constituentIndividualRoles" type="xs:string" minOccurs="0"/>
+          <xs:element name="constituentOrganizationRoles" type="xs:string" minOccurs="0"/>
+          <xs:element name="constituentType" type="xs:string" minOccurs="0"/>
+          <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+          <xs:element name="gifts" type="tns:gift" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+          <xs:element name="legalName" type="xs:string" minOccurs="0"/>
+          <xs:element name="loginId" type="xs:string" minOccurs="0"/>
+          <xs:element name="maritalStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="middleName" type="xs:string" minOccurs="0"/>
+          <xs:element name="ncaisCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="organizationName" type="xs:string" minOccurs="0"/>
+          <xs:element name="pledges" type="tns:pledge" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="preferredPhoneType" type="xs:string" minOccurs="0"/>
+          <xs:element name="recognitionName" type="xs:string" minOccurs="0"/>
+          <xs:element name="recurringGifts" type="tns:recurringGift" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="site" type="tns:site" minOccurs="0"/>
+          <xs:element name="suffix" type="xs:string" minOccurs="0"/>
+          <xs:element name="title" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCommunicatorEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="addresses" type="tns:address" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="emails" type="tns:email" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="phones" type="tns:phone" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="primaryAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="primaryEmail" type="tns:email" minOccurs="0"/>
+          <xs:element name="primaryPhone" type="tns:phone" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gift">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPaymentInfoEntity">
+        <xs:sequence>
+          <xs:element name="adjustedGifts" type="tns:adjustedGift" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="associatedPledgeIds" type="xs:long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="associatedRecurringGiftIds" type="xs:long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="authCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="deductible" type="xs:boolean"/>
+          <xs:element name="deductibleAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="donationDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="entryType" type="tns:giftEntryType" minOccurs="0"/>
+          <xs:element name="giftStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="giftType" type="tns:giftType" minOccurs="0"/>
+          <xs:element name="paymentMessage" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="posted" type="xs:boolean"/>
+          <xs:element name="postedDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="postmarkDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="transactionDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="txRefNum" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPaymentInfoEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="address" type="tns:address" minOccurs="0"/>
+          <xs:element name="addressType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="checkNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="comments" type="xs:string" minOccurs="0"/>
+          <xs:element name="currencyCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="distributionLines" type="tns:distributionLine" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="mutableDistributionLines" type="tns:distributionLine" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="paymentSource" type="tns:paymentSource" minOccurs="0"/>
+          <xs:element name="paymentSourceType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="paymentType" type="xs:string" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="phone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="phoneType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="selectedPaymentSource" type="tns:paymentSource" minOccurs="0"/>
+          <xs:element name="selectedPhone" type="tns:phone" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="adjustedGift">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPaymentInfoEntity">
+        <xs:sequence>
+          <xs:element name="adjustedAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="adjustedPaymentRequired" type="xs:boolean"/>
+          <xs:element name="adjustedPaymentTo" type="xs:string" minOccurs="0"/>
+          <xs:element name="adjustedReason" type="xs:string" minOccurs="0"/>
+          <xs:element name="adjustedStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="adjustedTransactionDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="adjustedType" type="xs:string" minOccurs="0"/>
+          <xs:element name="authCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="currentTotalAdjustedAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="originalAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="originalGiftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="paymentMessage" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="txRefNum" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="address">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+        <xs:sequence>
+          <xs:element name="addressLine1" type="xs:string" minOccurs="0"/>
+          <xs:element name="addressLine2" type="xs:string" minOccurs="0"/>
+          <xs:element name="addressLine3" type="xs:string" minOccurs="0"/>
+          <xs:element name="cassDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="city" type="xs:string" minOccurs="0"/>
+          <xs:element name="country" type="xs:string" minOccurs="0"/>
+          <xs:element name="ncoaDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="postalCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="stateProvince" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCommunicationEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="activationStatus" type="tns:activationType" minOccurs="0"/>
+          <xs:element name="comments" type="xs:string" minOccurs="0"/>
+          <xs:element name="effectiveDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="inactive" type="xs:boolean"/>
+          <xs:element name="personId" type="xs:long" minOccurs="0"/>
+          <xs:element name="primary" type="xs:boolean"/>
+          <xs:element name="receiveCorrespondence" type="xs:boolean"/>
+          <xs:element name="seasonalEndDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="seasonalStartDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="temporaryEndDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="temporaryStartDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="undeliverable" type="xs:boolean"/>
+          <xs:element name="userCreated" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customField">
+    <xs:sequence>
+      <xs:element name="dataType" type="xs:long" minOccurs="0"/>
+      <xs:element name="displayEndDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="displayStartDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="entityId" type="xs:long" minOccurs="0"/>
+      <xs:element name="entityType" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:long" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="sequenceNumber" type="xs:int"/>
+      <xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="value" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldDefinition">
+    <xs:sequence>
+      <xs:element name="defaultLabel" type="xs:string" minOccurs="0"/>
+      <xs:element name="entityAttributes" type="xs:string" minOccurs="0"/>
+      <xs:element name="entityType" type="tns:entityType" minOccurs="0"/>
+      <xs:element name="fieldInfo" type="xs:string" minOccurs="0"/>
+      <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+      <xs:element name="fieldType" type="tns:fieldType" minOccurs="0"/>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="numericId" type="xs:long"/>
+      <xs:element name="referenceType" type="tns:referenceType" minOccurs="0"/>
+      <xs:element name="site" type="tns:site" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="site">
+    <xs:sequence>
+      <xs:element name="achCompanyName" type="xs:string" minOccurs="0"/>
+      <xs:element name="achMerchantId" type="xs:int" minOccurs="0"/>
+      <xs:element name="achRuleNumber" type="xs:int" minOccurs="0"/>
+      <xs:element name="achSiteNumber" type="xs:int" minOccurs="0"/>
+      <xs:element name="achTestMode" type="xs:int" minOccurs="0"/>
+      <xs:element name="achTestModeForm" type="xs:int" minOccurs="0"/>
+      <xs:element name="active" type="xs:boolean"/>
+      <xs:element name="createDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="jasperPassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="jasperUserId" type="xs:string" minOccurs="0"/>
+      <xs:element name="localeString" type="xs:string" minOccurs="0"/>
+      <xs:element name="majorDonorAccountManagerId" type="xs:int" minOccurs="0"/>
+      <xs:element name="merchantBin" type="xs:string" minOccurs="0"/>
+      <xs:element name="merchantNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="merchantTerminalId" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="parentSite" type="tns:site" minOccurs="0"/>
+      <xs:element name="smtpAccountName" type="xs:string" minOccurs="0"/>
+      <xs:element name="smtpFromAddress" type="xs:string" minOccurs="0"/>
+      <xs:element name="smtpPassword" type="xs:string" minOccurs="0"/>
+      <xs:element name="smtpServerName" type="xs:string" minOccurs="0"/>
+      <xs:element name="timeZoneString" type="xs:string" minOccurs="0"/>
+      <xs:element name="updateDate" type="xs:dateTime" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="distributionLine">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCustomizableEntity">
+        <xs:sequence>
+          <xs:element name="adjustedGiftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="amount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="giftId" type="xs:long" minOccurs="0"/>
+          <xs:element name="motivationCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="other_motivationCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="percentage" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="pledgeId" type="xs:long" minOccurs="0"/>
+          <xs:element name="projectCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="paymentSource">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="achAccountNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="achAccountNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="achAccountNumberEncrypted" type="xs:string" minOccurs="0"/>
+          <xs:element name="achHolderName" type="xs:string" minOccurs="0"/>
+          <xs:element name="achRoutingNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="achRoutingNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="address" type="tns:address" minOccurs="0"/>
+          <xs:element name="addressType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="creditCardExpiration" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="creditCardExpirationMonth" type="xs:int" minOccurs="0"/>
+          <xs:element name="creditCardExpirationYear" type="xs:int" minOccurs="0"/>
+          <xs:element name="creditCardHolderName" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumberDisplay" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardNumberEncrypted" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardSecurityCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="creditCardType" type="xs:string" minOccurs="0"/>
+          <xs:element name="inactive" type="xs:boolean"/>
+          <xs:element name="lastFourDigits" type="xs:string" minOccurs="0"/>
+          <xs:element name="paymentType" type="xs:string" minOccurs="0"/>
+          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="phone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="phoneType" type="tns:formBeanType" minOccurs="0"/>
+          <xs:element name="profile" type="xs:string" minOccurs="0"/>
+          <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
+          <xs:element name="selectedPhone" type="tns:phone" minOccurs="0"/>
+          <xs:element name="userCreated" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="phone">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+        <xs:sequence>
+          <xs:element name="number" type="xs:string" minOccurs="0"/>
+          <xs:element name="provider" type="xs:string" minOccurs="0"/>
+          <xs:element name="receiveCorrespondenceText" type="xs:boolean"/>
+          <xs:element name="sms" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pledge">
+    <xs:complexContent>
+      <xs:extension base="tns:commitment">
+        <xs:sequence>
+          <xs:element name="pledgeCancelDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="pledgeCancelReason" type="xs:string" minOccurs="0"/>
+          <xs:element name="pledgeDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="pledgeStatus" type="xs:string" minOccurs="0"/>
+          <xs:element name="projectedDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="recurring" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="commitment" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractPaymentInfoEntity">
+        <xs:sequence>
+          <xs:element name="amountPaid" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountPerGift" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountRemaining" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="amountTotal" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="associatedGiftIds" type="xs:long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="commitmentType" type="tns:commitmentType" minOccurs="0"/>
+          <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="frequency" type="xs:string" minOccurs="0"/>
+          <xs:element name="gifts" type="tns:gift" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="lastEntryDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recurringGift">
+    <xs:complexContent>
+      <xs:extension base="tns:commitment">
+        <xs:sequence>
+          <xs:element name="activate" type="xs:boolean"/>
+          <xs:element name="autoPay" type="xs:boolean"/>
+          <xs:element name="nextRunDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="recurringGiftStatus" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="email">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractCommunicationEntity">
+        <xs:sequence>
+          <xs:element name="emailAddress" type="xs:string" minOccurs="0"/>
+          <xs:element name="emailDisplay" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="formBeanType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="NEW"/>
+      <xs:enumeration value="EXISTING"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="communicationHistoryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MANUAL"/>
+      <xs:enumeration value="GIFT_RECEIPT"/>
+      <xs:enumeration value="MEMBERSHIP_RECEIPT"/>
+      <xs:enumeration value="PLEDGE_RECEIPT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="activationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="permanent"/>
+      <xs:enumeration value="temporary"/>
+      <xs:enumeration value="seasonal"/>
+      <xs:enumeration value="unknown"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="entityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="common"/>
+      <xs:enumeration value="person"/>
+      <xs:enumeration value="donation"/>
+      <xs:enumeration value="event"/>
+      <xs:enumeration value="address"/>
+      <xs:enumeration value="email"/>
+      <xs:enumeration value="phone"/>
+      <xs:enumeration value="gift"/>
+      <xs:enumeration value="giftInKind"/>
+      <xs:enumeration value="adjustedGift"/>
+      <xs:enumeration value="code"/>
+      <xs:enumeration value="picklist"/>
+      <xs:enumeration value="recurringGift"/>
+      <xs:enumeration value="pledge"/>
+      <xs:enumeration value="paymentSource"/>
+      <xs:enumeration value="paymentHistory"/>
+      <xs:enumeration value="communicationHistory"/>
+      <xs:enumeration value="selectedAddress"/>
+      <xs:enumeration value="selectedEmail"/>
+      <xs:enumeration value="selectedPhone"/>
+      <xs:enumeration value="selectedPaymentSource"/>
+      <xs:enumeration value="constituentCustomFieldRelationship"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fieldType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HIDDEN"/>
+      <xs:enumeration value="DATE"/>
+      <xs:enumeration value="DATE_DISPLAY"/>
+      <xs:enumeration value="TEXT"/>
+      <xs:enumeration value="PERCENTAGE"/>
+      <xs:enumeration value="READ_ONLY_TEXT"/>
+      <xs:enumeration value="PAYMENT_TYPE_READ_ONLY_TEXT"/>
+      <xs:enumeration value="ASSOCIATION"/>
+      <xs:enumeration value="ASSOCIATION_DISPLAY"/>
+      <xs:enumeration value="LOOKUP"/>
+      <xs:enumeration value="CODE"/>
+      <xs:enumeration value="CODE_OTHER"/>
+      <xs:enumeration value="MULTI_CODE_ADDITIONAL"/>
+      <xs:enumeration value="CODE_OTHER_DISPLAY"/>
+      <xs:enumeration value="PICKLIST"/>
+      <xs:enumeration value="PICKLIST_DISPLAY"/>
+      <xs:enumeration value="MULTI_PICKLIST"/>
+      <xs:enumeration value="MULTI_PICKLIST_ADDITIONAL"/>
+      <xs:enumeration value="MULTI_PICKLIST_DISPLAY"/>
+      <xs:enumeration value="MULTI_PICKLIST_ADDITIONAL_DISPLAY"/>
+      <xs:enumeration value="PREFERRED_PHONE_TYPES"/>
+      <xs:enumeration value="DATE_TIME"/>
+      <xs:enumeration value="ADDRESS"/>
+      <xs:enumeration value="PHONE"/>
+      <xs:enumeration value="LONG_TEXT"/>
+      <xs:enumeration value="NUMBER"/>
+      <xs:enumeration value="SPACER"/>
+      <xs:enumeration value="CC_EXPIRATION"/>
+      <xs:enumeration value="CC_EXPIRATION_DISPLAY"/>
+      <xs:enumeration value="CHECKBOX"/>
+      <xs:enumeration value="PAYMENT_SOURCE_PICKLIST"/>
+      <xs:enumeration value="ADJUSTED_GIFT_PAYMENT_TYPE_PICKLIST"/>
+      <xs:enumeration value="ADJUSTED_GIFT_PAYMENT_SOURCE_PICKLIST"/>
+      <xs:enumeration value="ADDRESS_PICKLIST"/>
+      <xs:enumeration value="PHONE_PICKLIST"/>
+      <xs:enumeration value="EMAIL_PICKLIST"/>
+      <xs:enumeration value="EXISTING_ADDRESS_PICKLIST"/>
+      <xs:enumeration value="EXISTING_PHONE_PICKLIST"/>
+      <xs:enumeration value="EXISTING_EMAIL_PICKLIST"/>
+      <xs:enumeration value="QUERY_LOOKUP"/>
+      <xs:enumeration value="MULTI_QUERY_LOOKUP"/>
+      <xs:enumeration value="QUERY_LOOKUP_OTHER"/>
+      <xs:enumeration value="QUERY_LOOKUP_DISPLAY"/>
+      <xs:enumeration value="SELECTION"/>
+      <xs:enumeration value="SELECTION_DISPLAY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="referenceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="person"/>
+      <xs:enumeration value="pledge"/>
+      <xs:enumeration value="gift"/>
+      <xs:enumeration value="recurringGift"/>
+      <xs:enumeration value="adjustedGift"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="giftEntryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AUTO"/>
+      <xs:enumeration value="MANUAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="giftType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MONETARY_GIFT"/>
+      <xs:enumeration value="GIFT_IN_KIND"/>
+      <xs:enumeration value="ADJUSTMENT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="commitmentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RECURRING_GIFT"/>
+      <xs:enumeration value="PLEDGE"/>
+      <xs:enumeration value="MEMBERSHIP"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

@@ -53,7 +53,7 @@
 		 
  
   		   <h4>Other</h4>
-  		   Major Donor Account Manager Id<input type="text" id="majorDonorAccountManagerId" name="majorDonorAccountManagerId" value="<c:out value='${site.majorDonorAccountManagerId}'/>"/><br/>  
+  		   Major Donor Account Manager Id <input type="text" id="majorDonorAccountManagerId" name="majorDonorAccountManagerId" value="<c:out value='${site.majorDonorAccountManagerId}'/>"/><br/>  
   		      
 		 	
 		   <br/>

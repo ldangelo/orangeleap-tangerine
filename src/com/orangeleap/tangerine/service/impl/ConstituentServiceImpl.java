@@ -122,8 +122,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         
         if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
         	
+        	setOptInPrefs(constituent);
         	setPicklistDefaultsForRequiredFields(constituent, PageType.person, tangerineUserHelper.lookupUserRoles());
-
+        	
 	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
 	        BindException errors = new BindException(br);
 	      
@@ -167,6 +168,14 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
     
+    private void setOptInPrefs(Person constituent) {
+    	String communicationPreferences = constituent.getCustomFieldValue("communicationPreferences");
+    	String communicationOptInPreferences = constituent.getCustomFieldValue("communicationOptInPreferences");
+    	if ("Opt In".equals(communicationPreferences) && StringUtils.trimToNull(communicationOptInPreferences) == null) {
+    		constituent.setCustomFieldValue("communicationOptInPreferences", "Unknown");
+    	}
+    }
+    
     
     private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
     void routeConstituent(Person constituent) throws ConstituentValidationException {
@@ -195,13 +204,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             
     		errorLogService.addErrorMessage(message, "gift.rules");
 
-//    		FileWriter out = new FileWriter("rules-errors.log");
-//    		try {
-//    			out.write(message);
-//    		} finally {
-//    			out.close();
-//    		}
-    		
     	} catch (Exception e) {
     		logger.error("Unable to write to rules error log file: "+message);
     	}

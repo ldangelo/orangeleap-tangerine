@@ -57,7 +57,8 @@ public enum PageType {
     fieldRelationshipCustomize("/fieldRelationshipCustomize.htm"),
     audit("/audit.htm"),
     siteAudit("/siteAudit.htm"),
-    customField("/customField.htm")
+    customField("/customField.htm"),
+    siteSettings("/siteSettings.htm")
     ;
 
     private String pageName;

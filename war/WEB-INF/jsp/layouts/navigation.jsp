@@ -115,6 +115,11 @@
 						</c:if>
 					</li>
 					<li>
+			            <c:if test="${pageAccess['/siteSettings.htm']=='ALLOWED'}">
+							<a href="siteSettings.htm"><spring:message code="siteSettings"/></a>
+						</c:if>
+					</li>
+					<li>
 			            <c:if test="${pageAccess['/importexport.htm']=='ALLOWED'}">
 						   <a href="importexport.htm"><spring:message code="importExport"/></a>
 						</c:if>

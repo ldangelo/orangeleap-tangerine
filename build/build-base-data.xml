@@ -119,6 +119,7 @@
 			<transaction src="${basedir}/db/prod/picklists/programStartMonthPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/journalTypePicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/pledgeStatusPicklist.sql"/>
+			<transaction src="${basedir}/db/prod/picklists/giftPostedPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/giftStatusPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/adjustedReasonPicklist.sql"/>
 			<transaction src="${basedir}/db/prod/picklists/adjustedTypePicklist.sql"/>

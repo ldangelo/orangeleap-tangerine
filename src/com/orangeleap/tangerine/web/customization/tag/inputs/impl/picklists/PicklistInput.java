@@ -60,7 +60,7 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
                     sb.append(" reference=\"" + reference + "\"");
                 }
                 if (fieldVO.getFieldValue() != null && code != null) {
-                    if (code.equals(fieldVO.getFieldValue())) {
+                    if (code.equals(fieldVO.getFieldValue().toString())) {
                         sb.append(" selected=\"selected\"");
                         selectedRef = reference;
                     }

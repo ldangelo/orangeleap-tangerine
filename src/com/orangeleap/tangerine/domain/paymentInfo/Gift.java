@@ -27,6 +27,8 @@ public class Gift extends AbstractPaymentInfoEntity {
 	private BigDecimal amount;
 	private BigDecimal deductibleAmount;
 	private Date donationDate = new Date();
+	private boolean posted;
+	private Date postedDate = new Date();
 	private Date postmarkDate;
 	private boolean deductible = false;
 	private Date transactionDate;
@@ -109,6 +111,22 @@ public class Gift extends AbstractPaymentInfoEntity {
 
 	public void setDonationDate(Date donationDate) {
 		this.donationDate = donationDate;
+	}
+
+	public boolean isPosted() {
+		return posted;
+	}
+
+	public void setPosted(boolean posted) {
+		this.posted = posted;
+	}
+
+	public Date getPostedDate() {
+		return postedDate;
+	}
+
+	public void setPostedDate(Date postedDate) {
+		this.postedDate = postedDate;
 	}
 
 	public Date getPostmarkDate() {
@@ -271,6 +289,9 @@ public class Gift extends AbstractPaymentInfoEntity {
 		}
 		if (deductibleAmount == null) {
 			deductibleAmount = amount;
+		}
+		if (posted == false) {
+			setPostedDate(null);
 		}
 	}
 

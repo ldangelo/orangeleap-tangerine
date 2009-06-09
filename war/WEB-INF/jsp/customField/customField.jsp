@@ -29,6 +29,8 @@
 		  	    <option value="" >Select...</option>
 			    <option value="person" >Constituent</option>
 			    <option value="gift" >Gift</option>
+			    <option value="recurringGift" >Recurring Gift</option>
+			    <option value="pledge" >Pledge</option>
 			    <option value="communicationHistory" >Touch Point</option>
 		      </select>
   	     	  <br/>

@@ -184,6 +184,14 @@ public class Site implements Serializable {
 		this.achTestMode = achTestMode;
 	}
 
+	public Integer getAchTestModeForm() {
+		return achTestMode;
+	}
+
+	public void setAchTestModeForm(Integer achTestMode) {
+		this.achTestMode = achTestMode;
+	}
+
 	public String getSmtpServerName() {
 		return smtpServerName;
 	}

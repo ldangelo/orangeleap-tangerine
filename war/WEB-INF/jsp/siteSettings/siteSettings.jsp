@@ -30,7 +30,7 @@
   		   ACH Merchant ID <input type="text" id="achMerchantId" name="achMerchantId" value="<c:out value='${site.achMerchantId}'/>"/><br/>   
   		   ACH Rule Number <input type="text" id="achRuleNumber" name="achRuleNumber" value="<c:out value='${site.achRuleNumber}'/>"/><br/>   
   		   ACH Company Name <input type="text" id="achCompanyName" name="achCompanyName" value="<c:out value='${site.achCompanyName}'/>"/><br/>   
-  		   ACH Test Mode <input type="text" id="achTestMode" name="achTestMode" value="<c:out value='${site.achTestMode}'/>"/><br/>
+  		   ACH Test Mode <input type="text" id="achTestModeForm" name="achTestModeForm" value="<c:out value='${site.achTestModeForm}'/>"/><br/>
   		      
 		 	
 		   <br/>

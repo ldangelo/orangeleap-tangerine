@@ -10,6 +10,7 @@
         	<package name="com.orangeleap.tangerine.test.web.customization.handler"></package>
         	<package name="com.orangeleap.tangerine.test.util"></package>
         	<package name="com.orangeleap.tangerine.test.web.customization"></package>
+            <package name="com.orangeleap.tangerine.test.integration"></package>
         </packages>
     </test>
 </suite>

@@ -9,10 +9,13 @@ import com.orangeleap.tangerine.type.CommunicationHistoryType;
 import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
+import javax.xml.bind.annotation.XmlType;
+
 /*
  * Communication history (including generated correspondence) for Constituent
  */
 // recordedBy and assignedTo have been moved to custom fields
+@XmlType(namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class CommunicationHistory extends AbstractCustomizableEntity implements AddressAware, PhoneAware, EmailAware {
     private static final long serialVersionUID = 1L;
 

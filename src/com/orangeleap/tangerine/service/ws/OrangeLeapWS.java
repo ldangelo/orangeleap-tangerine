@@ -87,4 +87,22 @@ public class OrangeLeapWS {
     {
         return null;
     }
+
+    @PayloadRoot(localPart="GetSegmentationListRequest",namespace="http://www.orangeleap.com/orangeleap/service/1.0")
+    public GetSegmentationListResponse getSegmentationList(GetSegmentationListRequest req)
+    {
+        return null;
+    }
+
+    @PayloadRoot(localPart="AddCommunicationHistoryRequest",namespace="http://www.orangeleap.com/orangeleap/service/1.0")
+    public void addCommunicationHistory(AddCommunicationHistoryRequest req)
+    {
+
+    }
+
+    @PayloadRoot(localPart="GetCommunicationHistoryRequest",namespace="http://www.orangeleap.com/orangeleap/service/1.0")
+    public GetCommunicationHistoryResponse getCommunicationHistory(GetCommunicationHistoryRequest req)
+    {
+        return null;
+    }
 }

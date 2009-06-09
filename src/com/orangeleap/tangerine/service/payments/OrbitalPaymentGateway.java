@@ -112,9 +112,11 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 				request.setFieldValue("AVSname", gift.getSelectedPaymentSource()
 						.getCreditCardHolderName());
 				request.setFieldValue("AVSaddress1", addr.getAddressLine1());
+                request.setFieldValue("AVSaddress2", addr.getAddressLine2());
 				request.setFieldValue("AVScity", addr.getCity());
 				request.setFieldValue("AVSstate", addr.getStateProvince());
 				request.setFieldValue("AVSzip", addr.getPostalCode());
+                request.setFieldValue("AVSCountryCode",addr.getCountry());
 			}
 
 			if (logger.isInfoEnabled()) {

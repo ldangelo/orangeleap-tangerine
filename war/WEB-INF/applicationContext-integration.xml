@@ -43,13 +43,17 @@
   <channel id="newAddressChannel"/>
   <channel id="gift_drools_channel"/>
   <channel id="constituent_drools_channel"/>
+  <channel id="constituent_transformer"/>
+  <channel id="constituent_marshalling_transformer"/>
+    <channel id="gift_transformer"/>
+    <channel id="gift_marshalling_transformer"/>
   <channel id="gift_jms_channel"/>
   <channel id="constituent_jms_channel"/>
   <channel id="payment_drools_channel"/>
 
   <service-activator input-channel="gift_drools_channel" ref="GiftDrools" method="doApplyRules"/>
   <service-activator input-channel="payment_drools_channel" ref="PaymentDrools" method="doApplyRules"/>
-  <service-activator input-channel="person_drools_channel" ref="PersonDrools" method="doApplyRules"/>
+  <service-activator input-channel="constituent_drools_channel" ref="PersonDrools" method="doApplyRules"/>
   <!--  <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/> -->
   
   <router id="routerEndpoint" input-channel="newGiftChannel" ref="giftRouter"/>
@@ -58,7 +62,8 @@
   <beans:bean id="constituentRouter" class="org.springframework.integration.router.RecipientListRouter">
   	<beans:property name="channels">
   		<beans:list>
-  			<beans:ref bean="person_drools_channel"/>
+  			<beans:ref bean="constituent_drools_channel"/>
+            <beans:ref bean="constituent_transformer"/>
   		</beans:list>
   	</beans:property>
   </beans:bean>
@@ -68,10 +73,40 @@
       <beans:list>
 		<beans:ref bean="gift_drools_channel"/>
 		<beans:ref bean="payment_drools_channel"/>
-<!-- 		<beans:ref bean="gift_jms_channel"/> -->
+ 		<beans:ref bean="gift_transformer"/>
       </beans:list>
     </beans:property>
   </beans:bean>
+
+  <transformer input-channel="constituent_transformer" output-channel="constituent_marshalling_transformer" ref="personToConstituentTransformer"/>
+  <transformer input-channel="gift_transformer" output-channel="gift_marshalling_transformer" ref="giftTransformer"/>
+
+  <beans:bean id="marshallingTransformer" class="org.springframework.integration.xml.transformer.XmlPayloadMarshallingTransformer">
+      <beans:constructor-arg>
+          <beans:bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+            <beans:property name="classesToBeBound">
+            <beans:list>
+                <beans:value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateConstituentRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.CreateDefaultConstituentRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.GetSegmentationRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.GiftResponse</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateGiftRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.SearchConstituentsRequest</beans:value>
+                <beans:value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</beans:value>
+            </beans:list>
+        </beans:property>
+          </beans:bean>
+      </beans:constructor-arg>
+      <beans:constructor-arg>
+          <beans:bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer"/>
+      </beans:constructor-arg>
+  </beans:bean>
+
+  <transformer input-channel="constituent_marshalling_transformer" output-channel="constituent_jms_channel" ref="marshallingTransformer">
+  </transformer>
+  <transformer input-channel="gift_marshalling_transformer" output-channel="gift_jms_channel" ref="marshallingTransformer"/>
 
   <beans:bean id="AbstractRulesInterceptor" class="com.orangeleap.tangerine.service.rule.RulesInterceptor" abstract="true">
     <beans:constructor-arg value="${drools.host}" index="0" />

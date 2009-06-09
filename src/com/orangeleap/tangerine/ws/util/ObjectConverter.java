@@ -1,8 +1,41 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.ws.util;
 
 import com.orangeleap.tangerine.ws.schema.Constituent;
+import com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.integration.transformer.personToConstituentTransformer;
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.InvalidPropertyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.*;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,24 +45,400 @@ import org.springframework.beans.BeanUtils;
  * To change this template use File | Settings | File Templates.
  */
 public class ObjectConverter {
+    private Logger logger = LoggerFactory.getLogger(ObjectConverter.class);
 
     public ObjectConverter() {
 
     }
 
-    static Person Convert(Constituent c) {
-        Person p = new Person();
+    public void ConvertFromJAXB(Object from, Object to) {
+        Class propertyType = null;
+        BeanWrapper bwFrom = new BeanWrapperImpl(from);
+        BeanWrapper bwTo = new BeanWrapperImpl(to);
 
-        BeanUtils.copyProperties(c,p);
+        PropertyDescriptor[] pdFrom = bwFrom.getPropertyDescriptors();
 
-        return p;
+        //
+        // walk the from property descriptos and set the to propertydescriptors
+        for (int i = 0; i < pdFrom.length; i++) {
+
+            try {
+                PropertyDescriptor pdTo = bwTo.getPropertyDescriptor(pdFrom[i].getName());
+
+                Method writeMethod = pdTo.getWriteMethod();
+                Method readMethod = pdFrom[i].getReadMethod();
+
+                propertyType = pdFrom[i].getPropertyType();
+
+                Class domainClass = pdTo.getClass();
+
+                if (domainClass.getName().startsWith("com.orangeleap.tangerine.domain")) {
+                    Object newObject = domainClass.newInstance();
+                    ConvertFromJAXB(readMethod.invoke(from),newObject);
+                    writeMethod.invoke(to, newObject);
+                } else if (propertyType == List.class) {
+                    //
+                    // handle the list items seperately because JaxB does not
+                    // create setters for collections
+                    List l = (List) readMethod.invoke(from);
+                    if (l != null) {
+                        for (Object o : l) {
+
+                            Class newClass = to.getClass();
+                            if (newClass.getName().startsWith("com.orangeleap.tangerine.domain")) {
+                                Object newObject = newClass.newInstance();
+                                ConvertFromJAXB(o, newObject);
+                                List newList = (List) pdTo.getReadMethod().invoke(to);
+                                newList.add(newObject);
+                                pdTo.getWriteMethod().invoke(to,newList);
+                            }
+
+                        }
+                    }
+
+                } else if (propertyType == XMLGregorianCalendar.class) {
+                    //
+                    // need to provide date conversions...
+                    XMLGregorianCalendar xmlDate = (XMLGregorianCalendar) readMethod.invoke(from);
+                    if (xmlDate != null) {
+                        GregorianCalendar cal = new GregorianCalendar();
+
+                        cal.set(GregorianCalendar.SECOND,xmlDate.getSecond());
+                        cal.set(GregorianCalendar.MINUTE,xmlDate.getMinute());
+                        cal.set(GregorianCalendar.HOUR_OF_DAY,xmlDate.getHour());
+                        cal.set(GregorianCalendar.DAY_OF_MONTH,xmlDate.getDay());
+                        cal.set(GregorianCalendar.MONTH,xmlDate.getMonth());
+                        cal.set(GregorianCalendar.YEAR,xmlDate.getYear());
+
+                        writeMethod.invoke(to, cal.getTime());
+                    }
+                } else if (propertyType == com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity.CustomFieldMap.class) {
+                    //
+                    // handle custom field map
+                    ConvertCustomFieldMapFromJAXB((com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) from,  (com.orangeleap.tangerine.domain.AbstractCustomizableEntity)to);
+                } else if (writeMethod != null && readMethod != null)
+                    writeMethod.invoke(to, readMethod.invoke(from));
+
+            } catch (IllegalArgumentException iae) {
+                logger.info(iae.getMessage());
+            } catch (InvalidPropertyException ipe) {
+                logger.info(ipe.getMessage());
+            } catch (IllegalAccessException e) {
+                logger.info(e.getMessage());
+            } catch (InvocationTargetException e) {
+                logger.info(e.getMessage());
+            } catch (InstantiationException e) {
+                logger.info(e.getMessage());
+            }
+
+
+        }
     }
 
-    static Constituent Convert(Person p) {
-        Constituent c = new Constituent();
+    public void ConvertToJAXB(Object from, Object to) {
+        Class propertyType = null;
+        BeanWrapper bwFrom = new BeanWrapperImpl(from);
+        BeanWrapper bwTo = new BeanWrapperImpl(to);
 
-        BeanUtils.copyProperties(p,c);
+        PropertyDescriptor[] pdFrom = bwFrom.getPropertyDescriptors();
 
-        return c;
+        //
+        // walk the from property descriptos and set the to propertydescriptors
+        for (int i = 0; i < pdFrom.length; i++) {
+
+            try {
+                PropertyDescriptor pdTo = bwTo.getPropertyDescriptor(pdFrom[i].getName());
+
+                Method writeMethod = pdTo.getWriteMethod();
+                Method readMethod = pdFrom[i].getReadMethod();
+
+                propertyType = pdTo.getPropertyType();
+                Class schemaClass = null;
+
+                try {
+                    String name = propertyType.getSimpleName();
+                    schemaClass = Class.forName("com.orangeleap.tangerine.ws.schema." + name);
+                } catch (ClassNotFoundException cnf) {
+                    schemaClass = null;
+                }
+
+                if (schemaClass != null) {
+                    Object newObject = schemaClass.newInstance();
+                    ConvertToJAXB(readMethod.invoke(from), newObject);
+                    writeMethod.invoke(to, newObject);
+                } else if (propertyType == List.class) {
+                    //
+                    // handle the list items seperately because JaxB does not
+                    // create setters for collections
+                    List l = (List) readMethod.invoke(from);
+                    if (l != null) {
+                        for (Object o : l) {
+                            String className = o.getClass().getSimpleName();
+
+                            Class newClass = Class.forName("com.orangeleap.tangerine.ws.schema." + className);
+                            Object newObject = newClass.newInstance();
+                            ConvertToJAXB(o, newObject);
+                            List newList = (List) pdTo.getReadMethod().invoke(to);
+                            newList.add(newObject);
+
+                            /*
+                            if (o.getClass() == com.orangeleap.tangerine.domain.communication.Address.class) {
+                                com.orangeleap.tangerine.ws.schema.Address addr = new com.orangeleap.tangerine.ws.schema.Address();
+                                Convert(o,addr);
+                                if (to.getClass() == Constituent.class) ((Constituent) to).getAddresses().add(addr);
+                            } else if (o.getClass() == com.orangeleap.tangerine.domain.communication.Email.class) {
+                                com.orangeleap.tangerine.ws.schema.Email email = new com.orangeleap.tangerine.ws.schema.Email();
+                                Convert(o,email);
+                                if (to.getClass() == Constituent.class) ((Constituent) to).getEmails().add(email);
+                            }  else if (o.getClass() == com.orangeleap.tangerine.domain.communication.Phone.class) {
+                                com.orangeleap.tangerine.ws.schema.Phone phone = new com.orangeleap.tangerine.ws.schema.Phone();
+                                Convert(o,phone);
+                                if (to.getClass() == Constituent.class) ((Constituent) to).getPhones().add(phone);
+                            }
+                            */
+                        }
+                    }
+
+                } else if (propertyType == XMLGregorianCalendar.class) {
+                    //
+                    // need to provide date conversions...
+                    Date d = (Date) readMethod.invoke(from);
+                    if (d != null) {
+                        GregorianCalendar cal = new GregorianCalendar();
+
+                        cal.setTime(d);
+
+                        XMLGregorianCalendar xmlDate = new XMLGregorianCalendarImpl();
+                        xmlDate.setSecond(cal.get(GregorianCalendar.SECOND));
+                        xmlDate.setMinute(cal.get(GregorianCalendar.MINUTE));
+                        xmlDate.setHour(cal.get(GregorianCalendar.HOUR_OF_DAY));
+                        xmlDate.setDay(cal.get(GregorianCalendar.DAY_OF_MONTH));
+                        xmlDate.setMonth(cal.get(GregorianCalendar.MONTH));
+                        xmlDate.setYear(cal.get(GregorianCalendar.YEAR));
+
+                        writeMethod.invoke(to, xmlDate);
+                    }
+                } else if (propertyType == com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity.CustomFieldMap.class) {
+                    //
+                    // handle custom field map
+                    ConvertCustomFieldMapToJAXB((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from, (com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
+                } else if (writeMethod != null && readMethod != null)
+                    writeMethod.invoke(to, readMethod.invoke(from));
+
+            } catch (ClassNotFoundException cnfe) {
+                logger.info(cnfe.getMessage());
+            } catch (IllegalArgumentException iae) {
+                logger.info(iae.getMessage());
+            } catch (InvalidPropertyException ipe) {
+                logger.info(ipe.getMessage());
+            } catch (IllegalAccessException e) {
+                logger.info(e.getMessage());
+            } catch (InvocationTargetException e) {
+                logger.info(e.getMessage());
+            } catch (InstantiationException e) {
+                logger.info(e.getMessage());
+            }
+
+
+        }
     }
+
+//    /**
+//     * Convert from a domain gift to a schema gift
+//     *
+//     * @param from
+//     * @param to
+//     */
+//    static public void Convert(com.orangeleap.tangerine.domain.paymentInfo.Gift from, com.orangeleap.tangerine.ws.schema.Gift to)
+//    {
+//        String ignoreProperties[] = {"customFieldMap"};
+//
+//        BeanUtils.copyProperties(from,to,ignoreProperties);
+//    }
+//
+
+    //
+    /**
+     * Convert from a domain AbstractEntity to a xml schema AbstractCustomizableEntity
+     *
+     * @param from domain AbstractCustomizableEntity
+     * @param to   schema AbstractCustomizableEntity
+     */
+    static private void ConvertCustomFieldMapToJAXB(com.orangeleap.tangerine.domain.AbstractCustomizableEntity from, com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity to) {
+        //
+        // now copy the customFieldMap
+        Map<String, CustomField> customFieldMap = from.getCustomFieldMap();
+        Iterator it = customFieldMap.entrySet().iterator();
+
+        AbstractCustomizableEntity.CustomFieldMap cMap = new AbstractCustomizableEntity.CustomFieldMap();
+        for (int i = 0; i < customFieldMap.size(); i++) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            CustomField value = (CustomField) entry.getValue();
+
+            AbstractCustomizableEntity.CustomFieldMap.Entry cvf = new AbstractCustomizableEntity.CustomFieldMap.Entry();
+            com.orangeleap.tangerine.ws.schema.CustomField cf = new com.orangeleap.tangerine.ws.schema.CustomField();
+
+            cf.setDataType(value.getDataType());
+            cf.setDisplayEndDate(value.getDisplayEndDate());
+            cf.setDisplayStartDate(value.getDisplayStartDate());
+            //cf.setEndDate(new XMLGregorianCalendar(value.getEndDate()));
+            cf.setEntityId(value.getEntityId());
+            cf.setEntityType(value.getEntityType());
+
+            if (value.getId() != null)
+                cf.setId(value.getId());
+
+            cf.setName(value.getName());
+            cf.setSequenceNumber(value.getSequenceNumber());
+            //cf.setStartDate(new XMLGregorianCalendar());
+            cf.setValue(value.getValue());
+
+
+            cvf.setKey(key);
+            cvf.setValue(cf);
+
+            cMap.getEntry().add(cvf);
+        }
+        to.setCustomFieldMap(cMap);
+    }
+
+
+    /**
+     * Convert from a JAXB AbstractEntity to a domain AbstractCustomizableEntity
+     *
+     * @param from domain AbstractCustomizableEntity
+     * @param to   schema AbstractCustomizableEntity
+     */
+    static private void ConvertCustomFieldMapFromJAXB(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity from, com.orangeleap.tangerine.domain.AbstractCustomizableEntity to) {
+        //
+        // now copy the customFieldMap
+        com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity.CustomFieldMap customFieldMap= from.getCustomFieldMap();
+        Iterator it = customFieldMap.getEntry().iterator();
+
+        Map<String, CustomField> cMap = new HashMap<String,CustomField>();
+
+        while(it.hasNext()) {
+
+            AbstractCustomizableEntity.CustomFieldMap.Entry entry = (AbstractCustomizableEntity.CustomFieldMap.Entry) it.next();
+            String key = (String) entry.getKey();
+            com.orangeleap.tangerine.ws.schema.CustomField value = (com.orangeleap.tangerine.ws.schema.CustomField) entry.getValue();
+
+            CustomField cf = new CustomField();
+
+            cf.setDataType(value.getDataType());
+            cf.setDisplayEndDate(value.getDisplayEndDate());
+            cf.setDisplayStartDate(value.getDisplayStartDate());
+            //cf.setEndDate(new XMLGregorianCalendar(value.getEndDate()));
+            cf.setEntityId(value.getEntityId());
+            cf.setEntityType(value.getEntityType());
+
+
+            cf.setId(value.getId());
+
+            cf.setName(value.getName());
+            cf.setSequenceNumber(value.getSequenceNumber());
+            //cf.setStartDate(new XMLGregorianCalendar());
+            cf.setValue(value.getValue());
+
+            cMap.put(value.getName(),cf);
+        }
+        to.setCustomFieldMap(cMap);
+    }
+
+//    static public Person Convert(Constituent c) {
+//        Person p = new Person();
+//
+//        BeanUtils.copyProperties(c,p);
+//
+//        return p;
+//    }
+//
+//    /**
+//     * Convert from a domain Person to a schema Constituent
+//     *
+//     * @param from domain Person
+//     * @param to schema Constituent
+//     */
+//    static public void Convert(Person from,Constituent to) {
+//        String ignoreProperties[] = {"customFieldMap","primaryAddress","primaryEmail","primaryPhone"};
+//
+//
+//        //
+//        // Because collections are handled differently between the classes
+//        // we will convert collections by hand...
+//        BeanUtils.copyProperties(from,to,ignoreProperties);
+//
+//
+//        //
+//        // convert the custom field map
+//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
+//
+//        // now set primaryAddress
+//        com.orangeleap.tangerine.ws.schema.Address address = new com.orangeleap.tangerine.ws.schema.Address();
+//        Convert(from.getPrimaryAddress(),address);
+//        to.setPrimaryAddress(address);
+//
+//        // now set primaryEmail
+//        com.orangeleap.tangerine.ws.schema.Email email = new com.orangeleap.tangerine.ws.schema.Email();
+//        Convert(from.getPrimaryEmail(),email);
+//        to.setPrimaryEmail(email);
+//
+//        // now set primaryPhone
+//        com.orangeleap.tangerine.ws.schema.Phone phone = new com.orangeleap.tangerine.ws.schema.Phone();
+//        Convert(from.getPrimaryPhone(),phone);
+//        to.setPrimaryPhone(phone);
+//    }
+//
+//    /**
+//     * Convert from a domain Address to a schema Address
+//     *
+//     * @param from domain Address
+//     * @param to schema Address
+//     */
+//    static public void Convert(com.orangeleap.tangerine.domain.communication.Address from, com.orangeleap.tangerine.ws.schema.Address to)
+//    {
+//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
+//
+//        BeanUtils.copyProperties(from,to,ignoreProperties);
+//
+//        //
+//        // convert the custom field map
+//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
+//    }
+//
+//    /**
+//     * Convert from a domain Email to a schema Email
+//     *
+//     * @param from domain Email
+//     * @param to schema Email
+//     */
+//    static public void Convert(com.orangeleap.tangerine.domain.communication.Email from, com.orangeleap.tangerine.ws.schema.Email to)
+//    {
+//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
+//
+//
+//        BeanUtils.copyProperties(from,to,ignoreProperties);
+//
+//        //
+//        // convert the custom field map
+//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
+//    }
+//
+//    /**
+//     * Convert from a domain Phone to a schema Phone
+//     * @param from domain Phone
+//     * @param to schema Phone
+//     */
+//    static public void Convert(com.orangeleap.tangerine.domain.communication.Phone from, com.orangeleap.tangerine.ws.schema.Phone to)
+//    {
+//        String[] ignoreProperties = {"customFieldMap","activationStatus","temporaryStartDate","temporaryEndDate","seasonalStartDate","seasonalEndDate","effectiveDate" };
+//
+//
+//        BeanUtils.copyProperties(from,to,ignoreProperties);
+//
+//        //
+//        // convert the custom field map
+//        Convert((com.orangeleap.tangerine.domain.AbstractCustomizableEntity) from,(com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity) to);
+//    }
 }

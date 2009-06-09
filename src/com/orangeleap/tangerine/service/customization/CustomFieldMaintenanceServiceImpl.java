@@ -90,7 +90,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     		SectionDefinition sectionDefinition = addSectionDefinitionsAndValidations(editPage, customFieldRequest, fieldDefinition, site);
     		SectionDefinition sectionDefinitionView = null;
 
-    		if (!customFieldRequest.getEntityType().equals("person")) {
+    		if (hasViewPage(customFieldRequest.getEntityType())) {
     			PageType viewPage = PageType.valueOf(customFieldRequest.getEntityType()+"View");
     			sectionDefinitionView = addSectionDefinitionsAndValidations(viewPage, customFieldRequest, fieldDefinition, site);
     		}
@@ -111,6 +111,10 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
             cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PAGE_CUSTOMIZATION);
             
 	}
+
+    private boolean hasViewPage(String entityType) {
+            return !("person".equals(entityType) || "giftInKind".equals(entityType));
+    }
     
     private void createRelationship(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition) {
 

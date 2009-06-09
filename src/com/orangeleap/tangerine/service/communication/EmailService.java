@@ -22,7 +22,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.FileSystemResource;
@@ -41,7 +40,6 @@ import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 //@Service("emailSendingService")
@@ -59,20 +57,12 @@ public class EmailService implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 	private JasperPrint print;
 
-    @Autowired
-    private SiteService siteService;
-
 	private File runReport() {
 		File temp = null;
 		TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-		String siteName=  tuh.lookupUserSiteName();
-        Site site = siteService.readSite(siteName);
-        String jasperUser = site.getJasperUserId();
-        String jasperPass  =site.getJasperPassword();
-
-        jserver = new JServer();
-		jserver.setUsername(jasperUser + "@" + site.getName());
-		jserver.setPassword(jasperPass);
+		jserver = new JServer();
+		jserver.setUsername(tuh.lookupUserName() + "@" + site.getName());
+		jserver.setPassword(tuh.lookupUserPassword());
 		jserver.setUrl(uri);
 		try {
 			WSClient client = jserver.getWSClient();

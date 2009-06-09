@@ -15,7 +15,7 @@
 	    <h1 class="loginHeader">Session Logged Out</h1>
         <p>Your account has been logged in from another computer or browser window</p>
 	    <p style="padding:8px;">
-	    <a style="font-size:14px;" href="welcome.htm">Click here to login again</a>
+	    <a style="font-size:14px;" href="login.jsp">Click here to login again</a>
 	    </p>
 	</div>
 </div>

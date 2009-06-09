@@ -40,9 +40,7 @@ public class PasswordChangeValidator implements Validator {
         // new password must be different than current password
         // minimum 6 characters
         // TODO: force change password every 60 days
-        // TODO - [AUTH] Won't need this Validator; fake out for now
-        //String authenticatedPw = tangerineUserHelper.lookupUserPassword();
-        String authenticatedPw = "";
+        String authenticatedPw = tangerineUserHelper.lookupUserPassword();
         if (!authenticatedPw.equals(oldPw)) {
             errors.rejectValue("currentPassword", "currentPasswordIncorrect", null, "current password is incorrect");
             logger.trace("current password, " + authenticatedPw + ", didn't match " + oldPw);
@@ -61,3 +59,4 @@ public class PasswordChangeValidator implements Validator {
         }
     }
 }
+

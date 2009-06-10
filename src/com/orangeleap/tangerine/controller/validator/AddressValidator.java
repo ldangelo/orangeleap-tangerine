@@ -48,11 +48,18 @@ public class AddressValidator extends AbstractCommunicationValidator<Address> {
         }
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressLine1", "invalidAddressLine1", "Address Line 1 is required"); // TODO: why are the error codes not in the messageResource table?
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city", "invalidCity", "City is required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State/Province is required");
+        if (stateRequired(address)) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "stateProvince", "invalidStateProvince", "State/Province is required");
+        }
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "postalCode", "invalidPostalCode", "Postal/Zip Code is required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "country", "invalidCountry", "Country is required");
         
         validateDates(address, errors);
         errors.setNestedPath(inPath);
     }
+    
+    private static boolean stateRequired(Address address) {
+        return "US".equals(address.getCountry()) || "CA".equals(address.getCountry());
+    }
+
 }

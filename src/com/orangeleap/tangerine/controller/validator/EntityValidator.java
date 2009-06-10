@@ -1,10 +1,6 @@
 package com.orangeleap.tangerine.controller.validator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -212,7 +208,8 @@ public class EntityValidator implements Validator {
                         conditionsMet = false;
                     }
                 } else {
-                    if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !dependentProperty.toString().equals(fc.getValue()))) {
+                    List fcValues = Arrays.asList(fc.getValue().split("\\|"));
+                    if (dependentProperty == null || (!"!null".equals(fc.getValue()) && !fcValues.contains(dependentProperty.toString()))) {
                         conditionsMet = false;
                     }
                 }

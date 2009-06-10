@@ -166,7 +166,7 @@
 		</sql>		
 	</target>
 
-	<target name="9.4 Load V2 Extra Schema">
+	<target name="9.4 Load Extra Schema">
 	     <sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
 		          userid="${mysql.db.user}"
@@ -174,7 +174,7 @@
 		          encoding="UTF-8"
 		          classpath="${mysql.db.classpath}"
  	              delimiter=";">
-		    <transaction src="${basedir}/db/prod/tangerine-V2.ddl"/>
+		    <transaction src="${basedir}/db/prod/tangerine-extra.ddl"/>
 	    </sql>
 	</target>
 

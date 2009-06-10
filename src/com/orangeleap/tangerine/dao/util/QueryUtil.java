@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.GenericValidator;
+import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
 
 public class QueryUtil {
 	
@@ -38,7 +39,11 @@ public class QueryUtil {
         
         if (searchparams != null) {
             for (Map.Entry<String, Object> pair : searchparams.entrySet()) {
+
                 String key = pair.getKey();
+                
+                key = AbstractIBatisDao.oneWord(key);
+
                 Object value = pair.getValue();
 
                 boolean isString = true;

@@ -89,11 +89,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
             logger.trace("readAllConstituentsBySite:");
         }
 
-        Map<String,Object> params = setupParams();
-        params.put("sortColumn", sortColumn);
-        params.put("sortDir", dir);
-        params.put("offset", start);
-        params.put("limit", limit);
+        Map<String,Object> params = setupSortParams(sortColumn, dir, start, limit);
 
         return getSqlMapClientTemplate().queryForList("SELECT_LIMITED_CONSTITUENTS_BY_SITE", params);
     }

@@ -44,11 +44,7 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
             logger.trace("readAuditHistoryForSite:");
         }
 
-        Map<String, Object> params = setupParams();
-        params.put("sortColumn", sortColumn);
-        params.put("sortDir", dir);
-        params.put("offset", start);
-        params.put("limit", limit);
+        Map<String, Object> params = setupSortParams(sortColumn, dir, start, limit);
 
         List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_SITE_PAGINATED", params);
         Long count = (Long)getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_SITE_ROWCOUNT",params);
@@ -80,13 +76,9 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
             logger.trace("readAuditHistoryForEntity: entityTypeDisplay = " + entityTypeDisplay + " objectId = " + objectId);
         }
 
-        Map<String, Object> params = setupParams();
-        params.put("entityType", entityTypeDisplay);
+        Map<String, Object> params = setupSortParams(sortColumn, dir, start, limit);
+        params.put("entityType", oneWord(entityTypeDisplay));
         params.put("objectId", objectId);
-        params.put("sortColumn", sortColumn);
-        params.put("sortDir", dir);
-        params.put("offset", start);
-        params.put("limit", limit);
 
         List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_ENTITY_PAGINATED", params);
         Long count = (Long) getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_ENTITY_ROWCOUNT",params);
@@ -116,12 +108,8 @@ public class IBatisAuditDao extends AbstractIBatisDao implements AuditDao {
         if (logger.isDebugEnabled()) {
             logger.debug("auditHistoryForConstituent: constituentId = " + constituentId);
         }
-        Map<String, Object> params = setupParams();
+        Map<String, Object> params = setupSortParams(sortColumn, dir, start, limit);
         params.put("constituentId", constituentId);
-        params.put("sortColumn", sortColumn);
-        params.put("sortDir", dir);
-        params.put("offset", start);
-        params.put("limit", limit);
 
         List rows = getSqlMapClientTemplate().queryForList("AUDIT_HISTORY_FOR_CONSTITUENT_PAGINATED", params);
         Long count = (Long) getSqlMapClientTemplate().queryForObject("AUDIT_HISTORY_FOR_CONSTITUENT_ROWCOUNT", params);

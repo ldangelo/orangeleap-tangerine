@@ -1,5 +1,7 @@
 package com.orangeleap.tangerine.web.common;
 
+import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -84,8 +86,8 @@ public class SortInfo {
      * Convenience method to add sort info to query params
      */
     public void addParams(Map<String, Object> params) {
-        params.put("sortColumn", getSort());
-        params.put("sortDir", getDir());
+        params.put("sortColumn", AbstractIBatisDao.oneWord(getSort()));
+        params.put("sortDir", AbstractIBatisDao.oneWord(getDir()));
         params.put("offset", getStart());
         params.put("limit", getLimit());
     }

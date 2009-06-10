@@ -88,6 +88,18 @@ public class IBatisRecurringGiftDao extends AbstractPaymentInfoEntityDao<Recurri
         }
         getSqlMapClientTemplate().update("UPDATE_RECURRING_GIFT_AMOUNT_PAID_REMAINING_STATUS", recurringGift);
     }
+    
+    /**
+     * Updates the recurringGift NEXT_RUN_DATE field ONLY
+     * @param recurringGift
+     */
+    @Override
+    public void maintainRecurringGiftNextRunDate(RecurringGift recurringGift) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("maintainRecurringGiftNextRunDate: recurringGiftId = " + recurringGift.getId() + " nextRunDate = " + recurringGift.getNextRunDate());
+        }
+        getSqlMapClientTemplate().update("UPDATE_RECURRING_GIFT_NEXT_RUN_DATE", recurringGift);
+    }
 
     @Override
     public void removeRecurringGift(RecurringGift rg) {

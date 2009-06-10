@@ -31,4 +31,6 @@ public interface RecurringGiftDao {
 	public List<DistributionLine> findDistributionLinesForRecurringGifts(List<String> recurringGiftIds);
 	
 	public BigDecimal readAmountPaidForRecurringGiftId(Long recurringGiftId);
+
+	void maintainRecurringGiftNextRunDate(RecurringGift recurringGift);
 }

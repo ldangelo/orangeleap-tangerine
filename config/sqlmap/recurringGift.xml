@@ -167,6 +167,14 @@
 		UPDATE_DATE = now()
 		where RECURRING_GIFT_ID = #id#
 	</update>
+	
+	<update id="UPDATE_RECURRING_GIFT_NEXT_RUN_DATE" parameterClass="com.orangeleap.tangerine.domain.paymentInfo.RecurringGift">
+		update RECURRING_GIFT
+		set 
+		NEXT_RUN_DATE = #nextRunDate#,
+		UPDATE_DATE = now()
+		where RECURRING_GIFT_ID = #id#
+	</update>
   
 	<delete id="DELETE_RECURRING_GIFT" parameterClass="map">
 		delete from RECURRING_GIFT 

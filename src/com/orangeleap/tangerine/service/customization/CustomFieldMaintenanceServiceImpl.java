@@ -37,7 +37,7 @@ import com.orangeleap.tangerine.type.ReferenceType;
 import com.orangeleap.tangerine.type.RelationshipType;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.Collections;
 
 @Service("customFieldMaintenanceService")
 @Transactional

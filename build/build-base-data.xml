@@ -89,7 +89,8 @@
 	     	<transaction src="${basedir}/db/prod/pages/fieldValidation.sql"/>
 
 	     	<!-- Picklists -->
-	     	<transaction src="${basedir}/db/prod/picklists/projectCodePicklist.sql"/>
+            <transaction src="${basedir}/db/prod/picklists/projectCodePicklist.sql"/>
+            <transaction src="${basedir}/db/prod/picklists/bankCodePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/motivationCodePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/currencyCodePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/countryPicklist.sql"/>

@@ -53,21 +53,24 @@ public class PicklistInput extends AbstractSingleValuedPicklistInput {
             List<Object> displayValues = fieldVO.getDisplayValues();
             for (int i = 0; i < augmentedCodes.size(); i++) {
                 String code = augmentedCodes.get(i);
-                sb.append("<option value=\"" + StringEscapeUtils.escapeHtml(code) + "\"");
+                String displayValue = displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml( (displayValues.get(i) == null) ? "" : displayValues.get(i).toString() );
+                if (displayValue.trim().length() > 0) {
+                  sb.append("<option value=\"" + StringEscapeUtils.escapeHtml(code) + "\"");
 
-                String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
-                if (StringUtils.hasText(reference)) {
-                    sb.append(" reference=\"" + reference + "\"");
-                }
-                if (fieldVO.getFieldValue() != null && code != null) {
-                    if (code.equals(fieldVO.getFieldValue().toString())) {
-                        sb.append(" selected=\"selected\"");
-                        selectedRef = reference;
+                  String reference = (references == null || i >= references.size() ? StringConstants.EMPTY : references.get(i));
+                  if (StringUtils.hasText(reference)) {
+                        sb.append(" reference=\"" + reference + "\"");
                     }
+                    if (fieldVO.getFieldValue() != null && code != null) {
+                        if (code.equals(fieldVO.getFieldValue().toString())) {
+                            sb.append(" selected=\"selected\"");
+                            selectedRef = reference;
+                        }
+                   }
+                   sb.append(">");
+                   sb.append(displayValue);
+                   sb.append("</option>");
                 }
-                sb.append(">");
-                sb.append(displayValues == null || i >= displayValues.size() ? StringConstants.EMPTY : StringEscapeUtils.escapeHtml( (displayValues.get(i) == null) ? "" : displayValues.get(i).toString() ));
-                sb.append("</option>");
             }
         }
         return selectedRef;

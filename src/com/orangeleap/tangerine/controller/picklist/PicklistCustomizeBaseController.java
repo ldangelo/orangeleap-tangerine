@@ -47,7 +47,8 @@ public class PicklistCustomizeBaseController extends SimpleFormController {
     }
 	
     protected boolean isGLCoded(Picklist picklist) {
-    	return picklist.getPicklistNameId().endsWith("projectCode");
+    	return picklist.getPicklistNameId().endsWith("projectCode")
+            || picklist.getPicklistNameId().endsWith("customFieldMap[bank]");
     }
 
 	protected Map<String, String> getMap(Map<String, CustomField> map) {

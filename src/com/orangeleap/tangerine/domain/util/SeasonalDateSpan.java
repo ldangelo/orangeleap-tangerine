@@ -17,9 +17,8 @@ public class SeasonalDateSpan {
     private final Calendar endDate = Calendar.getInstance();
 
     /**
-     * Construct a new SeasonalDateSpan. The startDate must fall before
-     * the endDate chronologically, even though comparisons are made
-     * ignoring the year
+     * Construct a new SeasonalDateSpan. Comparisons are made
+     * based on the year of the Date passed in the contains() method
      * @param startDate the seasonal start date
      * @param endDate the seasonal end date
      */
@@ -33,13 +32,6 @@ public class SeasonalDateSpan {
 
         this.startDate.setTime(startDate);
         this.endDate.setTime(endDate);
-
-        if(!endDate.after(startDate)) {
-            DateFormat df = new SimpleDateFormat("MM/dd/yy");
-            throw new IllegalArgumentException(
-                    String.format("startDate [%s] must come before endDate [%s]",
-                            df.format(startDate), df.format(endDate)) );
-        }
     }
 
     /**
@@ -55,29 +47,24 @@ public class SeasonalDateSpan {
             return false;
         }
 
-        int startDay = startDate.get(Calendar.DAY_OF_YEAR);
-        int startYear = startDate.get(Calendar.YEAR);
-        int endDay = endDate.get(Calendar.DAY_OF_YEAR);
-        int endYear = endDate.get(Calendar.YEAR);
+        Calendar activeDate = Calendar.getInstance();
+        activeDate.setTime(date);
 
-        Calendar compareDate = Calendar.getInstance();
-        compareDate.setTime(date);
-        int compareDay = compareDate.get(Calendar.DAY_OF_YEAR);
+        int baseYear = activeDate.get(Calendar.YEAR);
 
-        // end date rolls over to another year (i.e. span = Nov through Feb)
-        if(startYear < endYear) {
+        // calibrate the start and end dates to the base year
+        startDate.set(Calendar.YEAR,baseYear);
+        endDate.set(Calendar.YEAR, baseYear);
 
-            if( (compareDay >= startDay && compareDay <= (endDay+365)) ||
-                ( (compareDay+365) >= startDay && (compareDay+365) <= (endDay+365))) {
-                return true;
-            }
+        if(startDate.compareTo(endDate) == 0) {
+            // all the same date
+            return (startDate.compareTo(activeDate) == 0);
+        } else if(startDate.compareTo(endDate) < 0) {
+            // start date is before end date
+            return (startDate.compareTo(activeDate) <=0 && endDate.compareTo(activeDate) >= 0);
         } else {
-
-            if(compareDay >= startDay && compareDay <= endDay) {
-                return true;
-            }
+            // start date is after end date
+            return (startDate.compareTo(activeDate) <=0 || endDate.compareTo(activeDate) >= 0);
         }
-
-        return false;
     }
 }

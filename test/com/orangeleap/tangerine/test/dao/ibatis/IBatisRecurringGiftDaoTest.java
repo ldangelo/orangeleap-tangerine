@@ -56,7 +56,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getCreateDate() == null;
         assert recurringGift.getUpdateDate() == null;
         assert recurringGift.getFrequency() == null;
-        assert recurringGift.getLastEntryDate() == null;
         assert recurringGift.getDistributionLines() != null && recurringGift.getDistributionLines().isEmpty();
         assert StringConstants.USD.equals(recurringGift.getCurrencyCode());
     }

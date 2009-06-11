@@ -106,7 +106,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getCreateDate() != null;
         assert readPledge.getUpdateDate() != null;
         assert readPledge.getFrequency() == null;
-        assert readPledge.getLastEntryDate() == null;
         assert readPledge.isRecurring() == false;
         assert readPledge.getProjectedDate() == null;
         
@@ -139,7 +138,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getCreateDate() != null;
         assert readPledge.getUpdateDate() != null;
         assert readPledge.getFrequency() == null;
-        assert readPledge.getLastEntryDate() == null;
         assert readPledge.getProjectedDate() == null;
         assert readPledge.getPaymentType() == null;
         assert readPledge.getCheckNumber() == null;
@@ -193,7 +191,6 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert pledge.getCreateDate() == null;
         assert pledge.getUpdateDate() == null;
         assert pledge.getFrequency() == null;
-        assert pledge.getLastEntryDate() == null;
         assert pledge.getProjectedDate() == null;
         assert StringConstants.USD.equals(pledge.getCurrencyCode());
     }

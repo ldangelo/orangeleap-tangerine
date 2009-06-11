@@ -3,7 +3,7 @@
 	<div class="container">
 		<c:if test="${not empty lastLoginDate}">
 			<p class="legal">
-				<spring:message code="lastLogin"/> <fmt:formatDate value="${lastLoginDate}" pattern="h:mm a z, EEEE, MMMM d, yyyy"/>
+				<spring:message code="lastLogin"/> <fmt:formatDate value="${lastLoginDate}" pattern="h:mm a z, EEEE, MMMM d, yyyy"/> | Build version: ${build.time}
 			</p>
 		</c:if>
 		<c:set var="copyrightStart" value="2008" />

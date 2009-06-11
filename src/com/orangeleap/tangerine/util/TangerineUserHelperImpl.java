@@ -82,6 +82,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
      * @see com.orangeleap.tangerine.security.TangerineUserHelper#lookupUserRoles()
      */
     @Override
+    @Transactional
     public List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         RoleType greatestRoleType = null;

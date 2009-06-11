@@ -11,12 +11,13 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.AbstractAuthenticationToken;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.security.TangerineAuthenticationToken;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.type.RoleType;
 
-public final class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
+public class TangerineUserHelperImpl implements TangerineUserHelper, ApplicationContextAware {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -45,7 +46,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
      * @see com.orangeleap.tangerine.util.TangerineUserHelper#lookupUserSiteName()
      */
     @Override
-    public final String lookupUserSiteName() {
+    public String lookupUserSiteName() {
         TangerineAuthenticationToken token = getToken();
         return token == null ? null : token.getSite();
     }
@@ -54,7 +55,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
      * @see com.orangeleap.tangerine.util.TangerineUserHelper#lookupUserName()
      */
     @Override
-    public final String lookupUserName() {
+    public String lookupUserName() {
         TangerineAuthenticationToken token = getToken();
         return token == null ? null : token.getName();
     }
@@ -63,7 +64,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
      * @see com.orangeleap.tangerine.util.TangerineUserHelper#lookupUserPassword()
      */
     @Override
-    public final String lookupUserPassword() {
+    public String lookupUserPassword() {
         TangerineAuthenticationToken token = getToken();
         return token == null ? null : (String)token.getCredentials();
     }
@@ -72,7 +73,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
      * @see com.orangeleap.tangerine.util.TangerineUserHelper#lookupUserId()
      */
     @Override
-    public final Long lookupUserId() {
+    public Long lookupUserId() {
         TangerineAuthenticationToken token = getToken();
         return token == null ? null : token.getPersonId();
     }
@@ -81,7 +82,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
      * @see com.orangeleap.tangerine.security.TangerineUserHelper#lookupUserRoles()
      */
     @Override
-    public final List<String> lookupUserRoles() {
+    public List<String> lookupUserRoles() {
         GrantedAuthority[] authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         RoleType greatestRoleType = null;
         for (int i = 0; i < authorities.length; i++) {
@@ -103,6 +104,7 @@ public final class TangerineUserHelperImpl implements TangerineUserHelper, Appli
 
     // Used by nightly scheduled job functions
     @Override
+    @Transactional
     public void setSystemUserAndSiteName(String siteName) {
     	// Give system user all roles used by screen definitions
     	SiteService siteservice = (SiteService) applicationContext.getBean("siteService");

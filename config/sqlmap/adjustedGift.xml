@@ -19,6 +19,8 @@
 		<result property="originalGiftId" column="ORIGINAL_GIFT_ID" jdbcType="BIGINT" />
 		<result property="paymentMessage" column="ADJUSTED_PAYMENT_MESSAGE" jdbcType="VARCHAR" />
 		<result property="paymentStatus" column="ADJUSTED_PAYMENT_STATUS" jdbcType="VARCHAR" />
+		<result property="posted" column="ADJUSTED_POSTED" jdbcType="CHAR" />
+		<result property="postedDate" column="ADJUSTED_POSTED_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="ADJUSTED_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
 		<result property="paymentType" column="ADJUSTED_PAYMENT_TYPE" jdbcType="VARCHAR" />
 		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
@@ -38,7 +40,8 @@
 		ag.ADJUSTED_PAYMENT_REQUIRED, ag.ADJUSTED_PAYMENT_TO, 
 		ag.AUTH_CODE as ADJUSTED_AUTH_CODE, ag.CHECK_NUMBER as ADJUSTED_CHECK_NUMBER,
 		ag.COMMENTS as ADJUSTED_COMMENTS, ag.GIFT_ID as ORIGINAL_GIFT_ID, ag.PAYMENT_MESSAGE as ADJUSTED_PAYMENT_MESSAGE,
-		ag.PAYMENT_STATUS as ADJUSTED_PAYMENT_STATUS, ag.PAYMENT_TXREFNUM as ADJUSTED_PAYMENT_TXREFNUM, ag.PAYMENT_TYPE as ADJUSTED_PAYMENT_TYPE, 
+		ag.PAYMENT_STATUS as ADJUSTED_PAYMENT_STATUS, ag.PAYMENT_TXREFNUM as ADJUSTED_PAYMENT_TXREFNUM, ag.PAYMENT_TYPE as ADJUSTED_PAYMENT_TYPE,
+		ag.POSTED as ADJUSTED_POSTED, ag.POSTED_DATE as ADJUSTED_POSTED_DATE,  
 		ag.CREATE_DATE as ADJUSTED_CREATE_DATE, ag.UPDATE_DATE as ADJUSTED_UPDATE_DATE, g2.AMOUNT as ORIGINAL_AMOUNT, g2.CURRENCY_CODE as ADJUSTED_CURRENCY_CODE
 	</sql>
 	
@@ -76,6 +79,7 @@
 		AUTH_CODE, CHECK_NUMBER, 
 		COMMENTS, GIFT_ID, PAYMENT_MESSAGE, 
 		PAYMENT_STATUS, PAYMENT_TXREFNUM, PAYMENT_TYPE, 
+		POSTED, POSTED_DATE, 
 		ADDRESS_ID, PAYMENT_SOURCE_ID, CONSTITUENT_ID, PHONE_ID,
 		CREATE_DATE, UPDATE_DATE
 		)
@@ -84,6 +88,7 @@
 		#authCode#,	#checkNumber#, 
 		#comments#, #originalGiftId#, #paymentMessage#,
 		#paymentStatus#, #txRefNum#, #paymentType#,
+		#posted#, #postedDate#, 
 		#selectedAddress.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, 
 		now(), now())
 		<selectKey keyProperty="id" resultClass="long">
@@ -109,6 +114,8 @@
 		ag.PAYMENT_STATUS = #paymentStatus#,
 		ag.PAYMENT_TXREFNUM = #txRefNum#,
 		ag.PAYMENT_TYPE = #paymentType#,
+		ag.POSTED = #posted#,
+		ag.POSTED_DATE = #postedDate#,
 		ag.ADDRESS_ID = #selectedAddress.id#,
 		ag.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
 		ag.CONSTITUENT_ID = #person.id#,

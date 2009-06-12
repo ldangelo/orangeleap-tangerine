@@ -687,6 +687,8 @@ CREATE TABLE `ADJUSTED_GIFT` (
   `PAYMENT_STATUS` varchar(255) default NULL,
   `PAYMENT_TXREFNUM` varchar(255) default NULL,
   `PAYMENT_TYPE` varchar(255) default NULL,
+  `POSTED` char(1) NOT NULL default '0',
+  `POSTED_DATE` datetime default NULL,
   `CONSTITUENT_ID` bigint(20) default NULL,
   `ADDRESS_ID` bigint(20) default NULL,
   `PHONE_ID` bigint(20) default NULL,

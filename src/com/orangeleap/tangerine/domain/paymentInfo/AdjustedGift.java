@@ -29,6 +29,8 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
     private String txRefNum;
     private String paymentStatus = StringConstants.EMPTY;
     private String paymentMessage;
+	private boolean posted;
+	private Date postedDate = new Date();
 
     public AdjustedGift() {
         super();
@@ -181,7 +183,23 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
     public void setPaymentMessage(String paymentMessage) {
         this.paymentMessage = paymentMessage;
     }
-    
+
+	public boolean isPosted() {
+		return posted;
+	}
+
+	public void setPosted(boolean posted) {
+		this.posted = posted;
+	}
+
+	public Date getPostedDate() {
+		return postedDate;
+	}
+
+	public void setPostedDate(Date postedDate) {
+		this.postedDate = postedDate;
+	}
+
     @Override
     public void setDefaults() {
         super.setDefaults();
@@ -203,6 +221,9 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
             setPaymentType(null);
             setSelectedPaymentSource(null);
         }
+		if (posted == false) {
+			setPostedDate(null);
+		}
     }
     
     public String getShortDescription() {

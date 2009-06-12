@@ -19,7 +19,6 @@ public abstract class AbstractCommunicationValidator<T extends AbstractCommunica
         if (ActivationType.seasonal.equals(entity.getActivationStatus())) {
             checkNullDate(entity.getSeasonalStartDate(), "seasonalStartDate", "invalidSeasonalStartDate", "Seasonal Start Date is required", errors);
             checkNullDate(entity.getSeasonalEndDate(), "seasonalEndDate", "invalidSeasonalEndDate", "Seasonal End Date is required", errors);
-            checkDateRange(entity.getSeasonalStartDate(), entity.getSeasonalEndDate(), "seasonalEndDate", "invalidSeasonalEndDateBeforeStartDate", "The Seasonal End Date must be after the Seasonal Start Date", errors);
         } 
         else if (ActivationType.temporary.equals(entity.getActivationStatus())) {
             checkNullDate(entity.getTemporaryStartDate(), "temporaryStartDate", "invalidTemporaryStartDate", "Temporary Start Date is required", errors);

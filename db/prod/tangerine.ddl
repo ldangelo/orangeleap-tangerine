@@ -632,6 +632,7 @@ CREATE TABLE `GIFT` (
   `GIFT_TYPE` varchar(255) default NULL,
   `AMOUNT` decimal(19,2) default NULL,
   `AUTH_CODE` varchar(255) default NULL,
+  `AVS_MESSAGE` varchar(255) default NULL,
   `CHECK_NUMBER` varchar(255) default NULL,
   `COMMENTS` varchar(255) default NULL,
   `CURRENCY_CODE` varchar(255) default NULL,

@@ -36,6 +36,7 @@ public class Gift extends AbstractPaymentInfoEntity {
 	private String txRefNum;
 	private String paymentStatus = StringConstants.EMPTY;
 	private String paymentMessage;
+	private String avsMessage;
 	private GiftEntryType entryType = GiftEntryType.MANUAL;
 
 	private List<Long> associatedPledgeIds;
@@ -183,6 +184,14 @@ public class Gift extends AbstractPaymentInfoEntity {
 
 	public void setPaymentMessage(String message) {
 		this.paymentMessage = message;
+	}
+
+	public String getAvsMessage() {
+		return avsMessage;
+	}
+
+	public void setAvsMessage(String avsMessage) {
+		this.avsMessage = avsMessage;
 	}
 
 	public List<Long> getAssociatedPledgeIds() {

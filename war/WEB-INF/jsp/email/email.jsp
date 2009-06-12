@@ -22,9 +22,18 @@
 								</p>
 							</c:when>
 							<c:when test="${fieldVO.fieldType == 'DATE'}">
-								<p style="margin: 0;">
-									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
-								</p>
+                               <c:choose>
+                                    <c:when test="${fieldVO.fieldName =='seasonalStartDate' || fieldVO.fieldName == 'seasonalEndDate'}">
+                                        <p style="margin: 0;">
+                                            <c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MMM-dd" value="${fieldVO.fieldValue}" />
+                                        </p>
+                                    </c:when>
+                                    <c:otherwise>
+                                         <p style="margin: 0;">
+									        <c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
+								        </p>
+                                    </c:otherwise>
+								</c:choose>
 							</c:when>
 							<c:otherwise>
 								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>
@@ -65,9 +74,18 @@
 								</p>
 							</c:when>
 							<c:when test="${fieldVO.fieldType == 'DATE'}">
-								<p style="margin: 0;">
-									<c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
-								</p>
+								 <c:choose>
+                                    <c:when test="${fieldVO.fieldName =='seasonalStartDate' || fieldVO.fieldName == 'seasonalEndDate'}">
+                                        <p style="margin: 0;">
+                                            <c:out value='${fieldVO.labelText}'/>: <fmt:formatDate pattern="MMM-dd" value="${fieldVO.fieldValue}" />
+                                        </p>
+                                    </c:when>
+                                    <c:otherwise>
+                                         <p style="margin: 0;">
+									        <c:out value='${fieldVO.labelText}'/>:  <fmt:formatDate pattern="MM/dd/yyyy" value="${fieldVO.fieldValue}" />
+								        </p>
+                                    </c:otherwise>
+								</c:choose>
 							</c:when>
 							<c:otherwise>
 								<p style="margin: 0;"><c:out value='${fieldVO.labelText}'/>:  <c:out value='${fieldVO.displayValue}'/></p>

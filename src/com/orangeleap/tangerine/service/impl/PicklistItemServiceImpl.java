@@ -215,9 +215,11 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 			List<PicklistItem> items = template.getPicklistItems();
 			for (PicklistItem item: items) {
 				item = picklistDao.readPicklistItemById(item.getId());  // This currently the only way to get custom fields on dependent objects
-				PicklistItem newItem = (PicklistItem)item.createCopy();
-				newItem.setPicklistId(result.getId());
-				result.getPicklistItems().add(newItem);
+				if (item != null ) {
+                    PicklistItem newItem = (PicklistItem)item.createCopy();
+                    newItem.setPicklistId(result.getId());
+                    result.getPicklistItems().add(newItem);
+                }
 			}
 		} catch (Exception e) {
 			logger.error("Cannot create copy of default picklist." ,e);

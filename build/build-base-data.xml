@@ -106,7 +106,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/constituentTypePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/constituentIndividualRolesPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/constituentOrganizationRolesPicklist.sql"/>
-	     	<transaction src="${basedir}/db/prod/picklists/ncaisCodePicklist.sql"/>
+	     	<transaction src="${basedir}/db/prod/picklists/naicsCodePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/genderPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/militaryPicklist.sql"/>
 		    <transaction src="${basedir}/db/prod/picklists/racePicklist.sql"/>

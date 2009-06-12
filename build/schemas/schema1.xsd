@@ -20,7 +20,7 @@
           <xs:element name="loginId" type="xs:string" minOccurs="0"/>
           <xs:element name="maritalStatus" type="xs:string" minOccurs="0"/>
           <xs:element name="middleName" type="xs:string" minOccurs="0"/>
-          <xs:element name="ncaisCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="naicsCode" type="xs:string" minOccurs="0"/>
           <xs:element name="organizationName" type="xs:string" minOccurs="0"/>
           <xs:element name="pledges" type="pledge" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="preferredPhoneType" type="xs:string" minOccurs="0"/>

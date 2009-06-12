@@ -87,7 +87,7 @@ public class Person extends AbstractCommunicatorEntity {
     private String recognitionName;
     private String organizationName;
     private String legalName;
-    private String ncaisCode;
+    private String naicsCode;
     private String maritalStatus = "Unknown";
     private String preferredPhoneType;
     private String loginId;
@@ -287,12 +287,12 @@ public class Person extends AbstractCommunicatorEntity {
         return isSpecificDonor;
     }
 
-    public void setNcaisCode(String ncaisCode) {
-        this.ncaisCode = ncaisCode;
+    public void setNaicsCode(String naicsCode) {
+        this.naicsCode = naicsCode;
     }
 
-    public String getNcaisCode() {
-        return ncaisCode;
+    public String getNaicsCode() {
+        return naicsCode;
     }
 
     public void setRecognitionName(String recognitionName) {
@@ -577,7 +577,7 @@ public class Person extends AbstractCommunicatorEntity {
     public void clearOrganization() {
         setOrganizationName(null);
         setLegalName(null);
-        setNcaisCode(null);
+        setNaicsCode(null);
         removeCustomField(CONSTITUENT_ORGANIZATION_ROLES);
         removeCustomField(ORGANIZATION_ADDITIONAL_ELIGIBLE_FUNDS);
         removeCustomField(ORGANIZATION_ADDITIONAL_ELIGIBLE_ORGANIZATIONS);

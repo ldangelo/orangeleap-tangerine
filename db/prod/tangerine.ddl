@@ -74,7 +74,7 @@ CREATE TABLE `CONSTITUENT` (
   `LOGIN_ID` varchar(255) default NULL,
   `MARITAL_STATUS` varchar(255) default NULL,
   `MIDDLE_NAME` varchar(255) default NULL,
-  `NCAIS_CODE` varchar(255) default NULL,
+  `NAICS_CODE` varchar(255) default NULL,
   `ORGANIZATION_NAME` varchar(255) default NULL,
   `PREFERRED_PHONE_TYPE` varchar(255) default NULL,
   `RECOGNITION_NAME` varchar(255) default NULL,

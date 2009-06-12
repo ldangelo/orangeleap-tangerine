@@ -89,7 +89,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert readConstituent.getLoginId() == null;
         assert "Unknown".equals(readConstituent.getMaritalStatus());
         assert readConstituent.getMiddleName() == null;
-        assert readConstituent.getNcaisCode() == null;
+        assert readConstituent.getNaicsCode() == null;
         assert readConstituent.getOrganizationName() == null;
         assert readConstituent.getPreferredPhoneType() == null;
         assert readConstituent.getRecognitionName() != null;
@@ -100,14 +100,14 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         // Update
         constituent.setTitle("Lady");
         constituent.setLoginId("joe@bob.com");
-        constituent.setNcaisCode("huh");        
+        constituent.setNaicsCode("huh");
         constituent = constituentDao.maintainConstituent(constituent);
         readConstituent = constituentDao.readConstituentById(constituent.getId());
         assert readConstituent != null;
         assert "Lady".equals(readConstituent.getTitle());
         assert "joe@bob.com".equals(readConstituent.getLoginId());
         assert 4000000L == readConstituent.getAccountNumber();
-        assert readConstituent.getNcaisCode() == null;
+        assert readConstituent.getNaicsCode() == null;
         
         assert constituent.getFirstName().equals(readConstituent.getFirstName());
         assert constituent.getLastName().equals(readConstituent.getLastName());

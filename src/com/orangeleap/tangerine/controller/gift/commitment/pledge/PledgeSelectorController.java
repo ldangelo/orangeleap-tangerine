@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment.pledge;
+package com.orangeleap.tangerine.controller.gift.commitment.pledge;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

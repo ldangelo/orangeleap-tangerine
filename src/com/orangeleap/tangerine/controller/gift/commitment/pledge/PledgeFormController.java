@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment.pledge;
+package com.orangeleap.tangerine.controller.gift.commitment.pledge;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.orangeleap.tangerine.controller.commitment.CommitmentFormController;
+import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;

@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment;
+package com.orangeleap.tangerine.controller.gift.commitment;
 
 import java.util.List;
 

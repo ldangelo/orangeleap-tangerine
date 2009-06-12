@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment.pledge;
+package com.orangeleap.tangerine.controller.gift.commitment.pledge;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 
-import com.orangeleap.tangerine.controller.commitment.CommitmentFormController;
+import com.orangeleap.tangerine.controller.gift.commitment.CommitmentFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.service.PledgeService;

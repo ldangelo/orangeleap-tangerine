@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment.recurringGift;
+package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

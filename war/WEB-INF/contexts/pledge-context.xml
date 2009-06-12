@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     
-    <bean id="pledgeFormController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeFormController" parent="commitmentFormController">
+    <bean id="pledgeFormController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeFormController" parent="commitmentFormController">
         <property name="pageType" value="pledge"/>
         <property name="commandName" value="pledge"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Pledge"/>
@@ -18,7 +18,7 @@
         <property name="formUrl" value="redirect:/pledge.htm" />
     </bean>
 
-    <bean id="pledgeViewController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeViewController" parent="commitmentFormController">
+    <bean id="pledgeViewController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeViewController" parent="commitmentFormController">
         <property name="pageType" value="pledge"/>
         <property name="commandName" value="pledge"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Pledge"/>
@@ -40,18 +40,18 @@
         <property name="successView" value="redirect:/pledgeView.htm" />
     </bean>
 
-    <bean id="pledgeSearchController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeSearchFormController">
+    <bean id="pledgeSearchController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeSearchFormController">
         <property name="commandName" value="pledge"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Pledge"/>
         <property name="formView" value="pledge/pledgeSearch"/>
         <property name="successView" value="pledge/pledgeSearch"/>
     </bean>
 
-    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeListController">
+    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeListController">
         <property name="viewName" value="pledge/pledgeList"/>
     </bean>
 
-    <bean id="pledgeSelectorController" class="com.orangeleap.tangerine.controller.commitment.pledge.PledgeSelectorController">
+    <bean id="pledgeSelectorController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeSelectorController">
         <property name="viewName" value="pledge/pledgeSelector"/>
     </bean>
 

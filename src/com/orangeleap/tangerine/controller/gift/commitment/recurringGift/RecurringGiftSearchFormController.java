@@ -1,4 +1,4 @@
-package com.orangeleap.tangerine.controller.commitment.pledge;
+package com.orangeleap.tangerine.controller.gift.commitment.recurringGift;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -20,18 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
-import com.orangeleap.tangerine.service.PledgeService;
+import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.SessionService;
 
-//TODO: refactor this and RecurringGiftSearchFormController into one class
-public class PledgeSearchFormController extends SimpleFormController {
+// TODO: refactor this and PledgeSearchFormController into one class
+public class RecurringGiftSearchFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Resource(name="pledgeService")
-    private PledgeService pledgeService;
+    @Resource(name="recurringGiftService")
+    private RecurringGiftService recurringGiftService;
 
     @Resource(name="sessionService")
     private SessionService sessionService;
@@ -43,7 +43,7 @@ public class PledgeSearchFormController extends SimpleFormController {
         }
         Person p = new Person();
         p.setSite(sessionService.lookupSite());
-        Pledge g = new Pledge();
+        RecurringGift g = new RecurringGift();
         g.setPerson(p);
         return g;
     }
@@ -54,8 +54,8 @@ public class PledgeSearchFormController extends SimpleFormController {
         if (logger.isTraceEnabled()) {
             logger.trace("onSubmit:");
         }
-        Pledge pledge = (Pledge) command;
-        BeanWrapper bw = new BeanWrapperImpl(pledge);
+        RecurringGift recurringGift = (RecurringGift) command;
+        BeanWrapper bw = new BeanWrapperImpl(recurringGift);
         Map<String, Object> params = new HashMap<String, Object>();
         Enumeration<String> enu = request.getParameterNames();
         while (enu.hasMoreElements()) {
@@ -67,13 +67,13 @@ public class PledgeSearchFormController extends SimpleFormController {
             }
         }
 
-        List<Pledge> pledgeList = pledgeService.searchPledges(params);
+        List<RecurringGift> recurringGiftList = recurringGiftService.searchRecurringGifts(params);
         // TODO: Adding errors.getModel() to our ModelAndView is a "hack" to allow our
         // form to post results back to the same page. We need to get the
         // command from errors and then add our search results to the model.
         ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-        mav.addObject("pledgeList", pledgeList);
-        mav.addObject("pledgeListSize", pledgeList.size());
+        mav.addObject("recurringGiftList", recurringGiftList);
+        mav.addObject("recurringGiftListSize", recurringGiftList.size());
         return mav;
     }
 }

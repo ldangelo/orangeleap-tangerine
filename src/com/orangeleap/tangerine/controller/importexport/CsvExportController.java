@@ -74,7 +74,7 @@ public class CsvExportController extends SimpleFormController {
 			String exportData = getExport(er);
 			response.setContentType("application/x-download"); 
 			String entity = er.getEntity();
-			if (entity.equals("person")) entity = "constituent";
+			if (entity.equals("constituent")) entity = "constituent";
 			response.setHeader("Content-Disposition", "attachment; filename=" + entity + "-export.csv");
 			response.setContentLength(exportData.length());
 			PrintWriter out = response.getWriter();

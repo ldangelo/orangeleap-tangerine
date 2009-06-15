@@ -15,7 +15,7 @@
 		<result property="seasonalStartDate" column="EMAIL_SEASONAL_START_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryEndDate" column="EMAIL_TEMPORARY_END_DATE"	jdbcType="TIMESTAMP" />
 		<result property="temporaryStartDate" column="EMAIL_TEMPORARY_START_DATE"	jdbcType="TIMESTAMP" />
-		<result property="personId" column="EMAIL_CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="constituentId" column="EMAIL_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="primary" column="EMAIL_IS_PRIMARY" jdbcType="CHAR" />
 		<result property="undeliverable" column="EMAIL_UNDELIVERABLE" jdbcType="CHAR" />
 		<result property="createDate" column="EMAIL_CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -62,7 +62,7 @@
 		values (#activationStatus#, #comments#, now(), #effectiveDate#, #emailAddress#, #emailDisplay#,
 		#inactive#, #receiveCorrespondence#, #seasonalEndDate#,
 		#seasonalStartDate#, #temporaryEndDate#, #temporaryStartDate#,
-		now(), #personId#, #primary#, #undeliverable#)
+		now(), #constituentId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -82,7 +82,7 @@
 		TEMPORARY_END_DATE = #temporaryEndDate#,
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
-		CONSTITUENT_ID = #personId#,
+		CONSTITUENT_ID = #constituentId#,
 		IS_PRIMARY = #primary#,
 		UNDELIVERABLE = #undeliverable#
 		where EMAIL_ID = #id#

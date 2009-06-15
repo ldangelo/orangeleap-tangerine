@@ -1,12 +1,12 @@
 Ext.namespace('Contacts');
 
 Ext.onReady(function() {
-    var pId = /personId=(\d+)/g.exec(document.location.search);
+    var pId = /constituentId=(\d+)/g.exec(document.location.search);
     if (pId) {	
 	    Ext.BLANK_IMAGE_URL = "js/extjs/resources/images/default/s.gif";
 	    Ext.form.Field.prototype.msgTarget = 'side';
 	    Ext.QuickTips.init();
-	    Contacts.personId = pId[1];
+	    Contacts.constituentId = pId[1];
 	
 	    /******************************************************
 	     * Configuration for the Address Information          *
@@ -48,7 +48,7 @@ Ext.onReady(function() {
 	                // used for easter-egg mode
 	                Contacts.win.hide();
 	                Ext.get(document.body).mask();
-	                window.location.href = "addressManager.htm?personId=" + Contacts.personId;
+	                window.location.href = "addressManager.htm?constituentId=" + Contacts.constituentId;
 	            }
 	        },
 	        hideHeaders: true
@@ -102,7 +102,7 @@ Ext.onReady(function() {
 	                // used for easter-egg mode
 	                Contacts.win.hide();
 	                Ext.get(document.body).mask();
-	                window.location.href = "phoneManager.htm?personId=" + Contacts.personId;
+	                window.location.href = "phoneManager.htm?constituentId=" + Contacts.constituentId;
 	            }
 	        },
 	        hideHeaders: true
@@ -152,7 +152,7 @@ Ext.onReady(function() {
 	                // used for easter-egg mode
 	                Contacts.win.hide();
 	                Ext.get(document.body).mask();
-	                window.location.href = "emailManager.htm?personId=" + Contacts.personId;
+	                window.location.href = "emailManager.htm?constituentId=" + Contacts.constituentId;
 	            }
 	        },
 	        hideHeaders: true,
@@ -193,12 +193,12 @@ Ext.onReady(function() {
             cls: 'ext-widget'
 	    });
 	
-	    Ext.get('personTitle').on('dblclick',function() {Contacts.win.show();});
+	    Ext.get('constituentTitle').on('dblclick',function() {Contacts.win.show();});
 	    
 	    // Now load all the stores
-	    Contacts.addressStore.load({params: {id: Contacts.personId}});
-	    Contacts.phoneStore.load({params: {id: Contacts.personId}});
-	    Contacts.emailStore.load({params: {id: Contacts.personId}});
+	    Contacts.addressStore.load({params: {id: Contacts.constituentId}});
+	    Contacts.phoneStore.load({params: {id: Contacts.constituentId}});
+	    Contacts.emailStore.load({params: {id: Contacts.constituentId}});
 	}
 });
 

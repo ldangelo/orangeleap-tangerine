@@ -11,7 +11,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
@@ -65,7 +65,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				}
 				workingMemory.setFocus(site+"gift");
 				workingMemory.setGlobal("applicationContext", applicationContext);
-				workingMemory.setGlobal("personService", ps);
+				workingMemory.setGlobal("constituentService", ps);
 				workingMemory.setGlobal("giftService",gs);
 				workingMemory.setGlobal("userHelper",uh);
 				
@@ -74,23 +74,23 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				ss.populateDefaultEntityEditorMaps(gift);
 				workingMemory.insert(gift);
 				
-				/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getPerson().getId()); 
+				/*List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift.getConstituent().getId()); 
 				Iterator<Gift> giftsIter = gifts.iterator();
 				while (giftsIter.hasNext()) {
 					workingMemory.insert(giftsIter.next());
 				}*/
 
-				Person person = gift.getPerson();
+				Constituent constituent = gift.getConstituent();
 				
-				person.setGifts(gs.readMonetaryGifts(person));
-				person.setSite(ss.readSite(person.getSite().getName()));
+				constituent.setGifts(gs.readMonetaryGifts(constituent));
+				constituent.setSite(ss.readSite(constituent.getSite().getName()));
 				
-				ss.populateDefaultEntityEditorMaps(person);
-				person.setSuppressValidation(true);
+				ss.populateDefaultEntityEditorMaps(constituent);
+				constituent.setSuppressValidation(true);
 
-				TaskStack.push(new RuleTask(applicationContext,site + "email",person,gift));
+				TaskStack.push(new RuleTask(applicationContext,site + "email",constituent,gift));
 
-				workingMemory.insert(person);
+				workingMemory.insert(constituent);
 
 			} catch (Exception ex) {
 				logger.error(ex.getMessage());

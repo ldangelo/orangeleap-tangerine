@@ -54,14 +54,14 @@ public class GiftExporter extends EntityExporter {
 		
 		List<FieldDescriptor> list = super.getExportFieldDescriptors();
 
-		// Add a column for person accountnumber
+		// Add a column for constituent accountnumber
 		FieldDefinition fd = new FieldDefinition();
-		fd.setId("person.accountNumber");
+		fd.setId("constituent.accountNumber");
 		fd.setEntityType(EntityType.gift);
-		fd.setFieldName("person.accountNumber");
+		fd.setFieldName("constituent.accountNumber");
 		fd.setFieldType(FieldType.TEXT);
 		
-		FieldDescriptor fieldDescriptor = new FieldDescriptor("person.accountNumber", FieldDescriptor.NATIVE, fd);
+		FieldDescriptor fieldDescriptor = new FieldDescriptor("constituent.accountNumber", FieldDescriptor.NATIVE, fd);
 		list.add(0, fieldDescriptor);
 		
 		return list;

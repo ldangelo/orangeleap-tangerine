@@ -72,7 +72,7 @@ BEGIN
         SELECT COUNT(CUSTOM_FIELD_ID) INTO CNT
                 FROM CUSTOM_FIELD
                 WHERE ENTITY_ID = ENTITYID
-                AND ENTITY_TYPE = 'person'
+                AND ENTITY_TYPE = 'constituent'
                 AND FIELD_NAME = 'donorProfiles'
                 AND FIELD_VALUE = DONOR_TYPE;
                 

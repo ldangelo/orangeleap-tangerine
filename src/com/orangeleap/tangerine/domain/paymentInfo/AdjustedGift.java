@@ -40,7 +40,7 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
         this();
         setOriginalAmount(originalGift.getAmount());
         setOriginalGiftId(originalGift.getId());
-        setPerson(originalGift.getPerson());
+        setConstituent(originalGift.getConstituent());
         setAdjustedTransactionDate(Calendar.getInstance(Locale.getDefault()).getTime());
         setSelectedPaymentSource(originalGift.getSelectedPaymentSource());
         setSelectedAddress(originalGift.getSelectedAddress());
@@ -203,8 +203,8 @@ public class AdjustedGift extends AbstractPaymentInfoEntity {
     @Override
     public void setDefaults() {
         super.setDefaults();
-        if (adjustedPaymentTo == null && person != null) {
-            setAdjustedPaymentTo(person.getFirstLast());
+        if (adjustedPaymentTo == null && constituent != null) {
+            setAdjustedPaymentTo(constituent.getFirstLast());
         }
     }
 

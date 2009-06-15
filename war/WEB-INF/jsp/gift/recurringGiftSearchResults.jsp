@@ -22,13 +22,13 @@
 					<c:choose>
 						<c:when test="${empty row.gifts}">
 							<tr>
-								<td><a href="recurringGift.htm?recurringGiftId=${row.id}&personId=${row.person.id}">View</a></td>
+								<td><a href="recurringGift.htm?recurringGiftId=${row.id}&constituentId=${row.constituent.id}">View</a></td>
 								<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 							</tr>
 						</c:when>
 						<c:otherwise>
 							<tr>
-								<td><a href="recurringGiftView.htm?recurringGiftId=${row.id}&personId=${row.person.id}">View</a></td>
+								<td><a href="recurringGiftView.htm?recurringGiftId=${row.id}&constituentId=${row.constituent.id}">View</a></td>
 								<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 							</tr>
 						</c:otherwise>

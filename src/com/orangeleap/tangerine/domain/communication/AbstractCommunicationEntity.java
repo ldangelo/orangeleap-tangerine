@@ -18,7 +18,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 @SuppressWarnings("serial")
 public abstract class AbstractCommunicationEntity extends AbstractCustomizableEntity implements Inactivatible, Creatable {
 
-    protected Long personId;
+    protected Long constituentId;
     protected ActivationType activationStatus;
     protected boolean receiveCorrespondence = false;
     protected Date temporaryStartDate;
@@ -33,12 +33,12 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
     protected Date effectiveDate;
     protected boolean userCreated = false;
 
-    public Long getPersonId() {
-        return personId;
+    public Long getConstituentId() {
+        return constituentId;
     }
 
-    public void setPersonId(Long personId) {
-        this.personId = personId;
+    public void setConstituentId(Long constituentId) {
+        this.constituentId = constituentId;
     }
 
     public boolean isReceiveCorrespondence() {
@@ -184,7 +184,7 @@ public abstract class AbstractCommunicationEntity extends AbstractCustomizableEn
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append(super.toString()).append("constituentId", personId).append("createDate", getCreateDate()).
+        return new ToStringCreator(this).append(super.toString()).append("constituentId", constituentId).append("createDate", getCreateDate()).
             append("updateDate", getUpdateDate()).append("activationStatus", activationStatus).append("receiveCorrespondence", receiveCorrespondence).append("temporaryStartDate", temporaryStartDate).
             append("temporaryEndDate", temporaryEndDate).append("seasonalStartDate", seasonalStartDate).append("seasonalEndDate", seasonalEndDate).append("inactive", inactive).
             append("isPrimary", isPrimary).append("comments", comments).append("effectiveDate", effectiveDate).append("userCreated", userCreated).

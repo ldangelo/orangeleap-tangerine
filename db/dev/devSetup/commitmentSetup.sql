@@ -1,5 +1,5 @@
 -- Create recurring gifts and pledges
--- Must be executed AFTER CONSTITUENT insertions (personSetup.sql)
+-- Must be executed AFTER CONSTITUENT insertions (constituentSetup.sql)
 
 INSERT INTO RECURRING_GIFT (COMMENTS, AMOUNT_PER_GIFT, CONSTITUENT_ID,  AUTO_PAY) VALUES ('', 1000, 1, false);
 INSERT INTO RECURRING_GIFT (COMMENTS, AMOUNT_PER_GIFT, CONSTITUENT_ID,  AUTO_PAY) VALUES ('', 1000, 1, false);

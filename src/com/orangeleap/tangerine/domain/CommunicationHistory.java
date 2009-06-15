@@ -24,7 +24,7 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private String entryType = "";
     private boolean systemGenerated = false;
     private String comments = StringConstants.EMPTY;
-    private Person person;
+    private Constituent constituent;
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
@@ -36,15 +36,15 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private Email selectedEmail;
 
 	public Site getSite() {
-		return getPerson().getSite();
+		return getConstituent().getSite();
 	}
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setConstituent(Constituent constituent) {
+		this.constituent = constituent;
 	}
 	
 	public CommunicationHistoryType getCommunicationHistoryType() {

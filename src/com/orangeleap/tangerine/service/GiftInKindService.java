@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -17,7 +17,7 @@ public interface GiftInKindService {
 
     public List<GiftInKind> readGiftsInKindByConstituentId(Long constituentId);
 
-    public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Person constituent);
+    public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Constituent constituent);
 
 	public PaginatedResult readPaginatedGiftsInKindByConstituentId(Long constituentId, SortInfo sortinfo);
 

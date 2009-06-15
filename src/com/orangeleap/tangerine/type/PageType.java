@@ -4,9 +4,9 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public enum PageType {
-    person("/person.htm"),
-    personSearch("/personSearch.htm"),
-    personSearchResults("/personSearchResults.htm"),
+    constituent("/constituent.htm"),
+    constituentSearch("/constituentSearch.htm"),
+    constituentSearchResults("/constituentSearchResults.htm"),
     gift("/gift.htm"),
     giftList("/giftList.htm"),
     giftSearch("/giftSearch.htm"),

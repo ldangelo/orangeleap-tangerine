@@ -12,7 +12,7 @@ import com.orangeleap.tangerine.controller.importexport.ProperCaseAddressUtil;
 import com.orangeleap.tangerine.controller.importexport.exporters.AddressExporter;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.controller.importexport.fielddefs.FieldDefUtil;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.AddressService;
@@ -86,10 +86,10 @@ public class AddressImporter extends EntityImporter {
 			
 			address = new Address();
 			String account = values.get(ACCOUNT_FIELD);
-			Person person = constituentService.readConstituentByAccountNumber(account);
-			if (person == null) throw new RuntimeException("Invalid constituent account "+account);
-			address.setPersonId(person.getId());
-			logger.debug("Adding new address to "+person.getFullName()+"...");
+			Constituent constituent = constituentService.readConstituentByAccountNumber(account);
+			if (constituent == null) throw new RuntimeException("Invalid constituent account "+account);
+			address.setConstituentId(constituent.getId());
+			logger.debug("Adding new address to "+constituent.getFullName()+"...");
 			
 		} else {
 			
@@ -103,7 +103,7 @@ public class AddressImporter extends EntityImporter {
 				throw new RuntimeException("Invalid id value "+id);
 			}
 		    address = addressService.readById(lid);
-			if (address == null || constituentService.readConstituentById(address.getPersonId()) == null) {
+			if (address == null || constituentService.readConstituentById(address.getConstituentId()) == null) {
                 throw new RuntimeException(getIdField() + " " + id + " not found.");
 			}
 			siteService.populateDefaultEntityEditorMaps(address);

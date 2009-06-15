@@ -4,11 +4,11 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var personId = /personId=(\d+)/g.exec(document.location.search);
+    var constituentId = /constituentId=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if(personId) {
-        baseParams.personId = personId[1];
+    if(constituentId) {
+        baseParams.constituentId = constituentId[1];
     }
 
     var header = 'Payment History';
@@ -21,7 +21,7 @@ Ext.onReady(function() {
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
             {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-            {name: 'personId', mapping: 'personid', type: 'string'},
+            {name: 'constituentId', mapping: 'constituentid', type: 'string'},
             {name: 'type', mapping: 'type', type: 'string'},
             {name: 'paymentType', mapping: 'paymenttype', type: 'string'},
             {name: 'paymentStatus', mapping: 'paymentstatus', type: 'string'},

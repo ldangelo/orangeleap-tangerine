@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.testng.annotations.DataProvider;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.type.ActivationType;
@@ -20,12 +20,12 @@ public class AddressDataProvider {
         Site site1 = new Site();
         site1.setName("setupAddressSite-1");
 
-        Person person1 = new Person();
-        person1.setFirstName("createAddressFirstName-1");
-        person1.setLastName("createAddressLastName-1");
+        Constituent constituent1 = new Constituent();
+        constituent1.setFirstName("createAddressFirstName-1");
+        constituent1.setLastName("createAddressLastName-1");
 
         List<Address> addresses = new ArrayList<Address>();
-        Address address = new Address(person1.getId());
+        Address address = new Address(constituent1.getId());
         address.setAddressLine1("1-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -34,7 +34,7 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.permanent);
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("2-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -43,7 +43,7 @@ public class AddressDataProvider {
         address.setActivationStatus(ActivationType.permanent);
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("3-permanent-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -53,7 +53,7 @@ public class AddressDataProvider {
         addresses.add(address);
 
         // set seasonals to be 10/1 - 3/31
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("1-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -67,7 +67,7 @@ public class AddressDataProvider {
         address.setSeasonalEndDate(seasonEnd.getTime());
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("2-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -78,7 +78,7 @@ public class AddressDataProvider {
         address.setSeasonalEndDate(seasonEnd.getTime());
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("3-seasonal-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -90,7 +90,7 @@ public class AddressDataProvider {
         addresses.add(address);
 
         // set temporary addresses for 10/15/<today's year> - 11/14/<today's year>
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("1-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -105,7 +105,7 @@ public class AddressDataProvider {
         address.setTemporaryEndDate(tempEnd.getTime());
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("2-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -116,7 +116,7 @@ public class AddressDataProvider {
         address.setTemporaryEndDate(tempEnd.getTime());
         addresses.add(address);
 
-        address = new Address(person1.getId());
+        address = new Address(constituent1.getId());
         address.setAddressLine1("3-temporary-addressLine1");
         address.setCity("city");
         address.setCountry("US");
@@ -127,6 +127,6 @@ public class AddressDataProvider {
         address.setTemporaryEndDate(tempEnd.getTime());
         addresses.add(address);
 
-        return new Object[][] { new Object[] { site1, person1, addresses } };
+        return new Object[][] { new Object[] { site1, constituent1, addresses } };
     }
 }

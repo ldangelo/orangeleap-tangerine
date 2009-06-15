@@ -34,7 +34,7 @@ public class RecurringGiftListController {
 
     static {
         NAME_MAP.put("id", "rg.GIFT_ID");
-        NAME_MAP.put("personId", "rg.CONSTITUENT_ID");
+        NAME_MAP.put("constituentId", "rg.CONSTITUENT_ID");
         NAME_MAP.put("status", "rg.RECURRING_GIFT_STATUS");
         NAME_MAP.put("amountpergift", "rg.AMOUNT_PER_GIFT");
         NAME_MAP.put("amounttotal", "rg.AMOUNT_TOTAL");
@@ -46,7 +46,7 @@ public class RecurringGiftListController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", rg.getId());
-        map.put("personId", rg.getPerson().getId());
+        map.put("constituentId", rg.getConstituent().getId());
         map.put("status", rg.getRecurringGiftStatus());
         map.put("amountpergift", rg.getAmountPerGift());
         map.put("amounttotal", rg.getAmountTotal());
@@ -76,8 +76,8 @@ public class RecurringGiftListController {
         // set the sort to the valid column name, based on the map
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
-        String personId = request.getParameter("personId");
-        PaginatedResult result = recurringGiftService.readPaginatedRecurringGiftsByConstituentId(Long.valueOf(personId), sortInfo); 
+        String constituentId = request.getParameter("constituentId");
+        PaginatedResult result = recurringGiftService.readPaginatedRecurringGiftsByConstituentId(Long.valueOf(constituentId), sortInfo); 
 
         List<RecurringGift> list = result.getRows();
 

@@ -81,7 +81,7 @@ public class AuditListController {
         if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
             result = auditService.allAuditHistoryForSite(sortInfo);
         } else {
-            if (EntityType.valueOf(entityType) == EntityType.person) {
+            if (EntityType.valueOf(entityType) == EntityType.constituent) {
                 result = auditService.auditHistoryForConstituent(Long.valueOf(objectId), sortInfo);
             } else {
                 result = auditService.auditHistoryForEntity(EntityType.valueOf(entityType).name(),
@@ -113,7 +113,7 @@ public class AuditListController {
         map.put("description", audit.getDescription());
         map.put("objectType", "communicationhistory".equals(audit.getEntityType()) ? "touch point" : audit.getEntityType());
         map.put("objectId", audit.getObjectId());
-        map.put("personId", audit.getConstituentId());
+        map.put("constituentId", audit.getConstituentId());
 
         return map;
 

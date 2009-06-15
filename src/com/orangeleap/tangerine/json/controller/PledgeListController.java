@@ -34,7 +34,7 @@ public class PledgeListController {
 
     static {
         NAME_MAP.put("id", "c.GIFT_ID");
-        NAME_MAP.put("personId", "c.CONSTITUENT_ID");
+        NAME_MAP.put("constituentId", "c.CONSTITUENT_ID");
         NAME_MAP.put("status", "c.PLEDGE_STATUS");
         NAME_MAP.put("amountpergift", "c.AMOUNT_PER_GIFT");
         NAME_MAP.put("amounttotal", "c.AMOUNT_TOTAL");
@@ -46,7 +46,7 @@ public class PledgeListController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", c.getId());
-        map.put("personId", c.getPerson().getId());
+        map.put("constituentId", c.getConstituent().getId());
         map.put("status", c.getPledgeStatus());
         map.put("amountpergift", c.getAmountPerGift());
         map.put("amounttotal", c.getAmountTotal());
@@ -76,8 +76,8 @@ public class PledgeListController {
         // set the sort to the valid column name, based on the map
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
-        String personId = request.getParameter("personId");
-        PaginatedResult result = pledgeService.readPaginatedPledgesByConstituentId(Long.valueOf(personId), sortInfo); 
+        String constituentId = request.getParameter("constituentId");
+        PaginatedResult result = pledgeService.readPaginatedPledgesByConstituentId(Long.valueOf(constituentId), sortInfo); 
 
         List<Pledge> list = result.getRows();
 

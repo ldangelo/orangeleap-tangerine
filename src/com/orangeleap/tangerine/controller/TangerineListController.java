@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -29,14 +29,14 @@ public abstract class TangerineListController extends ParameterizableViewControl
         if (logger.isTraceEnabled()) {
             logger.trace("handleRequestInternal:");
         }
-        Long constituentId = Long.valueOf(request.getParameter(StringConstants.PERSON_ID));
+        Long constituentId = Long.valueOf(request.getParameter(StringConstants.CONSTITUENT_ID));
 
         List<? extends GeneratedId> list = getList(constituentId);
-        Person constituent = constituentService.readConstituentById(constituentId);
+        Constituent constituent = constituentService.readConstituentById(constituentId);
 
         ModelAndView mav = new ModelAndView(super.getViewName());
         if (constituent != null) {
-            mav.addObject(StringConstants.PERSON, constituent);
+            mav.addObject(StringConstants.CONSTITUENT, constituent);
         }
         mav.addObject("list", list);
         mav.addObject("listSize", list.size());

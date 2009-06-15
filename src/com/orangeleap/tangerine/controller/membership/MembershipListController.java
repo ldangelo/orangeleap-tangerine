@@ -27,14 +27,14 @@ public class MembershipListController extends ParameterizableViewController {
 //        if (logger.isDebugEnabled()) {
 //            logger.debug("handleRequestInternal:");
 //        }
-//        String personId = request.getParameter("personId");
+//        String constituentId = request.getParameter("constituentId");
 //
-//        List<Commitment> commitmentList = commitmentService.readCommitments(Long.valueOf(personId), CommitmentType.MEMBERSHIP);
-//        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
+//        List<Commitment> commitmentList = commitmentService.readCommitments(Long.valueOf(constituentId), CommitmentType.MEMBERSHIP);
+//        Constituent constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
 
         ModelAndView mav = new ModelAndView(super.getViewName());
 //        if (constituent != null) {
-//            mav.addObject("person", constituent);
+//            mav.addObject("constituent", constituent);
 //        }
 //        mav.addObject("commitmentList", commitmentList);
 //        mav.addObject("commitmentListSize", commitmentList.size());

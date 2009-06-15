@@ -37,7 +37,7 @@ public class TouchPointListController {
     static {
         NAME_MAP.put("id", "ch.COMMUNICATION_HISTORY_ID");
         NAME_MAP.put("date", "ch.RECORD_DATE");
-        NAME_MAP.put("personId", "ch.CONSTITUENT_ID");
+        NAME_MAP.put("constituentId", "ch.CONSTITUENT_ID");
         NAME_MAP.put("type", "ch.ENTRY_TYPE");
         NAME_MAP.put("comments", "ch.COMMENTS");
     }
@@ -49,7 +49,7 @@ public class TouchPointListController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", ch.getId());
         map.put("date", formatter.format(ch.getRecordDate()) );
-        map.put("personId", ch.getPerson().getId());
+        map.put("constituentId", ch.getConstituent().getId());
         map.put("type", ch.getEntryType());
         map.put("comments", ch.getComments());
     
@@ -76,8 +76,8 @@ public class TouchPointListController {
         // set the sort to the valid column name, based on the map
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
-        String personId = request.getParameter("personId");
-        PaginatedResult result = communicationHistoryService.readCommunicationHistoryByConstituent(Long.valueOf(personId), sortInfo); 
+        String constituentId = request.getParameter("constituentId");
+        PaginatedResult result = communicationHistoryService.readCommunicationHistoryByConstituent(Long.valueOf(constituentId), sortInfo); 
 
         List<CommunicationHistory> list = result.getRows();
 

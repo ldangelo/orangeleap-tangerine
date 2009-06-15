@@ -19,11 +19,11 @@
 	<tiles:putAttribute name="sidebarNav" value="Relationships" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-			<c:set var="person" value="${person}" scope="request" />
-			<c:if test="${person.id!=null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${constituent}" scope="request" />
+			<c:if test="${constituent.id!=null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
-			<jsp:include page="../snippets/personHeader.jsp">
+			<jsp:include page="../snippets/constituentHeader.jsp">
 				<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 			</jsp:include>
 	
@@ -34,7 +34,7 @@
 					<span class="message"><c:out value="${message}" /></span>
 					
 					<form id="form" method="post" action="relationship.htm">
-					    <input type="hidden" name="personId" value="${form.person.id}" />
+					    <input type="hidden" name="constituentId" value="${form.constituent.id}" />
 				        <input type="hidden" name="fieldDefinitionId" value="${form.fieldDefinition.id}" />
 						<table class="customFields">
 							<col class="lookup"></col>
@@ -58,8 +58,8 @@
 													<div id="lookup-cfFieldValue-${status.count}-" class="queryLookupOption" selectedId="<c:out value='${customField.value}'/>">
 														<c:choose>
 															<c:when test="${not empty customField.value}">
-																<c:url value="person.htm" var="entityLink" scope="page">
-																	<c:param name="personId" value="${customField.value}" />
+																<c:url value="constituent.htm" var="entityLink" scope="page">
+																	<c:param name="constituentId" value="${customField.value}" />
 																</c:url>
 																<span><a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${form.relationshipNames[status.index]}'/></a></span>
 																<c:remove var="entityLink" scope="page" />
@@ -121,7 +121,7 @@
 				
 						decorateDateInputs();
 					</script>
-					<strong><a class="action" href="relationships.htm?personId=${person.id}">&laquo;<spring:message code='back'/></a></strong>
+					<strong><a class="action" href="relationships.htm?constituentId=${constituent.id}">&laquo;<spring:message code='back'/></a></strong>
 				</div>
 			</div>	
 		</div>

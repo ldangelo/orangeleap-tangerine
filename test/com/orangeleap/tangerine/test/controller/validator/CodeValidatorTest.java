@@ -12,7 +12,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -34,7 +34,7 @@ public class CodeValidatorTest extends BaseTest {
     private PicklistItem motivationCode;
     private PicklistItem currencyCode;
     private Site site;
-    private Person person;
+    private Constituent constituent;
 
     @BeforeMethod
     public void setupMocks() {
@@ -88,10 +88,10 @@ public class CodeValidatorTest extends BaseTest {
         
         site = new Site();
         site.setName("company1");
-        person = new Person();
-        person.setSite(site);
+        constituent = new Constituent();
+        constituent.setSite(site);
         
-        gift.setPerson(person);
+        gift.setConstituent(constituent);
         distributionLine.setGiftId(gift.getId());
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         lines.add(distributionLine);

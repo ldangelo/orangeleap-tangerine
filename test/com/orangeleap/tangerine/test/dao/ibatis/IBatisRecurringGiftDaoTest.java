@@ -14,7 +14,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -46,10 +46,10 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert 550 == recurringGift.getAmountPerGift().intValue();
         assert Pledge.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
 
-        assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 100L;
-        assert "Billy Graham Ministries".equals(recurringGift.getPerson().getOrganizationName());
-        assert "Graham".equals(recurringGift.getPerson().getLastName());
-        assert "Billy".equals(recurringGift.getPerson().getFirstName());
+        assert recurringGift.getConstituent() != null && recurringGift.getConstituent().getId() == 100L;
+        assert "Billy Graham Ministries".equals(recurringGift.getConstituent().getOrganizationName());
+        assert "Graham".equals(recurringGift.getConstituent().getLastName());
+        assert "Billy".equals(recurringGift.getConstituent().getFirstName());
 
         assert recurringGift.getStartDate() == null;
         assert recurringGift.getEndDate() == null;
@@ -68,8 +68,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
         assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
         assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
-        assert recurringGift.getPerson() != null && recurringGift.getPerson().getId() == 200L;
-        IBatisConstituentDaoTest.testConstituentId200(recurringGift.getPerson());
+        assert recurringGift.getConstituent() != null && recurringGift.getConstituent().getId() == 200L;
+        IBatisConstituentDaoTest.testConstituentId200(recurringGift.getConstituent());
     }
     
     @Test(groups = { "testReadRecurringGifts" })
@@ -89,7 +89,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         RecurringGift recurringGift = new RecurringGift(sdf.parse("01/01/2009 12:00"));
         recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_EXPIRED);
         recurringGift.setAmountPerGift(new BigDecimal(2));
-        recurringGift.setPerson(new Person(300L, new Site("company1")));
+        recurringGift.setConstituent(new Constituent(300L, new Site("company1")));
 
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         assert recurringGift.getId() > 0;
@@ -103,8 +103,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert sdf.parse("01/01/2009 12:00").equals(readRecurringGift.getNextRunDate());
         assert 2 == readRecurringGift.getAmountPerGift().intValue();
         assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
-        assert readRecurringGift.getPerson() != null && readRecurringGift.getPerson().getId() == 300L;
-        Person constituent = readRecurringGift.getPerson();
+        assert readRecurringGift.getConstituent() != null && readRecurringGift.getConstituent().getId() == 300L;
+        Constituent constituent = readRecurringGift.getConstituent();
         IBatisConstituentDaoTest.testConstituentId300(constituent);
         
         // Update
@@ -118,8 +118,8 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         assert sdf.parse("10/01/1970 08:00").equals(readRecurringGift.getNextRunDate());
         assert 2 == readRecurringGift.getAmountPerGift().intValue();
         assert RecurringGift.STATUS_EXPIRED.equals(readRecurringGift.getRecurringGiftStatus());
-        assert readRecurringGift.getPerson() != null && readRecurringGift.getPerson().getId() == 300L;
-        constituent = readRecurringGift.getPerson();
+        assert readRecurringGift.getConstituent() != null && readRecurringGift.getConstituent().getId() == 300L;
+        constituent = readRecurringGift.getConstituent();
         IBatisConstituentDaoTest.testConstituentId300(constituent);
     } 
     
@@ -182,7 +182,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         List<RecurringGift> recurringGifts = recurringGiftDao.searchRecurringGifts(params);
         assert recurringGifts != null && recurringGifts.size() > 0;
         for (RecurringGift recurringGift : recurringGifts) {
-            assert recurringGift.getPerson().getFirstName().equals("Pablo");
+            assert recurringGift.getConstituent().getFirstName().equals("Pablo");
             assert recurringGift.getAmountPerGift().compareTo(new BigDecimal(10)) == 0;
         }
     }   

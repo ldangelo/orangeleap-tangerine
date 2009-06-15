@@ -35,7 +35,7 @@ Ext.onReady(function() {
             {name: 'description', mapping: 'description', type: 'string'},
             {name: 'objectType', mapping: 'objectType', type: 'string'},
             {name: 'objectId', mapping: 'objectId', type: 'int'},
-            {name: 'personId', mapping: 'personId', type: 'int'}
+            {name: 'constituentId', mapping: 'constituentId', type: 'int'}
         ],
         sortInfo:{field: 'date', direction: "DESC"},
         remoteSort: true,
@@ -100,41 +100,41 @@ Audit.navigate = function(id) {
     Audit.grid.getGridEl().mask('Loading Entity');
 
     switch(rec.data.objectType) {
-        case 'person':
-            window.location.href = 'person.htm?personId=' + id;
+        case 'constituent':
+            window.location.href = 'constituent.htm?constituentId=' + id;
             break;
         case 'gift':
-            window.location.href= 'giftView.htm?giftId=' + id + '&personId=' + rec.data.personId;
+            window.location.href= 'giftView.htm?giftId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         case 'adjustedgift':
-            window.location.href= 'giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.personId;
+            window.location.href= 'giftAdjustmentView.htm?adjustedGiftId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         case 'address':
-            window.location.href= 'addressManager.htm?personId=' + rec.data.personId;
+            window.location.href= 'addressManager.htm?constituentId=' + rec.data.constituentId;
             break;
         case 'paymentsource':
-            window.location.href= 'paymentManager.htm?personId=' + rec.data.personId;
+            window.location.href= 'paymentManager.htm?constituentId=' + rec.data.constituentId;
             break;
         case 'email':
-            window.location.href= 'emailManager.htm?personId=' + rec.data.personId;
+            window.location.href= 'emailManager.htm?constituentId=' + rec.data.constituentId;
             break;
         case 'phone':
-            window.location.href= 'phoneManager.htm?personId=' + rec.data.personId;
+            window.location.href= 'phoneManager.htm?constituentId=' + rec.data.constituentId;
             break;
         case 'recurringgift':
-            window.location.href='recurringGift.htm?recurringGiftId=' + id + '&personId=' + rec.data.personId;
+            window.location.href='recurringGift.htm?recurringGiftId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         case 'pledge':
-            window.location.href='pledge.htm?pledgeId=' + id + '&personId=' + rec.data.personId;
+            window.location.href='pledge.htm?pledgeId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         case 'giftinkind':
-            window.location.href= 'giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
+            window.location.href= 'giftInKind.htm?giftInKindId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         case 'touch point':
-            window.location.href= 'communicationHistoryView.htm?communicationHistoryId=' + id + '&personId=' + rec.data.personId;
+            window.location.href= 'communicationHistoryView.htm?communicationHistoryId=' + id + '&constituentId=' + rec.data.constituentId;
             break;
         default:
-            window.location.href= 'person.htm?personid=' + rec.data.personId;
+            window.location.href= 'constituent.htm?constituentid=' + rec.data.constituentId;
     }
 
     return false;

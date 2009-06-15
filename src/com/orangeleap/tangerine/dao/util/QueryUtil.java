@@ -62,12 +62,12 @@ public class QueryUtil {
                 
                 
                 // Constituent fields not including nested fields.
-                if (key.startsWith("person.") && (key.contains("[") || key.indexOf("") != key.lastIndexOf("."))) {
+                if (key.startsWith("constituent.") && (key.contains("[") || key.indexOf("") != key.lastIndexOf("."))) {
                 	key = key.substring(key.indexOf('.') + 1);
                 }
                 
                 
-                if (key.startsWith("person.")) {
+                if (key.startsWith("constituent.")) {
                 	refConstituentParams.put(key, quote + value + quote);
                 }
                 else if (key.startsWith("primaryAddress")) {

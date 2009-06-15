@@ -107,7 +107,7 @@ public class CustomFieldController extends SimpleFormController {
 	    
     private List<FieldDefinition> getEligibleFieldDefinitions() {
 		// Return all field definitions for the constituent maintenance page that are reference types and not involved in a relationship.
-		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.person, tangerineUserHelper.lookupUserRoles());
+		Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.constituent, tangerineUserHelper.lookupUserRoles());
 		List<FieldDefinition> fds = new ArrayList<FieldDefinition>();
 		Iterator<Map.Entry<String, FieldDefinition>> it = fieldDefinitionMap.entrySet().iterator();
 		while (it.hasNext()) {

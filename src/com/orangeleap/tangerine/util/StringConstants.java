@@ -18,8 +18,8 @@ public final class StringConstants {
     public static final String CONSTITUENT = "constituent";
     public static final String CONSTITUENT_ID = "constituentId";
     
-    public static final String PERSON = "person";
-    public static final String PERSON_ID = "personId";
+    public static final String CONSTITUENT = "constituent";
+    public static final String CONSTITUENT_ID = "constituentId";
 
     public static final String EMAIL = "email";
     public static final String EMAILS = "emails";

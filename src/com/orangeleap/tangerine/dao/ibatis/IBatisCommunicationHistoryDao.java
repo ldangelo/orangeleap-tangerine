@@ -30,8 +30,8 @@ public class IBatisCommunicationHistoryDao extends AbstractIBatisDao implements 
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("maintainCommunicationHistory: communicationHistoryId = " + communicationHistory.getId());
 	    }
-        if (!communicationHistory.getPerson().getSite().getName().equals(getSiteName())) {
-            throw new RuntimeException("Person object does not belong to current site.");
+        if (!communicationHistory.getConstituent().getSite().getName().equals(getSiteName())) {
+            throw new RuntimeException("Constituent object does not belong to current site.");
         }
         insertOrUpdate(communicationHistory, "COMMUNICATION_HISTORY");
         return communicationHistory;

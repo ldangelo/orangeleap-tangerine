@@ -13,7 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
@@ -58,10 +58,10 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
     	pledge.setAmountTotal(new BigDecimal(150));
     	pledge.setRecurring(false);
         Site site = new Site("company1");
-    	Person person = new Person();
-        person.setId(100L);
-        person.setSite(site);
-        pledge.setPerson(person);
+    	Constituent constituent = new Constituent();
+        constituent.setId(100L);
+        constituent.setSite(site);
+        pledge.setConstituent(constituent);
         setupDistributionLines(pledge);
         
         pledge = pledgeDao.maintainPledge(pledge);
@@ -74,11 +74,11 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert StringConstants.USD.equals(readPledge.getCurrencyCode());
         assert 150 == readPledge.getAmountTotal().intValue();
         
-        assert readPledge.getPerson() != null && readPledge.getPerson().getId() == 100L;
+        assert readPledge.getConstituent() != null && readPledge.getConstituent().getId() == 100L;
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
         for (DistributionLine line : readPledge.getDistributionLines()) {
             assert readPledge.getId().equals(line.getPledgeId());
-            assert line.getPerson().getId() == 100L;
+            assert line.getConstituent().getId() == 100L;
             if (100 == line.getAmount().floatValue()) {
                 assert "foo".equals(line.getProjectCode());
                 assert line.getMotivationCode() == null;
@@ -127,7 +127,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert readPledge.getAmountTotal() == null;
         assert readPledge.isRecurring();
 
-        assert readPledge.getPerson() != null && readPledge.getPerson().getId() == 100L;
+        assert readPledge.getConstituent() != null && readPledge.getConstituent().getId() == 100L;
         assert readPledge.getDistributionLines() != null && readPledge.getDistributionLines().size() == 2;
         assert readPledge.getStartDate() == null;
         assert readPledge.getEndDate() == null;
@@ -150,10 +150,10 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert "Pending".equals(pledge.getPledgeStatus());
         assert pledge.isRecurring();
         
-        assert pledge.getPerson() != null && pledge.getPerson().getId() == 300L;
-        assert "Howdy Doody Inc".equals(pledge.getPerson().getOrganizationName());
-        assert "Doody".equals(pledge.getPerson().getLastName());
-        assert "Howdy".equals(pledge.getPerson().getFirstName());
+        assert pledge.getConstituent() != null && pledge.getConstituent().getId() == 300L;
+        assert "Howdy Doody Inc".equals(pledge.getConstituent().getOrganizationName());
+        assert "Doody".equals(pledge.getConstituent().getLastName());
+        assert "Howdy".equals(pledge.getConstituent().getFirstName());
 
         assert pledge.getDistributionLines() != null && pledge.getDistributionLines().size() == 2;
         for (DistributionLine line : pledge.getDistributionLines()) {
@@ -166,7 +166,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
                     assert line.getGiftId() == null;
                     assert line.getMotivationCode() == null;
                     assert line.getProjectCode() == null;
-                    assert line.getPerson().getId() == 300L;
+                    assert line.getConstituent().getId() == 300L;
                     break;
                 case 600:
                     assert 5 == line.getAmount().intValue();
@@ -175,7 +175,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
                     assert line.getGiftId() == null;
                     assert line.getMotivationCode() == null;
                     assert line.getProjectCode() == null;
-                    assert line.getPerson().getId() == 300L;
+                    assert line.getConstituent().getId() == 300L;
                     break;
                 default:
                     Assert.assertTrue("Invalid ID = " + line.getId(), false);
@@ -242,13 +242,13 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         assert lines.get(0).getId() == 900L;
         assert lines.get(0).getAmount().intValue() == 99;
         assert lines.get(0).getPledgeId() == 800L;
-        assert lines.get(0).getPerson().getId() == 200L;
+        assert lines.get(0).getConstituent().getId() == 200L;
         
         pledgeIds.add("700");
         lines = pledgeDao.findDistributionLinesForPledges(pledgeIds);
         assert lines != null && lines.size() == 3;
         for (DistributionLine line : lines) {
-            assert line.getPerson().getId() == 200L;
+            assert line.getConstituent().getId() == 200L;
             switch (line.getId().intValue()) {
                 case 700:
                     assert 1.99f == line.getAmount().floatValue();
@@ -303,7 +303,7 @@ public class IBatisPledgeDaoTest extends AbstractIBatisTest {
         Assert.assertNotNull("pledges are null", pledges);
         Assert.assertEquals("pledges size = " + pledges.size(), 1, pledges.size());
         for (Pledge pledge : pledges) {
-            assert pledge.getPerson().getFirstName().equals("Pablo");
+            assert pledge.getConstituent().getFirstName().equals("Pablo");
             assert pledge.getAmountTotal().compareTo(new BigDecimal("3.99")) == 0;
         }
     }   

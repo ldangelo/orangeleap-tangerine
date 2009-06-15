@@ -6,13 +6,13 @@
 	<tiles:putAttribute name="sidebarNav" value="Memberships" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<mp:page pageName='membershipList' />
-		<c:set var="person" value="${person}" scope="request" />
-		<c:if test="${person.id!=null}">
-			<c:set var="viewingPerson" value="true" scope="request" />
+		<c:set var="constituent" value="${constituent}" scope="request" />
+		<c:if test="${constituent.id!=null}">
+			<c:set var="viewingConstituent" value="true" scope="request" />
 		</c:if>
 		<div class="content760 mainForm">
 
-		<jsp:include page="../snippets/personHeader.jsp">
+		<jsp:include page="../snippets/constituentHeader.jsp">
 			<jsp:param name="currentFunctionTitleText" value="Memberships" />
 		</jsp:include>
 
@@ -43,11 +43,11 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="membership.htm?personId=${person.id}">Enter a New Membership » </a></p>
+				<p style="padding-top:12px;text-align:right;"><a class="newLink" href="membership.htm?constituentId=${constituent.id}">Enter a New Membership » </a></p>
 			</c:when>
 			<c:when test="${commitmentList ne null}">
-				<p style="margin:8px 0 6px 0;">No memberships have been entered for this person.</p>
-				<p>Would you like to <a href="membership.htm?personId=${person.id}">create a new membership</a>?</p>
+				<p style="margin:8px 0 6px 0;">No memberships have been entered for this constituent.</p>
+				<p>Would you like to <a href="membership.htm?constituentId=${constituent.id}">create a new membership</a>?</p>
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>

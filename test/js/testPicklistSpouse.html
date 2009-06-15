@@ -35,20 +35,20 @@
 			$(document).ready(function() {
 				module("test spouse tree structure");
 				test("MPower.Spouse", function() {
-					var tree = $("li#li-person_demographics-customFieldMap-individual_spouse-_value").data("tree"); 
+					var tree = $("li#li-constituent_demographics-customFieldMap-individual_spouse-_value").data("tree"); 
 					ok(tree.parents.length == 2, "2 parents for Spouse were expected");
 					ok(0 === tree.children.length, "0 child fields for Spouse was expected"); 
 					ok(tree.isSelected == false, "Spouse was expected to have isSelected='false'"); 
 				});
 				module("test cascade for load");
 				test("elements shown or hidden", function() {
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
-					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":visible"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-constituent_demographics-maritalStatus").is(":visible"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 
 					ok($("#li-test1").is(":visible"), "li-test1 is expected to be visible");
 					ok($("#li-test2").is(":hidden"), "li-test2 is expected to be hidden");
@@ -63,55 +63,55 @@
 				test("toggle constituent type picklist to organization", function() {
 					$("#constituentType").selectOptions("organization");
 					$("#constituentType").change();
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden"), "li-person_contactInfo-constituentIndividualRoles is expected to be hidden");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":visible"), "li-person_contactInfo-constituentOrganizationRoles is expected to be visible");
-					ok($("#li-person_demographics-maritalStatus").is(":hidden"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":hidden"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be hidden");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":visible"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be visible");
+					ok($("#li-constituent_demographics-maritalStatus").is(":hidden"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 				});
 				test("toggle constituent type picklist to individual", function() {
 					$("#constituentType").selectOptions("individual");
 					$("#constituentType").change();
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
-					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":visible"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-constituent_demographics-maritalStatus").is(":visible"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 				});
 				test("toggle constituent type picklist from married individual to organization to individual", function() {
 					$("#maritalStatus").selectOptions("Married");
 					$("#maritalStatus").change();
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
-					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":visible"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-constituent_demographics-maritalStatus").is(":visible"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 					
 					$("#constituentType").selectOptions("organization");
 					$("#constituentType").change();
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":hidden"), "li-person_contactInfo-constituentIndividualRoles is expected to be hidden");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":visible"), "li-person_contactInfo-constituentOrganizationRoles is expected to be visible");
-					ok($("#li-person_demographics-maritalStatus").is(":hidden"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":hidden"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be hidden");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":visible"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be visible");
+					ok($("#li-constituent_demographics-maritalStatus").is(":hidden"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":hidden"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be hidden");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 
 					$("#constituentType").selectOptions("individual");
 					$("#constituentType").change();
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
-					ok($("#li-person_demographics-maritalStatus").is(":visible"), "li-person_demographics-maritalStatus is expected to be hidden");
-					ok($("#li-person_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-person_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-person_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
-					ok($("#li-person_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-person_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":visible"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-constituent_demographics-maritalStatus").is(":visible"), "li-constituent_demographics-maritalStatus is expected to be hidden");
+					ok($("#li-constituent_demographics-customFieldMap-individual_spouse-_value").is(":visible"), "li-constituent_demographics-customFieldMap-individual_spouse-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-communicationPreferences-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-communicationPreferences-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-customFieldMap-emailFormat-_value").is(":visible"), "li-constituent_contactInfo-customFieldMap-emailFormat-_value is expected to be visible");
 				});
 				
 				test("toggle li-test number elements", function() {
@@ -224,22 +224,22 @@
 				<a href="#">Create New...</a>
 				<ul>
 					<li>
-						<a href="person.htm">Constituent</a>
+						<a href="constituent.htm">Constituent</a>
 					</li>
 					<li class="sectionTitle">For Adam&nbsp;Smith ...</li>
 
 						<li>
-							<a href="gift.htm?personId=1">Gift</a>
+							<a href="gift.htm?constituentId=1">Gift</a>
 						</li>
 						<li>
-							<a href="addressManager.htm?personId=1">Address</a>
+							<a href="addressManager.htm?constituentId=1">Address</a>
 						</li>
 						<li>
-							<a href="recurringGift.htm?personId=1&type=recurringGift">Recurring Gift</a>
+							<a href="recurringGift.htm?constituentId=1&type=recurringGift">Recurring Gift</a>
 
 						</li>
 						<li>
-							<a href="pledge.htm?personId=1&type=pledge">Pledge</a>
+							<a href="pledge.htm?constituentId=1&type=pledge">Pledge</a>
 						</li>
 						</ul>
 			</li>
@@ -271,7 +271,7 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="personSearch.htm" id="searchForm">
+		<form method="post" action="constituentSearch.htm" id="searchForm">
 
 			<input size="30" name="lastName" type="text" />
 			<select name="type" id="typeSearch">
@@ -295,34 +295,34 @@
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
 
 						<span class="secondary active">
-							<a class="active" href="person.htm?personId=1">Contact Information</a>
-							<a class="" href="addressManager.htm?personId=1">Addresses</a>
-							<a class="" href="emailManager.htm?personId=1">Emails</a>
-							<a class="" href="phoneManager.htm?personId=1">Phone Numbers</a>
+							<a class="active" href="constituent.htm?constituentId=1">Contact Information</a>
+							<a class="" href="addressManager.htm?constituentId=1">Addresses</a>
+							<a class="" href="emailManager.htm?constituentId=1">Emails</a>
+							<a class="" href="phoneManager.htm?constituentId=1">Phone Numbers</a>
 						</span>
 					</div>
 
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Payment Manager</a>
 						<span class="secondary ">
-							<a class="" href="paymentManager.htm?personId=1">Payment Methods</a>
-							<a class="" href="paymentHistory.htm?personId=1">Payment History</a>
+							<a class="" href="paymentManager.htm?constituentId=1">Payment Methods</a>
+							<a class="" href="paymentHistory.htm?constituentId=1">Payment History</a>
 						</span>
 					</div>					
 					<div class="navGroup">
 
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gift Manager</a>
 			            <span class="secondary ">
-				            <a class="" href="gift.htm?personId=1">New Gift</a>
-							<a class="" href="giftList.htm?personId=1">Gifts</a>
-							<a class="" href="recurringGift.htm?personId=1&type=recurringGift">New Recurring Gift</a>
-				            <a class="" href="recurringGiftList.htm?personId=1&type=recurringGift">Recurring Gifts</a>
+				            <a class="" href="gift.htm?constituentId=1">New Gift</a>
+							<a class="" href="giftList.htm?constituentId=1">Gifts</a>
+							<a class="" href="recurringGift.htm?constituentId=1&type=recurringGift">New Recurring Gift</a>
+				            <a class="" href="recurringGiftList.htm?constituentId=1&type=recurringGift">Recurring Gifts</a>
 
-				            <a class="" href="pledge.htm?personId=1&type=pledge">New Pledge</a>
-				            <a class="" href="pledgeList.htm?personId=1&type=pledge">Pledges</a>
+				            <a class="" href="pledge.htm?constituentId=1&type=pledge">New Pledge</a>
+				            <a class="" href="pledgeList.htm?constituentId=1&type=pledge">Pledges</a>
 				            </span>
 		            </div>
-					<a class="" href="audit.htm?object=person&id=1">Audit</a>
+					<a class="" href="audit.htm?object=constituent&id=1">Audit</a>
 				</div>
 			<h3>
 
@@ -344,12 +344,12 @@
 	</div>
 </div><div class="content760 mainForm">
 
-			<form id="person" action="/orangeleap/person.htm?personId=1" method="post"><div class="columns iconHeader">
+			<form id="constituent" action="/orangeleap/constituent.htm?constituentId=1" method="post"><div class="columns iconHeader">
 	<div class="column"><img src="images/dude2.gif" /></div>
 	<div class="column">
-		<h2 class="personEdit cluetip" rel="personView.htm?personId=1" id="personTitle">
+		<h2 class="constituentEdit cluetip" rel="constituentView.htm?constituentId=1" id="constituentTitle">
 					Smith, Adam</h2>
-			<h3 id="currentFunctionTitle" class="personEdit">
+			<h3 id="currentFunctionTitle" class="constituentEdit">
 			Profile</h3>
 	</div>
 
@@ -357,12 +357,12 @@
 			<input type="submit" value="Save Changes" class="saveButton" />
 		</div>
 	<div class="clearColumns"></div>
-</div><h4 class="formSectionHeader">Personal Details</h4>
+</div><h4 class="formSectionHeader">Constituental Details</h4>
 					<div class="columns">
 			<div class="column">
 						<ul class="formFields width385">
 			
-	<li class="side" id="li-person_contactInfo-constituentType">
+	<li class="side" id="li-constituent_contactInfo-constituentType">
 			<label for="constituentType" class="desc">
 				<span class="required">*</span>&nbsp;Constituent Type</label>
 
@@ -378,7 +378,7 @@
 					<div style="display:none" id="selectedRef-constituentType">li:has(.ea-individual)</div>
 
 				</li>
-	<li class="side" id="li-person_contactInfo-constituentIndividualRoles">
+	<li class="side" id="li-constituent_contactInfo-constituentIndividualRoles">
 			<label for="constituentIndividualRoles" class="desc">
 				Constituent Roles</label>
 			<div class="lookupWrapper">
@@ -434,7 +434,7 @@
 
 					<div style="display:none" id="selectedRef-constituentIndividualRoles">li:has(.ea-alumni),li:has(.ea-headOfHousehold)</div>
 				</li>
-	<li class="side" id="li-person_contactInfo-constituentOrganizationRoles">
+	<li class="side" id="li-constituent_contactInfo-constituentOrganizationRoles">
 			<label for="constituentOrganizationRoles" class="desc">
 				Constituent Roles</label>
 			<div class="lookupWrapper">
@@ -501,7 +501,7 @@
 
 			<div class="column">
 				<ul class="formFields width385">
-					<li class="side" id="li-person_demographics-maritalStatus">
+					<li class="side" id="li-constituent_demographics-maritalStatus">
 			<label for="maritalStatus" class="desc">
 				Marital Status</label>
 			<select name="maritalStatus" class="picklist ea-individual" id="maritalStatus"
@@ -530,7 +530,7 @@
 							</select>
 					<div style="display:none" id="selectedRef-maritalStatus"></div>
 				</li>
-	<li class="side" id="li-person_demographics-customFieldMap-individual_spouse-_value">
+	<li class="side" id="li-constituent_demographics-customFieldMap-individual_spouse-_value">
 
 			<label for="customFieldMap[individual.spouse].value" class="desc">
 				Spouse</label>
@@ -538,7 +538,7 @@
 					    <div class="lookupField ea-individual">
 							
 					        &nbsp;
-					        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="person.customFieldMap[individual.spouse]" class="hideText" alt="Lookup" title="Lookup">Lookup</a>
+					        <a href="javascript:void(0)" onclick="Lookup.loadQueryLookup(this)" fieldDef="constituent.customFieldMap[individual.spouse]" class="hideText" alt="Lookup" title="Lookup">Lookup</a>
 					    </div>
 						<input type="hidden" name="customFieldMap[individual.spouse].value" value="" id="customFieldMap-individual_spouse-_value" />
 
@@ -548,7 +548,7 @@
 						</div>
 					</div>
 				</li>
-<li id="li-person_contactInfo-customFieldMap-communicationPreferences-_value" class="side">
+<li id="li-constituent_contactInfo-customFieldMap-communicationPreferences-_value" class="side">
 <label class="desc" for="customFieldMap[communicationPreferences].value"> Communication Preferences</label>
 <select id="customFieldMap-communicationPreferences-_value" class="ea-individual ea-organization" references="" name="customFieldMap[communicationPreferences].value">
 <option value="none">None</option>
@@ -559,7 +559,7 @@
 </select>
 <div id="selectedRef-customFieldMap-communicationPreferences-_value" style="display: none;"/>
 </li>
-<li id="li-person_contactInfo-customFieldMap-emailFormat-_value" class="side">
+<li id="li-constituent_contactInfo-customFieldMap-emailFormat-_value" class="side">
 <label class="desc" for="customFieldMap[emailFormat].value"> Email Format</label>
 <select id="customFieldMap-emailFormat-_value" class="ea-individual ea-organization" references="" name="customFieldMap[emailFormat].value">
 <option value="none">None</option>
@@ -624,9 +624,9 @@
 			</div>
 			<div class="clearColumns"></div>
 		</div>
-	<div class="formButtonFooter personFormButtons">
+	<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
-					<a class="newAccountButton" href="person.htm">Add New Constituent È </a>
+					<a class="newAccountButton" href="constituent.htm">Add New Constituent È </a>
 
 				</div>
 			</form></div>

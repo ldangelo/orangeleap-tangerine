@@ -47,15 +47,15 @@
             <li>
                 <a href="#"><spring:message code="viewMenu"/></a>
                 <ul>
-                <li><a href="personList.htm"><spring:message code="viewMenu.personList"/></a></li>
-                <c:if test="${viewingPerson}">
-					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${person.firstLast}"/>...</li>
-                    <li><a href="giftList.htm?personId=${person.id}"><spring:message code="viewMenu.gifts"/></a></li>
-                    <li><a href="recurringGiftList.htm?personId=${person.id}"><spring:message code="viewMenu.recurringGifts"/></a></li>
-                    <li><a href="pledgeList.htm?personId=${person.id}"><spring:message code="viewMenu.pledges"/></a></li>
-                    <li><a href="giftInKindList.htm?personId=${person.id}"><spring:message code="viewMenu.giftsInKind"/></a></li>
-                    <li><a href="paymentHistory.htm?personId=${person.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
-                    <li><a href="communicationHistoryList.htm?personId=${person.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
+                <li><a href="constituentList.htm"><spring:message code="viewMenu.constituentList"/></a></li>
+                <c:if test="${viewingConstituent}">
+					<li class="sectionTitle"><spring:message code='for'/> <c:out value="${constituent.firstLast}"/>...</li>
+                    <li><a href="giftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.gifts"/></a></li>
+                    <li><a href="recurringGiftList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.recurringGifts"/></a></li>
+                    <li><a href="pledgeList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.pledges"/></a></li>
+                    <li><a href="giftInKindList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.giftsInKind"/></a></li>
+                    <li><a href="paymentHistory.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.paymentHistory"/></a></li>
+                    <li><a href="communicationHistoryList.htm?constituentId=${constituent.id}"><spring:message code="viewMenu.touchPoints"/></a></li>
                 </c:if>
                 </ul>
             </li>
@@ -63,19 +63,19 @@
 				<a href="#"><spring:message code="menuCreateNew"/></a>
 				<ul>
 					<li>
-						<a href="person.htm"><spring:message code="constituent"/></a>
+						<a href="constituent.htm"><spring:message code="constituent"/></a>
 					</li>
-					<c:if test="${viewingPerson}">
-						<li class="sectionTitle"><spring:message code='for'/> <c:out value="${person.firstLast}"/>...</li>
-						<li><a href="gift.htm?personId=${person.id}"><spring:message code="gift"/></a></li>
-						<li><a href="recurringGift.htm?personId=${person.id}"><spring:message code="recurringGift"/></a></li>
-						<li><a href="pledge.htm?personId=${person.id}"><spring:message code="pledge"/></a></li>
-						<li><a href="giftInKind.htm?personId=${person.id}"><spring:message code="giftInKind"/></a></li>
-						<li><a href="paymentManager.htm?personId=${person.id}"><spring:message code="paymentMethod"/></a></li>
-                    	<li><a href="communicationHistory.htm?personId=${person.id}"><spring:message code="touchPoint"/></a></li>
+					<c:if test="${viewingConstituent}">
+						<li class="sectionTitle"><spring:message code='for'/> <c:out value="${constituent.firstLast}"/>...</li>
+						<li><a href="gift.htm?constituentId=${constituent.id}"><spring:message code="gift"/></a></li>
+						<li><a href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code="recurringGift"/></a></li>
+						<li><a href="pledge.htm?constituentId=${constituent.id}"><spring:message code="pledge"/></a></li>
+						<li><a href="giftInKind.htm?constituentId=${constituent.id}"><spring:message code="giftInKind"/></a></li>
+						<li><a href="paymentManager.htm?constituentId=${constituent.id}"><spring:message code="paymentMethod"/></a></li>
+                    	<li><a href="communicationHistory.htm?constituentId=${constituent.id}"><spring:message code="touchPoint"/></a></li>
 						<%-- Removed for BETA
 						<li>
-							<a href="membership.htm?personId=${person.id}&type=membership"><spring:message code="membership"/></a>
+							<a href="membership.htm?constituentId=${constituent.id}&type=membership"><spring:message code="membership"/></a>
 						</li>
 						--%>
 					</c:if>
@@ -131,7 +131,7 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="personSearch.htm" id="searchForm">
+		<form method="post" action="constituentSearch.htm" id="searchForm">
 			<input size="30" name="lastName" type="text" />
 			<select name="type" id="typeSearch">
 				<option value="people"><spring:message code="constituents"/></option>

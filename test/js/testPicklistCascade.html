@@ -46,7 +46,7 @@
 				test("Picklist.RootTree", function() {
 					ok(Picklist.rootTrees["li-gift_info-selectedPaymentSource"], "selectedPaymentSource exists as a root");
 					ok(Picklist.rootTrees["li-gift_info-selectedEmail"], "selectedEmail exists as a root");
-					ok(Picklist.rootTrees["li-person_contactInfo-constituentType"], "constituentType exists as a root");
+					ok(Picklist.rootTrees["li-constituent_contactInfo-constituentType"], "constituentType exists as a root");
 					ok(Picklist.rootTrees["li-gift_info-selectedAddress"], "selectedAddress exists as a root");
 					ok(Picklist.rootTrees["li-gift_info-selectedPhone"], "selectedPhone exists as a root");
 					
@@ -120,32 +120,32 @@
 						ok(id === "li-gift_info-paymentType", id + " was expected as a parent");
 					}
 				});
-				test("MPower.li-person_contactInfo-constituentType", function() {
-					var tree = $("li#li-person_contactInfo-constituentType").data("tree"); 
+				test("MPower.li-constituent_contactInfo-constituentType", function() {
+					var tree = $("li#li-constituent_contactInfo-constituentType").data("tree"); 
 					ok(tree.parents.length == 0, "0 parents for constituentType was expected");
 					ok(2 === tree.children.length, "2 child fields for constituentType was expected"); 
 
 					for (var id in tree.childIds) {
-						ok(id === "li-person_contactInfo-constituentOrganizationRoles" || 
-							id === "li-person_contactInfo-constituentIndividualRoles", id + " was expected as a child");
+						ok(id === "li-constituent_contactInfo-constituentOrganizationRoles" || 
+							id === "li-constituent_contactInfo-constituentIndividualRoles", id + " was expected as a child");
 					}
 					ok(tree.isSelected == true, "constituentType was expected to have isSelected='true', instead = " + tree.isSelected);
 				});
 
 				module("test multipicklist");
 				test("MPower.constituentIndividualRoles", function() {
-					var tree = $("li#li-person_contactInfo-constituentIndividualRoles").data("tree"); 
+					var tree = $("li#li-constituent_contactInfo-constituentIndividualRoles").data("tree"); 
 					ok(tree.parents.length == 1, "1 parent for constituentIndividualRoles was expected");
 					ok(1 === tree.children.length, "1 child fields for constituentIndividualRoles was expected, instead " + tree.children.length); 
 
 					for (var id in tree.childIds) {
-						ok(id === "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value", id + " was expected as a child");
+						ok(id === "li-constituent_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value", id + " was expected as a child");
 					}
 					ok(tree.isSelected == true, "constituentIndividualRoles was expected to have isSelected='true', instead = " + tree.isSelected);
 				});
 
 				test("MPower.constituentOrganizationRoles", function() {
-					var tree = $("li#li-person_contactInfo-constituentOrganizationRoles").data("tree"); 
+					var tree = $("li#li-constituent_contactInfo-constituentOrganizationRoles").data("tree"); 
 					ok(tree.parents.length == 1, "1 parent for constituentOrganizationRoles was expected");
 					ok(0 === tree.children.length, "0 child fields for constituentOrganizationRoles was expected, instead " + tree.children.length); 
 
@@ -153,7 +153,7 @@
 				});
 				
 				test("MPower.headOfHousehold_householdMembers", function() {
-					var tree = $("li#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").data("tree"); 
+					var tree = $("li#li-constituent_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").data("tree"); 
 					ok(tree.parents.length == 1, "1 parent for headOfHousehold_householdMembers was expected");
 					ok(0 === tree.children.length, "0 child fields for headOfHousehold_householdMembers was expected, instead " + tree.children.length); 
 
@@ -178,10 +178,10 @@
 					ok($("#li-gift_info-email_emailAddress").is(":hidden"), "li-gift_info-email_emailAddress is expected to be hidden");
 
 
-					ok($("#li-person_contactInfo-constituentType").is(":visible"), "li-person_contactInfo-constituentType is expected to be visible");
-					ok($("#li-person_contactInfo-constituentIndividualRoles").is(":visible"), "li-person_contactInfo-constituentIndividualRoles is expected to be visible");
-					ok($("#li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":visible"), "li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be visible");
-					ok($("#li-person_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-person_contactInfo-constituentOrganizationRoles is expected to be hidden");
+					ok($("#li-constituent_contactInfo-constituentType").is(":visible"), "li-constituent_contactInfo-constituentType is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentIndividualRoles").is(":visible"), "li-constituent_contactInfo-constituentIndividualRoles is expected to be visible");
+					ok($("#li-constituent_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value").is(":visible"), "li-constituent_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value is expected to be visible");
+					ok($("#li-constituent_contactInfo-constituentOrganizationRoles").is(":hidden"), "li-constituent_contactInfo-constituentOrganizationRoles is expected to be hidden");
 				});
 
 				module("test toggle picklist");
@@ -362,26 +362,26 @@
 				<a href="#">Create New...</a>
 				<ul>
 					<li>
-						<a href="person.htm">Constituent</a>
+						<a href="constituent.htm">Constituent</a>
 
 					</li>
 					<li class="sectionTitle">For Adam&nbsp;Smith ...</li>
 						<li>
-							<a href="gift.htm?personId=1">Gift</a>
+							<a href="gift.htm?constituentId=1">Gift</a>
 						</li>
 						<li>
-							<a href="addressManager.htm?personId=1">Address</a>
+							<a href="addressManager.htm?constituentId=1">Address</a>
 
 						</li>
 						<li>
-							<a href="recurringGift.htm?personId=1&type=recurringGift">Recurring Gift</a>
+							<a href="recurringGift.htm?constituentId=1&type=recurringGift">Recurring Gift</a>
 						</li>
 						<li>
-							<a href="pledge.htm?personId=1&type=pledge">Pledge</a>
+							<a href="pledge.htm?constituentId=1&type=pledge">Pledge</a>
 						</li>
 						<li>
 
-							<a href="membership.htm?personId=1&type=membership">Membership</a>
+							<a href="membership.htm?constituentId=1&type=membership">Membership</a>
 						</li>
 					</ul>
 			</li>
@@ -390,7 +390,7 @@
 				<ul>
 					<li>
 
-						<a href="personSearch.htm">Search Constituents</a>
+						<a href="constituentSearch.htm">Search Constituents</a>
 					</li>
 					<li>
 						<a href="giftSearch.htm">Search Gifts</a>
@@ -413,7 +413,7 @@
 	</div>
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="personSearch.htm">
+		<form method="post" action="constituentSearch.htm">
 			<input size="30" name="lastName" />
 			<select name="type">
 
@@ -437,29 +437,29 @@
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
 						<span class="secondary ">
 
-							<a class="" href="person.htm?personId=1">Contact Information</a>
-							<a class="" href="addressManager.htm?personId=1">Addresses</a>
-							<a class="" href="emailManager.htm?personId=1">Emails</a>
-							<a class="" href="phoneManager.htm?personId=1">Phone Numbers</a>
+							<a class="" href="constituent.htm?constituentId=1">Contact Information</a>
+							<a class="" href="addressManager.htm?constituentId=1">Addresses</a>
+							<a class="" href="emailManager.htm?constituentId=1">Emails</a>
+							<a class="" href="phoneManager.htm?constituentId=1">Phone Numbers</a>
 						</span>
 					</div>
 					<div class="navGroup">
 
-						<a class="" href="paymentManager.htm?personId=1">Payment Manager</a>
+						<a class="" href="paymentManager.htm?constituentId=1">Payment Manager</a>
 					</div>
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gift Manager</a>
 			            <span class="secondary ">
-				            <a class="active" href="gift.htm?personId=1">New Gift</a>
-							<a class="" href="giftList.htm?personId=1">Gifts</a>
+				            <a class="active" href="gift.htm?constituentId=1">New Gift</a>
+							<a class="" href="giftList.htm?constituentId=1">Gifts</a>
 
-							<a class="" href="recurringGift.htm?personId=1&type=recurringGift">New Recurring Gift</a>
-				            <a class="" href="recurringGiftList.htm?personId=1&type=recurringGift">Recurring Gifts</a>
-				            <a class="" href="pledge.htm?personId=1&type=pledge">New Pledge</a>
-				            <a class="" href="pledgeList.htm?personId=1&type=pledge">Pledges</a>
+							<a class="" href="recurringGift.htm?constituentId=1&type=recurringGift">New Recurring Gift</a>
+				            <a class="" href="recurringGiftList.htm?constituentId=1&type=recurringGift">Recurring Gifts</a>
+				            <a class="" href="pledge.htm?constituentId=1&type=pledge">New Pledge</a>
+				            <a class="" href="pledgeList.htm?constituentId=1&type=pledge">Pledges</a>
 				            </span>
 		            </div>
-					<a class="" href="audit.htm?object=person&id=1">Audit</a>
+					<a class="" href="audit.htm?object=constituent&id=1">Audit</a>
 
 				</div>
 			<h3>
@@ -474,15 +474,15 @@
 		</div>
 	</div>
 </div><div class="content760 mainForm">
-			<form id="gift" action="/orangeleap/gift.htm?personId=1" method="post"><div class="columns iconHeader">
+			<form id="gift" action="/orangeleap/gift.htm?constituentId=1" method="post"><div class="columns iconHeader">
 	<div class="column">
 		<img src="images/dude2.gif" />
 	</div>
 
 	<div class="column">
-	<h2 class="personEdit cluetip" rel="personView.htm?personId=1" id="personTitle">
+	<h2 class="constituentEdit cluetip" rel="constituentView.htm?constituentId=1" id="constituentTitle">
 			Smith, Adam</h2>
-	<h3 id="currentFunctionTitle" class="personEdit">
+	<h3 id="currentFunctionTitle" class="constituentEdit">
 			Enter Gift</h3>
 	</div>
 	<div class="columnRight" style="padding:19px 19px 0 0;">
@@ -1356,7 +1356,7 @@
 		<!-- MULTIPICKLISTS -->
 	<div class="column constituentInfo" id="constituentInfo" style="padding-right:8px;">
 			<ul class="formFields width385">
-		<li class="side" id="li-person_contactInfo-constituentType">
+		<li class="side" id="li-constituent_contactInfo-constituentType">
 	<label for="constituentType" class="desc">
 		<span class="required">*</span>&nbsp;Constituent Type</label>
 	<select name="constituentType" class="picklist " id="constituentType"
@@ -1368,7 +1368,7 @@
 						Organization</option>
 				</select>
 				<div style="display:none" id="selectedRef-constituentType">li:has(.ea-individual)</div>
-		</li><li class="side" id="li-person_contactInfo-constituentIndividualRoles">
+		</li><li class="side" id="li-constituent_contactInfo-constituentIndividualRoles">
 	<label for="constituentIndividualRoles" class="desc">
 		Constituent Roles</label>
 	<div class="lookupWrapper">
@@ -1422,7 +1422,7 @@
 			    <input type="hidden" name="constituentIndividualRoles" id="constituentIndividualRoles" value="alumni,headOfHousehold" />
 			</div>
 			<div style="display:none" id="selectedRef-constituentIndividualRoles">li:has(.ea-alumni),li:has(.ea-headOfHousehold)</div>
-		</li><li class="side" id="li-person_contactInfo-constituentOrganizationRoles">
+		</li><li class="side" id="li-constituent_contactInfo-constituentOrganizationRoles">
 	<label for="constituentOrganizationRoles" class="desc">
 		Constituent Roles</label>
 	<div class="lookupWrapper">
@@ -1478,14 +1478,14 @@
 			</div>
 			<div style="display:none" id="selectedRef-constituentOrganizationRoles"></div>			
 		</li>
-		<li class="side" id="li-person_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value">
+		<li class="side" id="li-constituent_relationshipInfo-customFieldMap-headOfHousehold_householdMembers-_value">
 	<label for="customFieldMap[headOfHousehold.householdMembers].value" class="desc">
 		Household members</label>
 	<div class="lookupWrapper">
 			    <div class="multiLookupField ea-headOfHousehold">
 					
 			        &nbsp;
-			        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="person.customFieldMap[headOfHousehold.householdMembers]" class="hideText">Lookup</a>
+			        <a href="javascript:void(0)" onclick="Lookup.loadMultiQueryLookup(this)" fieldDef="constituent.customFieldMap[headOfHousehold.householdMembers]" class="hideText">Lookup</a>
 			    </div>
 
 				<input type="hidden" name="customFieldMap[headOfHousehold.householdMembers].value" value="" id="customFieldMap[headOfHousehold.householdMembers].value" />
@@ -1533,7 +1533,7 @@
 		</table>
 	<p class="gridActions">&nbsp;<span id="subTotal">Total <span class="warningText">(must match gift value)</span> <span class="value">0</span></span></p>
 
-						<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
+						<div class="formButtonFooter constituentFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
 				</form></div>
 	<div class="clearBoth"></div>
 			<div id="footer">

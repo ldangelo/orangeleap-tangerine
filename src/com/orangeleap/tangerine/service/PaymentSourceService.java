@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 
 public interface PaymentSourceService {
 
@@ -17,7 +17,7 @@ public interface PaymentSourceService {
 
     public PaymentSource readPaymentSource(Long paymentSourceId);
 
-    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person constituent);
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Constituent constituent);
 
     public PaymentSource findPaymentSourceProfile(Long constituentId, String profile);
 

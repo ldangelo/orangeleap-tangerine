@@ -198,16 +198,16 @@ public class IBatisCustomFieldHelper {
     }
     
     private boolean useDateRanges(CustomField cf) {
-    	return isPerson(cf) && isReferenceType(getFieldDefinition(cf));
+    	return isConstituent(cf) && isReferenceType(getFieldDefinition(cf));
     }
     
-    private boolean isPerson(CustomField cf) {
-    	return cf.getEntityType().equals("person");
+    private boolean isConstituent(CustomField cf) {
+    	return cf.getEntityType().equals("constituent");
     }
     
     private FieldDefinition getFieldDefinition(CustomField cf) {
     	if (fieldDao == null) return new FieldDefinition();
-    	return fieldDao.readFieldDefinition("person.customFieldMap["+cf.getName()+"]");
+    	return fieldDao.readFieldDefinition("constituent.customFieldMap["+cf.getName()+"]");
     }
     
     private boolean isReferenceType(FieldDefinition fd) {

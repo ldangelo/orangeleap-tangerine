@@ -12,14 +12,14 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='recurringGiftView'/>
 			
-			<c:set var="person" value="${recurringGift.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${recurringGift.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 			<form:form method="post" commandName="recurringGift">
 				<spring:message code='viewRecurringGift' var="titleText" />
 				<spring:message code='submitRecurringGift' var="submitText" />
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
@@ -112,20 +112,20 @@
 				</div>
 				
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<a class="newAccountButton" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a>
+					<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterANewRecurringGift'/></a>
 				</div>
 
 <%-- TODO: put back below
 				<div class="formButtonFooter">
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='viewRecurringGiftHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='viewRecurringGiftHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<input type="button" value="<spring:message code='enterNewRecurringGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGift.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='enterNewRecurringGift'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGift.htm?constituentId=${constituent.id}')"/>
 				</div>
 --%>				
 			</form:form>

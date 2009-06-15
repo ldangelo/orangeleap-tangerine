@@ -41,7 +41,7 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -93,7 +93,7 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -136,7 +136,7 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="phoneManagerEdit.htm?phoneId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="phoneManagerEdit.htm?phoneId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>

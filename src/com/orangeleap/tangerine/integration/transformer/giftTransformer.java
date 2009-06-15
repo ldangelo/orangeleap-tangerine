@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class giftTransformer {
-    private Logger logger = LoggerFactory.getLogger(personToConstituentTransformer.class);
+    private Logger logger = LoggerFactory.getLogger(constituentToConstituentTransformer.class);
 
     /**
      *

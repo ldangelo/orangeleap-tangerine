@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.controller.importexport.ExportRequest;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -35,12 +35,12 @@ public class AddressExporter extends EntityExporter {
 	protected List readAll() {
 		// Export as a constituent to get the extra readonly info fields and import as an address to avoid updating the constituent.
 		List result = new ArrayList();
-		List<Person> constituents = constituentService.readAllConstituentsByAccountRange(er.getFromAccount(), er.getToAccount());
-		// Need a separate row for all active addresses on person not just the original 'primary' one.
-		for (Person constituent : constituents) {
+		List<Constituent> constituents = constituentService.readAllConstituentsByAccountRange(er.getFromAccount(), er.getToAccount());
+		// Need a separate row for all active addresses on constituent not just the original 'primary' one.
+		for (Constituent constituent : constituents) {
 			for (Address address: constituent.getAddresses()) {
 				if (address.getAddressLine1() != null && checkNcoaAndCassDates(address)) {
-					Person aconstituent = (Person)constituent.createCopy();
+					Constituent aconstituent = (Constituent)constituent.createCopy();
 					aconstituent.setPrimaryAddress(address);
 					result.add(aconstituent);
 				}
@@ -67,7 +67,7 @@ public class AddressExporter extends EntityExporter {
 	
 	@Override
 	protected PageType getPageType() {
-	    return PageType.person; // need person info on addresses export
+	    return PageType.constituent; // need constituent info on addresses export
 	}
 	
 	@Override

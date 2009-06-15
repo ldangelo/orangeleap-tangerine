@@ -10,7 +10,7 @@ import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.util.StringUtils;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 
 
@@ -21,7 +21,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
  */
 @SuppressWarnings("unchecked")
 public class GiftPledgeRecurringGiftLinesForm {
-    private Person constituent;
+    private Constituent constituent;
     
     @SuppressWarnings("unused")
     private String selectedPledgeIds;
@@ -35,7 +35,7 @@ public class GiftPledgeRecurringGiftLinesForm {
     private String amount;
     private BigDecimal enteredAmount;
     
-    public GiftPledgeRecurringGiftLinesForm(Person constituent) {
+    public GiftPledgeRecurringGiftLinesForm(Constituent constituent) {
         super();
         this.constituent = constituent;
     }

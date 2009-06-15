@@ -25,7 +25,7 @@ public class EntityDefault implements GeneratedId, Serializable {
     private Long id;
     private String defaultValue;
     /**
-     * Should be a field on the specified entity (e.g. "lastName" for Person)
+     * Should be a field on the specified entity (e.g. "lastName" for Constituent)
      */
     private String entityFieldName;
     private String entityType;

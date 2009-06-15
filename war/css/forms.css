@@ -196,15 +196,15 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
 	padding-top:10px;
 	border-bottom:1px solid #888;
 }
-.searchPersonButtons {
+.searchConstituentButtons {
 	text-align:center;
 	padding:12px;
 	position:relative;
 }
-.personFormButtons {
+.constituentFormButtons {
 	position:relative;
 }
-.personFormButtons input {
+.constituentFormButtons input {
 	font-size:13px;
 	margin:0 5px;
 	font-family:arial;
@@ -251,7 +251,7 @@ table.tablesorter tbody tr.lineRow td a.hideText { top: 0; right: 0; padding: 1p
 	font-family:arial;
 	font-size:14px;
 }
-.searchPersonButtons .newAccountButton {
+.searchConstituentButtons .newAccountButton {
 	bottom:6px;
 }
 .newLink {

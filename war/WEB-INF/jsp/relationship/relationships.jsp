@@ -6,11 +6,11 @@
 	<tiles:putAttribute name="sidebarNav" value="Relationships" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-		<c:set var="person" value="${person}" scope="request" />
+		<c:set var="constituent" value="${constituent}" scope="request" />
 	
-		<c:if test="${person.id!=null}">
-			<c:set var="viewingPerson" value="true" scope="request" />
-		    <jsp:include page="../snippets/personHeader.jsp">
+		<c:if test="${constituent.id!=null}">
+			<c:set var="viewingConstituent" value="true" scope="request" />
+		    <jsp:include page="../snippets/constituentHeader.jsp">
 			   <jsp:param name="currentFunctionTitleText" value="Manage Relationships" />
 		    </jsp:include>
 		</c:if>
@@ -20,7 +20,7 @@
 		 <form id="form" action="#">
 
   		   <c:choose>
-      	   <c:when test="${person == null}">
+      	   <c:when test="${constituent == null}">
 			  <h4>Select Master Constituent Record Field</h4>
 		      <br/>
            </c:when>
@@ -39,7 +39,7 @@
 		 </form>
 		
 		 <c:choose>
-      	 <c:when test="${person == null}">
+      	 <c:when test="${constituent == null}">
 			<script>
 			function changeSelection(id) {
 				if (id != '') {
@@ -52,11 +52,11 @@
 			<script>
 			function changeSelection(id) {
 				if (id != '') {
-					this.window.location="relationship.htm?fieldDefinitionId="+id+"&personId="+${person.id};
+					this.window.location="relationship.htm?fieldDefinitionId="+id+"&constituentId="+${constituent.id};
 				}
 			}
 			</script>
-     		<strong><a class="action" href="person.htm?personId=${person.id}">&laquo;Back</a></strong>
+     		<strong><a class="action" href="constituent.htm?constituentId=${constituent.id}">&laquo;Back</a></strong>
          </c:otherwise>
          </c:choose>
 

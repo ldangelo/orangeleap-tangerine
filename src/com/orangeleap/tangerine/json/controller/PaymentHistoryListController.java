@@ -38,7 +38,7 @@ public class PaymentHistoryListController {
     static {
         NAME_MAP.put("id", "phis.PAYMENT_HISTORY_ID");
         NAME_MAP.put("date", "phis.TRANSACTION_DATE");
-        NAME_MAP.put("personid", "phis.PERSON_ID");
+        NAME_MAP.put("constituentid", "phis.CONSTITUENT_ID");
         NAME_MAP.put("type", "phis.PAYMENT_HISTORY_TYPE");
         NAME_MAP.put("paymenttype", "phis.PAYMENT_TYPE");
         NAME_MAP.put("paymentstatus", "phis.PAYMENT_STATUS");
@@ -54,7 +54,7 @@ public class PaymentHistoryListController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", ph.getId());
         map.put("date", formatter.format(ph.getTransactionDate()) );
-        map.put("personid", ph.getPerson().getId());
+        map.put("constituentid", ph.getConstituent().getId());
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymenttype", ph.getPaymentType());
         map.put("paymentstatus", ph.getPaymentStatus());
@@ -85,12 +85,12 @@ public class PaymentHistoryListController {
         // set the sort to the valid column name, based on the map
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
-        String personId = request.getParameter("personId");
+        String constituentId = request.getParameter("constituentId");
         PaginatedResult result = null;
-        if (GenericValidator.isBlankOrNull(personId)) {
+        if (GenericValidator.isBlankOrNull(constituentId)) {
             result = paymentHistoryService.readPaymentHistoryBySite(sortInfo); 
         } else {
-            result = paymentHistoryService.readPaymentHistory(Long.valueOf(personId), sortInfo); 
+            result = paymentHistoryService.readPaymentHistory(Long.valueOf(constituentId), sortInfo); 
         }
 
         List<PaymentHistory> list = result.getRows();

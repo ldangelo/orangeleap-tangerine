@@ -20,6 +20,6 @@ public class RecurringGiftViewController extends RecurringGiftFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         RecurringGift recurringGift = (RecurringGift)command;
         RecurringGift current = recurringGiftService.editRecurringGift(recurringGift);
-        return new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        return new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
     }
 }

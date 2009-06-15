@@ -11,15 +11,15 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='communicationHistoryView' />
 
-			<c:set var="person" value="${communicationHistory.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${communicationHistory.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 						
 			<form:form method="post" commandName="communicationHistory">
 				<spring:message code='viewCommunicationHistory' var="titleText" />
 				<spring:message code='submitCommunicationHistory' var="submitText" />
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
@@ -132,10 +132,10 @@
 						</tbody>
 					</table>
 				</c:forEach>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submitCommunicationHistory'/>" class="saveButton" />
-					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('communicationHistoryList.htm?personId=${person.id}')"/>
-					<a class="newAccountButton" href="communicationHistory.htm?personId=${person.id}"><spring:message code='enterANewCommunicationHistoryEntry'/></a>
+					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('communicationHistoryList.htm?constituentId=${constituent.id}')"/>
+					<a class="newAccountButton" href="communicationHistory.htm?constituentId=${constituent.id}"><spring:message code='enterANewCommunicationHistoryEntry'/></a>
 				</div>
 			</form:form>
 		</div>

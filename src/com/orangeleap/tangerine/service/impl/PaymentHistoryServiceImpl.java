@@ -29,7 +29,7 @@ public class PaymentHistoryServiceImpl extends AbstractTangerineService implemen
         if (logger.isTraceEnabled()) {
             logger.trace("addPaymentHistory: paymentHistory = " + paymentHistory);
         }
-		if (paymentHistory.getPerson() == null) {
+		if (paymentHistory.getConstituent() == null) {
             return null;
         }
 		return paymentHistoryDao.addPaymentHistory(paymentHistory);

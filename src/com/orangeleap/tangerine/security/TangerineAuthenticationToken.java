@@ -20,7 +20,7 @@ public class TangerineAuthenticationToken extends UsernamePasswordAuthentication
 
     private Map<String, AccessType> pageAccess;
     
-    private Long personId;
+    private Long constituentId;
     
     private Map<String, String> userAttributes;
 
@@ -46,12 +46,12 @@ public class TangerineAuthenticationToken extends UsernamePasswordAuthentication
         this.pageAccess = pageAccess;
     }
 
-	public void setPersonId(Long personId) {
-		this.personId = personId;
+	public void setConstituentId(Long constituentId) {
+		this.constituentId = constituentId;
 	}
 
-	public Long getPersonId() {
-		return personId;
+	public Long getConstituentId() {
+		return constituentId;
 	}
 
 	public void setUserAttributes(Map<String, String> userAttributes) {

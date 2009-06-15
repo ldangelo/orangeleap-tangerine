@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 
 public abstract class RequiresConstituentEditor extends PropertyEditorSupport {
@@ -28,7 +28,7 @@ public abstract class RequiresConstituentEditor extends PropertyEditorSupport {
         this.constituentId = constituentId;
     }
 
-    protected Person getPerson() {
+    protected Constituent getConstituent() {
         return constituentService.readConstituentById(new Long(constituentId));
     }
 }

@@ -16,7 +16,7 @@ import com.orangeleap.tangerine.domain.NewAddressAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -33,11 +33,11 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected String paymentType;
     protected String checkNumber;
     
-    protected Person person;
+    protected Constituent constituent;
     /** Form bean representation of the DistributionLines */
     protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
-            DistributionLine line = new DistributionLine(getPerson());
+            DistributionLine line = new DistributionLine(getConstituent());
             line.setDefaults();
             return line;
         }
@@ -55,32 +55,32 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
 
     protected Address address = new Address();
     protected Phone phone = new Phone();
-    protected PaymentSource paymentSource = new PaymentSource(person);
+    protected PaymentSource paymentSource = new PaymentSource(constituent);
     
     protected Address selectedAddress = new Address();
     protected Phone selectedPhone = new Phone();
-    protected PaymentSource selectedPaymentSource = new PaymentSource(person);
+    protected PaymentSource selectedPaymentSource = new PaymentSource(constituent);
 
     public AbstractPaymentInfoEntity() {
         super();
     }
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
-        if (person != null) {
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
+        if (constituent != null) {
             if (paymentSource != null) {
-                paymentSource.setPerson(person);
+                paymentSource.setConstituent(constituent);
             }
             if (selectedPaymentSource != null) {
-                selectedPaymentSource.setPerson(person);
+                selectedPaymentSource.setConstituent(constituent);
             }
         }
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
-        DistributionLine line = new DistributionLine(person);
+        DistributionLine line = new DistributionLine(constituent);
         line.setDefaults();
         lines.add(line);
         dummyDistributionLines = UnmodifiableList.decorate(lines);
@@ -154,7 +154,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             }
         }
         if (distributionLines.isEmpty()) {
-            DistributionLine line = new DistributionLine(person);
+            DistributionLine line = new DistributionLine(constituent);
             line.setDefaults();
             distributionLines.add(line);
         }
@@ -268,7 +268,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     }
 
     public Site getSite() {
-        return person != null ? person.getSite() : null;
+        return constituent != null ? constituent.getSite() : null;
     }
 
     @Override

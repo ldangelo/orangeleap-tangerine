@@ -30,7 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="comments" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="effectiveDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="inactive" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="personId" type="{http://www.w3.org/2001/XMLSchema}long"/>
+ *         &lt;element name="constituentId" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="primary" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="receiveCorrespondence" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="seasonalEndDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
@@ -53,7 +53,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "comments",
     "effectiveDate",
     "inactive",
-    "personId",
+    "constituentId",
     "primary",
     "receiveCorrespondence",
     "seasonalEndDate",
@@ -77,7 +77,7 @@ public abstract class AbstractCommunicationEntity
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar effectiveDate;
     protected boolean inactive;
-    protected long personId;
+    protected long constituentId;
     protected boolean primary;
     protected boolean receiveCorrespondence;
     @XmlSchemaType(name = "dateTime")
@@ -180,19 +180,19 @@ public abstract class AbstractCommunicationEntity
     }
 
     /**
-     * Gets the value of the personId property.
+     * Gets the value of the constituentId property.
      * 
      */
-    public long getPersonId() {
-        return personId;
+    public long getConstituentId() {
+        return constituentId;
     }
 
     /**
-     * Sets the value of the personId property.
+     * Sets the value of the constituentId property.
      * 
      */
-    public void setPersonId(long value) {
-        this.personId = value;
+    public void setConstituentId(long value) {
+        this.constituentId = value;
     }
 
     /**

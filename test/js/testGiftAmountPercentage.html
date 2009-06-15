@@ -182,26 +182,26 @@
 				<a href="#">Create New...</a>
 				<ul>
 					<li>
-						<a href="person.htm">Constituent</a>
+						<a href="constituent.htm">Constituent</a>
 
 					</li>
 					<li class="sectionTitle">For Adam&nbsp;Smith ...</li>
 						<li>
-							<a href="gift.htm?personId=1">Gift</a>
+							<a href="gift.htm?constituentId=1">Gift</a>
 						</li>
 						<li>
-							<a href="addressManager.htm?personId=1">Address</a>
+							<a href="addressManager.htm?constituentId=1">Address</a>
 
 						</li>
 						<li>
-							<a href="recurringGift.htm?personId=1&type=recurringGift">Recurring Gift</a>
+							<a href="recurringGift.htm?constituentId=1&type=recurringGift">Recurring Gift</a>
 						</li>
 						<li>
-							<a href="pledge.htm?personId=1&type=pledge">Pledge</a>
+							<a href="pledge.htm?constituentId=1&type=pledge">Pledge</a>
 						</li>
 						<li>
 
-							<a href="membership.htm?personId=1&type=membership">Membership</a>
+							<a href="membership.htm?constituentId=1&type=membership">Membership</a>
 						</li>
 					</ul>
 			</li>
@@ -210,7 +210,7 @@
 				<ul>
 					<li>
 
-						<a href="personSearch.htm">Search Constituents</a>
+						<a href="constituentSearch.htm">Search Constituents</a>
 					</li>
 					<li>
 						<a href="giftSearch.htm">Search Gifts</a>
@@ -240,7 +240,7 @@
 
 	<div class="navRightCap"></div>
 	<div class="searchBar">
-		<form method="post" action="personSearch.htm">
+		<form method="post" action="constituentSearch.htm">
 			<input size="30" name="lastName" />
 			<select name="type">
 				<option value="people">Constituents</option>
@@ -263,30 +263,30 @@
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Profile</a>
 						<span class="secondary ">
-							<a class="" href="person.htm?personId=1">Contact Information</a>
-							<a class="" href="addressManager.htm?personId=1">Addresses</a>
-							<a class="" href="emailManager.htm?personId=1">Emails</a>
+							<a class="" href="constituent.htm?constituentId=1">Contact Information</a>
+							<a class="" href="addressManager.htm?constituentId=1">Addresses</a>
+							<a class="" href="emailManager.htm?constituentId=1">Emails</a>
 
-							<a class="" href="phoneManager.htm?personId=1">Phone Numbers</a>
+							<a class="" href="phoneManager.htm?constituentId=1">Phone Numbers</a>
 						</span>
 					</div>
 					<div class="navGroup">
-						<a class="" href="paymentManager.htm?personId=1">Payment Manager</a>
+						<a class="" href="paymentManager.htm?constituentId=1">Payment Manager</a>
 					</div>
 					<div class="navGroup">
 						<a class="groupHeader" href="#" onclick="this.blur();return false;">Gift Manager</a>
 
 			            <span class="secondary ">
-				            <a class="active" href="gift.htm?personId=1">New Gift</a>
-							<a class="" href="giftList.htm?personId=1">Gifts</a>
-							<a class="" href="recurringGift.htm?personId=1&type=recurringGift">New Recurring Gift</a>
-				            <a class="" href="recurringGiftList.htm?personId=1&type=recurringGift">Recurring Gifts</a>
-				            <a class="" href="pledge.htm?personId=1&type=pledge">New Pledge</a>
+				            <a class="active" href="gift.htm?constituentId=1">New Gift</a>
+							<a class="" href="giftList.htm?constituentId=1">Gifts</a>
+							<a class="" href="recurringGift.htm?constituentId=1&type=recurringGift">New Recurring Gift</a>
+				            <a class="" href="recurringGiftList.htm?constituentId=1&type=recurringGift">Recurring Gifts</a>
+				            <a class="" href="pledge.htm?constituentId=1&type=pledge">New Pledge</a>
 
-				            <a class="" href="pledgeList.htm?personId=1&type=pledge">Pledges</a>
+				            <a class="" href="pledgeList.htm?constituentId=1&type=pledge">Pledges</a>
 				            </span>
 		            </div>
-					<a class="" href="audit.htm?object=person&id=1">Audit</a>
+					<a class="" href="audit.htm?object=constituent&id=1">Audit</a>
 				</div>
 			<h3>
 				My Tasks
@@ -301,15 +301,15 @@
 
 	</div>
 </div><div class="content760 mainForm">
-			<form id="gift" action="/orangeleap/gift.htm?personId=1" method="post"><div class="columns iconHeader">
+			<form id="gift" action="/orangeleap/gift.htm?constituentId=1" method="post"><div class="columns iconHeader">
 	<div class="column">
 		<img src="images/dude2.gif" />
 	</div>
 	<div class="column">
-	<h2 class="personEdit cluetip" rel="personView.htm?personId=1" id="personTitle">
+	<h2 class="constituentEdit cluetip" rel="constituentView.htm?constituentId=1" id="constituentTitle">
 			Smith, Adam</h2>
 
-	<h3 id="currentFunctionTitle" class="personEdit">
+	<h3 id="currentFunctionTitle" class="constituentEdit">
 			Enter Gift</h3>
 	</div>
 	<div class="columnRight" style="padding:19px 19px 0 0;">
@@ -1569,7 +1569,7 @@
 
 						<div class="value" id="subTotal">0</div>
 					</div>
-				<div class="formButtonFooter personFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
+				<div class="formButtonFooter constituentFormButtons"><input type="submit" value="Submit Payment" class="saveButton" /></div>
 			</form></div>
 	<div class="clearBoth"></div>
 			<div id="footer">

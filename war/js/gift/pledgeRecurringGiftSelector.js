@@ -111,7 +111,7 @@ var PledgeRecurringGiftSelector = {
 
 		$.ajax({
 			type: "POST",
-			url: baseUrl + "?personId=" + $("#thisConstituentId").val(),
+			url: baseUrl + "?constituentId=" + $("#thisConstituentId").val(),
 			data: queryString,
 			success: function(html) {
 				$("#dialog").html(html);
@@ -201,7 +201,7 @@ var PledgeRecurringGiftSelector = {
 		
 		$.ajax({
 			type: "POST",
-			url: "giftPledgeRecurringGiftLines.htm?personId=" + $("#thisConstituentId").val(),
+			url: "giftPledgeRecurringGiftLines.htm?constituentId=" + $("#thisConstituentId").val(),
 			data: queryString,
 			success: function(html) {
 				$("tbody.gridRow", $("#gift_distribution")).each(function() {
@@ -229,7 +229,7 @@ var PledgeRecurringGiftSelector = {
 		$cloned.attr("id", "lookup-" + thisId);
 		$cloned.attr("selectedId", thisId);
 		var linkStr = isPledge ? "pledge.htm?pledgeId=" + thisId : "recurringGift.htm?recurringGiftId=" + thisId;
-		$popLink.attr("href", linkStr + "&personId=" + $("#thisConstituentId").val());
+		$popLink.attr("href", linkStr + "&constituentId=" + $("#thisConstituentId").val());
 		$popLink.text(thisName);
 		
 		$cloned.removeClass("clone").removeClass("noDisplay");

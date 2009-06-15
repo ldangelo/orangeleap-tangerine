@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
@@ -119,14 +119,14 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 	
 	private ModelAndView handleRequest(HttpServletRequest request, boolean isSubmit) {
 		
-		Long constituentId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(constituentId);
-		if (person == null) return null;
+		Long constituentId = new Long(request.getParameter("constituentId"));
+		Constituent constituent = constituentService.readConstituentById(constituentId);
+		if (constituent == null) return null;
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
 		Long customFieldId = new Long(request.getParameter("customFieldId"));
-		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
+		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(constituent.getId(), fieldDefinition.getCustomFieldName());
 		CustomField cf = getCustomField(savedlist, customFieldId);
 		
         ConstituentCustomFieldRelationship constituentCustomFieldRelationship = 
@@ -161,7 +161,7 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.addObject("map", stringmap);
-		mav.addObject("person", person);
+		mav.addObject("constituent", constituent);
 		mav.addObject("fieldDefinition", fieldDefinition);
 		mav.addObject("customField", cf);
 		mav.addObject("constituentCustomFieldRelationship", constituentCustomFieldRelationship);

@@ -34,7 +34,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         Address readAddress = addressDao.readById(address.getId());
         assert readAddress != null;
         assert address.getId().equals(readAddress.getId());
-        assert 300L == readAddress.getPersonId();
+        assert 300L == readAddress.getConstituentId();
         assert "1234 Fake Dr".equals(readAddress.getAddressLine1());
         assert "New York".equals(readAddress.getCity());
         assert "NY".equals(readAddress.getStateProvince());
@@ -67,7 +67,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert "92111".equals(readAddress.getPostalCode());
         assert "USA".equals(readAddress.getCountry());
         assert address.getId().equals(readAddress.getId());
-        assert 300L == readAddress.getPersonId();
+        assert 300L == readAddress.getConstituentId();
         assert ActivationType.permanent.equals(readAddress.getActivationStatus());
         assert readAddress.getAddressLine2() == null;
         assert readAddress.getAddressLine3() == null;
@@ -97,7 +97,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert address.getAddressLine3() == null;
         assert address.getCreateDate() != null;
         assert address.getUpdateDate() != null;
-        assert 100L == address.getPersonId();
+        assert 100L == address.getConstituentId();
         assert address.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(address.getActivationStatus());
         assert address.isInactive() == false;
@@ -117,7 +117,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
             if (address.getId() >= 100L && address.getId() <= 400L) {
                 assert address.getUpdateDate() != null;
                 assert address.getCreateDate() != null;
-                assert 100L == address.getPersonId();
+                assert 100L == address.getConstituentId();
                 assert "Dallas".equals(address.getCity());
                 assert "TX".equals(address.getStateProvince());
                 assert "US".equals(address.getCountry());
@@ -173,7 +173,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
             if (address.getId() >= 100L && address.getId() <= 400L) {
                 assert address.getUpdateDate() != null;
                 assert address.getCreateDate() != null;
-                assert 100L == address.getPersonId();
+                assert 100L == address.getConstituentId();
                 assert "Dallas".equals(address.getCity());
                 assert "TX".equals(address.getStateProvince());
                 assert "US".equals(address.getCountry());
@@ -218,7 +218,7 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.isInactive() == false;
         assert d.equals(readAddress.getTemporaryEndDate());
         assert "1 Main Street".equals(readAddress.getAddressLine1());
-        assert 300L == readAddress.getPersonId();
+        assert 300L == readAddress.getConstituentId();
         
         addressDao.inactivateEntities();
         
@@ -229,6 +229,6 @@ public class IBatisAddressDaoTest extends AbstractIBatisTest {
         assert readAddress.isInactive();
         assert d.equals(readAddress.getTemporaryEndDate());
         assert "1 Main Street".equals(readAddress.getAddressLine1());
-        assert 300L == readAddress.getPersonId();
+        assert 300L == readAddress.getConstituentId();
     }
 }

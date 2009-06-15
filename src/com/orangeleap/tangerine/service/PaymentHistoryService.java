@@ -8,7 +8,7 @@ public interface PaymentHistoryService {
 
     public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory);
 
-    public PaginatedResult readPaymentHistory(Long personId, SortInfo sortinfo);
+    public PaginatedResult readPaymentHistory(Long constituentId, SortInfo sortinfo);
 
     public PaginatedResult readPaymentHistoryBySite(SortInfo sortinfo);
 

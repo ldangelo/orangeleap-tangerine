@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
@@ -43,10 +43,10 @@ public class CommunicationHistorySearchFormController extends SimpleFormControll
         if (logger.isTraceEnabled()) {
             logger.trace("formBackingObject:");
         }
-        Person p = new Person();
+        Constituent p = new Constituent();
         p.setSite(sessionService.lookupSite());
         CommunicationHistory g = new CommunicationHistory();
-        g.setPerson(p);
+        g.setConstituent(p);
         return g;
     }
 

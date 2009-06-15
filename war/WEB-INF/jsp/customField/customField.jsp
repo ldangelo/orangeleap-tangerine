@@ -25,9 +25,9 @@
 
 		   <div id="selectEntityType">
   		      Entity Type
-		      <select id="entityType" name="entityType" onchange="if (this.value == 'person') { $('#selectConstituentType').show(); } else { $('#selectConstituentType').hide();  };  ">
+		      <select id="entityType" name="entityType" onchange="if (this.value == 'constituent') { $('#selectConstituentType').show(); } else { $('#selectConstituentType').hide();  };  ">
 		  	    <option value="" >Select...</option>
-			    <option value="person" >Constituent</option>
+			    <option value="constituent" >Constituent</option>
 			    <option value="gift" >Gift</option>
 			    <option value="recurringGift" >Recurring Gift</option>
                 <option value="pledge" >Pledge</option>

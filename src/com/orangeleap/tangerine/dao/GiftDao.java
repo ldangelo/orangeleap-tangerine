@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -25,7 +25,7 @@ public interface GiftDao {
 
 	public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
-	public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
+	public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
 	public PaginatedResult readPaginatedGiftListByConstituentId(Long constituentId, SortInfo sortinfo);
 

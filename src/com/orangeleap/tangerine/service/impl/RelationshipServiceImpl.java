@@ -22,7 +22,7 @@ import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.CustomFieldDao;
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -30,7 +30,7 @@ import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.service.QueryLookupService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
+import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.service.relationship.TooManyLevelsException;
 import com.orangeleap.tangerine.type.FieldType;
@@ -45,7 +45,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class RelationshipServiceImpl extends AbstractTangerineService implements RelationshipService {
 	
 	public static final int MAX_TREE_DEPTH = 200;
-	private static final String PERSON = "person";
+	private static final String CONSTITUENT = "constituent";
  
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -64,7 +64,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
-    public Person maintainRelationships(Person constituent) throws ConstituentValidationException {
+    public Constituent maintainRelationships(Constituent constituent) throws ConstituentValidationException {
     	if (logger.isTraceEnabled()) {
     	    logger.trace("maintainRelationships: constituent = " + constituent);
     	}
@@ -131,19 +131,19 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     // Validate id list for import.  They must exist and be on same site.
     private void validateIds(String customFieldName, List<Long> ids) {
     	for (Long id : ids) {
-    		Person person = constituentDao.readConstituentById(id);
-    		if (person == null || !person.getSite().getName().equals(getSiteName())) {
+    		Constituent constituent = constituentDao.readConstituentById(id);
+    		if (constituent == null || !constituent.getSite().getName().equals(getSiteName())) {
                 throw new RuntimeException("Invalid id "+id+" for "+customFieldName);
             }
     	}
     }
     
-    // Return the tree reachable from Person, using the "parent" field name (e.g. "organization.parent")
+    // Return the tree reachable from Constituent, using the "parent" field name (e.g. "organization.parent")
     @Override
     @Transactional(readOnly=true, propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
+	public ConstituentTreeNode getTree(Constituent constituent, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
     	
-       	Map<String, FieldDefinition> map = person.getFieldTypeMap();
+       	Map<String, FieldDefinition> map = constituent.getFieldTypeMap();
     	for (Map.Entry<String, FieldDefinition> e: map.entrySet()) {
     		FieldDefinition fd = e.getValue();
     		if (fd.getCustomFieldName().equals(parentCustomFieldName)) {
@@ -151,7 +151,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     			for (FieldRelationship fr : details) {
 	    			if (fr.isRecursive()) {
 	        			String childrenCustomFieldName = fr.getMasterRecordField().getCustomFieldName();
-	            		PersonTreeNode tree = getTree(person, parentCustomFieldName, childrenCustomFieldName, oneLevelOnly, fromHeadOfTree);
+	            		ConstituentTreeNode tree = getTree(constituent, parentCustomFieldName, childrenCustomFieldName, oneLevelOnly, fromHeadOfTree);
 	    				return tree;
 	    			}
     			}
@@ -160,125 +160,125 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	return null;
 	}
 
-    private String getNewFieldValue(Person person, String fieldname) {
-    	BeanWrapperImpl bean = new BeanWrapperImpl(person);
+    private String getNewFieldValue(Constituent constituent, String fieldname) {
+    	BeanWrapperImpl bean = new BeanWrapperImpl(constituent);
     	String result = (String) bean.getPropertyValue(fieldname + ".value");
     	return (result == null) ? "" : result;
     }
     
-    private String getOldFieldValue(Person person, String fieldname) {
-		String oldFieldValue = (String)person.getFieldValueMap().get(fieldname);  
+    private String getOldFieldValue(Constituent constituent, String fieldname) {
+		String oldFieldValue = (String)constituent.getFieldValueMap().get(fieldname);  
 		return (oldFieldValue == null) ? "" : oldFieldValue;
     }
     
 	
-	private void ensureOtherPersonAttributeIsSet(FieldDefinition otherFieldDefinition, Person otherPerson) {
+	private void ensureOtherConstituentAttributeIsSet(FieldDefinition otherFieldDefinition, Constituent otherConstituent) {
 		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
 		if (fieldAttributes == null) {
             return;
         }
-		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other person. 
+		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other constituent. 
 		// For multiple attributes, take the first as the default.
 		if (fieldAttributes.contains(",")) {
 			fieldAttributes = fieldAttributes.substring(0,fieldAttributes.indexOf(","));
 		}
-	    otherPerson.addConstituentRole(fieldAttributes);
+	    otherConstituent.addConstituentRole(fieldAttributes);
 	}
 
 	// Field must be a detail (child list) custom field.
-	private void getDescendantIds(List<Long> list, Person person, String customFieldName, int level) throws ConstituentValidationException {
+	private void getDescendantIds(List<Long> list, Constituent constituent, String customFieldName, int level) throws ConstituentValidationException {
 		
 		if (level > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(customFieldName);
 		}
 
-		List<Person> referencedPersons = getPersons(person, customFieldName);
-		for (Person referencedPerson : referencedPersons) {
-			Long referencedId = referencedPerson.getId();
+		List<Constituent> referencedConstituents = getConstituents(constituent, customFieldName);
+		for (Constituent referencedConstituent : referencedConstituents) {
+			Long referencedId = referencedConstituent.getId();
 			if (list.contains(referencedId)) {
 				// This will normally happen if they place a child over a parent or vice-versa.  It is caught in the recursion check logic when the item causing the loop is edited.
-				String recursionLoop = "Relationship tree for "+customFieldName+" forms a loop due to reference from " + person.getDisplayValue() + " to " + referencedPerson.getDisplayValue();
+				String recursionLoop = "Relationship tree for "+customFieldName+" forms a loop due to reference from " + constituent.getDisplayValue() + " to " + referencedConstituent.getDisplayValue();
 				logger.debug(recursionLoop);
 				return;
 			}
 			list.add(referencedId);
-			getDescendantIds(list, referencedPerson, customFieldName, level + 1);
+			getDescendantIds(list, referencedConstituent, customFieldName, level + 1);
 		}
 		
 	}
 	
-	// Returns list of person Ids in the reference type custom field.
-	private List<Long> getIdList(Person person, String customFieldName) {
+	// Returns list of constituent Ids in the reference type custom field.
+	private List<Long> getIdList(Constituent constituent, String customFieldName) {
 		
-		CustomField customField = person.getCustomFieldMap().get(customFieldName);
+		CustomField customField = constituent.getCustomFieldMap().get(customFieldName);
 		String customFieldValue = customField.getValue();
 		List<Long> ids = RelationshipUtil.getIds(customFieldValue);
         return ids;		
         
 	}
 	
-	// Returns list of Person objects referenced by the custom field
-	private List<Person> getPersons(Person person, String customFieldName) {
-	    List<Person> persons = new ArrayList<Person>();
+	// Returns list of Constituent objects referenced by the custom field
+	private List<Constituent> getConstituents(Constituent constituent, String customFieldName) {
+	    List<Constituent> constituents = new ArrayList<Constituent>();
 		if (StringUtils.hasText(customFieldName)) {
-    	    List<Long> ids = getIdList(person, customFieldName);
+    	    List<Long> ids = getIdList(constituent, customFieldName);
     	    if (ids != null && ids.isEmpty() == false) {
-    	        persons = constituentDao.readConstituentsByIds(ids);
+    	        constituents = constituentDao.readConstituentsByIds(ids);
     	    }
 		}
-		return persons;
+		return constituents;
 	}
 	
-	// Person is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
+	// Constituent is any member of the tree.  Returns the tree based on the recursive relationship defined by the custom fields.
 	@Override
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
+	public ConstituentTreeNode getTree(Constituent constituent, String parentCustomFieldName, String childrenCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException {
 		if (fromHeadOfTree) {
-            person = getHeadOfTree(person, parentCustomFieldName);
+            constituent = getHeadOfTree(constituent, parentCustomFieldName);
         }
-		PersonTreeNode personNode = new PersonTreeNode(person, 0);
-		getSubTree(personNode, childrenCustomFieldName, oneLevelOnly);
-		return personNode;
+		ConstituentTreeNode constituentNode = new ConstituentTreeNode(constituent, 0);
+		getSubTree(constituentNode, childrenCustomFieldName, oneLevelOnly);
+		return constituentNode;
 	}
 	
 	// Field must be a master (parent id) custom field.
 	@Override
-	public Person getHeadOfTree(Person person, String parentCustomFieldName) throws ConstituentValidationException {
+	public Constituent getHeadOfTree(Constituent constituent, String parentCustomFieldName) throws ConstituentValidationException {
 		int level = 0;
 		while (true) {
 			level++;
 			if (level > MAX_TREE_DEPTH) {
 				throw new TooManyLevelsException(parentCustomFieldName);
 			}
-			List<Person> referencedPersons = getPersons(person, parentCustomFieldName);
-			if (referencedPersons.size() == 0) {
-                return person;
+			List<Constituent> referencedConstituents = getConstituents(constituent, parentCustomFieldName);
+			if (referencedConstituents.size() == 0) {
+                return constituent;
             }
-			person = referencedPersons.get(0);
+			constituent = referencedConstituents.get(0);
 		}
 	}
 	
-	public void getSubTree(PersonTreeNode personNode, String childrenCustomFieldName, boolean oneLevelOnly) throws ConstituentValidationException {
-		if (personNode.getLevel() > MAX_TREE_DEPTH) {
+	public void getSubTree(ConstituentTreeNode constituentNode, String childrenCustomFieldName, boolean oneLevelOnly) throws ConstituentValidationException {
+		if (constituentNode.getLevel() > MAX_TREE_DEPTH) {
 			throw new TooManyLevelsException(childrenCustomFieldName);
 		}
 
-		List<Person> referencedPersons = getPersons(personNode.getPerson(), childrenCustomFieldName);
-		for (Person referencedPerson : referencedPersons) {
-			PersonTreeNode child = new PersonTreeNode(referencedPerson, personNode.getLevel() + 1);
-			personNode.getChildren().add(child);
+		List<Constituent> referencedConstituents = getConstituents(constituentNode.getConstituent(), childrenCustomFieldName);
+		for (Constituent referencedConstituent : referencedConstituents) {
+			ConstituentTreeNode child = new ConstituentTreeNode(referencedConstituent, constituentNode.getLevel() + 1);
+			constituentNode.getChildren().add(child);
 			if (!oneLevelOnly) {
                 getSubTree(child, childrenCustomFieldName, oneLevelOnly);
             }
 		}
 	}
 	
-	// If person is in tree, return the node, otherwise return null.
-	public PersonTreeNode findPersonNodeInTree(Person person, PersonTreeNode tree) {
-		if (equals(person, tree.getPerson())) {
+	// If constituent is in tree, return the node, otherwise return null.
+	public ConstituentTreeNode findConstituentNodeInTree(Constituent constituent, ConstituentTreeNode tree) {
+		if (equals(constituent, tree.getConstituent())) {
             return tree;
         }
-	    for (PersonTreeNode personNode: tree.getChildren()) {
-	    	PersonTreeNode node = findPersonNodeInTree(person, personNode);
+	    for (ConstituentTreeNode constituentNode: tree.getChildren()) {
+	    	ConstituentTreeNode node = findConstituentNodeInTree(constituent, constituentNode);
 	    	if (node != null) {
                 return node;
             }
@@ -286,10 +286,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    return null;
 	}
 
-	public Person getFirstCommonAncestor(Person p1, Person p2, String parentCustomFieldName) throws ConstituentValidationException {
-		List<Person> p1Parents = new ArrayList<Person>();
+	public Constituent getFirstCommonAncestor(Constituent p1, Constituent p2, String parentCustomFieldName) throws ConstituentValidationException {
+		List<Constituent> p1Parents = new ArrayList<Constituent>();
 		p1Parents.add(p1);
-		List<Person> p2Parents = new ArrayList<Person>();
+		List<Constituent> p2Parents = new ArrayList<Constituent>();
 		p2Parents.add(p2);
 		int level = 0;
 		while (true) {
@@ -297,16 +297,16 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 			if (level > MAX_TREE_DEPTH) {
 				throw new TooManyLevelsException(parentCustomFieldName);
 			}
-			List<Person> referencedPersons1 = getPersons(p1, parentCustomFieldName);
-			List<Person> referencedPersons2 = getPersons(p2, parentCustomFieldName);
-			if (referencedPersons1.size() == 0 && referencedPersons2.size() == 0) {
+			List<Constituent> referencedConstituents1 = getConstituents(p1, parentCustomFieldName);
+			List<Constituent> referencedConstituents2 = getConstituents(p2, parentCustomFieldName);
+			if (referencedConstituents1.size() == 0 && referencedConstituents2.size() == 0) {
                 return null;
             }
-			if (referencedPersons1.size() > 0) {
-                p1 = referencedPersons1.get(0);
+			if (referencedConstituents1.size() > 0) {
+                p1 = referencedConstituents1.get(0);
             }
-			if (referencedPersons2.size() > 0) {
-                p2 = referencedPersons2.get(0);
+			if (referencedConstituents2.size() > 0) {
+                p2 = referencedConstituents2.get(0);
             }
 			if (contains(p1Parents, p2)) {
                 return p2;
@@ -317,21 +317,21 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 	}
 	
-	public String debugPrintTree(PersonTreeNode tree) {
+	public String debugPrintTree(ConstituentTreeNode tree) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < tree.getLevel(); i++) {
             sb.append("\t");
         }
-		sb.append(tree.getPerson().getDisplayValue()).append("\r\n");
-		for (PersonTreeNode child: tree.getChildren()) {
+		sb.append(tree.getConstituent().getDisplayValue()).append("\r\n");
+		for (ConstituentTreeNode child: tree.getChildren()) {
             sb.append(debugPrintTree(child));
         }
 		return sb.toString();
 	}
 	
-	private boolean contains(List<Person> persons, Person person) {
-		for (Person aperson: persons) {
-            if (equals(person, aperson)) {
+	private boolean contains(List<Constituent> constituents, Constituent constituent) {
+		for (Constituent aconstituent: constituents) {
+            if (equals(constituent, aconstituent)) {
                 return true;
             }
         }
@@ -339,7 +339,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	}
 
 	// Don't want to add an equals method to the JPA object
-	private boolean equals(Person p1, Person p2) {
+	private boolean equals(Constituent p1, Constituent p2) {
 		if (p1 == null && p2 == null) {
             return true;
         }
@@ -373,25 +373,25 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
     @Override
-	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName) {
+	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long constituentId, String fieldName) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndFieldName: personId = " + personId);
+	        logger.trace("ConstituentCustomFieldRelationshipService.readAllCustomFieldsByConstituentAndFieldName: constituentId = " + constituentId);
 	    }
-	    if (null == constituentDao.readConstituentById(personId)) {
+	    if (null == constituentDao.readConstituentById(constituentId)) {
             return null;
         }
-	    return customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldName);
+	    return customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldName);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
-    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException 
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long constituentId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException 
     {
     	
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: personId = " + personId);
+	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: constituentId = " + constituentId);
 	    }
-	    if (null == constituentDao.readConstituentById(personId)) {
+	    if (null == constituentDao.readConstituentById(constituentId)) {
             throw new RuntimeException("Invalid constituent id");
         }
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
@@ -399,14 +399,14 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             throw new RuntimeException("Invalid Field Definition id");
         }
 
-	    validateNoSelfReference(personId, list, fieldDefinition);
+	    validateNoSelfReference(constituentId, list, fieldDefinition);
 	    // TODO check hierarchy recursion
-		validateDateRangesAndSave(personId, fieldDefinition, list, additionalDeletes);
+		validateDateRangesAndSave(constituentId, fieldDefinition, list, additionalDeletes);
 	   
     }
     
-    private void validateNoSelfReference(Long personId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {
-    	String id = "" + personId;
+    private void validateNoSelfReference(Long constituentId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {
+    	String id = "" + constituentId;
 		for (CustomField cf : list) {
 			if (cf.getValue().equals(id)) {
 				ConstituentValidationException ex = new ConstituentValidationException("Field value cannot reference itself.");
@@ -416,7 +416,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
     }
 
-    private void validateDateRangesAndSave(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist, List<Long> additionalDeletes) throws ConstituentValidationException {
+    private void validateDateRangesAndSave(Long constituentId, FieldDefinition fieldDefinition, List<CustomField> newlist, List<Long> additionalDeletes) throws ConstituentValidationException {
 
     	FieldDefinition refField = getCorrespondingField(fieldDefinition);
     	
@@ -430,15 +430,15 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		
     	// Find any orphaned back references 
 		if (refField != null) {
-			List<CustomField> deletes = getDeletes(personId, fieldDefinition, newlist);
+			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, newlist);
 			for (CustomField cf : deletes) { 
 				additionalDeletes.add(new Long(cf.getValue()));
 			}
 			for (Long refid : additionalDeletes) {
-				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), CONSTITUENT, refField.getCustomFieldName());
 		        for (CustomField refcf: reflist) {
 		        	Long backref = new Long(refcf.getValue());
-		        	if (backref.equals(personId)) {
+		        	if (backref.equals(constituentId)) {
 		        		customFieldDao.deleteCustomField(refcf);
 		        	}
 		        }
@@ -446,8 +446,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 		
 	    // Save custom fields on main entity
-		customFieldDao.maintainCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName(), newlist);
-	    newlist = customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName());
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName(), newlist);
+	    newlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName());
 
     	// Check date ranges on referenced entities
 		if (refField != null) {
@@ -471,7 +471,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				CustomField cf1 = alist.get(0);
 				
 				Long refid = new Long(cf1.getValue());
-				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), PERSON, refField.getCustomFieldName());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), CONSTITUENT, refField.getCustomFieldName());
 				Iterator<CustomField> it = reflist.iterator();
 				while (it.hasNext()) {
 					CustomField refcf = it.next();
@@ -484,7 +484,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				for (CustomField cf: alist) {
 		        	CustomField newcf = new CustomField();
 		        	newcf.setEntityId(refid);
-		        	newcf.setEntityType("person");
+		        	newcf.setEntityType("constituent");
 		        	newcf.setName(refField.getCustomFieldName());
 		        	newcf.setStartDate(cf.getStartDate());
 		        	newcf.setEndDate(cf.getEndDate());
@@ -492,21 +492,21 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		        	reflist.add(newcf);
 				}
 				
-		        Person refPerson;
+		        Constituent refConstituent;
 				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
 				if (!refdatesvalid) {
-					refPerson = constituentDao.readConstituentById(new Long(cf1.getValue()));
-					ConstituentValidationException ex = new ConstituentValidationException("Date ranges conflict on corresponding custom field for referenced value " + refPerson.getFullName());
-					ex.addValidationResult("referenceFieldDateOverlap", new Object[]{refPerson.getFullName()});
+					refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
+					ConstituentValidationException ex = new ConstituentValidationException("Date ranges conflict on corresponding custom field for referenced value " + refConstituent.getFullName());
+					ex.addValidationResult("referenceFieldDateOverlap", new Object[]{refConstituent.getFullName()});
 					throw ex;
 				} 
 				
-				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, PERSON, refField.getCustomFieldName(), reflist);
+				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, CONSTITUENT, refField.getCustomFieldName(), reflist);
 			    
 			    // Set new roles on refId.
-				refPerson = constituentDao.readConstituentById(new Long(cf1.getValue()));
-			    ensureOtherPersonAttributeIsSet(refField, refPerson);
-				refPerson = constituentDao.maintainConstituent(refPerson);
+				refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
+			    ensureOtherConstituentAttributeIsSet(refField, refConstituent);
+				refConstituent = constituentDao.maintainConstituent(refConstituent);
 			    
 			}
 			
@@ -530,9 +530,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	});
     }
     
-    private List<CustomField> getDeletes(Long personId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
+    private List<CustomField> getDeletes(Long constituentId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
 		List<CustomField> deletes = new ArrayList<CustomField>();
-	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByEntityAndFieldName(personId, PERSON, fieldDefinition.getCustomFieldName());
+	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName());
 	    for (CustomField oldcf : oldlist) {
 	    	boolean found = false;
 		    for (CustomField newcf : newlist) {
@@ -646,11 +646,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
     @Override
-    public List<Person> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue) {
+    public List<Constituent> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue) {
         if (logger.isTraceEnabled()) {
             logger.trace("executeRelationshipQueryLookup: fieldType = " + fieldType + " searchOption = " + searchOption + " searchValue = " + searchValue);
         }
-        List<Person> constituents = null;
+        List<Constituent> constituents = null;
         if (StringConstants.LAST_NAME.equals(searchOption) || 
                 StringConstants.FIRST_NAME.equals(searchOption) || 
                 StringConstants.ORGANIZATION_NAME.equals(searchOption)) {

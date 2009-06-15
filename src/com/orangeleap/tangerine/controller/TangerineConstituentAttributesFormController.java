@@ -29,7 +29,7 @@ import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.communication.Address;
@@ -85,11 +85,11 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
         this.bindEmail = bindEmail;
     }
     
-    protected Person getConstituent(HttpServletRequest request) {
+    protected Constituent getConstituent(HttpServletRequest request) {
         Long constituentId = getConstituentId(request);
-        Person constituent = null;
+        Constituent constituent = null;
         if (constituentId != null) {
-            constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this person (authorization)?
+            constituent = constituentService.readConstituentById(constituentId); // TODO: do we need to check if the user can view this constituent (authorization)?
         }
         if (constituent == null) {
             throw new IllegalArgumentException("The constituent ID was not found");
@@ -99,9 +99,9 @@ public abstract class TangerineConstituentAttributesFormController extends Tange
 
     @SuppressWarnings("unchecked")
     protected void addConstituentToReferenceData(HttpServletRequest request, Map refData) {
-        Person constituent = getConstituent(request);
+        Constituent constituent = getConstituent(request);
         if (constituent != null) {
-            refData.put(StringConstants.PERSON, getConstituent(request));
+            refData.put(StringConstants.CONSTITUENT, getConstituent(request));
         }
     }
 

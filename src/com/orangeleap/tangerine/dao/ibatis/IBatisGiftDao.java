@@ -16,7 +16,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -69,7 +69,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
             else {
                 gift.setAssociatedRecurringGiftIds(new ArrayList<Long>(0)); // default set
             }
-            loadCustomFields(gift.getPerson());
+            loadCustomFields(gift.getConstituent());
             loadCustomFields(gift.getSelectedAddress());
             loadCustomFields(gift.getSelectedPhone());
         }
@@ -135,7 +135,7 @@ public class IBatisGiftDao extends AbstractPaymentInfoEntityDao<Gift> implements
     
 	@SuppressWarnings("unchecked")
     @Override
-    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
+    public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("analyzeLapsedDonor:  beginDate = " + beginDate + " currentDate = " + currentDate);
         }

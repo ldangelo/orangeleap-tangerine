@@ -13,7 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -46,7 +46,7 @@ public class MyAccountsController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person constituent = constituentService.readConstituentById(tangerineUserHelper.lookupUserId());
+        Constituent constituent = constituentService.readConstituentById(tangerineUserHelper.lookupUserId());
         if (constituent == null) {
             return new ModelMap();
         }
@@ -59,7 +59,7 @@ public class MyAccountsController {
             for (String account : accounts) {
 
                 Long acctId = Long.parseLong(account);
-                Person client = constituentService.readConstituentById(acctId);
+                Constituent client = constituentService.readConstituentById(acctId);
 
                 BigDecimal totalGiving = new BigDecimal(0);
 
@@ -79,7 +79,7 @@ public class MyAccountsController {
     }
 
     @SuppressWarnings("unchecked")
-    private Map fromConstituent(Person constituent, BigDecimal amount, int gifts) {
+    private Map fromConstituent(Constituent constituent, BigDecimal amount, int gifts) {
 
         Map<String,Object> ret = new HashMap<String,Object>();
         ret.put("id", constituent.getId());

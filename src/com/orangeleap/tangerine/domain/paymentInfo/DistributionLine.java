@@ -8,7 +8,7 @@ import org.springframework.core.style.ToStringCreator;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public class DistributionLine extends AbstractCustomizableEntity {  
@@ -23,7 +23,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     private Long pledgeId;
     private Long recurringGiftId;
     private Long adjustedGiftId;
-    private Person person;
+    private Constituent constituent;
 
     public DistributionLine() { }
 
@@ -37,14 +37,14 @@ public class DistributionLine extends AbstractCustomizableEntity {
     
     public DistributionLine(DistributionLine otherLine, RecurringGift recurringGift) {
         this(otherLine.getAmount(), otherLine.getPercentage(), otherLine.getProjectCode(), otherLine.getMotivationCode(), otherLine.getOther_motivationCode());
-        this.person = otherLine.getPerson();
+        this.constituent = otherLine.getConstituent();
         setCustomFieldMap(otherLine.getCustomFieldMap());
         setCustomFieldValue(StringConstants.ASSOCIATED_RECURRING_GIFT_ID, recurringGift.getId().toString());
     }
 
-    public DistributionLine(Person person) {
+    public DistributionLine(Constituent constituent) {
         this();
-        this.person = person;
+        this.constituent = constituent;
     }
 
     public DistributionLine(BigDecimal amount) {
@@ -124,12 +124,12 @@ public class DistributionLine extends AbstractCustomizableEntity {
         this.adjustedGiftId = adjustedGiftId;
     }
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
     }
 
     public boolean isValid() {
@@ -157,7 +157,7 @@ public class DistributionLine extends AbstractCustomizableEntity {
     public void setDefaults() {
         super.setDefaults();
         setDefaultCustomFieldValue(StringConstants.TAX_DEDUCTIBLE, "true"); 
-        setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, person == null ? null : person.getRecognitionName());
+        setDefaultCustomFieldValue(StringConstants.RECOGNITION_NAME, constituent == null ? null : constituent.getRecognitionName());
     }
 
     @Override

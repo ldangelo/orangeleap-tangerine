@@ -13,7 +13,7 @@
 		<result property="recognitionName" column="GIFT_IN_KIND_RECOGNITION_NAME" jdbcType="VARCHAR" />
 		<result property="transactionDate" column="GIFT_IN_KIND_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="giftId" column="GIFT_IN_KIND_GIFT_ID" jdbcType="BIGINT" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
         <result property="createDate" column="GIFT_IN_KIND_CREATE_DATE" jdbcType="TIMESTAMP"/>
         <result property="updateDate" column="GIFT_IN_KIND_UPDATE_DATE" jdbcType="TIMESTAMP"/>
 	</resultMap>
@@ -91,7 +91,7 @@
 		ANONYMOUS, RECOGNITION_NAME, TRANSACTION_DATE, CONSTITUENT_ID, GIFT_ID,	CREATE_DATE, UPDATE_DATE)
 		values 
 		(#fairMarketValue#, #currencyCode#, #donationDate#, #motivationCode#, #other_motivationCode#, 
-		#anonymous#, #recognitionName#, #transactionDate#, #person.id#, #giftId#, now(), now())
+		#anonymous#, #recognitionName#, #transactionDate#, #constituent.id#, #giftId#, now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -108,7 +108,7 @@
 		gik.ANONYMOUS = #anonymous#,
 		gik.RECOGNITION_NAME = #recognitionName#,
 		gik.TRANSACTION_DATE = #transactionDate#,
-		gik.CONSTITUENT_ID = #person.id#,
+		gik.CONSTITUENT_ID = #constituent.id#,
 		gik.GIFT_ID = #giftId#,
 		gik.UPDATE_DATE = now()
 		where 

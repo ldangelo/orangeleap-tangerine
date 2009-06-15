@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.type.CommunicationHistoryType;
 
@@ -23,7 +23,7 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
     	communicationHistoryDao = (CommunicationHistoryDao)super.applicationContext.getBean("communicationHistoryDAO");
     }
     
-    private final static Long PERSON_ID = new Long(100);
+    private final static Long CONSTITUENT_ID = new Long(100);
     private final static String COMMENTS = "Comments added here...";
 
     @Test(groups = { "testReadCommunicationHistory" })
@@ -33,7 +33,7 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         
         history = communicationHistoryDao.readCommunicationHistoryById(200L);
         assert history != null;
-        IBatisConstituentDaoTest.testConstituentId300(history.getPerson());
+        IBatisConstituentDaoTest.testConstituentId300(history.getConstituent());
         assert CommunicationHistoryType.MANUAL.equals(history.getCommunicationHistoryType());
         assert history.getCreateDate() != null;
         assert history.getRecordDate() != null;
@@ -53,10 +53,10 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         // Insert
     	CommunicationHistory history = new CommunicationHistory();
     	Site site = new Site("company1");
-    	Person constituent = new Person();
+    	Constituent constituent = new Constituent();
     	constituent.setSite(site);
-    	constituent.setId(PERSON_ID);
-    	history.setPerson(constituent);
+    	constituent.setId(CONSTITUENT_ID);
+    	history.setConstituent(constituent);
 
     	history.setCommunicationHistoryType(CommunicationHistoryType.GIFT_RECEIPT);
     	history.setComments(COMMENTS);
@@ -72,7 +72,7 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
     	assert readHistory.getGiftId() == 600L;
     	assert readHistory.getPledgeId() == null;
         assert readHistory.getRecurringGiftId() == null;
-    	IBatisConstituentDaoTest.testConstituentId100(readHistory.getPerson());
+    	IBatisConstituentDaoTest.testConstituentId100(readHistory.getConstituent());
     	assert readHistory.getCreateDate() != null;
     	assert readHistory.getUpdateDate() != null;
     	assert readHistory.getRecordDate() == null;
@@ -92,7 +92,7 @@ public class IBatisCommunicationHistoryDaoTest extends AbstractIBatisTest {
         assert CommunicationHistoryType.MANUAL.equals(readHistory.getCommunicationHistoryType());
         assert readHistory.getPledgeId() == 200L;
         assert readHistory.getRecurringGiftId() == null;
-        IBatisConstituentDaoTest.testConstituentId100(readHistory.getPerson());
+        IBatisConstituentDaoTest.testConstituentId100(readHistory.getConstituent());
         assert readHistory.isSystemGenerated() == true;
         assert readHistory.getComments() == null;
         assert readHistory.getGiftId() == null;

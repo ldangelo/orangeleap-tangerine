@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 
 public class PaymentHistoryListController extends ParameterizableViewController {
@@ -25,12 +25,12 @@ public class PaymentHistoryListController extends ParameterizableViewController 
         if (logger.isTraceEnabled()) {
             logger.trace("handleRequestInternal:");
         }
-        String personId = request.getParameter("personId");
-        Person constituent = constituentService.readConstituentById(Long.valueOf(personId));
+        String constituentId = request.getParameter("constituentId");
+        Constituent constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
         
         ModelAndView mav = new ModelAndView(super.getViewName());
         if (constituent != null) {
-            mav.addObject("person", constituent);
+            mav.addObject("constituent", constituent);
         }
         return mav;
     }

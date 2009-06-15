@@ -12,7 +12,7 @@ import org.springframework.validation.BindException;
 import com.orangeleap.tangerine.controller.importexport.ImportRequest;
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -83,7 +83,7 @@ public class GiftImporter extends EntityImporter {
 		if (id == null) {
             throw new RuntimeException(getIdField() + " field is required.");
         }
-	    Person constituent = constituentService.readConstituentByAccountNumber(id);
+	    Constituent constituent = constituentService.readConstituentByAccountNumber(id);
 		if (constituent == null) {
             throw new RuntimeException(getIdField() + " " + id + " not found.");
         }

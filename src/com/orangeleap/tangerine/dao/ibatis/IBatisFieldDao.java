@@ -192,13 +192,13 @@ public class IBatisFieldDao extends AbstractIBatisDao implements FieldDao {
     
     private static final Map<String, String> GURU_REPORT_FIELD_GROUPS = new HashMap<String, String>();
     static {
-    	GURU_REPORT_FIELD_GROUPS.put("person", "Contact Details");
+    	GURU_REPORT_FIELD_GROUPS.put("constituent", "Contact Details");
     	GURU_REPORT_FIELD_GROUPS.put("gift", "Gift Information");
     	GURU_REPORT_FIELD_GROUPS.put("communicationHistory", "Touch Point Information");
     }
     private static final Map<String, String> GURU_REPORT_FIELD_ALIASS = new HashMap<String, String>();
     static {
-    	GURU_REPORT_FIELD_ALIASS.put("person", "CONSTITUENT_CONSTITUENT_ID");
+    	GURU_REPORT_FIELD_ALIASS.put("constituent", "CONSTITUENT_CONSTITUENT_ID");
     	GURU_REPORT_FIELD_ALIASS.put("gift", "GIFT_GIFT_ID");
     	GURU_REPORT_FIELD_ALIASS.put("communicationHistory", "COMMUNICATION_HISTORY_COMMUNICATION_HISTORY_ID");
     }

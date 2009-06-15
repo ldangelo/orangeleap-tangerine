@@ -75,7 +75,7 @@ public class TangerineUserHelperImpl implements TangerineUserHelper, Application
     @Override
     public Long lookupUserId() {
         TangerineAuthenticationToken token = getToken();
-        return token == null ? null : token.getPersonId();
+        return token == null ? null : token.getConstituentId();
     }
 
     /* (non-Javadoc)

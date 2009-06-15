@@ -22,7 +22,7 @@ import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -74,7 +74,7 @@ public class EntityValidator implements Validator {
     @Override
     public boolean supports(Class clazz) {
         return 
-        Person.class.equals(clazz) 
+        Constituent.class.equals(clazz) 
         || AbstractPaymentInfoEntity.class.isAssignableFrom(clazz)
         || CommunicationHistory.class.equals(clazz) 
         || GiftInKind.class.equals(clazz) 

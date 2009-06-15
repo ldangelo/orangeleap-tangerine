@@ -29,8 +29,8 @@ public class GiftMessageConverter implements MessageConverter {
 		
 		Gift gift = (Gift) object;
 		MapMessage message = session.createMapMessage();
-		message.setString("lastName", gift.getPerson().getLastName());
-        message.setString("firstName", gift.getPerson().getFirstName());
+		message.setString("lastName", gift.getConstituent().getLastName());
+        message.setString("firstName", gift.getConstituent().getFirstName());
         message.setString("gift amount", gift.getAmount().toString());
         message.setString("merchant acct", gift.getSite().getMerchantNumber());
 		

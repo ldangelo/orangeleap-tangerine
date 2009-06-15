@@ -20,7 +20,7 @@ import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.controller.validator.GiftInKindDetailsValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.GiftInKindDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKindDetail;
@@ -74,14 +74,14 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         }
 
         
-        maintainEntityChildren(giftInKind, giftInKind.getPerson());
+        maintainEntityChildren(giftInKind, giftInKind.getConstituent());
         giftInKind.setTransactionDate(Calendar.getInstance().getTime());
         Gift gift = createGiftForGiftInKind(giftInKind);
         gift = giftDao.maintainGift(gift); // save a row in the gift table
         giftInKind.setGiftId(gift.getId());
         giftInKind.filterValidDetails();
         giftInKind = giftInKindDao.maintainGiftInKind(giftInKind);
-        auditService.auditObject(giftInKind, giftInKind.getPerson());
+        auditService.auditObject(giftInKind, giftInKind.getConstituent());
 
         return giftInKind;
     }
@@ -111,7 +111,7 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
     }
     
     @Override
-    public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Person constituent) {
+    public GiftInKind readGiftInKindByIdCreateIfNull(String giftInKindId, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftInKindByIdCreateIfNull: giftInKindId = " + giftInKindId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
@@ -125,12 +125,12 @@ public class GiftInKindServiceImpl extends AbstractPaymentService implements Gif
         return giftInKind;
     }
     
-    private GiftInKind createDefaultGiftInKind(Person constituent) {
+    private GiftInKind createDefaultGiftInKind(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultGiftInKind: constituent = " + (constituent == null ? null : constituent.getId()));
         }
         GiftInKind giftInKind = new GiftInKind();
-        giftInKind.setPerson(constituent);
+        giftInKind.setConstituent(constituent);
         List<GiftInKindDetail> details = new ArrayList<GiftInKindDetail>(1);
         GiftInKindDetail detail = new GiftInKindDetail();
         details.add(detail);

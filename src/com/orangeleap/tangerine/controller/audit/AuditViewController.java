@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.util.WebUtils;
 
 import com.orangeleap.tangerine.domain.Audit;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.type.AccessType;
@@ -51,9 +51,9 @@ public class AuditViewController extends ParameterizableViewController {
         if (GenericValidator.isBlankOrNull(entityType) || GenericValidator.isBlankOrNull(objectId)) {
             audits = auditService.allAuditHistoryForSite();
         } else {
-            if (EntityType.valueOf(entityType) == EntityType.person) {
-                Person constituent = constituentService.readConstituentById(Long.valueOf(objectId));
-                mav.addObject("person", constituent);
+            if (EntityType.valueOf(entityType) == EntityType.constituent) {
+                Constituent constituent = constituentService.readConstituentById(Long.valueOf(objectId));
+                mav.addObject("constituent", constituent);
                 audits = auditService.auditHistoryForConstituent(constituent.getId());
             } else {
                 audits = auditService.auditHistoryForEntity(EntityType.valueOf(entityType).name(), Long.valueOf(objectId));

@@ -8,9 +8,9 @@
 
 	<div class="content760 mainForm">
 		<mp:page pageName='paymentManager'/>	
-		<c:set var="person" value="${paymentSource.person}" scope="request"/>
-		<c:if test="${person.id != null}">
-			<c:set var="viewingPerson" value="true" scope="request"/>
+		<c:set var="constituent" value="${paymentSource.constituent}" scope="request"/>
+		<c:if test="${constituent.id != null}">
+			<c:set var="viewingConstituent" value="true" scope="request"/>
 		</c:if>
 		<form:form method="post" commandName="paymentSource">
 			<c:if test="${id != null}">
@@ -20,7 +20,7 @@
 	
 			<spring:message code='paymentMethods' var="titleText" />
 			<spring:message code='submitPaymentMethod' var="submitText" />
-			<jsp:include page="../snippets/personHeader.jsp">
+			<jsp:include page="../snippets/constituentHeader.jsp">
 				<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 				<jsp:param name="submitButtonText" value="${submitText}" />
 			</jsp:include>
@@ -35,10 +35,10 @@
 				</c:forEach>
 				<div class="clearColumns"></div>
 			</div>
-			<div class="formButtonFooter personFormButtons">
+			<div class="formButtonFooter constituentFormButtons">
 				<input type="submit" value="<spring:message code='submitPaymentMethod'/>" class="saveButton"/>
 				<c:if test="${paymentSource.id != null}">
-					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('paymentManager.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('paymentManager.htm?constituentId=${constituent.id}')"/>
 				</c:if>
 			</div>
 		</form:form>

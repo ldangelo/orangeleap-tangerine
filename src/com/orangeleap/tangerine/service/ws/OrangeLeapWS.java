@@ -1,6 +1,6 @@
 package com.orangeleap.tangerine.service.ws;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.ws.schema.*;
@@ -31,7 +31,7 @@ public class OrangeLeapWS {
 	@PayloadRoot(localPart="CreateDefaultConstituentRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
 	public CreateDefaultConstituentResponse createDefaultConstituent(CreateDefaultConstituentRequest cdcr) {
 		CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
-		Person p = cs.createDefaultConstituent();
+		Constituent p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
 		c.setFirstName("Test");
@@ -49,7 +49,7 @@ public class OrangeLeapWS {
     @PayloadRoot(localPart="FindConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
     public FindConstituentsResponse findConstituent(FindConstituentsRequest request) {
 		FindConstituentsResponse cr = new FindConstituentsResponse();
-		Person p = cs.createDefaultConstituent();
+		Constituent p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
 		c.setFirstName("Test");
@@ -63,7 +63,7 @@ public class OrangeLeapWS {
     @PayloadRoot(localPart="SearchConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
     public SearchConstituentsResponse searchConstituent(SearchConstituentsRequest request) {
 		SearchConstituentsResponse cr = new SearchConstituentsResponse();
-		Person p = cs.createDefaultConstituent();
+		Constituent p = cs.createDefaultConstituent();
 		Constituent c = new Constituent();
 		
 		c.setFirstName("Test");

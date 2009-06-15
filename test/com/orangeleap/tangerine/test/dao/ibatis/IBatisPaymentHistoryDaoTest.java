@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.PaymentHistoryDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -27,7 +27,7 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
     	paymentHistoryDao = (PaymentHistoryDao)super.applicationContext.getBean("paymentHistoryDAO");
     }
     
-    private final static Long PERSON_ID = new Long(100);
+    private final static Long CONSTITUENT_ID = new Long(100);
     private final static Long GIFT_ID = new Long(100);
     
     @Test(groups = { "testCreatePaymentHistoryEntry" })
@@ -39,9 +39,9 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
     	paymentHistory.setPaymentType(StringConstants.EMPTY);
     	paymentHistory.setTransactionDate(new java.util.Date());
     	
-    	Person constituent = new Person();
-    	constituent.setId(PERSON_ID);
-    	paymentHistory.setPerson(constituent);
+    	Constituent constituent = new Constituent();
+    	constituent.setId(CONSTITUENT_ID);
+    	paymentHistory.setConstituent(constituent);
     	
     	paymentHistory.setGiftId(GIFT_ID);
     	paymentHistory = paymentHistoryDao.addPaymentHistory(paymentHistory);
@@ -56,8 +56,8 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
         assert StringConstants.EMPTY.equals(history.getPaymentType());
         assert history.getTransactionDate() != null;
         
-        assert history.getPerson() != null;
-        Person constituent = history.getPerson();
+        assert history.getConstituent() != null;
+        Constituent constituent = history.getConstituent();
         IBatisConstituentDaoTest.testConstituentId100(constituent);
         
         assert history.getGiftId() != null;
@@ -71,7 +71,7 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
         PaginatedResult pr = paymentHistoryDao.readPaymentHistoryByConstituentId(0L, sortinfo);
         assert pr.getRowCount() == 0;
         
-    	pr = paymentHistoryDao.readPaymentHistoryByConstituentId(new Long(PERSON_ID), sortinfo);
+    	pr = paymentHistoryDao.readPaymentHistoryByConstituentId(new Long(CONSTITUENT_ID), sortinfo);
         assert pr.getRowCount() > 0;
         PaymentHistory history = (PaymentHistory)pr.getRows().get(0);
         testCreatedHistory(history);
@@ -95,8 +95,8 @@ public class IBatisPaymentHistoryDaoTest extends AbstractIBatisTest {
                     assert history.getTransactionDate() != null;
                     assert "123456789".equals(history.getTransactionId());
                     assert history.getGiftId() == 600L;
-                    assert history.getPerson() != null && history.getPerson().getId() == 300L;
-                    IBatisConstituentDaoTest.testConstituentId300(history.getPerson());
+                    assert history.getConstituent() != null && history.getConstituent().getId() == 300L;
+                    IBatisConstituentDaoTest.testConstituentId300(history.getConstituent());
                     break;
                 default:
                     testCreatedHistory(history);

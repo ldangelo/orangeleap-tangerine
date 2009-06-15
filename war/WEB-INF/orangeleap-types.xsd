@@ -11,7 +11,7 @@
           <xs:element name="emailType" type="tns:formBeanType" minOccurs="0"/>
           <xs:element name="entryType" type="xs:string" minOccurs="0"/>
           <xs:element name="giftId" type="xs:long" minOccurs="0"/>
-          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="constituent" type="tns:constituent" minOccurs="0"/>
           <xs:element name="pledgeId" type="xs:long" minOccurs="0"/>
           <xs:element name="recordDate" type="xs:dateTime" minOccurs="0"/>
           <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
@@ -187,7 +187,7 @@
           <xs:element name="paymentSource" type="tns:paymentSource" minOccurs="0"/>
           <xs:element name="paymentSourceType" type="tns:formBeanType" minOccurs="0"/>
           <xs:element name="paymentType" type="xs:string" minOccurs="0"/>
-          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="constituent" type="tns:constituent" minOccurs="0"/>
           <xs:element name="phone" type="tns:phone" minOccurs="0"/>
           <xs:element name="phoneType" type="tns:formBeanType" minOccurs="0"/>
           <xs:element name="selectedAddress" type="tns:address" minOccurs="0"/>
@@ -247,7 +247,7 @@
           <xs:element name="comments" type="xs:string" minOccurs="0"/>
           <xs:element name="effectiveDate" type="xs:dateTime" minOccurs="0"/>
           <xs:element name="inactive" type="xs:boolean"/>
-          <xs:element name="personId" type="xs:long" minOccurs="0"/>
+          <xs:element name="constituentId" type="xs:long" minOccurs="0"/>
           <xs:element name="primary" type="xs:boolean"/>
           <xs:element name="receiveCorrespondence" type="xs:boolean"/>
           <xs:element name="seasonalEndDate" type="xs:dateTime" minOccurs="0"/>
@@ -330,7 +330,7 @@
           <xs:element name="motivationCode" type="xs:string" minOccurs="0"/>
           <xs:element name="other_motivationCode" type="xs:string" minOccurs="0"/>
           <xs:element name="percentage" type="xs:decimal" minOccurs="0"/>
-          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="constituent" type="tns:constituent" minOccurs="0"/>
           <xs:element name="pledgeId" type="xs:long" minOccurs="0"/>
           <xs:element name="projectCode" type="xs:string" minOccurs="0"/>
           <xs:element name="recurringGiftId" type="xs:long" minOccurs="0"/>
@@ -363,7 +363,7 @@
           <xs:element name="inactive" type="xs:boolean"/>
           <xs:element name="lastFourDigits" type="xs:string" minOccurs="0"/>
           <xs:element name="paymentType" type="xs:string" minOccurs="0"/>
-          <xs:element name="person" type="tns:constituent" minOccurs="0"/>
+          <xs:element name="constituent" type="tns:constituent" minOccurs="0"/>
           <xs:element name="phone" type="tns:phone" minOccurs="0"/>
           <xs:element name="phoneType" type="tns:formBeanType" minOccurs="0"/>
           <xs:element name="profile" type="xs:string" minOccurs="0"/>
@@ -476,7 +476,7 @@
   <xs:simpleType name="entityType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="common"/>
-      <xs:enumeration value="person"/>
+      <xs:enumeration value="constituent"/>
       <xs:enumeration value="donation"/>
       <xs:enumeration value="event"/>
       <xs:enumeration value="address"/>
@@ -552,7 +552,7 @@
 
   <xs:simpleType name="referenceType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="person"/>
+      <xs:enumeration value="constituent"/>
       <xs:enumeration value="pledge"/>
       <xs:enumeration value="gift"/>
       <xs:enumeration value="recurringGift"/>

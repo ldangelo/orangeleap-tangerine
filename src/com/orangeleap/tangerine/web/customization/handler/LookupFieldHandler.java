@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
@@ -67,8 +67,8 @@ public class LookupFieldHandler extends GenericFieldHandler {
 
     protected String resolve(Long id, ReferenceType referenceType) {
         String val = new StringBuilder(id == null ? StringConstants.EMPTY : id.toString()).toString();
-        if (referenceType == ReferenceType.person) {
-            Person constituent = constituentService.readConstituentById(id);
+        if (referenceType == ReferenceType.constituent) {
+            Constituent constituent = constituentService.readConstituentById(id);
             if (constituent == null) {
                 logger.warn("resolve: Could not find constituent for ID = " + id);
             }

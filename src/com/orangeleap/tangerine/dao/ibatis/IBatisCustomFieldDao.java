@@ -31,12 +31,12 @@ public class IBatisCustomFieldDao extends AbstractIBatisDao implements CustomFie
 
     @SuppressWarnings("unchecked")
 	@Override
-	public List<CustomField> readCustomFieldsByEntityAndFieldName(Long personId, String entityType, String fieldName) {
+	public List<CustomField> readCustomFieldsByEntityAndFieldName(Long constituentId, String entityType, String fieldName) {
         if (logger.isTraceEnabled()) {
             logger.trace("readCustomFieldsByEntityAndFieldName: entityType = " + entityType);
         }
         Map<String, Object> params = setupParams();
-        params.put("entityId", personId);
+        params.put("entityId", constituentId);
         params.put("entityType", entityType);
         params.put("fieldName", fieldName);
         return getSqlMapClientTemplate().queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);

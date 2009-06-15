@@ -9,7 +9,7 @@ public class EntityExporterFactory {
 	
 	public EntityExporter getEntityExporter(ExportRequest er, ApplicationContext applicationContext) {
 		
-		if ("person".equals(er.getEntity())) return new PersonExporter(er, applicationContext);
+		if ("constituent".equals(er.getEntity())) return new ConstituentExporter(er, applicationContext);
 		if ("gift".equals(er.getEntity())) return new GiftExporter(er, applicationContext);
 		if ("address".equals(er.getEntity())) return new AddressExporter(er, applicationContext);
 		

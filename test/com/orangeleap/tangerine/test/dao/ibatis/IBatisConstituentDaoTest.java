@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.ConstituentDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -27,7 +27,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         constituentDao = (ConstituentDao)super.applicationContext.getBean("constituentDAO");
     }
     
-    public static void testConstituentId100(Person constituent) {
+    public static void testConstituentId100(Constituent constituent) {
         assert constituent.getId() == 100L;
         assert "Billy Graham Ministries".equals(constituent.getOrganizationName());
         assert "Graham".equals(constituent.getLastName());
@@ -38,7 +38,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert 1000000L == constituent.getAccountNumber();
     }
     
-    public static void testConstituentId200(Person constituent) {
+    public static void testConstituentId200(Constituent constituent) {
         assert constituent.getId() == 200L;
         assert "Painters, Inc.".equals(constituent.getOrganizationName());
         assert "Picasso".equals(constituent.getLastName());
@@ -49,7 +49,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         assert 2000000L == constituent.getAccountNumber();
     }
 
-    public static void testConstituentId300(Person constituent) {
+    public static void testConstituentId300(Constituent constituent) {
         assert constituent.getId() == 300L;
         assert "Howdy Doody Inc".equals(constituent.getOrganizationName());
         assert "Doody".equals(constituent.getLastName());
@@ -63,18 +63,18 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testMaintainConstituent" }, dependsOnGroups = { "testReadConstituent" })
     public void testMaintainConstituent() throws Exception {
         // Insert
-        Person constituent = new Person();
+        Constituent constituent = new Constituent();
         constituent.setFirstName("Joe");
         constituent.setLastName("Bob");
         constituent.setSite(new Site("company1"));
-        constituent.setConstituentType(Person.INDIVIDUAL);
+        constituent.setConstituentType(Constituent.INDIVIDUAL);
         constituent.setTitle("Sir");
         constituent.setAccountNumber(4000000L);
         
         constituent = constituentDao.maintainConstituent(constituent);
         assert constituent.getId() > 0;
         
-        Person readConstituent = constituentDao.readConstituentById(constituent.getId());
+        Constituent readConstituent = constituentDao.readConstituentById(constituent.getId());
         assert readConstituent != null;
         assert constituent.getFirstName().equals(readConstituent.getFirstName());
         assert constituent.getLastName().equals(readConstituent.getLastName());
@@ -128,13 +128,13 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByIdInvalid() throws Exception {
-        Person constituent = constituentDao.readConstituentById(0L);
+        Constituent constituent = constituentDao.readConstituentById(0L);
         assert constituent == null;
     }
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentById() throws Exception {
-        Person constituent = constituentDao.readConstituentById(100L);
+        Constituent constituent = constituentDao.readConstituentById(100L);
         assert constituent != null;
         assert constituent.getId() == 100;
         assert "Billy Graham Ministries".equals(constituent.getOrganizationName());
@@ -147,13 +147,13 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByLoginIdInvalid() throws Exception {
-        Person constituent = constituentDao.readConstituentByLoginId("pablo@companyDoesNotExist.com");
+        Constituent constituent = constituentDao.readConstituentByLoginId("pablo@companyDoesNotExist.com");
         assert constituent == null;
     }
     
     @Test(groups = { "testReadConstituent" })
     public void testReadConstituentByLoginId() throws Exception {
-        Person constituent = constituentDao.readConstituentByLoginId("pablo@company1.com");
+        Constituent constituent = constituentDao.readConstituentByLoginId("pablo@company1.com");
         assert constituent != null;
         assert constituent.getId() == 200;
         testConstituentId200(constituent);
@@ -161,9 +161,9 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadConstituent" })
     public void testReadAllConstituentsBySiteName() throws Exception {
-        List<Person> constituents = constituentDao.readAllConstituentsBySite();
+        List<Constituent> constituents = constituentDao.readAllConstituentsBySite();
         assert constituents != null && constituents.size() == 3;
-        for (Person constituent : constituents) {
+        for (Constituent constituent : constituents) {
             assert "company1".equals(constituent.getSite().getName());
             assert constituent.getId() == 200 || constituent.getId() == 300 || constituent.getId() == 100;
             assert "Painters, Inc.".equals(constituent.getOrganizationName()) || "Howdy Doody Inc".equals(constituent.getOrganizationName()) || "Billy Graham Ministries".equals(constituent.getOrganizationName());
@@ -174,8 +174,8 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         }
     }
     
-    @Test(groups = { "testSearchPersons" })
-    public void testSearchPersons() throws Exception {
+    @Test(groups = { "testSearchConstituents" })
+    public void testSearchConstituents() throws Exception {
     	Map<String, Object> params = new HashMap<String, Object>();
         List<Long> ignoreIds = new ArrayList<Long>();
         long ignoreId = 100l;
@@ -186,17 +186,17 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
         params.put("addressMap[home].addressLine1", "ACORN");
         params.put("emailMap[home].email", "");
     	
-        List<Person> constituents = constituentDao.searchConstituents(params, ignoreIds);
+        List<Constituent> constituents = constituentDao.searchConstituents(params, ignoreIds);
         assert constituents != null && constituents.size() > 0;
-        for (Person constituent : constituents) {
+        for (Constituent constituent : constituents) {
         	System.out.println(constituent);
             assert constituent.getFirstName().equals("Pablo");
             assert constituent.getId().longValue() != ignoreId;
         }
     }
     
-    @Test(groups = {"testFindPersons"})
-    public void testFindPersons() throws Exception {
+    @Test(groups = {"testFindConstituents"})
+    public void testFindConstituents() throws Exception {
     	Map<String,Object> params = new HashMap<String, Object>();
     	List<Long> ignoreIds = new ArrayList<Long>();
     	long ignoreId = 1001;
@@ -207,20 +207,20 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 //    	params.put("addressMap[home].addressLine1", "ACORN");
 //    	params.put("emailMap[home].email","pablo@company1.com");
     	
-    	List<Person> constituents = constituentDao.findConstituents(params,ignoreIds);
+    	List<Constituent> constituents = constituentDao.findConstituents(params,ignoreIds);
     	assert constituents != null && constituents.size() >0;
-    	for (Person constituent: constituents) {
+    	for (Constituent constituent: constituents) {
     			System.out.println(constituents);
     			assert constituent.getFirstName().equals("Pablo");
     			assert constituent.getId().longValue() != ignoreId;
     	}
     }
     
-    @Test(groups = { "testSearchPersons" })
+    @Test(groups = { "testSearchConstituents" })
     public void testReadAllConstituentsByIdRange() throws Exception {
-        List<Person> constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 2000000L);
+        List<Constituent> constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 2000000L);
         assert constituents.size() == 2;
-        for (Person constituent : constituents) {
+        for (Constituent constituent : constituents) {
             assert constituent.getId() == 100L || constituent.getId() == 200L;
         }
 
@@ -233,7 +233,7 @@ public class IBatisConstituentDaoTest extends AbstractIBatisTest {
 
         constituents = constituentDao.readAllConstituentsByAccountRange(1000000L, 3000000L);
         assert constituents.size() == 3;
-        for (Person constituent : constituents) {
+        for (Constituent constituent : constituents) {
             assert constituent.getId() == 100L || constituent.getId() == 200L || constituent.getId() == 300L;
         }
     }

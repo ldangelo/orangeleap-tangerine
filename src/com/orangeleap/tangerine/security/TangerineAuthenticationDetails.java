@@ -25,7 +25,7 @@ public class TangerineAuthenticationDetails implements SessionIdentifierAware, S
 
     private Map<String, AccessType> pageAccess;
 
-    private Long personId;
+    private Long constituentId;
 
     private Map<String, String> userAttributes;
 
@@ -59,12 +59,12 @@ public class TangerineAuthenticationDetails implements SessionIdentifierAware, S
         this.pageAccess = pageAccess;
     }
 
-    public Long getPersonId() {
-        return personId;
+    public Long getConstituentId() {
+        return constituentId;
     }
 
-    public void setPersonId(Long personId) {
-        this.personId = personId;
+    public void setConstituentId(Long constituentId) {
+        this.constituentId = constituentId;
     }
 
     public Map<String, String> getUserAttributes() {

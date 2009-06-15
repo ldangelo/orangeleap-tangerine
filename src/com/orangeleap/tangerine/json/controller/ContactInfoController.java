@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -38,7 +38,7 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person constituent = constituentService.readConstituentById(id);
+        Constituent constituent = constituentService.readConstituentById(id);
         if (constituent == null) {
             return new ModelMap();
         }
@@ -69,12 +69,12 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = constituentService.readConstituentById(id);
-        if (person == null) {
+        Constituent constituent = constituentService.readConstituentById(id);
+        if (constituent == null) {
             return new ModelMap();
         }
 
-        List<Phone> phones = person.getPhones();
+        List<Phone> phones = constituent.getPhones();
 
         for(Phone phone : phones) {
 
@@ -98,12 +98,12 @@ public class ContactInfoController {
 
         List<Map> response = new ArrayList<Map>();
 
-        Person person = constituentService.readConstituentById(id);
-        if (person == null) {
+        Constituent constituent = constituentService.readConstituentById(id);
+        if (constituent == null) {
             return new ModelMap();
         }
 
-        List<Email> emails = person.getEmails();
+        List<Email> emails = constituent.getEmails();
 
         for(Email email : emails) {
 

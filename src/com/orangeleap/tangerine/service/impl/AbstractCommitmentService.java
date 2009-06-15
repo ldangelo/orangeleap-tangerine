@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -41,7 +41,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     @Resource(name = "siteDAO")
     private SiteDao siteDao;
 
-    public void createDefault(Person constituent, T commitment, EntityType entityType, String lineIdProperty) {
+    public void createDefault(Constituent constituent, T commitment, EntityType entityType, String lineIdProperty) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultCommitment: constituent = " + (constituent == null ? null : constituent.getId()));
         }
@@ -59,7 +59,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         lineWrapper.setPropertyValue(lineIdProperty, commitment.getId());
         lines.add(line);
         commitment.setDistributionLines(lines);
-        commitment.setPerson(constituent);
+        commitment.setConstituent(constituent);
     }
     
     // TODO: refactor; this method is a mess!!!

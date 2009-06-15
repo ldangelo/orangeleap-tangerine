@@ -49,7 +49,7 @@ Ext.onReady(function() {
                 var rec = grid.getSelectionModel().getSelected();
                 Sidebar.win.hide();
                 Ext.get(document.body).mask('Loading ' + rec.data.first + ' ' + rec.data.last);
-                window.location.href = "person.htm?personId=" + rec.data.id;
+                window.location.href = "constituent.htm?constituentId=" + rec.data.id;
             }
         },
         bbar: ['Double click a row to view details']

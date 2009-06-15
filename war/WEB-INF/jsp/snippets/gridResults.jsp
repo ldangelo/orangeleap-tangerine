@@ -17,8 +17,8 @@
 							<c:when test="${not empty fieldVO.ids[status.index]}">
 								<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">
 									<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.ids[status.index]}" />
-									<c:if test="${fieldVO.referenceType != 'person'}">
-										<c:param name="personId" value="${param.personId}" />
+									<c:if test="${fieldVO.referenceType != 'constituent'}">
+										<c:param name="constituentId" value="${param.constituentId}" />
 									</c:if>
 								</c:url>
 								<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>

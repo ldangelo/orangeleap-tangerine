@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -72,7 +72,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 				
 				
 
-				List<Person> peopleList = constituentService.readAllConstituentsBySite();
+				List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
 				
 
 					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
@@ -87,16 +87,16 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 							.addEventListener(new DebugWorkingMemoryEventListener());
 
 					workingMemory.setGlobal("giftService", gs);
-					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("constituentService", ps);
 					workingMemory.setGlobal("mailService",ms);
 					workingMemory.setGlobal("applicationContext",
 							applicationContext);
 					workingMemory.setFocus(getSiteName() + "scheduleddaily");
-					for (Person p : peopleList) {
+					for (Constituent p : peopleList) {
 						Boolean updated = false;
 
 						//
-						// if the person has been updated or one of their
+						// if the constituent has been updated or one of their
 						// gifts have been updated
 						if (p.getUpdateDate().compareTo(yesterday) > 0) updated = true;
 						
@@ -104,7 +104,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 								.readMonetaryGiftsByConstituentId(p.getId());
 						
 						//
-						// if the person has not been updated check to see if any of their
+						// if the constituent has not been updated check to see if any of their
 						// gifts have been...
 						if (!updated) {
 							for (Gift g: giftList) {
@@ -153,7 +153,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 				
 				
 				th.setSystemUserAndSiteName(s.getName());
-				List<Person> peopleList = constituentService.readAllConstituentsBySite();
+				List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
 				
 
 					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
@@ -168,16 +168,16 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 							.addEventListener(new DebugWorkingMemoryEventListener());
 
 					workingMemory.setGlobal("giftService", gs);
-					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("constituentService", ps);
 					workingMemory.setGlobal("mailService",ms);
 					workingMemory.setGlobal("applicationContext",
 							applicationContext);
 					workingMemory.setFocus(getSiteName() + "scheduledweekly");
-					for (Person p : peopleList) {
+					for (Constituent p : peopleList) {
 						Boolean updated = false;
 
 						//
-						// if the person has been updated or one of their
+						// if the constituent has been updated or one of their
 						// gifts have been updated
 						if (p.getCreateDate().compareTo(lastweek) > 0) updated = true;
 						
@@ -185,7 +185,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 								.readMonetaryGiftsByConstituentId(p.getId());
 						
 						//
-						// if the person has not been updated check to see if any of their
+						// if the constituent has not been updated check to see if any of their
 						// gifts have been...
 						if (!updated) {
 							for (Gift g: giftList) {
@@ -234,7 +234,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 				
 				
 				th.setSystemUserAndSiteName(s.getName());
-				List<Person> peopleList = constituentService.readAllConstituentsBySite();
+				List<Constituent> peopleList = constituentService.readAllConstituentsBySite();
 				
 
 					RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
@@ -249,16 +249,16 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 							.addEventListener(new DebugWorkingMemoryEventListener());
 
 					workingMemory.setGlobal("giftService", gs);
-					workingMemory.setGlobal("personService", ps);
+					workingMemory.setGlobal("constituentService", ps);
 					workingMemory.setGlobal("mailService",ms);
 					workingMemory.setGlobal("applicationContext",
 							applicationContext);
 					workingMemory.setFocus(getSiteName() + "scheduledmonthly");
-					for (Person p : peopleList) {
+					for (Constituent p : peopleList) {
 						Boolean updated = false;
 
 						//
-						// if the person has been updated or one of their
+						// if the constituent has been updated or one of their
 						// gifts have been updated
 						if (p.getCreateDate().compareTo(lastmonth) > 0) updated = true;
 						
@@ -266,7 +266,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 								.readMonetaryGiftsByConstituentId(p.getId());
 						
 						//
-						// if the person has not been updated check to see if any of their
+						// if the constituent has not been updated check to see if any of their
 						// gifts have been...
 						if (!updated) {
 							for (Gift g: giftList) {

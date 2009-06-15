@@ -7,13 +7,13 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='membershipView'/>
-			<c:set var="person" value="${commitment.person}" scope="request" />
-			<c:if test="${person.id!=null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${commitment.constituent}" scope="request" />
+			<c:if test="${constituent.id!=null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 			<form:form method="post" commandName="commitment">
 
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="View Membership" />
 				</jsp:include>
 
@@ -29,16 +29,16 @@
 						</c:forEach>
 						<div class="clearColumns"></div>
 					</div>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="Save Changes" class="saveButton" />
 				</div>
 			</form:form>
 
 			<div class="formButtonFooter">
 				<c:if test="${pageAccess['/membershipList.htm']!='DENIED'}">
-					<input type="button" value="<spring:message code='viewMembershipHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membershipList.htm?personId=${person.id}')"/>
+					<input type="button" value="<spring:message code='viewMembershipHistory'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membershipList.htm?constituentId=${constituent.id}')"/>
 				</c:if>
-				<input type="button" value="<spring:message code='enterNewMembership'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membership.htm?personId=${person.id}')"/>
+				<input type="button" value="<spring:message code='enterNewMembership'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('membership.htm?constituentId=${constituent.id}')"/>
 			</div>
 			<c:forEach var="gift" items="${gifts}">
 			<c:out value='${gift.transactionDate}'/> ... <c:out value='${gift.amount}'/><br />

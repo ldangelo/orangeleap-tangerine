@@ -29,7 +29,7 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        sessionService.lookupSite(); // call lookupSite to make sure TangerineAuthenticationToken has the personId set
+        sessionService.lookupSite(); // call lookupSite to make sure TangerineAuthenticationToken has the constituentId set
         return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getConstituent(request));
     }
 
@@ -49,7 +49,7 @@ public class CommunicationHistoryFormController extends TangerineConstituentAttr
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+            mav = new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
         }
         else {
             mav = super.showForm(request, errors, getFormView());

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orangeleap.tangerine.dao.ConstituentCustomFieldRelationshipDao;
 import com.orangeleap.tangerine.dao.ConstituentDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
@@ -74,7 +74,7 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
 	}
     
     public ConstituentCustomFieldRelationship readByConstituentFieldDefinitionCustomFieldIds(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
-	    Person constituent = constituentDao.readConstituentById(constituentId);
+	    Constituent constituent = constituentDao.readConstituentById(constituentId);
 	    // If the site can't read the constituent, don't return the ccr.
 	    if (constituent == null) return null;
 	    ConstituentCustomFieldRelationship constituentCustomFieldRelationship = constituentCustomFieldRelationshipDao.readByConstituentFieldDefinitionCustomFieldIds(constituentId, fieldDefinitionId, customFieldValue, customFieldStartDate);

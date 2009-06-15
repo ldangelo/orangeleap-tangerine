@@ -71,7 +71,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			//
 			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
 			
 			//
 			// Create the request
@@ -218,7 +218,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			//
 			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
 			
 			//
 			// Create the request
@@ -339,7 +339,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			//
 			// make sure the site information is loaded
 			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			gift.getPerson().setSite(ss.readSite(gift.getPerson().getSite().getName()));
+			gift.getConstituent().setSite(ss.readSite(gift.getConstituent().getSite().getName()));
 			
 			//
 			// Create the request

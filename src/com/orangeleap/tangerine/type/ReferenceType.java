@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
 public enum ReferenceType {
-    person,
+    constituent,
     pledge,
     gift,
     recurringGift,

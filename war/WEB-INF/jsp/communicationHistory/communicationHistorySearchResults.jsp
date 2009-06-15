@@ -18,7 +18,7 @@
 			<tbody>
 				<c:forEach items="${pagedListHolder.pageList}" var="row">
 					<tr>
-						<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&personId=${row.person.id}"><spring:message code='view'/></a></td>
+						<td><a href="communicationHistoryView.htm?communicationHistoryId=${row.id}&constituentId=${row.constituent.id}"><spring:message code='view'/></a></td>
 						<%@ include file="/WEB-INF/jsp/snippets/gridResults.jsp" %>
 					</tr>
 				</c:forEach>

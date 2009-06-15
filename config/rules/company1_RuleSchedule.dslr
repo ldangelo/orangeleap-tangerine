@@ -1,8 +1,8 @@
 package com.orangeleap.tangerine.rules
 
-import com.orangeleap.tangerine.service.PersonService;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Gift;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,21 +14,21 @@ global org.springframework.context.ApplicationContext applicationContext;
 
 rule "Analyze Lapsed Donor"
 	when
-		There is a person
+		There is a constituent
 		- who is not a lapsed donor
 		who donated at least 1 gifts
 		who has not made a donation in the past 2 "months"
 	then
-		Set the person as a lapsed donor
+		Set the constituent as a lapsed donor
 end
 
 rule "Set Monthly Donors"
 	when
-		There is a person
+		There is a constituent
 		
 		who has donated in 4 out of the last 4 months
 	then
-		#>System.out.println("PERSON: " + $personId + " is a MONTHLY DONOR");
+		#>System.out.println("CONSTITUENT: " + $constituentId + " is a MONTHLY DONOR");
 end
 
 

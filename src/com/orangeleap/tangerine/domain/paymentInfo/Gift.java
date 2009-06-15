@@ -253,11 +253,11 @@ public class Gift extends AbstractPaymentInfoEntity {
 		this.currencyCode = giftInKind.getCurrencyCode();
 		this.donationDate = giftInKind.getDonationDate();
 		this.transactionDate = giftInKind.getTransactionDate();
-		this.person = giftInKind.getPerson();
+		this.constituent = giftInKind.getConstituent();
 	}
 
 	public void setGiftForRecurringGift(RecurringGift recurringGift) {
-		this.setPerson(recurringGift.getPerson());
+		this.setConstituent(recurringGift.getConstituent());
 		this.addAssociatedRecurringGiftId(recurringGift.getId());
 
 		this.setComments(recurringGift.getComments());

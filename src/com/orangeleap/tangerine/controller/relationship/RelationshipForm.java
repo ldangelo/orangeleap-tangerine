@@ -2,14 +2,14 @@ package com.orangeleap.tangerine.controller.relationship;
 
 import java.util.List;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 
 public class RelationshipForm {
 	
 	private FieldDefinition fieldDefinition;
-	private Person person;
+	private Constituent constituent;
 	private List<CustomField> customFieldList;
 	private List<String> relationshipNames;
 	private String fieldLabel;
@@ -21,11 +21,11 @@ public class RelationshipForm {
 	public FieldDefinition getFieldDefinition() {
 		return fieldDefinition;
 	}
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setConstituent(Constituent constituent) {
+		this.constituent = constituent;
 	}
-	public Person getPerson() {
-		return person;
+	public Constituent getConstituent() {
+		return constituent;
 	}
 	public void setCustomFieldList(List<CustomField> relationshipList) {
 		this.customFieldList = relationshipList;

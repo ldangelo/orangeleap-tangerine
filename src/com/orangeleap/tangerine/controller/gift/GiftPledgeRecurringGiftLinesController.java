@@ -12,7 +12,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -37,8 +37,8 @@ public class GiftPledgeRecurringGiftLinesController extends SimpleFormController
     @Resource(name="constituentService")
     private ConstituentService constituentService;
     
-    private Person getConstituent(HttpServletRequest request) {
-        return constituentService.readConstituentById(Long.parseLong(request.getParameter(StringConstants.PERSON_ID)));
+    private Constituent getConstituent(HttpServletRequest request) {
+        return constituentService.readConstituentById(Long.parseLong(request.getParameter(StringConstants.CONSTITUENT_ID)));
     }
     
     @Override

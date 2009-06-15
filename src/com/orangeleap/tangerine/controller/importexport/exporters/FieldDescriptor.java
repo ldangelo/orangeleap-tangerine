@@ -79,7 +79,7 @@ public class FieldDescriptor {
 	
 	// Create an export field name for internal name.
 	public String getExportFieldNameForInternalName() {
-		if (name.startsWith("person.")) return name.substring(name.indexOf('.')+1);
+		if (name.startsWith("constituent.")) return name.substring(name.indexOf('.')+1);
 		return getExportFieldNameForMap(name);
 	}
 	

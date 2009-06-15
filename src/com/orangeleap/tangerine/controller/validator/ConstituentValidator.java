@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class ConstituentValidator implements Validator {
@@ -28,52 +28,52 @@ public class ConstituentValidator implements Validator {
     @SuppressWarnings("unchecked")
     @Override
     public boolean supports(Class clazz) {
-        return Person.class.equals(clazz);
+        return Constituent.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        Person constituent = (Person)target;
+        Constituent constituent = (Constituent)target;
         validateConstituentAddress(constituent, errors);
         validateConstituentPhone(constituent, errors);
         validateConstituentEmail(constituent, errors);
         validateOrganization(constituent, errors);
     }
     
-    private void validateConstituentAddress(Person constituent, Errors errors) {
+    private void validateConstituentAddress(Constituent constituent, Errors errors) {
         if (constituent.getPrimaryAddress() != null && constituent.getPrimaryAddress().isFieldEntered()) {
             addressValidator.validateAddress(constituent, errors);
         }
     }
     
-    private void validateConstituentPhone(Person constituent, Errors errors) {
+    private void validateConstituentPhone(Constituent constituent, Errors errors) {
         if (constituent.getPrimaryPhone() != null && constituent.getPrimaryPhone().isFieldEntered()) {
             phoneValidator.validatePhone(constituent, errors);
         }
     }
     
-    private void validateConstituentEmail(Person constituent, Errors errors) {
+    private void validateConstituentEmail(Constituent constituent, Errors errors) {
         if (constituent.getPrimaryEmail() != null && constituent.getPrimaryEmail().isFieldEntered()) {
             emailValidator.validateEmail(constituent, errors);
         }
     }
     
-    private void validateOrganization(Person constituent, Errors errors) {
+    private void validateOrganization(Constituent constituent, Errors errors) {
         if (constituent.isOrganization()) {
-            Object minMatch = constituent.getCustomFieldValue(Person.ORGANIZATION_MINIMUM_GIFT_MATCH);
-            Object maxMatch = constituent.getCustomFieldValue(Person.ORGANIZATION_MAXIMUM_GIFT_MATCH);
+            Object minMatch = constituent.getCustomFieldValue(Constituent.ORGANIZATION_MINIMUM_GIFT_MATCH);
+            Object maxMatch = constituent.getCustomFieldValue(Constituent.ORGANIZATION_MAXIMUM_GIFT_MATCH);
             if (minMatch != null && NumberUtils.isNumber(minMatch.toString()) == false) {
-                errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Person.ORGANIZATION_MINIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMinGiftMatch", "The Minimum Gift Match must be a valid amount");
+                errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Constituent.ORGANIZATION_MINIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMinGiftMatch", "The Minimum Gift Match must be a valid amount");
             }
             if (maxMatch != null && NumberUtils.isNumber(maxMatch.toString()) == false) {
-                errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Person.ORGANIZATION_MAXIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMaxGiftMatch", "The Maximum Gift Match must be a valid amount");
+                errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Constituent.ORGANIZATION_MAXIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMaxGiftMatch", "The Maximum Gift Match must be a valid amount");
             }
             if (minMatch != null && NumberUtils.isNumber(minMatch.toString()) && maxMatch != null && NumberUtils.isNumber(maxMatch.toString())) {
                 Double min = new Double(minMatch.toString());
                 Double max = new Double(maxMatch.toString());
                 
                 if (max.doubleValue() < min.doubleValue()) {
-                    errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Person.ORGANIZATION_MAXIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMinMaxGiftMatch", "The Maximum Gift Match amount must be greater than or equal to the Minimum Gift Match amount");
+                    errors.rejectValue(StringConstants.CUSTOM_FIELD_MAP_START + Constituent.ORGANIZATION_MAXIMUM_GIFT_MATCH + StringConstants.CUSTOM_FIELD_MAP_END, "invalidMinMaxGiftMatch", "The Maximum Gift Match amount must be greater than or equal to the Minimum Gift Match amount");
                 }
             }
         }

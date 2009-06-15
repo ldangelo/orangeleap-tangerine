@@ -56,7 +56,7 @@ public abstract class CommitmentFormController<T extends Commitment> extends Tan
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(super.appendSaved(getReturnView(current) + "?" + getParamId() + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
         }
         else {
             if (handleEmptyDistributionLines) {

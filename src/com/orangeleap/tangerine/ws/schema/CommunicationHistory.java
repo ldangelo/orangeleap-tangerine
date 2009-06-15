@@ -31,7 +31,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="emailType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="entryType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="giftId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *         &lt;element name="person" type="{http://www.orangeleap.com/orangeleap/services/1.0}constituent" minOccurs="0"/>
+ *         &lt;element name="constituent" type="{http://www.orangeleap.com/orangeleap/services/1.0}constituent" minOccurs="0"/>
  *         &lt;element name="pledgeId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
  *         &lt;element name="recordDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="recurringGiftId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
@@ -55,7 +55,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "emailType",
     "entryType",
     "giftId",
-    "person",
+    "constituent",
     "pledgeId",
     "recordDate",
     "recurringGiftId",
@@ -74,7 +74,7 @@ public class CommunicationHistory
     protected String emailType;
     protected String entryType;
     protected Long giftId;
-    protected Constituent person;
+    protected Constituent constituent;
     protected Long pledgeId;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar recordDate;
@@ -229,27 +229,27 @@ public class CommunicationHistory
     }
 
     /**
-     * Gets the value of the person property.
+     * Gets the value of the constituent property.
      * 
      * @return
      *     possible object is
      *     {@link Constituent }
      *     
      */
-    public Constituent getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
     /**
-     * Sets the value of the person property.
+     * Sets the value of the constituent property.
      * 
      * @param value
      *     allowed object is
      *     {@link Constituent }
      *     
      */
-    public void setPerson(Constituent value) {
-        this.person = value;
+    public void setConstituent(Constituent value) {
+        this.constituent = value;
     }
 
     /**

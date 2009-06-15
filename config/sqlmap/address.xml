@@ -20,7 +20,7 @@
         <result property="stateProvince" column="ADDRESS_STATE_PROVINCE" jdbcType="VARCHAR"/>
         <result property="temporaryEndDate" column="ADDRESS_TEMPORARY_END_DATE" jdbcType="TIMESTAMP"/>
         <result property="temporaryStartDate" column="ADDRESS_TEMPORARY_START_DATE" jdbcType="TIMESTAMP"/>
-        <result property="personId" column="ADDRESS_CONSTITUENT_ID" jdbcType="BIGINT"/>
+        <result property="constituentId" column="ADDRESS_CONSTITUENT_ID" jdbcType="BIGINT"/>
         <result property="ncoaDate" column="ADDRESS_NCOA_DATE" jdbcType="TIMESTAMP"/>
         <result property="cassDate" column="ADDRESS_CASS_DATE" jdbcType="TIMESTAMP"/>
 		<result property="primary" column="ADDRESS_IS_PRIMARY" jdbcType="CHAR" />
@@ -77,7 +77,7 @@
         #inactive#, #postalCode#, #receiveCorrespondence#,
         #seasonalEndDate#, #seasonalStartDate#, #stateProvince#,
         #temporaryEndDate#, #temporaryStartDate#, now(),
-        #personId#, #ncoaDate#, #cassDate#, #primary#, #undeliverable#)
+        #constituentId#, #ncoaDate#, #cassDate#, #primary#, #undeliverable#)
         <selectKey keyProperty="id" resultClass="long">
             SELECT LAST_INSERT_ID() AS value
         </selectKey>
@@ -102,7 +102,7 @@
         STATE_PROVINCE = #stateProvince#,
         TEMPORARY_END_DATE = #temporaryEndDate#,
         TEMPORARY_START_DATE = #temporaryStartDate#,
-        CONSTITUENT_ID = #personId#,
+        CONSTITUENT_ID = #constituentId#,
         NCOA_DATE = #ncoaDate#, 
         CASS_DATE = #cassDate#, 
 		IS_PRIMARY = #primary#,

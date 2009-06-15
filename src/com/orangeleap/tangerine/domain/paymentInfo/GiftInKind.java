@@ -14,7 +14,7 @@ import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.util.StringConstants;
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
@@ -32,7 +32,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
     private Date transactionDate;
    
     private Long giftId;
-    private Person person;
+    private Constituent constituent;
 
     /** Form bean representation of the GiftInKindDetails */
     protected List<GiftInKindDetail> mutableDetails = LazyList.decorate(new ArrayList<GiftInKindDetail>(), new Factory() {
@@ -140,12 +140,12 @@ public class GiftInKind extends AbstractCustomizableEntity {
         this.transactionDate = transactionDate;
     }
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
     }
 
     public List<GiftInKindDetail> getDetails() {
@@ -202,7 +202,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
     public void setDefaults() {
         super.setDefaults();
         if (recognitionName == null) {
-            setRecognitionName(person.getRecognitionName());
+            setRecognitionName(constituent.getRecognitionName());
         }
     }
 
@@ -215,7 +215,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
     }
 
     public Site getSite() {
-        return person != null ? person.getSite() : null;
+        return constituent != null ? constituent.getSite() : null;
     }
 
     @Override
@@ -223,7 +223,7 @@ public class GiftInKind extends AbstractCustomizableEntity {
         return new ToStringCreator(this).append(super.toString()).append("fairMarketValue", fairMarketValue).append("currencyCode", currencyCode).
             append("donationDate", donationDate).
             append("motivationCode", motivationCode).append("other_motivationCode", other_motivationCode).append("anonymous", anonymous).append("recognitionName", recognitionName).
-            append("constituent", person).append("giftId", giftId).append("transactionDate", transactionDate).
+            append("constituent", constituent).append("giftId", giftId).append("transactionDate", transactionDate).
             toString();
     }
 }

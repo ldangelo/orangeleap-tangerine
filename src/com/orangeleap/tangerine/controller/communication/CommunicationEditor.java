@@ -32,7 +32,7 @@ public abstract class CommunicationEditor<T extends AbstractCommunicationEntity>
             setValue(entity);
         }
 //        else if (StringConstants.NEW.equals(text)){
-//            T entity = createEntity(getPerson().getId());
+//            T entity = createEntity(getConstituent().getId());
 //            entity.setUserCreated(true);
 //            setValue(entity);
 //        }

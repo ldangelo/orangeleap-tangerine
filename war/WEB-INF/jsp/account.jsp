@@ -24,7 +24,7 @@
 					<td><input size="30" class="loginField" type="password" name="newPasswordConfirm" id="newPasswordConfirm" value="<c:out value='${user.newPasswordConfirm}'/>" /></td>
 	    		</tr>
     		</table>
-    		<div class="formButtonFooter personFormButtons">
+    		<div class="formButtonFooter constituentFormButtons">
 				<input type="submit" class="saveButton" value="Save Changes"/>
 			</div>
 			</form:form>

@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.rules
 
-import com.orangeleap.tangerine.domain.Person;
-import com.orangeleap.tangerine.service.PersonService;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.domain.Gift;
 import java.util.Calendar;

@@ -14,7 +14,7 @@
 		<result property="transactionId" column="TRANSACTION_ID" jdbcType="VARCHAR" />
 		<result property="giftId" column="GIFT_ID" jdbcType="BIGINT" />
 		<result property="adjustedGiftId" column="ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
 	<sql id="SELECT_PAYMENT_HISTORY_FRAGMENT">
@@ -98,7 +98,7 @@
 		PAYMENT_HISTORY_TYPE, PAYMENT_TYPE, PAYMENT_STATUS, TRANSACTION_DATE, TRANSACTION_ID, GIFT_ID, ADJUSTED_GIFT_ID, CONSTITUENT_ID)
 		values (#amount#, #currencyCode#, #description#,
 		#paymentHistoryType:VARCHAR#, #paymentType#, #paymentStatus#, 
-		#transactionDate#, #transactionId#, #giftId#, #adjustedGiftId#, #person.id#)
+		#transactionDate#, #transactionId#, #giftId#, #adjustedGiftId#, #constituent.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>

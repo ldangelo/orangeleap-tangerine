@@ -19,13 +19,13 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
 
     public Email() { }
 
-    public Email(Long personId) {
-        this.personId = personId;
+    public Email(Long constituentId) {
+        this.constituentId = constituentId;
         this.activationStatus = ActivationType.permanent;
     }
 
-    public Email(Long personId, String emailAddress) {
-        this(personId);
+    public Email(Long constituentId, String emailAddress) {
+        this(constituentId);
         this.emailAddress = emailAddress;
     }
 
@@ -82,14 +82,14 @@ public class Email extends AbstractCommunicationEntity  { //SiteAware, Constitue
         }
         Email e = (Email) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getPersonId(), e.getPersonId()).append(emailAddress, e.getEmailAddress());
+        eb.append(getConstituentId(), e.getConstituentId()).append(emailAddress, e.getEmailAddress());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getPersonId()).append(emailAddress);
+        hcb.append(getConstituentId()).append(emailAddress);
         return hcb.hashCode();
     }
     

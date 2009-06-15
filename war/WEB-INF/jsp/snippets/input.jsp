@@ -146,8 +146,8 @@
 										</c:choose>
 										<c:url value="${thisUrl}" var="entityLink" scope="page">
 											<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.id}" />
-											<c:if test="${fieldVO.referenceType != 'person'}">
-												<c:param name="personId" value="${param.personId}" />
+											<c:if test="${fieldVO.referenceType != 'constituent'}">
+												<c:param name="constituentId" value="${param.constituentId}" />
 											</c:if>
 										</c:url>
 										<span><a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a></span>
@@ -174,7 +174,7 @@
 						</c:if>
 						 
 						<c:if test="${fieldVO.hierarchy}">
-				       		 <a href="javascript:void(0)" onclick="Lookup.loadTreeView(this);" divid="treeview-${fieldVO.fieldId}" personid="${param.personId}" fieldDef="<c:out value='${fieldVO.fieldName}'/>" >View hierarchy</a>
+				       		 <a href="javascript:void(0)" onclick="Lookup.loadTreeView(this);" divid="treeview-${fieldVO.fieldId}" constituentid="${param.constituentId}" fieldDef="<c:out value='${fieldVO.fieldName}'/>" >View hierarchy</a>
 				       		 <div id="treeview-${fieldVO.fieldId}" ></div>
 				    	</c:if>
 				    	 
@@ -192,8 +192,8 @@
 										<c:when test="${not empty fieldVO.ids[status.index]}">
 											<c:url value="${fieldVO.referenceType}.htm" var="entityLink" scope="page">
 												<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.ids[status.index]}" />
-												<c:if test="${fieldVO.referenceType != 'person'}">
-													<c:param name="personId" value="${param.personId}" />
+												<c:if test="${fieldVO.referenceType != 'constituent'}">
+													<c:param name="constituentId" value="${param.constituentId}" />
 												</c:if>
 											</c:url>
 											<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>
@@ -296,7 +296,7 @@
 									</c:choose>
 									<c:url value="${thisUrl}" var="entityLink" scope="page">
 										<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.ids[status.index]}" />
-										<c:param name="personId" value="${person.id}" />
+										<c:param name="constituentId" value="${constituent.id}" />
 									</c:url>
 									<a href="<c:out value='${entityLink}'/>" target="_blank" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"><c:out value='${thisVal}'/></a>
 									<c:if test="${fieldVO.fieldType != 'SELECTION_DISPLAY'}">

@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.AdjustedGiftDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
@@ -52,7 +52,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         adjustedGift.setAdjustedTransactionDate(sdf.parse("01/01/2010"));
         adjustedGift.setAdjustedType("foo");
         adjustedGift.setOriginalGiftId(600L);
-        adjustedGift.setPerson(new Person(100L, new Site("company1")));
+        adjustedGift.setConstituent(new Constituent(100L, new Site("company1")));
         Address addr = new Address();
         addr.setId(100L);
         adjustedGift.setSelectedAddress(addr);
@@ -67,7 +67,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "Pending".equals(readAdjustedGift.getAdjustedStatus());
         assert "01/01/2010".equals(sdf.format(readAdjustedGift.getAdjustedTransactionDate()));
         assert "foo".equals(readAdjustedGift.getAdjustedType());
-        assert 100L == readAdjustedGift.getPerson().getId();
+        assert 100L == readAdjustedGift.getConstituent().getId();
         assert 100L == readAdjustedGift.getSelectedAddress().getId();
         assert readAdjustedGift.getDistributionLines().size() == 1;
         assert new BigDecimal("-9.99").floatValue() == readAdjustedGift.getDistributionLines().get(0).getAmount().floatValue();
@@ -98,7 +98,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "Pending".equals(readAdjustedGift.getAdjustedStatus());
         assert "01/01/2010".equals(sdf.format(readAdjustedGift.getAdjustedTransactionDate()));
         assert "foo".equals(readAdjustedGift.getAdjustedType());
-        assert 100L == readAdjustedGift.getPerson().getId();
+        assert 100L == readAdjustedGift.getConstituent().getId();
         assert 100L == readAdjustedGift.getSelectedAddress().getId();
         assert readAdjustedGift.getDistributionLines().size() == 1;
         assert new BigDecimal("-9.99").floatValue() == readAdjustedGift.getDistributionLines().get(0).getAmount().floatValue();
@@ -133,7 +133,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "foobar".equals(adjustedGift.getAdjustedPaymentTo());
         assert 300L == adjustedGift.getOriginalGiftId();
         assert 300f == adjustedGift.getOriginalAmount().floatValue();
-        assert 200L == adjustedGift.getPerson().getId();
+        assert 200L == adjustedGift.getConstituent().getId();
         
         assert adjustedGift.getDistributionLines().size() == 2;
         for (DistributionLine line : adjustedGift.getDistributionLines()) {
@@ -153,7 +153,7 @@ public class IBatisAdjustedGiftDaoTest extends AbstractIBatisTest {
         assert "foobar".equals(adjustedGift.getAdjustedPaymentTo());
         assert 300L == adjustedGift.getOriginalGiftId();
         assert 300f == adjustedGift.getOriginalAmount().floatValue();
-        assert 200L == adjustedGift.getPerson().getId();
+        assert 200L == adjustedGift.getConstituent().getId();
         
         assert adjustedGift.getDistributionLines().size() == 2;
         for (DistributionLine line : adjustedGift.getDistributionLines()) {

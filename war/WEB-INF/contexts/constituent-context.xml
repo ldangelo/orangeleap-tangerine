@@ -6,38 +6,38 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-    <bean id="personSearch" class="com.orangeleap.tangerine.controller.constituent.PersonSearchFormController">
-        <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.Person"/>
+    <bean id="constituentSearch" class="com.orangeleap.tangerine.controller.constituent.ConstituentSearchFormController">
+        <property name="commandName" value="constituent"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.Constituent"/>
 <!--        <property name="validator">-->
 <!--            <bean class="spring_mvc_starter_anno.service.ProductValidator"/>-->
 <!--        </property>-->
-        <property name="formView" value="constituent/personSearch"/>
-        <property name="successView" value="constituent/personSearch"/>
+        <property name="formView" value="constituent/constituentSearch"/>
+        <property name="successView" value="constituent/constituentSearch"/>
     </bean>
 
-    <bean id="person" class="com.orangeleap.tangerine.controller.constituent.PersonFormController" parent="tangerineFormController">
-        <property name="commandName" value="person"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.Person"/>
-        <property name="formView" value="constituent/person" />
-        <property name="successView" value="redirect:/person.htm" />
+    <bean id="constituent" class="com.orangeleap.tangerine.controller.constituent.ConstituentFormController" parent="tangerineFormController">
+        <property name="commandName" value="constituent"/>
+        <property name="commandClass" value="com.orangeleap.tangerine.domain.Constituent"/>
+        <property name="formView" value="constituent/constituent" />
+        <property name="successView" value="redirect:/constituent.htm" />
     </bean>
 
-    <bean id="personView" class="com.orangeleap.tangerine.controller.constituent.PersonViewController">
-        <property name="viewName" value="constituent/personView"/>
+    <bean id="constituentView" class="com.orangeleap.tangerine.controller.constituent.ConstituentViewController">
+        <property name="viewName" value="constituent/constituentView"/>
     </bean>
 
-    <bean id="personList" class="com.orangeleap.tangerine.controller.constituent.PersonListController">
-        <property name="viewName" value="constituent/personList"/>
+    <bean id="constituentList" class="com.orangeleap.tangerine.controller.constituent.ConstituentListController">
+        <property name="viewName" value="constituent/constituentList"/>
     </bean>
     
-    <bean id="personUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+    <bean id="constituentUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
 		<property name="mappings">
 		    <props>
-		        <prop key="/person.htm">person</prop>
-		        <prop key="/personSearch.htm">personSearch</prop>
-		        <prop key="/personView.htm">personView</prop>
-                <prop key="/personList.htm">personList</prop>
+		        <prop key="/constituent.htm">constituent</prop>
+		        <prop key="/constituentSearch.htm">constituentSearch</prop>
+		        <prop key="/constituentView.htm">constituentView</prop>
+                <prop key="/constituentList.htm">constituentList</prop>
 			</props>
 		</property>
 	</bean>

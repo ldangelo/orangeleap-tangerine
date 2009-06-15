@@ -8,7 +8,7 @@ public interface CommunicationHistoryDao {
 
     public CommunicationHistory maintainCommunicationHistory(CommunicationHistory communicationHistory);
 	
-	public PaginatedResult readCommunicationHistoryByConstituentId(Long personId, SortInfo sortinfo);
+	public PaginatedResult readCommunicationHistoryByConstituentId(Long constituentId, SortInfo sortinfo);
 	
 	public CommunicationHistory readCommunicationHistoryById(Long communicationHistoryId);
 	

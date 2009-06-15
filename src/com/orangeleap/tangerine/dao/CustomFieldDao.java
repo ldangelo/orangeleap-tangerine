@@ -9,7 +9,7 @@ import com.orangeleap.tangerine.domain.customization.CustomField;
  */
 public interface CustomFieldDao {
 
-	public List<CustomField> readCustomFieldsByEntityAndFieldName(Long personId, String entityType, String fieldName);
+	public List<CustomField> readCustomFieldsByEntityAndFieldName(Long constituentId, String entityType, String fieldName);
 	
 	public void maintainCustomFieldsByEntityAndFieldName(Long entityId, String entityType, String fieldName, List<CustomField> list);
 	

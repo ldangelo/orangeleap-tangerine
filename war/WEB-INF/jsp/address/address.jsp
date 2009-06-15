@@ -41,7 +41,7 @@
 						</c:if>
 					</p>
 				</c:forEach>
-				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="addressManagerEdit.htm?addressId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -82,7 +82,7 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="addressManagerEdit.htm?addressId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>
@@ -134,7 +134,7 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<a href="addressManagerEdit.htm?addressId=${row.id}&personId=${person.id}""><spring:message code='edit'/></a>
+				<a href="addressManagerEdit.htm?addressId=${row.id}&constituentId=${constituent.id}""><spring:message code='edit'/></a>
 				<hr />
 			</c:forEach>
 		</c:forEach>

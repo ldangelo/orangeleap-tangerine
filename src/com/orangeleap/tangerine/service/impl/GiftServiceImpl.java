@@ -35,7 +35,7 @@ import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.PaymentHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -125,12 +125,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
             
             
-	        maintainEntityChildren(gift, gift.getPerson());
+	        maintainEntityChildren(gift, gift.getConstituent());
 	        setDefaultDates(gift);
 	        gift = giftDao.maintainGift(gift);
 	        pledgeService.updatePledgeForGift(gift);
 	        recurringGiftService.updateRecurringGiftForGift(gift);
-	        auditService.auditObject(gift, gift.getPerson());
+	        auditService.auditObject(gift, gift.getConstituent());
 	
 	        //
 	        // this needs to go last because we need the gift in the database
@@ -173,14 +173,14 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	            logger.trace("editGift: giftId = " + gift.getId());
 	        }
 	        
-	        maintainEntityChildren(gift, gift.getPerson());
+	        maintainEntityChildren(gift, gift.getConstituent());
 	        gift = giftDao.maintainGift(gift);
             pledgeService.updatePledgeForGift(gift);
             recurringGiftService.updateRecurringGiftForGift(gift);
 	        if (!reentrant) {
 	        	routeGift(gift);
 	        }
-	        auditService.auditObject(gift, gift.getPerson());
+	        auditService.auditObject(gift, gift.getConstituent());
 	
 	        return gift;
         
@@ -234,7 +234,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	paymentHistory.setAmount(gift.getAmount());
     	paymentHistory.setCurrencyCode(gift.getCurrencyCode());
     	paymentHistory.setGiftId(gift.getId());
-    	paymentHistory.setPerson(gift.getPerson());
+    	paymentHistory.setConstituent(gift.getConstituent());
     	paymentHistory.setPaymentHistoryType(PaymentHistoryType.GIFT);
     	paymentHistory.setPaymentType(gift.getPaymentType());
     	paymentHistory.setTransactionDate(gift.getTransactionDate());
@@ -254,7 +254,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId) {
+    public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readGiftByIdCreateIfNull: giftId = " + giftId +  
                     " constituentId = " + (constituent == null ? null : constituent.getId()));
@@ -272,7 +272,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public List<Gift> readMonetaryGifts(Person constituent) {
+    public List<Gift> readMonetaryGifts(Constituent constituent) {
         return readMonetaryGifts(constituent.getId());
     }
 
@@ -301,7 +301,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     @Override
-    public Gift createDefaultGift(Person constituent) {
+    public Gift createDefaultGift(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultGift: constituent = " + (constituent == null ? null : constituent.getId()));
         }
@@ -313,7 +313,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         for (EntityDefault ed : entityDefaults) {
             giftBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
-        gift.setPerson(constituent);
+        gift.setConstituent(constituent);
         List<DistributionLine> lines = new ArrayList<DistributionLine>(1);
         DistributionLine line = new DistributionLine(constituent);
         line.setDefaults();
@@ -368,7 +368,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	
 	@Override
 	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, 
-	        int numCommitments, Person constituent, boolean isPledge) {
+	        int numCommitments, Constituent constituent, boolean isPledge) {
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("combineGiftPledgeDistributionLines: amount = " + amount + " numCommitments = " + numCommitments + " isPledge = " + isPledge);
 	    }
@@ -423,7 +423,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	 * Check if a default distribution line was created; remove if necessary
 	 * @param giftDistributionLines
 	 */
-	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent) {
+	public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("removeDefaultDistributionLine: amount = " + amount);
         }

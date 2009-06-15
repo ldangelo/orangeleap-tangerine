@@ -4,11 +4,11 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var personId = /personId=(\d+)/g.exec(document.location.search);
+    var constituentId = /constituentId=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if(personId) {
-        baseParams.personId = personId[1];
+    if(constituentId) {
+        baseParams.constituentId = constituentId[1];
     }
 
     var header = 'Recurring Gift List';
@@ -19,7 +19,7 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'personId', mapping: 'personId', type: 'string'},
+            {name: 'constituentId', mapping: 'constituentId', type: 'string'},
             {name: 'status', mapping: 'status', type: 'string'},
             {name: 'amountpergift', mapping: 'amountpergift', type: 'float'},
             {name: 'amounttotal', mapping: 'amounttotal', type: 'float'},
@@ -75,7 +75,7 @@ RecurringGiftList.entityViewRenderer = function(val, meta, record) {
 RecurringGiftList.navigate = function(id) {
 	    var rec = RecurringGiftList.grid.getSelectionModel().getSelected();
 	    RecurringGiftList.grid.getGridEl().mask('Loading Record');
-        window.location.href='recurringGift.htm?recurringGiftId=' + id + '&personId=' + rec.data.personId;
+        window.location.href='recurringGift.htm?recurringGiftId=' + id + '&constituentId=' + rec.data.constituentId;
 };
 
 

@@ -33,7 +33,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     public void testReadSectionDefinitionsNoRole() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_DOOFUS");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.person, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.constituent, roles);
         assert sections != null && sections.isEmpty();
     }
     
@@ -41,11 +41,11 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     public void testReadSectionDefinitionsSuperManager() throws Exception {
         List<String> roles = new ArrayList<String>(1);
         roles.add("ROLE_SUPER_MANAGER");
-        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.person, roles);
+        List<SectionDefinition> sections = sectionDao.readSectionDefinitions(PageType.constituent, roles);
         assert sections != null && sections.size() == 3;
         for (SectionDefinition secDef : sections) {
-            assert PageType.person.equals(secDef.getPageType());
-            assert "person.contactInfo".equals(secDef.getSectionName()) || "person.demographics".equals(secDef.getSectionName()) || "person.relationshipInfo".equals(secDef.getSectionName());
+            assert PageType.constituent.equals(secDef.getPageType());
+            assert "constituent.contactInfo".equals(secDef.getSectionName()) || "constituent.demographics".equals(secDef.getSectionName()) || "constituent.relationshipInfo".equals(secDef.getSectionName());
             assert "Contact Details".equals(secDef.getDefaultLabel()) || "Demographic Information".equals(secDef.getDefaultLabel()) || "Relationship Information".equals(secDef.getDefaultLabel());
             assert 1 == secDef.getSectionOrder() || 2 == secDef.getSectionOrder() || 3 == secDef.getSectionOrder();
             assert LayoutType.TWO_COLUMN.equals(secDef.getLayoutType());
@@ -87,8 +87,8 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         assert 6000 == sectionFields.get(0).getFieldOrder();
         FieldDefinition fieldDef = sectionFields.get(0).getFieldDefinition();
         assert fieldDef != null;
-        assert "person.recognitionName".equals(fieldDef.getId());
-        assert EntityType.person.equals(fieldDef.getEntityType());
+        assert "constituent.recognitionName".equals(fieldDef.getId());
+        assert EntityType.constituent.equals(fieldDef.getEntityType());
         assert "recognitionName".equals(fieldDef.getFieldName());
         assert "Recognition Name".equals(fieldDef.getDefaultLabel());
         assert FieldType.TEXT.equals(fieldDef.getFieldType());
@@ -100,8 +100,8 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         SectionDefinition sectionDef = sectionFields.get(0).getSectionDefinition();
         assert sectionDef != null;
         assert 200L == sectionDef.getId();
-        assert PageType.person.equals(sectionDef.getPageType());
-        assert "person.demographics".equals(sectionDef.getSectionName());
+        assert PageType.constituent.equals(sectionDef.getPageType());
+        assert "constituent.demographics".equals(sectionDef.getSectionName());
         assert "Demographic Information".equals(sectionDef.getDefaultLabel());
         assert 2 == sectionDef.getSectionOrder();
         assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
@@ -117,8 +117,8 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         assert 7000 == sectionFields.get(0).getFieldOrder();
         FieldDefinition fieldDef = sectionFields.get(0).getFieldDefinition();
         assert fieldDef != null;
-        assert "person.primaryEmail".equals(fieldDef.getId());
-        assert EntityType.person.equals(fieldDef.getEntityType());
+        assert "constituent.primaryEmail".equals(fieldDef.getId());
+        assert EntityType.constituent.equals(fieldDef.getEntityType());
         assert "primaryEmail".equals(fieldDef.getFieldName());
         assert "Email".equals(fieldDef.getDefaultLabel());
         assert FieldType.TEXT.equals(fieldDef.getFieldType());
@@ -138,8 +138,8 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
         SectionDefinition sectionDef = sectionFields.get(0).getSectionDefinition();
         assert sectionDef != null;
         assert 100L == sectionDef.getId();
-        assert PageType.person.equals(sectionDef.getPageType());
-        assert "person.contactInfo".equals(sectionDef.getSectionName());
+        assert PageType.constituent.equals(sectionDef.getPageType());
+        assert "constituent.contactInfo".equals(sectionDef.getSectionName());
         assert "Contact Details".equals(sectionDef.getDefaultLabel());
         assert 1 == sectionDef.getSectionOrder();
         assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());
@@ -149,7 +149,7 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
     
     @Test(groups = { "testReadSectionFields" })
     public void testReadOutOfBoxSectionFields() throws Exception {
-        List<SectionField> sectionFields = sectionDao.readOutOfBoxSectionFields(PageType.person, "person.contactInfo");
+        List<SectionField> sectionFields = sectionDao.readOutOfBoxSectionFields(PageType.constituent, "constituent.contactInfo");
         assert sectionFields != null && sectionFields.isEmpty() == false;
         assert sectionFields.size() == 5;
         
@@ -157,10 +157,10 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
             assert secFld.getFieldOrder() >= 1000 && secFld.getFieldOrder() <= 5000;
             FieldDefinition fieldDef = secFld.getFieldDefinition();
             assert fieldDef != null;
-            assert "person.title".equals(fieldDef.getId()) || "person.firstName".equals(fieldDef.getId()) || "person.middleName".equals(fieldDef.getId()) || 
-                "person.lastName".equals(fieldDef.getId()) || "person.suffix".equals(fieldDef.getId());
-            assert EntityType.person.equals(fieldDef.getEntityType());
-            if ("person.title".equals(fieldDef.getId()) || "person.suffix".equals(fieldDef.getId())) {
+            assert "constituent.title".equals(fieldDef.getId()) || "constituent.firstName".equals(fieldDef.getId()) || "constituent.middleName".equals(fieldDef.getId()) || 
+                "constituent.lastName".equals(fieldDef.getId()) || "constituent.suffix".equals(fieldDef.getId());
+            assert EntityType.constituent.equals(fieldDef.getEntityType());
+            if ("constituent.title".equals(fieldDef.getId()) || "constituent.suffix".equals(fieldDef.getId())) {
                 assert FieldType.PICKLIST.equals(fieldDef.getFieldType());
             }
             else {
@@ -174,8 +174,8 @@ public class IBatisSectionDaoTest extends AbstractIBatisTest {
             SectionDefinition sectionDef = secFld.getSectionDefinition();
             assert sectionDef != null;
             assert 100L == sectionDef.getId();
-            assert PageType.person.equals(sectionDef.getPageType());
-            assert "person.contactInfo".equals(sectionDef.getSectionName());
+            assert PageType.constituent.equals(sectionDef.getPageType());
+            assert "constituent.contactInfo".equals(sectionDef.getSectionName());
             assert "Contact Details".equals(sectionDef.getDefaultLabel());
             assert 1 == sectionDef.getSectionOrder();
             assert LayoutType.TWO_COLUMN.equals(sectionDef.getLayoutType());

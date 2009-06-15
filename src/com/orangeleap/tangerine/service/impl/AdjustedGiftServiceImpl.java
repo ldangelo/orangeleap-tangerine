@@ -65,14 +65,14 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         if (logger.isTraceEnabled()) {
             logger.trace("maintainAdjustedGift: adjustedGiftId = " + adjustedGift.getId());
         }
-        maintainEntityChildren(adjustedGift, adjustedGift.getPerson());
+        maintainEntityChildren(adjustedGift, adjustedGift.getConstituent());
         adjustedGift = adjustedGiftDao.maintainAdjustedGift(adjustedGift);
         pledgeService.updatePledgeForAdjustedGift(adjustedGift);
         recurringGiftService.updateRecurringGiftForAdjustedGift(adjustedGift);
         if (adjustedGift.isAdjustedPaymentRequired()) {
             paymentHistoryService.addPaymentHistory(createPaymentHistoryForAdjustedGift(adjustedGift));
         }
-        auditService.auditObject(adjustedGift, adjustedGift.getPerson());
+        auditService.auditObject(adjustedGift, adjustedGift.getConstituent());
         return adjustedGift;
     }
 
@@ -81,7 +81,7 @@ public class AdjustedGiftServiceImpl extends AbstractPaymentService implements A
         paymentHistory.setAmount(adjustedGift.getAdjustedAmount());
         paymentHistory.setCurrencyCode(adjustedGift.getCurrencyCode());
         paymentHistory.setAdjustedGiftId(adjustedGift.getId());
-        paymentHistory.setPerson(adjustedGift.getPerson());
+        paymentHistory.setConstituent(adjustedGift.getConstituent());
         paymentHistory.setPaymentHistoryType(PaymentHistoryType.ADJUSTED_GIFT);
         paymentHistory.setPaymentType(adjustedGift.getPaymentType());
         paymentHistory.setPaymentStatus(adjustedGift.getPaymentStatus());

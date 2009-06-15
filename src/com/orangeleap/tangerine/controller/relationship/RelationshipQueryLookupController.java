@@ -17,7 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
@@ -46,7 +46,7 @@ public class RelationshipQueryLookupController extends SimpleFormController {
             String searchValue = request.getParameter(searchOption);
             String fieldDef = request.getParameter(StringConstants.FIELD_DEF);
             
-            List<Person> constituents = relationshipService.executeRelationshipQueryLookup(fieldDef, searchOption, searchValue);
+            List<Constituent> constituents = relationshipService.executeRelationshipQueryLookup(fieldDef, searchOption, searchValue);
             if (constituents != null) {
                 sortPaginate(request, constituents, searchOption);
             }

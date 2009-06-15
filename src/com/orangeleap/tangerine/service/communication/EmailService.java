@@ -35,7 +35,7 @@ import com.jaspersoft.jasperserver.irplugin.JServer;
 import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
 import com.jaspersoft.jasperserver.irplugin.wsclient.WSClient;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -90,7 +90,7 @@ public class EmailService implements ApplicationContextAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void setParameters(Person p, Gift g) 
+	private void setParameters(Constituent p, Gift g) 
 	{
 		Class c = p.getClass();
 		Field[] fields = c.getDeclaredFields();
@@ -117,7 +117,7 @@ public class EmailService implements ApplicationContextAware {
 		}		
 	}
 	
-	public void sendMail(Person p, Gift g, String subject, String templateName) {
+	public void sendMail(Constituent p, Gift g, String subject, String templateName) {
 		List<Email> selectedEmails = new LinkedList<Email>();
 		setSubject(subject);
 		setTemplateName(templateName);
@@ -127,7 +127,7 @@ public class EmailService implements ApplicationContextAware {
 		
 
 		//
-		// first we run the report passing in the person.id as a parameter
+		// first we run the report passing in the constituent.id as a parameter
 		Map params = getReportParameters();
 		params.clear();
 
@@ -192,7 +192,7 @@ public class EmailService implements ApplicationContextAware {
 			// add entry to touchpoints for this e-mail
 			for (Email e: selectedEmails) {
 				CommunicationHistory ch = new CommunicationHistory();
-				ch.setPerson(p);
+				ch.setConstituent(p);
 				ch.setGiftId(g.getId());
 				ch.setSystemGenerated(true);
 				ch.setComments("Sent e-mail using template named " + getTemplateName());

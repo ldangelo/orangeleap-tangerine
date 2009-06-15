@@ -79,11 +79,11 @@ public abstract class TangerineFormController extends SimpleFormController {
     }
 
     protected Long getConstituentId(HttpServletRequest request) {
-        return this.getIdAsLong(request, StringConstants.PERSON_ID);
+        return this.getIdAsLong(request, StringConstants.CONSTITUENT_ID);
     }
 
     protected String getConstituentIdString(HttpServletRequest request) {
-        return request.getParameter(StringConstants.PERSON_ID);
+        return request.getParameter(StringConstants.CONSTITUENT_ID);
     }
 
     @Override
@@ -123,7 +123,7 @@ public abstract class TangerineFormController extends SimpleFormController {
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        return new ModelAndView(appendSaved(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.PERSON_ID).append("=").append(getConstituentId(request)).toString()));
+        return new ModelAndView(appendSaved(new StringBuilder().append(getSuccessView()).append("?").append(StringConstants.CONSTITUENT_ID).append("=").append(getConstituentId(request)).toString()));
     }
 
     protected abstract AbstractEntity findEntity(HttpServletRequest request);

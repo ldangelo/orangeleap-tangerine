@@ -15,10 +15,10 @@ public class RecurringGiftSearchFieldMapper extends SearchFieldMapper {
     static {
     	
 		// Constituent
-    	MAP.put("person.accountNumber", "ACCOUNT_NUMBER");
-		MAP.put("person.firstName", "FIRST_NAME");
-		MAP.put("person.lastName", "LAST_NAME");
-		MAP.put("person.organizationName", "ORGANIZATION_NAME");
+    	MAP.put("constituent.accountNumber", "ACCOUNT_NUMBER");
+		MAP.put("constituent.firstName", "FIRST_NAME");
+		MAP.put("constituent.lastName", "LAST_NAME");
+		MAP.put("constituent.organizationName", "ORGANIZATION_NAME");
 
 		// Address
 		MAP.put("postalCode", "POSTAL_CODE");

@@ -9,10 +9,10 @@
 	<div class="content760 mainForm">
 	<mp:page pageName='addressManagerEdit' />
 
-	<c:set var="person" value="${person}" scope="request" />
+	<c:set var="constituent" value="${constituent}" scope="request" />
 
-	<c:if test="${person.id!=null}">
-		<c:set var="viewingPerson" value="true" scope="request" />
+	<c:if test="${constituent.id!=null}">
+		<c:set var="viewingConstituent" value="true" scope="request" />
 	</c:if>
 
 	<form:form method="post" commandName="address">
@@ -20,7 +20,7 @@
 			<input type="hidden" name="id" value="<c:out value='${id}'/>" />
 		</c:if>
 
-		<jsp:include page="../snippets/personHeader.jsp">
+		<jsp:include page="../snippets/constituentHeader.jsp">
 			<jsp:param name="currentFunctionTitleText" value="Addresses" />
 			<jsp:param name="submitButtonText" value="Submit" />
 		</jsp:include>
@@ -35,10 +35,10 @@
 			</c:forEach>
 			<div class="clearColumns"></div>
 		</div>
-		<div class="formButtonFooter personFormButtons">
+		<div class="formButtonFooter constituentFormButtons">
 			<input type="submit" value="<spring:message code='submit'/>" class="saveButton" />
 			<c:if test="${address.id != null}">
-				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('addressManager.htm?personId=${person.id}')"/>
+				<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('addressManager.htm?constituentId=${constituent.id}')"/>
 			</c:if>
 		</div>
 

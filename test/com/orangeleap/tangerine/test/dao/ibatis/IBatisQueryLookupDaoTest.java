@@ -26,21 +26,21 @@ public class IBatisQueryLookupDaoTest extends AbstractIBatisTest {
 
     @Test(groups = { "testReadQueryLookup" })
     public void testReadQueryLookupInvalid() throws Exception {
-        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[headofhousehold.householdMembers]");
+        QueryLookup lookup = queryLookupDao.readQueryLookup("constituent.customFieldMap[headofhousehold.householdMembers]");
         assert lookup == null;
     }
     
     @Test(groups = { "testReadQueryLookup" })
     public void testReadQueryLookupValid() throws Exception {
-        QueryLookup lookup = queryLookupDao.readQueryLookup("person.customFieldMap[organization.employees]");
+        QueryLookup lookup = queryLookupDao.readQueryLookup("constituent.customFieldMap[organization.employees]");
         assert lookup != null;
         assert lookup.getSite() != null && "company1".equals(lookup.getSite().getName());
-        assert "person.contactInfo".equals(lookup.getSectionName());
+        assert "constituent.contactInfo".equals(lookup.getSectionName());
         // TODO test entity type and sqlWhere fields
         assert lookup.getFieldDefinition() != null;
-        assert "person.customFieldMap[organization.employees]".equals(lookup.getFieldDefinition().getId());
-        assert EntityType.person.equals(lookup.getFieldDefinition().getEntityType());
-        assert ReferenceType.person.equals(lookup.getFieldDefinition().getReferenceType());
+        assert "constituent.customFieldMap[organization.employees]".equals(lookup.getFieldDefinition().getId());
+        assert EntityType.constituent.equals(lookup.getFieldDefinition().getEntityType());
+        assert ReferenceType.constituent.equals(lookup.getFieldDefinition().getReferenceType());
         assert "customFieldMap[organization.employees]".equals(lookup.getFieldDefinition().getFieldName());
         assert "Employee List".equals(lookup.getFieldDefinition().getDefaultLabel());
         assert FieldType.MULTI_QUERY_LOOKUP.equals(lookup.getFieldDefinition().getFieldType());

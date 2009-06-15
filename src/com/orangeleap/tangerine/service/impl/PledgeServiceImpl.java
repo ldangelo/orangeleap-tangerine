@@ -26,7 +26,7 @@ import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -97,9 +97,9 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
     
     private Pledge save(Pledge pledge) {
-        maintainEntityChildren(pledge, pledge.getPerson());
+        maintainEntityChildren(pledge, pledge.getConstituent());
         pledge = pledgeDao.maintainPledge(pledge);
-        auditService.auditObject(pledge, pledge.getPerson());
+        auditService.auditObject(pledge, pledge.getConstituent());
         return pledge;
     }
 
@@ -112,7 +112,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
     
     @Override
-    public Pledge readPledgeByIdCreateIfNull(String pledgeId, Person constituent) {
+    public Pledge readPledgeByIdCreateIfNull(String pledgeId, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPledgeByIdCreateIfNull: pledgeId = " + pledgeId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
@@ -128,7 +128,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
         return pledge;
     }
 
-    public Pledge createDefaultPledge(Person constituent) {
+    public Pledge createDefaultPledge(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultPledge: constituent = " + (constituent == null ? null : constituent.getId()));
         }
@@ -139,7 +139,7 @@ public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> impleme
     }
     
     @Override
-    public List<Pledge> readPledgesForConstituent(Person constituent) {
+    public List<Pledge> readPledgesForConstituent(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPledges: constituent = " + constituent);
         }

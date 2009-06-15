@@ -7,9 +7,9 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='membership' />
-				<c:set var="person" value="${commitment.person}" scope="request" />
-				<c:if test="${person.id!=null}">
-					<c:set var="viewingPerson" value="true" scope="request" />
+				<c:set var="constituent" value="${commitment.constituent}" scope="request" />
+				<c:if test="${constituent.id!=null}">
+					<c:set var="viewingConstituent" value="true" scope="request" />
 				</c:if>
 				<c:set var="commandObject" value="commitment" />
 				<form:form method="post" commandName="${commandObject}">
@@ -17,7 +17,7 @@
 						<input type="hidden" name="id" value="<c:out value='${id}'/>" />
 					</c:if>
 
-					<jsp:include page="../snippets/personHeader.jsp">
+					<jsp:include page="../snippets/constituentHeader.jsp">
 						<jsp:param name="currentFunctionTitleText" value="Enter Membership" />
 						<jsp:param name="submitButtonText" value="Save Membership" />
 					</jsp:include>
@@ -40,7 +40,7 @@
 							<p class="gridActions">&nbsp;<span id="subTotal">Total <span class="warningText">(must match membership value)</span> <span class="value">0</span></span></p>
 						</c:if>
 					</c:forEach>
-					<div class="formButtonFooter personFormButtons"><input type="submit" value="Save Membership" class="saveButton" /></div>
+					<div class="formButtonFooter constituentFormButtons"><input type="submit" value="Save Membership" class="saveButton" /></div>
 				</form:form>
 		</div>
 	</tiles:putAttribute>

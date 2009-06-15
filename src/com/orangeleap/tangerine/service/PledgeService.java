@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -22,11 +22,11 @@ public interface PledgeService extends CommitmentService<Pledge> {
 
     public Pledge readPledgeById(Long pledgeId);
     
-    public Pledge readPledgeByIdCreateIfNull(String pledgeId, Person constituent);
+    public Pledge readPledgeByIdCreateIfNull(String pledgeId, Constituent constituent);
     
-    public Pledge createDefaultPledge(Person constituent);
+    public Pledge createDefaultPledge(Constituent constituent);
     
-    public List<Pledge> readPledgesForConstituent(Person constituent);
+    public List<Pledge> readPledgesForConstituent(Constituent constituent);
 
     public List<Pledge> readPledgesForConstituent(Long constituentId);
     

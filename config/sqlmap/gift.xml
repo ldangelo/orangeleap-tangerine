@@ -24,7 +24,7 @@
 		<result property="postmarkDate" column="GIFT_POSTMARK_DATE" jdbcType="TIMESTAMP" />
 		<result property="transactionDate" column="GIFT_TRANSACTION_DATE" jdbcType="TIMESTAMP" />
 		<result property="txRefNum" column="GIFT_PAYMENT_TXREFNUM" jdbcType="VARCHAR" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 		<result property="selectedAddress" resultMap="ADDRESS.ADDRESS_RESULT" />
 		<result property="selectedPhone" resultMap="PHONE.PHONE_RESULT" />
 		<result property="selectedPaymentSource" resultMap="PAYMENT_SOURCE.PAYMENT_SOURCE_RESULT" />
@@ -171,7 +171,7 @@
 		#paymentMessage#, #paymentStatus#, #paymentType#, 
 		#posted#, #postedDate#, #postmarkDate#,
 		#transactionDate#, #txRefNum#, 
-		#selectedAddress.id#, #selectedPaymentSource.id#, #person.id#, #selectedPhone.id#, 
+		#selectedAddress.id#, #selectedPaymentSource.id#, #constituent.id#, #selectedPhone.id#, 
 		now(), now())
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
@@ -202,7 +202,7 @@
 		g.PAYMENT_TXREFNUM = #txRefNum#,
 		g.ADDRESS_ID = #selectedAddress.id#,
 		g.PAYMENT_SOURCE_ID = #selectedPaymentSource.id#,
-		g.CONSTITUENT_ID = #person.id#,
+		g.CONSTITUENT_ID = #constituent.id#,
 		g.PHONE_ID = #selectedPhone.id#,
 		g.UPDATE_DATE = now()
 		where 
@@ -250,7 +250,7 @@
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD scf where 
-		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
+		   ((scf.ENTITY_ID = g.GIFT_ID and scf.ENTITY_TYPE = 'gift') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'constituent'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>

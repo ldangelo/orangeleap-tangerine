@@ -16,9 +16,9 @@
 		<div class="content760 mainForm">
 			<mp:page pageName='giftView' />
 
-			<c:set var="person" value="${gift.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${gift.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 						
 			<form:form method="post" commandName="gift">
@@ -26,11 +26,11 @@
 				<c:if test="${hideAdjustGiftButton == false}">
                 	<spring:message code='adjustGift' var="adjustText"  />
                 </c:if>
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
                     <jsp:param name="routeButtonText" value="${adjustText}" />
-					<jsp:param name="routeUrl" value="giftAdjustment.htm?giftId=${gift.id}&personId=${person.id}" />
+					<jsp:param name="routeUrl" value="giftAdjustment.htm?giftId=${gift.id}&constituentId=${constituent.id}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -132,15 +132,15 @@
 				</c:forEach>
 				
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${hideAdjustGiftButton == false}">
-				    	<input type="button" value="<c:out value='${adjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${gift.id}&personId=${person.id}')"/>
+				    	<input type="button" value="<c:out value='${adjustText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftAdjustment.htm?giftId=${gift.id}&constituentId=${constituent.id}')"/>
 				    </c:if>
 					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<a class="newAccountButton" href="gift.htm?personId=${person.id}"><spring:message code='enterNewGift'/></a>
+					<a class="newAccountButton" href="gift.htm?constituentId=${constituent.id}"><spring:message code='enterNewGift'/></a>
 				</div>
 			</form:form>
 		</div>

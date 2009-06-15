@@ -4,11 +4,11 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var personId = /personId=(\d+)/g.exec(document.location.search);
+    var constituentId = /constituentId=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if(personId) {
-        baseParams.personId = personId[1];
+    if(constituentId) {
+        baseParams.constituentId = constituentId[1];
     }
 
     var header = 'Touch Point History';
@@ -21,7 +21,7 @@ Ext.onReady(function() {
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
             {name: 'date', mapping: 'date', type: 'date', dateFormat: 'Y-m-d'},
-            {name: 'personId', mapping: 'personId', type: 'string'},
+            {name: 'constituentId', mapping: 'constituentId', type: 'string'},
             {name: 'type', mapping: 'type', type: 'string'},
             {name: 'comments', mapping: 'comments', type: 'string'}
         ],
@@ -78,7 +78,7 @@ CommunicationHistory.entityViewRenderer = function(val, meta, record) {
 CommunicationHistory.navigate = function(id) {
 	    var rec = CommunicationHistory.grid.getSelectionModel().getSelected();
 	    CommunicationHistory.grid.getGridEl().mask('Loading Record');
-        window.location.href='communicationHistoryView.htm?communicationHistoryId=' + id + '&personId=' + rec.data.personId;
+        window.location.href='communicationHistoryView.htm?communicationHistoryId=' + id + '&constituentId=' + rec.data.constituentId;
 };
 
 

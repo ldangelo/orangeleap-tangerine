@@ -15,9 +15,9 @@ var loadMRU = function(resp) {
     var historyList = $('#bookmarkHistory');
     historyList.empty();
 
-    var pId = /personId=(\d+)/g.exec(document.location.search);
+    var pId = /constituentId=(\d+)/g.exec(document.location.search);
 
-    // see if we're looking at a new person
+    // see if we're looking at a new constituent
     if (pId) {
         var addIt = true;
         for (var i = 0; i < arr.length; i++) {
@@ -42,9 +42,9 @@ var loadMRU = function(resp) {
         }
     }
 
-    // the template to render with the person name
+    // the template to render with the constituent name
     var template = new Ext.XTemplate(
-            '<li><a href="person.htm?personId={id}">',
+            '<li><a href="constituent.htm?constituentId={id}">',
             '<tpl if="firstName.length == 0 && lastName.length == 0">',
                 '{orgName}',
             '</tpl>',

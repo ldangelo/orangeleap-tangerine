@@ -30,7 +30,7 @@ import com.jaspersoft.jasperserver.irplugin.RepositoryReportUnit;
 import com.jaspersoft.jasperserver.irplugin.wsclient.RequestAttachment;
 import com.jaspersoft.jasperserver.irplugin.wsclient.WSClient;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
@@ -114,30 +114,30 @@ public class MailService {
 		return temp;
 	}
 
-	public void generateMail(List<Person> list, String lableTemplateName, String mailingTemplateName) {
+	public void generateMail(List<Constituent> list, String lableTemplateName, String mailingTemplateName) {
 
 		setTemplateName(mailingTemplateName);
 		setLabelTemplateName(lableTemplateName);
 
-		Person p = list.get(0);
+		Constituent p = list.get(0);
 		Site s = p.getSite();
 		setSite(s);
 		
 		ArrayList<Long> ids = new ArrayList<Long>();
 		
-		for (Person person : list) {
-			ids.add(person.getId());
+		for (Constituent constituent : list) {
+			ids.add(constituent.getId());
 			
 			//
-			// Add touchpoint for this person so rule will not fire again...
+			// Add touchpoint for this constituent so rule will not fire again...
 			CommunicationHistory ch = new CommunicationHistory();
-			ch.setPerson(person);
+			ch.setConstituent(constituent);
 			ch.setSystemGenerated(true);
 			ch.setComments("Generated mailing using template named " + getTemplateName());
 			ch.setEntryType("Mail");
 			ch.setRecordDate(new Date());
 			ch.setCustomFieldValue("template", getTemplateName());
-			ch.setSelectedAddress(person.getPrimaryAddress());
+			ch.setSelectedAddress(constituent.getPrimaryAddress());
 
 			ch.setSuppressValidation(true);
 			try {
@@ -149,7 +149,7 @@ public class MailService {
 
 		}
 		//
-		// first we run the report passing in the person.id as a parameter
+		// first we run the report passing in the constituent.id as a parameter
 		Map params = getReportParameters();
 		params.clear();
 		params.put("Ids", ids);

@@ -7,9 +7,9 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='pledgeView'/>
-			<c:set var="person" value="${pledge.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${pledge.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 			
 			<form:form method="post" commandName="pledge">
@@ -18,11 +18,11 @@
 				<c:if test="${requestScope.canApplyPayment}">
 					<spring:message var="applyPaymentText" code="applyPayment"/>
 				</c:if>
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 					<jsp:param name="routeButtonText" value="${applyPaymentText}" />
-					<jsp:param name="routeUrl" value="gift.htm?personId=${person.id}&selectedPledgeId=${pledge.id}" />
+					<jsp:param name="routeUrl" value="gift.htm?constituentId=${constituent.id}&selectedPledgeId=${pledge.id}" />
 				</jsp:include>
 				
 			    <c:set var="gridCollectionName" value="distributionLines" scope="request" />
@@ -111,15 +111,15 @@
 				</div>
 				
 				<%@ include file="/WEB-INF/jsp/gift/distributionLinesView.jsp"%>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${requestScope.canApplyPayment}">
-						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&selectedPledgeId=${pledge.id}')"/>
+						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?constituentId=${constituent.id}&selectedPledgeId=${pledge.id}')"/>
 					</c:if>
 					<input type="submit" value="<spring:message code='submitPledge'/>" class="saveButton" />
 		            <c:if test="${pageAccess['/pledgeList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('pledgeList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
-					<a class="newAccountButton" href="pledge.htm?personId=${person.id}"><spring:message code='enterNewPledge'/></a>
+					<a class="newAccountButton" href="pledge.htm?constituentId=${constituent.id}"><spring:message code='enterNewPledge'/></a>
 				</div>
 			</form:form>
 		</div>

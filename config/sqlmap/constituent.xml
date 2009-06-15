@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="CONSTITUENT">
 
-	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Person" groupBy="id">
+	<resultMap id="CONSTITUENT_RESULT" class="com.orangeleap.tangerine.domain.Constituent" groupBy="id">
 		<result property="id" column="CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="constituentType" column="CONSTITUENT_TYPE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -41,8 +41,8 @@
 	<select id="SELECT_CONSTITUENT_BY_IDS_SITE" resultMap="CONSTITUENT_RESULT" parameterClass="map">
 		<include refid="SELECT_CONSTITUENT_FRAGMENT"/>		 
 		and p.CONSTITUENT_ID in 
-		<iterate property="personIds" conjunction="," open="(" close=")">
-			#personIds[]#
+		<iterate property="constituentIds" conjunction="," open="(" close=")">
+			#constituentIds[]#
 		</iterate>
 	</select>
 	
@@ -98,7 +98,7 @@
 		and p.LOGIN_ID = #loginId#
 	</select>
 
-	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
+	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		insert into CONSTITUENT (
 		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
 		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NAICS_CODE, ORGANIZATION_NAME,
@@ -112,7 +112,7 @@
 		</selectKey>
 	</insert>
 
-	<update id="UPDATE_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Person">
+	<update id="UPDATE_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		update CONSTITUENT
 		set 
 		CONSTITUENT_TYPE = #constituentType#,
@@ -186,7 +186,7 @@
 		   and exists (
 		    select * from CUSTOM_FIELD cf where 
 		    cf.ENTITY_ID = p.CONSTITUENT_ID
-		    and cf.ENTITY_TYPE = 'person'
+		    and cf.ENTITY_TYPE = 'constituent'
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE like #customParams[].value#
 		    </iterate>
@@ -251,7 +251,7 @@
 		   and exists (
 		    select * from CUSTOM_FIELD cf where 
 		    cf.ENTITY_ID = p.CONSTITUENT_ID
-		    and cf.ENTITY_TYPE = 'person'
+		    and cf.ENTITY_TYPE = 'constituent'
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    cf.FIELD_NAME = #customParams[].key# and cf.FIELD_VALUE = #customParams[].value#
 		    </iterate>

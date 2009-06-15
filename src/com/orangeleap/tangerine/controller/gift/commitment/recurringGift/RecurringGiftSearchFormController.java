@@ -19,7 +19,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.service.SessionService;
@@ -41,10 +41,10 @@ public class RecurringGiftSearchFormController extends SimpleFormController {
         if (logger.isTraceEnabled()) {
             logger.trace("formBackingObject:");
         }
-        Person p = new Person();
+        Constituent p = new Constituent();
         p.setSite(sessionService.lookupSite());
         RecurringGift g = new RecurringGift();
-        g.setPerson(p);
+        g.setConstituent(p);
         return g;
     }
 

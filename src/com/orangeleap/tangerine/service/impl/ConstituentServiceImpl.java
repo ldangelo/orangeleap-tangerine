@@ -30,7 +30,7 @@ import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -70,7 +70,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     @Resource(name = "errorLogService")
     private ErrorLogService errorLogService;
 
-    @Resource(name="personEntityValidator")
+    @Resource(name="constituentEntityValidator")
     protected EntityValidator entityValidator;
    
     @Resource(name="constituentValidator")
@@ -112,7 +112,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ConstituentValidationException.class, BindException.class})
-    public Person maintainConstituent(Person constituent) throws ConstituentValidationException, BindException {
+    public Constituent maintainConstituent(Constituent constituent) throws ConstituentValidationException, BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituent: constituent = " + constituent);
         }
@@ -123,9 +123,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (constituent.getFieldLabelMap() != null && !constituent.isSuppressValidation()) {
         	
         	setOptInPrefs(constituent);
-        	setPicklistDefaultsForRequiredFields(constituent, PageType.person, tangerineUserHelper.lookupUserRoles());
+        	setPicklistDefaultsForRequiredFields(constituent, PageType.constituent, tangerineUserHelper.lookupUserRoles());
         	
-	        BindingResult br = new BeanPropertyBindingResult(constituent, "person");
+	        BindingResult br = new BeanPropertyBindingResult(constituent, "constituent");
 	        BindException errors = new BindException(br);
 	      
 	        constituentValidator.validate(constituent, errors);
@@ -148,15 +148,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         Email email = constituent.getPrimaryEmail();
         
         if (address != null) {
-        	address.setPersonId(constituent.getId());
+        	address.setConstituentId(constituent.getId());
         	addressService.save(address);
         }
         if (phone != null) {
-        	phone.setPersonId(constituent.getId());
+        	phone.setConstituentId(constituent.getId());
         	phoneService.save(phone);
         }
         if (email != null) {
-        	email.setPersonId(constituent.getId());
+        	email.setConstituentId(constituent.getId());
         	emailService.save(email);
         }
 
@@ -168,7 +168,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         return constituent;
     }
     
-    private void setOptInPrefs(Person constituent) {
+    private void setOptInPrefs(Constituent constituent) {
     	String communicationPreferences = constituent.getCustomFieldValue("communicationPreferences");
     	String communicationOptInPreferences = constituent.getCustomFieldValue("communicationOptInPreferences");
     	if ("Opt In".equals(communicationPreferences) && StringUtils.trimToNull(communicationOptInPreferences) == null) {
@@ -178,14 +178,14 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     
     
     private final static String ROUTE_METHOD = "ConstituentServiceImpl.routeConstituent";
-    void routeConstituent(Person constituent) throws ConstituentValidationException {
+    void routeConstituent(Constituent constituent) throws ConstituentValidationException {
         
     	RulesStack.push(ROUTE_METHOD);
         try {
         	
 	        try {
 	            NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
-	            newConstituent.routePerson(constituent);
+	            newConstituent.routeConstituent(constituent);
 	        } 
 	        catch (ConstituentValidationException cve) {
 	        	throw cve;
@@ -210,7 +210,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
     
     @Transactional(propagation = Propagation.REQUIRED)
-    public void maintainCorrespondence(Person constituent) {
+    public void maintainCorrespondence(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainCorrespondence: constituent.id = " + constituent.getId());
         }
@@ -273,27 +273,27 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 
     @Override
-    public Person readConstituentById(Long id) {
+    public Constituent readConstituentById(Long id) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentById: id = " + id);
         }
-        Person constituent = constituentDao.readConstituentById(id);
+        Constituent constituent = constituentDao.readConstituentById(id);
         addCommunicationEntities(constituent);
         return constituent;
     }
 
 
     @Override
-    public Person readConstituentByAccountNumber(String accountNumber) {
+    public Constituent readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByAccountNumber: accountNumber = " + accountNumber);
         }
-        Person constituent = constituentDao.readConstituentByAccountNumber(accountNumber);
+        Constituent constituent = constituentDao.readConstituentByAccountNumber(accountNumber);
         addCommunicationEntities(constituent);
         return constituent;
     }
     
-    private void addCommunicationEntities(Person constituent) {
+    private void addCommunicationEntities(Constituent constituent) {
         if (constituent != null) {
             constituent.setAddresses(addressService.readByConstituentId(constituent.getId()));
             constituent.setPhones(phoneService.readByConstituentId(constituent.getId()));
@@ -303,7 +303,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
 
     @Override
-    public Person readConstituentByLoginId(String loginId) {
+    public Constituent readConstituentByLoginId(String loginId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByLoginId: loginId = " + loginId);
         }
@@ -312,7 +312,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     
 
     @Override
-    public List<Person> searchConstituents(Map<String, Object> params) {
+    public List<Constituent> searchConstituents(Map<String, Object> params) {
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params);
         }
@@ -320,7 +320,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
+    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("searchConstituents: params = " + params + " ignoreIds = " + ignoreIds);
         }
@@ -328,7 +328,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public List<Person> findConstituents(Map<String, Object> params, List<Long> ignoreIds) {
+    public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds) {
         if (logger.isTraceEnabled()) {
             logger.trace("findConstituents: params = " + params + " ignoreIds = " + ignoreIds);
         }
@@ -336,7 +336,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     }
 
     @Override
-    public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId) {
+    public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsByIdRange: " + fromId + " " + toId);
         }
@@ -346,26 +346,26 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	
 
     @Override
-    public Person createDefaultConstituent() {
+    public Constituent createDefaultConstituent() {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultConstituent:");
         }
-        // get initial person with built-in defaults
-        Person constituent = new Person();
+        // get initial constituent with built-in defaults
+        Constituent constituent = new Constituent();
         constituent.setSite(siteDao.readSite(tangerineUserHelper.lookupUserSiteName()));
-        BeanWrapper personBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
+        BeanWrapper constituentBeanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(constituent);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.person }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { EntityType.constituent }));
         for (EntityDefault ed : entityDefaults) {
-            personBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
+            constituentBeanWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
 
-        // TODO: consider caching techniques for the default Person
+        // TODO: consider caching techniques for the default Constituent
         return constituent;
     }
 
     @Override
-    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate) {
+    public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate) {
         if (logger.isTraceEnabled()) {
             logger.trace("analyzeLapsedDonor: beginDate = " + beginDate + " currentDate = " + currentDate);
         }
@@ -378,16 +378,16 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (logger.isTraceEnabled()) {
             logger.trace("setLapsedDonor: constituentId = " + constituentId);
         }
-        Person constituent = readConstituentById(constituentId);
+        Constituent constituent = readConstituentById(constituentId);
         if (constituent != null) {
-            constituent.addCustomFieldValue(Person.DONOR_PROFILES, "lapsedDonor");
+            constituent.addCustomFieldValue(Constituent.DONOR_PROFILES, "lapsedDonor");
         }
         constituentDao.maintainConstituent(constituent);
     }
 
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
-	public List<Person> readAllConstituentsBySite() {
+	public List<Constituent> readAllConstituentsBySite() {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:");
         }
@@ -396,7 +396,7 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public List<Person> readAllConstituentsBySite(SortInfo sort) {
+    public List<Constituent> readAllConstituentsBySite(SortInfo sort) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:" + sort);
         }

@@ -27,7 +27,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SessionService;
 import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 
 /**
  * This security filter will decorate the web HttpSession with information needed
@@ -126,10 +126,10 @@ public class TangerineSessionInformationFilter extends SpringSecurityFilter {
          */
         sessionService.lookupSite();
 
-        Person person = constituentService.readConstituentByLoginId(username);
-        details.setPersonId(person.getId());
-        details.setLastName(person.getLastName());
-        details.setFirstName(person.getFirstName());
+        Constituent constituent = constituentService.readConstituentByLoginId(username);
+        details.setConstituentId(constituent.getId());
+        details.setLastName(constituent.getLastName());
+        details.setFirstName(constituent.getFirstName());
     }
 
 

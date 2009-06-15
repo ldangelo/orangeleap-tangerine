@@ -13,7 +13,7 @@
 					</h1>
 					<div class="searchSection">
 						<%@ include file="/WEB-INF/jsp/snippets/fieldLayout.jsp" %>
-					    <div class="personFormButtons searchPersonButtons">
+					    <div class="constituentFormButtons searchConstituentButtons">
 							<input class="searchButton" type="submit" value="Search" />
 						</div>
 					</div>

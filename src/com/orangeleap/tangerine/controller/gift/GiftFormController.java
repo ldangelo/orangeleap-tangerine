@@ -88,7 +88,7 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
         }
         else {
 			current.removeEmptyMutableDistributionLines();

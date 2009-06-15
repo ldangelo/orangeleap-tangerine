@@ -18,11 +18,9 @@
 
 package com.orangeleap.tangerine.ws.util;
 
-import com.orangeleap.tangerine.ws.schema.Constituent;
 import com.orangeleap.tangerine.ws.schema.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.Person;
 import com.orangeleap.tangerine.domain.customization.CustomField;
-import com.orangeleap.tangerine.integration.transformer.personToConstituentTransformer;
+import com.orangeleap.tangerine.integration.transformer.constituentToConstituentTransformer;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -346,8 +344,8 @@ public class ObjectConverter {
         to.setCustomFieldMap(cMap);
     }
 
-//    static public Person Convert(Constituent c) {
-//        Person p = new Person();
+//    static public Constituent Convert(Constituent c) {
+//        Constituent p = new Constituent();
 //
 //        BeanUtils.copyProperties(c,p);
 //
@@ -355,12 +353,12 @@ public class ObjectConverter {
 //    }
 //
 //    /**
-//     * Convert from a domain Person to a schema Constituent
+//     * Convert from a domain Constituent to a schema Constituent
 //     *
-//     * @param from domain Person
+//     * @param from domain Constituent
 //     * @param to schema Constituent
 //     */
-//    static public void Convert(Person from,Constituent to) {
+//    static public void Convert(Constituent from,Constituent to) {
 //        String ignoreProperties[] = {"customFieldMap","primaryAddress","primaryEmail","primaryPhone"};
 //
 //

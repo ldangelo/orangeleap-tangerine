@@ -5,8 +5,8 @@ import com.orangeleap.tangerine.type.EntityType;
 public class SearchFieldMapperFactory {
 	public SearchFieldMapper getMapper(EntityType entitytype)  {
 		
-		if (entitytype == EntityType.person) {
-            return new PersonSearchFieldMapper();
+		if (entitytype == EntityType.constituent) {
+            return new ConstituentSearchFieldMapper();
         }
 		if (entitytype == EntityType.gift) {
             return new GiftSearchFieldMapper();

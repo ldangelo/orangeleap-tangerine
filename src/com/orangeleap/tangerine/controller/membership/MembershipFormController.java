@@ -57,21 +57,21 @@ public class MembershipFormController extends SimpleFormController {
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true));
         binder.registerCustomEditor(String.class, new NoneStringTrimmerEditor(true));
-        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, request.getParameter("personId")));
+        binder.registerCustomEditor(PaymentSource.class, new PaymentSourceEditor(paymentSourceService, request.getParameter("constituentId")));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map refData = new HashMap();
-//        String personIdString = request.getParameter("personId");
-//        Long personId = null;
-//        if (personIdString == null) {
+//        String constituentIdString = request.getParameter("constituentId");
+//        Long constituentId = null;
+//        if (constituentIdString == null) {
 //            String commitmentId = request.getParameter("commitmentId");
 //            if (commitmentId != null) {
 //                Commitment commitment = commitmentService.readCommitmentById(Long.valueOf(commitmentId));
 //                if (commitment != null) {
-//                    personId = commitment.getPerson().getId();
+//                    constituentId = commitment.getConstituent().getId();
 //                    List<Gift> gifts = commitmentService.getCommitmentGifts(commitment);
 //                    refData.put("gifts",gifts);
 //                    Iterator<Gift> giftIter = gifts.iterator();
@@ -84,10 +84,10 @@ public class MembershipFormController extends SimpleFormController {
 //
 //            }
 //        } else {
-//            personId = Long.valueOf(personIdString);
+//            constituentId = Long.valueOf(constituentIdString);
 //        }
-//        if (personId != null) {
-//            List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(personId);
+//        if (constituentId != null) {
+//            List<PaymentSource> paymentSources = paymentSourceService.readPaymentSources(constituentId);
 //            refData.put("paymentSources", paymentSources);
 //        }
         return refData;
@@ -98,18 +98,18 @@ public class MembershipFormController extends SimpleFormController {
         String commitmentId = request.getParameter("commitmentId");
 //        Commitment commitment = null;
 //        if (commitmentId == null) {
-//            // create person
-//            String personId = request.getParameter("personId");
-//            // TODO: if the user navigates directly to gift.htm with no personId, we should redirect to giftSearch.htm
-//            Person person = null;
-//            if (personId != null) {
-//                person = constituentService.readConstituentById(Long.valueOf(personId));
-//                if (person == null) {
-//                    logger.error("**** person not found for id: " + personId);
+//            // create constituent
+//            String constituentId = request.getParameter("constituentId");
+//            // TODO: if the user navigates directly to gift.htm with no constituentId, we should redirect to giftSearch.htm
+//            Constituent constituent = null;
+//            if (constituentId != null) {
+//                constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
+//                if (constituent == null) {
+//                    logger.error("**** constituent not found for id: " + constituentId);
 //                    return commitment;
 //                }
-////                commitment = commitmentService.createDefaultCommitment(person, CommitmentType.MEMBERSHIP);
-////                commitment.setPerson(person);
+////                commitment = commitmentService.createDefaultCommitment(constituent, CommitmentType.MEMBERSHIP);
+////                commitment.setConstituent(constituent);
 //            }
 //        } else {
 //            commitment = commitmentService.readCommitmentById(new Long(commitmentId));

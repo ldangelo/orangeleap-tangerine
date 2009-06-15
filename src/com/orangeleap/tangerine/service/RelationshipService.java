@@ -2,34 +2,34 @@ package com.orangeleap.tangerine.service;
 
 import java.util.List;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
+import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 
 public interface RelationshipService {
 	
-	public Person maintainRelationships(Person person) throws ConstituentValidationException;
+	public Constituent maintainRelationships(Constituent constituent) throws ConstituentValidationException;
 	
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException;
+	public ConstituentTreeNode getTree(Constituent constituent, String parentCustomFieldName, boolean oneLevelOnly, boolean fromHeadOfTree) throws ConstituentValidationException;
 
 	public boolean isRelationship(FieldDefinition fd);
 	
 	public boolean isHierarchy(FieldDefinition fd);
 
-	public PersonTreeNode getTree(Person person, String parentCustomFieldName,
+	public ConstituentTreeNode getTree(Constituent constituent, String parentCustomFieldName,
 			String childrenCustomFieldName, boolean oneLevelOnly,
 			boolean fromHeadOfTree) throws ConstituentValidationException;
 
-	public Person getHeadOfTree(Person person, String parentCustomFieldName)
+	public Constituent getHeadOfTree(Constituent constituent, String parentCustomFieldName)
 			throws ConstituentValidationException;
 	
-	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long personId, String fieldName);
+	public List<CustomField> readCustomFieldsByConstituentAndFieldName(Long constituentId, String fieldName);
 	
-    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long personId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException;
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long constituentId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException;
 
-    public List<Person> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue);
+    public List<Constituent> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue);
     
     public String isIndividualOrganizationRelationship(String fieldDefinitionId);
 }

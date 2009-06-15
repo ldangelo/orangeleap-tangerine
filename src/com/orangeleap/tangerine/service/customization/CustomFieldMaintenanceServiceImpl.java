@@ -113,7 +113,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
 	}
 
     private boolean hasViewPage(String entityType) {
-            return !("person".equals(entityType) || "giftInKind".equals(entityType));
+            return !("constituent".equals(entityType) || "giftInKind".equals(entityType));
     }
     
     private void createRelationship(CustomFieldRequest customFieldRequest, FieldDefinition fieldDefinition) {
@@ -157,7 +157,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     }
     
     private boolean isRelationship(CustomFieldRequest customFieldRequest) {
-    	return StringUtils.trimToNull(customFieldRequest.getRelateToField()) != null && customFieldRequest.getEntityType().equals("person");
+    	return StringUtils.trimToNull(customFieldRequest.getRelateToField()) != null && customFieldRequest.getEntityType().equals("constituent");
     }
     
     private boolean isReferenceType(CustomFieldRequest customFieldRequest) {
@@ -172,11 +172,11 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	boolean isBoth = customFieldRequest.getReferenceConstituentType().equals("both");
 
     	// Create queries
-    	String lookupSectionName = sectionDefinition.getPageType() + ".person."+fieldDefinition.getCustomFieldName();
+    	String lookupSectionName = sectionDefinition.getPageType() + ".constituent."+fieldDefinition.getCustomFieldName();
     	
     	QueryLookup queryLookup = new QueryLookup();
     	queryLookup.setFieldDefinition(fieldDefinition);
-    	queryLookup.setEntityType(EntityType.person);
+    	queryLookup.setEntityType(EntityType.constituent);
     	queryLookup.setSite(fieldDefinition.getSite());
     	String sqlWhere = "";
     	if (isOrganization) {
@@ -210,11 +210,11 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
     	lookupSectionDefinition = pageCustomizationService.maintainSectionDefinition(lookupSectionDefinition); 
     	
     	if (isOrganization || isBoth) {
-    		addSectionField(lookupSectionDefinition, "person.organizationName", 1000);
+    		addSectionField(lookupSectionDefinition, "constituent.organizationName", 1000);
     	} 
     	if (isIndividual || isBoth) {
-    		addSectionField(lookupSectionDefinition, "person.lastName", 1000);
-    		addSectionField(lookupSectionDefinition, "person.firstName", 2000);
+    		addSectionField(lookupSectionDefinition, "constituent.lastName", 1000);
+    		addSectionField(lookupSectionDefinition, "constituent.firstName", 2000);
     	}
     
     }
@@ -297,7 +297,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         FieldDefinition newFieldDefinition = new FieldDefinition();
         newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
         newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
-        if (customFieldRequest.getEntityType().equals("person")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
+        if (customFieldRequest.getEntityType().equals("constituent")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
         newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
         newFieldDefinition.setSite(site);
         String fieldName = "customFieldMap["+ customFieldRequest.getFieldName()+"]";
@@ -305,7 +305,7 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         String id = site.getName() + "-" + customFieldRequest.getEntityType() + "." + fieldName;
         newFieldDefinition.setId(id);
         if (isReferenceType(customFieldRequest)) {
-        	newFieldDefinition.setReferenceType(ReferenceType.person);
+        	newFieldDefinition.setReferenceType(ReferenceType.constituent);
         }
         return newFieldDefinition;
     }

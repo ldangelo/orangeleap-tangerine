@@ -31,6 +31,6 @@ public class GiftAdjustmentController extends TangerineConstituentAttributesForm
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
         AdjustedGift anAdjustedGift = adjustedGiftService.maintainAdjustedGift((AdjustedGift) command);
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.ADJUSTED_GIFT_ID + "=" + anAdjustedGift.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
     }
 }

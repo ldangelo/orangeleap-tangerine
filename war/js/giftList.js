@@ -4,11 +4,11 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var personId = /personId=(\d+)/g.exec(document.location.search);
+    var constituentId = /constituentId=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if(personId) {
-        baseParams.personId = personId[1];
+    if(constituentId) {
+        baseParams.constituentId = constituentId[1];
     }
 
     var header = 'Gift List';
@@ -90,13 +90,13 @@ GiftList.navigate = function(id) {
 	
 	switch (rec.data.gifttype) {
 		case 'MONETARY':
-		    window.location.href='giftView.htm?giftId=' + id + '&personId=' + rec.data.constituentid;
+		    window.location.href='giftView.htm?giftId=' + id + '&constituentId=' + rec.data.constituentid;
 			break;
 		case 'ADJUSTED':
-			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&personId=' + rec.data.constituentid;
+			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&constituentId=' + rec.data.constituentid;
 			break;
         default:
-            window.location.href= 'person.htm?personid=' + rec.data.constituentid;
+            window.location.href= 'constituent.htm?constituentid=' + rec.data.constituentid;
 	}
 	return false;
 };

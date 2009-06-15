@@ -2,20 +2,20 @@ package com.orangeleap.tangerine.util;
 
 import org.springframework.context.ApplicationContext;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 
 public class RuleTask {
 	private String agendaGroup;
-	private Person person;
+	private Constituent constituent;
 	private Gift   gift;
 	private ApplicationContext context;
 	
 	
-	public RuleTask(ApplicationContext c,String string, Person person2, Gift gift2) {
+	public RuleTask(ApplicationContext c,String string, Constituent constituent2, Gift gift2) {
 		setContext(c);
 		setAgendaGroup(string);
-		setPerson(person2);
+		setConstituent(constituent2);
 		setGift(gift2);
 	}
 	public String getAgendaGroup() {
@@ -24,11 +24,11 @@ public class RuleTask {
 	public void setAgendaGroup(String agendaGroup) {
 		this.agendaGroup = agendaGroup;
 	}
-	public Person getPerson() {
-		return person;
+	public Constituent getConstituent() {
+		return constituent;
 	}
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setConstituent(Constituent constituent) {
+		this.constituent = constituent;
 	}
 	public Gift getGift() {
 		return gift;

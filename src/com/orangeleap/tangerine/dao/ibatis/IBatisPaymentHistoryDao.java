@@ -28,7 +28,7 @@ public class IBatisPaymentHistoryDao extends AbstractIBatisDao implements Paymen
 	@Override
 	public PaymentHistory addPaymentHistory(PaymentHistory paymentHistory) {
         if (logger.isTraceEnabled()) {
-            logger.trace("addPaymentHistory: constituentId = " + paymentHistory.getPerson().getId());
+            logger.trace("addPaymentHistory: constituentId = " + paymentHistory.getConstituent().getId());
         }
         return (PaymentHistory)insertOrUpdate(paymentHistory, "PAYMENT_HISTORY");
 	}

@@ -21,13 +21,13 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
 
     public Phone() { }
 
-    public Phone(Long personId) {
-        this.personId = personId;
+    public Phone(Long constituentId) {
+        this.constituentId = constituentId;
         this.activationStatus = ActivationType.permanent;
     }
     
-    public Phone(Long personId, String number) {
-        this(personId);
+    public Phone(Long constituentId, String number) {
+        this(constituentId);
         this.number = number;
     }
 
@@ -100,14 +100,14 @@ public class Phone extends AbstractCommunicationEntity { // SiteAware, Constitue
         }
         Phone p = (Phone) obj;
         EqualsBuilder eb = new EqualsBuilder();
-        eb.append(getPersonId(), p.getPersonId()).append(number, p.getNumber());
+        eb.append(getConstituentId(), p.getConstituentId()).append(number, p.getNumber());
         return eb.isEquals();
     }
 
     @Override
     public int hashCode() {
         HashCodeBuilder hcb = new HashCodeBuilder();
-        hcb.append(getPersonId()).append(number);
+        hcb.append(getConstituentId()).append(number);
         return hcb.hashCode();
     }
     

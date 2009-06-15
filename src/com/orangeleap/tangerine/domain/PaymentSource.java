@@ -51,7 +51,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
 
     private FormBeanType addressType;
     private FormBeanType phoneType;
-    private Person person;
+    private Constituent constituent;
     private Address address = new Address(); // Created only because spring binds to it
     private Phone phone = new Phone(); // Created only because spring binds to it
     private Address selectedAddress = new Address(); // Created only because spring binds to it
@@ -61,22 +61,22 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     public PaymentSource() {
     }
 
-    public PaymentSource(Person person) {
+    public PaymentSource(Constituent constituent) {
         this();
-        this.person = person;
+        this.constituent = constituent;
     }
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
-        if (address != null && person != null) {
-            address.setPersonId(person.getId());
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
+        if (address != null && constituent != null) {
+            address.setConstituentId(constituent.getId());
         }
-        if (phone != null && person != null) {
-            phone.setPersonId(person.getId());
+        if (phone != null && constituent != null) {
+            phone.setConstituentId(constituent.getId());
         }
     }
 
@@ -319,7 +319,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     }
 
     public Site getSite() {
-        return person != null ? person.getSite() : null;
+        return constituent != null ? constituent.getSite() : null;
     }
 
     public List<String> getExpirationMonthList() {
@@ -504,11 +504,11 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     @Override
     public void setDefaults() {
         super.setDefaults();
-        if (creditCardHolderName == null && person != null) {
-            creditCardHolderName = person.getFirstLast();
+        if (creditCardHolderName == null && constituent != null) {
+            creditCardHolderName = constituent.getFirstLast();
         }
-        if (achHolderName == null && person != null) {
-            achHolderName = person.getFirstLast();
+        if (achHolderName == null && constituent != null) {
+            achHolderName = constituent.getFirstLast();
         }
     }
 
@@ -534,7 +534,7 @@ public class PaymentSource extends AbstractEntity implements Inactivatible, Crea
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("profile", profile).append("paymentType", paymentType).append(creditCardHolderName, "creditCardHolderName").
-            append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", person).
+            append("creditCardType", creditCardType).append("achHolderName", achHolderName).append("inactive", inactive).append("address", address).append("phone", phone).append("constituent", constituent).
             append("userCreated", userCreated).append("selectedAddress", selectedAddress).append("selectedPhone", selectedPhone).
             toString();
     }

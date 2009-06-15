@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.dao.PicklistDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
 import com.orangeleap.tangerine.domain.customization.FieldRequired;
 import com.orangeleap.tangerine.domain.customization.FieldValidation;
@@ -122,7 +122,7 @@ public class FieldServiceImpl implements FieldService {
                 model instanceof AbstractCommunicationEntity) {
             
             AbstractCommunicationEntity entity = (AbstractCommunicationEntity) model;
-            Person constituent = constituentService.readConstituentById(entity.getPersonId());
+            Constituent constituent = constituentService.readConstituentById(entity.getConstituentId());
             if (constituent != null) {
                 String communicationPref = constituent.getCustomFieldValue(StringConstants.COMMUNICATION_PREFERENCES);
                 if (StringConstants.OPT_OUT_ALL.equals(communicationPref)) {

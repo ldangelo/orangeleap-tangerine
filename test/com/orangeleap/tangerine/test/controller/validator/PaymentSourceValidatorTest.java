@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.controller.validator.PaymentSourceValidator;
 import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.test.BaseTest;
 
@@ -18,7 +18,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
     private PaymentSource source;
     private BindException errors;
     private Mockery mockery;
-    private final Long PERSON_ID = 1L;
+    private final Long CONSTITUENT_ID = 1L;
 
     @BeforeMethod
     public void setupMocks() {
@@ -26,9 +26,9 @@ public class PaymentSourceValidatorTest extends BaseTest {
         validator = new PaymentSourceValidator();
 
         source = new PaymentSource();
-        Person person = new Person();
-        person.setId(PERSON_ID);
-        source.setPerson(person);
+        Constituent constituent = new Constituent();
+        constituent.setId(CONSTITUENT_ID);
+        source.setConstituent(constituent);
 
         errors = new BindException(source, "paymentSource");
 
@@ -36,7 +36,7 @@ public class PaymentSourceValidatorTest extends BaseTest {
         validator.setPaymentSourceService(service);
 
         mockery.checking(new Expectations() {{
-            allowing (service).findPaymentSourceProfile(PERSON_ID, "MyProfile"); will(returnValue(new PaymentSource()));
+            allowing (service).findPaymentSourceProfile(CONSTITUENT_ID, "MyProfile"); will(returnValue(new PaymentSource()));
         }});
     }
 

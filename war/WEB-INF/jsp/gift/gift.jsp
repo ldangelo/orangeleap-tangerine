@@ -14,10 +14,10 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='gift' />
-			<c:set var="person" value="${gift.person}" scope="request" />
-			<input type="hidden" id="thisConstituentId" name="thisConstituentId" value="<c:out value='${person.id}'/>"/> 
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${gift.constituent}" scope="request" />
+			<input type="hidden" id="thisConstituentId" name="thisConstituentId" value="<c:out value='${constituent.id}'/>"/> 
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 			<c:choose>
 				<c:when test="${associatedPledge != null}">
@@ -33,7 +33,7 @@
 				<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
 			
 				<spring:message code='submitGift' var="submitText" />
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
@@ -127,10 +127,10 @@
 				<div id="giftDistributionLinesDiv">
 					<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				</div>
- 				<div class="formButtonFooter personFormButtons">
+ 				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
 				</div>
 			</form:form>

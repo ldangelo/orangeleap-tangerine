@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.dao.FieldDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -57,11 +57,11 @@ public class RelationshipFormController extends SimpleFormController {
     public ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 		
 		ModelAndView mav = super.showForm(request, response, errors, controlModel);
-		Long personId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(personId);
+		Long constituentId = new Long(request.getParameter("constituentId"));
+		Constituent constituent = constituentService.readConstituentById(constituentId);
 		
         mav.addObject("form", readForm(request));
-        mav.addObject("person", person);
+        mav.addObject("constituent", constituent);
         return mav;
         
     }
@@ -79,16 +79,16 @@ public class RelationshipFormController extends SimpleFormController {
         ModelAndView mav = new ModelAndView(getSuccessView());
 		
 
-		Long personId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(personId);
-		if (person == null) {
+		Long constituentId = new Long(request.getParameter("constituentId"));
+		Constituent constituent = constituentService.readConstituentById(constituentId);
+		if (constituent == null) {
             return null;
         }
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
 		String fieldName = fieldDefinition.getCustomFieldName();
-    	List<CustomField> list = getMap(request, personId, fieldName);
+    	List<CustomField> list = getMap(request, constituentId, fieldName);
 
     	int customizeIndex = getIndex(request.getParameter("customizeIndex"));
         CustomField customizeCf = null;
@@ -100,17 +100,17 @@ public class RelationshipFormController extends SimpleFormController {
 
     	try {
     		
-    		List<CustomField> existing = relationshipService.readCustomFieldsByConstituentAndFieldName(personId, fieldName);
+    		List<CustomField> existing = relationshipService.readCustomFieldsByConstituentAndFieldName(constituentId, fieldName);
     		adjustCCRs(existing, list, masterfieldDefinitionId);
     		
-    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(person.getId(), fieldDefinitionId, list, new ArrayList<Long>());
-    		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(person.getId(), fieldDefinition.getCustomFieldName());
-    		person = constituentService.readConstituentById(personId);
+    		relationshipService.maintainCustomFieldsByConstituentAndFieldDefinition(constituent.getId(), fieldDefinitionId, list, new ArrayList<Long>());
+    		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(constituent.getId(), fieldDefinition.getCustomFieldName());
+    		constituent = constituentService.readConstituentById(constituentId);
     		
     		if (customizeCf != null) {
     			CustomField customField = getCustomFieldId(customizeCf, savedlist);
-    			Person refperson = constituentService.readConstituentById(new Long(customField.getValue()));
-    		    return new ModelAndView("redirect:/relationshipCustomize.htm?personId=" + personId + "&fieldDefinitionId=" + fieldDefinitionId + "&customFieldId=" + customField.getId()+"&refvalue="+refperson.getFullName());
+    			Constituent refconstituent = constituentService.readConstituentById(new Long(customField.getValue()));
+    		    return new ModelAndView("redirect:/relationshipCustomize.htm?constituentId=" + constituentId + "&fieldDefinitionId=" + fieldDefinitionId + "&customFieldId=" + customField.getId()+"&refvalue="+refconstituent.getFullName());
     		}
     		
     		
@@ -121,7 +121,7 @@ public class RelationshipFormController extends SimpleFormController {
     	
 		mav.addObject("message", message);
         mav.addObject("form", readForm(request));
-        mav.addObject("person", person);
+        mav.addObject("constituent", constituent);
         return mav;
         
     }
@@ -181,9 +181,9 @@ public class RelationshipFormController extends SimpleFormController {
         
 	private RelationshipForm readForm(HttpServletRequest request) {
 		
-        Long personId = new Long(request.getParameter("personId"));
-		Person person = constituentService.readConstituentById(personId);
-		if (person == null) {
+        Long constituentId = new Long(request.getParameter("constituentId"));
+		Constituent constituent = constituentService.readConstituentById(constituentId);
+		if (constituent == null) {
             return null;
         }
 
@@ -192,20 +192,20 @@ public class RelationshipFormController extends SimpleFormController {
         String fieldname = fieldDefinition.getCustomFieldName();
         String fieldlabel = fieldDefinition.getDefaultLabel();
         
-        List<CustomField> list = relationshipService.readCustomFieldsByConstituentAndFieldName(new Long(personId), fieldname);
+        List<CustomField> list = relationshipService.readCustomFieldsByConstituentAndFieldName(new Long(constituentId), fieldname);
         
         if (list.size() == 0) {
         	CustomField cf = new CustomField();
         	cf.setName(fieldname);
-        	cf.setEntityId(person.getId());
-        	cf.setEntityType("person");
+        	cf.setEntityId(constituent.getId());
+        	cf.setEntityType("constituent");
         	list.add(cf);
         }
         
         RelationshipForm form = new RelationshipForm();
         form.setCustomFieldList(list);
         form.setRelationshipNames(resolveConstituentRelationship(list));
-        form.setPerson(person);
+        form.setConstituent(constituent);
         form.setFieldDefinition(fieldDefinition);
         form.setFieldLabel(fieldlabel);
         form.setFieldType(relationshipService.isIndividualOrganizationRelationship(fieldDefinitionId));
@@ -218,7 +218,7 @@ public class RelationshipFormController extends SimpleFormController {
 	    List<String> constituentNames = new ArrayList<String>();
 	    for (CustomField customField : fields) {
 	        if (NumberUtils.isDigits(customField.getValue())) {
-	            Person constituent = constituentService.readConstituentById(Long.parseLong(customField.getValue()));
+	            Constituent constituent = constituentService.readConstituentById(Long.parseLong(customField.getValue()));
 	            if (constituent == null) {
 	                constituentNames.add(StringConstants.EMPTY);
 	            }
@@ -234,7 +234,7 @@ public class RelationshipFormController extends SimpleFormController {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<CustomField> getMap(HttpServletRequest request, Long personId, String fieldName) {
+	private List<CustomField> getMap(HttpServletRequest request, Long constituentId, String fieldName) {
 		List<CustomField> list = new ArrayList<CustomField>();
 		Enumeration e = request.getParameterNames();
 		while (e.hasMoreElements()) {
@@ -243,8 +243,8 @@ public class RelationshipFormController extends SimpleFormController {
 				String fieldnum = parm.substring("cfFieldValue".length());
 				int ifieldnum = Integer.parseInt(fieldnum.replace('[',' ').replace(']',' ').trim());
 				CustomField cf = new CustomField();
-				cf.setEntityId(personId);
-				cf.setEntityType("person");
+				cf.setEntityId(constituentId);
+				cf.setEntityType("constituent");
 				cf.setName(fieldName);
 				String id = request.getParameter("cfId"+fieldnum);
 				if (id != null && id.length() > 0) {

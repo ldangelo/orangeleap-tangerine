@@ -11,7 +11,7 @@
 		<result property="pledgeDate" column="PLEDGE_DATE" jdbcType="TIMESTAMP" />
 		<result property="pledgeStatus" column="PLEDGE_STATUS" jdbcType="VARCHAR" />
 		<result property="recurring" column="RECURRING" jdbcType="CHAR" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
 	<resultMap id="PLEDGE_RESULT" class="com.orangeleap.tangerine.domain.paymentInfo.Pledge" groupBy="id" extends="MIN_PLEDGE_RESULT">
@@ -127,7 +127,7 @@
 		#comments#, now(), #endDate#,
 		#frequency#,  #pledgeCancelDate#,
 		#pledgeCancelReason#, #pledgeDate#,	#projectedDate#, #recurring#, 
-		#startDate#, #pledgeStatus#, now(), #person.id#)
+		#startDate#, #pledgeStatus#, now(), #constituent.id#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -152,7 +152,7 @@
 		RECURRING = #recurring#,
 		START_DATE = #startDate#,
 		UPDATE_DATE = now(),
-		CONSTITUENT_ID = #person.id#
+		CONSTITUENT_ID = #constituent.id#
 		where PLEDGE_ID = #id#
 	</update>
 	
@@ -204,7 +204,7 @@
 		<isNotNull property="customParams"> 
 		   and exists (
 		    select * from CUSTOM_FIELD scf where 
-		   ((scf.ENTITY_ID = c.PLEDGE_ID and scf.ENTITY_TYPE = 'pledge') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'person'))
+		   ((scf.ENTITY_ID = c.PLEDGE_ID and scf.ENTITY_TYPE = 'pledge') or (scf.ENTITY_ID = p.CONSTITUENT_ID and scf.ENTITY_TYPE = 'constituent'))
 		    <iterate property="customParams" conjunction="and" open="and" close="">
 		    scf.FIELD_NAME = #customParams[].key# and scf.FIELD_VALUE like #customParams[].value#
 		    </iterate>

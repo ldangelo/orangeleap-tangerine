@@ -63,8 +63,8 @@ public class GiftListController {
         // set the sort to the valid column name, based on the map
         sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
 
-        String personId = request.getParameter("personId");
-        PaginatedResult result = giftService.readPaginatedGiftList(Long.valueOf(personId), sortInfo); 
+        String constituentId = request.getParameter("constituentId");
+        PaginatedResult result = giftService.readPaginatedGiftList(Long.valueOf(constituentId), sortInfo); 
 
         ModelMap map = new ModelMap("rows", result.getRows());
         map.put("totalRows", result.getRowCount());

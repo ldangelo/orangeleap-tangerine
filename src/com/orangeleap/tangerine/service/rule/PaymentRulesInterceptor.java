@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ErrorLogService;
@@ -45,7 +45,7 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 		try {
 
 			workingMemory.setGlobal("applicationContext", applicationContext);
-			workingMemory.setGlobal("personService", ps);
+			workingMemory.setGlobal("constituentService", ps);
 			workingMemory.setGlobal("giftService",gs);
 
 			if (site == null) {
@@ -57,15 +57,15 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 			workingMemory.insert(gift);
 
 /*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift
-					.getPerson().getId());
+					.getConstituent().getId());
 			Iterator<Gift> giftsIter = gifts.iterator();
 			while (giftsIter.hasNext()) {
 				workingMemory.insert(giftsIter.next());
 			}*/
 
-			Person person = gift.getPerson();
-			person.setGifts(gs.readMonetaryGifts(person));
-			workingMemory.insert(person);
+			Constituent constituent = gift.getConstituent();
+			constituent.setGifts(gs.readMonetaryGifts(constituent));
+			workingMemory.insert(constituent);
 
 		} catch (Exception ex) {
 			logger.info(ex.getMessage());

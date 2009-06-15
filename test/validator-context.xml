@@ -34,8 +34,8 @@
 	</bean>
 
 
-    <bean id="personEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
-         <property name="pageType" value="person"/>
+    <bean id="constituentEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">
+         <property name="pageType" value="constituent"/>
 	</bean>
 	
     <bean id="giftEntityValidator" class="com.orangeleap.tangerine.controller.validator.EntityValidator">

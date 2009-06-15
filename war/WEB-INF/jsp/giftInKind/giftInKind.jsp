@@ -13,15 +13,15 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='giftInKind' />
-			<c:set var="person" value="${giftInKind.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${giftInKind.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 						
 			<form:form method="post" commandName="giftInKind">
 			
 				<spring:message code='submitGiftInKind' var="submitText" />
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 				</jsp:include>
@@ -90,13 +90,13 @@
 				</div>
 				<%@ include file="/WEB-INF/jsp/giftInKind/giftInKindDetails.jsp"%>
 
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<input type="submit" value="<spring:message code='submitGiftInKind'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftInKindList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftInKindList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftInKindList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
 					<c:if test="${param.giftInKindId > 0}">
-						<a class="newAccountButton" href="giftInKind.htm?personId=${person.id}"><spring:message code='enterNewGiftInKind'/></a>
+						<a class="newAccountButton" href="giftInKind.htm?constituentId=${constituent.id}"><spring:message code='enterNewGiftInKind'/></a>
 					</c:if>
 				</div>
 			</form:form>

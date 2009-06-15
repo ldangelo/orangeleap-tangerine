@@ -17,7 +17,7 @@ $(document).ready(function() {
 		}
 		else {
 			// assume people search
-			$("#searchForm").attr("action", "personSearch.htm");	
+			$("#searchForm").attr("action", "constituentSearch.htm");	
 		}
 	});
 	$("ul.formFields li input, ul.formFields li select").change(function() {
@@ -1050,10 +1050,10 @@ var Lookup = {
 		
 		var $elem = $(elem);
 		var fieldDef = $elem.attr("fieldDef");
-		var personId = $elem.attr("personId");
+		var constituentId = $elem.attr("constituentId");
 		var divid = $elem.attr("divid");
 		$elem.hide();
-		var treeurl = "constituentHeirarchy.json?memberPersonId=" + personId + "&fieldDef=" + fieldDef;
+		var treeurl = "constituentHeirarchy.json?memberConstituentId=" + constituentId + "&fieldDef=" + fieldDef;
 		
 		var tree = new Ext.tree.TreePanel({
 	        el:divid,

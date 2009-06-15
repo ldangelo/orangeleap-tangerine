@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -59,10 +59,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert gift.getCheckNumber() == null;
         assert GiftType.MONETARY_GIFT.equals(gift.getGiftType());
         
-        assert gift.getPerson() != null && gift.getPerson().getId() == 100L;
-        assert "Billy Graham Ministries".equals(gift.getPerson().getOrganizationName());
-        assert "Graham".equals(gift.getPerson().getLastName());
-        assert "Billy".equals(gift.getPerson().getFirstName());
+        assert gift.getConstituent() != null && gift.getConstituent().getId() == 100L;
+        assert "Billy Graham Ministries".equals(gift.getConstituent().getOrganizationName());
+        assert "Graham".equals(gift.getConstituent().getLastName());
+        assert "Billy".equals(gift.getConstituent().getFirstName());
         
         assert gift.getSelectedAddress() != null && gift.getSelectedAddress().getId() == 100L;
         assert "3726 THIRD ST".equals(gift.getSelectedAddress().getAddressLine1());
@@ -77,7 +77,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert "214-443-6829".equals(gift.getSelectedPhone().getNumber());
         assert gift.getSelectedPhone().getCreateDate() != null;
         assert gift.getSelectedPhone().getUpdateDate() != null;
-        assert 100L == gift.getSelectedPhone().getPersonId();
+        assert 100L == gift.getSelectedPhone().getConstituentId();
         
         assert gift.getSelectedPaymentSource() != null && gift.getSelectedPaymentSource().getId() == null;
     }
@@ -102,7 +102,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (DistributionLine line : gift.getDistributionLines()) {
             assert line.getId() >= 100L && line.getId() <= 400L;
             assert 300L == line.getGiftId();
-            assert 200L == line.getPerson().getId();
+            assert 200L == line.getConstituent().getId();
             switch (line.getId().intValue()) {
                 case 100:
                     assert 150 == line.getAmount().intValue();
@@ -214,10 +214,10 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         src.setId(100L);
         gift.setSelectedPaymentSource(src);
         Site site = new Site("company1");
-        Person person = new Person();
-        person.setId(100L);
-        person.setSite(site);
-        gift.setPerson(person);
+        Constituent constituent = new Constituent();
+        constituent.setId(100L);
+        constituent.setSite(site);
+        gift.setConstituent(constituent);
         setupDistributionLines(gift);
         gift.addAssociatedPledgeId(500L);
         gift.addAssociatedPledgeId(700L);
@@ -239,7 +239,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getSelectedAddress() != null && 100L == readGift.getSelectedAddress().getId();
         assert readGift.getSelectedPhone() != null && readGift.getSelectedPhone().getId() == null;
         assert readGift.getSelectedPaymentSource() != null && 100L == readGift.getSelectedPaymentSource().getId();
-        assert readGift.getPerson() != null && 100L == readGift.getPerson().getId();
+        assert readGift.getConstituent() != null && 100L == readGift.getConstituent().getId();
         Assert.assertNotNull("readGift distributionLines is null", readGift.getDistributionLines());
         Assert.assertEquals("readGift distributionLines size is " + readGift.getDistributionLines().size(), 2, readGift.getDistributionLines().size());
         assert readGift.getRecurringGiftId() == null;
@@ -251,7 +251,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
 
         for (DistributionLine line : readGift.getDistributionLines()) {
             assert readGift.getId().equals(line.getGiftId());
-            assert line.getPerson().getId() == 100L;
+            assert line.getConstituent().getId() == 100L;
             if (100.5 == line.getAmount().floatValue()) {
                 assert "foo".equals(line.getProjectCode());
                 assert line.getMotivationCode() == null;
@@ -309,7 +309,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         assert readGift.getSelectedAddress() != null && readGift.getSelectedAddress().getId() == null;
         assert readGift.getSelectedPhone() != null && readGift.getSelectedPhone().getId() == 100L;
         assert readGift.getSelectedPaymentSource() != null && 100L == readGift.getSelectedPaymentSource().getId();
-        assert readGift.getPerson() != null && 100L == readGift.getPerson().getId();
+        assert readGift.getConstituent() != null && 100L == readGift.getConstituent().getId();
         Assert.assertNotNull("readGift distributionLines is null", readGift.getDistributionLines());
         Assert.assertEquals("readGift distributionLines size is " + readGift.getDistributionLines().size(), 2, readGift.getDistributionLines().size());
         assert readGift.getPostmarkDate() == null;
@@ -418,12 +418,12 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         for (Gift gift : gifts) {
             assert gift.getId() == 300L || gift.getId() == 400L;
 
-            assert "Painters, Inc.".equals(gift.getPerson().getOrganizationName());
-            assert "Picasso".equals(gift.getPerson().getLastName());
-            assert "Pablo".equals(gift.getPerson().getFirstName());
-            assert gift.getPerson().getMiddleName() == null;
-            assert "Sr".equals(gift.getPerson().getSuffix());
-            assert "company1".equals(gift.getPerson().getSite().getName());
+            assert "Painters, Inc.".equals(gift.getConstituent().getOrganizationName());
+            assert "Picasso".equals(gift.getConstituent().getLastName());
+            assert "Pablo".equals(gift.getConstituent().getFirstName());
+            assert gift.getConstituent().getMiddleName() == null;
+            assert "Sr".equals(gift.getConstituent().getSuffix());
+            assert "company1".equals(gift.getConstituent().getSite().getName());
             assert GiftType.MONETARY_GIFT.equals(gift.getGiftType());
 
             switch (gift.getId().intValue()) {
@@ -459,12 +459,12 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testAnalyze" })
     public void testAnalyzeLapsedDonor() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy kk:mm");
-        List<Person> constituents = giftDao.analyzeLapsedDonor(sdf.parse("06/05/2007 00:00"), sdf.parse("06/07/2007 00:00"));
+        List<Constituent> constituents = giftDao.analyzeLapsedDonor(sdf.parse("06/05/2007 00:00"), sdf.parse("06/07/2007 00:00"));
         assert constituents != null && constituents.size() == 1 && constituents.get(0).getId() == 100L;
         
         constituents = giftDao.analyzeLapsedDonor(sdf.parse("06/03/2007 00:00"), sdf.parse("06/07/2007 00:00"));
         assert constituents != null && constituents.size() == 2;
-        for (Person constituent : constituents) {
+        for (Constituent constituent : constituents) {
             assert constituent.getId() == 100L || constituent.getId() == 200L;
             switch (constituent.getId().intValue()) {
                 case 100:
@@ -495,7 +495,7 @@ public class IBatisGiftDaoTest extends AbstractIBatisTest {
         List<Gift> gifts = giftDao.searchGifts(params);
         assert gifts != null && gifts.size() > 0;
         for (Gift gift : gifts) {
-            assert gift.getPerson().getFirstName().equals("Pablo");
+            assert gift.getConstituent().getFirstName().equals("Pablo");
             assert gift.getAmount().compareTo(new BigDecimal(300.00)) == 0;
         }
     }    

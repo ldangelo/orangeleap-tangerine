@@ -3,33 +3,33 @@ package com.orangeleap.tangerine.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 
 public interface ConstituentDao {
 
-    public Person readConstituentById(Long id);
+    public Constituent readConstituentById(Long id);
 
-    public Person readConstituentByAccountNumber(String accountNumber);
+    public Constituent readConstituentByAccountNumber(String accountNumber);
 
-    public List<Person> readAllConstituentsBySite();
+    public List<Constituent> readAllConstituentsBySite();
 
-    public List<Person> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit);
+    public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit);
 
     public int getConstituentCountBySite();
 
-    public Person readConstituentByLoginId(String loginId);
+    public Constituent readConstituentByLoginId(String loginId);
 
-    public List<Person> readConstituentsByIds(List<Long> ids);
+    public List<Constituent> readConstituentsByIds(List<Long> ids);
 
-    public Person maintainConstituent(Person constituent);
+    public Constituent maintainConstituent(Constituent constituent);
 
-    public List<Person> searchConstituents(Map<String, Object> params);
+    public List<Constituent> searchConstituents(Map<String, Object> params);
 
-    public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
-	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId);
+	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId);
 
-	public List<Person> findConstituents(Map<String, Object> params,
+	public List<Constituent> findConstituents(Map<String, Object> params,
 			List<Long> ignoreIds);
 
 }

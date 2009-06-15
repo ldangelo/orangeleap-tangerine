@@ -14,7 +14,7 @@ public class ExtendedValidationSupport {
 
 	/* 
 	 * Add ability to use for example in place of regex:  'extensions:isEmail'
-	 * INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'person.contactInfo', 'person.emailMap[home]', 'email.emailAddress', 'extensions:isEmail');
+	 * INSERT INTO FIELD_VALIDATION (SITE_NAME, SECTION_NAME, FIELD_DEFINITION_ID, SECONDARY_FIELD_DEFINITION_ID, VALIDATION_REGEX) VALUES ('company1', 'constituent.contactInfo', 'constituent.emailMap[home]', 'email.emailAddress', 'extensions:isEmail');
 	 * 
 	 * @param value - string to validate
 	 * @param expression - isCreditCard/isEmail/isUrl

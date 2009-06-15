@@ -51,8 +51,8 @@ public class QueryLookupInput extends AbstractInput {
                 linkSb.append(fieldVO.getReferenceType().toString()).append(".htm?");
             }
             linkSb.append(fieldVO.getReferenceType().toString()).append("Id=" + checkForNull(fieldVO.getId()));
-            if (ReferenceType.person.equals(fieldVO.getReferenceType()) == false) {
-                linkSb.append("&" + StringConstants.PERSON_ID + "=" + request.getParameter(StringConstants.PERSON_ID));
+            if (ReferenceType.constituent.equals(fieldVO.getReferenceType()) == false) {
+                linkSb.append("&" + StringConstants.CONSTITUENT_ID + "=" + request.getParameter(StringConstants.CONSTITUENT_ID));
             }
             String linkMsg = getMessage("gotoLink");
             sb.append("<a href=\"" + linkSb.toString() + "\" target=\"_blank\" alt=\"" + linkMsg + "\" title=\"" + linkMsg + "\">");
@@ -117,7 +117,7 @@ public class QueryLookupInput extends AbstractInput {
     protected void createHiearchy(HttpServletRequest request, HttpServletResponse response, PageContext pageContext, FieldVO fieldVO, StringBuilder sb) {
         if (fieldVO.isHierarchy()) {
             sb.append("<a href=\"javascript:void(0)\" onclick=\"Lookup.loadTreeView(this)\" divid=\"treeview-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\" "); 
-            sb.append("personid=\"" + request.getParameter(StringConstants.PERSON_ID) + "\" fieldDef=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\">");
+            sb.append("constituentid=\"" + request.getParameter(StringConstants.CONSTITUENT_ID) + "\" fieldDef=\"" + StringEscapeUtils.escapeHtml(fieldVO.getFieldName()) + "\">");
             sb.append(getMessage("viewHierarchy"));
             sb.append("</a>");
             sb.append("<div id=\"treeview-" + StringEscapeUtils.escapeHtml(fieldVO.getFieldId()) + "\"></div>");

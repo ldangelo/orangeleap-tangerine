@@ -25,14 +25,14 @@ public class PaymentHistory implements GeneratedId, Serializable {
     private String paymentStatus;
     // CC# and ACH# must be stored in masked format
     private String description = StringConstants.EMPTY;
-    private Person person;
+    private Constituent constituent;
     private Long giftId;
     private Long adjustedGiftId;
     
     public PaymentHistory() {  }
 
-    public PaymentHistory(Person person) {
-        this.person = person;
+    public PaymentHistory(Constituent constituent) {
+        this.constituent = constituent;
     }
 
 	@Override
@@ -45,12 +45,12 @@ public class PaymentHistory implements GeneratedId, Serializable {
         this.id = id;
     }
 
-    public Person getPerson() {
-        return person;
+    public Constituent getConstituent() {
+        return constituent;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
     }
 
     public void setPaymentType(String paymentType) {
@@ -134,7 +134,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
     }
 
     public Site getSite() {
-        return person.getSite();
+        return constituent.getSite();
     }
     
     @Override
@@ -143,7 +143,7 @@ public class PaymentHistory implements GeneratedId, Serializable {
             append(super.toString()).append("transactionId", transactionId).append("transactionDate", transactionDate).
             append(super.toString()).append("amount", amount).append("currencyCode", currencyCode).
             append(super.toString()).append("paymentType", paymentType).append("paymentStatus", paymentStatus).append("description", description).
-            append(super.toString()).append("person", person).
+            append(super.toString()).append("constituent", constituent).
             toString();
     }
 }

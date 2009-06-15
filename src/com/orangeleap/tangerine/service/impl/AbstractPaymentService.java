@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.domain.NewEmailAware;
 import com.orangeleap.tangerine.domain.NewPhoneAware;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PhoneAware;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
@@ -48,7 +48,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
     @Resource(name = "paymentSourceService")
     protected PaymentSourceService paymentSourceService;
 
-    public void maintainEntityChildren(AbstractEntity entity, Person constituent) {
+    public void maintainEntityChildren(AbstractEntity entity, Constituent constituent) {
         if (entity instanceof AddressAware) {
             AddressAware addressAware = (AddressAware)entity;
             maintainAddressChild(addressAware, constituent);
@@ -66,11 +66,11 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
 
-    private void maintainAddressChild(AddressAware addressAware, Person constituent) {
+    private void maintainAddressChild(AddressAware addressAware, Constituent constituent) {
         if (FormBeanType.NEW.equals(addressAware.getAddressType()) && addressAware instanceof NewAddressAware) {
             NewAddressAware newAddressAware = (NewAddressAware) addressAware;
             Address newAddress = newAddressAware.getAddress();
-            newAddress.setPersonId(constituent.getId());
+            newAddress.setConstituentId(constituent.getId());
             
             Address existingAddress = addressService.alreadyExists(newAddress);
             if (existingAddress != null) {
@@ -92,11 +92,11 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
     
-    private void maintainPhoneChild(PhoneAware phoneAware, Person constituent) {
+    private void maintainPhoneChild(PhoneAware phoneAware, Constituent constituent) {
         if (FormBeanType.NEW.equals(phoneAware.getPhoneType()) && phoneAware instanceof NewPhoneAware) {
             NewPhoneAware newPhoneAware = (NewPhoneAware) phoneAware;
             Phone newPhone = newPhoneAware.getPhone();
-            newPhone.setPersonId(constituent.getId());
+            newPhone.setConstituentId(constituent.getId());
             
             Phone existingPhone = phoneService.alreadyExists(newPhone);
             if (existingPhone != null) {
@@ -117,11 +117,11 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
     
-    private void maintainEmailChild(EmailAware emailAware, Person constituent) {
+    private void maintainEmailChild(EmailAware emailAware, Constituent constituent) {
         if (FormBeanType.NEW.equals(emailAware.getEmailType()) && emailAware instanceof NewEmailAware) {
             NewEmailAware newEmailAware = (NewEmailAware) emailAware;
             Email newEmail = newEmailAware.getEmail();
-            newEmail.setPersonId(constituent.getId());
+            newEmail.setConstituentId(constituent.getId());
             
             Email existingEmail = emailService.alreadyExists(newEmail);
             if (existingEmail != null) {
@@ -142,7 +142,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
         }
     }
     
-    private void maintainPaymentSourceChild(AbstractEntity entity, Person constituent) {
+    private void maintainPaymentSourceChild(AbstractEntity entity, Constituent constituent) {
         PaymentSourceAware paymentSourceAware = (PaymentSourceAware)entity;
         if (PaymentSource.CASH.equals(paymentSourceAware.getPaymentType()) || 
             PaymentSource.CHECK.equals(paymentSourceAware.getPaymentType()) || 
@@ -154,7 +154,7 @@ public abstract class AbstractPaymentService extends AbstractTangerineService {
                 PaymentSource.CREDIT_CARD.equals(paymentSourceAware.getPaymentType())) {
             if (FormBeanType.NEW.equals(paymentSourceAware.getPaymentSourceType())) {
                 PaymentSource newPaymentSource = paymentSourceAware.getPaymentSource();
-                newPaymentSource.setPerson(constituent);
+                newPaymentSource.setConstituent(constituent);
                 newPaymentSource.setPaymentType(paymentSourceAware.getPaymentType());
                 
                 if (entity instanceof AddressAware && FormBeanType.NONE.equals(((AddressAware)entity).getAddressType()) == false) {

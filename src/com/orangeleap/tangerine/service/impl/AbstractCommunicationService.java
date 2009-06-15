@@ -40,7 +40,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isTraceEnabled()) {
             logger.trace("alreadyExists: entity = " + entity);
         }
-        List<T> entities = readByConstituentId(entity.getPersonId());
+        List<T> entities = readByConstituentId(entity.getConstituentId());
         T returnEntity = null;
         for (T existingEntity : entities) {
             if (existingEntity.equals(entity) && existingEntity.getId().equals(entity.getId()) == false) {
@@ -57,7 +57,7 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         if (logger.isTraceEnabled()) {
             logger.trace("save: entity = " + entity);
         }
-        List<T> entities = readByConstituentId(entity.getPersonId());
+        List<T> entities = readByConstituentId(entity.getConstituentId());
         if (!entity.isPrimary()) {
         	checkIfOnlyOneActive(entity, entities);
         }
@@ -66,10 +66,10 @@ public abstract class AbstractCommunicationService<T extends AbstractCommunicati
         } 
         entity = getDao().maintainEntity(entity);
         if (entity.isInactive()) {
-            auditService.auditObjectInactive(entity, entity.getPersonId());
+            auditService.auditObjectInactive(entity, entity.getConstituentId());
         } 
         else {
-            auditService.auditObject(entity, entity.getPersonId());
+            auditService.auditObject(entity, entity.getConstituentId());
         }
         return entity;
     }

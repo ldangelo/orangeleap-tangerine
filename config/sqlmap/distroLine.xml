@@ -13,7 +13,7 @@
 		<result property="pledgeId" column="DISTRO_PLEDGE_ID" jdbcType="BIGINT" />
 		<result property="recurringGiftId" column="DISTRO_RECURRING_GIFT_ID" jdbcType="BIGINT" />
 		<result property="adjustedGiftId" column="DISTRO_ADJUSTED_GIFT_ID" jdbcType="BIGINT" />
-		<result property="person" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
+		<result property="constituent" resultMap="CONSTITUENT.CONSTITUENT_RESULT" />
 	</resultMap>
 
 	<sql id="DISTRO_LINE_COLS_FRAGMENT">

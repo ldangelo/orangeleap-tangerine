@@ -13,7 +13,7 @@
           <xs:element minOccurs="0" name="emailType" type="xs:string"/>
           <xs:element minOccurs="0" name="entryType" type="xs:string"/>
           <xs:element minOccurs="0" name="giftId" type="xs:long"/>
-          <xs:element minOccurs="0" name="person" type="tns:constituent"/>
+          <xs:element minOccurs="0" name="constituent" type="tns:constituent"/>
           <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
           <xs:element minOccurs="0" name="recordDate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
@@ -96,7 +96,7 @@
           <xs:element minOccurs="0" name="comments" type="xs:string"/>
           <xs:element minOccurs="0" name="effectiveDate" type="xs:dateTime"/>
           <xs:element name="inactive" type="xs:boolean"/>
-          <xs:element maxOccurs="1" minOccurs="1" name="personId" type="xs:long"/>
+          <xs:element maxOccurs="1" minOccurs="1" name="constituentId" type="xs:long"/>
           <xs:element name="primary" type="xs:boolean"/>
           <xs:element name="receiveCorrespondence" type="xs:boolean"/>
           <xs:element minOccurs="0" name="seasonalEndDate" type="xs:dateTime"/>

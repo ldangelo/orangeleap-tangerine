@@ -25,7 +25,7 @@
 							<ul id="availableOptions">
 								<c:forEach items="${notSelectedRecurringGifts}" var="recurringGift">
 									<li id="<c:out value='${recurringGift.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/>  <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/>  <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&constituentId=<c:out value='${param.constituentId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>
@@ -35,7 +35,7 @@
 			                <ul id="selectedOptions">
 								<c:forEach items="${selectedRecurringGifts}" var="recurringGift">
 									<li id="<c:out value='${recurringGift.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/> <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+										<input type="checkbox" name="<c:out value='${recurringGift.id}'/>" id="recurringGift-<c:out value='${recurringGift.id}'/>" value="<c:out value="${recurringGift.shortDescription}"/>"></input> <c:out value="${recurringGift.shortDescription}"/> <a href="recurringGift.htm?recurringGiftId=<c:out value='${recurringGift.id}'/>&constituentId=<c:out value='${param.constituentId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>

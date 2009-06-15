@@ -34,7 +34,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         Phone readPhone = phoneDao.readById(phone.getId());
         assert readPhone != null;
         assert phone.getId().equals(readPhone.getId());
-        assert 300L == readPhone.getPersonId();
+        assert 300L == readPhone.getConstituentId();
         assert "911-911-9110".equals(readPhone.getNumber());
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
@@ -57,7 +57,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert "000-000-0000".equals(readPhone.getNumber());
         assert readPhone.getId() > 0;
         assert phone.getId().equals(readPhone.getId());
-        assert 300L == readPhone.getPersonId();
+        assert 300L == readPhone.getConstituentId();
         assert ActivationType.permanent.equals(readPhone.getActivationStatus());
         assert readPhone.getCreateDate() != null;
         assert readPhone.getUpdateDate() != null;
@@ -81,7 +81,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert "214-443-6829".equals(phone.getNumber());
         assert phone.getCreateDate() != null;
         assert phone.getUpdateDate() != null;
-        assert 100L == phone.getPersonId();
+        assert 100L == phone.getConstituentId();
         assert phone.isReceiveCorrespondence() == false;
         assert ActivationType.permanent.equals(phone.getActivationStatus());
         assert phone.isInactive() == false;
@@ -103,7 +103,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             if (phone.getId() >= 100L && phone.getId() <= 600L) {
                 assert phone.getUpdateDate() != null;
                 assert phone.getCreateDate() != null;
-                assert 100L == phone.getPersonId();
+                assert 100L == phone.getConstituentId();
                 assert phone.isReceiveCorrespondence() == false;
                 assert phone.isInactive() == false;
                 assert ActivationType.permanent.equals(phone.getActivationStatus());
@@ -144,7 +144,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
             assert 700L == phone.getId();
             assert phone.getUpdateDate() != null;
             assert phone.getCreateDate() != null;
-            assert 200L == phone.getPersonId();
+            assert 200L == phone.getConstituentId();
             assert phone.isReceiveCorrespondence() == false;
             assert phone.isInactive() == false;
             assert ActivationType.permanent.equals(phone.getActivationStatus());
@@ -171,7 +171,7 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.isInactive() == false;
         assert d.equals(readPhone.getTemporaryEndDate());
         assert "123-123-1234".equals(readPhone.getNumber());
-        assert 300L == readPhone.getPersonId();
+        assert 300L == readPhone.getConstituentId();
         
         phoneDao.inactivateEntities();
         
@@ -182,6 +182,6 @@ public class IBatisPhoneDaoTest extends AbstractIBatisTest {
         assert readPhone.isInactive();
         assert d.equals(readPhone.getTemporaryEndDate());
         assert "123-123-1234".equals(readPhone.getNumber());
-        assert 300L == readPhone.getPersonId();
+        assert 300L == readPhone.getConstituentId();
     }
 }

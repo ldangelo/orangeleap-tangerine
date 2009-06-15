@@ -25,7 +25,7 @@ import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.domain.Auditable;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.annotation.NotAuditable;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -64,7 +64,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     @Override
-    public List<Audit> auditObject(Object object, Person constituent) {
+    public List<Audit> auditObject(Object object, Constituent constituent) {
         return auditObject(object, constituent.getId());
     }
 
@@ -129,8 +129,8 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                     if (beanProperty instanceof CustomField) {
                         fieldName = key + ".value";
                         beanProperty = bean.getPropertyValue(fieldName);
-                        if (entity instanceof Person) {
-                        	FieldDefinition fd = ((Person)entity).getFieldTypeMap().get(key);
+                        if (entity instanceof Constituent) {
+                        	FieldDefinition fd = ((Constituent)entity).getFieldTypeMap().get(key);
                         	if (relationshipService.isRelationship(fd)) {
                                 if (originalBeanProperty != null) {
                                     originalBeanProperty = dereference(siteName, originalBeanProperty.toString());
@@ -144,7 +144,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                     if (beanProperty instanceof String) {
                         beanProperty = StringUtils.trimToNull((String) beanProperty);
                     } 
-                    else if (beanProperty instanceof Person) {
+                    else if (beanProperty instanceof Constituent) {
                         fieldName = key + ".displayValue";
                         beanProperty = bean.getPropertyValue(fieldName);
                     }
@@ -226,7 +226,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         return auditable;
     }
     
-    // Get Person name from id list.
+    // Get Constituent name from id list.
     private String dereference(String siteName, String fieldValue) {
         if (logger.isTraceEnabled()) {
             logger.trace("dereference: siteName = " + siteName + " fieldValue = " + fieldValue);
@@ -235,10 +235,10 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         if (org.springframework.util.StringUtils.hasText(fieldValue)) {
         	List<Long> list = RelationshipUtil.getIds(fieldValue);
         	if (list != null && list.isEmpty() == false) {
-        		List<Person> constituents = constituentDao.readConstituentsByIds(list);
+        		List<Constituent> constituents = constituentDao.readConstituentsByIds(list);
             	List<String> displayValues = new ArrayList<String>();
             	// first name last name, without commas
-            	for (Person constituent : constituents) {
+            	for (Constituent constituent : constituents) {
                     displayValues.add(constituent.getFullName());
                 } 
             	names = StringUtils.join(displayValues, ", ");
@@ -367,7 +367,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     }
 
     @Override
-    public Audit auditObjectInactive(Object object, Person constituent) {
+    public Audit auditObjectInactive(Object object, Constituent constituent) {
         return auditObjectInactive(object, constituent.getId());
     }
     

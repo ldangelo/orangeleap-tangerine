@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.domain.PaymentSource;
 import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.InactivateService;
 import com.orangeleap.tangerine.service.PaymentSourceService;
 import com.orangeleap.tangerine.type.FormBeanType;
@@ -40,15 +40,15 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
             logger.trace("maintainPaymentSource: paymentSource = " + paymentSource);
         }
         
-        maintainEntityChildren(paymentSource, paymentSource.getPerson());
+        maintainEntityChildren(paymentSource, paymentSource.getConstituent());
         
         paymentSource = paymentSourceDao.maintainPaymentSource(paymentSource);
 
         if (paymentSource.isInactive()) {
-            auditService.auditObjectInactive(paymentSource, paymentSource.getPerson());
+            auditService.auditObjectInactive(paymentSource, paymentSource.getConstituent());
         }
         else {
-            auditService.auditObject(paymentSource, paymentSource.getPerson());
+            auditService.auditObject(paymentSource, paymentSource.getConstituent());
         }
         return paymentSource;
     }
@@ -130,7 +130,7 @@ public class PaymentSourceServiceImpl extends AbstractPaymentService implements 
     }
 
     @Override
-    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Person constituent) {
+    public PaymentSource readPaymentSourceCreateIfNull(String paymentSourceId, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readPaymentSourceCreateIfNull: paymentSourceId = " + paymentSourceId + " constituent = " + constituent);
         }

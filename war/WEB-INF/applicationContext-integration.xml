@@ -53,7 +53,7 @@
 
   <service-activator input-channel="gift_drools_channel" ref="GiftDrools" method="doApplyRules"/>
   <service-activator input-channel="payment_drools_channel" ref="PaymentDrools" method="doApplyRules"/>
-  <service-activator input-channel="constituent_drools_channel" ref="PersonDrools" method="doApplyRules"/>
+  <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/>
   <!--  <service-activator input-channel="constituent_drools_channel" ref="ConstituentDrools" method="doApplyRules"/> -->
   
   <router id="routerEndpoint" input-channel="newGiftChannel" ref="giftRouter"/>
@@ -78,7 +78,7 @@
     </beans:property>
   </beans:bean>
 
-  <transformer input-channel="constituent_transformer" output-channel="constituent_marshalling_transformer" ref="personToConstituentTransformer"/>
+  <transformer input-channel="constituent_transformer" output-channel="constituent_marshalling_transformer" ref="constituentToConstituentTransformer"/>
   <transformer input-channel="gift_transformer" output-channel="gift_marshalling_transformer" ref="giftTransformer"/>
 
   <beans:bean id="marshallingTransformer" class="org.springframework.integration.xml.transformer.XmlPayloadMarshallingTransformer">
@@ -117,7 +117,7 @@
 
   <beans:bean id="PaymentDrools" class="com.orangeleap.tangerine.service.rule.PaymentRulesInterceptor"/>
   
-  <beans:bean id="PersonDrools" class="com.orangeleap.tangerine.service.rule.PersonRulesInterceptor"/>
+  <beans:bean id="ConstituentDrools" class="com.orangeleap.tangerine.service.rule.ConstituentRulesInterceptor"/>
   
   <beans:bean id="emailInterceptor" class="com.orangeleap.tangerine.service.rule.EmailRulesInterceptor">
   	<beans:property name="agendaGroup" value="email"/>

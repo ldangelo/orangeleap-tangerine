@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.test.BaseTest;
@@ -18,8 +18,8 @@ public class ConstituentServiceTest extends BaseTest {
 	    private ConstituentService constituentService;
 	    
 	    @Test
-	    public void testDuplicatePerson() throws Exception {
-	    	Person p = constituentService.createDefaultConstituent();
+	    public void testDuplicateConstituent() throws Exception {
+	    	Constituent p = constituentService.createDefaultConstituent();
 	    	p.setFirstName("Pablo");
 	    	p.setLastName("Picasso");
 	    	p.setConstituentType("individual");
@@ -34,8 +34,8 @@ public class ConstituentServiceTest extends BaseTest {
 	    }
 	    
 	    @Test
-	    public void testByPassDuplicatePerson() throws Exception {
-	    	Person p = constituentService.createDefaultConstituent();
+	    public void testByPassDuplicateConstituent() throws Exception {
+	    	Constituent p = constituentService.createDefaultConstituent();
 	    	p.setFirstName("Pablo");
 	    	p.setLastName("Picasso");
 	    	p.setConstituentType("individual");

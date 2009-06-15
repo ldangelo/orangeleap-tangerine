@@ -6,39 +6,39 @@ import java.util.Map;
 
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 public interface ConstituentService {
 
-    public Person maintainConstituent(Person constituent) throws ConstituentValidationException, BindException;
+    public Constituent maintainConstituent(Constituent constituent) throws ConstituentValidationException, BindException;
 
-    public Person readConstituentById(Long id);
+    public Constituent readConstituentById(Long id);
 
-    public Person readConstituentByAccountNumber(String accountNumber);
+    public Constituent readConstituentByAccountNumber(String accountNumber);
 
-    public Person readConstituentByLoginId(String id);
+    public Constituent readConstituentByLoginId(String id);
 
-	public List<Person> searchConstituents(Map<String, Object> params);
+	public List<Constituent> searchConstituents(Map<String, Object> params);
 
-    public List<Person> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    public List<Constituent> searchConstituents(Map<String, Object> params, List<Long> ignoreIds);
     
-    public List<Person> findConstituents(Map<String, Object> params, List<Long> ignoreIds);
+    public List<Constituent> findConstituents(Map<String, Object> params, List<Long> ignoreIds);
 
-    public Person createDefaultConstituent();
+    public Constituent createDefaultConstituent();
 
-    public List<Person> analyzeLapsedDonor(Date beginDate, Date currentDate);
+    public List<Constituent> analyzeLapsedDonor(Date beginDate, Date currentDate);
 
     public void setLapsedDonor(Long constituentId);
 
-    public List<Person> readAllConstituentsBySite();
+    public List<Constituent> readAllConstituentsBySite();
 
-    public List<Person> readAllConstituentsBySite(SortInfo sort);
+    public List<Constituent> readAllConstituentsBySite(SortInfo sort);
 
     public int getConstituentCountBySite();
 
-	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId);
+	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId);
 
 /*	boolean hasReceivedCommunication(Long constituentId, String commType);
 

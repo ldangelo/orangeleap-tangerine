@@ -13,7 +13,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import com.orangeleap.tangerine.dao.util.search.SearchFieldMapperFactory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.type.EntityType;
 
 /** 
@@ -32,49 +32,49 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     }
     
     @Override
-    public Person maintainConstituent(Person constituent) {
+    public Constituent maintainConstituent(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainConstituent: constituentId = " + constituent.getId());
         }
-        return (Person)insertOrUpdate(constituent, "CONSTITUENT");
+        return (Constituent)insertOrUpdate(constituent, "CONSTITUENT");
     }
 
     @Override
-    public Person readConstituentById(Long id) {
+    public Constituent readConstituentById(Long id) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentById: id = " + id);
         }
         Map<String, Object> params = setupParams();
-        List<Long> personIds = new ArrayList<Long>(1);
-        personIds.add(id);
-        params.put("personIds", personIds);
-        return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_IDS_SITE", params);
+        List<Long> constituentIds = new ArrayList<Long>(1);
+        constituentIds.add(id);
+        params.put("constituentIds", constituentIds);
+        return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
     
     @Override
-    public Person readConstituentByAccountNumber(String accountNumber) {
+    public Constituent readConstituentByAccountNumber(String accountNumber) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByAccountNumber: accountNumber = " + accountNumber);
         }
         Map<String, Object> params = setupParams();
         params.put("accountNumber", accountNumber);
-        return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_ACCOUNT_NUMBER", params);
+        return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_ACCOUNT_NUMBER", params);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readConstituentsByIds(List<Long> ids) {
+    public List<Constituent> readConstituentsByIds(List<Long> ids) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentsByIds: ids = " + ids);
         }
         Map<String, Object> params = setupParams();
-        params.put("personIds", ids);
+        params.put("constituentIds", ids);
         return getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_IDS_SITE", params);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readAllConstituentsBySite() {
+    public List<Constituent> readAllConstituentsBySite() {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:");
         }
@@ -83,7 +83,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Person> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit) {
+    public List<Constituent> readAllConstituentsBySite(String sortColumn, String dir, int start, int limit) {
 
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsBySite:");
@@ -96,7 +96,7 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     
     @SuppressWarnings("unchecked")
     @Override
-	public List<Person> readAllConstituentsByAccountRange(Long fromId, Long toId) {
+	public List<Constituent> readAllConstituentsByAccountRange(Long fromId, Long toId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readAllConstituentsByIdRange:");
         }
@@ -119,18 +119,18 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     }
 
     @Override
-    public Person readConstituentByLoginId(String loginId) {
+    public Constituent readConstituentByLoginId(String loginId) {
         if (logger.isTraceEnabled()) {
             logger.trace("readConstituentByLoginId: loginId = " + loginId);
         }
         Map<String, Object> params = setupParams();
         params.put("loginId", loginId);
-        return (Person)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_LOGIN_ID_SITE", params);
+        return (Constituent)getSqlMapClientTemplate().queryForObject("SELECT_CONSTITUENT_BY_LOGIN_ID_SITE", params);
     }
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<Person> searchConstituents(Map<String, Object> searchparams, List<Long> ignoreIds) {
+    public List<Constituent> searchConstituents(Map<String, Object> searchparams, List<Long> ignoreIds) {
     	Map<String, Object> params = setupParams();
     	if (ignoreIds == null) {
             ignoreIds = new ArrayList<Long>();
@@ -138,13 +138,13 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	if (ignoreIds.size() > 0) {
             params.put("ignoreIds", ignoreIds);
         }
-    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.person).getMap());
-    	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
-    	return persons;
+    	QueryUtil.translateSearchParamsToIBatisParams(searchparams, params, new SearchFieldMapperFactory().getMapper(EntityType.constituent).getMap());
+    	List<Constituent> constituents = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_SEARCH_TERMS", params);
+    	return constituents;
     }
 
 	@Override
-	public List<Person> findConstituents(Map<String, Object> findparams,
+	public List<Constituent> findConstituents(Map<String, Object> findparams,
 			List<Long> ignoreIds) {
     	Map<String, Object> params = setupParams();
     	if (ignoreIds == null) {
@@ -153,13 +153,13 @@ public class IBatisConstituentDao extends AbstractIBatisDao implements Constitue
     	if (ignoreIds.size() > 0) {
             params.put("ignoreIds", ignoreIds);
         }
-    	QueryUtil.translateSearchParamsToIBatisParams(findparams, params, new SearchFieldMapperFactory().getMapper(EntityType.person).getMap(),false);
-    	List<Person> persons = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_FIND_TERMS", params);
-		return persons;
+    	QueryUtil.translateSearchParamsToIBatisParams(findparams, params, new SearchFieldMapperFactory().getMapper(EntityType.constituent).getMap(),false);
+    	List<Constituent> constituents = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_BY_FIND_TERMS", params);
+		return constituents;
 	}
    
     @Override
-    public List<Person> searchConstituents(Map<String, Object> searchparams) {
+    public List<Constituent> searchConstituents(Map<String, Object> searchparams) {
         return searchConstituents(searchparams, null);
     }
 

@@ -4,11 +4,11 @@ Ext.onReady(function() {
 
     Ext.QuickTips.init();
 
-    var personId = /personId=(\d+)/g.exec(document.location.search);
+    var constituentId = /constituentId=(\d+)/g.exec(document.location.search);
     var baseParams = {};
 
-    if(personId) {
-        baseParams.personId = personId[1];
+    if(constituentId) {
+        baseParams.constituentId = constituentId[1];
     }
 
     var header = 'Gift In Kind List';
@@ -19,7 +19,7 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
-            {name: 'personId', mapping: 'personId', type: 'string'},
+            {name: 'constituentId', mapping: 'constituentId', type: 'string'},
             {name: 'donationdate', mapping: 'donationdate', type: 'date', dateFormat: 'Y-m-d'},
             {name: 'fairmarketvalue', mapping: 'fairmarketvalue', type: 'float'},
             {name: 'currencycode', mapping: 'currencycode', type: 'string'},
@@ -83,7 +83,7 @@ GiftInKindList.motivationRender = function(val, meta, record) {
 GiftInKindList.navigate = function(id) {
 	var rec = GiftInKindList.grid.getSelectionModel().getSelected();
 	GiftInKindList.grid.getGridEl().mask('Loading Record');
-	window.location.href='giftInKind.htm?giftInKindId=' + id + '&personId=' + rec.data.personId;
+	window.location.href='giftInKind.htm?giftInKindId=' + id + '&constituentId=' + rec.data.constituentId;
 };
 
 

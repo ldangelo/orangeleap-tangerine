@@ -30,7 +30,7 @@ import com.orangeleap.tangerine.controller.validator.CodeValidator;
 import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -81,7 +81,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
     
     @Override
-    public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Person constituent) {
+    public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRecurringGiftByIdCreateIfNull: recurringGiftId = " + recurringGiftId + " constituentId = " + (constituent == null ? null : constituent.getId()));
         }
@@ -98,7 +98,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
     
     @Override
-    public RecurringGift createDefaultRecurringGift(Person constituent) {
+    public RecurringGift createDefaultRecurringGift(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("createDefaultRecurringGift: constituent = " + (constituent == null ? null : constituent.getId()));
         }
@@ -156,14 +156,14 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
     
     private RecurringGift save(RecurringGift recurringGift) {
-        maintainEntityChildren(recurringGift, recurringGift.getPerson());
+        maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
-        auditService.auditObject(recurringGift, recurringGift.getPerson());
+        auditService.auditObject(recurringGift, recurringGift.getConstituent());
         return recurringGift;
     }
     
     @Override
-    public List<RecurringGift> readRecurringGiftsForConstituent(Person constituent) {
+    public List<RecurringGift> readRecurringGiftsForConstituent(Constituent constituent) {
         if (logger.isTraceEnabled()) {
             logger.trace("readRecurringGifts: constituent = " + constituent);
         }

@@ -17,7 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
@@ -78,7 +78,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 		String site = null;
 
 		workingMemory.setGlobal("applicationContext", applicationContext);
-		workingMemory.setGlobal("personService", ps);
+		workingMemory.setGlobal("constituentService", ps);
 		workingMemory.setGlobal("giftService",gs);
 
 			try {
@@ -89,12 +89,12 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 				
 				workingMemory.insert(gift);
 				
-				Person person = gift.getPerson();
+				Constituent constituent = gift.getConstituent();
 				
-				person.setGifts(gs.readMonetaryGifts(person));
-				person.setSite(ss.readSite(person.getSite().getName()));
+				constituent.setGifts(gs.readMonetaryGifts(constituent));
+				constituent.setSite(ss.readSite(constituent.getSite().getName()));
 
-				workingMemory.insert(person);
+				workingMemory.insert(constituent);
 
 			} catch (Exception ex) {
 				logger.error(ex.getMessage());

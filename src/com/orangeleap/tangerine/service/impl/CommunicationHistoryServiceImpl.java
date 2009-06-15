@@ -14,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.CommunicationHistoryDao;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -48,7 +48,7 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
         if (logger.isTraceEnabled()) {
             logger.trace("maintainCommunicationHistory: communicationHistory = " + communicationHistory);
         }
-		if (communicationHistory.getPerson() == null) {
+		if (communicationHistory.getConstituent() == null) {
             return null;
         }
 		
@@ -68,7 +68,7 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 		    communicationHistory.setCustomFieldValue("recordedBy", "" + tangerineUserHelper.lookupUserId());
 		}
 		CommunicationHistory savedHistory = communicationHistoryDao.maintainCommunicationHistory(communicationHistory);
-		auditService.auditObject(savedHistory, communicationHistory.getPerson());
+		auditService.auditObject(savedHistory, communicationHistory.getConstituent());
 		return savedHistory;
 	}
 
@@ -89,7 +89,7 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 	}
 
 	@Override
-	public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Person constituent) {
+	public CommunicationHistory readCommunicationHistoryByIdCreateIfNull(String communicationHistoryId, Constituent constituent) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("readCommunicationHistoryByIdCreateIfNull: communicationHistoryId = " + communicationHistoryId + " constituentId = " + (constituent == null ? null : constituent.getId()));
 		}
@@ -104,9 +104,9 @@ public class CommunicationHistoryServiceImpl extends AbstractTangerineService im
 		return communicationHistory;
 	}
 
-	private CommunicationHistory createCommunicationHistory(Person constituent) {
+	private CommunicationHistory createCommunicationHistory(Constituent constituent) {
 		CommunicationHistory communicationHistory = new CommunicationHistory();
-		communicationHistory.setPerson(constituent);
+		communicationHistory.setConstituent(constituent);
 		return communicationHistory;
 	}
 }

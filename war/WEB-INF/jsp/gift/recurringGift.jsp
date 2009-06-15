@@ -14,9 +14,9 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 			<mp:page pageName='recurringGift' />
-			<c:set var="person" value="${recurringGift.person}" scope="request" />
-			<c:if test="${person.id != null}">
-				<c:set var="viewingPerson" value="true" scope="request" />
+			<c:set var="constituent" value="${recurringGift.constituent}" scope="request" />
+			<c:if test="${constituent.id != null}">
+				<c:set var="viewingConstituent" value="true" scope="request" />
 			</c:if>
 			
 			<form:form method="post" commandName="recurringGift">
@@ -28,11 +28,11 @@
 				<c:if test="${requestScope.canApplyPayment}">
 					<spring:message var="applyPaymentText" code="applyPayment"/>
 				</c:if>
-				<jsp:include page="../snippets/personHeader.jsp">
+				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
 					<jsp:param name="routeButtonText" value="${applyPaymentText}" />
-					<jsp:param name="routeUrl" value="gift.htm?personId=${person.id}&selectedRecurringGiftId=${recurringGift.id}" />
+					<jsp:param name="routeUrl" value="gift.htm?constituentId=${constituent.id}&selectedRecurringGiftId=${recurringGift.id}" />
 				</jsp:include>
 
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -122,16 +122,16 @@
 					<div class="clearColumns"></div>
 				</div>
 				<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
-				<div class="formButtonFooter personFormButtons">
+				<div class="formButtonFooter constituentFormButtons">
 					<c:if test="${requestScope.canApplyPayment}">
-						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?personId=${person.id}&selectedRecurringGiftId=${recurringGift.id}')"/>
+						<input type="button" value="<c:out value='${applyPaymentText}'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('gift.htm?constituentId=${constituent.id}&selectedRecurringGiftId=${recurringGift.id}')"/>
 					</c:if>
 					<input type="submit" value="<spring:message code='submitRecurringGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/recurringGiftList.htm']!='DENIED'}">
-						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?personId=${person.id}')"/>
+						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('recurringGiftList.htm?constituentId=${constituent.id}')"/>
 					</c:if>
 					<c:if test="${param.recurringGiftId > 0}">
-						<a class="newAccountButton" href="recurringGift.htm?personId=${person.id}"><spring:message code='enterANewRecurringGift'/></a>
+						<a class="newAccountButton" href="recurringGift.htm?constituentId=${constituent.id}"><spring:message code='enterANewRecurringGift'/></a>
 					</c:if>
 				</div>
 			</form:form>

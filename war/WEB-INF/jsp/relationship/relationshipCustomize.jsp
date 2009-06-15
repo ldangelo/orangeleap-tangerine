@@ -7,11 +7,11 @@
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
 		
-		<c:set var="person" value="${person}" scope="request" />
-		<c:if test="${person.id!=null}">
-			<c:set var="viewingPerson" value="true" scope="request" />
+		<c:set var="constituent" value="${constituent}" scope="request" />
+		<c:if test="${constituent.id!=null}">
+			<c:set var="viewingConstituent" value="true" scope="request" />
 		</c:if>
-		<jsp:include page="../snippets/personHeader.jsp">
+		<jsp:include page="../snippets/constituentHeader.jsp">
 			<jsp:param name="currentFunctionTitleText" value="Manage Relationship" />
 		</jsp:include>
 	
@@ -30,7 +30,7 @@
 			</table>
 			<br/>
 			<input type="hidden" name="id" value="${constituentCustomFieldRelationship.id}"  />
-			<input type="hidden" name="personId" value="${person.id}"  />
+			<input type="hidden" name="constituentId" value="${constituent.id}"  />
 			<input type="hidden" name="fieldDefinitionId" value="${fieldDefinition.id}"  />
 			<input type="hidden" name="customFieldId" value="${customField.id}"  />
 			<input type="hidden" name="refvalue" value="<c:out value='${refvalue}'/>"  />
@@ -42,7 +42,7 @@
 
 		</div>
      
-		<strong><a class="action" href="relationship.htm?personId=${person.id}&fieldDefinitionId=${fieldDefinition.id}">&laquo;Back</a></strong>
+		<strong><a class="action" href="relationship.htm?constituentId=${constituent.id}&fieldDefinitionId=${fieldDefinition.id}">&laquo;Back</a></strong>
 	
 		</div>
 	</tiles:putAttribute>

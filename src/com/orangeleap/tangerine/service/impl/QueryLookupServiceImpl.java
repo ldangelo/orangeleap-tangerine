@@ -19,7 +19,7 @@ import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.QueryLookupDao;
 import com.orangeleap.tangerine.dao.RecurringGiftDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.QueryLookupParam;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -88,13 +88,13 @@ public class QueryLookupServiceImpl extends AbstractTangerineService implements 
         EntityType entityType = ql.getEntityType();
     	List<Object> result = new ArrayList<Object>();
         
-        if (entityType == EntityType.person) {
+        if (entityType == EntityType.constituent) {
             String where = ql.getSqlWhere();
             if (where != null && where.trim().length() > 0) {
                 filterparms.put(QueryUtil.ADDITIONAL_WHERE, where);
             }
-        	List<Person> persons = constituentDao.searchConstituents(filterparms);
-        	result.addAll(persons);
+        	List<Constituent> constituents = constituentDao.searchConstituents(filterparms);
+        	result.addAll(constituents);
         	
         }
         

@@ -25,7 +25,7 @@ public class CommunicationHistoryViewController extends TangerineConstituentAttr
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        // TODO: if the user navigates directly to CommunicationHistory.htm with no personId, we should redirect to CommunicationHistorySearch.htm
+        // TODO: if the user navigates directly to CommunicationHistory.htm with no constituentId, we should redirect to CommunicationHistorySearch.htm
         return communicationHistoryService.readCommunicationHistoryByIdCreateIfNull(request.getParameter(StringConstants.COMMUNICATION_HISTORY_ID), super.getConstituent(request));
     }
 
@@ -35,7 +35,7 @@ public class CommunicationHistoryViewController extends TangerineConstituentAttr
         if (!communicationHistory.isSystemGenerated()) {
             communicationHistory = communicationHistoryService.maintainCommunicationHistory(communicationHistory);
         }
-        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+        return new ModelAndView(getSuccessView() + "?" + StringConstants.COMMUNICATION_HISTORY_ID + "=" + communicationHistory.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
     }
     
 }

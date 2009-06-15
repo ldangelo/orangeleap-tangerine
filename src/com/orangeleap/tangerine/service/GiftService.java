@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -21,21 +21,21 @@ public interface GiftService {
     
     public Gift readGiftById(Long giftId);
 
-    public Gift readGiftByIdCreateIfNull(Person constituent, String giftId);
+    public Gift readGiftByIdCreateIfNull(Constituent constituent, String giftId);
 
-    public List<Gift> readMonetaryGifts(Person constituent);
+    public List<Gift> readMonetaryGifts(Constituent constituent);
 
     public List<Gift> readMonetaryGifts(Long constituentId);
 
     public List<Gift> searchGifts(Map<String, Object> params);
 
-    public Gift createDefaultGift(Person constituent);
+    public Gift createDefaultGift(Constituent constituent);
 
     public double analyzeMajorDonor(Long constituentId, Date beginDate, Date currentDate);
 
     public List<Gift> readMonetaryGiftsByConstituentId(Long constituentId);
 
-    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Person constituent);
+    public List<DistributionLine> removeDefaultDistributionLine(List<DistributionLine> giftDistributionLines, BigDecimal amount, Constituent constituent);
 
 	public List<Gift> readAllGiftsBySiteName();
 	
@@ -43,7 +43,7 @@ public interface GiftService {
 
 	public PaginatedResult readPaginatedGiftList(Long constituentId, SortInfo sortinfo);
 	
-	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Person constituent, boolean isPledge);
+	public List<DistributionLine> combineGiftCommitmentDistributionLines(List<DistributionLine> giftDistributionLines, List<DistributionLine> commitmentLines, BigDecimal amount, int numCommitments, Constituent constituent, boolean isPledge);
 	
 	public void checkAssociatedPledgeIds(Gift gift);
 	

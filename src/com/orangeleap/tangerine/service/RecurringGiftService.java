@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.springframework.validation.BindException;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -19,15 +19,15 @@ public interface RecurringGiftService extends CommitmentService<RecurringGift> {
     
     public RecurringGift readRecurringGiftById(Long recurringGiftId);
     
-    public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Person constituent);
+    public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Constituent constituent);
     
-    public RecurringGift createDefaultRecurringGift(Person constituent);
+    public RecurringGift createDefaultRecurringGift(Constituent constituent);
 
     public RecurringGift maintainRecurringGift(RecurringGift recurringGift) throws BindException;
 
     public RecurringGift editRecurringGift(RecurringGift recurringGift);
     
-    public List<RecurringGift> readRecurringGiftsForConstituent(Person constituent);
+    public List<RecurringGift> readRecurringGiftsForConstituent(Constituent constituent);
     
     public List<RecurringGift> readRecurringGiftsForConstituent(Long constituentId);
     

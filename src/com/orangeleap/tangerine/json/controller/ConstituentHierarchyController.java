@@ -13,11 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.service.relationship.PersonTreeNode;
+import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 
 /**
  * This controller handles JSON requests for populating
@@ -31,7 +31,7 @@ public class ConstituentHierarchyController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @SuppressWarnings("unchecked")
-	private ModelMap personToMap(Person p) {
+	private ModelMap constituentToMap(Constituent p) {
 
         ModelMap map = new ModelMap();
         map.put("id", p.getId());    
@@ -55,32 +55,32 @@ public class ConstituentHierarchyController {
     public ModelMap getTree(HttpServletRequest request)  {
 
     	String id = request.getParameter("node");
-    	String memberPersonId = request.getParameter("memberPersonId");
+    	String memberConstituentId = request.getParameter("memberConstituentId");
     	String fieldDef = request.getParameter("fieldDef");
 
     	fieldDef = getFieldName(fieldDef);
 
-    	logger.debug("constituentHeirarchy.json: id="+id+", memberPersonId="+memberPersonId+", fieldDef="+fieldDef);
+    	logger.debug("constituentHeirarchy.json: id="+id+", memberConstituentId="+memberConstituentId+", fieldDef="+fieldDef);
 
 
     	List<Map> rows = new ArrayList<Map>();
 
     	try {
 
-    		Person person;
+    		Constituent constituent;
     		if (id == null || "".equals(id) || "0".equals(id)) {
-    			person = constituentService.readConstituentById(new Long(memberPersonId));
-    			if (person == null) return null;
-    			populateMaps(person);
-    			Person head = relationshipService.getHeadOfTree(person, fieldDef);
-    			rows.add(personToMap(head));
+    			constituent = constituentService.readConstituentById(new Long(memberConstituentId));
+    			if (constituent == null) return null;
+    			populateMaps(constituent);
+    			Constituent head = relationshipService.getHeadOfTree(constituent, fieldDef);
+    			rows.add(constituentToMap(head));
     		} else {
-    			person = constituentService.readConstituentById(new Long(id));
-    			if (person == null) return null;
-    			populateMaps(person);
-    			PersonTreeNode node = relationshipService.getTree(person, fieldDef, true, false);
+    			constituent = constituentService.readConstituentById(new Long(id));
+    			if (constituent == null) return null;
+    			populateMaps(constituent);
+    			ConstituentTreeNode node = relationshipService.getTree(constituent, fieldDef, true, false);
     			for (int i = 0; i < node.getChildren().size(); i++) {
-    				rows.add(personToMap(node.getChildren().get(i).getPerson()));
+    				rows.add(constituentToMap(node.getChildren().get(i).getConstituent()));
     			}
     		}
 
@@ -95,8 +95,8 @@ public class ConstituentHierarchyController {
     	}
     }
 
-    private void populateMaps(Person person) {
-    	siteService.populateDefaultEntityEditorMaps(person);
+    private void populateMaps(Constituent constituent) {
+    	siteService.populateDefaultEntityEditorMaps(constituent);
     }
     
     private String getFieldName(String fieldDef) {

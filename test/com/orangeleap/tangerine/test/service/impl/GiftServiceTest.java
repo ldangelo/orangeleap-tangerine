@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
@@ -50,7 +50,7 @@ public class GiftServiceTest extends BaseTest {
 
     @Test(groups="testRemove")
     public void testRemoveDefaultDistributionLine() throws Exception {
-        Person constituent = new Person();
+        Constituent constituent = new Constituent();
         List<DistributionLine> lines = initLazyListDistributionLines();
         lines.add(new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null));
         
@@ -135,7 +135,7 @@ public class GiftServiceTest extends BaseTest {
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
         constituent.setRecognitionName("foo");
-        line.setPerson(constituent);
+        line.setConstituent(constituent);
         line.setDefaults();
         lines.add(line);
         returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
@@ -143,9 +143,9 @@ public class GiftServiceTest extends BaseTest {
         
         lines = initLazyListDistributionLines();
         line = new DistributionLine(new BigDecimal("30"), new BigDecimal("100"), null, null, null);
-        Person newPerson = new Person();
-        newPerson.setRecognitionName("foo2");
-        line.setPerson(newPerson);
+        Constituent newConstituent = new Constituent();
+        newConstituent.setRecognitionName("foo2");
+        line.setConstituent(newConstituent);
         line.setDefaults();
         lines.add(line);
         returnLines = giftService.removeDefaultDistributionLine(lines, new BigDecimal("30"), constituent);
@@ -395,8 +395,8 @@ public class GiftServiceTest extends BaseTest {
         Gift gift = getGift();
         gift.setSuppressValidation(true);
     	giftService.maintainGift(gift);
-    	Person person = constituentService.readConstituentById(gift.getPerson().getId());
-    	//assert person.isMajorDonor();
+    	Constituent constituent = constituentService.readConstituentById(gift.getConstituent().getId());
+    	//assert constituent.isMajorDonor();
     }
     
     private Gift getGift() throws Exception {
@@ -416,10 +416,10 @@ public class GiftServiceTest extends BaseTest {
         src.setId(100L);
         gift.setSelectedPaymentSource(src);
         Site site = new Site("company1");
-        Person person = new Person();
-        person.setId(100L);
-        person.setSite(site);
-        gift.setPerson(person);
+        Constituent constituent = new Constituent();
+        constituent.setId(100L);
+        constituent.setSite(site);
+        gift.setConstituent(constituent);
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         
         DistributionLine line = new DistributionLine();

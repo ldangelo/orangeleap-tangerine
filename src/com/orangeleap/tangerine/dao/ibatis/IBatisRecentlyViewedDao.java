@@ -58,19 +58,19 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
         getSqlMapClientTemplate().insert("INSERT_RECENTLY_VIEWED", params);
 
         // Finally, create the List to return, which has the new value at the head of the list
-        List<Long> personIds = new ArrayList<Long>();
-        personIds.add(acctNumber);
-        personIds.addAll(recentlyViewed);
+        List<Long> constituentIds = new ArrayList<Long>();
+        constituentIds.add(acctNumber);
+        constituentIds.addAll(recentlyViewed);
 
-        return getRecentlyViewedNames(personIds, userName);
+        return getRecentlyViewedNames(constituentIds, userName);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Map> getRecentlyViewed(String userName) {
 
-        List<Long> personIds = getRecentlyViewedIds(userName);
-        return getRecentlyViewedNames(personIds, userName);
+        List<Long> constituentIds = getRecentlyViewedIds(userName);
+        return getRecentlyViewedNames(constituentIds, userName);
     }
 
     /*
@@ -101,23 +101,23 @@ public class IBatisRecentlyViewedDao extends AbstractIBatisDao implements Recent
         is all that is needed for the MRU list.
      */
     @SuppressWarnings("unchecked")
-    private List<Map> getRecentlyViewedNames(List<Long> personIds, String userName) {
+    private List<Map> getRecentlyViewedNames(List<Long> constituentIds, String userName) {
 
-        if(personIds.size() == 0) {
+        if(constituentIds.size() == 0) {
             return new ArrayList<Map>();
         }
 
         Map<String, Object> params = setupParams();
         params.put("userName", userName);
-        params.put("personIds", personIds);
-        List<Map> people = getSqlMapClientTemplate().queryForList("SELECT_PERSON_FLYWEIGHT", params);
+        params.put("constituentIds", constituentIds);
+        List<Map> people = getSqlMapClientTemplate().queryForList("SELECT_CONSTITUENT_FLYWEIGHT", params);
 
         // the People list is not ordered correctly, since it relies
         // on a SQL 'IN' clause. Put it back into the correct order
         // before returning it.
         List<Map> ret = new ArrayList<Map>();
 
-        for(Long id : personIds) {
+        for(Long id : constituentIds) {
 
             for(Map map : people)  {
                 if( id.equals(map.get("id"))) {

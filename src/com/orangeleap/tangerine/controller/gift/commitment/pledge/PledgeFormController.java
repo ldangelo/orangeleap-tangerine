@@ -37,7 +37,7 @@ public class PledgeFormController extends CommitmentFormController<Pledge> {
         Pledge pledge = (Pledge)formBackingObject(request);
         
         if (usePledgeView(pledge)) {
-            mv = new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + pledge.getId() + "&" + StringConstants.PERSON_ID + "=" + super.getConstituentId(request));
+            mv = new ModelAndView(getSuccessView() + "?" + getParamId() + "=" + pledge.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request));
         }
         return mv;
     }

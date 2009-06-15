@@ -64,7 +64,7 @@ public class IBatisPageAccessDaoTest extends AbstractIBatisTest {
                 assert AccessType.DENIED.equals(pageAccess.getAccessType());
                 assert pageAccess.getSite() == null;
                 assert "ROLE_DOOFUS".equals(pageAccess.getRole());
-                assert PageType.person.equals(pageAccess.getPageType());
+                assert PageType.constituent.equals(pageAccess.getPageType());
             }
         }
     } 

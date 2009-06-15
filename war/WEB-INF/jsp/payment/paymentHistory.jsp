@@ -9,11 +9,11 @@
 	<tiles:putAttribute name="sidebarNav" value="Payment History" />
 	<tiles:putAttribute name="mainContent" type="string">
 		<div class="content760 mainForm">
-		<c:set var="person" value="${person}" scope="request" />
-		<c:if test="${person.id!=null}">
-			<c:set var="viewingPerson" value="true" scope="request" />
+		<c:set var="constituent" value="${constituent}" scope="request" />
+		<c:if test="${constituent.id!=null}">
+			<c:set var="viewingConstituent" value="true" scope="request" />
 		</c:if>
-		<jsp:include page="../snippets/personHeader.jsp">
+		<jsp:include page="../snippets/constituentHeader.jsp">
 			<jsp:param name="currentFunctionTitleText" value="Payment History" />
 		</jsp:include>
 		<!--<div class="searchResultsHeader">

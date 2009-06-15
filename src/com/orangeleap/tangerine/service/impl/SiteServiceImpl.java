@@ -24,7 +24,7 @@ import org.springframework.validation.BindException;
 
 import com.orangeleap.tangerine.dao.SiteDao;
 import com.orangeleap.tangerine.domain.AbstractEntity;
-import com.orangeleap.tangerine.domain.Person;
+import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -99,11 +99,11 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
   	    if (tangerineUserHelper.lookupUserId() == null) {
   	    	String name = tangerineUserHelper.lookupUserName();
   	    	logger.debug("Looking up login record "+ name);
-          	Person constituent = constituentService.readConstituentByLoginId(name);
+          	Constituent constituent = constituentService.readConstituentByLoginId(name);
           	if (constituent == null) {
       	    	logger.debug("Login record "+ name + " not found, creating.");
           	    try {
-					constituent = createPerson(authentication, siteName);
+					constituent = createConstituent(authentication, siteName);
 				} 
           	    catch (Exception e) {
 					logger.error(e);
@@ -111,15 +111,15 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
 					throw new RuntimeException("Unable to create new user record.");
 				}
           	} 
-          	authentication.setPersonId(constituent.getId());
+          	authentication.setConstituentId(constituent.getId());
   	    }
         return site;
     }
     
-    // Create a Person object row corresponding to the login user.
-    private Person createPerson(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
+    // Create a Constituent object row corresponding to the login user.
+    private Constituent createConstituent(TangerineAuthenticationToken authentication, String siteName)  throws ConstituentValidationException, BindException, javax.naming.NamingException {
         logger.info("Creating user for login id: "+authentication.getName());
-        Person constituent = constituentService.createDefaultConstituent();
+        Constituent constituent = constituentService.createDefaultConstituent();
         constituent.setFirstName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.FIRST_NAME));
         constituent.setLastName(authentication.getUserAttributes().get(TangerineLdapAuthoritiesPopulator.LAST_NAME));
         constituent.setConstituentIndividualRoles("user");

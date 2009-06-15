@@ -25,7 +25,7 @@
 							<ul id="availableOptions">
 								<c:forEach items="${notSelectedPledges}" var="pledge">
 									<li id="<c:out value='${pledge.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/>  <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/>  <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&constituentId=<c:out value='${param.constituentId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>
@@ -35,7 +35,7 @@
 			                <ul id="selectedOptions">
 								<c:forEach items="${selectedPledges}" var="pledge">
 									<li id="<c:out value='${pledge.id}'/>-li">
-										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/> <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&personId=<c:out value='${param.personId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
+										<input type="checkbox" name="<c:out value='${pledge.id}'/>" id="pledge-<c:out value='${pledge.id}'/>" value="<c:out value="${pledge.shortDescription}"/>"></input> <c:out value="${pledge.shortDescription}"/> <a href="pledge.htm?pledgeId=<c:out value='${pledge.id}'/>&constituentId=<c:out value='${param.constituentId}'/>" target="_blank"><img src="images/icons/link.png" alt="<spring:message code='gotoLink'/>" title="<spring:message code='gotoLink'/>"/></a>
 									</li>
 								</c:forEach>
 			                </ul>

@@ -35,7 +35,7 @@ public class GiftInKindListController {
 
 	static {
 		NAME_MAP.put("id", "gik.GIFT_ID");
-		NAME_MAP.put("personId", "gik.CONSTITUENT_ID");
+		NAME_MAP.put("constituentId", "gik.CONSTITUENT_ID");
 		NAME_MAP.put("fairmarketvalue", "gik.FAIR_MARKET_VALUE");
 		NAME_MAP.put("currencycode", "gik.CURRENCY_CODE");
 		NAME_MAP.put("donationdate", "gik.DONATION_DATE");
@@ -49,7 +49,7 @@ public class GiftInKindListController {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", gik.getId());
-		map.put("personId", gik.getPerson().getId());
+		map.put("constituentId", gik.getConstituent().getId());
 		map.put("fairmarketvalue", gik.getFairMarketValue());
 		map.put("currencycode", gik.getCurrencyCode());
 		map.put("donationdate", formatter.format(gik.getDonationDate()));
@@ -79,8 +79,8 @@ public class GiftInKindListController {
 		// set the sort to the valid column name, based on the map
 		sortInfo.setSort((String) NAME_MAP.get(sortInfo.getSort()));
 
-		String personId = request.getParameter("personId");
-		PaginatedResult result = giftInKindService.readPaginatedGiftsInKindByConstituentId(Long.valueOf(personId), sortInfo);
+		String constituentId = request.getParameter("constituentId");
+		PaginatedResult result = giftInKindService.readPaginatedGiftsInKindByConstituentId(Long.valueOf(constituentId), sortInfo);
 
 		List<GiftInKind> list = result.getRows();
 

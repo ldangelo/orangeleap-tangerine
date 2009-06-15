@@ -9,7 +9,7 @@
 		    
 		    <script>
 		    function Export_hideShow(val) {
-		    	if ( val === 'person' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
+		    	if ( val === 'constituent' || val === 'address' )  { $('#nameRange').show(); } else { $('#nameRange').hide(); }
 		    	if ( val === 'gift' || val === 'distributionLine' )  { $('#dateRange').show(); } else { $('#dateRange').hide(); }
 		    	if ( val === 'address' )  { $('#exportNcoaCassDate').show(); } else { $('#exportNcoaCassDate').hide(); }
 		    	
@@ -23,7 +23,7 @@
 	        
 		        <select id="exportEntity" name="entity"  onchange="Export_hideShow( $('#exportEntity').val() );"  >
 		          <option value="">Select...</option>
-		          <option value="person">Constituents</option>
+		          <option value="constituent">Constituents</option>
 		          <option value="address">NCOA Addresses</option>   
 		          <option value="gift">Gift Summary</option> 
 		          <!--  <option value="distributionLine">Gift Detail</option>    -->
@@ -110,7 +110,7 @@
 	        <form method="post" action="import.htm" enctype="multipart/form-data">
 		        <select id="importEntity" name="entity" onchange="Import_hideShow( $('#importEntity').val() );" >
 		          <option value="">Select...</option>
-		          <option value="person">Constituents</option>
+		          <option value="constituent">Constituents</option>
  		          <option value="gift">Gifts</option> 
  		          <option value="address">NCOA Addresses</option>   
 		        </select>            

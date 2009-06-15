@@ -17,7 +17,7 @@
 		<result property="sms" column="PHONE_SMS" jdbcType="VARCHAR" />
 		<result property="temporaryEndDate" column="PHONE_TEMPORARY_END_DATE" jdbcType="TIMESTAMP" />
 		<result property="temporaryStartDate" column="PHONE_TEMPORARY_START_DATE" jdbcType="TIMESTAMP" />
-		<result property="personId" column="PHONE_CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="constituentId" column="PHONE_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="primary" column="PHONE_IS_PRIMARY" jdbcType="CHAR" />
 		<result property="undeliverable" column="PHONE_UNDELIVERABLE" jdbcType="CHAR" />
 		<result property="createDate" column="PHONE_CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -69,7 +69,7 @@
 		#effectiveDate#, #inactive#, #number#, 
 		#provider#, #receiveCorrespondence#, #receiveCorrespondenceText#, #seasonalEndDate#,
 		#seasonalStartDate#, #sms#, #temporaryEndDate#,
-		#temporaryStartDate#, now(), #personId#, #primary#, #undeliverable#)
+		#temporaryStartDate#, now(), #constituentId#, #primary#, #undeliverable#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
@@ -91,7 +91,7 @@
 		TEMPORARY_END_DATE = #temporaryEndDate#,
 		TEMPORARY_START_DATE = #temporaryStartDate#,
 		UPDATE_DATE = now(),
-		CONSTITUENT_ID = #personId#,
+		CONSTITUENT_ID = #constituentId#,
 		IS_PRIMARY = #primary#,
 		UNDELIVERABLE = #undeliverable#
 		where PHONE_ID = #id#

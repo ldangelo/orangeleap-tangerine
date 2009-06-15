@@ -8,5 +8,5 @@ public enum CommunicationMode {
     PHONE,
     EMAIL,
     LETTER,
-    IN_PERSON
+    IN_CONSTITUENT
 }

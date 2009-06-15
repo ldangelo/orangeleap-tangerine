@@ -8,6 +8,25 @@ import com.orangeleap.tangerine.domain.Site;
 
 public class PaymentSourceDataProvider {
 
+    @DataProvider(name = "setupCCPaymentSource") 
+        public static Object[][] setupCCPaymentSource() {
+        Site site = new Site();
+        site.setName("company1");
+
+        Constituent constituent = new Constituent();
+        constituent.setFirstName("test");
+        constituent.setLastName("testing");
+
+        PaymentSource ps = new PaymentSource();
+        ps.setPaymentType(PaymentSource.CREDIT_CARD);
+        ps.setCreditCardNumber("4111111111111111");
+        ps.setCreditCardExpirationMonth(11);
+        ps.setCreditCardExpirationYear(2012);
+        ps.setCreditCardType("Visa");
+
+        return new Object[][] { new Object[] {site,constituent,ps}};
+    }
+
     @DataProvider(name = "setupPaymentSource")
     public static Object[][] createPaymentSource() {
         Site site1 = new Site();

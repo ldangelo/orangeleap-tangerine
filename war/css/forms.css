@@ -505,7 +505,7 @@ div.lookupScrollContainer.readOnly div.multiOption,
 table.alignLeft td,
 	table.alignLeft th { text-align:left; }
 
-input:focus, textarea:focus, select:focus, .focused { background-color: #DFF1FF; }
+input:focus, textarea:focus, .focused { background-color: #DFF1FF; }
 input.defaultText { color: #AFAFAF; }
 ul.formFields li.side label.inFocus { font-weight: bold; color: black; }
 
@@ -519,6 +519,7 @@ div.disabled ~ a.multiLookupLink {
 	background:#EEEEEE url(../images/icons/viewDisabled.png) no-repeat scroll center center;
 	cursor:default;
 }
+div.multiLookupField a, div.lookupField a { text-decoration: none; }
 tr.hiddenRow td table { margin-left: 16px; }
 tr.hiddenRow td table ul.width350 li.side label.desc { width:100px; }
 tr.hiddenRow td table ul.width350 li.side select { width:67%; }

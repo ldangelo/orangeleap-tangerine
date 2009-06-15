@@ -134,6 +134,7 @@
 	     	<transaction src="${basedir}/db/prod/picklists/donorProfilePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/tributePicklist.sql"/>
 	     	<transaction src="${basedir}/db/prod/picklists/tributeOccasionPicklist.sql"/>
+            <transaction src="${basedir}/db/prod/picklists/sourcePicklist.sql"/>
 
 			
 	     </sql>

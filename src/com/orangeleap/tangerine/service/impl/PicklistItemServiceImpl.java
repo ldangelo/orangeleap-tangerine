@@ -70,7 +70,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
             return null;
         }
 		
-		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistByNameId(picklistNameId));
 		if (picklist == null) {
             return null;
         }
@@ -106,7 +106,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public List<PicklistItem> getPicklistItems(String picklistNameId, String picklistItemName, String description, Boolean showInactive) {
-		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistByNameId(picklistNameId));
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
 		for (PicklistItem item : picklist.getPicklistItems()) {
 			if (showInactive || !item.isInactive()) {
@@ -126,7 +126,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	@Override
 	public List<PicklistItem> findCodeByDescription(String picklistNameId, String description, Boolean showInactive) {
-		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistByNameId(picklistNameId));
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
 		for (PicklistItem item : picklist.getPicklistItems()) {
 			if (showInactive || !item.isInactive()) {
@@ -142,7 +142,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	
 	@Override
 	public List<PicklistItem> findCodeByValue(String picklistNameId, String value, Boolean showInactive) {
-		Picklist picklist = picklistDao.readPicklistByNameId(picklistNameId);
+		Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistByNameId(picklistNameId));
 		List<PicklistItem> result = new ArrayList<PicklistItem>();
 		for (PicklistItem item : picklist.getPicklistItems()) {
 			if (showInactive || !item.isInactive()) {
@@ -172,7 +172,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 		List<Picklist> result = new ArrayList<Picklist>();
 		for (Picklist picklist : list) {
 			if (picklist.getSite() != null && picklist.getPicklistName().length() > 0) {
-				result.add(picklist);
+				result.add(populateCustomFieldsOnDependentItems(picklist));
 			}
 		}
 		
@@ -270,7 +270,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     		throw new RuntimeException("PicklistItem is blank.");
     	}
     	
-    	Picklist picklist = picklistDao.readPicklistById(picklistItem.getPicklistId());
+    	Picklist picklist = populateCustomFieldsOnDependentItems(picklistDao.readPicklistById(picklistItem.getPicklistId()));
     	validate(picklist);
 
 		if (StringUtils.trimToNull(picklistItem.getItemName()) == null) {
@@ -321,6 +321,18 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 
         return picklistItem;
     	
+    }
+
+    // Normally picklist item custom fields are not needed for screen display and validation, however they are needed in picklist maintenance.
+    private Picklist populateCustomFieldsOnDependentItems(Picklist picklist) {
+        if (picklist == null) return null;
+        List<PicklistItem> items = picklist.getPicklistItems();
+        for (int i = 0; i < items.size(); i++) {
+            PicklistItem item = items.get(i);
+            item = picklistDao.readPicklistItemById(item.getId());
+            items.set(i, item);
+        }
+        return picklist;
     }
 
 

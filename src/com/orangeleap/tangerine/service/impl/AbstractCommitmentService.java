@@ -32,7 +32,9 @@ import com.orangeleap.tangerine.type.EntityType;
 @Transactional(propagation = Propagation.REQUIRED)
 public abstract class AbstractCommitmentService<T extends Commitment> extends AbstractPaymentService {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final static Log logger = LogFactory.getLog(AbstractCommitmentService.class);
 
     @Resource(name = "giftService")
@@ -48,7 +50,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         // get initial commitment with built-in defaults
         BeanWrapper commitmentWrapper = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
 
-        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[] { entityType }));
+        List<EntityDefault> entityDefaults = siteDao.readEntityDefaults(Arrays.asList(new EntityType[]{entityType}));
         for (EntityDefault ed : entityDefaults) {
             commitmentWrapper.setPropertyValue(ed.getEntityFieldName(), ed.getDefaultValue());
         }
@@ -61,7 +63,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         commitment.setDistributionLines(lines);
         commitment.setConstituent(constituent);
     }
-    
+
     // TODO: refactor; this method is a mess!!!
     public List<Calendar> getCommitmentGiftDates(T commitment) {
         if (logger.isTraceEnabled()) {
@@ -82,59 +84,31 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
         giftDates.add(createGiftDate(firstGiftCal));
 
-        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
-            Calendar secondGiftCal = new GregorianCalendar();
-            secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
-            if (isPastEndDate(commitment, secondGiftCal.getTime())) {
-                return giftDates;
-            } else {
-                giftDates.add(createGiftDate(secondGiftCal));
-            }
-            boolean pastEndDate = false;
-            int i = 0;
-            while (!pastEndDate) {
-                i++;
-                Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
-                if (isPastEndDate(commitment, payment1.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    giftDates.add(createGiftDate(payment1));
-                }
-                Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
-                if (isPastEndDate(commitment, payment2.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    giftDates.add(createGiftDate(payment2));
-                }
-            }
+
+        Calendar giftCal = firstGiftCal;
+
+        if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+            giftCal.add(Calendar.WEEK_OF_MONTH, 1);
+        } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+            giftCal.add(Calendar.MONTH, 1);
+        } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+            giftCal.add(Calendar.MONTH, 3);
+        } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+            giftCal.add(Calendar.MONTH, 6);
+        } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+            giftCal.add(Calendar.YEAR, 1);
         } else {
-            Calendar giftCal = firstGiftCal;
-            boolean pastEndDate = false;
-            while (!pastEndDate) {
-                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.WEEK_OF_MONTH, 1);
-                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 1);
-                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 3);
-                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.MONTH, 6);
-                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-                    giftCal.add(Calendar.YEAR, 1);
-                } else {
-                    logger.debug("Unknown frequency");
-                    return giftDates;
-                }
-                if (isPastEndDate(commitment, giftCal.getTime())) {
-                    pastEndDate = true;
-                } else {
-                    giftDates.add(createGiftDate(giftCal));
-                }
-            }
+            logger.debug("Unknown frequency");
+            return giftDates;
         }
+
+        giftDates.add(createGiftDate(giftCal));
+
+
+
         return giftDates;
     }
-    
+
     public Calendar createGiftDate(Calendar giftCal) {
         return new GregorianCalendar(giftCal.get(Calendar.YEAR), giftCal.get(Calendar.MONTH), giftCal.get(Calendar.DAY_OF_MONTH));
     }
@@ -165,14 +139,11 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         Date nextGiftDate = new Date();
         if (commitment.getEndDate() != null && commitment.getEndDate().before(Calendar.getInstance().getTime())) {
             nextGiftDate = null;
-        } 
-        else if (commitment instanceof RecurringGift && ((RecurringGift)commitment).isActivate()) {
+        } else if (commitment instanceof RecurringGift && ((RecurringGift) commitment).isActivate()) {
             nextGiftDate = calculateNextRunDate(commitment);
-        }
-        else if (commitment instanceof Pledge && Commitment.STATUS_ACTIVE.equals(((Pledge) commitment).getPledgeStatus())) {
+        } else if (commitment instanceof Pledge && Commitment.STATUS_ACTIVE.equals(((Pledge) commitment).getPledgeStatus())) {
             nextGiftDate = calculateNextRunDate(commitment);
-        }
-        else {
+        } else {
             nextGiftDate = null;
         }
 
@@ -181,94 +152,55 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         }
         return nextGiftDate;
     }
-    
+
     protected Date calculateNextRunDate(T commitment) {
         Calendar nextRun = new GregorianCalendar();
-        nextRun.setTimeInMillis(commitment.getStartDate().getTime());
+        nextRun.setTimeInMillis(((RecurringGift)commitment).getNextRunDate().getTime());
         logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
         Calendar today = getToday();
-        
-        if (Commitment.FREQUENCY_TWICE_MONTHLY.equals(commitment.getFrequency())) {
-            Calendar startDateCal = new GregorianCalendar();
-            startDateCal.setTimeInMillis(commitment.getStartDate().getTime());
-            Calendar firstGiftCal = new GregorianCalendar(startDateCal.get(Calendar.YEAR), startDateCal.get(Calendar.MONTH), startDateCal.get(Calendar.DAY_OF_MONTH));
-            boolean found = false;
-            boolean pastEndDate = false;
-            if (firstGiftCal.after(today)) {
-                nextRun.setTimeInMillis(firstGiftCal.getTimeInMillis());
-                pastEndDate = isPastEndDate(commitment, nextRun.getTime());
-                found = !pastEndDate;
+
+
+            if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.WEEK_OF_MONTH, 1);
+            } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.MONTH, 1);
+            } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.MONTH, 3);
+            } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.MONTH, 6);
+            } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+                nextRun.add(Calendar.YEAR, 1);
+            } else {
+                nextRun = null;
             }
-            if (!found && !pastEndDate) {
-                Calendar secondGiftCal = new GregorianCalendar();
-                secondGiftCal.setTimeInMillis(firstGiftCal.getTimeInMillis() + (1000 * 60 * 60 * 24 * 15));
-                if (secondGiftCal.after(today)) {
-                    nextRun.setTimeInMillis(secondGiftCal.getTimeInMillis());
-                    pastEndDate = isPastEndDate(commitment, nextRun.getTime());
-                    found = !pastEndDate;
-                }
-                int i = 0;
-                while (!found && !pastEndDate) {
-                    i++;
-                    Calendar payment1 = getBimonthlyCalendar(firstGiftCal.get(Calendar.YEAR), firstGiftCal.get(Calendar.MONTH) + i, firstGiftCal.get(Calendar.DAY_OF_MONTH));
-                    if (payment1.after(today)) {
-                        nextRun.setTimeInMillis(payment1.getTimeInMillis());
-                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
-                        found = !pastEndDate;
-                    }
-                    Calendar payment2 = getBimonthlyCalendar(secondGiftCal.get(Calendar.YEAR), secondGiftCal.get(Calendar.MONTH) + i, secondGiftCal.get(Calendar.DAY_OF_MONTH));
-                    if (payment2.after(today)) {
-                        nextRun.setTimeInMillis(payment2.getTimeInMillis());
-                        pastEndDate = isPastEndDate(commitment, nextRun.getTime());
-                        found = !pastEndDate;
-                    }
-                }
-            }
-        } else {
-                if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-                    nextRun.add(Calendar.WEEK_OF_MONTH, 1);
-                } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-                    nextRun.add(Calendar.MONTH, 1);
-                } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-                    nextRun.add(Calendar.MONTH, 3);
-                } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-                    nextRun.add(Calendar.MONTH, 6);
-                } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-                    nextRun.add(Calendar.YEAR, 1);
-                } else {
-                    nextRun = null;
-                }
-        }
-        if (nextRun == null || (commitment.getLastEntryDate() != null && !nextRun.getTime().after(commitment.getLastEntryDate()))) {
+   
+        if (nextRun == null || (commitment.getEndDate() != null && !nextRun.getTime().after(commitment.getEndDate()))) {
             nextRun = null;
             logger.debug("no next run scheduled");
             return null;
         }
         return nextRun.getTime();
     }
-    
+
     protected void setCommitmentStatus(T commitment, String statusPropertyName) {
         if (commitment.getAmountPaid() != null) {
             BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(commitment);
             if (bw.isWritableProperty(statusPropertyName)) {
-            	if (commitment.getAmountTotal() != null) {
-            		if (commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 0 || commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 1) {
-            			bw.setPropertyValue(statusPropertyName, Commitment.STATUS_FULFILLED);
-            		}
-            		else if (bw.isReadableProperty(statusPropertyName) && 
-                    		Commitment.STATUS_FULFILLED.equals(bw.getPropertyValue(statusPropertyName)) && 
-                    		commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == -1) {
+                if (commitment.getAmountTotal() != null) {
+                    if (commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 0 || commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == 1) {
+                        bw.setPropertyValue(statusPropertyName, Commitment.STATUS_FULFILLED);
+                    } else if (bw.isReadableProperty(statusPropertyName) &&
+                            Commitment.STATUS_FULFILLED.equals(bw.getPropertyValue(statusPropertyName)) &&
+                            commitment.getAmountPaid().compareTo(commitment.getAmountTotal()) == -1) {
                         bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
-            		}
-                    else if (bw.isReadableProperty(statusPropertyName) && 
-                    		Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) && 
-                    		commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                    } else if (bw.isReadableProperty(statusPropertyName) &&
+                            Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) &&
+                            commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
                         bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
                     }
-                }
-                else if (bw.isReadableProperty(statusPropertyName) && 
-                		Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) && 
-                		commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
+                } else if (bw.isReadableProperty(statusPropertyName) &&
+                        Commitment.STATUS_PENDING.equals(bw.getPropertyValue(statusPropertyName)) &&
+                        commitment.getAmountPaid().compareTo(BigDecimal.ZERO) == 1) {
                     bw.setPropertyValue(statusPropertyName, Commitment.STATUS_IN_PROGRESS);
                 }
             }

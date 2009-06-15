@@ -3,16 +3,30 @@ package com.orangeleap.tangerine.test.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+
 
 import junit.framework.Assert;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindException;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
+import com.orangeleap.tangerine.domain.PaymentSource;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.service.impl.RecurringGiftServiceImpl;
+import com.orangeleap.tangerine.service.impl.AbstractCommitmentService;
 import com.orangeleap.tangerine.test.BaseTest;
+import com.orangeleap.tangerine.test.dataprovider.GiftDataProvider;
+import com.orangeleap.tangerine.test.dataprovider.PaymentSourceDataProvider;
 
 public class RecurringGiftServiceImplTest extends BaseTest {
     @Autowired
@@ -60,5 +74,61 @@ public class RecurringGiftServiceImplTest extends BaseTest {
         for (RecurringGift aGift : returnList) {
             assert aGift.getId() == 3L || aGift.getId() == 6L;
         }
+    }
+
+    Method findCalculateNextRunDateMethod() {
+        Method methods[] = AbstractCommitmentService.class.getDeclaredMethods();
+
+        for (int i = 0; i < methods.length; i++)
+            if (methods[i].getName().equals("calculateNextRunDate")) return methods[i];
+
+        return null;
+    }
+
+    @Test(dataProvider = "setupCCPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
+    public void testNextRunDate(Site site, Constituent c, PaymentSource ps) throws NoSuchMethodException,IllegalAccessException, InvocationTargetException
+    {
+        RecurringGiftService service = new RecurringGiftServiceImpl();
+        RecurringGift recurringGift  = null;
+        Calendar startCal = Calendar.getInstance();
+        startCal.add(Calendar.MONTH,-4);
+
+        Calendar endCal = Calendar.getInstance();
+
+        Method getNextRunDate = findCalculateNextRunDateMethod();
+        getNextRunDate.setAccessible(true);
+
+        recurringGift = new RecurringGift(1L,Commitment.STATUS_PENDING,startCal.getTime(),endCal.getTime());
+        recurringGift.setFrequency(Commitment.FREQUENCY_WEEKLY);
+        Date d = (Date) getNextRunDate.invoke(service,recurringGift);
+
+        recurringGift = new RecurringGift(1L,Commitment.STATUS_PENDING,startCal.getTime(),endCal.getTime());
+        recurringGift.setFrequency(Commitment.FREQUENCY_QUARTERLY);
+        recurringGift.setConstituent(c);
+        recurringGift.setPaymentSource(ps);
+     
+        d = (Date) getNextRunDate.invoke(service,recurringGift);
+    }
+
+    @Test(dataProvider = "setupCCPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
+    public void testWeekly(Site site, Constituent c, PaymentSource ps) throws BindException
+    {
+
+        Calendar startCal = Calendar.getInstance();
+        startCal.add(Calendar.MONTH,-4);
+
+        Calendar endCal = Calendar.getInstance();
+                                     
+/*
+        RecurringGift recurringGift = new RecurringGift(100L,Commitment.STATUS_PENDING,startCal.getTime(),endCal.getTime());
+        recurringGift.setAmountPerGift(new BigDecimal(10.00));
+        recurringGift.setFrequency(RecurringGift.FREQUENCY_WEEKLY);
+        recurringGift.setActivate(true);
+        recurringGift.setConstituent(c);
+        recurringGift.setPaymentSource(ps);
+
+        recurringGiftService.maintainRecurringGift(recurringGift);
+*/
+        recurringGiftService.processRecurringGifts();
     }
 }

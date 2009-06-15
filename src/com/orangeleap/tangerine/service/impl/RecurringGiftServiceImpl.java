@@ -329,7 +329,10 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("processRecurringGifts:");
         }
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(Calendar.getInstance().getTime(), Arrays.asList(new String[] { Commitment.STATUS_ACTIVE /*, Commitment.STATUS_FULFILLED*/ }));
+        
+        Calendar cal = Calendar.getInstance();
+
+        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[] { Commitment.STATUS_PENDING,Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/ }));
         if (recurringGifts != null) {
             for (RecurringGift recurringGift : recurringGifts) {
                 logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
@@ -361,6 +364,5 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         	logger.error(e);
         }
         
-        recurringGift.setLastEntryDate(gift.getTransactionDate());
     }
 }

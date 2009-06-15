@@ -29,7 +29,7 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
 
     public static final String FREQUENCY_ONE_TIME = "one time";
     public static final String FREQUENCY_WEEKLY = "weekly";
-    public static final String FREQUENCY_TWICE_MONTHLY = "twice monthly";
+
     public static final String FREQUENCY_MONTHLY = "monthly";
     public static final String FREQUENCY_QUARTERLY = "quarterly";
     public static final String FREQUENCY_TWICE_ANNUALLY = "twice annually";
@@ -44,7 +44,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
     protected Date startDate = Calendar.getInstance().getTime();
     protected Date endDate;
     protected String frequency;
-    private Date lastEntryDate;
     private List<Gift> gifts;
     private List<Long> associatedGiftIds;
     
@@ -76,12 +75,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
             if (frequency.equals(FREQUENCY_WEEKLY)) {
                 Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
                 multiplier += weeks.getWeeks();
-            } 
-            else if (frequency.equals(FREQUENCY_TWICE_MONTHLY)) {
-                // this is the only one that can be a bit tricky, given a month
-                // can potentially have more than 4 weeks. Use for now
-                Weeks weeks = Weeks.weeksBetween(dtStart,dtEnd);
-                multiplier += weeks.getWeeks() / 2;
             } 
             else if (frequency.equals(FREQUENCY_MONTHLY)) {
                 Months months = Months.monthsBetween(dtStart,dtEnd);
@@ -162,13 +155,7 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         this.frequency = frequency;
     }
 
-    public Date getLastEntryDate() {
-        return lastEntryDate;
-    }
 
-    public void setLastEntryDate(Date lastEntryDate) {
-        this.lastEntryDate = lastEntryDate;
-    }
 
     public List<Gift> getGifts() {
         if (gifts == null) {
@@ -208,7 +195,6 @@ public abstract class Commitment extends AbstractPaymentInfoEntity {
         return new ToStringCreator(this).append("commitmentType", commitmentType).append("amountPerGift", amountPerGift).append("startDate", startDate).
                append("endDate", endDate).append("createDate", getCreateDate()).append("updateDate", getUpdateDate()).
                append("frequency", frequency).
-               append("lastEntryDate", lastEntryDate).
                toString();
     }
 }

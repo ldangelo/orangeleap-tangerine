@@ -24,10 +24,8 @@ import org.testng.annotations.Test;
 import com.orangeleap.tangerine.test.dataprovider.ConstituentDataProvider;
 import com.orangeleap.tangerine.test.dataprovider.GiftDataProvider;
 import com.orangeleap.tangerine.test.BaseTest;
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.ws.schema.Constituent;
 import com.orangeleap.tangerine.ws.util.ObjectConverter;
 
 /**
@@ -47,22 +45,22 @@ public class CopyObjectTest extends BaseTest
     }
 
     @Test(groups = {"copyToJAXBConstituentTest"},dataProvider="setupCreateConstituent", dataProviderClass= ConstituentDataProvider.class)
-    public void copyToJAXBConstituentTest(Site site, Constituent constituent)
+    public void copyToJAXBConstituentTest(Site site, com.orangeleap.tangerine.domain.Constituent constituent)
     {
-        Constituent constituent = new Constituent();
+        com.orangeleap.tangerine.ws.schema.Constituent jaxConstituent = new com.orangeleap.tangerine.ws.schema.Constituent();
         
-        converter.ConvertToJAXB(constituent,constituent);
-        System.out.println(constituent.getFirstName());
-        System.out.println(constituent.getFirstName());
-        assert(constituent.getFirstName() == constituent.getFirstName());
+        converter.ConvertToJAXB(constituent,jaxConstituent);
+        System.out.println(jaxConstituent.getFirstName());
+        System.out.println(jaxConstituent.getFirstName());
+        assert(jaxConstituent.getFirstName() == constituent.getFirstName());
 
-        Constituent newconstituent = new Constituent();
+        com.orangeleap.tangerine.domain.Constituent newconstituent = new com.orangeleap.tangerine.domain.Constituent();
         converter.ConvertFromJAXB(constituent,newconstituent);
         assert(newconstituent.getFirstName() == constituent.getFirstName());
     }
 
     @Test(groups = {"copyToJAXBGiftTest"},dataProvider="setupGift", dataProviderClass= GiftDataProvider.class)
-    public void copyToJAXBGiftTest(Site site, Constituent constituent, Gift gift)
+    public void copyToJAXBGiftTest(Site site, com.orangeleap.tangerine.domain.Constituent constituent, Gift gift)
     {
         com.orangeleap.tangerine.ws.schema.Gift jaxbGift = new com.orangeleap.tangerine.ws.schema.Gift();
 

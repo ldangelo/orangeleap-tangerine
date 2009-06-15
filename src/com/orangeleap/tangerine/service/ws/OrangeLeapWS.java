@@ -1,12 +1,13 @@
 package com.orangeleap.tangerine.service.ws;
 
-import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.ws.schema.*;
 import org.springframework.validation.BindException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+
+import java.net.BindException;
 
 @Endpoint
 public class OrangeLeapWS {
@@ -31,8 +32,8 @@ public class OrangeLeapWS {
 	@PayloadRoot(localPart="CreateDefaultConstituentRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
 	public CreateDefaultConstituentResponse createDefaultConstituent(CreateDefaultConstituentRequest cdcr) {
 		CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
-		Constituent p = cs.createDefaultConstituent();
-		Constituent c = new Constituent();
+		com.orangeleap.tangerine.domain.Constituent p = cs.createDefaultConstituent();
+		com.orangeleap.tangerine.ws.schema.Constituent c = new com.orangeleap.tangerine.ws.schema.Constituent();
 		
 		c.setFirstName("Test");
 		
@@ -49,8 +50,8 @@ public class OrangeLeapWS {
     @PayloadRoot(localPart="FindConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
     public FindConstituentsResponse findConstituent(FindConstituentsRequest request) {
 		FindConstituentsResponse cr = new FindConstituentsResponse();
-		Constituent p = cs.createDefaultConstituent();
-		Constituent c = new Constituent();
+		com.orangeleap.tangerine.domain.Constituent p = cs.createDefaultConstituent();
+		com.orangeleap.tangerine.ws.schema.Constituent c = new com.orangeleap.tangerine.ws.schema.Constituent();
 		
 		c.setFirstName("Test");
 		
@@ -63,8 +64,8 @@ public class OrangeLeapWS {
     @PayloadRoot(localPart="SearchConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
     public SearchConstituentsResponse searchConstituent(SearchConstituentsRequest request) {
 		SearchConstituentsResponse cr = new SearchConstituentsResponse();
-		Constituent p = cs.createDefaultConstituent();
-		Constituent c = new Constituent();
+		com.orangeleap.tangerine.domain.Constituent p = cs.createDefaultConstituent();
+		com.orangeleap.tangerine.ws.schema.Constituent c = new com.orangeleap.tangerine.ws.schema.Constituent();
 		
 		c.setFirstName("Test");
 

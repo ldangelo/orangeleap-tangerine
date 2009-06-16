@@ -192,7 +192,10 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	        }
 	        catch (Exception ex) {
 	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
-	            writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+                // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
+	            if (!(""+ex.getMessage()).contains("timeout")) {
+                    writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
+                }
 	        } 
         } finally {
         	RulesStack.pop(ROUTE_METHOD);

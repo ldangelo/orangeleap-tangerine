@@ -244,7 +244,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	Iterator<PicklistItem> it = picklist.getPicklistItems().iterator();
         while (it.hasNext()) {
         	PicklistItem item = it.next();
-        	if (item.getItemName() == null) it.remove();
+        	if (item == null || item.getItemName() == null) it.remove();
         }
     }
     

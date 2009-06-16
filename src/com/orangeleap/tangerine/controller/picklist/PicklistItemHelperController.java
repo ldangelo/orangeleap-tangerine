@@ -69,7 +69,7 @@ public class PicklistItemHelperController extends ParameterizableViewController 
         
         List<PicklistItem> filteredPicklistItems = new ArrayList<PicklistItem>();
     	for (PicklistItem item : picklistItems) {
-    		if (showInactive == null || showInactive.equals(item.isInactive())) {
+    		if (item != null && (showInactive == null || showInactive.equals(item.isInactive()))) {
 		        if (description.length() > 0) {
 		        	if (item.getDefaultDisplayValue() != null && item.getDefaultDisplayValue().toUpperCase().startsWith(description)) {
                         filteredPicklistItems.add(item);

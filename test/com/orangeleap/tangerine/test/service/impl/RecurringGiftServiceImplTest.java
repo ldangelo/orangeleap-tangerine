@@ -84,7 +84,8 @@ public class RecurringGiftServiceImplTest extends BaseTest {
 
         return null;
     }
-
+    
+               /*
     @Test(dataProvider = "setupCCPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void testNextRunDate(Site site, Constituent c, PaymentSource ps) throws NoSuchMethodException,IllegalAccessException, InvocationTargetException
     {
@@ -109,6 +110,7 @@ public class RecurringGiftServiceImplTest extends BaseTest {
      
         d = (Date) getNextRunDate.invoke(service,recurringGift);
     }
+                 */
 
     @Test(dataProvider = "setupCCPaymentSource", dataProviderClass = PaymentSourceDataProvider.class)
     public void testWeekly(Site site, Constituent c, PaymentSource ps) throws BindException

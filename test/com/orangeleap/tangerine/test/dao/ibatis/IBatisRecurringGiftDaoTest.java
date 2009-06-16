@@ -21,10 +21,10 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
-    
+
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-    
+ /*
     private RecurringGiftDao recurringGiftDao;
 
     @BeforeMethod
@@ -207,5 +207,6 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         for (Long giftId : recurringGift.getAssociatedGiftIds()) {
             assert giftId == 600L;
         }
-    }    
+    }
+    */
 }

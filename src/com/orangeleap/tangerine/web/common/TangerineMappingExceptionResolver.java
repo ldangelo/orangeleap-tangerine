@@ -17,6 +17,17 @@ public class TangerineMappingExceptionResolver extends SimpleMappingExceptionRes
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object command, Exception exception) {
         logger.error(ExceptionUtils.getStackTrace(exception));
+        
+        if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
+        	response.setHeader("AJAX_ERROR", "true");
+        	try {
+        		response.sendError(508); // custom error code
+        	}
+        	catch (Exception e) {
+        		logger.warn("Error setting error code to 508");
+        	}
+        }
+        
         return super.resolveException(request, response, command, exception);
     }
 }

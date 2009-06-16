@@ -118,10 +118,6 @@ var PledgeRecurringGiftSelector = {
 				PledgeRecurringGiftSelector.selectorBindings();
 				Lookup.multiCommonBindings();
 				$("#dialog").jqmShow();
-			},
-			error: function(html){
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 	},
@@ -215,10 +211,6 @@ var PledgeRecurringGiftSelector = {
 				Distribution.reInitDistribution();
 				Distribution.rowCloner("table.distributionLines tbody.gridRow:last");
 				giftDistElem.unmask();
-			},
-			error: function(html){
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 	},

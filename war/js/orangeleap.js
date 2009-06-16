@@ -3,6 +3,19 @@ $(document).ready(function() {
 		$("li.side:has(.picklist), li.side:has(.multiPicklist)", "ul").each(Picklist.buildPicklistTree);
 		Picklist.cascadeElementsRoot();
 	})();
+	
+	$.ajaxSetup({
+		timeout: 30000, // 30 seconds before the request times out
+		error: function(xhr, errorType, exception) {
+			if (errorType == "timeout")	{
+				alert("The server was not available.  Please try again or contact Orange Leap Support.");
+			}
+			else if (xhr.status == 508 || errorType == "error") {
+				document.location.reload();
+			}
+		}
+	});
+	
 	$(".picklist", "form").bind("change", Picklist.togglePicklist);
 	
 	$("table.tablesorter tbody td input").focus(function() {
@@ -158,9 +171,11 @@ function saveInPlace(elem, baseUrl) {
 			$(elem).parent().parent().html(html);
 			return false;
 		},
-		error: function(html){
-			alert("Code could not be saved. Please ensure that the code has a unique value.");
-			return false;
+		error: function(xhr) {
+			if (xhr.status == 508) {
+				alert("The code could not be saved. Please ensure that the code has a unique value.");
+				return false;
+			}
 		}
 	});
 	return false;
@@ -177,9 +192,11 @@ function newInPlace(elem, baseUrl) {
 			$(".justAdded table").append(newRow);
 			return false;
 		},
-		error: function(html){
-			alert("Code could not be saved. Please ensure that the code has a unique value.");
-			return false;
+		error: function(xhr) {
+			if (xhr.status == 508) {
+				alert("The code could not be saved. Please ensure that the code has a unique value.");
+				return false;
+			}
 		}
 	});
 	return false;
@@ -197,10 +214,6 @@ function getPage(elem) {
 			data: queryString+"&view=ajaxResults",
 			success: function(html){
 				$("#searchResults").html(html);
-				//return false;
-			},
-			error: function(html){
-				alert("An error has occurred.  Please refresh the page and try again.");
 				//return false;
 			}
 		});
@@ -554,18 +567,17 @@ var Picklist = {
 var OrangeLeap = {
 	expandCollapse: function(elem) {
 		$elem = $(elem);
-		var rowIndex = $elem.attr("rowIndex");
 		if ($elem.hasClass("plus")) {
 			$elem.removeClass("plus").addClass("minus");
 			var $parent = $elem.parent().parent();
 			$parent.removeClass("collapsed").addClass("expanded");
-			$parent.siblings(".hiddenRow").removeClass("noDisplay");
+			$parent.next(".hiddenRow").removeClass("noDisplay");
 		}
 		else {
 			$elem.removeClass("minus").addClass("plus");
 			var $parent = $elem.parent().parent();
 			$parent.removeClass("expanded").addClass("collapsed");
-			$parent.siblings(".hiddenRow").addClass("noDisplay");
+			$parent.next(".hiddenRow").addClass("noDisplay");
 		}
 		return false;
 	},
@@ -653,6 +665,10 @@ var OrangeLeap = {
 		else {
 			$(recognitionSelector).show();
 		}
+	},
+	
+	escapeIdCharacters: function(idString) {
+		return idString.replace(".", "\\.").replace("[", "\\[").replace("]", "\\]"); // for jQuery selection, escape common characters
 	}	
 };
 var Lookup = {
@@ -709,10 +725,6 @@ var Lookup = {
 				Lookup.singleCodeLookupBindings();
 				Lookup.clickEventHandler();
 				$("#dialog").jqmShow();
-			},
-			error: function(html) {
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 		return false;
@@ -733,10 +745,6 @@ var Lookup = {
 				Lookup.multiCodeLookupBindings();
 				Lookup.clickEventHandler();
 				$("#dialog").jqmShow();
-			},
-			error: function(html) {
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 	},
@@ -1038,10 +1046,6 @@ var Lookup = {
 				Lookup.multiCommonBindings();
 				Lookup.multiQueryLookupBindings();
 				$("#dialog").jqmShow();
-			},
-			error: function(html) {
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 	},
@@ -1110,10 +1114,6 @@ var Lookup = {
 				Lookup.multiCommonBindings();
 				Lookup.multiPicklistBindings();
 				$("#dialog").jqmShow();
-			},
-			error: function(html){
-				// TODO: improve error handling
-				alert("The server was not available.  Please try again.");
 			}
 		});
 	},	

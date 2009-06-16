@@ -306,7 +306,12 @@
 			<artifact name="activemq-all" type="jar" />
 			<artifact name="activemq-all" type="source" ext="jar" classifier="sources" conf="sources"/>
 		</dependency>
-		
+
+        <dependency org="org.apache.xbean" name="xbean-spring" transitive="false" rev="3.5">
+            <artifact name="xbean-spring" type="jar"/>
+            <artifact name="xbean-spring" type="source" ext="jar" classifier="sources" conf="sources"/>
+        </dependency>
+        
 		<!-- Jasper ireport plugin -->
 		<dependency org="com.jaspersoft.jasperserver.irplugin" name="jasperserver-ireport-plugin" transitive="false" rev="3.0.0">
 			<artifact name="jasperserver-ireport-plugin" type="jar"/>

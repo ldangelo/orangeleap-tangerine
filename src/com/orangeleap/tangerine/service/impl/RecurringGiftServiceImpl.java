@@ -43,7 +43,6 @@ import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
 @Service("recurringGiftService")
-@Transactional(propagation = Propagation.REQUIRED)
 public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService {
 
     /** Logger for this class and subclasses */
@@ -324,6 +323,20 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
+    private void processRecurringGift(RecurringGift recurringGift)
+    {
+        Date nextDate = null;
+        createAutoGift(recurringGift);
+        nextDate = getNextGiftDate(recurringGift);
+
+        if (nextDate != null) {
+            recurringGift.setNextRunDate(nextDate);
+
+            // Update the Next Run Date ONLY
+            recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
+        }
+    }
+
     @Override
     public void processRecurringGifts() {
         if (logger.isTraceEnabled()) {
@@ -338,15 +351,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                 logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
                 Date nextDate = null;
                 if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
-                    createAutoGift(recurringGift);
-                    nextDate = getNextGiftDate(recurringGift);
-
-                    if (nextDate != null) {
-                        recurringGift.setNextRunDate(nextDate);
-                        
-                        // Update the Next Run Date ONLY
-                        recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
-                    }
+                    processRecurringGift(recurringGift);  
                 }
             }
         }

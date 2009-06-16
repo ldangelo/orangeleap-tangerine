@@ -4,6 +4,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:jms="http://www.springframework.org/schema/integration/jms"
 	xmlns:stream="http://www.springframework.org/schema/integration/stream"
+    xmlns:amq="http://activemq.apache.org/schema/core"   
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 			http://www.springframework.org/schema/integration
@@ -11,18 +12,18 @@
 			http://www.springframework.org/schema/integration/jms
 			http://www.springframework.org/schema/integration/jms/spring-integration-jms-1.0.xsd			
 			http://www.springframework.org/schema/integration/stream
-			http://www.springframework.org/schema/integration/stream/spring-integration-stream-1.0.xsd">
+			http://www.springframework.org/schema/integration/stream/spring-integration-stream-1.0.xsd
+			http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
+    <amq:broker useJmx="true" persistent="false">
+        <amq:transportConnectors>
+          <amq:transportConnector uri="tcp://localhost:0" />
+        </amq:transportConnectors>
+      </amq:broker>
+  
+    <amq:connectionFactory id="connectionFactory" brokerURL="vm://localhost"/>
 
-  <beans:bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-    <beans:property name="targetConnectionFactory">
-      <beans:bean class="org.apache.activemq.ActiveMQConnectionFactory">
-	<beans:property name="brokerURL" value="tcp://localhost:61616"/>		
-      </beans:bean>
-    </beans:property>
-    <beans:property name="sessionCacheSize" value="10"/>
-    <beans:property name="cacheProducers" value="false"/>
-  </beans:bean>
+  
 
   <beans:bean id="GiftDestination" class="org.apache.activemq.command.ActiveMQQueue">
     <beans:constructor-arg value="queue.orangeleap.tangerine.gift"/>
@@ -129,8 +130,8 @@
     <beans:constructor-arg value="${drools.packagedir}" index="2" />
   </beans:bean>
 
-  <jms:outbound-gateway id="ConstituentJms" request-channel="constituent_jms_channel" request-destination="ConstituentDestination" />
-  <jms:outbound-gateway id="GiftJms" request-channel="gift_jms_channel" request-destination="GiftDestination" />
+  <jms:outbound-channel-adapter id="ConstituentJms" channel="constituent_jms_channel" destination="ConstituentDestination" />
+  <jms:outbound-channel-adapter id="GiftJms" channel="gift_jms_channel" destination="GiftDestination" />
 
 	<poller id="poller" default="true">
 		<interval-trigger interval="1000"/>

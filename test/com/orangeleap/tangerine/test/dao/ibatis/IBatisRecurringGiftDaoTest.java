@@ -24,7 +24,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
- /*
+
     private RecurringGiftDao recurringGiftDao;
 
     @BeforeMethod
@@ -44,18 +44,18 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         }
         assert "Thank you for your recurring gift".equals(recurringGift.getComments());
         assert 550 == recurringGift.getAmountPerGift().intValue();
-        assert Pledge.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
+        assert Pledge.STATUS_PENDING.equals(recurringGift.getRecurringGiftStatus());
 
         assert recurringGift.getConstituent() != null && recurringGift.getConstituent().getId() == 100L;
         assert "Billy Graham Ministries".equals(recurringGift.getConstituent().getOrganizationName());
         assert "Graham".equals(recurringGift.getConstituent().getLastName());
         assert "Billy".equals(recurringGift.getConstituent().getFirstName());
 
-        assert recurringGift.getStartDate() == null;
+        assert recurringGift.getStartDate() != null;
         assert recurringGift.getEndDate() == null;
         assert recurringGift.getCreateDate() == null;
         assert recurringGift.getUpdateDate() == null;
-        assert recurringGift.getFrequency() == null;
+//        assert recurringGift.getFrequency() == null;
         assert recurringGift.getDistributionLines() != null && recurringGift.getDistributionLines().isEmpty();
         assert StringConstants.USD.equals(recurringGift.getCurrencyCode());
     }
@@ -64,7 +64,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         assert sdf.parse("02/14/2008").equals(recurringGift.getNextRunDate());
         assert 10 == recurringGift.getAmountPerGift().intValue();
-        assert RecurringGift.STATUS_ACTIVE.equals(recurringGift.getRecurringGiftStatus());
+        assert RecurringGift.STATUS_PENDING.equals(recurringGift.getRecurringGiftStatus());
         assert recurringGift.getSelectedAddress() != null && recurringGift.getSelectedAddress().getId() == null;
         assert recurringGift.getSelectedPhone() != null && recurringGift.getSelectedPhone().getId() == null;
         assert recurringGift.getSelectedPaymentSource() != null && recurringGift.getSelectedPaymentSource().getId() == null;
@@ -126,7 +126,7 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
     @Test(groups = { "testReadRecurringGifts" })
     public void testReadRecurringGifts() throws Exception {
     	List<String> statuses = new ArrayList<String>();
-    	statuses.add(RecurringGift.STATUS_ACTIVE);
+    	statuses.add(RecurringGift.STATUS_PENDING);
     	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     	List<RecurringGift> rgs = recurringGiftDao.readRecurringGifts(sdf.parse("01/01/1980"), statuses);
     	assert rgs != null && rgs.isEmpty();
@@ -208,5 +208,5 @@ public class IBatisRecurringGiftDaoTest extends AbstractIBatisTest {
             assert giftId == 600L;
         }
     }
-    */
+
 }

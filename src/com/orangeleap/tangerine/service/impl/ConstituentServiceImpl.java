@@ -193,7 +193,8 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	        catch (Exception ex) {
 	            logger.error("RULES_FAILURE: " + ex.getMessage(), ex);
                 // Cannot start new transaction to record error when current transaction has timed out waiting on external connection issue.
-	            if (!(""+ex.getMessage()).contains("timeout")) {
+                String msg = ""+ex.getMessage();
+	            if ( !msg.contains("timeout") && !msg.contains("Connection refused") ) {
                     writeRulesFailureLog(ex.getMessage() + "\r\n" + constituent);
                 }
 	        } 

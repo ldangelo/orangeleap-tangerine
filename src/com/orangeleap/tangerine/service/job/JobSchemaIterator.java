@@ -34,7 +34,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 
     private static long minimumTime = 15000; // 15 sec.
     
-    private static Date lastRun = new Date();
+    private static Date lastRun = new Date(0);
 
     private static boolean isTooFrequent(Date d1, Date d2) {
         return d1.getTime() - d2.getTime() < minimumTime;

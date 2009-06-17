@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
+import java.util.Calendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,49 +31,72 @@ public class JobSchemaIterator extends QuartzJobBean {
 	// Allows one instance on the cluster to run jobs and not the others.
 	private static final String JOBS_ENABLED = "tangerine.jobs.enabled";
 
+
+    private static long minimumTime = 15000; // 15 sec.
+    
+    private static Date lastRun = new Date();
+
+    private static boolean isTooFrequent(Date d1, Date d2) {
+        return d1.getTime() - d2.getTime() < minimumTime;
+    }
+
+
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		
-		String jobsEnabledValue = System.getProperty(JOBS_ENABLED);
-		boolean enabled = !"false".equalsIgnoreCase(jobsEnabledValue);
-		if (!enabled) {
-			logger.info("Skipping jobs: tangerine.jobs.enabled="+jobsEnabledValue);
-			return;
-		}
 
-		ApplicationContext applicationContext = null;
-		SchemaService schemaService = null;
-		TangerineDataSource ds = null;
-		try {
-			applicationContext = getApplicationContext(context);
-			schemaService = (SchemaService)applicationContext.getBean("schemaService");
-			ds = (TangerineDataSource)applicationContext.getBean("dataSource");
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.fatal(e);
-			return;
-		}
-		
-		if (!ds.isSplitDatabases()) {
-			SiteService ss = (SiteService) applicationContext.getBean("siteService");
-			TangerineUserHelper th = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
-			List<Site> siteList = ss.readSites();
-			
-			for (Site s : siteList) {
-				th.setSystemUserAndSiteName(s.getName());
+        synchronized(JobSchemaIterator.class) {
 
-				executeInternalForSchema(context, applicationContext);
-			}
-			return;
-		}
+            
+            Date now = new Date();
+            if (isTooFrequent(now, lastRun)) {
+                logger.error("Skipping multiple quartz run.");
+                return;
+            }
+            lastRun = now;
 
-		List<String> schemas = schemaService.readSchemas();
-		for (String schema : schemas) {
-			logger.info("Processing jobs for "+schema);
-			schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
-			executeInternalForSchema(context, applicationContext);
-		}
-		
+
+
+            String jobsEnabledValue = System.getProperty(JOBS_ENABLED);
+            boolean enabled = !"false".equalsIgnoreCase(jobsEnabledValue);
+            if (!enabled) {
+                logger.info("Skipping jobs: tangerine.jobs.enabled="+jobsEnabledValue);
+                return;
+            }
+
+            ApplicationContext applicationContext = null;
+            SchemaService schemaService = null;
+            TangerineDataSource ds = null;
+            try {
+                applicationContext = getApplicationContext(context);
+                schemaService = (SchemaService)applicationContext.getBean("schemaService");
+                ds = (TangerineDataSource)applicationContext.getBean("dataSource");
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.fatal(e);
+                return;
+            }
+
+            if (!ds.isSplitDatabases()) {
+                SiteService ss = (SiteService) applicationContext.getBean("siteService");
+                TangerineUserHelper th = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+                List<Site> siteList = ss.readSites();
+
+                for (Site s : siteList) {
+                    th.setSystemUserAndSiteName(s.getName());
+
+                    executeInternalForSchema(context, applicationContext);
+                }
+                return;
+            }
+
+            List<String> schemas = schemaService.readSchemas();
+            for (String schema : schemas) {
+                logger.info("Processing jobs for "+schema);
+                schemaService.setSchema(schema);  //  sets tangerine user helper with site name for TangerineDatasource to read.
+                executeInternalForSchema(context, applicationContext);
+            }
+
+        }
 	}
 	
 	// Run list of jobs methods in job map.

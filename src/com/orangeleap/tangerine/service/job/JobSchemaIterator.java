@@ -32,7 +32,7 @@ public class JobSchemaIterator extends QuartzJobBean {
 	private static final String JOBS_ENABLED = "tangerine.jobs.enabled";
 
 
-    private static long minimumTime = 15000; // 15 sec.
+    private static long minimumTime = 60000; // 60 sec.
     
     private static Date lastRun = new Date(0);
 

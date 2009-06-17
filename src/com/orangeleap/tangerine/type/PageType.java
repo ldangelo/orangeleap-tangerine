@@ -58,7 +58,8 @@ public enum PageType {
     audit("/audit.htm"),
     siteAudit("/siteAudit.htm"),
     customField("/customField.htm"),
-    siteSettings("/siteSettings.htm")
+    siteSettings("/siteSettings.htm"),
+    postbatch("/postbatch.htm")
     ;
 
     private String pageName;

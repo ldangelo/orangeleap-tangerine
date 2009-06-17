@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    <!--
+    <bean id="postbatchs" class="com.orangeleap.tangerine.controller.postbatch.PostBatchListController">
+        <property name="formView" value="postbatch/postbatchs" />
+        <property name="successView" value="postbatch/postbatchs" />
+    </bean>
+    -->
+    
+    <bean id="postbatch" class="com.orangeleap.tangerine.controller.postbatch.PostBatchFormController">
+        <property name="formView" value="postbatch/postbatch" />
+        <property name="successView" value="postbatch/postbatch" />
+    </bean>
+
+    <bean id="postbatchUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" parent="urlMapping">
+		<property name="mappings">
+		    <props>
+               <!-- <prop key="/postbatches.htm">postbatchs</prop>   -->
+                <prop key="/postbatch.htm">postbatch</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

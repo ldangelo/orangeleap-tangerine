@@ -8,6 +8,7 @@
 		<div class="content760 mainForm">
 			<h1><c:out value="${titleText}"/></h1>
 			<div class="errorDiv"><spring:message code="exceptionOccurred"/></div>
+			<div class="noDisplay"><c:out value="${exceptionStackTrace}"/></div>
 		</div>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

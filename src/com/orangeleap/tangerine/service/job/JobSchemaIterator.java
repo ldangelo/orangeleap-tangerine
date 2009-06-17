@@ -47,12 +47,12 @@ public class JobSchemaIterator extends QuartzJobBean {
         synchronized(JobSchemaIterator.class) {
 
             
-            Date now = new Date();
-            if (isTooFrequent(now, lastRun)) {
-                logger.error("Skipping multiple quartz run.");
-                return;
-            }
-            lastRun = now;
+//            Date now = new Date();
+//            if (isTooFrequent(now, lastRun)) {
+//                logger.error("Skipping multiple quartz run.");
+//                return;
+//            }
+//            lastRun = now;
 
 
 

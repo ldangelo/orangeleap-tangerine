@@ -40,8 +40,8 @@
   		<property name="jobDetail" ref="nightlyBatchJob" />
   		 <!-- run every morning at 3 AM    -->
   	     <property name="cronExpression" value="0 0 3 * * ?" />
-  		 <!--  setting less than 1 day is now prevented by JobSchemaIterator -->
-  		<!-- <property name="cronExpression" value="* 0/5 * * * ?" />   -->
+         <!-- run every 5 min for testing  -->
+  		<!-- <property name="cronExpression" value="0 0/5 * * * ?" />   -->
   	</bean>
 
   	<bean id="weeklyBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

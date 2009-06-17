@@ -115,5 +115,6 @@ img {
 p.enterNew {
 	padding-top:12px; text-align:right;
 }
-div.errorDiv {font-size: 1.2em; font-family: arial; padding-top: 6px; } 
+.whiteFont { color: #FFF; }
+div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; } 
 /* input field borders are #7f9db9 by default in firefox */

@@ -64,14 +64,14 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     // Ensures literal parameter value is one word to avoid SQL injection.
     // This should be used on all passed parameters that use the literal $ syntax, unless the value is safely system-generated.
     public static String oneWord(String literalDollarParameterValue) {
-        if (literalDollarParameterValue.contains(" ")) throw new RuntimeException("Invalid parameter");
+        if (literalDollarParameterValue != null && literalDollarParameterValue.contains(" ")) throw new RuntimeException("Invalid parameter");
         return check(literalDollarParameterValue);
     }
 
     // Ensures literal parameter value contains no semicolons or escaped chars to avoid SQL injection.
     // This should be used on all passed parameters that use the literal $ IBatis syntax.
     public static String check(String literalDollarParameterValue) {
-        if (literalDollarParameterValue.contains(";") || literalDollarParameterValue.contains("\\")) throw new RuntimeException("Invalid parameter");
+        if (literalDollarParameterValue != null && (literalDollarParameterValue.contains(";") || literalDollarParameterValue.contains("\\"))) throw new RuntimeException("Invalid parameter");
         return literalDollarParameterValue;
     }
 

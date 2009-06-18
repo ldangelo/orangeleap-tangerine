@@ -1,0 +1,121 @@
+package com.orangeleap.tangerine.json.controller;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.util.WebUtils;
+
+import com.orangeleap.tangerine.domain.Audit;
+import com.orangeleap.tangerine.domain.ErrorLog;
+import com.orangeleap.tangerine.service.AuditService;
+import com.orangeleap.tangerine.service.ErrorLogService;
+import com.orangeleap.tangerine.type.AccessType;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
+
+/**
+ * This controller handles JSON requests for populating
+ * the grid of log events.
+ * @version 1.0
+ */
+@Controller
+public class LogViewController {
+
+    /** Logger for this class and subclasses */
+    protected final Log logger = OLLogger.getLog(getClass());
+
+    private final static int MAX_MESSAGE_LENGTH = 2000;
+
+    @Resource(name="errorLogService")
+    private ErrorLogService errorLogService;
+
+
+    private final static Map<String, Object> NAME_MAP = new HashMap<String, Object>();
+
+    static {
+        NAME_MAP.put("id", "ERROR_LOG_ID");
+        NAME_MAP.put("constituentid", "CONSTITUENT_ID");
+        NAME_MAP.put("message", "MESSAGE");
+        NAME_MAP.put("createdate", "CREATE_DATE");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static boolean accessAllowed(HttpServletRequest request) {
+        Map<String, AccessType> pageAccess = (Map<String, AccessType>) WebUtils.getSessionAttribute(request, "pageAccess");
+        return pageAccess.get("/logView.htm") == AccessType.ALLOWED;
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/logView.json")
+    public ModelMap getLogEvents(HttpServletRequest request, SortInfo sortInfo) {
+
+    	if (!accessAllowed(request)) return null;
+
+        List<Map> rows = new ArrayList<Map>();
+
+        // if we're not getting back a valid column name, possible SQL injection,
+        // so send back an empty list.
+        if(!sortInfo.validateSortField(NAME_MAP.keySet())) {
+            logger.warn("getLogEvents called with invalid sort column: [" + sortInfo.getSort() + "]");
+            return new ModelMap("rows", rows);
+        }
+                                                     
+        // set the sort to the valid column name, based on the map
+        sortInfo.setSort( (String) NAME_MAP.get(sortInfo.getSort()) );
+
+        PaginatedResult result = errorLogService.readErrorMessages(sortInfo);
+        
+
+        List<ErrorLog> list = result.getRows();
+
+        for(ErrorLog errorLog : list) {
+            rows.add( logEventToMap(errorLog) );
+        }
+
+        ModelMap map = new ModelMap("rows", rows);
+        map.put("totalRows", result.getRowCount());
+        return map;
+    }
+
+    private Map<String,Object> logEventToMap(ErrorLog errorLog) {
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // keys should map with the NAME_MAP constant
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("id", errorLog.getId());
+        map.put("createdate", formatter.format(errorLog.getCreateDate()) );
+        map.put("constituentid", errorLog.getConstituentId());
+        String message = errorLog.getMessage();
+        if (message.length() > MAX_MESSAGE_LENGTH) message = message.substring(0,MAX_MESSAGE_LENGTH);
+        message = jsEscape(message);
+        map.put("message", message);
+
+        return map;
+
+    }
+
+    private String jsEscape(String s) {
+        s = s.replace("\\", "\\\\");
+        return s.replace("\"", "\\\"").replace("\'", "\\\'").replace("\r","").replace("\n","\\n");
+    }
+
+
+
+}

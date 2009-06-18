@@ -124,6 +124,12 @@
 						   <a href="importexport.htm"><spring:message code="importExport"/></a>
 						</c:if>
 					</li>
+                    <li>
+                      <c:if test="${pageAccess['/logView.htm']=='ALLOWED'}">
+                            <a href="logView.htm"><spring:message code="logView"/></a>
+                      </c:if>
+                    </li>
+
 				</ul>
 			</li>
 		</ul>

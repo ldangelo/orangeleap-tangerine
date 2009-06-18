@@ -3,6 +3,7 @@ package com.orangeleap.tangerine.dao.ibatis;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.orangeleap.tangerine.dao.ErrorLogDao;
+import com.orangeleap.tangerine.domain.ErrorLog;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 
 /** 
  * Corresponds to the ERROR_LOG table
@@ -34,17 +38,6 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
 		
         Map<String, Object> params = setupParams();
 
-//        Long lastid = (Long)getSqlMapClientTemplate().queryForObject("GET_LAST_ERROR_ID", params);
-//        params.put("id", lastid);
-//        String lastmessage = (String)getSqlMapClientTemplate().queryForObject("GET_ERROR_MESSAGE_BY_ID", params);
-//        if (message.equals(lastmessage))
-//        {
-//        	// Don't repeat same message twice in a row.
-//        	logger.debug("Skipping duplicate log table message for: "+message);
-//        	return;
-//        }
-//        params = setupParams();
-
         params.put("message", message);
         params.put("context", context);
         params.put("constituentId", constituentId);
@@ -54,15 +47,15 @@ public class IBatisErrorLogDao extends AbstractIBatisDao implements ErrorLogDao 
 	}
 
 	@Override
-	public void removeErrorMessagesOlderThanDays(int days) {
-        Map<String, Object> params = setupParams();
-        
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -days);
-        Date cutoffdate = cal.getTime();
-        
-        params.put("cutoffdate", cutoffdate);
-		getSqlMapClientTemplate().delete("DELETE_ERROR_LOG", params);
+    public PaginatedResult readErrorMessages(String sortColumn, String dir, int start, int limit) {
+        Map<String, Object> params = setupSortParams(sortColumn, dir, start, limit);
+
+        List rows = getSqlMapClientTemplate().queryForList("ERROR_LOG_FOR_SITE_PAGINATED", params);
+        Long count = (Long)getSqlMapClientTemplate().queryForObject("ERROR_LOG_FOR_SITE_ROWCOUNT",params);
+        PaginatedResult resp = new PaginatedResult();
+        resp.setRows(rows);
+        resp.setRowCount(count);
+        return resp;
 	}
 	
 }

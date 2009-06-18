@@ -34,6 +34,7 @@
 	<import resource="contexts/customField-context.xml"/>
     <import resource="contexts/siteSettings-context.xml"/>
     <import resource="contexts/postbatch-context.xml"/>
+    <import resource="contexts/logView-context.xml"/>
 
     <context:component-scan base-package="com.orangeleap.tangerine.controller"/>
 

@@ -2,10 +2,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
 <sqlMap namespace="ERROR_LOG">
 
-	<resultMap id="ERROR_LOG" class="java.util.HashMap" >
+	<resultMap id="ERROR_LOG_RESULT" class="com.orangeleap.tangerine.domain.ErrorLog" >
 		<result property="id" column="ERROR_LOG_ID" jdbcType="BIGINT" />
 		<result property="siteName" column="SITE_NAME" jdbcType="VARCHAR" />
-		<result property="constituentId" column="CONSTITUENT_ID" jdbcType="BIGINT" />
+		<result property="constituentId" column="ERROR_LOG_CONSTITUENT_ID" jdbcType="BIGINT" />
 		<result property="context" column="CONTEXT" jdbcType="VARCHAR" />
 		<result property="message" column="MESSAGE" jdbcType="VARCHAR" />
 		<result property="createDate" column="CREATE_DATE" jdbcType="TIMESTAMP" />
@@ -22,19 +22,22 @@
 		where el.SITE_NAME = #siteName#
 	</sql>
 
-	<select id="SELECT_ERROR_LOG_BY_SITE" resultMap="ERROR_LOG" parameterClass="map">
+    <sql id="ERROR_LOG_ROWCOUNT_FRAGMENT">
+        select count(1)
+        from ERROR_LOG el
+        where el.SITE_NAME = #siteName#
+    </sql>
+
+    <select id="ERROR_LOG_FOR_SITE_PAGINATED" resultMap="ERROR_LOG_RESULT" parameterClass="map" >
 		<include refid="SELECT_ERROR_LOG_FRAGMENT"/>
-		order by el.CREATE_DATE desc
+		order by $sortColumn$ $sortDir$
+        limit $offset$,$limit$
 	</select>
 
-	<select id="GET_LAST_ERROR_ID" resultClass="Long" parameterClass="map">
-		select max(ERROR_LOG_ID) from ERROR_LOG where SITE_NAME = #siteName#
-	</select>
-	
-	<select id="GET_ERROR_MESSAGE_BY_ID" resultClass="java.lang.String" parameterClass="map">
-		select MESSAGE from ERROR_LOG where ERROR_LOG_ID = #id# and SITE_NAME = #siteName#
-	</select>
-	
+    <select id="ERROR_LOG_FOR_SITE_ROWCOUNT" resultClass="long" parameterClass="map" >
+        <include refid="ERROR_LOG_ROWCOUNT_FRAGMENT"/>
+    </select>
+    
 
 	<insert id="INSERT_ERROR_LOG" parameterClass="map">
 		insert DELAYED into ERROR_LOG (SITE_NAME, CONSTITUENT_ID, CONTEXT, MESSAGE, CREATE_DATE)
@@ -43,13 +46,6 @@
 			SELECT LAST_INSERT_ID() AS value
 		</selectKey>
 	</insert>
-	
-	<delete id="DELETE_ERROR_LOG" parameterClass="map">
-		delete from ERROR_LOG 
-		where
-		SITE_NAME = #siteName#
-		and CREATE_DATE &lt; #cutoffdate#
-	</delete>
 	
 
 </sqlMap>

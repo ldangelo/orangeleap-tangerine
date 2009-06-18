@@ -8,10 +8,10 @@ $(document).ready(function() {
 		timeout: 30000, // 30 seconds before the request times out
 		error: function(xhr, errorType, exception) {
 			if (errorType == "timeout")	{
-				alert("The server was not available.  Please try again or contact Orange Leap Support.");
+				alert("The server was not available.  Please try again or contact your administrator if this issue continues.");
 			}
 			else if (xhr.status == 508 || errorType == "error") {
-				document.location.reload();
+				alert("An unexpected error has occurred and has been logged.  Please try again or contact your administrator if this issue continues.");
 			}
 		}
 	});

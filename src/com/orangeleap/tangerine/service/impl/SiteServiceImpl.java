@@ -85,8 +85,6 @@ public class SiteServiceImpl extends AbstractTangerineService implements SiteSer
     	    logger.trace("createSiteAndUserIfNotExist: siteName = " + siteName);
     	}
     	
-    	errorLogService.removeErrorMessagesOlderThanDays(OLDEST_LOG_MESSAGE_DAYS);
-    	
     	versionService.checkOrangeLeapSchemaCompatible();
     	
         Site site = siteDao.readSite(siteName);

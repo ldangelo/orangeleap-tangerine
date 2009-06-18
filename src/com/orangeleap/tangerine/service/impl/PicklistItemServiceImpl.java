@@ -24,6 +24,7 @@ import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.type.CacheGroupType;
+import com.orangeleap.tangerine.util.OLLogger;
 
 /*
  * Manages picklist items for site.
@@ -34,7 +35,7 @@ import com.orangeleap.tangerine.type.CacheGroupType;
 public class PicklistItemServiceImpl extends AbstractTangerineService implements PicklistItemService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     
     
@@ -214,8 +215,8 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 			result.setPicklistItems(new ArrayList<PicklistItem>());
 			List<PicklistItem> items = template.getPicklistItems();
 			for (PicklistItem item: items) {
-				item = picklistDao.readPicklistItemById(item.getId());  // This currently the only way to get custom fields on dependent objects
-				if (item != null ) {
+				if (item != null ) item = picklistDao.readPicklistItemById(item.getId());  // This currently the only way to get custom fields on dependent objects
+                if (item != null ) {
                     PicklistItem newItem = (PicklistItem)item.createCopy();
                     newItem.setPicklistId(result.getId());
                     result.getPicklistItems().add(newItem);

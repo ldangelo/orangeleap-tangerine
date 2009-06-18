@@ -119,6 +119,7 @@
 	</bean>
 
 	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
+    <bean id="tableLogger" class="com.orangeleap.tangerine.util.TableLoggerImpl"/>
 
 	<!--
 		The following beans were created and used in the JMS/MOM poc shown

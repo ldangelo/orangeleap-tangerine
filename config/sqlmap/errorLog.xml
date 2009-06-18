@@ -37,7 +37,7 @@
 	
 
 	<insert id="INSERT_ERROR_LOG" parameterClass="map">
-		insert into ERROR_LOG (SITE_NAME, CONSTITUENT_ID, CONTEXT, MESSAGE, CREATE_DATE)
+		insert DELAYED into ERROR_LOG (SITE_NAME, CONSTITUENT_ID, CONTEXT, MESSAGE, CREATE_DATE)
 		values (#siteName#, #constituentId#, #context#, #message#, #createDate#)
 		<selectKey keyProperty="id" resultClass="long">
 			SELECT LAST_INSERT_ID() AS value

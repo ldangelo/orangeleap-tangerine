@@ -162,6 +162,11 @@
         <location>/WEB-INF/jsp/errors/error.jsp</location>
     </error-page>
 
+    <error-page>
+        <error-code>508</error-code>
+        <location>/WEB-INF/jsp/errors/error.jsp</location>
+    </error-page>
+
 	<error-page>
 		<error-code>403</error-code>
 		<location>/WEB-INF/jsp/errors/403.jsp</location>

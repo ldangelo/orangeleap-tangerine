@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -34,8 +33,8 @@ import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
 import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
@@ -88,7 +87,7 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 
     private ApplicationContext context;
 
-    public void setApplicationContext(ApplicationContext applicationContext)
+	public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         context = applicationContext;
     }
@@ -115,12 +114,18 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     	        BindException errors = new BindException(br);
     	      
     	        codeValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) throw errors;
+    	        if (errors.getAllErrors().size() > 0) {
+					throw errors;
+				}
     	        distributionLinesValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) throw errors;
+    	        if (errors.getAllErrors().size() > 0) {
+					throw errors;
+				}
     	        
     	        entityValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) throw errors;
+    	        if (errors.getAllErrors().size() > 0) {
+					throw errors;
+				}
             }
 
             
@@ -152,10 +157,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         if (gift.getId() == null) {
             Calendar transCal = Calendar.getInstance();
             gift.setTransactionDate(transCal.getTime());
-            if (gift.getPostmarkDate() == null) {
-                Calendar postCal = new GregorianCalendar(transCal.get(Calendar.YEAR), transCal.get(Calendar.MONTH), transCal.get(Calendar.DAY_OF_MONTH));
-                gift.setPostmarkDate(postCal.getTime());
-            }
         }
     }
 

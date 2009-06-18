@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.controller.importexport.importers.EntityImporter;
@@ -17,7 +17,7 @@ public class ImportHandler {
 	public static final int MAX_ERRORS = 100;
 	
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = OLLogger.getLog(getClass());
 
 	private EntityImporter entityImporter;
 	private List<String[]> data;

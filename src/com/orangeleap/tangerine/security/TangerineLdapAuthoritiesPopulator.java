@@ -10,7 +10,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.GrantedAuthority;
@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 import com.orangeleap.tangerine.type.RoleType;
 
 public class TangerineLdapAuthoritiesPopulator implements LdapAuthoritiesPopulator {
-    private static final Log logger = LogFactory.getLog(DefaultLdapAuthoritiesPopulator.class);
+    private static final Log logger = OLLogger.getLog(DefaultLdapAuthoritiesPopulator.class);
 
     /**
      * A default role which will be assigned to all authenticated users if set

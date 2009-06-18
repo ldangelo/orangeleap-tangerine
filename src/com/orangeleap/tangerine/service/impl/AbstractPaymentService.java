@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.AddressAware;
@@ -31,7 +31,7 @@ import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 public abstract class AbstractPaymentService extends AbstractTangerineService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "auditService")
     protected AuditService auditService;

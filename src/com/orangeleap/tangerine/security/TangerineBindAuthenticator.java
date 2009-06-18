@@ -5,7 +5,7 @@ import java.util.Iterator;
 import javax.naming.directory.DirContext;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.ContextSource;
@@ -19,7 +19,7 @@ import org.springframework.security.providers.ldap.authenticator.AbstractLdapAut
 import org.springframework.util.Assert;
 
 public class TangerineBindAuthenticator extends AbstractLdapAuthenticator {
-    private static final Log logger = LogFactory.getLog(TangerineBindAuthenticator.class);
+    private static final Log logger = OLLogger.getLog(TangerineBindAuthenticator.class);
 
     /**
      * Create an initialized instance using the {@link SpringSecurityContextSource} provided.

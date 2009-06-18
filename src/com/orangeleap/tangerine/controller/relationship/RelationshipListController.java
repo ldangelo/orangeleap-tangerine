@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -31,7 +31,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class RelationshipListController extends SimpleFormController {
 	
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "fieldDAO")
     private FieldDao fieldDao;

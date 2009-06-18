@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.spi.ConsequenceException;
@@ -25,7 +25,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class ConstituentRulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
-	private static final Log logger = LogFactory.getLog(ConstituentRulesInterceptor.class);
+	private static final Log logger = OLLogger.getLog(ConstituentRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String ruleFlowName;

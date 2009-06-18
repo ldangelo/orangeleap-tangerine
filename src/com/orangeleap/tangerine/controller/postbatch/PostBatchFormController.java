@@ -7,7 +7,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchService;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class PostBatchFormController extends SimpleFormController {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "constituentService")
     private ConstituentService constituentService;

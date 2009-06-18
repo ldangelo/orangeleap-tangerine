@@ -6,7 +6,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.FieldDao;
@@ -27,7 +27,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 public class FieldServiceImpl implements FieldService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "constituentService")
     private ConstituentService constituentService;

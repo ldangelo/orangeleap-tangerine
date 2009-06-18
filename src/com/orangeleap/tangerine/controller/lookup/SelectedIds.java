@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.StringUtils;
 
 public class SelectedIds {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     private List<String> names;
     private List<String> ids;

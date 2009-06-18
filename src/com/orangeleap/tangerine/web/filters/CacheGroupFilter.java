@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.ehcache.Cache;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,7 +27,7 @@ import com.orangeleap.tangerine.type.CacheGroupType;
 public class CacheGroupFilter extends OncePerRequestFilter {
 	
 	
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 	    private Object getBean(HttpServletRequest request, String bean) {
 	    	ServletContext servletContext = request.getSession().getServletContext();

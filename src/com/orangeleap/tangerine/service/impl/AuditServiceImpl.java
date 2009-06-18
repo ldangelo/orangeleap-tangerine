@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyAccessorUtils;
@@ -44,7 +44,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "relationshipService")
     private RelationshipService relationshipService;

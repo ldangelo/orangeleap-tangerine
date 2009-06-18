@@ -3,7 +3,7 @@ package com.orangeleap.tangerine.security;
 import javax.naming.directory.SearchControls;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.DirContextOperations;
@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
 public class TangerineLdapUserSearch implements LdapUserSearch {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 	
 	private ContextSource contextSource;

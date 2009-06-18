@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.controller.validator;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 public class AddressValidator extends AbstractCommunicationValidator<Address> {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @SuppressWarnings("unchecked")
     @Override

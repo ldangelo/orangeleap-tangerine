@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -29,7 +29,7 @@ import com.orangeleap.tangerine.util.TaskStack;
 
 public abstract class RulesInterceptor implements ApplicationContextAware, ApplicationListener {
 
-	private static final Log logger = LogFactory.getLog(RulesInterceptor.class);
+	private static final Log logger = OLLogger.getLog(RulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	private String agendaGroup;

@@ -3,14 +3,14 @@ package com.orangeleap.tangerine.service.rule;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.agent.RuleAgent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 public class DroolsRuleAgent implements ApplicationContextAware {
-	private static final Log logger = LogFactory.getLog(DroolsRuleAgent.class);
+	private static final Log logger = OLLogger.getLog(DroolsRuleAgent.class);
 
 	private ApplicationContext applicationContext;
 

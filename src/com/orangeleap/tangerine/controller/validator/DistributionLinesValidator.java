@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -16,7 +16,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 public class DistributionLinesValidator implements Validator {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @SuppressWarnings("unchecked")
     @Override

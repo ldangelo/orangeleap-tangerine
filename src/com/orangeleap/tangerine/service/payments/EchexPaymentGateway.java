@@ -3,7 +3,7 @@ package com.orangeleap.tangerine.service.payments;
 
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
@@ -22,7 +22,7 @@ import com.orangeleap.tangerine.service.SiteService;
 
 public class EchexPaymentGateway implements ACHPaymentGateway {
     private CheckService checkService = null;
-	private static final Log logger = LogFactory.getLog(EchexPaymentGateway.class);
+	private static final Log logger = OLLogger.getLog(EchexPaymentGateway.class);
 	private ApplicationContext applicationContext;
 	
     public void setCheckService(CheckService s)

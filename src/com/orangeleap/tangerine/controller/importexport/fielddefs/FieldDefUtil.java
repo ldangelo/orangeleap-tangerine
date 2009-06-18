@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.controller.importexport.exporters.FieldDescriptor;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
@@ -18,7 +18,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 public class FieldDefUtil {
 	
-	private static final Log logger = LogFactory.getLog(FieldDefUtil.class);
+	private static final Log logger = OLLogger.getLog(FieldDefUtil.class);
 
 	public static interface Exclusion {
 		public boolean excludeField(String name, FieldDefinition fd);

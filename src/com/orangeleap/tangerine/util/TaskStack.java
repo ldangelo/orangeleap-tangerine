@@ -3,12 +3,12 @@ package com.orangeleap.tangerine.util;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.service.rule.RulesInterceptor;
 
 public class TaskStack {
-    protected static final Log logger = LogFactory.getLog(RulesStack.class);
+    protected static final Log logger = OLLogger.getLog(RulesStack.class);
 	
     private static ThreadLocal<Stack<RuleTask>> tl_stack = new ThreadLocal<Stack<RuleTask>>(){
         protected synchronized Stack<RuleTask> initialValue() {

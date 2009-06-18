@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.service.rule;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -25,7 +25,7 @@ import com.orangeleap.tangerine.util.TaskStack;
 
 public class GiftRulesInterceptor extends RulesInterceptor {
 
-	private static final Log logger = LogFactory.getLog(GiftRulesInterceptor.class);
+	private static final Log logger = OLLogger.getLog(GiftRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	

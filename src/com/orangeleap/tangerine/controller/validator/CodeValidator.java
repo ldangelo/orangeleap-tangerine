@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.validation.Errors;
@@ -22,7 +22,7 @@ import com.orangeleap.tangerine.web.customization.FieldVO;
 public class CodeValidator implements Validator {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
     private PicklistItemService picklistItemService;
     private TangerineUserHelper tangerineUserHelper;
     public static final String PROJECT_CODE = "projectCode";

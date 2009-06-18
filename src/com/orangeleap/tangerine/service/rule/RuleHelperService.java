@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 
@@ -101,7 +101,7 @@ public class RuleHelperService {
 
 	// For the logger
 	public static Log getLogger() {
-		final Log logger = LogFactory.getLog("DROOLS: ");
+		final Log logger = OLLogger.getLog(RuleHelperService.class);
 		return logger;
 	}
 

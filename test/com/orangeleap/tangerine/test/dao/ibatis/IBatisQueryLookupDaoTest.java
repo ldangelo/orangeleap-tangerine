@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.test.dao.ibatis;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -15,7 +15,7 @@ import com.orangeleap.tangerine.type.ReferenceType;
 public class IBatisQueryLookupDaoTest extends AbstractIBatisTest {
     
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
     
     private QueryLookupDao queryLookupDao;
 

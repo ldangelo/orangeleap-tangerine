@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -26,7 +26,7 @@ import com.orangeleap.tangerine.util.TaskStack;
 public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 	
 	
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 	    private Object getBean(HttpServletRequest request, String bean) {
 	    	ServletContext servletContext = request.getSession().getServletContext();

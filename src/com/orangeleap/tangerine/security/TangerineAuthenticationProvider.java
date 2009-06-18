@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.ldap.NamingException;
 import org.springframework.ldap.core.DirContextOperations;
@@ -31,7 +31,7 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.SiteService;
 
 public class TangerineAuthenticationProvider implements AuthenticationProvider {
-    private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
+    private static final Log logger = OLLogger.getLog(LdapAuthenticationProvider.class);
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 

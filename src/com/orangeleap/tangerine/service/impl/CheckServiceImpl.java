@@ -6,7 +6,7 @@ import org.dom4j.Element;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import static com.orangeleap.tangerine.domain.checkservice.EchexTemplate.*;
 
@@ -32,7 +32,7 @@ import java.net.MalformedURLException;
 public class CheckServiceImpl extends AbstractTangerineService implements CheckService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     private URL echexUrl;
 

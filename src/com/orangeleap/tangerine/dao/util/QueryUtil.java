@@ -5,14 +5,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.validator.GenericValidator;
 import com.orangeleap.tangerine.dao.ibatis.AbstractIBatisDao;
 
 public class QueryUtil {
 	
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     
     private QueryUtil() {

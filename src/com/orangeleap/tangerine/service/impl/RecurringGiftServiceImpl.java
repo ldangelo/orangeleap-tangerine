@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.joda.time.DateMidnight;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -46,7 +46,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;

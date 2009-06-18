@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 import com.orangeleap.tangerine.type.FieldType;
@@ -19,7 +19,7 @@ import com.orangeleap.tangerine.web.customization.tag.inputs.AbstractInput;
 public class InputTag extends RequestContextAwareTag {
 
 	/** Logger for this class and subclasses */
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = OLLogger.getLog(getClass());
 
 	protected FieldVO field;
 

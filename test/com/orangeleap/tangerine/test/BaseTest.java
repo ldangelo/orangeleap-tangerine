@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.test;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
@@ -9,6 +9,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 }

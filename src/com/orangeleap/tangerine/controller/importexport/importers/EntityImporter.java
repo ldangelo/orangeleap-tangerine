@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
@@ -35,7 +35,7 @@ public abstract class EntityImporter {
 	public final static String ACTION_CHANGE = "change";
 	public final static String ACTION_DELETE = "delete";
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	protected final Log logger = OLLogger.getLog(getClass());
 
 	protected ImportRequest importRequest;
 	protected ApplicationContext applicationContext;

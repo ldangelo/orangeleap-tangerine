@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ import com.orangeleap.tangerine.web.common.SortInfo;
 public class PledgeServiceImpl extends AbstractCommitmentService<Pledge> implements PledgeService {
 
     /** Logger for this class and subclasses */
-    protected final static Log logger = LogFactory.getLog(PledgeServiceImpl.class);
+    protected final static Log logger = OLLogger.getLog(PledgeServiceImpl.class);
 
     @Resource(name = "pledgeDAO")
     private PledgeDao pledgeDao;

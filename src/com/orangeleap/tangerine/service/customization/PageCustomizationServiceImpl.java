@@ -13,7 +13,7 @@ import net.sf.ehcache.Element;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +40,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 public class PageCustomizationServiceImpl implements PageCustomizationService {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     private static final Integer ZERO = Integer.valueOf(0);
 

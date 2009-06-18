@@ -3,11 +3,11 @@ package com.orangeleap.tangerine.util;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class RulesStack {
 	
-    protected static final Log logger = LogFactory.getLog(RulesStack.class);
+    protected static final Log logger = OLLogger.getLog(RulesStack.class);
 	
     private static ThreadLocal<Stack<String>> tl_stack = new ThreadLocal<Stack<String>>(){
         protected synchronized Stack<String> initialValue() {

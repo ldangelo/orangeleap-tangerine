@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.service.rule;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.event.DebugAgendaEventListener;
@@ -21,7 +21,7 @@ import com.orangeleap.tangerine.service.GiftService;
 public class PaymentRulesInterceptor implements ApplicationContextAware,
 		ApplicationListener {
 
-	private static final Log logger = LogFactory.getLog(PaymentRulesInterceptor.class);
+	private static final Log logger = OLLogger.getLog(PaymentRulesInterceptor.class);
 
 	private ApplicationContext applicationContext;
 	

@@ -3,12 +3,12 @@ package com.orangeleap.tangerine.controller.validator;
 import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.validator.GenericValidator;
 
 public class ExtendedValidationSupport {
 	
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 	protected static Object validator = new GenericValidator();
 

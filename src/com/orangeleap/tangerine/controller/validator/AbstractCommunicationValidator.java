@@ -3,7 +3,7 @@ package com.orangeleap.tangerine.controller.validator;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -13,7 +13,7 @@ import com.orangeleap.tangerine.type.ActivationType;
 public abstract class AbstractCommunicationValidator<T extends AbstractCommunicationEntity> implements Validator {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     protected void validateDates(T entity, Errors errors) {
         if (ActivationType.seasonal.equals(entity.getActivationStatus())) {

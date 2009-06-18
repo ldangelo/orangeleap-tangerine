@@ -9,11 +9,11 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class TangerineDataSource implements DataSource {
 	
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 	
 	// The default schema should have no tables. Change to this first so in case something goes wrong, we don't want to still be pointing to the old database.

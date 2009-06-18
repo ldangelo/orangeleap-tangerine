@@ -2,7 +2,7 @@ package com.orangeleap.tangerine.controller.communication;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.controller.constituent.RequiresConstituentEditor;
 import com.orangeleap.tangerine.domain.communication.AbstractCommunicationEntity;
@@ -11,7 +11,7 @@ import com.orangeleap.tangerine.service.CommunicationService;
 public abstract class CommunicationEditor<T extends AbstractCommunicationEntity> extends RequiresConstituentEditor {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     public CommunicationEditor() {
         super();

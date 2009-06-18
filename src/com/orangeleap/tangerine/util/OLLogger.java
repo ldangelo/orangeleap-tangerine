@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class OLLogger implements Log {
 

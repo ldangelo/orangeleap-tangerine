@@ -7,7 +7,7 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.orangeleap.tangerine.domain.customization.SectionDefinition;
@@ -17,7 +17,7 @@ import com.orangeleap.tangerine.service.customization.PageCustomizationService;
 public class SectionTag extends TagSupport {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
 
     private static final long serialVersionUID = 1L;

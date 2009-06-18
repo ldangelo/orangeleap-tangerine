@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.controller.validator;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.Errors;
 
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
@@ -15,7 +15,7 @@ import com.orangeleap.tangerine.type.FormBeanType;
 public class AdjustedGiftEntityValidator extends EntityValidator {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
     
     @Override
     protected void validateSubEntities(Object target, Errors errors) {

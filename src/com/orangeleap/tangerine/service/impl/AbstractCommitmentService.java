@@ -11,7 +11,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
     /**
      * Logger for this class and subclasses
      */
-    protected final static Log logger = LogFactory.getLog(AbstractCommitmentService.class);
+    protected final static Log logger = OLLogger.getLog(AbstractCommitmentService.class);
 
     @Resource(name = "giftService")
     protected GiftService giftService;

@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.dao.DashboardDao;
@@ -27,7 +27,7 @@ public class DashboardServiceImpl extends AbstractTangerineService implements Da
 	public static final int DATA_POINT_LIMIT = 12;
 	
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "dashboardDAO")
     private DashboardDao dashboardDao;

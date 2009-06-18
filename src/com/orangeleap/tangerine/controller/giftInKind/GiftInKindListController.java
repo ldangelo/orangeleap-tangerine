@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 
 import com.orangeleap.tangerine.controller.TangerineListController;
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.service.GiftInKindService;
 public class GiftInKindListController extends TangerineListController {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name="giftInKindService")
     private GiftInKindService giftInKindService;

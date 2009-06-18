@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.dao.ibatis;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 
@@ -12,7 +12,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 public abstract class AbstractPaymentInfoEntityDao<T extends AbstractPaymentInfoEntity> extends AbstractIBatisDao {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     protected AbstractPaymentInfoEntityDao(SqlMapClient sqlMapClient) {
         super(sqlMapClient);

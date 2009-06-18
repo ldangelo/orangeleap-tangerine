@@ -3,7 +3,7 @@ package com.orangeleap.tangerine.test.dao.ibatis;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,7 +20,7 @@ import com.orangeleap.tangerine.type.RelationshipType;
 public class IBatisFieldDaoTest extends AbstractIBatisTest {
     
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
     
     private FieldDao fieldDao;
 

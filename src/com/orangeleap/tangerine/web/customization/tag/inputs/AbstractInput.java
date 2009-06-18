@@ -6,7 +6,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Component;
 
 import com.orangeleap.tangerine.util.StringConstants;
@@ -17,7 +17,7 @@ import com.orangeleap.tangerine.web.customization.FieldVO;
 public abstract class AbstractInput {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     protected String getMessage(String code) {
         return getMessage(code, null);

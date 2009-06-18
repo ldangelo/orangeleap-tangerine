@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 public class PasswordChangeValidator implements Validator {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     private static final int MINIMUM_PASSWORD_LENGTH = 6;
     

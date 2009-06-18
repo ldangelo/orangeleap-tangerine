@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.context.ApplicationContext;
 
@@ -17,7 +17,7 @@ import com.orangeleap.tangerine.web.customization.FieldVO;
 public class ExpirationFieldHandler extends GenericFieldHandler {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     public ExpirationFieldHandler(ApplicationContext appContext) {
         super(appContext);

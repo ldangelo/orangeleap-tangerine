@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
@@ -28,7 +28,7 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     protected ApplicationContext applicationContext;
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     protected String getSiteName() {
         return tangerineUserHelper.lookupUserSiteName();

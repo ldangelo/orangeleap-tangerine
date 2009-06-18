@@ -1,7 +1,7 @@
 package com.orangeleap.tangerine.test.controller.validator;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.testng.annotations.Test;
 
@@ -13,7 +13,7 @@ import com.orangeleap.tangerine.util.StringConstants;
 public class ConstituentValidatorTest extends BaseTest {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     private ConstituentValidator validator = new ConstituentValidator();
     private BindException errors;

@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.CollectionUtils;
 
 import com.orangeleap.tangerine.type.FieldType;
@@ -17,7 +17,7 @@ import com.orangeleap.tangerine.type.ReferenceType;
 public class FieldVO {
 
     /** Logger for this class and subclasses */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Log logger = OLLogger.getLog(getClass());
 
     // TODO: move elsewhere
     public static final String NORMAL_DELIMITER = ",";

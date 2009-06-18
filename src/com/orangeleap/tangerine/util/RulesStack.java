@@ -24,7 +24,7 @@ public class RulesStack {
     	boolean reentrant = getStack().contains(operationId);
     	getStack().push(operationId);
     	if (reentrant) {
-    		logger.error("Re-entrant rules stack state.");
+    		logger.debug("Re-entrant rules stack state.");
     	}
     	return reentrant;
     }

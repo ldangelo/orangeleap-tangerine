@@ -11,17 +11,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.Map;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class PostBatchServiceImpl extends AbstractTangerineService implements PostBatchService {
 
-	public static final int MAX_TREE_DEPTH = 200;
-	private static final String CONSTITUENT = "constituent";
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
+    @Override
+    public Map<String, String> readAllowedGiftSelectFields() {
+        // TODO read gift entry screen for custom fields.
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("giftStatus", "Gift Status");
+        map.put("paymentStatus", "Payment Status");
+        map.put("amount", "Amount");
+        map.put("donationDate", "Donation Date");
+        return map;
+    }
+
+    @Override
+    public Map<String, String> readAllowedGiftUpdateFields() {
+        // TODO read gift entry screen for custom fields.
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put("giftStatus", "Gift Status");
+        map.put("paymentStatus", "Payment Status");
+        return map;
+    }
 
     @Override
     public List<PostBatch> listBatchs(PostBatch postbatch) {
@@ -29,7 +48,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
     @Override
-    public PostBatch readBatch(long batchId) {
+    public PostBatch readBatch(Long batchId) {
+        logger.debug("readBatch");
         return null;
     }
 

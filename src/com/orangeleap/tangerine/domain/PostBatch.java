@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 public class PostBatch extends AbstractCustomizableEntity {
@@ -10,8 +11,8 @@ public class PostBatch extends AbstractCustomizableEntity {
 
     private Long id;
     private String description = "";
-    private Map<String, String> whereConditions = new HashMap<String, String>();
-    private Map<String, String> updateFields = new HashMap<String, String>();
+    private Map<String, String> whereConditions = new TreeMap<String, String>();
+    private Map<String, String> updateFields = new TreeMap<String, String>();
 
 
     public PostBatch() {

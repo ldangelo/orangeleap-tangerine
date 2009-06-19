@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
@@ -12,8 +13,10 @@ import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 
 public interface PostBatchService {
 
+    public Map<String, String> readAllowedGiftSelectFields();
+    public Map<String, String> readAllowedGiftUpdateFields();
     public List<PostBatch> listBatchs(PostBatch postbatch);
-    public PostBatch readBatch(long batchId);
+    public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
     public List<Gift> createBatchSelectionList(PostBatch postbatch);
     public List<Gift> getBatchSelectionList(PostBatch postbatch);

@@ -22,14 +22,21 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
+
+
     @Override
     public Map<String, String> readAllowedGiftSelectFields() {
         // TODO read gift entry screen for custom fields.
         Map<String, String> map = new TreeMap<String, String>();
-        map.put("giftStatus", "Gift Status");
-        map.put("paymentStatus", "Payment Status");
         map.put("amount", "Amount");
+        map.put("currencyCode", "Currency Code");
+        map.put("createDate", "Create date");
+        map.put("constituent.id", "Constituent Id");
+        map.put("giftStatus", "Gift Status");
         map.put("donationDate", "Donation Date");
+        map.put("postmarkDate", "Postmark Date");
+        map.put("paymentStatus", "Payment Status");
+        map.put("posted", "Posted");
         return map;
     }
 
@@ -38,7 +45,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         // TODO read gift entry screen for custom fields.
         Map<String, String> map = new TreeMap<String, String>();
         map.put("giftStatus", "Gift Status");
-        map.put("paymentStatus", "Payment Status");
+        map.put("posted", "Posted");
+        map.put("postedDate", "Posted Date");
         return map;
     }
 

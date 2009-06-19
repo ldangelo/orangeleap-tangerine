@@ -4,6 +4,24 @@ $(document).ready(function() {
 		Picklist.cascadeElementsRoot();
 	})();
 	
+	// Fix IE8 Date Menu being cut off 
+	Ext.override(Ext.menu.Menu, {
+	    autoWidth : function(){
+	        var el = this.el, ul = this.ul;
+	        if(!el){
+	            return;
+	        }
+	        var w = this.width;
+	        if(w){
+	            el.setWidth(w);
+	        }else if(Ext.isIE && !Ext.isIE8){
+	            el.setWidth(this.minWidth);
+	            var t = el.dom.offsetWidth; // force recalc
+	            el.setWidth(ul.getWidth()+el.getFrameWidth("lr"));
+	        }
+	    }
+	});
+
 	$.ajaxSetup({
 		timeout: 30000, // 30 seconds before the request times out
 		error: function(xhr, errorType, exception) {
@@ -140,13 +158,19 @@ $(document).ready(function() {
 							if (!thisElem.disabled) {
 								if (thisElem.tagName.toLowerCase() == "input") {
 									if (thisElem.type != "hidden" && thisElem.type != "submit" && thisElem.type != "button" && thisElem.type != "reset") {
-										thisElem.focus();
+										try {
+											thisElem.focus();
+										}
+										catch (exception) {}
 										isFound = true;
 										break;
 									}
 								}
 								else {
-									thisElem.focus();
+									try {
+										thisElem.focus();
+									}
+									catch (exception) {}
 									isFound = true;
 									break;
 								}

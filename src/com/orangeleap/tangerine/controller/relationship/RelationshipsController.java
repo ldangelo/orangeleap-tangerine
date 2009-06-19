@@ -392,6 +392,7 @@ public class RelationshipsController extends SimpleFormController {
 								constituentName }));
 					}
 
+					custFldNameVal = new StringBuilder(newRelationshipCtmFld.getCustomField().getName()).append("-").append(newRelationshipCtmFld.getCustomField().getEndDate()).toString();
 					messageKey = validationErrorKeys.get(custFldNameVal);
 					if ("errorDateRangesSingleValueRelationship".equals(messageKey) || "errorDateRangesCorrespondingRelationship".equals(messageKey)) {
 						validationErrorMessages.put(custFldNameVal, TangerineMessageAccessor.getMessage(messageKey, new String[] { fieldRelationshipForm.getFieldLabel(), 

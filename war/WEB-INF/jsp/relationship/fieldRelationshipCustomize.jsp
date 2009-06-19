@@ -29,6 +29,7 @@
 		</div>
 		
 		<br/>
+			<strong><a class="action" href="relationshipList.htm">&laquo;<spring:message code='back'/></a></strong>
 
 		</div>
 		        

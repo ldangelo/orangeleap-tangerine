@@ -5,11 +5,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapperImpl;
@@ -29,14 +31,17 @@ import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
 import com.orangeleap.tangerine.service.QueryLookupService;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.service.relationship.TooManyLevelsException;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RelationshipDirection;
 import com.orangeleap.tangerine.type.RelationshipType;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -45,7 +50,6 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class RelationshipServiceImpl extends AbstractTangerineService implements RelationshipService {
 	
 	public static final int MAX_TREE_DEPTH = 200;
-	private static final String CONSTITUENT = "constituent";
  
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -61,6 +65,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     @Resource(name="queryLookupService")
     protected QueryLookupService queryLookupService;
+
+    @Resource(name = "siteService")
+    private SiteService siteService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
@@ -380,7 +387,25 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (null == constituentDao.readConstituentById(constituentId)) {
             return null;
         }
-	    return customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldName);
+	    return customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldName);
+    }
+    
+    @Override
+    public Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<CustomField> newCustomFields, String fieldDefinitionId) {
+	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+	    Map<String, String> validationErrors = new LinkedHashMap<String, String>();
+	    
+    	if (newCustomFields != null) {
+    		for (CustomField custFld : newCustomFields) {
+				if (custFld.getValue().equals(constituentId.toString())) {
+					validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getValue()).toString(), 
+							"errorSelfReferenceRelationship");
+				}
+			}
+    	}
+    	
+    	validateAllDateRangesAtOnce(newCustomFields, fieldDefinition, constituentId, validationErrors);
+		return validationErrors;
     }
 
     @Override
@@ -404,16 +429,55 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		validateDateRangesAndSave(constituentId, fieldDefinition, list, additionalDeletes);
 	   
     }
-    
-    private void validateNoSelfReference(Long constituentId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {
-    	String id = "" + constituentId;
-		for (CustomField cf : list) {
-			if (cf.getValue().equals(id)) {
-				ConstituentValidationException ex = new ConstituentValidationException("Field value cannot reference itself.");
-				ex.addValidationResult("fieldSelfReference", new Object[]{fieldDefinition.getDefaultLabel()});
-				throw ex;
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> customFields) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId);
+	    }
+	    if (constituentDao.readConstituentById(constituentId) == null) {
+            throw new RuntimeException("Invalid constituent id");
+        }
+	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+	    if (fieldDefinition == null) {
+            throw new RuntimeException("Invalid Field Definition id");
+        }
+    	FieldDefinition correspondingRefField = getCorrespondingField(fieldDefinition);
+		
+    	// Find any orphaned back references 
+		if (correspondingRefField != null) {
+			List<Long> additionalDeletes = new ArrayList<Long>();
+ 			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, customFields);
+			for (CustomField cf : deletes) { 
+				additionalDeletes.add(new Long(cf.getValue()));
+			}
+			for (Long refid : additionalDeletes) {
+				List<CustomField> refList = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName());
+		        for (CustomField refCustFld: refList) {
+		        	Long backref = new Long(refCustFld.getValue());
+		        	if (backref.equals(constituentId)) {
+		        		customFieldDao.deleteCustomField(refCustFld);
+		        	}
+		        }
 			}
 		}
+		
+	    // Save custom fields on main entity
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), customFields);
+    }
+
+    private void validateNoSelfReference(Long constituentId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {
+    	String id = "" + constituentId;
+    	if (list != null) {
+			for (CustomField cf : list) {
+				if (cf.getValue().equals(id)) {
+					ConstituentValidationException ex = new ConstituentValidationException(TangerineMessageAccessor.getMessage("errorFieldSelfReference", fieldDefinition.getDefaultLabel()));
+					ex.addValidationResult("fieldSelfReference", new Object[]{fieldDefinition.getDefaultLabel()});
+					throw ex;
+				}
+			}
+    	}
     }
 
     private void validateDateRangesAndSave(Long constituentId, FieldDefinition fieldDefinition, List<CustomField> newlist, List<Long> additionalDeletes) throws ConstituentValidationException {
@@ -423,7 +487,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	// Check date ranges on this entity
 		boolean datesvalid = validateDateRanges(fieldDefinition.getId(), newlist);
 		if (!datesvalid) {
-			ConstituentValidationException ex = new ConstituentValidationException("Date ranges cannot overlap for a single-valued field.");
+			ConstituentValidationException ex = new ConstituentValidationException(TangerineMessageAccessor.getMessage("errorDateRangesSingleValueField", fieldDefinition.getDefaultLabel()));
 			ex.addValidationResult("fieldDateOverlap", new Object[]{fieldDefinition.getDefaultLabel()});
 			throw ex;
 		} 
@@ -435,7 +499,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				additionalDeletes.add(new Long(cf.getValue()));
 			}
 			for (Long refid : additionalDeletes) {
-				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), CONSTITUENT, refField.getCustomFieldName());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), StringConstants.CONSTITUENT, refField.getCustomFieldName());
 		        for (CustomField refcf: reflist) {
 		        	Long backref = new Long(refcf.getValue());
 		        	if (backref.equals(constituentId)) {
@@ -446,22 +510,24 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 		
 	    // Save custom fields on main entity
-		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName(), newlist);
-	    newlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName());
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), newlist);
+	    newlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName());
 
     	// Check date ranges on referenced entities
 		if (refField != null) {
 			
 			// Sort by referenced id
 			Map<String, List<CustomField>> listsByValues = new HashMap<String, List<CustomField>>();
-			for (CustomField cf : newlist) {
-				String value = cf.getValue();
-				List<CustomField> alist = listsByValues.get(value);
-				if (alist == null) {
-					alist = new ArrayList<CustomField>();
-					listsByValues.put(value, alist);
+			if (newlist != null) {
+				for (CustomField cf : newlist) {
+					String value = cf.getValue();
+					List<CustomField> alist = listsByValues.get(value);
+					if (alist == null) {
+						alist = new ArrayList<CustomField>();
+						listsByValues.put(value, alist);
+					}
+					alist.add(cf);
 				}
-				alist.add(cf);
 			}
 				
 			// For each referenced id, delete all the back references to this id and re-populate.
@@ -471,7 +537,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				CustomField cf1 = alist.get(0);
 				
 				Long refid = new Long(cf1.getValue());
-				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), CONSTITUENT, refField.getCustomFieldName());
+				List<CustomField> reflist = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), StringConstants.CONSTITUENT, refField.getCustomFieldName());
 				Iterator<CustomField> it = reflist.iterator();
 				while (it.hasNext()) {
 					CustomField refcf = it.next();
@@ -484,11 +550,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				for (CustomField cf: alist) {
 		        	CustomField newcf = new CustomField();
 		        	newcf.setEntityId(refid);
-		        	newcf.setEntityType("constituent");
+		        	newcf.setEntityType(StringConstants.CONSTITUENT);
 		        	newcf.setName(refField.getCustomFieldName());
 		        	newcf.setStartDate(cf.getStartDate());
 		        	newcf.setEndDate(cf.getEndDate());
-		        	newcf.setValue(""+cf.getEntityId());
+		        	newcf.setValue(cf.getEntityId().toString());
 		        	reflist.add(newcf);
 				}
 				
@@ -496,12 +562,12 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				boolean refdatesvalid = validateDateRanges(refField.getId(), reflist);
 				if (!refdatesvalid) {
 					refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
-					ConstituentValidationException ex = new ConstituentValidationException("Date ranges conflict on corresponding custom field for referenced value " + refConstituent.getFullName());
+					ConstituentValidationException ex = new ConstituentValidationException(TangerineMessageAccessor.getMessage("errorDateRangesCorrespondingCustomField", new String[] { refConstituent.getFullName(), fieldDefinition.getDefaultLabel() }));
 					ex.addValidationResult("referenceFieldDateOverlap", new Object[]{refConstituent.getFullName()});
 					throw ex;
 				} 
 				
-				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, CONSTITUENT, refField.getCustomFieldName(), reflist);
+				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refid, StringConstants.CONSTITUENT, refField.getCustomFieldName(), reflist);
 			    
 			    // Set new roles on refId.
 				refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
@@ -532,15 +598,17 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     
     private List<CustomField> getDeletes(Long constituentId, FieldDefinition fieldDefinition, List<CustomField> newlist) {
 		List<CustomField> deletes = new ArrayList<CustomField>();
-	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, CONSTITUENT, fieldDefinition.getCustomFieldName());
+	    List<CustomField> oldlist = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName());
 	    for (CustomField oldcf : oldlist) {
 	    	boolean found = false;
-		    for (CustomField newcf : newlist) {
-		    	if (oldcf.getValue().equals(newcf.getValue())) {
-		    		found = true;
-		    		break;
-		    	}
-		    }
+	    	if (newlist != null) {
+			    for (CustomField newcf : newlist) {
+			    	if (oldcf.getValue().equals(newcf.getValue())) {
+			    		found = true;
+			    		break;
+			    	}
+			    }
+	    	}
 		    if (!found) {
 		    	deletes.add(oldcf);
 		    }
@@ -571,6 +639,144 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             }
 		}
 		return null;
+    }
+    
+    /**
+     * Find and return all date errors at the same time instead of finding and returning one at a time only. 
+     * @param newCustomFields
+     * @param fieldDefinition
+     * @param constituentId
+     * @param validationErrors
+     */
+    private void validateAllDateRangesAtOnce(List<CustomField> newCustomFields, FieldDefinition fieldDefinition, Long constituentId, Map<String, String> validationErrors) {
+    	List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fieldDefinition.getId());
+    	List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fieldDefinition.getId());
+    	
+    	boolean isMultiValued = checkIsMultiValued(masters, details, fieldDefinition);
+    	
+    	Map<String, List<CustomField>> groupedCustomFields = groupCustomFieldsByValue(newCustomFields, isMultiValued);
+    	checkDateOverlapRelationships(groupedCustomFields, validationErrors, "errorDateRangesSingleValueRelationship");
+
+    	validateCorrespondingRelationship(fieldDefinition, masters, details, newCustomFields, validationErrors);
+    }
+    
+    private boolean checkIsMultiValued(List<FieldRelationship> masters, List<FieldRelationship> details, FieldDefinition fieldDefinition) {
+    	boolean isMultiValued = false;
+
+    	if (masters.isEmpty() == false) {
+    		isMultiValued = thisCanBeMultiValued(RelationshipDirection.DETAIL, masters.get(0).getRelationshipType());
+    	}
+    	if (details.isEmpty() == false) {
+    		isMultiValued = thisCanBeMultiValued(RelationshipDirection.MASTER, details.get(0).getRelationshipType());
+    	}
+    	
+    	FieldType ft = fieldDefinition.getFieldType();
+    	if (FieldType.QUERY_LOOKUP.equals(ft) || FieldType.QUERY_LOOKUP_OTHER.equals(ft) || FieldType.PICKLIST.equals(ft)) {
+            isMultiValued = false;
+        }
+    	else if (FieldType.MULTI_PICKLIST.equals(ft) || FieldType.MULTI_PICKLIST_ADDITIONAL.equals(ft) || FieldType.MULTI_QUERY_LOOKUP.equals(ft)) {
+            isMultiValued = true;
+        }
+    	
+    	return isMultiValued;
+    }
+    
+    private Map<String, List<CustomField>> groupCustomFieldsByValue(List<CustomField> newCustomFields, boolean isMultiValued) {
+    	Map<String, List<CustomField>> groupedCustomFields = new HashMap<String, List<CustomField>>();
+    	if (newCustomFields != null) {
+	    	for (CustomField custFld : newCustomFields) {
+	    		String value = custFld.getValue();
+	    		if (!isMultiValued) {
+	                value = StringConstants.EMPTY;
+	            }
+	    		
+	    		List<CustomField> aList = groupedCustomFields.get(value);
+	    		if (aList == null) {
+	    			aList = new ArrayList<CustomField>();
+	    			groupedCustomFields.put(value, aList);
+	    		}
+	    		aList.add(custFld);
+	    	}
+    	}
+    	return groupedCustomFields;
+    }
+    
+    private void checkDateOverlapRelationships(Map<String, List<CustomField>> newCustomFields, Map<String, String> validationErrors, String errorMessageKey) {
+    	for (Map.Entry<String, List<CustomField>> thisEntry : newCustomFields.entrySet()) {
+    		List<CustomField> aList = thisEntry.getValue();
+    		
+    		sortByStartDate(aList);
+        	Date thisDate = null;
+        	for (CustomField custFld : aList) {
+        		if (!custFld.getEndDate().after(custFld.getStartDate())) {
+        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getEndDate()).toString(), 
+        					errorMessageKey);
+        		}
+        		if (thisDate != null && !custFld.getStartDate().after(thisDate)) {
+        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getStartDate()).toString(), 
+        					errorMessageKey);
+        		}
+        		thisDate = custFld.getEndDate();
+        	}
+    	}
+
+    }
+    
+    private void validateCorrespondingRelationship(FieldDefinition fieldDefinition, List<FieldRelationship> masters, List<FieldRelationship> details, 
+    		List<CustomField> newCustomFields, Map<String, String> validationErrors) {
+		FieldDefinition correspondingRefField = searchRelationships(fieldDefinition, masters);
+		if (correspondingRefField == null) {
+			correspondingRefField = searchRelationships(fieldDefinition, details);
+        }
+    	// Check date ranges on referenced entities
+		if (correspondingRefField != null) {
+	    	List<FieldRelationship> correspondingRefMasters = fieldDao.readMasterFieldRelationships(correspondingRefField.getId());
+	    	List<FieldRelationship> correspondingRefDetails = fieldDao.readDetailFieldRelationships(correspondingRefField.getId());
+	    	boolean isMultiValued = checkIsMultiValued(correspondingRefMasters, correspondingRefDetails, correspondingRefField);
+
+			// Sort by referenced id
+			Map<String, List<CustomField>> groupedCustomFields = groupCustomFieldsByValue(newCustomFields, true);
+				
+			// For each referenced id, delete all the back references to this id and re-populate.
+			for (Map.Entry<String, List<CustomField>> me: groupedCustomFields.entrySet()) {
+				
+				List<CustomField> aList = me.getValue();
+				CustomField cf1 = aList.get(0);
+				
+				Long refId = new Long(cf1.getValue());
+				List<CustomField> refList = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refId), StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName());
+				Iterator<CustomField> it = refList.iterator();
+				while (it.hasNext()) {
+					CustomField refcf = it.next();
+		        	Long backref = new Long(refcf.getValue());
+					if (backref.equals(cf1.getEntityId())) {
+                        it.remove();
+                    }
+				}
+				
+				for (CustomField custFld: aList) {
+		        	CustomField newCustFld = new CustomField();
+		        	newCustFld.setEntityId(refId);
+		        	newCustFld.setEntityType(StringConstants.CONSTITUENT);
+		        	newCustFld.setName(correspondingRefField.getCustomFieldName());
+		        	newCustFld.setStartDate(custFld.getStartDate());
+		        	newCustFld.setEndDate(custFld.getEndDate());
+		        	newCustFld.setValue(custFld.getEntityId().toString());
+		        	refList.add(newCustFld);
+				}
+				
+		    	checkDateOverlapRelationships(groupCustomFieldsByValue(refList, isMultiValued), validationErrors, "errorDateRangesCorrespondingRelationship");
+				if (validationErrors.isEmpty()) {
+					customFieldDao.maintainCustomFieldsByEntityAndFieldName(refId, StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName(), refList);
+					
+				    // Set new roles on refId.
+			        Constituent refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
+				    ensureOtherConstituentAttributeIsSet(correspondingRefField, refConstituent);
+					refConstituent = constituentDao.maintainConstituent(refConstituent);
+				}
+			}
+		}
+    	
     }
     
     private boolean validateDateRanges(String fieldDefinitionId, List<CustomField> list) {
@@ -604,19 +810,21 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     private boolean validateDateRangesDoNotOverlap(List<CustomField> list, boolean multiValued) {
     	
     	Map<String, List<CustomField>> exclusivelists = new HashMap<String, List<CustomField>>();
-    	for (CustomField cf : list) {
-    		
-    		String value = cf.getValue();
-    		if (!multiValued) {
-                value = "";
-            }
-    		
-    		List<CustomField> alist = exclusivelists.get(value);
-    		if (alist == null) {
-    			alist = new ArrayList<CustomField>();
-    			exclusivelists.put(value, alist);
-    		}
-    		alist.add(cf);
+    	if (list != null) {
+	    	for (CustomField cf : list) {
+	    		
+	    		String value = cf.getValue();
+	    		if (!multiValued) {
+	                value = "";
+	            }
+	    		
+	    		List<CustomField> alist = exclusivelists.get(value);
+	    		if (alist == null) {
+	    			alist = new ArrayList<CustomField>();
+	    			exclusivelists.put(value, alist);
+	    		}
+	    		alist.add(cf);
+	    	}
     	}
     	
     	for (Map.Entry<String, List<CustomField>> me : exclusivelists.entrySet()) {
@@ -695,5 +903,99 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         	relationship = StringConstants.INDIVIDUAL;
         }
         return relationship;
+    }
+    
+    @Override
+    public Map<String, Object> readRelationshipFieldDefinitions(String constituentId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readRelationshipFieldDefinitions: constituentId = " + constituentId);
+        }
+		Constituent constituent = constituentDao.readConstituentById(Long.parseLong(constituentId));
+
+        Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.constituent, tangerineUserHelper.lookupUserRoles());
+		List<FieldDefinition> fieldDefs = new ArrayList<FieldDefinition>();
+		Iterator<Map.Entry<String, FieldDefinition>> it = fieldDefinitionMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, FieldDefinition> me = it.next();
+			FieldDefinition fd = me.getValue();
+			
+			List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fd.getId());
+			List<FieldRelationship> frdetail = fieldDao.readDetailFieldRelationships(fd.getId());
+			
+			if (frmaster.size() > 0 || frdetail.size() > 0) {
+//				String relationshipType = isIndividualOrganizationRelationship(fd.getId());
+//				if ((constituent.isIndividual() && StringConstants.INDIVIDUAL.equals(relationshipType)) ||
+//						(constituent.isOrganization() && StringConstants.ORGANIZATION.equals(relationshipType))) {
+					fieldDefs.add(fd);
+//				}
+			}
+		}
+		
+		sortFieldDefsByDefaultLabel(fieldDefs);
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>(2);
+		returnMap.put(StringConstants.CONSTITUENT, constituent);
+		returnMap.put(StringConstants.FIELDS, fieldDefs);
+		
+    	return returnMap;
+    }
+    
+    @Override
+	public List<CustomField> findCustomFieldsForRelationship(Constituent constituent, FieldDefinition fieldDef) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("findCustomFieldsForRelationship: constituentId = " + constituent.getId() + " fieldDef.customFieldName = " + fieldDef.getCustomFieldName());
+        }
+        return customFieldDao.readCustomFieldsByEntityAndFieldName(constituent.getId(), StringConstants.CONSTITUENT, fieldDef.getCustomFieldName());
+	}
+	
+    @Override
+	public String resolveConstituentRelationship(CustomField customField) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("resolveConstituentRelationship: customField.value = " + customField.getValue());
+        }
+        String constituentName;
+        if (NumberUtils.isDigits(customField.getValue())) {
+            Constituent constituent = constituentDao.readConstituentById(Long.parseLong(customField.getValue()));
+            if (constituent == null) {
+            	constituentName = customField.getValue();
+            }
+            else {
+            	constituentName = constituent.getDisplayValue();
+            }
+        }
+        else {
+            constituentName = customField.getValue();
+        }
+        return constituentName;
+	}
+
+    @Override
+    public List<FieldDefinition> readMasterRelationshipFieldDefinitions() {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readMasterRelationshipFieldDefinitions:");
+        }
+
+        Map<String, FieldDefinition> fieldDefinitionMap = siteService.readFieldTypes(PageType.constituent, tangerineUserHelper.lookupUserRoles());
+		List<FieldDefinition> fieldDefs = new ArrayList<FieldDefinition>();
+		Iterator<Map.Entry<String, FieldDefinition>> it = fieldDefinitionMap.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, FieldDefinition> me = it.next();
+			FieldDefinition fd = me.getValue();
+			List<FieldRelationship> frmaster = fieldDao.readMasterFieldRelationships(fd.getId());
+			if (frmaster.isEmpty() == false) {
+				fieldDefs.add(fd);
+			}
+		}
+		sortFieldDefsByDefaultLabel(fieldDefs);
+    	return fieldDefs;
+    }
+    
+    private void sortFieldDefsByDefaultLabel(List<FieldDefinition> fds) {
+		Collections.sort(fds, new Comparator<FieldDefinition>() {
+			@Override
+			public int compare(FieldDefinition o1, FieldDefinition o2) {
+				return o1.getDefaultLabel().compareTo(o2.getDefaultLabel());
+			}
+		});
     }
 }

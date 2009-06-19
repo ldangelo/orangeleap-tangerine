@@ -120,7 +120,6 @@ $(document).ready(function() {
 	});
 
 	Date.format = 'mm/dd/yyyy';
-	//$('input.date').datePicker({startDate:'01/01/1900'});
 	
 	$(":input, select, textbox").bind("focus", function(event) {
 		if ($.browser.msie) {

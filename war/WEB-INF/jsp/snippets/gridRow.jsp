@@ -6,7 +6,7 @@
 		<tr class="lineRow <c:if test='${not empty hiddenGridRows}'>expandableRow collapsed</c:if>">
 			<c:if test='${not empty hiddenGridRows}'><td class="nodeLink"><a href="#" class="treeNodeLink plus" title="<spring:message code='clickShowHideExtended'/>" rowIndex="<c:out value='${counter}'/>"><spring:message code='clickShowHideExtended'/></a></td></c:if> 
 			<%@ include file="/WEB-INF/jsp/snippets/gridForm.jsp"%>
-			<td><a href="#" class="<c:if test='${counter == 0 || (counter == 1 && fn:length(gridCollection) == 1)}'>noDisplay</c:if> deleteButton"><img src="images/icons/deleteRow.png"/></a></td>
+			<td><a href="#" class="<c:if test='${counter == 0 || (counter == 1 && fn:length(gridCollection) == 1)}'>noDisplay</c:if> deleteButton"><img src="images/icons/deleteRow.png" alt="<spring:message code='removeThisOption'/>" title="<spring:message code='removeThisOption'/>"/></a></td>
 		</tr>
 		<c:if test='${not empty hiddenGridRows}'>
 			<tr class="hiddenRow noDisplay">

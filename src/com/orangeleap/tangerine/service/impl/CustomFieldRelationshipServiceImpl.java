@@ -66,7 +66,7 @@ public class CustomFieldRelationshipServiceImpl extends AbstractTangerineService
 	}
 
     @Override
-	public String getMasterFieldDefinitonId(String id) {
+	public String getMasterFieldDefinitionId(String id) {
 	    // Get corresponding master field definition id for relationship
     	FieldDefinition fd = fieldDao.readFieldDefinition(id);
     	if (fd == null) return null;

@@ -94,7 +94,7 @@ public class FieldVO {
         return fieldName;
     }
     
-    private String escapeChars(String str) {
+    public static String escapeChars(String str) {
         return str == null ? "" : str.replace('.', '_').replace('[', '-').replace(']', '-');
     }
 

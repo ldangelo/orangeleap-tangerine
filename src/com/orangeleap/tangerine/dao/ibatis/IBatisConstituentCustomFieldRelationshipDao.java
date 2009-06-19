@@ -41,7 +41,7 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
     @Override
     public ConstituentCustomFieldRelationship maintainConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship) {
         if (logger.isTraceEnabled()) {
-            logger.trace("maintainConstituentCustomFieldRelationship: Id = " + constituentCustomFieldRelationship.getId());
+            logger.trace("maintainConstituentCustomFieldRelationship: id = " + constituentCustomFieldRelationship.getId());
         }
         constituentCustomFieldRelationship.setSiteName(getSiteName());
         return (ConstituentCustomFieldRelationship)insertOrUpdate(constituentCustomFieldRelationship, "CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP");
@@ -50,7 +50,7 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
 	@Override
 	public ConstituentCustomFieldRelationship readByConstituentFieldDefinitionCustomFieldIds(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
         if (logger.isTraceEnabled()) {
-            logger.trace("readAllByConstituentAndField: constituentId = " + constituentId);
+            logger.trace("readByConstituentFieldDefinitionCustomFieldIds: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " customFieldValue = " + customFieldValue + " customFieldStartDate = " + customFieldStartDate);
         }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
@@ -63,6 +63,9 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
 
 	@Override
 	public void deleteConstituentCustomFieldRelationship(Long constituentId, String fieldDefinitionId, String customFieldValue, Date customFieldStartDate) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteConstituentCustomFieldRelationship: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " customFieldValue = " + customFieldValue + " customFieldStartDate = " + customFieldStartDate);
+        }
         Map<String, Object> params = setupParams();
         params.put("constituentId", constituentId);
         params.put("fieldDefinitionId", fieldDefinitionId);
@@ -70,6 +73,12 @@ public class IBatisConstituentCustomFieldRelationshipDao extends AbstractIBatisD
         params.put("customFieldStartDate", customFieldStartDate);
         getSqlMapClientTemplate().delete("DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP", params);
 	}
-   
 
+	@Override
+	public void deleteConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship ccr) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deleteConstituentCustomFieldRelationship: id = " + ccr.getId());
+        }
+        getSqlMapClientTemplate().delete("DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_ID", ccr);
+	}
 }

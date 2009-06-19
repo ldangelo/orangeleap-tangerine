@@ -107,4 +107,11 @@ public final class StringConstants {
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String ORGANIZATION_NAME = "organizationName";
+    
+    public static final String FIELDS = "fields";
+    public static final String BLANK_CUSTOM_FIELD_VALUE = "<blank>";
+    public final static String FLD_VAL = "fldVal-";
+    public final static String START_DT = "startDt-";
+    public final static String END_DT = "endDt-";
+    public final static String CUSTOM_FLD_ID = "customFldId-";
 }

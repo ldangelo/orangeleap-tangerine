@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <form:errors path="*">
 	<div class="globalFormErrors">
-		<h5>Please correct the following errors on this page:</h5>
+		<h5><spring:message code='errorsPleaseCorrect'/></h5>
 		<ul>
 		<c:forEach items="${messages}" var="message">
 			<li><c:out value='${message}'/></li>

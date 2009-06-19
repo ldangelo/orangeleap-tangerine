@@ -274,6 +274,7 @@ table tr td input.textError {
 	border:1px solid #d00;
 	padding:1px;
 }
+table tr td input.x-form-text.textError, table tr td textarea.x-form-field.textError { padding: 1px 3px; }
 .globalFormErrors h5 {
 	margin:6px 0 4px;
 	font-size:13px;
@@ -486,13 +487,15 @@ div.lookupScrollLeft { left:0; }
 div.lookupScrollRight { left:248px; }
 
 div.lookupScrollContainer div.multiOption, div.lookupWrapper div.queryLookupOption { background-color: #FFF; }
+div.lookupField.textError { border-color: #D00; }
+div.lookupField.textError, div.lookupField.textError div.queryLookupOption { background-color: #FED; }
 div.lookupWrapper div.queryLookupOption { width: 98%; padding-left: 4px; }
 div.lookupScrollContainer div.multiOption { padding: 1px 22px 1px 5px; width: 90%; }
 div.lookupScrollContainer div.multiOption:hover, div.lookupWrapper div.queryLookupOption:hover { background-color: #DFF1FF !important; }
 a.deleteOption { vertical-align: bottom; margin-left: 3px; visibility: hidden; }
 div.multiOption:hover a.deleteOption, div.queryLookupOption:hover a.deleteOption, div.multiOption:focus a.deleteOption, div.queryLookupOption:focus a.deleteOption { visibility: visible; } 
 a.deleteOption img { vertical-align: top; }
-a.treeNodeLink { background: transparent url(../images/expandCollapse.gif) no-repeat 0 0; display: block; height: 22px; width: 16px;	margin: 0;	padding: 0; overflow: hidden; text-indent: -2000px; }
+a.treeNodeLink { background: transparent url(../images/expandCollapse.gif) no-repeat 0 0; float: left; height: 22px; width: 16px;	margin: 0;	padding: 0; overflow: hidden; text-indent: -2000px; }
 a.plus { background-position: 0 0; }
 a.plus:hover, a.plus:focus { background-position: 0 -22px; } 
 a.minus { background-position: 0 -44px; }

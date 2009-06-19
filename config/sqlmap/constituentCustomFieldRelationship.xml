@@ -105,7 +105,7 @@
 		CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#
 	</update>
 
-	<delete id="DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP"  parameterClass="map">
+	<delete id="DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP" parameterClass="map">
 		delete from CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP 
 		where SITE_NAME = #siteName#
 		and CONSTITUENT_ID = #constituentId#	
@@ -114,5 +114,10 @@
 		and CUSTOM_FIELD_START_DATE = #customFieldStartDate#
 	</delete>
 
+	<delete id="DELETE_CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_BY_ID" parameterClass="com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelationship">
+		delete from CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP 
+		where SITE_NAME = #siteName#
+		and CONSTITUENT_CUSTOM_FIELD_RELATIONSHIP_ID = #id#
+	</delete>
 	
 </sqlMap>

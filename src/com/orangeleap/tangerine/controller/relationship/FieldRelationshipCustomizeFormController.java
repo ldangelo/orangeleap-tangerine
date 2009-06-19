@@ -99,7 +99,7 @@ public class FieldRelationshipCustomizeFormController extends SimpleFormControll
     	String fieldDefinitionId = request.getParameter("fieldDefinitionId");
     	FieldDefinition fd = fieldDao.readFieldDefinition(fieldDefinitionId);
 
-    	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
+    	String masterFieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitionId(fieldDefinitionId);
     	
         CustomFieldRelationship customFieldRelationship = customFieldRelationshipService.readByFieldDefinitionId(masterFieldDefinitionId);
         if (customFieldRelationship == null) {

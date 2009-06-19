@@ -93,7 +93,9 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 				String fieldnum = parm.substring(6);
 				String key = request.getParameter(parm).trim();
 				String value = request.getParameter("cfvalue"+fieldnum).trim();
-				if (key.length() > 0) map.put(key, value);
+				if (key.length() > 0) {
+					map.put(key, value);
+				}
 			}
 		}
 		return map;
@@ -121,10 +123,12 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 		
 		Long constituentId = new Long(request.getParameter("constituentId"));
 		Constituent constituent = constituentService.readConstituentById(constituentId);
-		if (constituent == null) return null;
+		if (constituent == null) {
+			return null;
+		}
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
+		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitionId(fieldDefinitionId);
 		Long customFieldId = new Long(request.getParameter("customFieldId"));
 		List<CustomField> savedlist = relationshipService.readCustomFieldsByConstituentAndFieldName(constituent.getId(), fieldDefinition.getCustomFieldName());
 		CustomField cf = getCustomField(savedlist, customFieldId);
@@ -186,7 +190,9 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 	}
 	
 	private void mergeFieldsFromReverseRelationship(ConstituentCustomFieldRelationship constituentCustomFieldRelationship, ConstituentCustomFieldRelationship reverseConstituentCustomFieldRelationship) {
-		if (reverseConstituentCustomFieldRelationship == null) return;
+		if (reverseConstituentCustomFieldRelationship == null) {
+			return;
+		}
 		Iterator<Map.Entry<String, CustomField>> it = reverseConstituentCustomFieldRelationship.getCustomFieldMap().entrySet().iterator();
 		while (it.hasNext()) {
 			CustomField cf = it.next().getValue();
@@ -195,7 +201,9 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
 	}
 	
 	private void clearFieldsOnReverseRelationship(ConstituentCustomFieldRelationship reverseConstituentCustomFieldRelationship) {
-		if (reverseConstituentCustomFieldRelationship == null) return;
+		if (reverseConstituentCustomFieldRelationship == null) {
+			return;
+		}
     	reverseConstituentCustomFieldRelationship.getCustomFieldMap().clear();
     	constituentCustomFieldRelationshipService.maintainConstituentCustomFieldRelationship(reverseConstituentCustomFieldRelationship);
 	}
@@ -204,14 +212,18 @@ public class RelationshipCustomizeFormController extends SimpleFormController {
     // Add default custom fields and values on constituentCustomFieldRelationship from customFieldRelationship if they dont exist
 	private void ensureDefaultFieldsAndValuesExist(ConstituentCustomFieldRelationship ccr) {
 		CustomFieldRelationship cfr = customFieldRelationshipService.readByFieldDefinitionId(ccr.getMasterFieldDefinitionId());
-		if (cfr == null) return;
+		if (cfr == null) {
+			return;
+		}
 		Iterator<Map.Entry<String, CustomField>> it = cfr.getCustomFieldMap().entrySet().iterator();
 		while (it.hasNext()) {
 			CustomField cf = it.next().getValue();
 			String name = cf.getName();
 			String defaultValue = cf.getValue();
 			boolean blank = defaultValue.equalsIgnoreCase("<blank>");
-			if (blank) defaultValue = "";
+			if (blank) {
+				defaultValue = "";
+			}
 			String value = ccr.getCustomFieldValue(name);
 			if (value == null || value.equals("")) {
 				ccr.setCustomFieldValue(name, defaultValue);

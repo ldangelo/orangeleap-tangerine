@@ -86,7 +86,7 @@ public class RelationshipFormController extends SimpleFormController {
         }
 		String fieldDefinitionId = request.getParameter("fieldDefinitionId");
 		FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitonId(fieldDefinitionId);
+		String masterfieldDefinitionId = customFieldRelationshipService.getMasterFieldDefinitionId(fieldDefinitionId);
 		String fieldName = fieldDefinition.getCustomFieldName();
     	List<CustomField> list = getMap(request, constituentId, fieldName);
 

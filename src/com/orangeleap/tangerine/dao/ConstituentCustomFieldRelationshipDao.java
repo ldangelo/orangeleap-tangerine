@@ -14,5 +14,6 @@ public interface ConstituentCustomFieldRelationshipDao {
 
 	public void deleteConstituentCustomFieldRelationship(Long entityId, String masterFieldDefinitionId, String value, Date startDate);
 
+	void deleteConstituentCustomFieldRelationship(ConstituentCustomFieldRelationship ccr);
 
 }

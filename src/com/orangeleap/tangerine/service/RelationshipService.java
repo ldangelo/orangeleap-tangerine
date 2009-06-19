@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
@@ -32,4 +33,16 @@ public interface RelationshipService {
     public List<Constituent> executeRelationshipQueryLookup(String fieldType, String searchOption, String searchValue);
     
     public String isIndividualOrganizationRelationship(String fieldDefinitionId);
+    
+    public Map<String, Object> readRelationshipFieldDefinitions(String constituentId);
+    
+    public List<FieldDefinition> readMasterRelationshipFieldDefinitions();
+
+	List<CustomField> findCustomFieldsForRelationship(Constituent constituent, FieldDefinition fieldDef);
+
+	String resolveConstituentRelationship(CustomField customField);
+
+	Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<CustomField> newCustomFields, String fieldDefinitionId);
+
+	void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> customFields);
 }

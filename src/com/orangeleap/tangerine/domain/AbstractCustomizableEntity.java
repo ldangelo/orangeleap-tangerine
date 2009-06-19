@@ -3,7 +3,6 @@ package com.orangeleap.tangerine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
-
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -43,6 +42,10 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             }
         };
         
+    }
+    
+    public void clearCustomFieldMap() {
+    	getCustomFieldMap().clear();
     }
     
     /**

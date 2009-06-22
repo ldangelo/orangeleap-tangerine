@@ -435,75 +435,6 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		validateDateRangesAndSave(constituentId, fieldDefinition, list, additionalDeletes);
 	   
     }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> oldCustomFields, 
-    		List<RelationshipCustomField> newRelationshipCustomFields, String masterFieldDefinitionId) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " masterFieldDefinitionId = " + masterFieldDefinitionId);
-	    } 
-	    if (constituentDao.readConstituentById(constituentId) == null) {
-            throw new RuntimeException("Invalid constituent id");
-        }
-	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
-	    if (fieldDefinition == null) {
-            throw new RuntimeException("Invalid Field Definition id");
-        }
-    	for (CustomField oldCustomFld: oldCustomFields) {
-    		boolean found = false;
-    		
-    		if (newRelationshipCustomFields != null) {
-	        	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
-	        		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
-	        		if (oldCustomFld.getId().equals(newCustomFld.getId())) {
-	        			found = true;
-	        			constituentCustomFieldRelationshipService.updateConstituentCustomFieldRelationshipValue(newCustomFld, oldCustomFld, 
-	        					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());
-	        		}
-	        	}
-    		}
-    		
-        	if (!found) {
-        		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(oldCustomFld, masterFieldDefinitionId);
-        	}
-    	}
-    	/* New ConstituentCustomFieldRelationship */
-    	if (newRelationshipCustomFields != null) {
-	    	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
-	    		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
-	    		if (newCustomFld.getId() == null || newCustomFld.getId() <= 0) {
-	    			constituentCustomFieldRelationshipService.saveNewConstituentCustomFieldRelationship(newRelationshipCustomFld.getCustomField(), 
-	    					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());	
-	    		}
-	    	}
-    	}
-
-    	FieldDefinition correspondingRefField = getCorrespondingField(fieldDefinition);
-		
-    	List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
-    	
-    	// Find any orphaned back references 
-		if (correspondingRefField != null) {
-			List<Long> additionalDeletes = new ArrayList<Long>();
- 			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, newCustomFields);
-			for (CustomField cf : deletes) { 
-				additionalDeletes.add(new Long(cf.getValue()));
-			}
-			for (Long refid : additionalDeletes) {
-				List<CustomField> refList = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName());
-		        for (CustomField refCustFld: refList) {
-		        	Long backref = new Long(refCustFld.getValue());
-		        	if (backref.equals(constituentId)) {
-		        		customFieldDao.deleteCustomField(refCustFld);
-		        	}
-		        }
-			}
-		}
-		
-	    // Save custom fields on main entity
-		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), newCustomFields);
-    }
     
     private List<CustomField> getCustomFieldsFromRelationshipCustomFields(List<RelationshipCustomField> relationshipCustomFields) {
     	List<CustomField> customFields = new ArrayList<CustomField>();
@@ -688,6 +619,128 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 		return null;
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> oldCustomFields, 
+    		List<RelationshipCustomField> newRelationshipCustomFields, String masterFieldDefinitionId) {
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " masterFieldDefinitionId = " + masterFieldDefinitionId);
+	    } 
+	    if (constituentDao.readConstituentById(constituentId) == null) {
+            throw new RuntimeException("Invalid constituent id");
+        }
+	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
+	    if (fieldDefinition == null) {
+            throw new RuntimeException("Invalid Field Definition id");
+        }
+    	for (CustomField oldCustomFld: oldCustomFields) {
+    		boolean found = false;
+    		
+    		if (newRelationshipCustomFields != null) {
+	        	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
+	        		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
+	        		if (oldCustomFld.getId().equals(newCustomFld.getId())) {
+	        			found = true;
+	        			constituentCustomFieldRelationshipService.updateConstituentCustomFieldRelationshipValue(newCustomFld, oldCustomFld, 
+	        					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());
+	        		}
+	        	}
+    		}
+    		
+        	if (!found) {
+        		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(oldCustomFld, masterFieldDefinitionId);
+        	}
+    	}
+    	/* New ConstituentCustomFieldRelationship */
+    	if (newRelationshipCustomFields != null) {
+	    	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
+	    		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
+	    		if (newCustomFld.getId() == null || newCustomFld.getId() <= 0) {
+	    			constituentCustomFieldRelationshipService.saveNewConstituentCustomFieldRelationship(newRelationshipCustomFld.getCustomField(), 
+	    					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());	
+	    		}
+	    	}
+    	}
+
+    	FieldDefinition correspondingRefField = getCorrespondingField(fieldDefinition);
+		
+    	List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
+    	
+    	// Find any orphaned back references 
+		if (correspondingRefField != null) {
+			List<Long> additionalDeletes = new ArrayList<Long>();
+ 			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, newCustomFields);
+			for (CustomField cf : deletes) { 
+				additionalDeletes.add(new Long(cf.getValue()));
+			}
+			for (Long refid : additionalDeletes) {
+				List<CustomField> refList = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refid), StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName());
+		        for (CustomField refCustFld: refList) {
+		        	Long backref = new Long(refCustFld.getValue());
+		        	if (backref.equals(constituentId)) {
+		        		customFieldDao.deleteCustomField(refCustFld);
+		        	}
+		        }
+			}
+		}
+		
+	    // Save custom fields on main entity
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), newCustomFields);
+		newCustomFields = customFieldDao.readCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName());
+		
+		saveCorrespondingRelationship(fieldDefinition, newCustomFields);
+    }
+    
+    private void saveCorrespondingRelationship(FieldDefinition fieldDefinition, List<CustomField> newCustomFields) {
+    	List<FieldRelationship> masters = fieldDao.readMasterFieldRelationships(fieldDefinition.getId());
+		FieldDefinition correspondingRefField = searchRelationships(fieldDefinition, masters);
+		if (correspondingRefField == null) {
+			List<FieldRelationship> details = fieldDao.readDetailFieldRelationships(fieldDefinition.getId());
+			correspondingRefField = searchRelationships(fieldDefinition, details);
+        }
+    	// Check date ranges on referenced entities
+		if (correspondingRefField != null) {
+			// Sort by referenced id
+			Map<String, List<CustomField>> groupedCustomFields = groupCustomFieldsByValue(newCustomFields, true);
+				
+			// For each referenced id, delete all the back references to this id and re-populate.
+			for (Map.Entry<String, List<CustomField>> me: groupedCustomFields.entrySet()) {
+				
+				List<CustomField> aList = me.getValue();
+				CustomField cf1 = aList.get(0);
+				
+				Long refId = new Long(cf1.getValue());
+				List<CustomField> refList = customFieldDao.readCustomFieldsByEntityAndFieldName(new Long(refId), StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName());
+				Iterator<CustomField> it = refList.iterator();
+				while (it.hasNext()) {
+					CustomField refcf = it.next();
+		        	Long backref = new Long(refcf.getValue());
+					if (backref.equals(cf1.getEntityId())) {
+                        it.remove();
+                    }
+				}
+				
+				for (CustomField custFld: aList) {
+		        	CustomField newCustFld = new CustomField();
+		        	newCustFld.setEntityId(refId);
+		        	newCustFld.setEntityType(StringConstants.CONSTITUENT);
+		        	newCustFld.setName(correspondingRefField.getCustomFieldName());
+		        	newCustFld.setStartDate(custFld.getStartDate());
+		        	newCustFld.setEndDate(custFld.getEndDate());
+		        	newCustFld.setValue(custFld.getEntityId().toString());
+		        	refList.add(newCustFld);
+				}
+				
+				customFieldDao.maintainCustomFieldsByEntityAndFieldName(refId, StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName(), refList);
+				
+			    // Set new roles on refId.
+		        Constituent refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
+			    ensureOtherConstituentAttributeIsSet(correspondingRefField, refConstituent);
+				refConstituent = constituentDao.maintainConstituent(refConstituent);
+			}
+		}
+    }
     
     /**
      * Find and return all date errors at the same time instead of finding and returning one at a time only. 
@@ -814,17 +867,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				}
 				
 		    	checkDateOverlapRelationships(groupCustomFieldsByValue(refList, isMultiValued), validationErrors, "errorDateRangesCorrespondingRelationship");
-				if (validationErrors.isEmpty()) {
-					customFieldDao.maintainCustomFieldsByEntityAndFieldName(refId, StringConstants.CONSTITUENT, correspondingRefField.getCustomFieldName(), refList);
-					
-				    // Set new roles on refId.
-			        Constituent refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
-				    ensureOtherConstituentAttributeIsSet(correspondingRefField, refConstituent);
-					refConstituent = constituentDao.maintainConstituent(refConstituent);
-				}
 			}
 		}
-    	
     }
     
     private boolean validateDateRanges(String fieldDefinitionId, List<CustomField> list) {

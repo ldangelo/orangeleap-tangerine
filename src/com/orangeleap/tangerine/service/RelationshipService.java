@@ -6,6 +6,7 @@ import java.util.Map;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.RelationshipCustomField;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.service.relationship.ConstituentTreeNode;
 
@@ -42,7 +43,8 @@ public interface RelationshipService {
 
 	String resolveConstituentRelationship(CustomField customField);
 
-	Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<CustomField> newCustomFields, String fieldDefinitionId);
+	Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<RelationshipCustomField> newRelationshipCustomFields, String fieldDefinitionId);
 
-	void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> customFields);
+	void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> oldCustomFields, 
+    		List<RelationshipCustomField> newRelationshipCustomFields, String masterFieldDefinitionId);
 }

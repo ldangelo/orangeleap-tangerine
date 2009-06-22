@@ -13,7 +13,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,6 +28,8 @@ import com.orangeleap.tangerine.domain.QueryLookup;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.domain.customization.FieldRelationship;
+import com.orangeleap.tangerine.domain.customization.RelationshipCustomField;
+import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.QueryLookupService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.SiteService;
@@ -40,6 +41,7 @@ import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.type.RelationshipDirection;
 import com.orangeleap.tangerine.type.RelationshipType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineMessageAccessor;
 
@@ -68,6 +70,9 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
     @Resource(name = "siteService")
     private SiteService siteService;
+
+    @Resource(name="constituentCustomFieldRelationshipService")
+    private ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
@@ -391,10 +396,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
     @Override
-    public Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<CustomField> newCustomFields, String fieldDefinitionId) {
+    public Map<String, String> validateConstituentRelationshipCustomFields(Long constituentId, List<RelationshipCustomField> newRelationshipCustomFields, String fieldDefinitionId) {
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
 	    Map<String, String> validationErrors = new LinkedHashMap<String, String>();
 	    
+	    List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
     	if (newCustomFields != null) {
     		for (CustomField custFld : newCustomFields) {
 				if (custFld.getValue().equals(constituentId.toString())) {
@@ -410,8 +416,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ConstituentValidationException.class)
-    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long constituentId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) throws ConstituentValidationException 
-    {
+    public void maintainCustomFieldsByConstituentAndFieldDefinition(Long constituentId, String fieldDefinitionId, List<CustomField> list, List<Long> additionalDeletes) 
+    	throws ConstituentValidationException {
     	
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("ConstituentCustomFieldRelationshipService.maintainCustomFieldsByConstituentAndFieldDefinition: constituentId = " + constituentId);
@@ -432,10 +438,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> customFields) {
+    public void maintainRelationshipCustomFields(Long constituentId, String fieldDefinitionId, List<CustomField> oldCustomFields, 
+    		List<RelationshipCustomField> newRelationshipCustomFields, String masterFieldDefinitionId) {
 	    if (logger.isTraceEnabled()) {
-	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId);
-	    }
+	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " masterFieldDefinitionId = " + masterFieldDefinitionId);
+	    } 
 	    if (constituentDao.readConstituentById(constituentId) == null) {
             throw new RuntimeException("Invalid constituent id");
         }
@@ -443,12 +450,43 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (fieldDefinition == null) {
             throw new RuntimeException("Invalid Field Definition id");
         }
+    	for (CustomField oldCustomFld: oldCustomFields) {
+    		boolean found = false;
+    		
+    		if (newRelationshipCustomFields != null) {
+	        	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
+	        		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
+	        		if (oldCustomFld.getId().equals(newCustomFld.getId())) {
+	        			found = true;
+	        			constituentCustomFieldRelationshipService.updateConstituentCustomFieldRelationshipValue(newCustomFld, oldCustomFld, 
+	        					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());
+	        		}
+	        	}
+    		}
+    		
+        	if (!found) {
+        		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(oldCustomFld, masterFieldDefinitionId);
+        	}
+    	}
+    	/* New ConstituentCustomFieldRelationship */
+    	if (newRelationshipCustomFields != null) {
+	    	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
+	    		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
+	    		if (newCustomFld.getId() == null || newCustomFld.getId() <= 0) {
+	    			constituentCustomFieldRelationshipService.saveNewConstituentCustomFieldRelationship(newRelationshipCustomFld.getCustomField(), 
+	    					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());	
+	    		}
+	    	}
+    	}
+
     	FieldDefinition correspondingRefField = getCorrespondingField(fieldDefinition);
 		
+    	List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
+    	
     	// Find any orphaned back references 
 		if (correspondingRefField != null) {
 			List<Long> additionalDeletes = new ArrayList<Long>();
- 			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, customFields);
+ 			List<CustomField> deletes = getDeletes(constituentId, fieldDefinition, newCustomFields);
 			for (CustomField cf : deletes) { 
 				additionalDeletes.add(new Long(cf.getValue()));
 			}
@@ -464,7 +502,17 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		}
 		
 	    // Save custom fields on main entity
-		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), customFields);
+		customFieldDao.maintainCustomFieldsByEntityAndFieldName(constituentId, StringConstants.CONSTITUENT, fieldDefinition.getCustomFieldName(), newCustomFields);
+    }
+    
+    private List<CustomField> getCustomFieldsFromRelationshipCustomFields(List<RelationshipCustomField> relationshipCustomFields) {
+    	List<CustomField> customFields = new ArrayList<CustomField>();
+    	if (relationshipCustomFields != null) {
+    		for (RelationshipCustomField relationshipCustomField : relationshipCustomFields) {
+				customFields.add(relationshipCustomField.getCustomField());
+			}
+    	}
+    	return customFields;
     }
 
     private void validateNoSelfReference(Long constituentId, List<CustomField> list, FieldDefinition fieldDefinition) throws ConstituentValidationException {

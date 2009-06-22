@@ -1,9 +1,8 @@
-package com.orangeleap.tangerine.controller.relationship;
+package com.orangeleap.tangerine.domain.customization;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.orangeleap.tangerine.domain.customization.CustomField;
 
 public class RelationshipCustomField {
 	

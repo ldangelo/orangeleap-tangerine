@@ -27,6 +27,7 @@ import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelat
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.CustomFieldRelationship;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
+import com.orangeleap.tangerine.domain.customization.RelationshipCustomField;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
@@ -122,15 +123,13 @@ public class RelationshipsController extends SimpleFormController {
 			String fieldDefinitionId = fieldRelationshipForm.getFieldDefinitionId();
 			String masterFieldDefinitionId = fieldRelationshipForm.getMasterFieldDefinitionId();
     		List<CustomField> existingCustomFields = relationshipService.readCustomFieldsByConstituentAndFieldName(constituentId, fieldName);
-    		List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
     		
-    		Map<String, String> fieldValidationErrors = relationshipService.validateConstituentRelationshipCustomFields(constituentId, newCustomFields, masterFieldDefinitionId);
+    		Map<String, String> fieldValidationErrors = relationshipService.validateConstituentRelationshipCustomFields(constituentId, newRelationshipCustomFields, masterFieldDefinitionId);
     		if (fieldValidationErrors != null && fieldValidationErrors.isEmpty() == false) {
     			validationErrors.putAll(fieldValidationErrors);
     		}
     		else {
-    			adjustConstituentCustomFieldRelationships(existingCustomFields, newRelationshipCustomFields, masterFieldDefinitionId, constituentId, fieldDefinitionId);
-	    		relationshipService.maintainRelationshipCustomFields(constituentId, fieldDefinitionId, newCustomFields);
+	    		relationshipService.maintainRelationshipCustomFields(constituentId, fieldDefinitionId, existingCustomFields, newRelationshipCustomFields, masterFieldDefinitionId);
     		}
 		}
 		if (validationErrors.isEmpty()) {
@@ -244,57 +243,6 @@ public class RelationshipsController extends SimpleFormController {
 			}
 		}
 	}
-
-	/**
-	 * If any start date has changed, adjust the start dates on the corresponding ccrs before saving.
-     * CCRs link to custom fields by start date rather than custom field id since the custom field ids change with each save in IBatisCustomFieldHelper.
-	 * @param oldCustomFields
-	 * @param newRelationshipCustomFields
-	 * @param masterFieldDefinitionId
-	 * @param constituentId
-	 * @param fieldDefinition
-	 */
-    private void adjustConstituentCustomFieldRelationships(List<CustomField> oldCustomFields, List<RelationshipCustomField> newRelationshipCustomFields, String masterFieldDefinitionId, 
-    		Long constituentId, String fieldDefinitionId) {
-    	for (CustomField oldCustomFld: oldCustomFields) {
-    		boolean found = false;
-    		
-    		if (newRelationshipCustomFields != null) {
-	        	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
-	        		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
-	        		if (oldCustomFld.getId().equals(newCustomFld.getId())) {
-	        			found = true;
-	        			constituentCustomFieldRelationshipService.updateConstituentCustomFieldRelationshipValue(newCustomFld, oldCustomFld, 
-	        					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());
-	        		}
-	        	}
-    		}
-    		
-        	if (!found) {
-        		constituentCustomFieldRelationshipService.deleteConstituentCustomFieldRelationship(oldCustomFld, masterFieldDefinitionId);
-        	}
-    	}
-    	/* New ConstituentCustomFieldRelationship */
-    	if (newRelationshipCustomFields != null) {
-	    	for (RelationshipCustomField newRelationshipCustomFld: newRelationshipCustomFields) {
-	    		CustomField newCustomFld = newRelationshipCustomFld.getCustomField();
-	    		if (newCustomFld.getId() == null || newCustomFld.getId() <= 0) {
-	    			constituentCustomFieldRelationshipService.saveNewConstituentCustomFieldRelationship(newRelationshipCustomFld.getCustomField(), 
-	    					masterFieldDefinitionId, newRelationshipCustomFld.getRelationshipCustomizations());	
-	    		}
-	    	}
-    	}
-    }
-    
-    private List<CustomField> getCustomFieldsFromRelationshipCustomFields(List<RelationshipCustomField> relationshipCustomFields) {
-    	List<CustomField> customFields = new ArrayList<CustomField>();
-    	if (relationshipCustomFields != null) {
-    		for (RelationshipCustomField relationshipCustomField : relationshipCustomFields) {
-				customFields.add(relationshipCustomField.getCustomField());
-			}
-    	}
-    	return customFields;
-    }
     
 	/**
 	 * Get the custom fields for a defined relationship for a GET request 

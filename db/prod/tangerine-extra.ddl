@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS `POST_BATCH`;
 CREATE TABLE `POST_BATCH` (
   `POST_BATCH_ID` bigint(20) NOT NULL auto_increment,
   `POST_BATCH_DESC` varchar(255) NOT NULL,
-  `CREATE_JOURNAL` char(1) NOT NULL default '0',
   `ENTITY` varchar(255) NOT NULL,
   `REVIEW_SET_GENERATED` char(1) NOT NULL default '0',
   `REVIEW_SET_GENERATED_BY_ID` bigint(20) default NULL,

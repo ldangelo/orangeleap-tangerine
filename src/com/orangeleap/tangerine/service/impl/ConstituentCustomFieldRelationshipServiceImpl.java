@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +20,7 @@ import com.orangeleap.tangerine.domain.customization.ConstituentCustomFieldRelat
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
@@ -146,22 +146,29 @@ public class ConstituentCustomFieldRelationshipServiceImpl extends AbstractTange
     
     @Override
     public void saveNewConstituentCustomFieldRelationship(CustomField newCustomFld, String masterFieldDefinitionId, Map<String, Object> relationshipCustomizations) {
-    	ConstituentCustomFieldRelationship ccr = new ConstituentCustomFieldRelationship();
-    	ccr.setConstituentId(newCustomFld.getEntityId());
-    	ccr.setCustomFieldStartDate(newCustomFld.getStartDate());
-    	ccr.setCustomFieldValue(newCustomFld.getValue());
-    	ccr.setMasterFieldDefinitionId(masterFieldDefinitionId);
-		setConstituentCustomFieldRelationshipCustomFields(relationshipCustomizations, ccr);
-    	ccr = maintainConstituentCustomFieldRelationship(ccr);
-
-    	if (NumberUtils.isDigits(newCustomFld.getValue())) {
-	    	ConstituentCustomFieldRelationship reverseCcr = new ConstituentCustomFieldRelationship();
-	    	reverseCcr.setConstituentId(Long.parseLong(newCustomFld.getValue()));
-	    	reverseCcr.setCustomFieldStartDate(newCustomFld.getStartDate());
-	    	reverseCcr.setCustomFieldValue(newCustomFld.getEntityId().toString());
-	    	reverseCcr.setMasterFieldDefinitionId(masterFieldDefinitionId);
-			setConstituentCustomFieldRelationshipCustomFields(relationshipCustomizations, reverseCcr);
-	    	reverseCcr = maintainConstituentCustomFieldRelationship(reverseCcr);
+    	ConstituentCustomFieldRelationship existingCcr = readByConstituentFieldDefinitionCustomFieldIds(newCustomFld.getEntityId(), masterFieldDefinitionId, newCustomFld.getValue(), newCustomFld.getStartDate());
+    	
+    	if (existingCcr != null) {
+    		updateConstituentCustomFieldRelationshipValue(newCustomFld, newCustomFld, masterFieldDefinitionId, relationshipCustomizations);
+    	}
+    	else {
+	    	ConstituentCustomFieldRelationship ccr = new ConstituentCustomFieldRelationship();
+	    	ccr.setConstituentId(newCustomFld.getEntityId());
+	    	ccr.setCustomFieldStartDate(newCustomFld.getStartDate());
+	    	ccr.setCustomFieldValue(newCustomFld.getValue());
+	    	ccr.setMasterFieldDefinitionId(masterFieldDefinitionId);
+			setConstituentCustomFieldRelationshipCustomFields(relationshipCustomizations, ccr);
+	    	ccr = maintainConstituentCustomFieldRelationship(ccr);
+	
+	    	if (NumberUtils.isDigits(newCustomFld.getValue())) {
+		    	ConstituentCustomFieldRelationship reverseCcr = new ConstituentCustomFieldRelationship();
+		    	reverseCcr.setConstituentId(Long.parseLong(newCustomFld.getValue()));
+		    	reverseCcr.setCustomFieldStartDate(newCustomFld.getStartDate());
+		    	reverseCcr.setCustomFieldValue(newCustomFld.getEntityId().toString());
+		    	reverseCcr.setMasterFieldDefinitionId(masterFieldDefinitionId);
+				setConstituentCustomFieldRelationshipCustomFields(relationshipCustomizations, reverseCcr);
+		    	reverseCcr = maintainConstituentCustomFieldRelationship(reverseCcr);
+	    	}
     	}
     }
     

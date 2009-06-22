@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="POST_BATCH">
+
+    <resultMap id="POST_BATCH_RESULT" class="com.orangeleap.tangerine.domain.PostBatch">
+        <result property="id" column="POST_BATCH_POST_BATCH_ID" />
+        <result property="postBatchDesc" column="POST_BATCH_POST_BATCH_DESC" />
+        <result property="entity" column="POST_BATCH_ENTITY" />
+        <result property="reviewSetGenerated" column="POST_BATCH_REVIEW_SET_GENERATED" />
+        <result property="reviewSetGeneratedById" column="POST_BATCH_REVIEW_SET_GENERATED_BY_ID" />
+        <result property="reviewSetGeneratedDate" column="POST_BATCH_REVIEW_SET_GENERATED_DATE" />
+        <result property="reviewSetSize" column="POST_BATCH_REVIEW_SET_SIZE" />
+        <result property="posted" column="POST_BATCH_POSTED" />
+        <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
+        <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
+        <result property="siteName" column="POST_BATCH_SITE_NAME" />
+        <result property="createDate" column="POST_BATCH_CREATE_DATE" />
+        <result property="updateDate" column="POST_BATCH_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="POST_BATCH_COLS_FRAGMENT">
+        post_batch.POST_BATCH_ID as POST_BATCH_POST_BATCH_ID,
+        post_batch.POST_BATCH_DESC as POST_BATCH_POST_BATCH_DESC,
+        post_batch.ENTITY as POST_BATCH_ENTITY,
+        post_batch.REVIEW_SET_GENERATED as POST_BATCH_REVIEW_SET_GENERATED,
+        post_batch.REVIEW_SET_GENERATED_BY_ID as POST_BATCH_REVIEW_SET_GENERATED_BY_ID,
+        post_batch.REVIEW_SET_GENERATED_DATE as POST_BATCH_REVIEW_SET_GENERATED_DATE,
+        post_batch.REVIEW_SET_SIZE as POST_BATCH_REVIEW_SET_SIZE,
+        post_batch.POSTED as POST_BATCH_POSTED,
+        post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
+        post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
+        post_batch.SITE_NAME as POST_BATCH_SITE_NAME,
+        post_batch.CREATE_DATE as POST_BATCH_CREATE_DATE,
+        post_batch.UPDATE_DATE as POST_BATCH_UPDATE_DATE
+    </sql>
+
+    <sql id="SELECT_POST_BATCH_FRAGMENT">
+        select
+        <include refid="POST_BATCH_COLS_FRAGMENT"/>
+        from POST_BATCH post_batch
+    </sql>
+
+    <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map" >
+        <include refid="SELECT_POST_BATCH_FRAGMENT"/>
+        and post_batch.POST_BATCH_ID = #id#
+    </select>
+
+    <insert id="INSERT_POST_BATCH" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
+        insert into POST_BATCH (
+        	POST_BATCH_ID,
+        	POST_BATCH_DESC,
+        	ENTITY,
+        	REVIEW_SET_GENERATED,
+        	REVIEW_SET_GENERATED_BY_ID,
+        	REVIEW_SET_GENERATED_DATE,
+        	REVIEW_SET_SIZE,
+        	POSTED,
+        	POSTED_BY_ID,
+        	POSTED_DATE,
+        	SITE_NAME,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#postBatchDesc# ,
+        	#entity# ,
+        	#reviewSetGenerated# ,
+        	#reviewSetGeneratedById# ,
+        	#reviewSetGeneratedDate# ,
+        	#reviewSetSize# ,
+        	#posted# ,
+        	#postedById# ,
+        	#postedDate# ,
+        	#siteName# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_POST_BATCH" parameterClass="com.orangeleap.tangerine.domain.PostBatch">
+        update POST_BATCH
+        SET
+        	POST_BATCH_ID = #id# ,
+        	POST_BATCH_DESC = #postBatchDesc# ,
+        	ENTITY = #entity# ,
+        	REVIEW_SET_GENERATED = #reviewSetGenerated# ,
+        	REVIEW_SET_GENERATED_BY_ID = #reviewSetGeneratedById# ,
+        	REVIEW_SET_GENERATED_DATE = #reviewSetGeneratedDate# ,
+        	REVIEW_SET_SIZE = #reviewSetSize# ,
+        	POSTED = #posted# ,
+        	POSTED_BY_ID = #postedById# ,
+        	POSTED_DATE = #postedDate# ,
+        	SITE_NAME = #siteName# ,
+        	UPDATE_DATE = now()
+        where POST_BATCH_ID = #id#
+    </update>
+
+</sqlMap>
+

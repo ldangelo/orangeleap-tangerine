@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="JOURNAL">
+
+    <resultMap id="JOURNAL_RESULT" class="com.orangeleap.tangerine.domain.Journal">
+        <result property="id" column="JOURNAL_JOURNAL_ID" />
+        <result property="postBatchId" column="JOURNAL_POST_BATCH_ID" />
+        <result property="entity" column="JOURNAL_ENTITY" />
+        <result property="entityId" column="JOURNAL_ENTITY_ID" />
+        <result property="masterEntity" column="JOURNAL_MASTER_ENTITY" />
+        <result property="masterEntityId" column="JOURNAL_MASTER_ENTITY_ID" />
+        <result property="origEntity" column="JOURNAL_ORIG_ENTITY" />
+        <result property="origEntityId" column="JOURNAL_ORIG_ENTITY_ID" />
+        <result property="code" column="JOURNAL_CODE" />
+        <result property="glCode1" column="JOURNAL_GL_CODE1" />
+        <result property="glCode2" column="JOURNAL_GL_CODE2" />
+        <result property="amount" column="JOURNAL_AMOUNT" />
+        <result property="jeType" column="JOURNAL_JE_TYPE" />
+        <result property="paymentMethod" column="JOURNAL_PAYMENT_METHOD" />
+        <result property="ccType" column="JOURNAL_CC_TYPE" />
+        <result property="desc" column="JOURNAL_DESC" />
+        <result property="donationDate" column="JOURNAL_DONATION_DATE" />
+        <result property="adjustmentDate" column="JOURNAL_ADJUSTMENT_DATE" />
+        <result property="postedDate" column="JOURNAL_POSTED_DATE" />
+        <result property="exportDate" column="JOURNAL_EXPORT_DATE" />
+        <result property="siteName" column="JOURNAL_SITE_NAME" />
+        <result property="createDate" column="JOURNAL_CREATE_DATE" />
+        <result property="updateDate" column="JOURNAL_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="JOURNAL_COLS_FRAGMENT">
+        journal.JOURNAL_ID as JOURNAL_JOURNAL_ID,
+        journal.POST_BATCH_ID as JOURNAL_POST_BATCH_ID,
+        journal.ENTITY as JOURNAL_ENTITY,
+        journal.ENTITY_ID as JOURNAL_ENTITY_ID,
+        journal.MASTER_ENTITY as JOURNAL_MASTER_ENTITY,
+        journal.MASTER_ENTITY_ID as JOURNAL_MASTER_ENTITY_ID,
+        journal.ORIG_ENTITY as JOURNAL_ORIG_ENTITY,
+        journal.ORIG_ENTITY_ID as JOURNAL_ORIG_ENTITY_ID,
+        journal.CODE as JOURNAL_CODE,
+        journal.GL_CODE1 as JOURNAL_GL_CODE1,
+        journal.GL_CODE2 as JOURNAL_GL_CODE2,
+        journal.AMOUNT as JOURNAL_AMOUNT,
+        journal.JE_TYPE as JOURNAL_JE_TYPE,
+        journal.PAYMENT_METHOD as JOURNAL_PAYMENT_METHOD,
+        journal.CC_TYPE as JOURNAL_CC_TYPE,
+        journal.DESC as JOURNAL_DESC,
+        journal.DONATION_DATE as JOURNAL_DONATION_DATE,
+        journal.ADJUSTMENT_DATE as JOURNAL_ADJUSTMENT_DATE,
+        journal.POSTED_DATE as JOURNAL_POSTED_DATE,
+        journal.EXPORT_DATE as JOURNAL_EXPORT_DATE,
+        journal.SITE_NAME as JOURNAL_SITE_NAME,
+        journal.CREATE_DATE as JOURNAL_CREATE_DATE,
+        journal.UPDATE_DATE as JOURNAL_UPDATE_DATE
+    </sql>
+
+    <sql id="SELECT_JOURNAL_FRAGMENT">
+        select
+        <include refid="JOURNAL_COLS_FRAGMENT"/>
+        from JOURNAL journal
+    </sql>
+
+    <select id="SELECT_JOURNAL_BY_ID" resultMap="JOURNAL_RESULT" parameterClass="map" >
+        <include refid="SELECT_JOURNAL_FRAGMENT"/>
+        and journal.JOURNAL_ID = #id#
+    </select>
+
+    <insert id="INSERT_JOURNAL" parameterClass="com.orangeleap.tangerine.domain.Journal">
+        insert into JOURNAL (
+        	JOURNAL_ID,
+        	POST_BATCH_ID,
+        	ENTITY,
+        	ENTITY_ID,
+        	MASTER_ENTITY,
+        	MASTER_ENTITY_ID,
+        	ORIG_ENTITY,
+        	ORIG_ENTITY_ID,
+        	CODE,
+        	GL_CODE1,
+        	GL_CODE2,
+        	AMOUNT,
+        	JE_TYPE,
+        	PAYMENT_METHOD,
+        	CC_TYPE,
+        	DESC,
+        	DONATION_DATE,
+        	ADJUSTMENT_DATE,
+        	POSTED_DATE,
+        	EXPORT_DATE,
+        	SITE_NAME,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#postBatchId# ,
+        	#entity# ,
+        	#entityId# ,
+        	#masterEntity# ,
+        	#masterEntityId# ,
+        	#origEntity# ,
+        	#origEntityId# ,
+        	#code# ,
+        	#glCode1# ,
+        	#glCode2# ,
+        	#amount# ,
+        	#jeType# ,
+        	#paymentMethod# ,
+        	#ccType# ,
+        	#desc# ,
+        	#donationDate# ,
+        	#adjustmentDate# ,
+        	#postedDate# ,
+        	#exportDate# ,
+        	#siteName# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_JOURNAL" parameterClass="com.orangeleap.tangerine.domain.Journal">
+        update JOURNAL
+        SET
+        	JOURNAL_ID = #id# ,
+        	POST_BATCH_ID = #postBatchId# ,
+        	ENTITY = #entity# ,
+        	ENTITY_ID = #entityId# ,
+        	MASTER_ENTITY = #masterEntity# ,
+        	MASTER_ENTITY_ID = #masterEntityId# ,
+        	ORIG_ENTITY = #origEntity# ,
+        	ORIG_ENTITY_ID = #origEntityId# ,
+        	CODE = #code# ,
+        	GL_CODE1 = #glCode1# ,
+        	GL_CODE2 = #glCode2# ,
+        	AMOUNT = #amount# ,
+        	JE_TYPE = #jeType# ,
+        	PAYMENT_METHOD = #paymentMethod# ,
+        	CC_TYPE = #ccType# ,
+        	DESC = #desc# ,
+        	DONATION_DATE = #donationDate# ,
+        	ADJUSTMENT_DATE = #adjustmentDate# ,
+        	POSTED_DATE = #postedDate# ,
+        	EXPORT_DATE = #exportDate# ,
+        	SITE_NAME = #siteName# ,
+        	UPDATE_DATE = now()
+        where JOURNAL_ID = #id#
+    </update>
+
+</sqlMap>
+

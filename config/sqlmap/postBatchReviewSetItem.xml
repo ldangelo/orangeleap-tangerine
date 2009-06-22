@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="POST_BATCH_REVIEW_SET_ITEM">
+
+    <resultMap id="POST_BATCH_REVIEW_SET_ITEM_RESULT" class="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
+        <result property="id" column="POST_BATCH_REVIEW_SET_ITEM_POST_BATCH_REVIEW_SET_ITEM_ID" />
+        <result property="postBatchId" column="POST_BATCH_REVIEW_SET_ITEM_POST_BATCH_ID" />
+        <result property="entityId" column="POST_BATCH_REVIEW_SET_ITEM_ENTITY_ID" />
+        <result property="createDate" column="POST_BATCH_REVIEW_SET_ITEM_CREATE_DATE" />
+        <result property="updateDate" column="POST_BATCH_REVIEW_SET_ITEM_UPDATE_DATE" />
+    </resultMap>
+
+    <sql id="POST_BATCH_REVIEW_SET_ITEM_COLS_FRAGMENT">
+        post_batch_review_set_item.POST_BATCH_REVIEW_SET_ITEM_ID as POST_BATCH_REVIEW_SET_ITEM_POST_BATCH_REVIEW_SET_ITEM_ID,
+        post_batch_review_set_item.POST_BATCH_ID as POST_BATCH_REVIEW_SET_ITEM_POST_BATCH_ID,
+        post_batch_review_set_item.ENTITY_ID as POST_BATCH_REVIEW_SET_ITEM_ENTITY_ID,
+        post_batch_review_set_item.CREATE_DATE as POST_BATCH_REVIEW_SET_ITEM_CREATE_DATE,
+        post_batch_review_set_item.UPDATE_DATE as POST_BATCH_REVIEW_SET_ITEM_UPDATE_DATE
+    </sql>
+
+    <sql id="SELECT_POST_BATCH_REVIEW_SET_ITEM_FRAGMENT">
+        select
+        <include refid="POST_BATCH_REVIEW_SET_ITEM_COLS_FRAGMENT"/>
+        from POST_BATCH_REVIEW_SET_ITEM post_batch_review_set_item
+    </sql>
+
+    <select id="SELECT_POST_BATCH_REVIEW_SET_ITEM_BY_ID" resultMap="POST_BATCH_REVIEW_SET_ITEM_RESULT" parameterClass="map" >
+        <include refid="SELECT_POST_BATCH_REVIEW_SET_ITEM_FRAGMENT"/>
+        and post_batch_review_set_item.POST_BATCH_REVIEW_SET_ITEM_ID = #id#
+    </select>
+
+    <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM" parameterClass="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
+        insert into POST_BATCH_REVIEW_SET_ITEM (
+        	POST_BATCH_REVIEW_SET_ITEM_ID,
+        	POST_BATCH_ID,
+        	ENTITY_ID,
+        	CREATE_DATE,
+        	UPDATE_DATE        )
+        values (
+        	#id# ,
+        	#postBatchId# ,
+        	#entityId# ,
+        	now(),
+        	now()        )
+        <selectKey keyProperty="id" resultClass="long">
+            SELECT LAST_INSERT_ID() AS value
+        </selectKey>
+    </insert>
+
+    <update id="UPDATE_POST_BATCH_REVIEW_SET_ITEM" parameterClass="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
+        update POST_BATCH_REVIEW_SET_ITEM
+        SET
+        	POST_BATCH_REVIEW_SET_ITEM_ID = #id# ,
+        	POST_BATCH_ID = #postBatchId# ,
+        	ENTITY_ID = #entityId# ,
+        	UPDATE_DATE = now()
+        where POST_BATCH_REVIEW_SET_ITEM_ID = #id#
+    </update>
+
+</sqlMap>
+

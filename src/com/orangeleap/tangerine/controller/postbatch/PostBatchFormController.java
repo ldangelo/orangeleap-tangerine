@@ -66,7 +66,7 @@ public class PostBatchFormController extends SimpleFormController {
     private PostBatch getNewPostBatch() {
         PostBatch postbatch =  new PostBatch();
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        postbatch.setDescription("Batch for " + formatter.format(new java.util.Date()));
+        postbatch.setPostBatchDesc("Batch for " + formatter.format(new java.util.Date()));
         // Add some default field settings...
         postbatch.getWhereConditions().put("posted","false");
         postbatch.getUpdateFields().put("posted","true");
@@ -101,7 +101,7 @@ public class PostBatchFormController extends SimpleFormController {
 
         
         // User can only edit the description and the list of select/update fields - the rest of the fields are read-only
-        postbatch.setDescription(requestPostbatch.getDescription());
+        postbatch.setPostBatchDesc(requestPostbatch.getPostBatchDesc());
 
         readFields(request, postbatch.getWhereConditions(), "sf");
         readFields(request, postbatch.getUpdateFields(), "uf");

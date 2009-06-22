@@ -2,6 +2,7 @@ package com.orangeleap.tangerine.domain;
 
 import java.util.Date;
 import java.math.BigDecimal;
+import java.io.Serializable;
 
 
 import javax.xml.bind.annotation.XmlType;
@@ -15,7 +16,7 @@ import com.orangeleap.tangerine.type.ActivationType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class Journal  {
+public class Journal implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 

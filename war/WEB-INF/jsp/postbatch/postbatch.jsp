@@ -21,7 +21,7 @@
 
             <input type="hidden" name="id" value="${postbatch.id}"  />
 
-            Batch Description: <input type="text" size="60" name="description" value="<c:out value='${postbatch.description}'/>"  /><br />
+            Batch Description: <input type="text" size="60" name="description" value="<c:out value='${postbatch.postBatchDesc}'/>"  /><br />
 
             <br />
 		    <h4>Batch selection criteria:</h4>

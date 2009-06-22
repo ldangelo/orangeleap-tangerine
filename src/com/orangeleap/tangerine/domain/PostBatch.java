@@ -8,9 +8,10 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+import java.io.Serializable;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class PostBatch  {
+public class PostBatch implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
 

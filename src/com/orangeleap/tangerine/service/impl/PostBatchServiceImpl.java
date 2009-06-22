@@ -5,10 +5,13 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PostBatchService;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.dao.PledgeDao;
+import com.orangeleap.tangerine.dao.PostBatchDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -22,6 +25,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
+    @Resource(name = "postBatchDAO")
+    private PostBatchDao postBatchDao;
 
 
     @Override
@@ -63,13 +68,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public PostBatch maintainBatch(PostBatch postbatch) {
-        return postbatch;
+        // todo save/retrieve custom fields from lists
+        return postBatchDao.maintainPostBatch(postbatch);
     }
 
     // Evaluates criteria to create list of matching gifts at this moment.
     @Override
     public List<Gift> createBatchSelectionList(PostBatch postbatch) {
-         return new ArrayList<Gift>();
+        // TODO call gift serach?
+        return new ArrayList<Gift>();
     }
 
     // Reads previous list of matched gifts. Does not re-evaluate any criteria.
@@ -78,6 +85,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
          return new ArrayList<Gift>();
     }
 
+    // Sets fields on gifts in reviewed batch list
     @Override
     public PostBatch postBatch(PostBatch postbatch) {
          return postbatch;

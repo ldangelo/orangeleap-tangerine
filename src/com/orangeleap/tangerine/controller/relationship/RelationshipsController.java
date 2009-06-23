@@ -274,7 +274,7 @@ public class RelationshipsController extends SimpleFormController {
 						customFieldRelationshipForm.setRelationshipCustomizations(fieldRelationshipForm.getDefaultRelationshipCustomizations());
 					}
 					else {
-						customFieldRelationshipForm.setRelationshipCustomizationsFromCustomFields(constituentCustomFieldRelationship.getCustomFieldMap());
+						customFieldRelationshipForm.setRelationshipCustomizationsFromCustomFields(fieldRelationshipForm.getDefaultRelationshipCustomizations(), constituentCustomFieldRelationship.getCustomFieldMap());
 					}
 				}
 

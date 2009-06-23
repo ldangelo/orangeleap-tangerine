@@ -92,10 +92,12 @@ public class CustomFieldRelationshipForm implements Serializable {
 		this.relationshipCustomizations = relationshipCustomizations;
 	}
 
-	public void setRelationshipCustomizationsFromCustomFields(Map<String, CustomField> relationshipCustomizations) {
+	public void setRelationshipCustomizationsFromCustomFields(Map<String, Object> defaultCustomizations, Map<String, CustomField> relationshipCustomizations) {
 		Map<String, Object> result = new TreeMap<String, Object>();
 		for (Map.Entry<String, CustomField> entry : relationshipCustomizations.entrySet()) {
-			result.put(entry.getValue().getName(), entry.getValue().getValue());
+			if (defaultCustomizations.containsKey(entry.getKey())) {
+				result.put(entry.getValue().getName(), entry.getValue().getValue());
+			}
 		}
 
 		this.relationshipCustomizations = result;

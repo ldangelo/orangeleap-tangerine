@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -28,17 +27,12 @@ import com.orangeleap.tangerine.controller.validator.EntityValidator;
 import com.orangeleap.tangerine.dao.ConstituentDao;
 import com.orangeleap.tangerine.dao.GiftDao;
 import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.domain.customization.FieldRequired;
-import com.orangeleap.tangerine.domain.customization.Picklist;
-import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.integration.NewConstituent;
 import com.orangeleap.tangerine.service.AddressService;
 import com.orangeleap.tangerine.service.AuditService;
@@ -47,13 +41,11 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.EmailService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.PhoneService;
-import com.orangeleap.tangerine.service.PicklistItemService;
 import com.orangeleap.tangerine.service.RelationshipService;
-import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
 import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -222,10 +214,12 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         if (StringConstants.OPT_OUT_ALL.equals(communicationPref)) {
             addressService.maintainResetReceiveCorrespondence(constituent.getId());
             phoneService.maintainResetReceiveCorrespondence(constituent.getId());
+            phoneService.maintainResetReceiveCorrespondenceText(constituent.getId());
             emailService.maintainResetReceiveCorrespondence(constituent.getId());
             
             addressService.resetReceiveCorrespondence(constituent.getPrimaryAddress());
             phoneService.resetReceiveCorrespondence(constituent.getPrimaryPhone());
+            phoneService.resetReceiveCorrespondenceText(constituent.getPrimaryPhone());
             emailService.resetReceiveCorrespondence(constituent.getPrimaryEmail());
         }
         else if (StringConstants.OPT_IN.equals(communicationPref)) {
@@ -233,7 +227,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.MAIL_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-                // do nothing
+            	if (constituent.getPrimaryAddress() != null) {
+            		constituent.getPrimaryAddress().setReceiveCorrespondence(true);
+            	}
             }
             else {
                 addressService.maintainResetReceiveCorrespondence(constituent.getId());
@@ -244,7 +240,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.PHONE_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-                // do nothing
+            	if (constituent.getPrimaryPhone() != null) {
+            		constituent.getPrimaryPhone().setReceiveCorrespondence(true);
+            	}
             }
             else {
                 phoneService.maintainResetReceiveCorrespondence(constituent.getId());
@@ -255,7 +253,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.TEXT_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-                // do nothing
+            	if (constituent.getPrimaryPhone() != null) {
+            		constituent.getPrimaryPhone().setReceiveCorrespondenceText(true);
+            	}
             }
             else {
                 phoneService.maintainResetReceiveCorrespondenceText(constituent.getId());
@@ -266,7 +266,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
             if (constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.EMAIL_CAMEL_CASE) ||
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.ANY_CAMEL_CASE) || 
                     constituent.hasCustomFieldValue(StringConstants.COMMUNICATION_OPT_IN_PREFERENCES, StringConstants.UNKNOWN_CAMEL_CASE)) {
-                // do nothing
+            	if (constituent.getPrimaryEmail() != null) {
+            		constituent.getPrimaryEmail().setReceiveCorrespondence(true);
+            	}
             }
             else {
                 emailService.maintainResetReceiveCorrespondence(constituent.getId());

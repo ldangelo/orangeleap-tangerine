@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.List;
 
 @Repository("postBatchDAO")
 public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDao {
@@ -46,6 +47,18 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         readCustomFields(aPostBatch);
         return aPostBatch;
 	}
+
+    @Override
+    public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("readPostBatch: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("postBatchId", postBatchId);
+        List<PostBatchReviewSetItem> result = (List<PostBatchReviewSetItem>)getSqlMapClientTemplate().queryForList("SELECT_POST_BATCH_REVIEW_SET_ITEMS", params);
+        return result;
+    }
+
 
     @Override
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem) {

@@ -24,10 +24,11 @@
         from POST_BATCH_REVIEW_SET_ITEM post_batch_review_set_item
     </sql>
 
-    <select id="SELECT_POST_BATCH_REVIEW_SET_ITEM_BY_ID" resultMap="POST_BATCH_REVIEW_SET_ITEM_RESULT" parameterClass="map" >
+    <select id="SELECT_POST_BATCH_REVIEW_SET_ITEMS" resultMap="POST_BATCH_REVIEW_SET_ITEM_RESULT" parameterClass="map" >
         <include refid="SELECT_POST_BATCH_REVIEW_SET_ITEM_FRAGMENT"/>
-        and post_batch_review_set_item.POST_BATCH_REVIEW_SET_ITEM_ID = #id#
+        where post_batch_review_set_item.POST_BATCH_ID = #postBatchId#
     </select>
+
 
     <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM" parameterClass="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
         insert into POST_BATCH_REVIEW_SET_ITEM (

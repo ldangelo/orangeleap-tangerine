@@ -87,11 +87,17 @@
      		<hr/>
 
             <table >
+                <tr>
+                  <th>Gift Id</th>
+                  <th>Constituent Id</th>
+                  <th>Description</th>
+                  <th>TX Reference Number</th>
+                </tr>
             <c:forEach var="gift" varStatus="status" items="${gifts}" >
               <tr rowindex="${status.count}">
                 <td><c:out value='${gift.id}'/></td>
                 <td><c:out value='${gift.constituent.id}'/></td>
-                <td><c:out value="<c:out value='${gift.shortDescription}'/>"/></td>
+                <td><c:out value='${gift.shortDescription}'/></td>
                 <td><c:out value='${gift.txRefNum}'/></td>
               </tr>
             </c:forEach>

@@ -12,6 +12,7 @@ public interface PostBatchDao {
 
     public PostBatch readPostBatch(Long postBatchId);
     public PostBatch maintainPostBatch(PostBatch postBatch);
+    public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId);
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
     
 }

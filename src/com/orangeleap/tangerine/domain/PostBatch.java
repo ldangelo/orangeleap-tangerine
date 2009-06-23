@@ -5,9 +5,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.xml.bind.annotation.XmlType;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.io.Serializable;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
@@ -31,6 +29,7 @@ public class PostBatch extends AbstractCustomizableEntity  {
 
     private Map<String, String> whereConditions = new TreeMap<String, String>();
     private Map<String, String> updateFields = new TreeMap<String, String>();
+    private List<String> updateErrors = new ArrayList<String>();
 
 
     public PostBatch() { }
@@ -247,4 +246,11 @@ public class PostBatch extends AbstractCustomizableEntity  {
         .toString();
     }
 
+    public List<String> getUpdateErrors() {
+        return updateErrors;
+    }
+
+    public void setUpdateErrors(List<String> updateErrors) {
+        this.updateErrors = updateErrors;
+    }
 }

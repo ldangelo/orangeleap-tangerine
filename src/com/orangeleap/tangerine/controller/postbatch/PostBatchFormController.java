@@ -111,11 +111,12 @@ public class PostBatchFormController extends SimpleFormController {
 
         String errormessage = "";
         List<Gift> gifts = new ArrayList<Gift>();
-        try{
-            postbatch = postBatchService.maintainBatch(postbatch);
-            gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
+        try {
             if (post) {
                 postbatch = postBatchService.postBatch(postbatch);
+            } else {
+                postbatch = postBatchService.maintainBatch(postbatch);
+                gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
             }
         } catch (Exception e) {
             logger.error(e);

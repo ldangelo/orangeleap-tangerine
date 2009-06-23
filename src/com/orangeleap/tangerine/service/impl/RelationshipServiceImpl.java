@@ -960,10 +960,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(searchOption, searchValue);
         
-        if (StringConstants.LAST_NAME.equals(searchOption) || StringConstants.FIRST_NAME.equals(searchOption)) {
+        if (StringConstants.INDIVIDUAL.equals(fieldType)) {
             params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
         }
-        else if (StringConstants.ORGANIZATION_NAME.equals(searchOption)) {
+        else if (StringConstants.ORGANIZATION.equals(fieldType)) {
             params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
         }
         constituents = constituentDao.searchConstituents(params);

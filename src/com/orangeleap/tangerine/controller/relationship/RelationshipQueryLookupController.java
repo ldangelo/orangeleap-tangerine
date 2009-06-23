@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
@@ -19,6 +18,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.RelationshipService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerinePagedListHolder;
 
@@ -34,7 +34,7 @@ public class RelationshipQueryLookupController extends SimpleFormController {
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         Map<String, Object> refData = new HashMap<String, Object>();
-        refData.put("isIndividual", StringConstants.INDIVIDUAL.equals(request.getParameter(StringConstants.FIELD_DEF)));
+        refData.put("relationshipType", request.getParameter(StringConstants.FIELD_DEF));
         refData.put(StringConstants.FIELD_DEF, request.getParameter(StringConstants.FIELD_DEF));
         return refData;
     }

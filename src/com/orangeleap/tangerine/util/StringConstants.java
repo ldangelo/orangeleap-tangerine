@@ -97,6 +97,7 @@ public final class StringConstants {
     
     public static final String ORGANIZATION = "organization";
     public static final String INDIVIDUAL = "individual";
+    public final static String BOTH = "both";
     
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";

@@ -957,25 +957,16 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
             logger.trace("executeRelationshipQueryLookup: fieldType = " + fieldType + " searchOption = " + searchOption + " searchValue = " + searchValue);
         }
         List<Constituent> constituents = null;
-        if (StringConstants.LAST_NAME.equals(searchOption) || 
-                StringConstants.FIRST_NAME.equals(searchOption) || 
-                StringConstants.ORGANIZATION_NAME.equals(searchOption)) {
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put(searchOption, searchValue);
-            
-            if (StringConstants.INDIVIDUAL.equals(fieldType)) {
-                params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
-            }
-            else {
-                params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
-            }
-            constituents = constituentDao.searchConstituents(params);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(searchOption, searchValue);
+        
+        if (StringConstants.LAST_NAME.equals(searchOption) || StringConstants.FIRST_NAME.equals(searchOption)) {
+            params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'individual' ");
         }
-        else {
-            if (logger.isWarnEnabled()) {
-                logger.warn("executeRelationshipQueryLookup: Unknown searchOption = " + searchOption);
-            }
+        else if (StringConstants.ORGANIZATION_NAME.equals(searchOption)) {
+            params.put(QueryUtil.ADDITIONAL_WHERE, "constituent_type = 'organization' ");
         }
+        constituents = constituentDao.searchConstituents(params);
         return constituents;
     }
     
@@ -988,7 +979,10 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         if (fieldDefinitionId != null) {
             QueryLookup queryLookup = queryLookupService.readQueryLookup(fieldDefinitionId);
             if (queryLookup != null && queryLookup.getSqlWhere() != null) {
-                if (queryLookup.getSqlWhere().indexOf(StringConstants.INDIVIDUAL) > -1) {
+                if (queryLookup.getSqlWhere().trim().equals(StringConstants.EMPTY)) {
+                    relationship = StringConstants.BOTH;
+                }
+                else if (queryLookup.getSqlWhere().indexOf(StringConstants.INDIVIDUAL) > -1) {
                     relationship = StringConstants.INDIVIDUAL;
                 }
                 else if (queryLookup.getSqlWhere().indexOf(StringConstants.ORGANIZATION) > -1) {

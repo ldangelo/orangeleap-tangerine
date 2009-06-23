@@ -16,15 +16,13 @@
 	        <div class="modalSearch">
 	        	<label for="searchText"><spring:message code="searchBy"/></label>
 	        	<select name="searchOption" id="searchOption">
-	        		<c:choose>
-	        			<c:when test='${requestScope.isIndividual}'>
-							<option value="lastName"><spring:message code='lastName'/></option>
-							<option value="firstName"><spring:message code='firstName'/></option>
-						</c:when>
-						<c:otherwise>
-							<option value="organizationName"><spring:message code='organizationName'/></option>
-						</c:otherwise>
-					</c:choose>
+        			<c:if test='${requestScope.relationshipType eq "individual" or requestScope.relationshipType eq "both"}'>
+						<option value="lastName"><spring:message code='lastName'/></option>
+						<option value="firstName"><spring:message code='firstName'/></option>
+					</c:if>
+					<c:if test='${requestScope.relationshipType eq "organization" or requestScope.relationshipType eq "both"}'>
+						<option value="organizationName"><spring:message code='organizationName'/></option>
+					</c:if>
 				</select>        	
 				<input type="hidden" name="fieldDef" id="fieldDef" value="<c:out value='${requestScope.fieldDef}'/>" />
 	        	<input type="text" value="" id="searchText" name="searchText"/>

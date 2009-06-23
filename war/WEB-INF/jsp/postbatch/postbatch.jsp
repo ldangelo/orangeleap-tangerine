@@ -21,7 +21,7 @@
 
             <input type="hidden" name="id" value="${postbatch.id}"  />
 
-            Batch Description: <input type="text" size="60" name="description" value="<c:out value='${postbatch.postBatchDesc}'/>"  /><br />
+            Batch Description: <input type="text" size="60" name="postBatchDesc" value="<c:out value='${postbatch.postBatchDesc}'/>"  /><br />
 
             <br />
 		    <h4>Batch selection criteria:</h4>
@@ -76,7 +76,7 @@
             Letter values are case-sensitive.  &gt;, =, and &lt; can be used with numeric and date selection values.   
             <br/><br/>
 
-			<input type="button" value="Mark records for update" class="saveButton" onclick="$('#post').val('false'); submit();" />
+			<input type="button" value="Select records for update" class="saveButton" onclick="$('#post').val('false'); submit();" />
             <input type="hidden" id="post" name="post" value="false"  />
             
             <!-- TODO add 'Are you sure' confirmation: -->

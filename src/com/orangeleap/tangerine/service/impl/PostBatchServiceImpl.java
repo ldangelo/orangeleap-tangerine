@@ -1,6 +1,7 @@
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.PostBatchService;
 import org.apache.commons.logging.Log;
@@ -62,13 +63,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public PostBatch readBatch(Long batchId) {
-        logger.debug("readBatch");
-        return null;
+        logger.debug("readBatch: id = "+batchId);
+        if (batchId == null) return null;
+        return postBatchDao.readPostBatch(batchId);
     }
 
     @Override
     public PostBatch maintainBatch(PostBatch postbatch) {
-        // todo save/retrieve custom fields from lists
         return postBatchDao.maintainPostBatch(postbatch);
     }
 
@@ -90,4 +91,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public PostBatch postBatch(PostBatch postbatch) {
          return postbatch;
     }
+
+
+
 }

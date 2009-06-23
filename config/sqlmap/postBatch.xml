@@ -38,6 +38,7 @@
         select
         <include refid="POST_BATCH_COLS_FRAGMENT"/>
         from POST_BATCH post_batch
+        where post_batch.SITE_NAME = #siteName#
     </sql>
 
     <select id="SELECT_POST_BATCH_BY_ID" resultMap="POST_BATCH_RESULT" parameterClass="map" >

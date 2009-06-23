@@ -115,6 +115,14 @@ public abstract class AbstractIBatisDao extends SqlMapClientDaoSupport implement
     				throw new RuntimeException(e);
     			}
     		}
+            if (m.getName().equals("setSiteName")) {
+                try {
+                   m.invoke(o, new Object[]{getSiteName()});
+                } catch (Exception e) {
+                    logger.error("Unable to set site");
+                    throw new RuntimeException(e);
+                }
+            }
     	}
     }
 

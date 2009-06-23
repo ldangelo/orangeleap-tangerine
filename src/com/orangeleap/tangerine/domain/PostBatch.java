@@ -11,7 +11,7 @@ import java.util.TreeMap;
 import java.io.Serializable;
 
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-public class PostBatch implements GeneratedId, Serializable {
+public class PostBatch extends AbstractCustomizableEntity  {
 
     private static final long serialVersionUID = 1L;
 

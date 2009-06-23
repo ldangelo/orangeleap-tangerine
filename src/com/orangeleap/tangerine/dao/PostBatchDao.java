@@ -10,6 +10,7 @@ import com.orangeleap.tangerine.type.CacheGroupType;
 
 public interface PostBatchDao {
 
+    public PostBatch readPostBatch(Long postBatchId);
     public PostBatch maintainPostBatch(PostBatch postBatch);
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
     

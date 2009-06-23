@@ -72,6 +72,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Override
     public List<PostBatch> listBatchs(PostBatch postbatch) {
+        // TODO implement if we want to list batches for 2-person review, copy create-from, etc.
         return new ArrayList<PostBatch>();
     }
 
@@ -135,6 +136,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                     giftService.maintainGift(gift);
                 } catch (BindException e) {
                     String msg = gift.getId() + ": " + e.getMessage();
+                    logger.error(msg);
                     postbatch.getUpdateErrors().add(msg);
                 }
             }
@@ -147,6 +149,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postbatch.setPostedDate(new java.util.Date());
         postbatch.setPostedById(tangerineUserHelper.lookupUserId());
         postBatchDao.maintainPostBatch(postbatch);
+        postBatchDao.deletePostBatchItems(postbatch.getId());
         return postbatch;
     }
 
@@ -155,7 +158,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         private List<String> errors;
 
         public PostBatchUpdateException(List<String> errors) {
-            super("Errors exist in batch.");
+            super("Errors exist in batch: " + errors.get(0));
             this.errors = errors;
         }
         

@@ -69,7 +69,16 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         return aPostBatchReviewSetItem;
     }
 
-    
+    @Override
+    public void deletePostBatchItems(Long postBatchId) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("deletePostBatchItems: postBatchId = " + postBatchId);
+        }
+        Map<String, Object> params = setupParams();
+        params.put("postBatchId", postBatchId);
+        getSqlMapClientTemplate().delete("DELETE_POST_BATCH_REVIEW_SET_ITEMS", params);
+    }
+
 
     private static final String WHERE = "where";
     private static final String UPDATE = "update";

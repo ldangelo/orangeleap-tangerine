@@ -14,5 +14,6 @@ public interface PostBatchDao {
     public PostBatch maintainPostBatch(PostBatch postBatch);
     public List<PostBatchReviewSetItem> readPostBatchReviewSetItems(Long postBatchId);
     public PostBatchReviewSetItem maintainPostBatchReviewSetItem(PostBatchReviewSetItem postBatchReviewSetItem);
+    public void deletePostBatchItems(Long postBatchId);    
     
 }

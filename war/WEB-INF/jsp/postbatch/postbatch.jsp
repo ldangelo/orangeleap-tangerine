@@ -15,7 +15,7 @@
             <h4>Edit Gift Posting Batch</h4>
 
 
-            <span style="font-color:red">${errormessage}</span>
+            <span style="color:#ff0000">${errormessage}</span>  <br />
 
             <br/>
 

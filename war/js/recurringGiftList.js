@@ -19,6 +19,9 @@ Ext.onReady(function() {
         root: 'rows',
         fields: [
             {name: 'id', mapping: 'id', type: 'int'},
+            {name: 'startdate', mapping: 'startdate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'enddate', mapping: 'enddate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+            {name: 'activate', mapping: 'activate', type: 'boolean'},
             {name: 'constituentId', mapping: 'constituentId', type: 'string'},
             {name: 'status', mapping: 'status', type: 'string'},
             {name: 'amountpergift', mapping: 'amountpergift', type: 'float'},
@@ -44,11 +47,14 @@ Ext.onReady(function() {
         store: RecurringGiftList.store,
         columns: [
             {header: '', width: 65, dataIndex: 'id', sortable: false, menuDisabled: true, renderer: RecurringGiftList.entityViewRenderer},
+            {header: 'Start Dt', width: 80, dataIndex: 'startdate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
+            {header: 'End Dt', width: 80, dataIndex: 'enddate', sortable: true, renderer: Ext.util.Format.dateRenderer('m-d-y')},
             {header: 'Status', width: 100, dataIndex: 'status', sortable: true},
-            {header: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true},
-            {header: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true},
-            {header: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true},
-            {header: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true}
+            {header: 'Activate', tooltip: 'Activate', width: 55, align: 'center', dataIndex: 'activate', sortable: true, renderer: RecurringGiftList.activateRenderer }, 
+            {header: 'Amt Per Gift', tooltip: 'Amount Per Gift', width: 65, dataIndex: 'amountpergift', sortable: true},
+            {header: 'Amt Total', tooltip: 'Amount Total', width: 65, dataIndex: 'amounttotal', sortable: true},
+            {header: 'Amt Paid', tooltip: 'Amount Paid', width: 65, dataIndex: 'amountpaid', sortable: true},
+            {header: 'Amt Remaining', tooltip: 'Amount Remaining', width: 65, dataIndex: 'amountremaining', sortable: true}
         ],
         sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig: {
@@ -70,6 +76,17 @@ Ext.onReady(function() {
 
 RecurringGiftList.entityViewRenderer = function(val, meta, record) {
 	   return '<a href="javascript:RecurringGiftList.navigate(' + record.data.id + ')" title="View">View</a>';
+};
+
+RecurringGiftList.activateRenderer = function(val, meta, record) {
+    if (record.data.activate) {
+        meta.css = 'green-dot';
+        meta.attr = 'ext:qtip="Activated"';
+    } 
+    else {
+        meta.css = 'grey-dot';
+        meta.attr = 'ext:qtip="Not Activated"';
+    }
 };
 
 RecurringGiftList.navigate = function(id) {

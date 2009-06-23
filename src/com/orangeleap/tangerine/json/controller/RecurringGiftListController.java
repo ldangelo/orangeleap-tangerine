@@ -9,13 +9,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -40,6 +40,9 @@ public class RecurringGiftListController {
         NAME_MAP.put("amounttotal", "rg.AMOUNT_TOTAL");
         NAME_MAP.put("amountpaid", "rg.AMOUNT_PAID");
         NAME_MAP.put("amountremaining", "rg.AMOUNT_REMAINING");
+        NAME_MAP.put("startdate", "rg.START_DATE");
+        NAME_MAP.put("enddate", "rg.END_DATE");
+        NAME_MAP.put("activate", "rg.ACTIVATE");
     }
     
     private Map<String,Object> recurringGiftToMap(RecurringGift rg) {
@@ -52,6 +55,9 @@ public class RecurringGiftListController {
         map.put("amounttotal", rg.getAmountTotal());
         map.put("amountpaid", rg.getAmountPaid());
         map.put("amountremaining", rg.getAmountRemaining());
+        map.put("startdate", rg.getStartDate());
+        map.put("enddate", rg.getEndDate());
+        map.put("activate", rg.isActivate());
         
         return map;
 

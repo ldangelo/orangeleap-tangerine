@@ -81,13 +81,9 @@ public class SiteSettingsController extends SimpleFormController {
 		
 		if (MASK.equals(site.getSmtpPassword())) {
 			site.setSmtpPassword(originalSite.getSmtpPassword());
-		} else {
-			site.setSmtpPassword(AES.encrypt(site.getSmtpPassword()));
 		}
 		if (MASK.equals(site.getJasperPassword())) {
-			site.setSmtpPassword(originalSite.getJasperPassword());
-		} else {
-			site.setSmtpPassword(AES.encrypt(site.getJasperPassword()));
+			site.setJasperPassword(originalSite.getJasperPassword());
 		}
 		
 		

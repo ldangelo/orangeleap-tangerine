@@ -158,23 +158,23 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
         nextRun.setTimeInMillis(((RecurringGift)commitment).getNextRunDate().getTime());
         logger.debug("start date = " + nextRun.getTime() + " millis = " + nextRun.getTimeInMillis());
         Calendar today = getToday();
-
-
-            if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.WEEK_OF_MONTH, 1);
-            } else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 1);
-            } else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 3);
-            } else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.MONTH, 6);
-            } else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
-                nextRun.add(Calendar.YEAR, 1);
-            } else {
-                nextRun = null;
-            }
+	
+	
+	if (Commitment.FREQUENCY_WEEKLY.equals(commitment.getFrequency())) {
+	    nextRun.add(Calendar.WEEK_OF_MONTH, 1);
+	} else if (Commitment.FREQUENCY_MONTHLY.equals(commitment.getFrequency())) {
+	    nextRun.add(Calendar.MONTH, 1);
+	} else if (Commitment.FREQUENCY_QUARTERLY.equals(commitment.getFrequency())) {
+	    nextRun.add(Calendar.MONTH, 3);
+	} else if (Commitment.FREQUENCY_TWICE_ANNUALLY.equals(commitment.getFrequency())) {
+	    nextRun.add(Calendar.MONTH, 6);
+	} else if (Commitment.FREQUENCY_ANNUALLY.equals(commitment.getFrequency())) {
+	    nextRun.add(Calendar.YEAR, 1);
+	} else {
+	    nextRun = null;
+	}
    
-        if (nextRun == null || (commitment.getEndDate() != null && !nextRun.getTime().after(commitment.getEndDate()))) {
+        if (nextRun == null || (commitment.getEndDate() != null && nextRun.getTime().after(commitment.getEndDate()))) {
             nextRun = null;
             logger.debug("no next run scheduled");
             return null;

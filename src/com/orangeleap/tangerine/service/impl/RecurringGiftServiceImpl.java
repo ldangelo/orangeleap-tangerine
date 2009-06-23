@@ -326,11 +326,13 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     private void processRecurringGift(RecurringGift recurringGift)
     {
         Date nextDate = null;
-        createAutoGift(recurringGift);
+
         nextDate = getNextGiftDate(recurringGift);
 
         if (nextDate != null) {
-            recurringGift.setNextRunDate(nextDate);
+	    createAutoGift(recurringGift);  
+	    
+	    recurringGift.setNextRunDate(nextDate);
 
             // Update the Next Run Date ONLY
             recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
@@ -356,17 +358,17 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             }
         }
     }
-
+    
     protected void createAutoGift(RecurringGift recurringGift) {
         Gift gift = new Gift(recurringGift);
         recurringGift.addGift(gift);
         
         gift.setSuppressValidation(true);
         try {
-        	gift = giftService.maintainGift(gift);
+	    gift = giftService.maintainGift(gift);
         } catch (BindException e) {
-        	// Should not happen with suppressValidation = true.
-        	logger.error(e);
+	    // Should not happen with suppressValidation = true.
+	    logger.error(e);
         }
         
     }

@@ -53,7 +53,8 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 			}
 
 			workingMemory.setFocus(site + "processpayment");
-			
+
+			workingMemory.insert(gift.getSite());
 			workingMemory.insert(gift);
 
 /*			List<Gift> gifts = gs.readMonetaryGiftsByConstituentId(gift

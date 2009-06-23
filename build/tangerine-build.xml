@@ -67,6 +67,7 @@
 	<target name="generate.schema">
 		<schemagen srcdir="${src.dir}" destdir="war/WEB-INF" classpath="${compile.path}">
 			<include name="**/Constituent.java"/>
+            <include name="**/CommunicationHistory.java"/>
 			<schema namespace="http://www.orangeleap.com/orangeleap/schemas" file="orangeleap-types.xsd" />
 		</schemagen>
 	</target>

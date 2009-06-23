@@ -86,6 +86,7 @@
     	<property name="password" value="${ldap.password}"/>
 	</bean>
 
+    
     <bean id="tangerineAuthenticationProvider" class="com.orangeleap.tangerine.security.TangerineAuthenticationProvider">
     	<constructor-arg ref="bindAuthenticator"/>
     	<constructor-arg ref="defaultLdapAuthoritiesPopulator"/>

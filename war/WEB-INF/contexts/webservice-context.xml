@@ -2,9 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:sws="http://www.springframework.org/schema/web-services"
+    xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	 http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-1.5.xsd
-	 http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-1.5.xsd">
+	 http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-1.5.xsd
+	 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
 
@@ -31,6 +33,28 @@
         <constructor-arg ref="constituentService"/>
     </bean>
 
+    <security:global-method-security secured-annotations="enabled"/>
+
+
+    <bean id="wsSecurityInterceptor"
+         class="org.springframework.ws.soap.security.xwss.XwsSecurityInterceptor">
+         <property name="policyConfiguration" value="classpath:ws-securityPolicy.xml"/>
+         <property name="callbackHandlers">
+             <list>
+                 <ref bean="springSecurityHandler"/>
+             </list>
+         </property>
+     </bean>
+
+    <bean id="springSecurityHandler"
+          class="org.springframework.ws.soap.security.xwss.callback.SpringPlainTextPasswordValidationCallbackHandler">
+        <property name="authenticationManager" ref="authenticationManager"/>
+      </bean>
+
+      <bean id="authenticationManager" class="com.orangeleap.tangerine.security.TangerineAuthenticationManager">
+         <property name="provider" ref="tangerineAuthenticationProvider"/>
+      </bean>
+
 
     <bean class="org.springframework.ws.server.endpoint.adapter.GenericMarshallingMethodEndpointAdapter">
         <constructor-arg ref="marshaller"/>
@@ -45,17 +69,26 @@
                 <value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</value>
                 <value>com.orangeleap.tangerine.ws.schema.CreateDefaultConstituentRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.GetSegmentationRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationResponse</value>
                 <value>com.orangeleap.tangerine.ws.schema.GiftResponse</value>
                 <value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateGiftRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.SearchConstituentsRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse</value>
             </list>
         </property> 
     </bean>
 
 
-     <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping"/>
+     <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping">
+     <property name="interceptors">
+         <list>
+             <ref bean="wsSecurityInterceptor" />
+         </list>
+     </property>
+     </bean>
 
 
 </beans>

@@ -184,17 +184,17 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     }
     
 	
-	private void ensureOtherConstituentAttributeIsSet(FieldDefinition otherFieldDefinition, Constituent otherConstituent) {
-		String fieldAttributes = otherFieldDefinition.getEntityAttributes();
+	private void ensureConstituentAttributeSet(FieldDefinition fieldDefinition, Constituent constituent) {
+		String fieldAttributes = fieldDefinition.getEntityAttributes();
 		if (fieldAttributes == null) {
             return;
         }
-		// If it's a field that applies to only a single attribute, make sure the attribute is set on the other constituent. 
+		// If it's a field that applies to only a single attribute, make sure the attribute is set on the constituent. 
 		// For multiple attributes, take the first as the default.
 		if (fieldAttributes.contains(",")) {
 			fieldAttributes = fieldAttributes.substring(0,fieldAttributes.indexOf(","));
 		}
-	    otherConstituent.addConstituentRole(fieldAttributes);
+	    constituent.addConstituentRole(fieldAttributes);
 	}
 
 	// Field must be a detail (child list) custom field.
@@ -550,7 +550,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 			    
 			    // Set new roles on refId.
 				refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
-			    ensureOtherConstituentAttributeIsSet(refField, refConstituent);
+			    ensureConstituentAttributeSet(refField, refConstituent);
 				refConstituent = constituentDao.maintainConstituent(refConstituent);
 			    
 			}
@@ -627,7 +627,8 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 	    if (logger.isTraceEnabled()) {
 	        logger.trace("maintainRelationshipCustomFields: constituentId = " + constituentId + " fieldDefinitionId = " + fieldDefinitionId + " masterFieldDefinitionId = " + masterFieldDefinitionId);
 	    } 
-	    if (constituentDao.readConstituentById(constituentId) == null) {
+	    Constituent constituent = constituentDao.readConstituentById(constituentId);
+	    if (constituent == null) {
             throw new RuntimeException("Invalid constituent id");
         }
 	    FieldDefinition fieldDefinition = fieldDao.readFieldDefinition(fieldDefinitionId);
@@ -666,6 +667,11 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	FieldDefinition correspondingRefField = getCorrespondingField(fieldDefinition);
 		
     	List<CustomField> newCustomFields = getCustomFieldsFromRelationshipCustomFields(newRelationshipCustomFields);
+    	
+    	if (newCustomFields.isEmpty() == false) {
+    		ensureConstituentAttributeSet(fieldDefinition, constituent);
+    		constituentDao.maintainConstituent(constituent);
+    	}
     	
     	// Find any orphaned back references 
 		if (correspondingRefField != null) {
@@ -736,7 +742,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 				
 			    // Set new roles on refId.
 		        Constituent refConstituent = constituentDao.readConstituentById(new Long(cf1.getValue()));
-			    ensureOtherConstituentAttributeIsSet(correspondingRefField, refConstituent);
+			    ensureConstituentAttributeSet(correspondingRefField, refConstituent);
 				refConstituent = constituentDao.maintainConstituent(refConstituent);
 			}
 		}

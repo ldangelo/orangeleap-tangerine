@@ -19,8 +19,10 @@ import com.orangeleap.tangerine.domain.GeneratedId;
 public class CustomField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final Date PAST_DATE = new java.util.Date("01/01/1900");
-    public static final Date FUTURE_DATE = new java.util.Date("01/01/3000");
+    public static final String BEGINNING_OF_TIME = "01/01/1900";
+    public static final String END_OF_TIME = "01/01/3000";
+    public static final Date PAST_DATE = new java.util.Date(BEGINNING_OF_TIME);
+    public static final Date FUTURE_DATE = new java.util.Date(END_OF_TIME);
 
     private Long id;
     private String name;
@@ -127,7 +129,9 @@ public class CustomField implements GeneratedId, Serializable {
 	private static final String FORMAT = "MM/dd/yyyy";
 	
 	private String getDisplayDate(Date d) {
-		if (d == null || d.equals(PAST_DATE) || d.equals(FUTURE_DATE)) return "";
+		if (d == null || d.equals(PAST_DATE) || d.equals(FUTURE_DATE)) {
+			return "";
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
 		return sdf.format(d);
 	}

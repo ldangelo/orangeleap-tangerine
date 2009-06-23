@@ -263,8 +263,8 @@ public class RelationshipsController extends SimpleFormController {
 				customFieldRelationshipForm.setFieldName(thisField.getCustomFieldName());
 				customFieldRelationshipForm.setCustomFieldId(thisCustomField.getId());
 				customFieldRelationshipForm.setFieldValue(thisCustomField.getValue());
-				customFieldRelationshipForm.setStartDate(thisCustomField.getStartDate());
-				customFieldRelationshipForm.setEndDate(thisCustomField.getEndDate());
+				customFieldRelationshipForm.setStartDate(thisCustomField.getDisplayStartDate());
+				customFieldRelationshipForm.setEndDate(thisCustomField.getDisplayEndDate());
 				customFieldRelationshipForm.setConstituentName(relationshipService.resolveConstituentRelationship(thisCustomField));
 				
 				if (fieldRelationshipForm.isHasRelationshipCustomizations() && masterFieldDefinitionId != null) {
@@ -318,8 +318,8 @@ public class RelationshipsController extends SimpleFormController {
 					customFieldRelationshipForm.setFieldName(newRelationshipCtmFld.getCustomField().getName());
 					customFieldRelationshipForm.setCustomFieldId(newRelationshipCtmFld.getCustomField().getId());
 					customFieldRelationshipForm.setFieldValue(newRelationshipCtmFld.getCustomField().getValue());
-					customFieldRelationshipForm.setStartDate(newRelationshipCtmFld.getCustomField().getStartDate());
-					customFieldRelationshipForm.setEndDate(newRelationshipCtmFld.getCustomField().getEndDate());
+					customFieldRelationshipForm.setStartDate(newRelationshipCtmFld.getCustomField().getDisplayStartDate());
+					customFieldRelationshipForm.setEndDate(newRelationshipCtmFld.getCustomField().getDisplayEndDate());
 					String constituentName = relationshipService.resolveConstituentRelationship(newRelationshipCtmFld.getCustomField());
 					customFieldRelationshipForm.setConstituentName(constituentName);
 					customFieldRelationshipForm.setRelationshipCustomizations(newRelationshipCtmFld.getRelationshipCustomizations());

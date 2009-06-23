@@ -1,0 +1,17 @@
+table.customFieldTbl { padding: 2px; font-family: arial; margin: 0 auto; }
+table.customFieldTbl thead th { background-color:#E6EEEE; color:#525F95; font-size: 10px; font-weight: bold; padding:4px 4px 2px; }
+table.customFieldTbl tbody th { vertical-align: top; text-align: left; font-size: 1.1em; padding: 8px 0 4px; }
+table.customFieldTbl tbody .treeNodeLink { margin: 0 5px; }
+table.customFieldTbl tbody td div.lookupWrapper div.queryLookupOption { width: 99%; }
+table.customFieldTbl tbody td div.lookupWrapper { width: 97%; }
+table.customFieldTbl tbody td div.lookupField { padding: 1px; }
+table.customFieldTbl tbody td div.lookupField a.hideText { padding: 2px; }
+table.customFieldTbl tbody tr.collapsed td, table.customFieldTbl tbody tr.expanded td  { padding-bottom: 12px; }
+table.customFieldTbl tbody.odd { background-color: #EFEFEF; }
+table.customFieldTbl tbody tr.hiddenRow th { padding-left: 20px; } 
+table.customFieldTbl tbody tr.hiddenRow td table { padding: 0 35px 25px 0; margin: 0 auto; }
+table.customFieldTbl tbody tr.hiddenRow td table td { padding: 0 5px; }
+col.reference { width: 450px; }
+col.date { width: 105px; }
+col.plusMinus { width: 25px; }
+col.delete { width: 30px; }

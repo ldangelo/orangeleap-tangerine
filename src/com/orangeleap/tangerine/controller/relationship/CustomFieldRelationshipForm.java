@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.controller.relationship;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,8 +18,8 @@ public class CustomFieldRelationshipForm implements Serializable {
 	private String fieldValue;
 	private String constituentName;
 	private Long customFieldId;
-	private Date startDate;
-	private Date endDate;
+	private String startDate;
+	private String endDate;
 	private Map<String, Object> relationshipCustomizations;
 	private ConstituentCustomFieldRelationship constituentCustomFieldRelationship;
 	private ConstituentCustomFieldRelationship reverseConstituentCustomFieldRelationship;
@@ -69,19 +68,19 @@ public class CustomFieldRelationshipForm implements Serializable {
 		this.customFieldId = customFieldId;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 	
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 

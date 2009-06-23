@@ -536,7 +536,7 @@ public class Constituent extends AbstractCommunicatorEntity {
                 setCustomFieldValue(INFORMAL_SALUTATION, organizationName);
             }
             else if (isIndividual()) {
-                setCustomFieldValue(INFORMAL_SALUTATION, getFirstLast());
+                setCustomFieldValue(INFORMAL_SALUTATION, getFirstName());
             }
         }
         setConstituentType(StringUtils.trimToEmpty(getConstituentType()).toLowerCase());

@@ -33,8 +33,8 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 	
 	public void doApplyRules(Constituent constituent) throws ConstituentValidationException {
 
-	
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+		String site = constituent.getSite().getName();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 
@@ -44,7 +44,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
-		String site = constituent.getSite().getName();
+
 		workingMemory.setFocus(site+"constituent");
 		workingMemory.setGlobal("applicationContext", applicationContext);
 		workingMemory.setGlobal("constituentService", ps);

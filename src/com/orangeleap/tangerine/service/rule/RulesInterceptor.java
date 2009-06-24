@@ -59,7 +59,7 @@ public abstract class RulesInterceptor implements ApplicationContextAware, Appli
 
     public void doApplyRules(Gift gift) {
 
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(gift.getSite().getName()).getRuleBase();
 
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;

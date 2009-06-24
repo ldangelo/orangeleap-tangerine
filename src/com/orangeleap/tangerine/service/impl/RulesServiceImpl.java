@@ -71,7 +71,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		
 		
 	    RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-		    .getBean("DroolsRuleAgent")).getRuleAgent()
+		    .getBean("DroolsRuleAgent")).getRuleAgent(tuh.lookupUserSiteName())
 		    .getRuleBase();
 		
 	    StatefulSession workingMemory = ruleBase.newStatefulSession();
@@ -153,7 +153,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		
 		
 		RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-		    .getBean("DroolsRuleAgent")).getRuleAgent()
+		    .getBean("DroolsRuleAgent")).getRuleAgent(th.lookupUserSiteName())
 		    .getRuleBase();
 		
 		StatefulSession workingMemory = ruleBase
@@ -243,7 +243,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
 		
 		
 		RuleBase ruleBase = ((DroolsRuleAgent) applicationContext
-		    .getBean("DroolsRuleAgent")).getRuleAgent()
+		    .getBean("DroolsRuleAgent")).getRuleAgent(th.lookupUserSiteName())
 		    .getRuleBase();
 		
 		StatefulSession workingMemory = ruleBase

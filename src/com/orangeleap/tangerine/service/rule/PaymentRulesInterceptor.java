@@ -26,8 +26,8 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 	private ApplicationContext applicationContext;
 	
 	public void doApplyRules(Gift gift) {
-
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+		String site = gift.getSite().getName();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
 		StatefulSession workingMemory = ruleBase.newStatefulSession();
 		if (logger.isDebugEnabled()) {
@@ -41,16 +41,12 @@ public class PaymentRulesInterceptor implements ApplicationContextAware,
 				.getBean("giftService");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 
-		String site = null;
+
 		try {
 
 			workingMemory.setGlobal("applicationContext", applicationContext);
 			workingMemory.setGlobal("constituentService", ps);
 			workingMemory.setGlobal("giftService",gs);
-
-			if (site == null) {
-				site = gift.getSite().getName();
-			}
 
 			workingMemory.setFocus(site + "processpayment");
 

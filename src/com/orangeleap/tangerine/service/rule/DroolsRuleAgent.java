@@ -14,24 +14,31 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 
-	private final Properties droolsProperties;
+	private Properties droolsProperties;
 	private RuleAgent ruleAgent = null;
+    private String pollInterval;
+    private String cacheDir;
+    private String packageDir;
 
 	public DroolsRuleAgent(final String pollInterval, final String cacheDir, final String packageDir) {
 	    if (logger.isDebugEnabled()) {
 	        logger.debug("DroolsRuleAgent: pollInterval = " + pollInterval + " cacheDir = " + cacheDir + " packageDir = " + packageDir);
 	    }
-		droolsProperties = new Properties();
-        droolsProperties.put("newInstance", "true");
-        droolsProperties.put("name", "orangeleap");
-        droolsProperties.put("poll", pollInterval);
-        droolsProperties.put("cache", cacheDir);
-        droolsProperties.put("dir", packageDir);
+        this.pollInterval = pollInterval;
+        this.cacheDir = cacheDir;
+        this.packageDir = packageDir;
+        this.droolsProperties = null;
 	}
-	
-	public Properties getDroolsProperties() {
+
+    public Properties getDroolsProperties(String siteName) {
+        String file = packageDir + "/" + siteName + ".pkg";
+        droolsProperties = new Properties();
+        droolsProperties.put(RuleAgent.POLL_INTERVAL,pollInterval);
+        droolsProperties.put(RuleAgent.FILES,file);
         return droolsProperties;
     }
+
+
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext)
@@ -39,13 +46,9 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 		this.applicationContext = applicationContext;
 	}
 
-    public RuleAgent getRuleAgent() {
-    	if (ruleAgent == null) {
-    		ruleAgent =RuleAgent.newRuleAgent(getDroolsProperties());
-            return ruleAgent; 
-            
-    	} else {
-    		return ruleAgent;
-    	}
+    public RuleAgent getRuleAgent(String siteName) {
+        return RuleAgent.newRuleAgent(getDroolsProperties(siteName));
     }
+
+
 }

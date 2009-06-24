@@ -37,16 +37,18 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 	
 	@Override
     public void doApplyRules(Gift gift) {
+        String site = null;
+        site =gift.getSite().getName();
 
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent().getRuleBase();
+		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
 
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;
 		
-//		if (logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			workingMemory.addEventListener (new DebugAgendaEventListener());
 			workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
-//		}
+		}
 		
 		
 		@SuppressWarnings("unused")
@@ -56,13 +58,10 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 		
-		String site = null;
 
 
 			try {
-				if (site == null) {
-					site =gift.getSite().getName();
-				}
+
 				workingMemory.setFocus(site+"gift");
 				workingMemory.setGlobal("applicationContext", applicationContext);
 				workingMemory.setGlobal("constituentService", ps);

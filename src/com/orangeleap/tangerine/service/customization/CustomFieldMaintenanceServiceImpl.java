@@ -297,7 +297,11 @@ public class CustomFieldMaintenanceServiceImpl extends AbstractTangerineService 
         FieldDefinition newFieldDefinition = new FieldDefinition();
         newFieldDefinition.setDefaultLabel(customFieldRequest.getLabel());
         newFieldDefinition.setEntityType(EntityType.valueOf(customFieldRequest.getEntityType()));
-        if (customFieldRequest.getEntityType().equals("constituent")) newFieldDefinition.setEntityAttributes(customFieldRequest.getConstituentType());
+        if (customFieldRequest.getEntityType().equals("constituent")) {
+            String constituentType = customFieldRequest.getConstituentType();
+            if (constituentType.equals("both")) constituentType = "individual,organization";
+            newFieldDefinition.setEntityAttributes(constituentType);
+        }
         newFieldDefinition.setFieldType(customFieldRequest.getFieldType());
         newFieldDefinition.setSite(site);
         String fieldName = "customFieldMap["+ customFieldRequest.getFieldName()+"]";

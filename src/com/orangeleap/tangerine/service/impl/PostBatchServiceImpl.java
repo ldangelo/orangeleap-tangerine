@@ -180,6 +180,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             bankmap.put(getKey(item.getItemName(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
             bankmap.put(getKey(item.getItemName(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
         }
+        if (bankCodes.getPicklistItems().size() > 0) {
+            PicklistItem defaultItem = bankCodes.getPicklistItems().get(0);
+            bankmap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
+            bankmap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
+            bankmap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
+        }
 
         // Project codes are stored in distribution lines as default display values rather than item names
         Picklist projectCodes = picklistItemService.getPicklist("projectCode");
@@ -301,6 +307,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         if (isGiftHeader) {
 
             String bank = gift.getCustomFieldValue(BANK);
+            bank = (bank == null ? "" : bank.trim());
+            if (bank.equalsIgnoreCase("none")) bank = "";
+
             journal.setJeType(isDebit?DEBIT:CREDIT);
             journal.setAmount(gift.getAmount());
             journal.setCode(bank);
@@ -310,6 +319,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         } else {
             
             String projectCode = dl.getProjectCode();
+            projectCode = (projectCode == null ? "" : projectCode.trim());
+            
             journal.setJeType(isDebit?CREDIT:DEBIT);
             journal.setAmount(dl.getAmount());
             journal.setCode(projectCode);

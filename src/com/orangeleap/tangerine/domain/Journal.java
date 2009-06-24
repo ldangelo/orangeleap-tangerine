@@ -29,13 +29,14 @@ public class Journal implements GeneratedId, Serializable {
     private String origEntity;
     private Long origEntityId;
     private String code;
-    private String glCode1;
-    private String glCode2;
+    private String glCode;
+    private String glAccount1;
+    private String glAccount2;
     private BigDecimal amount;
     private String jeType;
     private String paymentMethod;
     private String ccType;
-    private String desc;
+    private String description;
     private Date donationDate;
     private Date adjustmentDate;
     private Date postedDate;
@@ -128,21 +129,30 @@ public class Journal implements GeneratedId, Serializable {
     }
 
 
-    public String getGlCode1() {
-        return glCode1;
+    public String getGlCode() {
+        return glCode;
     }
 
-    public void setGlCode1(String glCode1) {
-        this.glCode1 = glCode1;
+    public void setGlCode(String glCode) {
+        this.glCode = glCode;
     }
 
 
-    public String getGlCode2() {
-        return glCode2;
+    public String getGlAccount1() {
+        return glAccount1;
     }
 
-    public void setGlCode2(String glCode2) {
-        this.glCode2 = glCode2;
+    public void setGlAccount1(String glAccount1) {
+        this.glAccount1 = glAccount1;
+    }
+
+
+    public String getGlAccount2() {
+        return glAccount2;
+    }
+
+    public void setGlAccount2(String glAccount2) {
+        this.glAccount2 = glAccount2;
     }
 
 
@@ -182,12 +192,12 @@ public class Journal implements GeneratedId, Serializable {
     }
 
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
@@ -271,13 +281,14 @@ public class Journal implements GeneratedId, Serializable {
         .append(origEntity, a.getOrigEntity())
         .append(origEntityId, a.getOrigEntityId())
         .append(code, a.getCode())
-        .append(glCode1, a.getGlCode1())
-        .append(glCode2, a.getGlCode2())
+        .append(glCode, a.getGlCode())
+        .append(glAccount1, a.getGlAccount1())
+        .append(glAccount2, a.getGlAccount2())
         .append(amount, a.getAmount())
         .append(jeType, a.getJeType())
         .append(paymentMethod, a.getPaymentMethod())
         .append(ccType, a.getCcType())
-        .append(desc, a.getDesc())
+        .append(description, a.getDescription())
         .append(donationDate, a.getDonationDate())
         .append(adjustmentDate, a.getAdjustmentDate())
         .append(postedDate, a.getPostedDate())
@@ -300,13 +311,14 @@ public class Journal implements GeneratedId, Serializable {
         .append(""+origEntity)
         .append(""+origEntityId)
         .append(""+code)
-        .append(""+glCode1)
-        .append(""+glCode2)
+        .append(""+glCode)
+        .append(""+glAccount1)
+        .append(""+glAccount2)
         .append(""+amount)
         .append(""+jeType)
         .append(""+paymentMethod)
         .append(""+ccType)
-        .append(""+desc)
+        .append(""+description)
         .append(""+donationDate)
         .append(""+adjustmentDate)
         .append(""+postedDate)
@@ -329,13 +341,14 @@ public class Journal implements GeneratedId, Serializable {
         .append("origEntity", ""+origEntity)
         .append("origEntityId", ""+origEntityId)
         .append("code", ""+code)
-        .append("glCode1", ""+glCode1)
-        .append("glCode2", ""+glCode2)
+        .append("glCode", ""+glCode)
+        .append("glAccount1", ""+glAccount1)
+        .append("glAccount2", ""+glAccount2)
         .append("amount", ""+amount)
         .append("jeType", ""+jeType)
         .append("paymentMethod", ""+paymentMethod)
         .append("ccType", ""+ccType)
-        .append("desc", ""+desc)
+        .append("description", ""+description)
         .append("donationDate", ""+donationDate)
         .append("adjustmentDate", ""+adjustmentDate)
         .append("postedDate", ""+postedDate)

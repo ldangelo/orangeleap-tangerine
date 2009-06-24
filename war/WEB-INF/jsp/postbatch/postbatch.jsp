@@ -85,8 +85,8 @@
 
 
      		<hr/>
-
-            <table >
+            
+            <table  border="1">
                 <tr>
                   <th>Gift Id</th>
                   <th>Constituent Id</th>

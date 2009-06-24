@@ -12,13 +12,14 @@
         <result property="origEntity" column="JOURNAL_ORIG_ENTITY" />
         <result property="origEntityId" column="JOURNAL_ORIG_ENTITY_ID" />
         <result property="code" column="JOURNAL_CODE" />
-        <result property="glCode1" column="JOURNAL_GL_CODE1" />
-        <result property="glCode2" column="JOURNAL_GL_CODE2" />
+        <result property="glCode" column="JOURNAL_GL_CODE" />
+        <result property="glAccount1" column="JOURNAL_GL_ACCOUNT_1" />
+        <result property="glAccount2" column="JOURNAL_GL_ACCOUNT_2" />
         <result property="amount" column="JOURNAL_AMOUNT" />
         <result property="jeType" column="JOURNAL_JE_TYPE" />
         <result property="paymentMethod" column="JOURNAL_PAYMENT_METHOD" />
         <result property="ccType" column="JOURNAL_CC_TYPE" />
-        <result property="desc" column="JOURNAL_DESC" />
+        <result property="description" column="JOURNAL_DESCRIPTION" />
         <result property="donationDate" column="JOURNAL_DONATION_DATE" />
         <result property="adjustmentDate" column="JOURNAL_ADJUSTMENT_DATE" />
         <result property="postedDate" column="JOURNAL_POSTED_DATE" />
@@ -38,13 +39,14 @@
         journal.ORIG_ENTITY as JOURNAL_ORIG_ENTITY,
         journal.ORIG_ENTITY_ID as JOURNAL_ORIG_ENTITY_ID,
         journal.CODE as JOURNAL_CODE,
-        journal.GL_CODE1 as JOURNAL_GL_CODE1,
-        journal.GL_CODE2 as JOURNAL_GL_CODE2,
+        journal.GL_CODE as JOURNAL_GL_CODE,
+        journal.GL_ACCOUNT_1 as JOURNAL_GL_ACCOUNT_1,
+        journal.GL_ACCOUNT_1 as JOURNAL_GL_ACCOUNT_2,
         journal.AMOUNT as JOURNAL_AMOUNT,
         journal.JE_TYPE as JOURNAL_JE_TYPE,
         journal.PAYMENT_METHOD as JOURNAL_PAYMENT_METHOD,
         journal.CC_TYPE as JOURNAL_CC_TYPE,
-        journal.DESC as JOURNAL_DESC,
+        journal.DESCRIPTION as JOURNAL_DESCRIPTION,
         journal.DONATION_DATE as JOURNAL_DONATION_DATE,
         journal.ADJUSTMENT_DATE as JOURNAL_ADJUSTMENT_DATE,
         journal.POSTED_DATE as JOURNAL_POSTED_DATE,
@@ -76,13 +78,14 @@
         	ORIG_ENTITY,
         	ORIG_ENTITY_ID,
         	CODE,
-        	GL_CODE1,
-        	GL_CODE2,
+        	GL_CODE,
+            GL_ACCOUNT_1,
+        	GL_ACCOUNT_2,
         	AMOUNT,
         	JE_TYPE,
         	PAYMENT_METHOD,
         	CC_TYPE,
-        	DESC,
+        	DESCRIPTION,
         	DONATION_DATE,
         	ADJUSTMENT_DATE,
         	POSTED_DATE,
@@ -100,13 +103,14 @@
         	#origEntity# ,
         	#origEntityId# ,
         	#code# ,
-        	#glCode1# ,
-        	#glCode2# ,
+        	#glCode# ,
+            #glAccount1# ,
+        	#glAccount2# ,
         	#amount# ,
         	#jeType# ,
         	#paymentMethod# ,
         	#ccType# ,
-        	#desc# ,
+        	#description# ,
         	#donationDate# ,
         	#adjustmentDate# ,
         	#postedDate# ,
@@ -131,13 +135,14 @@
         	ORIG_ENTITY = #origEntity# ,
         	ORIG_ENTITY_ID = #origEntityId# ,
         	CODE = #code# ,
-        	GL_CODE1 = #glCode1# ,
-        	GL_CODE2 = #glCode2# ,
+            GL_CODE = #glCode# ,
+            GL_ACCOUNT_1 = #glAccount1# ,
+        	GL_ACCOUNT_2 = #glAccount2# ,
         	AMOUNT = #amount# ,
         	JE_TYPE = #jeType# ,
         	PAYMENT_METHOD = #paymentMethod# ,
         	CC_TYPE = #ccType# ,
-        	DESC = #desc# ,
+        	DESCRIPTION = #description# ,
         	DONATION_DATE = #donationDate# ,
         	ADJUSTMENT_DATE = #adjustmentDate# ,
         	POSTED_DATE = #postedDate# ,

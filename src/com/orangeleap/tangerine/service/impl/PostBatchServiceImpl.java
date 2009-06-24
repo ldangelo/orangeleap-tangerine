@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -55,6 +56,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Resource(name="tangerineUserHelper")
     protected TangerineUserHelper tangerineUserHelper;
+
+
+    private final static String ACCOUNT_STRING_1 = "AccountString1";
+    private final static String ACCOUNT_STRING_2 = "AccountString2";
+    private final static String GL_ACCOUNT_CODE = "GLAccountCode";
+
 
 
     @Override
@@ -104,6 +111,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
     @Override
     public List<Gift> createBatchSelectionList(PostBatch postbatch) {
+        postBatchDao.deletePostBatchItems(postbatch.getId());
+        
         Map<String, Object> map = new HashMap();
         for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
             map.put(me.getKey(), me.getValue());
@@ -111,11 +120,18 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         List<Gift> list = giftService.searchGifts(map);
         // if (list.size() == 200) throw new RuntimeException("Too many items selected"); // see gift.xml for search limit
         // TODO raise this limit from 200 to ?
-        for (Gift gift : list) {
-            PostBatchReviewSetItem item = new PostBatchReviewSetItem();
-            item.setEntityId(gift.getId());
-            item.setPostBatchId(postbatch.getId());
-            postBatchDao.maintainPostBatchReviewSetItem(item);
+        Iterator<Gift> it = list.iterator();
+        while (it.hasNext()) {
+            Gift gift = it.next();
+            if (hasBankAndProjectCodes(gift)) {
+                PostBatchReviewSetItem item = new PostBatchReviewSetItem();
+                item.setEntityId(gift.getId());
+                item.setPostBatchId(postbatch.getId());
+                postBatchDao.maintainPostBatchReviewSetItem(item);
+            } else {
+                it.remove();
+                logger.debug("Excluding gift from search results - Missing bank or project codes on gift "+gift.getId());
+            }
         }
         postbatch.setReviewSetGenerated(true);
         postbatch.setReviewSetGeneratedDate(new java.util.Date());
@@ -123,6 +139,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postBatchDao.maintainPostBatch(postbatch);
         return list;
     }
+
+    private boolean hasBankAndProjectCodes(Gift gift) {
+        if (gift.getCustomFieldValue(BANK) == null) return false;
+        for (DistributionLine dl : gift.getDistributionLines()) {
+            if (dl.getProjectCode() == null || dl.getProjectCode().trim().length() == 0) return false;
+        }
+        return true;
+    }
+
 
     // Reads previous list of matched gifts. Does not re-evaluate any criteria.
     @Override
@@ -135,39 +160,55 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
          return result;
     }
 
-
-    private final static String ACCOUNT_STRING_1 = "AccountString1";
-    private final static String ACCOUNT_STRING_2 = "AccountString2";
-
-    // Sets fields on gifts in reviewed batch list
-    @Override
-    public PostBatch postBatch(PostBatch postbatch) {
-
-        Picklist projectCodes = picklistItemService.getPicklist("projectCode");
-        if (projectCodes == null || projectCodes.getActivePicklistItems().size() == 0) {
-            throw new RuntimeException("Designation codes for GL account codes not defined.");
-        }
-        Map<String, String> codemap = new HashMap<String, String>();
-        for (PicklistItem item : projectCodes.getPicklistItems()) {
-            if (item.getCustomFieldValue(ACCOUNT_STRING_1) == null ||item.getCustomFieldValue(ACCOUNT_STRING_2) == null) {
-                throw new RuntimeException("GL account code not defined for designation code "+item.getDefaultDisplayValue());
-            }
-            codemap.put(item.getItemName() + ACCOUNT_STRING_1, item.getCustomFieldValue(ACCOUNT_STRING_1));
-            codemap.put(item.getItemName() + ACCOUNT_STRING_2, item.getCustomFieldValue(ACCOUNT_STRING_2));
-        }
+    private void createMaps(Map<String, String> bankmap, Map<String, String> codemap) {
 
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
         if (bankCodes == null || bankCodes.getActivePicklistItems().size() == 0) {
             throw new RuntimeException("Bank GL account codes not defined.");
         }
-        Map<String, String> bankmap = new HashMap<String, String>();
+
         for (PicklistItem item : bankCodes.getPicklistItems()) {
-            if (item.getCustomFieldValue(ACCOUNT_STRING_1) == null ||item.getCustomFieldValue(ACCOUNT_STRING_2) == null) {
-                throw new RuntimeException("GL account code not defined for bank code "+item.getDefaultDisplayValue());
+            if (item.getCustomFieldValue(ACCOUNT_STRING_1) == null
+                || item.getCustomFieldValue(ACCOUNT_STRING_2) == null
+                || item.getCustomFieldValue(GL_ACCOUNT_CODE) == null
+            ) {
+                throw new RuntimeException("GL account codes not defined for bank code "+item.getDefaultDisplayValue());
             }
-            bankmap.put(item.getItemName() + ACCOUNT_STRING_1, item.getCustomFieldValue(ACCOUNT_STRING_1));
-            bankmap.put(item.getItemName() + ACCOUNT_STRING_2, item.getCustomFieldValue(ACCOUNT_STRING_2));
+            bankmap.put(getKey(item.getItemName(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
+            bankmap.put(getKey(item.getItemName(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
+            bankmap.put(getKey(item.getItemName(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
         }
+
+        // Project codes are stored in distribution lines as default display values rather than item names
+        Picklist projectCodes = picklistItemService.getPicklist("projectCode");
+        if (projectCodes == null || projectCodes.getActivePicklistItems().size() == 0) {
+            throw new RuntimeException("Designation codes for GL account codes not defined.");
+        }
+
+        for (PicklistItem item : projectCodes.getPicklistItems()) {
+            if (item.getCustomFieldValue(ACCOUNT_STRING_1) == null
+                || item.getCustomFieldValue(ACCOUNT_STRING_2) == null
+                || item.getCustomFieldValue(GL_ACCOUNT_CODE) == null
+            ) {
+                throw new RuntimeException("GL account code not defined for designation code "+item.getDefaultDisplayValue());
+            }
+            codemap.put(getKey(item.getDefaultDisplayValue(), ACCOUNT_STRING_1), item.getCustomFieldValue(ACCOUNT_STRING_1));
+            codemap.put(getKey(item.getDefaultDisplayValue(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
+            codemap.put(getKey(item.getDefaultDisplayValue(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
+        }
+
+
+    }
+
+
+
+    // Sets fields on gifts in reviewed batch list
+    @Override
+    public PostBatch postBatch(PostBatch postbatch) {
+
+        Map<String, String> bankmap = new HashMap<String, String>();
+        Map<String, String> codemap = new HashMap<String, String>();
+        createMaps(bankmap, codemap);
 
         postbatch.getUpdateErrors().clear();
         List<Gift> list = getBatchSelectionList(postbatch);
@@ -177,9 +218,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 BeanWrapperImpl bw = new BeanWrapperImpl(gift);
                 try {
                     bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
-                    giftService.maintainGift(gift);
+//                    giftService.maintainGift(gift);
                     createJournalEntries(gift, postbatch, codemap, bankmap);
-                } catch (BindException e) {
+                } catch (Exception e) {
                     String msg = gift.getId() + ": " + e.getMessage();
                     logger.error(msg);
                     postbatch.getUpdateErrors().add(msg);
@@ -226,27 +267,60 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private static String GIFT = "gift";
 
     private void createJournalEntry(Gift gift, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
+
         boolean isDebit = gift.getAmount().compareTo(new BigDecimal("0")) >= 0;
+        boolean isGiftHeader = dl == null;
+
         Journal journal = new Journal();
         journal.setEntity(GIFT);
         journal.setEntityId(gift.getId());
-        journal.setAmount(gift.getAmount());
         journal.setSiteName(getSiteName());
         journal.setPostedDate(new java.util.Date());
         journal.setPostBatchId(postbatch.getId());
-        if (dl == null) {
-            journal.setJeType(isDebit?DEBIT:CREDIT);
+
+        if (isGiftHeader) {
+
             String bank = gift.getCustomFieldValue(BANK);
-            journal.setGlCode1(bankmap.get(bank+ACCOUNT_STRING_1));
-            journal.setGlCode2(bankmap.get(bank+ACCOUNT_STRING_2));
+            journal.setJeType(isDebit?DEBIT:CREDIT);
+            journal.setAmount(gift.getAmount());
+            journal.setCode(bank);
+
+            updateJournalCodes(journal, bankmap, bank, postbatch);
+
         } else {
+            
+            String projectCode = dl.getProjectCode();
             journal.setJeType(isDebit?CREDIT:DEBIT);
-            journal.setGlCode1(codemap.get(dl.getProjectCode()+ACCOUNT_STRING_1));
-            journal.setGlCode2(codemap.get(dl.getProjectCode()+ACCOUNT_STRING_2));
+            journal.setAmount(dl.getAmount());
+            journal.setCode(projectCode);
+
+            updateJournalCodes(journal, codemap, projectCode, postbatch);
+
         }
 
         journal.setDonationDate(gift.getDonationDate());
         journalDao.maintainJournal(journal);
     }
+
+    private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch postbatch) {
+
+        String glAccount1 = map.get(getKey(code,ACCOUNT_STRING_1));
+        if (glAccount1 == null) postbatch.getUpdateErrors().add("Invalid AccountString1 for "+code);
+        journal.setGlAccount1(glAccount1);
+
+        String glAccount2 = map.get(getKey(code,ACCOUNT_STRING_2));
+        if (glAccount2 == null) postbatch.getUpdateErrors().add("Invalid AccountString2 for "+code);
+        journal.setGlAccount2(glAccount2);
+
+        String glCode = map.get(getKey(code,GL_ACCOUNT_CODE));
+        if (glCode == null) postbatch.getUpdateErrors().add("Invalid GL Code for "+code);
+        journal.setGlCode(glCode);
+        
+    }
+
+    private String getKey(String s1, String s2) {
+        return s1 + " : " + s2;
+    }
+
 
 }

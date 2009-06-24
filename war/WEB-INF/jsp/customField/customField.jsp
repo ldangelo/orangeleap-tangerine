@@ -39,9 +39,10 @@
 
 		   <div id="selectConstituentType"  style="display:none">
 			  Display for constituent type:
-		      <select id="constituentType" name="constituentType" ">
+		      <select id="constituentType" name="constituentType" >
 			    <option value="individual" >Individual</option>
-			    <option value="organization" >Organization</option>
+               <option value="organization" >Organization</option>
+               <option value="both" >Both</option>
 		      </select>
   	     	  <br/>
 			  Maintain relationships between this field and:

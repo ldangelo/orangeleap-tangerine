@@ -3,11 +3,13 @@ package com.orangeleap.tangerine.service.impl;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
 import com.orangeleap.tangerine.domain.Journal;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.service.PostBatchService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
@@ -88,7 +90,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         Map<String, String> map = new TreeMap<String, String>();
         map.put("posted", "Posted");
 //       map.put("postedDate", "Posted Date");
-        map.put("giftStatus", "Gift Status");
+//       map.put("giftStatus", "Gift Status");
         return map;
     }
 
@@ -240,7 +242,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             try {
                 saveGift(gift);
-                createJournalEntries(gift, postbatch, codemap, bankmap);
+                createJournalEntries(gift, null, postbatch, codemap, bankmap);   // TODO support Adjusted Gifts
             } catch (Exception e) {
                 String msg = gift.getId() + ": " + e.getMessage();
                 logger.error(msg);
@@ -280,10 +282,11 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     }
 
-    private void createJournalEntries(Gift gift, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
-        createJournalEntry(gift, null, postbatch, codemap, bankmap);
+    private void createJournalEntries(Gift gift, AdjustedGift ag, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
+        createJournalEntry(gift, ag, null, postbatch, codemap, bankmap);
+        List<DistributionLine> dls = ag == null ? gift.getDistributionLines() : ag.getDistributionLines();
         for (DistributionLine dl : gift.getDistributionLines()) {
-            createJournalEntry(gift, dl, postbatch, codemap, bankmap);
+            createJournalEntry(gift, ag, dl, postbatch, codemap, bankmap);
         }
     }
 
@@ -291,46 +294,72 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private static String CREDIT = "credit";
     private static String BANK = "bank";
     private static String GIFT = "gift";
+    private static String ADJUSTED_GIFT = "adjustedgift";
+    private static String DISTRO_LINE = "distributionline";
 
-    private void createJournalEntry(Gift gift, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
+    private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
 
         boolean isDebit = gift.getAmount().compareTo(new BigDecimal("0")) >= 0;
-        boolean isGiftHeader = dl == null;
+        boolean isHeader = dl == null;
+        boolean isAdjustedGift = ag != null;
 
         Journal journal = new Journal();
-        journal.setEntity(GIFT);
-        journal.setEntityId(gift.getId());
         journal.setSiteName(getSiteName());
         journal.setPostedDate(new java.util.Date());
         journal.setPostBatchId(postbatch.getId());
 
-        if (isGiftHeader) {
-
-            String bank = gift.getCustomFieldValue(BANK);
-            bank = (bank == null ? "" : bank.trim());
-            if (bank.equalsIgnoreCase("none")) bank = "";
+        if (isHeader) {
+            
+            // Gift or Adjusted Gift
 
             journal.setJeType(isDebit?DEBIT:CREDIT);
-            journal.setAmount(gift.getAmount());
-            journal.setCode(bank);
 
-            updateJournalCodes(journal, bankmap, bank, postbatch);
+            if (isAdjustedGift) {
+                journal.setEntity(ADJUSTED_GIFT);
+                journal.setEntityId(ag.getId());
+                journal.setOrigEntity(GIFT);
+                journal.setOrigEntityId(gift.getId());
+                journal.setAmount(ag.getAdjustedAmount());
+                journal.setCode(getBank(ag));
+            } else {
+                journal.setEntity(GIFT);
+                journal.setEntityId(gift.getId());
+                journal.setAmount(gift.getAmount());
+                journal.setCode(getBank(gift));
+            }
+
+            updateJournalCodes(journal, bankmap, journal.getCode(), postbatch);
 
         } else {
-            
+
+            // Distribution lines
+
+            journal.setJeType(isDebit?CREDIT:DEBIT);
+
+            journal.setEntity(DISTRO_LINE);
+            journal.setEntityId(dl.getId());
+            journal.setMasterEntity(GIFT);
+            journal.setMasterEntityId(gift.getId());
+
             String projectCode = dl.getProjectCode();
             projectCode = (projectCode == null ? "" : projectCode.trim());
             
-            journal.setJeType(isDebit?CREDIT:DEBIT);
             journal.setAmount(dl.getAmount());
             journal.setCode(projectCode);
 
-            updateJournalCodes(journal, codemap, projectCode, postbatch);
+            updateJournalCodes(journal, codemap, journal.getCode(), postbatch);
 
         }
 
         journal.setDonationDate(gift.getDonationDate());
         journalDao.maintainJournal(journal);
+    }
+
+    private String getBank(AbstractCustomizableEntity e) {
+        String bank = e.getCustomFieldValue(BANK);
+        bank = (bank == null ? "" : bank.trim());
+        if (bank.equalsIgnoreCase("none")) bank = "";
+        return bank;
     }
 
     private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch postbatch) {

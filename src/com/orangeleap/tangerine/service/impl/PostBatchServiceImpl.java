@@ -86,9 +86,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftUpdateFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
-        map.put("posted", "Posted");
-//        map.put("postedDate", "Posted Date");
-//        map.put("giftStatus", "Gift Status");
+//       map.put("posted", "Posted");
+//       map.put("postedDate", "Posted Date");
+        map.put("giftStatus", "Gift Status");
         return map;
     }
 
@@ -211,6 +211,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     @Override
     public PostBatch postBatch(PostBatch postbatch) {
 
+        Date postDate = new java.util.Date();
+
         Map<String, String> bankmap = new HashMap<String, String>();
         Map<String, String> codemap = new HashMap<String, String>();
         createMaps(bankmap, codemap);
@@ -221,6 +223,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             gift = giftService.readGiftById(gift.getId());
             siteService.populateDefaultEntityEditorMaps(gift);
+
+            gift.setPosted(true);
+            gift.setPostedDate(postDate);
+
             BeanWrapperImpl bw = new BeanWrapperImpl(gift);
             for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
                 bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
@@ -243,10 +249,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
 
         postbatch.setPosted(true);
-        postbatch.setPostedDate(new java.util.Date());
+        postbatch.setPostedDate(postDate);
         postbatch.setPostedById(tangerineUserHelper.lookupUserId());
         postBatchDao.maintainPostBatch(postbatch);
+        
         postBatchDao.deletePostBatchItems(postbatch.getId());
+        
         return postbatch;
         
     }

@@ -89,7 +89,7 @@ public class ImportHandler {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg = translate(e.getMessage());
+			String msg = translate(e);
 			msg = "Error in import file line "+linenumber+": "+msg;
 			logger.error(msg);
 			if (errors.size() < MAX_ERRORS) {
@@ -101,8 +101,9 @@ public class ImportHandler {
 
 	}
 	
-	private String translate(String msg) {
-        if (msg == null) msg = "";
+	private String translate(Exception e) {
+        String msg = e.getMessage();
+        if (msg == null || msg.trim().length() == 0) msg = e.getClass().getSimpleName();
 		if (msg.contains("fieldValidationFailure")) {
 			msg = msg.substring(msg.indexOf("arguments"));
 			msg = msg.substring(msg.indexOf("[")+1);

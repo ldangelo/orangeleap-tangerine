@@ -60,7 +60,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 	@Override
     @Transactional(propagation = Propagation.REQUIRED)
 	public Picklist getPicklistById(Long picklistId) {
-		return picklistDao.readPicklistById(picklistId);
+		return populateCustomFieldsOnDependentItems(picklistDao.readPicklistById(picklistId));
 	}
 	
 	@Override
@@ -281,6 +281,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
 
 		logger.info("Updating "+picklist.getSite().getName()+" site-specific copy of picklist item "+picklistItem.getItemName());
 
+        PicklistItem updatedItem = null;
 		boolean found = false;
 		Long id = picklistItem.getId();
     	if (id != null) {
@@ -291,6 +292,8 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
                     	Long origid = apicklistItem.getId();
             			BeanUtils.copyProperties(apicklistItem, picklistItem);
             			apicklistItem.setId(origid);
+                        apicklistItem.setCustomFieldMap(picklistItem.getCustomFieldMap());
+                        updatedItem = apicklistItem;
             		} catch (Exception e) {
             		}
                     break;
@@ -309,6 +312,7 @@ public class PicklistItemServiceImpl extends AbstractTangerineService implements
     	}
         
     	picklist = picklistDao.maintainPicklist(picklist);
+        if (updatedItem != null) picklistDao.maintainPicklistItem(updatedItem);
     	cacheGroupDao.updateCacheGroupTimestamp(CacheGroupType.PICKLIST);
 
 

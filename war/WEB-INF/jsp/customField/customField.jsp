@@ -84,7 +84,7 @@
 		   
 		   <div id="selectReferenceConstituentType"  style="display:none">
 			  Reference constituent type:
-		      <select id="referenceConstituentType" name="referenceConstituentType" ">
+		      <select id="referenceConstituentType" name="referenceConstituentType" >
 			    <option value="individual" >Individual</option>
 			    <option value="organization" >Organization</option>
 			    <option value="both" >Both</option>

@@ -116,7 +116,7 @@ public class CsvImportController extends SimpleFormController {
     		ImportHandler handler = new ImportHandler(importRequest, data, applicationContext);
 	    	handler.importData();
 	    	
-			String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrors().size();
+			String summary = "Adds: " + handler.getAdds() + ", Changes: " + handler.getChanges() + (handler.getDeletes() > 0 ? ", Deletes: " + handler.getDeletes() : "") + ", Errors: " + handler.getErrorCount();
 			result.add(summary);
 			if (handler.getErrors().size() == 0) {
                 result.add("Import successful.");

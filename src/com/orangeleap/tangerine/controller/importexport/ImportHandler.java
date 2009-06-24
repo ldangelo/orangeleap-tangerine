@@ -14,7 +14,7 @@ import com.orangeleap.tangerine.controller.importexport.importers.EntityImporter
 
 public class ImportHandler {
 	
-	public static final int MAX_ERRORS = 100;
+	public static final int MAX_ERRORS = 20;
 	
 
 	protected final Log logger = OLLogger.getLog(getClass());
@@ -26,6 +26,7 @@ public class ImportHandler {
 	private int adds = 0;
 	private int changes = 0;
 	private int deletes = 0;
+    private int errorCount = 0;
 	private List<String> errors = new ArrayList<String>();
 
 	public ImportHandler(ImportRequest importRequest, List<String[]> data, ApplicationContext applicationContext) {
@@ -92,6 +93,7 @@ public class ImportHandler {
 			String msg = translate(e);
 			msg = "Error in import file line "+linenumber+": "+msg;
 			logger.error(msg);
+            errorCount++;
 			if (errors.size() < MAX_ERRORS) {
 				errors.add(msg);
 			} else if (errors.size() == MAX_ERRORS) {
@@ -124,6 +126,12 @@ public class ImportHandler {
 	public int getDeletes() {
 		return deletes;
 	}
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+
 
 	public List<String> getErrors() {
 		return errors;

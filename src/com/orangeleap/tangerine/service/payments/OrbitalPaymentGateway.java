@@ -119,6 +119,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 //                request.setFieldValue("AVScountrycode",addr.getCountry());
 			}
 
+            if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
+                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals(""))
+                request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+
 			if (logger.isInfoEnabled()) {
 				logger.info(request.getXML());
 			}
@@ -263,6 +267,10 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 				request.setFieldValue("AVSstate", addr.getStateProvince());
 				request.setFieldValue("AVSzip", addr.getPostalCode());
 			}
+
+            if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
+                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals(""))
+                request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
 
 			if (logger.isInfoEnabled()) {
 				logger.info(request.getXML());

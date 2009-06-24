@@ -1,14 +1,15 @@
 package com.orangeleap.tangerine.test.service.impl;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.test.BaseTest;
+import com.orangeleap.tangerine.util.OLLogger;
 
 public class ConstituentServiceTest extends BaseTest {
 	   protected final Log logger = OLLogger.getLog(getClass());
@@ -26,7 +27,12 @@ public class ConstituentServiceTest extends BaseTest {
 	    
 	    	try {
 	    		constituentService.maintainConstituent(p);
-	    	} catch (ConstituentValidationException ex) {
+	    	} 
+	    	catch (DuplicateConstituentException ex) {
+	    		assert true;
+	    		return;
+	    	}
+	    	catch (ConstituentValidationException ex) {
 	    		assert true;
 	    		return;
 	    	}
@@ -43,7 +49,12 @@ public class ConstituentServiceTest extends BaseTest {
 	    	
 	    	try {
 	    		constituentService.maintainConstituent(p);
-	    	} catch (ConstituentValidationException ex) {
+	    	} 
+	    	catch (DuplicateConstituentException ex) {
+	    		assert false;
+	    		return;
+	    	}
+	    	catch (ConstituentValidationException ex) {
 	    		assert false;
 	    		return;
 	    	}

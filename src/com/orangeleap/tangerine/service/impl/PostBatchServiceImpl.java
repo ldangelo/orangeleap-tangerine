@@ -68,6 +68,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftSelectFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
+/*
         map.put("amount", "Amount");
         map.put("currencyCode", "Currency Code");
         map.put("createDate", "Create date");
@@ -76,6 +77,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         map.put("donationDate", "Donation Date");
         map.put("postmarkDate", "Postmark Date");
         map.put("paymentStatus", "Payment Status");
+*/        
         map.put("posted", "Posted");
         return map;
     }
@@ -84,9 +86,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftUpdateFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
-        map.put("giftStatus", "Gift Status");
         map.put("posted", "Posted");
-        map.put("postedDate", "Posted Date");
+//        map.put("postedDate", "Posted Date");
+//        map.put("giftStatus", "Gift Status");
         return map;
     }
 
@@ -200,7 +202,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     }
 
-
+    private void saveGift(Gift gift) throws BindException {
+        // TODO uncomment once complete TANGERINE-816 gift domain/form object separation
+        //giftService.maintainGift(gift);
+    }
 
     // Sets fields on gifts in reviewed batch list
     @Override
@@ -213,30 +218,37 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postbatch.getUpdateErrors().clear();
         List<Gift> list = getBatchSelectionList(postbatch);
         for (Gift gift: list) {
+
+            gift = giftService.readGiftById(gift.getId());
+            siteService.populateDefaultEntityEditorMaps(gift);
+            BeanWrapperImpl bw = new BeanWrapperImpl(gift);
             for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-                siteService.populateDefaultEntityEditorMaps(gift);
-                BeanWrapperImpl bw = new BeanWrapperImpl(gift);
-                try {
-                    bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
-//                    giftService.maintainGift(gift);
-                    createJournalEntries(gift, postbatch, codemap, bankmap);
-                } catch (Exception e) {
-                    String msg = gift.getId() + ": " + e.getMessage();
-                    logger.error(msg);
-                    postbatch.getUpdateErrors().add(msg);
-                }
+                bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
             }
+
+            try {
+                saveGift(gift);
+                createJournalEntries(gift, postbatch, codemap, bankmap);
+            } catch (Exception e) {
+                String msg = gift.getId() + ": " + e.getMessage();
+                logger.error(msg);
+                postbatch.getUpdateErrors().add(msg);
+            }
+
         }
+
         if (postbatch.getUpdateErrors().size() > 0) {
             // rollback entire batch for now.  otherwise we have to support reprocess partial
             throw new PostBatchUpdateException(postbatch.getUpdateErrors());   
         }
+
         postbatch.setPosted(true);
         postbatch.setPostedDate(new java.util.Date());
         postbatch.setPostedById(tangerineUserHelper.lookupUserId());
         postBatchDao.maintainPostBatch(postbatch);
         postBatchDao.deletePostBatchItems(postbatch.getId());
         return postbatch;
+        
     }
 
     public final static class PostBatchUpdateException extends RuntimeException {

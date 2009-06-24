@@ -43,6 +43,7 @@ import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.PhoneService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PageType;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -179,6 +180,9 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
 	            NewConstituent newConstituent = (NewConstituent) context.getBean("newConstituent");
 	            newConstituent.routeConstituent(constituent);
 	        } 
+	        catch (DuplicateConstituentException dce) {
+	        	throw dce;
+	        }
 	        catch (ConstituentValidationException cve) {
 	        	throw cve;
 	        }

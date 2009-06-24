@@ -23,6 +23,23 @@
     				showHideOrganization($(this));
         		});	
         	});
+
+			<c:if test="${not empty requestScope.duplicateConstituentName}">
+				$(function() {
+					var duplicateConstituentName = '<c:out value="${requestScope.duplicateConstituentName}"/>';
+					Ext.Msg.show({
+						title: "Save Duplicate Constituent '" + duplicateConstituentName + "'?",
+						msg: duplicateConstituentName + ' is a duplicate of another constituent.  Would you like to continue?',
+						buttons: Ext.Msg.OKCANCEL,
+						icon: Ext.MessageBox.WARNING,
+						fn: function(btn, text) {
+							if (btn == "ok") {
+								$("div.mainForm form").eq(0).append("<input type='hidden' name='byPassDuplicateDetection' id='byPassDuplicateDetection' value='true'/>").submit();
+							} 
+						}
+					});
+				});
+			</c:if>
         </script>
     </tiles:putAttribute>
     

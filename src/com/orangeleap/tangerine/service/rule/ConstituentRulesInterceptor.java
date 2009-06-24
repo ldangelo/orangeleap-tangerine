@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.spi.ConsequenceException;
@@ -20,6 +19,8 @@ import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 
@@ -31,7 +32,7 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 	private String ruleFlowName;
 	private Class  eventClass;
 	
-	public void doApplyRules(Constituent constituent) throws ConstituentValidationException {
+	public void doApplyRules(Constituent constituent) throws DuplicateConstituentException, ConstituentValidationException {
 
 		String site = constituent.getSite().getName();
 		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
@@ -71,7 +72,11 @@ public class ConstituentRulesInterceptor implements ApplicationContextAware, App
 			workingMemory.fireAllRules();
 			
 		} catch (ConsequenceException ce) {
-			if(ce.getCause() instanceof ConstituentValidationException) {
+			if (ce.getCause() instanceof DuplicateConstituentException) {
+				DuplicateConstituentException dce = (DuplicateConstituentException) ce.getCause();
+				throw dce;
+			}
+			if (ce.getCause() instanceof ConstituentValidationException) {
 				ConstituentValidationException cve = (ConstituentValidationException) ce.getCause();
 				throw cve;
 			}

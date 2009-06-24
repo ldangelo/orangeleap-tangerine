@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +12,8 @@ import com.orangeleap.tangerine.controller.TangerineFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
 public class ConstituentFormController extends TangerineFormController {
@@ -44,32 +45,37 @@ public class ConstituentFormController extends TangerineFormController {
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Constituent p = (Constituent) command;
+        Constituent constituent = (Constituent) command;
         if (logger.isTraceEnabled()) {
-            logger.trace("onSubmit: constituent = " + p.getFullName());
+            logger.trace("onSubmit: constituent = " + constituent.getFullName());
         }
         
-        boolean saved = true;
-        Constituent current = null;
+        boolean saved = false;
+        boolean isDuplicate = false;
         try {
-            current = constituentService.maintainConstituent(p);
+            constituent = constituentService.maintainConstituent(constituent);
+            saved = true;
         } 
+        catch (DuplicateConstituentException dce) {
+        	isDuplicate = true;
+        }
         catch (ConstituentValidationException e) {
-            saved = false;
-        	current = p;
             e.createMessages(errors);
-        } catch (BindException e) {
-            saved = false;
-            current = p;
+        }
+        catch (BindException e) {
             errors.addAllErrors(e);
         }
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(new StringBuilder(super.getSuccessView()).append("?").append(StringConstants.CONSTITUENT_ID).append("=").append(current.getId()).toString()));
+            mav = new ModelAndView(super.appendSaved(new StringBuilder(super.getSuccessView()).append("?").append(StringConstants.CONSTITUENT_ID).append("=").append(constituent.getId()).toString()));
         }
         else {
             mav = showForm(request, errors, getFormView());
+            
+            if (isDuplicate) {
+            	mav.addObject("duplicateConstituentName", constituent.getFirstLast());
+            }
         }
         return mav;
     }

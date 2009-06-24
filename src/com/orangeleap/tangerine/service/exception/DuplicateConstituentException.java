@@ -1,17 +1,17 @@
 package com.orangeleap.tangerine.service.exception;
 
-public class DuplicateConstituentException extends RuntimeException {
+public class DuplicateConstituentException extends ConstituentValidationException {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long duplicateConstituentID;
 	
-	DuplicateConstituentException() {
+	public DuplicateConstituentException() {
 		super();
 	}
 	
-	DuplicateConstituentException(String message) {
-		super();
+	public DuplicateConstituentException(String message) {
+		super(message);
 	}
 
 	public void setDuplicateConstituentID(Long duplicateConstituentID) {

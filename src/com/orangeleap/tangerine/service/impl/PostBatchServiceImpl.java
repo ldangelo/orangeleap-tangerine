@@ -86,7 +86,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftUpdateFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
-//       map.put("posted", "Posted");
+        map.put("posted", "Posted");
 //       map.put("postedDate", "Posted Date");
         map.put("giftStatus", "Gift Status");
         return map;

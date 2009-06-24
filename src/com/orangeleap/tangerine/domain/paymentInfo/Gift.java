@@ -248,6 +248,10 @@ public class Gift extends AbstractPaymentInfoEntity {
 		return !StringUtils.trimToEmpty(paymentStatus).equals("");
 	}
 
+    public Boolean getIsError() {
+        return StringUtils.equals(this.getPaymentStatus(),"Error");
+    }
+    
 	public void setGiftForGiftInKind(GiftInKind giftInKind) {
 		this.giftType = GiftType.GIFT_IN_KIND;
 		this.currencyCode = giftInKind.getCurrencyCode();

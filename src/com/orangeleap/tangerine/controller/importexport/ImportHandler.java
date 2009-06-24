@@ -102,6 +102,7 @@ public class ImportHandler {
 	}
 	
 	private String translate(String msg) {
+        if (msg == null) msg = "";
 		if (msg.contains("fieldValidationFailure")) {
 			msg = msg.substring(msg.indexOf("arguments"));
 			msg = msg.substring(msg.indexOf("[")+1);

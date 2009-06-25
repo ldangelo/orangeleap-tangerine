@@ -40,10 +40,21 @@ public class DummyController extends ParameterizableViewController {
         ModelAndView mav = new ModelAndView(super.getViewName());
         String id = request.getParameter(StringConstants.CONSTITUENT_ID);
         if (id != null && id.trim().length() > 0) {
-            Long constituentId = Long.valueOf(id);
-            Constituent constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
-            mav.addObject("constituent", constituent);
+            addConstituent(mav, id);
+        } else {
+            id = request.getParameter("id");
+            String object = request.getParameter("object");
+            if ("constituent".equals(object)) {
+                addConstituent(mav, id);
+            }
         }
         return mav;
     }
+
+    private void addConstituent(ModelAndView mav, String id) {
+        Long constituentId = Long.valueOf(id);
+        Constituent constituent = constituentService.readConstituentById(Long.valueOf(constituentId));
+        mav.addObject("constituent", constituent);
+    }
+
 }

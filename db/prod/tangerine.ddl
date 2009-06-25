@@ -998,8 +998,7 @@ DROP TABLE IF EXISTS `CUSTOM_ID`;
 CREATE TABLE `CUSTOM_ID` (
 	`SITE_NAME` varchar(255) primary key,
 	`SITE_PREFIX` varchar(255) default '1',  -- number that begin with 0 are truncated in excel
-	`NEXT_KEY` int default 1,
-	CONSTRAINT `FK_CUSTOM_ID` FOREIGN KEY (`SITE_NAME`) REFERENCES `SITE` (`SITE_NAME`)
+	`NEXT_KEY` int default 1
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `CACHE_GROUP`;

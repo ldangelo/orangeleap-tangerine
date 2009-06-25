@@ -7,6 +7,13 @@
 		<script type="text/javascript">PaymentEditable.commandObject = '<c:out value="${commandObject}"/>';</script>
 		<script type="text/javascript" src="js/gift/distribution.js"></script>
 		<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#clickButtonTop, #clickButtonButton").click(function() {
+					$("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit();
+				});
+			});
+		</script>
     </tiles:putAttribute>
 	<tiles:putAttribute name="primaryNav" value="People" />
 	<tiles:putAttribute name="secondaryNav" value="Edit" />
@@ -33,9 +40,13 @@
 				<%@ include file="/WEB-INF/jsp/payment/checkConflictingPaymentSource.jsp"%>
 			
 				<spring:message code='submitGift' var="submitText" />
+				<c:if test="${requestScope.allowReprocess}">
+                	<spring:message code='reprocess' var="clickText"  />
+                </c:if>
 				<jsp:include page="../snippets/constituentHeader.jsp">
 					<jsp:param name="currentFunctionTitleText" value="${titleText}" />
 					<jsp:param name="submitButtonText" value="${submitText}" />
+                    <jsp:param name="clickButtonText" value="${clickText}" />
 				</jsp:include>
 				
 				<jsp:include page="../snippets/standardFormErrors.jsp"/>
@@ -140,6 +151,9 @@
 					<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				</div>
  				<div class="formButtonFooter constituentFormButtons">
+					<c:if test="${allowReprocess}">
+				    	<input type="button" value="<c:out value='${clickText}'/>" class="saveButton" id="clickButtonBottom" />
+				    </c:if>
 					<input type="submit" value="<spring:message code='submitGift'/>" class="saveButton" />
 					<c:if test="${pageAccess['/giftList.htm']!='DENIED'}">
 						<input type="button" value="<spring:message code='cancel'/>" class="saveButton" onclick="OrangeLeap.gotoUrl('giftList.htm?constituentId=${constituent.id}')"/>

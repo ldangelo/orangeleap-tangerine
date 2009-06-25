@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -46,6 +45,7 @@ import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.type.PaymentHistoryType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
@@ -97,16 +97,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     // Used for create only.
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
-    public Gift maintainGift(Gift gift) throws BindException
-    {
-
+    public Gift maintainGift(Gift gift) throws BindException  {
     	boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
-        	
             if (logger.isTraceEnabled()) {
                 logger.trace("maintainGift: gift = " + gift);
             }
-            
             
             if (gift.getFieldLabelMap() != null && !gift.isSuppressValidation()) {
 
@@ -127,8 +123,6 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 					throw errors;
 				}
             }
-
-            
             
 	        maintainEntityChildren(gift, gift.getConstituent());
 	        setDefaultDates(gift);
@@ -144,13 +138,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        	routeGift(gift);
 	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
 	        }
-	        
 	        return gift;
-	        
-        } finally {
+        } 
+        finally {
         	RulesStack.pop(MAINTAIN_METHOD);
         }
-
     }
     
     private void setDefaultDates(Gift gift) {
@@ -166,10 +158,8 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Gift editGift(Gift gift) {
-
     	boolean reentrant = RulesStack.push(EDIT_METHOD);
         try {
-        	
 	        if (logger.isTraceEnabled()) {
 	            logger.trace("editGift: giftId = " + gift.getId());
 	        }
@@ -184,17 +174,24 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	        auditService.auditObject(gift, gift.getConstituent());
 	
 	        return gift;
-        
-        } finally {
+        } 
+        finally {
         	RulesStack.pop(EDIT_METHOD);
         }
-
+    }
+    
+    @Override
+    public Gift reprocessGift(Gift gift) throws BindException {
+        if (logger.isTraceEnabled()) {
+            logger.trace("reprocessGift: giftId = " + gift.getId());
+        }
+    	gift.clearPaymentStatusInfo();
+    	return maintainGift(gift);
     }
     
     private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";
     
     private void routeGift(Gift gift) {
-    
     	RulesStack.push(ROUTE_METHOD);
         try {
         	
@@ -207,10 +204,10 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	            writeRulesFailureLog(ex.getMessage() + "\r\n" + gift);
 	        }
 
-        } finally {
+        } 
+        finally {
         	RulesStack.pop(ROUTE_METHOD);
         }
-
     }
     
     private synchronized void writeRulesFailureLog(String message) {

@@ -19,10 +19,11 @@ import com.orangeleap.tangerine.util.StringConstants;
 public class Gift extends AbstractPaymentInfoEntity {
 
 	private static final long serialVersionUID = 1L;
-	public static final String PAID = "Paid";
-	public static final String NOT_PAID = "Not Paid";
-	public static final String APPROVED = "Approved";
-	public static final String DECLINED = "Declined";
+	public static final String STATUS_PAID = "Paid";
+	public static final String STATUS_NOT_PAID = "Not Paid";
+	public static final String PAY_STATUS_APPROVED = "Approved";
+	public static final String PAY_STATUS_DECLINED = "Declined";
+	public static final String PAY_STATUS_ERROR = "Error";
 	private String giftStatus;
 	private GiftType giftType;
 	private Long recurringGiftId;
@@ -252,6 +253,14 @@ public class Gift extends AbstractPaymentInfoEntity {
 
     public Boolean getIsError() {
         return StringUtils.equals(this.getPaymentStatus(),"Error");
+    }
+    
+    public void clearPaymentStatusInfo() {
+    	setPaymentMessage(null);
+    	setPaymentStatus(null);
+    	setAvsMessage(null);
+    	setAuthCode(null);
+    	setTxRefNum(null);
     }
     
 	public void setGiftForGiftInKind(GiftInKind giftInKind) {

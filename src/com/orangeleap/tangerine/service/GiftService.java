@@ -48,4 +48,6 @@ public interface GiftService {
 	public void checkAssociatedPledgeIds(Gift gift);
 	
 	public void checkAssociatedRecurringGiftIds(Gift gift);
+
+	Gift reprocessGift(Gift gift) throws BindException;
 }

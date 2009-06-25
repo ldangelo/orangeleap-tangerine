@@ -82,7 +82,7 @@ a:hover {
 .columnRight {
 	float: right;
 	display: inline;
-	padding: 0;
+	padding: 19px 19px 0 0;
 	margin: 0;
 }
 

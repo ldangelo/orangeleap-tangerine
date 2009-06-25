@@ -154,7 +154,7 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		try {
 			response = tp.process(request);
 		} catch (Exception text) {
-			gift.setPaymentStatus("Error");
+			gift.setPaymentStatus(Gift.PAY_STATUS_ERROR);
 			gift.setPaymentMessage(text.getMessage());
 			GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
@@ -181,14 +181,14 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-			gift.setGiftStatus("Paid");
-			gift.setPaymentStatus("Approved");
+			gift.setGiftStatus(Gift.STATUS_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_APPROVED);
 //			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
 		} else {
-			gift.setGiftStatus("Not Paid");
-			gift.setPaymentStatus("Declined");
+			gift.setGiftStatus(Gift.STATUS_NOT_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
 		}
@@ -323,12 +323,12 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-//			gift.setGiftStatus("Paid");
-			gift.setPaymentStatus("Approved");
+//			gift.setGiftStatus(Gift.STATUS_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_APPROVED);
 			gift.setPaymentMessage(response.getMessage());
 		} else {
-			gift.setGiftStatus("Not Paid");
-			gift.setPaymentStatus("Declined");
+			gift.setGiftStatus(Gift.STATUS_NOT_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
 			gift.setPaymentMessage(response.getMessage());
 		}
 		
@@ -424,12 +424,12 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-			gift.setGiftStatus(Gift.PAID);
-			gift.setPaymentStatus(Gift.APPROVED);
+			gift.setGiftStatus(Gift.STATUS_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_APPROVED);
 			gift.setPaymentMessage(response.getMessage());
 		} else {
-			gift.setGiftStatus(Gift.NOT_PAID);
-			gift.setPaymentStatus(Gift.DECLINED);
+			gift.setGiftStatus(Gift.STATUS_NOT_PAID);
+			gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
 			gift.setPaymentMessage(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");

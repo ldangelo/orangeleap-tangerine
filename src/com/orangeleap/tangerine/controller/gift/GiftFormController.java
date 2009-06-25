@@ -15,6 +15,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.orangeleap.tangerine.domain.AbstractEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
@@ -38,14 +39,22 @@ public class GiftFormController extends AbstractGiftController {
     protected AbstractEntity findEntity(HttpServletRequest request) {
         return giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
     }
+    
+    private boolean isEnteredGift(Gift gift) {
+    	return gift != null && gift.getId() != null && gift.getId() > 0;
+    }
+    
+    private boolean canReprocessGift(Gift gift) {
+    	return isEnteredGift(gift) && (Gift.STATUS_NOT_PAID.equals(gift.getGiftStatus()) || Commitment.STATUS_PENDING.equals(gift.getGiftStatus())) && 
+			(Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
+    }
 
 	@Override
 	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
 		ModelAndView mav = super.showForm(request, response, errors);
         Gift gift = (Gift) formBackingObject(request);
 
-        if (gift != null && gift.getId() != null && gift.getId() > 0 && Gift.PAID.equals(gift.getGiftStatus()) && 
-        		Gift.APPROVED.equals(gift.getPaymentStatus())) {
+        if (isEnteredGift(gift) && Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())) {
         	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
         }
 		return mav;
@@ -54,19 +63,24 @@ public class GiftFormController extends AbstractGiftController {
     @SuppressWarnings("unchecked")
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
-        Map returnMap = super.referenceData(request, command, errors);
+        Map refMap = super.referenceData(request, command, errors);
         
         String selectedPledgeId = request.getParameter("selectedPledgeId");
         String selectedRecurringGiftId = request.getParameter("selectedRecurringGiftId");
         if (NumberUtils.isDigits(selectedPledgeId)) {
             Pledge pledge = pledgeService.readPledgeById(Long.parseLong(selectedPledgeId));
-            returnMap.put("associatedPledge", pledge);
+            refMap.put("associatedPledge", pledge);
         }
         else if (NumberUtils.isDigits(selectedRecurringGiftId)) {
             RecurringGift recurringGift = recurringGiftService.readRecurringGiftById(Long.parseLong(selectedRecurringGiftId));
-            returnMap.put("associatedRecurringGift", recurringGift);
+            refMap.put("associatedRecurringGift", recurringGift);
         }
-        return returnMap;
+        
+        Gift gift = (Gift) command;
+        if (canReprocessGift(gift)) {
+        	refMap.put("allowReprocess", Boolean.TRUE);
+        }
+        return refMap;
     }
 
     @Override
@@ -84,7 +98,12 @@ public class GiftFormController extends AbstractGiftController {
         
         boolean saved = true;
         try {
-        	gift = giftService.maintainGift(gift);
+        	if ("true".equals(request.getParameter("doReprocess")) && canReprocessGift(gift)) {
+        		gift = giftService.reprocessGift(gift);
+        	}
+        	else {
+        		gift = giftService.maintainGift(gift);
+        	}
         } 
         catch (BindException e) {
             saved = false;

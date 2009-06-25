@@ -20,8 +20,14 @@
             <br/>
 
             <input type="hidden" name="id" value="${postbatch.id}"  />
-
+            Batch Id: ${postbatch.id} <br />
             Batch Description: <input type="text" size="60" name="postBatchDesc" value="<c:out value='${postbatch.postBatchDesc}'/>"  /><br />
+            Batch Type: 
+            <select id="entity" name="entity"   >
+                <option <c:if test="${postbatch.entity == 'gift'}">selected</c:if> value="gift" />Gift</option>
+                <option <c:if test="${postbatch.entity == 'adjustedgift'}">selected</c:if> value="adjustedgift" />Adjusted Gift</option>
+            </select>
+            <br />
 
             <br />
 		    <h4>Batch selection criteria:</h4>
@@ -86,7 +92,7 @@
 
      		<hr/>
             
-            <table  border="1">
+            <table cellspacing="8" border="0" >
                 <tr>
                   <th>Gift Id</th>
                   <th>Constituent Id</th>

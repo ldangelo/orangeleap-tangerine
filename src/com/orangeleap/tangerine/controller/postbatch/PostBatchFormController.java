@@ -4,6 +4,7 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchService;
@@ -27,6 +28,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class PostBatchFormController extends SimpleFormController {
+
+    // TODO add batch list with edit existing unposted, view historical and delete
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
@@ -56,7 +59,12 @@ public class PostBatchFormController extends SimpleFormController {
         if (!accessAllowed(request)) return null;
 
 		ModelAndView mav = super.showForm(request, response, errors, controlModel);
-        mav.addObject("postbatch", getNewPostBatch());
+        
+        PostBatch postbatch = getPostBatch(request);
+        List<AbstractPaymentInfoEntity> gifts = postBatchService.getBatchSelectionList(postbatch);  
+        
+        mav.addObject("gifts", gifts);
+        mav.addObject("postbatch", postbatch);
         mav.addObject("allowedSelectFields", postBatchService.readAllowedGiftSelectFields());
         mav.addObject("allowedUpdateFields", postBatchService.readAllowedGiftUpdateFields());
         return mav;
@@ -77,7 +85,17 @@ public class PostBatchFormController extends SimpleFormController {
 
 	@Override
     public Object formBackingObject(HttpServletRequest request) throws ServletException {
-        return getNewPostBatch();
+        return getPostBatch(request);
+    }
+
+    private PostBatch getPostBatch(HttpServletRequest request) {
+        String sid = request.getParameter("id");
+        PostBatch postbatch = null;
+        if (sid != null && sid.trim().length() > 0) {
+            postbatch = postBatchService.readBatch(new Long(sid));
+        }
+        if (postbatch == null) postbatch = getNewPostBatch();
+        return postbatch;
     }
 
 
@@ -91,7 +109,8 @@ public class PostBatchFormController extends SimpleFormController {
         boolean post = "true".equals(request.getParameter("post"));
 
         PostBatch requestPostbatch = (PostBatch)command;
-        // TODO validate
+        
+        // TODO validate and support ranges?
         // if any of the 'where' values start with ^(=|!=|<|>) then validate it matches one of the regexes:
         //       ^(=|!=|<|>)([\s])*([0-9]{2,2}-[0-9]{2,2}-[0-9]{4,4})$   (date)  or ^(=|!=|<|>)([\s])*-{0,1}\d*\.{0,1}\d+$   (number)   or  ^!=([\s])*null$
 
@@ -101,8 +120,9 @@ public class PostBatchFormController extends SimpleFormController {
         if (postbatch == null) postbatch = getNewPostBatch();
 
         
-        // User can only edit the description and the list of select/update fields - the rest of the fields are read-only
+        // User can only edit the description/type and the list of select/update fields - the rest of the fields are read-only
         postbatch.setPostBatchDesc(requestPostbatch.getPostBatchDesc());
+        postbatch.setEntity(requestPostbatch.getEntity());
 
         readFields(request, postbatch.getWhereConditions(), "sf");
         readFields(request, postbatch.getUpdateFields(), "uf");
@@ -110,15 +130,15 @@ public class PostBatchFormController extends SimpleFormController {
         // TODO validate fields are on allowed select lists.  May allow duplicate fields in list, for example date > and < for a range.
 
         String errormessage = "";
-        List<Gift> gifts = new ArrayList<Gift>();
+        List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
         try {
+            postbatch = postBatchService.maintainBatch(postbatch);
+            gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
             if (post) {
                 postbatch = postBatchService.postBatch(postbatch);
-            } else {
-                postbatch = postBatchService.maintainBatch(postbatch);
-                gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
-            }
+            } 
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e);
             errormessage = e.getMessage();
         }

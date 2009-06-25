@@ -6,6 +6,7 @@ import java.util.Map;
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.PostBatch;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
@@ -18,8 +19,8 @@ public interface PostBatchService {
     public List<PostBatch> listBatchs(PostBatch postbatch);
     public PostBatch readBatch(Long batchId);
     public PostBatch maintainBatch(PostBatch postbatch);
-    public List<Gift> createBatchSelectionList(PostBatch postbatch);
-    public List<Gift> getBatchSelectionList(PostBatch postbatch);
+    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
+    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
 	public PostBatch postBatch(PostBatch postbatch);
 
 }

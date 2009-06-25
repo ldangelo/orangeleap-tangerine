@@ -10,10 +10,8 @@ import com.orangeleap.tangerine.domain.customization.PicklistItem;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
 import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.service.PostBatchService;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.SiteService;
-import com.orangeleap.tangerine.service.PicklistItemService;
+import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.service.*;
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
@@ -46,6 +44,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     @Resource(name = "giftService")
     private GiftService giftService;
+
+    @Resource(name = "adjustedGiftService")
+    private AdjustedGiftService adjustedGiftService;
 
     @Resource(name = "siteService")
     private SiteService siteService;
@@ -114,27 +115,34 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
     @Override
-    public List<Gift> createBatchSelectionList(PostBatch postbatch) {
+    public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
         Map<String, Object> map = new HashMap();
         for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
             map.put(me.getKey(), me.getValue());
         }
-        List<Gift> list = giftService.searchGifts(map);
+
+        List list = new ArrayList<AbstractPaymentInfoEntity>();
+        if (GIFT.equals(postbatch.getEntity())) {
+            list = giftService.searchGifts(map);
+        } else if (ADJUSTED_GIFT.equals(postbatch.getEntity())) {
+            // list = adjustedGiftService.searchAdjustedGifts(map);
+        }
+
         // if (list.size() == 200) throw new RuntimeException("Too many items selected"); // see gift.xml for search limit
         // TODO raise this limit from 200 to ?
-        Iterator<Gift> it = list.iterator();
+        Iterator<AbstractPaymentInfoEntity> it = list.iterator();
         while (it.hasNext()) {
-            Gift gift = it.next();
-            if (hasBankAndProjectCodes(gift)) {
+            AbstractPaymentInfoEntity apie = it.next();
+            if (hasProjectCodes(apie)) {
                 PostBatchReviewSetItem item = new PostBatchReviewSetItem();
-                item.setEntityId(gift.getId());
+                item.setEntityId(apie.getId());
                 item.setPostBatchId(postbatch.getId());
                 postBatchDao.maintainPostBatchReviewSetItem(item);
             } else {
                 it.remove();
-                logger.debug("Excluding gift from search results - Missing bank or project codes on gift "+gift.getId());
+                logger.debug("Excluding item from search results - Missing bank or project codes on id "+apie.getId());
             }
         }
         postbatch.setReviewSetGenerated(true);
@@ -144,9 +152,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return list;
     }
 
-    private boolean hasBankAndProjectCodes(Gift gift) {
-        if (gift.getCustomFieldValue(BANK) == null) return false;
-        for (DistributionLine dl : gift.getDistributionLines()) {
+    private boolean hasProjectCodes(AbstractPaymentInfoEntity apie) {
+        for (DistributionLine dl : apie.getDistributionLines()) {
             if (dl.getProjectCode() == null || dl.getProjectCode().trim().length() == 0) return false;
         }
         return true;
@@ -155,11 +162,16 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
     // Reads previous list of matched gifts. Does not re-evaluate any criteria.
     @Override
-    public List<Gift> getBatchSelectionList(PostBatch postbatch) {
+    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
          List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-         List<Gift> result = new ArrayList<Gift>();
+         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
+         boolean isGift = GIFT.equals(postbatch.getEntity());
          for (PostBatchReviewSetItem item : list) {
-             result.add(giftService.readGiftById(item.getEntityId()));
+             if (isGift) {
+                 result.add(giftService.readGiftById(item.getEntityId()));
+             } else {
+                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
+             }
          }
          return result;
     }
@@ -215,9 +227,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         //giftService.maintainGift(gift);
     }
 
-    // Sets fields on gifts in reviewed batch list
+    private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
+        // TODO uncomment once complete TANGERINE-816 adjustedGift domain/form object separation
+        //adjustedGiftService.maintainAdjustedGift(adjustedGift);
+    }
+
+    // Sets fields on gifts/adjusted gifts in reviewed batch list
     @Override
     public PostBatch postBatch(PostBatch postbatch) {
+
+
+        boolean isGift = GIFT.equals(postbatch.getEntity());
 
         Date postDate = new java.util.Date();
 
@@ -226,25 +246,41 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         createMaps(bankmap, codemap);
 
         postbatch.getUpdateErrors().clear();
-        List<Gift> list = getBatchSelectionList(postbatch);
-        for (Gift gift: list) {
+        List<AbstractPaymentInfoEntity> list = getBatchSelectionList(postbatch);
+        for (AbstractPaymentInfoEntity apie: list) {
+            
+            if (isGift) {
+                apie = giftService.readGiftById(apie.getId());
+            } else {
+                apie = adjustedGiftService.readAdjustedGiftById(apie.getId());
+            }
 
-            gift = giftService.readGiftById(gift.getId());
-            siteService.populateDefaultEntityEditorMaps(gift);
+            siteService.populateDefaultEntityEditorMaps(apie);
 
-            gift.setPosted(true);
-            gift.setPostedDate(postDate);
+            BeanWrapperImpl bw = new BeanWrapperImpl(apie);
 
-            BeanWrapperImpl bw = new BeanWrapperImpl(gift);
+            bw.setPropertyValue("posted", true);
+            bw.setPropertyValue("postedDate", postDate);
+
             for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
                 bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
             }
 
             try {
-                saveGift(gift);
-                createJournalEntries(gift, null, postbatch, codemap, bankmap);   // TODO support Adjusted Gifts
+
+                if (isGift) {
+                    Gift gift = (Gift)apie;
+                    saveGift(gift);
+                    createJournalEntries(gift, null, postbatch, codemap, bankmap);
+                } else {
+                    AdjustedGift ag = (AdjustedGift)apie;
+                    saveAdjustedGift(ag);
+                    Gift gift = giftService.readGiftById(ag.getOriginalGiftId());
+                    createJournalEntries(gift, ag, postbatch, codemap, bankmap);
+                }
+
             } catch (Exception e) {
-                String msg = gift.getId() + ": " + e.getMessage();
+                String msg = apie.getId() + ": " + e.getMessage();
                 logger.error(msg);
                 postbatch.getUpdateErrors().add(msg);
             }
@@ -301,7 +337,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         boolean isDebit = gift.getAmount().compareTo(new BigDecimal("0")) >= 0;
         boolean isHeader = dl == null;
-        boolean isAdjustedGift = ag != null;
+        boolean isGift = ag == null;
 
         Journal journal = new Journal();
         journal.setSiteName(getSiteName());
@@ -312,20 +348,22 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             
             // Gift or Adjusted Gift
 
-            journal.setJeType(isDebit?DEBIT:CREDIT);
+            journal.setJeType(isDebit ? DEBIT : CREDIT);
 
-            if (isAdjustedGift) {
+            if (isGift) {
+                journal.setEntity(GIFT);
+                journal.setEntityId(gift.getId());
+                journal.setAmount(gift.getAmount());
+                journal.setCode(getBank(gift));
+                journal.setDonationDate(gift.getDonationDate());
+            } else {
                 journal.setEntity(ADJUSTED_GIFT);
                 journal.setEntityId(ag.getId());
                 journal.setOrigEntity(GIFT);
                 journal.setOrigEntityId(gift.getId());
                 journal.setAmount(ag.getAdjustedAmount());
                 journal.setCode(getBank(ag));
-            } else {
-                journal.setEntity(GIFT);
-                journal.setEntityId(gift.getId());
-                journal.setAmount(gift.getAmount());
-                journal.setCode(getBank(gift));
+                journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
             }
 
             updateJournalCodes(journal, bankmap, journal.getCode(), postbatch);
@@ -334,24 +372,21 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             // Distribution lines
 
-            journal.setJeType(isDebit?CREDIT:DEBIT);
+            journal.setJeType(isDebit ? CREDIT : DEBIT);
 
             journal.setEntity(DISTRO_LINE);
             journal.setEntityId(dl.getId());
-            journal.setMasterEntity(GIFT);
-            journal.setMasterEntityId(gift.getId());
 
-            String projectCode = dl.getProjectCode();
-            projectCode = (projectCode == null ? "" : projectCode.trim());
-            
+            journal.setMasterEntity(isGift ? GIFT : ADJUSTED_GIFT);
+            journal.setMasterEntityId(isGift ? gift.getId() : ag.getId());
+
             journal.setAmount(dl.getAmount());
-            journal.setCode(projectCode);
+            journal.setCode(getProjectCode(dl));
 
             updateJournalCodes(journal, codemap, journal.getCode(), postbatch);
 
         }
 
-        journal.setDonationDate(gift.getDonationDate());
         journalDao.maintainJournal(journal);
     }
 
@@ -360,6 +395,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         bank = (bank == null ? "" : bank.trim());
         if (bank.equalsIgnoreCase("none")) bank = "";
         return bank;
+    }
+
+    private String getProjectCode(DistributionLine dl) {
+        String pc = dl.getProjectCode();
+        pc = (pc == null ? "" : pc.trim());
+        if (pc.equalsIgnoreCase("none")) pc = "";
+        return pc;
     }
 
     private void updateJournalCodes(Journal journal, Map<String, String> map, String code, PostBatch postbatch) {

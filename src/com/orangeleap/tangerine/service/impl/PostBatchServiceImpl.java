@@ -199,6 +199,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             bankmap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
             bankmap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
             bankmap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
+            bankmap.put(DEFAULT, defaultItem.getItemName());
         }
 
         // Project codes are stored in distribution lines as default display values rather than item names
@@ -332,6 +333,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private static String GIFT = "gift";
     private static String ADJUSTED_GIFT = "adjustedgift";
     private static String DISTRO_LINE = "distributionline";
+    private static String DEFAULT = "_default";
+
 
     private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
 
@@ -354,7 +357,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setEntity(GIFT);
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
-                journal.setCode(getBank(gift));
+                journal.setCode(getBank(gift, bankmap));
                 journal.setDonationDate(gift.getDonationDate());
             } else {
                 journal.setEntity(ADJUSTED_GIFT);
@@ -362,7 +365,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setOrigEntity(GIFT);
                 journal.setOrigEntityId(gift.getId());
                 journal.setAmount(ag.getAdjustedAmount());
-                journal.setCode(getBank(ag));
+                journal.setCode(getBank(ag, bankmap));
                 journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
             }
 
@@ -390,8 +393,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         journalDao.maintainJournal(journal);
     }
 
-    private String getBank(AbstractCustomizableEntity e) {
+    private String getBank(AbstractCustomizableEntity e, Map<String, String> bankmap) {
+        String defaultbank = bankmap.get(DEFAULT);
         String bank = e.getCustomFieldValue(BANK);
+        if (bank == null) bank = defaultbank;
         bank = (bank == null ? "" : bank.trim());
         if (bank.equalsIgnoreCase("none")) bank = "";
         return bank;

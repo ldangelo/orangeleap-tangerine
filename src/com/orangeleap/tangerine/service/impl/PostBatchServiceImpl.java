@@ -1,9 +1,6 @@
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
-import com.orangeleap.tangerine.domain.Journal;
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.*;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
@@ -18,6 +15,7 @@ import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.dao.PledgeDao;
 import com.orangeleap.tangerine.dao.PostBatchDao;
 import com.orangeleap.tangerine.dao.JournalDao;
+import com.orangeleap.tangerine.dao.PaymentSourceDao;
 import com.orangeleap.tangerine.dao.util.QueryUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -281,6 +279,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
                 String msg = apie.getId() + ": " + e.getMessage();
                 logger.error(msg);
                 postbatch.getUpdateErrors().add(msg);
@@ -353,12 +352,16 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             journal.setJeType(isDebit ? DEBIT : CREDIT);
 
+
             if (isGift) {
                 journal.setEntity(GIFT);
                 journal.setEntityId(gift.getId());
                 journal.setAmount(gift.getAmount());
                 journal.setCode(getBank(gift, bankmap));
                 journal.setDonationDate(gift.getDonationDate());
+                journal.setDescription("Gift from " + gift.getConstituent().getRecognitionName());   
+                journal.setPaymentMethod(gift.getPaymentType());
+                journal.setCcType(gift.getSelectedPaymentSource().getCreditCardType());
             } else {
                 journal.setEntity(ADJUSTED_GIFT);
                 journal.setEntityId(ag.getId());
@@ -367,6 +370,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
                 journal.setAmount(ag.getAdjustedAmount());
                 journal.setCode(getBank(ag, bankmap));
                 journal.setAdjustmentDate(ag.getAdjustedTransactionDate());
+                journal.setDescription("Adjustment associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+                journal.setPaymentMethod(ag.getPaymentType());
+                journal.setCcType(ag.getSelectedPaymentSource().getCreditCardType());
             }
 
             updateJournalCodes(journal, bankmap, journal.getCode(), postbatch);
@@ -386,6 +392,12 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             journal.setAmount(dl.getAmount());
             journal.setCode(getProjectCode(dl));
 
+            if (isGift) {
+                journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+            } else {
+                journal.setDescription("Adjusted gift ID " + ag.getId() + ", associated with original gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
+            }
+            
             updateJournalCodes(journal, codemap, journal.getCode(), postbatch);
 
         }

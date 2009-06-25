@@ -69,7 +69,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftSelectFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
-/*
         map.put("amount", "Amount");
         map.put("currencyCode", "Currency Code");
         map.put("createDate", "Create date");
@@ -78,8 +77,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         map.put("donationDate", "Donation Date");
         map.put("postmarkDate", "Postmark Date");
         map.put("paymentStatus", "Payment Status");
-*/        
-        map.put("posted", "Posted");
+
         return map;
     }
 
@@ -87,10 +85,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public Map<String, String> readAllowedGiftUpdateFields() {
         // TODO read gift entry screen for custom fields?
         Map<String, String> map = new TreeMap<String, String>();
-        map.put("posted", "Posted");
-//       map.put("postedDate", "Posted Date");
-//       map.put("giftStatus", "Gift Status");
-        return map;
+       map.put("postedDate", "Posted Date");
+       map.put("giftStatus", "Gift Status");
+       return map;
     }
 
     @Override
@@ -121,6 +118,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             map.put(me.getKey(), me.getValue());
         }
 
+        //  TODO change to use INSERT INTO table (field) SELECT field2 from table2
         List list = new ArrayList<AbstractPaymentInfoEntity>();
         if (GIFT.equals(postbatch.getEntity())) {
             list = giftService.searchGifts(map);
@@ -133,7 +131,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         Iterator<AbstractPaymentInfoEntity> it = list.iterator();
         while (it.hasNext()) {
             AbstractPaymentInfoEntity apie = it.next();
-            if (hasProjectCodes(apie)) {
+            if (!isPosted(apie) && hasProjectCodes(apie)) {
                 PostBatchReviewSetItem item = new PostBatchReviewSetItem();
                 item.setEntityId(apie.getId());
                 item.setPostBatchId(postbatch.getId());
@@ -148,6 +146,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postbatch.setReviewSetGeneratedById(tangerineUserHelper.lookupUserId());
         postBatchDao.maintainPostBatch(postbatch);
         return list;
+    }
+
+    private boolean isPosted(AbstractPaymentInfoEntity apie) {
+        return "true".equals(""+new BeanWrapperImpl(apie).getPropertyValue("posted"));
     }
 
     private boolean hasProjectCodes(AbstractPaymentInfoEntity apie) {

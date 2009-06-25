@@ -13,7 +13,7 @@
         <property name="successView" value="redirect:/giftInKind.htm" />
     </bean>
 
-    <bean id="giftInKindListController" class="com.orangeleap.tangerine.controller.giftInKind.GiftInKindListController">
+    <bean id="giftInKindListController" class="com.orangeleap.tangerine.controller.DummyController">
         <property name="viewName" value="giftInKind/giftInKindList"/>
     </bean>
     

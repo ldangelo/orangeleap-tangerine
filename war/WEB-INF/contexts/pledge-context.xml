@@ -47,7 +47,7 @@
         <property name="successView" value="pledge/pledgeSearch"/>
     </bean>
 
-    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.gift.commitment.pledge.PledgeListController">
+    <bean id="pledgeListController" class="com.orangeleap.tangerine.controller.DummyController">
         <property name="viewName" value="pledge/pledgeList"/>
     </bean>
 

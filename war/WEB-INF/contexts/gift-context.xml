@@ -63,7 +63,7 @@
         <property name="successView" value="gift/giftSearch"/>
     </bean>
 
-    <bean id="giftListController" class="com.orangeleap.tangerine.controller.gift.GiftListController">
+    <bean id="giftListController" class="com.orangeleap.tangerine.controller.DummyController">
         <property name="viewName" value="gift/giftList"/>
     </bean>
 

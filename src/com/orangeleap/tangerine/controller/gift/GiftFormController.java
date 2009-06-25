@@ -9,40 +9,47 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
-public class GiftFormController extends TangerineConstituentAttributesFormController {
+public class GiftFormController extends AbstractGiftController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
 
-    @Resource(name="giftService")
-    private GiftService giftService;
-
     @Resource(name = "pledgeService")
-    private PledgeService pledgeService;
+    protected PledgeService pledgeService;
 
     @Resource(name = "recurringGiftService")
-    private RecurringGiftService recurringGiftService;
+    protected RecurringGiftService recurringGiftService;
 
     @Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
-        return giftService.createDefaultGift(super.getConstituent(request));
+        return giftService.readGiftByIdCreateIfNull(getConstituent(request), request.getParameter(StringConstants.GIFT_ID));
     }
+
+	@Override
+	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+		ModelAndView mav = super.showForm(request, response, errors);
+        Gift gift = (Gift) formBackingObject(request);
+
+        if (gift != null && gift.getId() != null && gift.getId() > 0 && Gift.PAID.equals(gift.getGiftStatus()) && 
+        		Gift.APPROVED.equals(gift.getPaymentStatus())) {
+        	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
+        }
+		return mav;
+	}
 
     @SuppressWarnings("unchecked")
     @Override
@@ -69,36 +76,33 @@ public class GiftFormController extends TangerineConstituentAttributesFormContro
         binder.registerCustomEditor(List.class, "associatedRecurringGiftIds", new AssociationEditor());
     }
 
-    @Override
+	@Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-     
     	Gift gift = (Gift) command;
         checkAssociations(gift);
         gift.filterValidDistributionLines();
         
         boolean saved = true;
-        Gift current = null;
         try {
-        	current = giftService.maintainGift(gift);
-        } catch (BindException e) {
+        	gift = giftService.maintainGift(gift);
+        } 
+        catch (BindException e) {
             saved = false;
-            current = gift;
             errors.addAllErrors(e);
         }
 
         ModelAndView mav = null;
         if (saved) {
-            mav = new ModelAndView(super.appendSaved(getSuccessView() + "?" + StringConstants.GIFT_ID + "=" + current.getId() + "&" + StringConstants.CONSTITUENT_ID + "=" + super.getConstituentId(request)));
+            mav = new ModelAndView(super.appendSaved(appendGiftParameters(request, getSuccessView(), gift)));
         }
         else {
-			current.removeEmptyMutableDistributionLines();
-			checkAssociations(current);
+        	gift.removeEmptyMutableDistributionLines();
+			checkAssociations(gift);
 			mav = showForm(request, errors, getFormView());
         }
         return mav;
-        
     }
-    
+	
     protected void checkAssociations(Gift gift) {
         giftService.checkAssociatedPledgeIds(gift);
         giftService.checkAssociatedRecurringGiftIds(gift);

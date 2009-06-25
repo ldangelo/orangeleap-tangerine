@@ -90,7 +90,7 @@ GiftList.navigate = function(id) {
 	
 	switch (rec.data.gifttype) {
 		case 'MONETARY':
-		    window.location.href='giftView.htm?giftId=' + id + '&constituentId=' + rec.data.constituentid;
+		    window.location.href='gift.htm?giftId=' + id + '&constituentId=' + rec.data.constituentid;
 			break;
 		case 'ADJUSTED':
 			window.location.href='giftAdjustmentView.htm?adjustedGiftId=' + id + '&constituentId=' + rec.data.constituentid;

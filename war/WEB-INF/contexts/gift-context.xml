@@ -4,21 +4,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-    <!-- Gift -->
-	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="tangerineConstituentAttributesFormController">
+
+	<bean id="abstractGiftController" class="com.orangeleap.tangerine.controller.gift.AbstractGiftController" parent="tangerineConstituentAttributesFormController" abstract="true">
         <property name="commandName" value="gift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
-        <property name="formView" value="gift/gift" />
-        <property name="successView" value="redirect:/giftView.htm" />
         <property name="bindEmail" value="false"/>
+        <property name="giftUrl" value="redirect:/gift.htm" />
+        <property name="giftViewUrl" value="redirect:/giftView.htm" />
     </bean>
 
-    <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="tangerineConstituentAttributesFormController">
-        <property name="commandName" value="gift"/>
-        <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.Gift"/>
+	<bean id="giftFormController" class="com.orangeleap.tangerine.controller.gift.GiftFormController" parent="abstractGiftController">
+        <property name="formView" value="gift/gift" />
+        <property name="successView" value="redirect:/gift.htm" />
+    </bean>
+
+    <bean id="giftViewController" class="com.orangeleap.tangerine.controller.gift.GiftViewController" parent="abstractGiftController">
         <property name="formView" value="gift/giftView"/>
         <property name="successView" value="redirect:/giftView.htm"/>
-        <property name="bindEmail" value="false"/>
 		<property name="validators">
 			<list>
 	            <bean class="com.orangeleap.tangerine.controller.validator.EntityValidator">
@@ -29,7 +31,7 @@
         </property>
     </bean>
 
-    <bean id="giftAdjustmentController" class="com.orangeleap.tangerine.controller.gift.GiftAdjustmentController" parent="giftFormController">
+    <bean id="giftAdjustmentController" class="com.orangeleap.tangerine.controller.gift.GiftAdjustmentController" parent="tangerineConstituentAttributesFormController">
         <property name="commandName" value="adjustedGift"/>
         <property name="commandClass" value="com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift"/>
         <property name="formView" value="gift/giftAdjustment"/>

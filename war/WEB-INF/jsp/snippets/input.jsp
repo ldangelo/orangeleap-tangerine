@@ -140,10 +140,7 @@
 								<c:choose>
 									<c:when test="${not empty fieldVO.id}">
 										<%--  TODO: remove this when automatic routing to the view page is implemented --%>
-										<c:choose>
-											<c:when test="${fieldVO.referenceType == 'gift'}"><c:set var="thisUrl" value="giftView.htm" scope="page"/></c:when>
-											<c:otherwise><c:set var="thisUrl" value="${fieldVO.referenceType}.htm" scope="page"/></c:otherwise>
-										</c:choose>
+										<c:set var="thisUrl" value="${fieldVO.referenceType}.htm" scope="page"/>
 										<c:url value="${thisUrl}" var="entityLink" scope="page">
 											<c:param name="${fieldVO.referenceType}Id" value="${fieldVO.id}" />
 											<c:if test="${fieldVO.referenceType != 'constituent'}">
@@ -290,7 +287,6 @@
 									<c:set var="thisVal" value="${fn:trim(val)}"/>
 									<c:choose>
 										<%--  TODO: remove this when automatic routing to the view page is implemented --%>
-										<c:when test="${fieldVO.referenceType == 'gift'}"><c:set var="thisUrl" value="giftView.htm" scope="page"/></c:when>
 										<c:when test="${fieldVO.referenceType == 'adjustedGift'}"><c:set var="thisUrl" value="giftAdjustmentView.htm" scope="page"/></c:when>
 										<c:otherwise><c:set var="thisUrl" value="${fieldVO.referenceType}.htm" scope="page"/></c:otherwise>
 									</c:choose>

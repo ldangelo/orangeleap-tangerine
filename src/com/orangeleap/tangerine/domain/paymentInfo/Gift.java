@@ -21,6 +21,8 @@ public class Gift extends AbstractPaymentInfoEntity {
 	private static final long serialVersionUID = 1L;
 	public static final String PAID = "Paid";
 	public static final String NOT_PAID = "Not Paid";
+	public static final String APPROVED = "Approved";
+	public static final String DECLINED = "Declined";
 	private String giftStatus;
 	private GiftType giftType;
 	private Long recurringGiftId;

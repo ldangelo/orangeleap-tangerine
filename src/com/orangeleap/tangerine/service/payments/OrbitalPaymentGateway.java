@@ -1,7 +1,6 @@
 package com.orangeleap.tangerine.service.payments;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.validation.BindException;
@@ -11,6 +10,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.paymentech.orbital.sdk.configurator.Configurator;
 import com.paymentech.orbital.sdk.configurator.ConfiguratorIF;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
@@ -94,14 +94,18 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
 				
 			}
-			else amount += "00";
+			else {
+				amount += "00";
+			}
 			
 			request.setFieldValue("Amount", amount);
 
 			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
 			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
 			
-			if (month.length() == 1) month = "0" + month;
+			if (month.length() == 1) {
+				month = "0" + month;
+			}
 			
 			request.setFieldValue("Exp", month + year);
 
@@ -120,8 +124,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			}
 
             if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
-                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals(""))
-                request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals("")) {
+				request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+			}
 
 			if (logger.isInfoEnabled()) {
 				logger.info(request.getXML());
@@ -246,14 +251,18 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
 
 			}
-			else amount += "00";
+			else {
+				amount += "00";
+			}
 
 			request.setFieldValue("Amount", amount);
 			
 			month = gift.getSelectedPaymentSource().getCreditCardExpirationMonthText();
 			year  = gift.getSelectedPaymentSource().getCreditCardExpirationYear().toString();
 			
-			if (month.length() == 1) month = "0" + month;
+			if (month.length() == 1) {
+				month = "0" + month;
+			}
 			
 			request.setFieldValue("Exp", month + year);
 
@@ -269,8 +278,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			}
 
             if (gift.getSelectedPaymentSource().getCreditCardSecurityCode() != null &&
-                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals(""))
-                request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+                !gift.getSelectedPaymentSource().getCreditCardSecurityCode().equals("")) {
+				request.setFieldValue("CardVerifyNumber",gift.getSelectedPaymentSource().getCreditCardSecurityCode().toString());
+			}
 
 			if (logger.isInfoEnabled()) {
 				logger.info(request.getXML());
@@ -368,7 +378,9 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 				amount = amount.substring(0,amount.indexOf('.')) + amount.substring(amount.indexOf('.') + 1);
 
 			}
-			else amount += "00";
+			else {
+				amount += "00";
+			}
 			request.setFieldValue("Amount", amount);
 
 			if (logger.isInfoEnabled()) {
@@ -412,12 +424,12 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 		if (response.isApproved()) {
 			gift.setAuthCode(response.getAuthCode());
 			gift.setTxRefNum(response.getTxRefNum());
-			gift.setGiftStatus("Paid");
-			gift.setPaymentStatus("Approved");
+			gift.setGiftStatus(Gift.PAID);
+			gift.setPaymentStatus(Gift.APPROVED);
 			gift.setPaymentMessage(response.getMessage());
 		} else {
-			gift.setGiftStatus("Not Paid");
-			gift.setPaymentStatus("Declined");
+			gift.setGiftStatus(Gift.NOT_PAID);
+			gift.setPaymentStatus(Gift.DECLINED);
 			gift.setPaymentMessage(response.getMessage());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");

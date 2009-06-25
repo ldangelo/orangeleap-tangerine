@@ -49,7 +49,7 @@
 					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
 					<mp:section sectionDefinition="${sectionDefinition}"/>
 					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
-					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN'}">
+					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN' && sectionDefinition.sectionHtmlName ne 'gift_paymentStatus'}">
 						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
 						<div class="columns">
 							<div class="column">
@@ -81,7 +81,7 @@
 				<div class="columns">
 					<c:forEach var="sectionDefinition" items="${columnSections}">
 						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName != 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
+						<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}">
 							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
 								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
 								<c:if test="${!empty sectionDefinition.defaultLabel}">
@@ -101,17 +101,17 @@
 					</c:forEach>
 					<div class="clearColumns"></div>
 				</div>
-				<div class="columns">
-					<c:forEach var="sectionDefinition" items="${columnSections}">
-						<mp:section sectionDefinition="${sectionDefinition}"/>
-						<c:if test="${sectionDefinition.sectionHtmlName == 'gift_acknowledgment' && (sectionDefinition.layoutType eq 'ONE_COLUMN' || sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN')}">
-							<div class="column singleColumn <c:out value='${sectionDefinition.sectionHtmlName}'/>" id="<c:out value='${sectionDefinition.sectionHtmlName}'/>" 
-								style="<c:if test="${sectionDefinition.layoutType eq 'ONE_COLUMN_HIDDEN'}"> display:none;</c:if>">
-								<c:if test="${!empty sectionDefinition.defaultLabel}">
-									<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
-								</c:if>
+				
+				<c:forEach var="sectionDefinition" items="${columnSections}">
+					<%-- Copy of fieldLayout.jsp with some bugs to fix; TODO: fix! --%>
+					<mp:section sectionDefinition="${sectionDefinition}"/>
+					<c:set var="totalFields" value="${sectionFieldCount}" scope="request"/>
+					<c:if test="${sectionDefinition.layoutType eq 'TWO_COLUMN' && sectionDefinition.sectionHtmlName eq 'gift_paymentStatus' && gift.id > 0}">
+						<h4 class="formSectionHeader"><mp:sectionHeader sectionDefinition="${sectionDefinition}" /></h4>
+						<div class="columns">
+							<div class="column">
 								<ul class="formFields width385">
-									<c:forEach var="sectionField" items="${sectionFieldList}" varStatus="status">
+									<c:forEach var="sectionField" items="${sectionFieldList}" begin="0" end="${(totalFields div 2)+((totalFields%2)-1)}" varStatus="status">
 										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
 										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
 										<c:set var="sectionField" value="${sectionField}" scope="request"/>
@@ -120,10 +120,22 @@
 									<li class="clear"></li>
 								</ul>
 							</div>
-						</c:if>
-					</c:forEach>
-					<div class="clearColumns"></div>
-				</div>
+							<div class="column">
+								<ul class="formFields width385">
+									<c:forEach var="sectionField" items="${sectionFieldList}" begin="${(totalFields div 2)+(totalFields%2)}">
+										<mp:field sectionField='${sectionField}' sectionFieldList='${sectionFieldList}' />
+										<c:set var="sectionDefinition" value="${sectionDefinition}" scope="request"/>
+										<c:set var="sectionField" value="${sectionField}" scope="request"/>
+										<jsp:include page="../snippets/input.jsp"/>
+									</c:forEach>
+									<li class="clear"></li>
+								</ul>
+							</div>
+							<div class="clearColumns"></div>
+						</div>
+					</c:if>
+				</c:forEach>
+
 				<div id="giftDistributionLinesDiv">
 					<%@ include file="/WEB-INF/jsp/gift/distributionLines.jsp"%>
 				</div>

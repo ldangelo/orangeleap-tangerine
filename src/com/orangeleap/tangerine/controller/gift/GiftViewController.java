@@ -7,30 +7,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.orangeleap.tangerine.controller.TangerineConstituentAttributesFormController;
 import com.orangeleap.tangerine.domain.AbstractEntity;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.AdjustedGiftService;
-import com.orangeleap.tangerine.service.GiftService;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
-public class GiftViewController extends TangerineConstituentAttributesFormController {
+public class GiftViewController extends AbstractGiftController {
 
     /** Logger for this class and subclasses */
     protected final Log logger = OLLogger.getLog(getClass());
-
-    @Resource(name="giftService")
-    private GiftService giftService;
     
     @Resource(name = "adjustedGiftService")
     private AdjustedGiftService adjustedGiftService;
-    
-    @Override
+
+	@Override
     protected AbstractEntity findEntity(HttpServletRequest request) {
         Gift gift = giftService.readGiftById(super.getIdAsLong(request, StringConstants.GIFT_ID));
         if (gift != null) {

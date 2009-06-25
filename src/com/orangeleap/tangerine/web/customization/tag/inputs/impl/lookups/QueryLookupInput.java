@@ -6,11 +6,11 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.StringUtils;
 
 import com.orangeleap.tangerine.domain.customization.SectionField;
 import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 import com.orangeleap.tangerine.web.customization.tag.inputs.AbstractInput;
@@ -44,12 +44,7 @@ public class QueryLookupInput extends AbstractInput {
         sb.append("<span>");
         if (fieldVO.getId() != null && fieldVO.getId() > 0 && fieldVO.getReferenceType() != null) {
             StringBuilder linkSb = new StringBuilder();
-            if (ReferenceType.gift.equals(fieldVO.getReferenceType())) {
-                linkSb.append("giftView.htm?"); // TODO: remove hardCoded link when automatic routing to the view page is implemented
-            }
-            else {
-                linkSb.append(fieldVO.getReferenceType().toString()).append(".htm?");
-            }
+            linkSb.append(fieldVO.getReferenceType().toString()).append(".htm?");
             linkSb.append(fieldVO.getReferenceType().toString()).append("Id=" + checkForNull(fieldVO.getId()));
             if (ReferenceType.constituent.equals(fieldVO.getReferenceType()) == false) {
                 linkSb.append("&" + StringConstants.CONSTITUENT_ID + "=" + request.getParameter(StringConstants.CONSTITUENT_ID));

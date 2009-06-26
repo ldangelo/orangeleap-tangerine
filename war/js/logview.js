@@ -25,7 +25,7 @@ Ext.onReady(function() {
             {name: 'constituentid', mapping: 'constituentid', type: 'string'},
             {name: 'message', mapping: 'message', type: 'string'},
         ],
-        sortInfo:{field: 'createdate', direction: "DESC"},
+        sortInfo:{field: 'id', direction: "DESC"},
         remoteSort: true,
         baseParams: baseParams
     });
@@ -42,6 +42,7 @@ Ext.onReady(function() {
 
         store: LogView.store,
         columns: [
+            {header: 'Id', width: 30, dataIndex: 'id', sortable: true},
             {header: 'Date', width: 60, dataIndex: 'createdate', sortable: true, renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')},
             {header: 'User', width: 40, dataIndex: 'constituentid', sortable: true},
             {header: 'Message', width: 250,  dataIndex: 'message', sortable: true, renderer: LogView.descriptionRenderer},
@@ -61,7 +62,7 @@ Ext.onReady(function() {
         renderTo: 'logViewGrid'
     });
 
-    LogView.store.load({params: {start: 0, limit: 100, sort: 'createdate', dir: 'DESC'}});
+    LogView.store.load({params: {start: 0, limit: 100, sort: 'id', dir: 'DESC'}});
 
 });
 

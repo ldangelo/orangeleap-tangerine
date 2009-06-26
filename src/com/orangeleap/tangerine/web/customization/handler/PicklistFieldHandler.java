@@ -41,7 +41,7 @@ public class PicklistFieldHandler extends GenericFieldHandler {
                 fieldVO.addDisplayValue(displayValue);
                 fieldVO.addReferenceValue(item.getReferenceValue());
             }
-            for (Iterator<String> iterator = fieldVO.getReferenceValues().iterator(); iterator.hasNext();) {
+            if (fieldVO.getReferenceValues() != null) for (Iterator<String> iterator = fieldVO.getReferenceValues().iterator(); iterator.hasNext();) {
                 String refVal = iterator.next();
                 if (!GenericValidator.isBlankOrNull(refVal)) {
                     fieldVO.setCascading(true);

@@ -73,10 +73,12 @@ public class FieldVO {
             o = "";
         } 
     	String value = StringUtils.trimToEmpty(o.toString());
-    	if (!codes.contains(value) && value.length() > 0) {
+    	if ((codes == null || !codes.contains(value)) && value.length() > 0) {
     		// This picklist item's previously saved value has been deleted from the list of available picklist values.  
     		// Add it back in as a temporary option so that it doesn't get reset when saving some other change from the gui.  
     		// We no longer have a display value, so use the code value for the display value in just this case.
+            if (codes == null) codes = new ArrayList<String>();
+            if (displayValues == null) displayValues = new ArrayList<Object>();
     		codes.add(""+getFieldValue());
     		displayValues.add(""+getFieldValue());
     	}

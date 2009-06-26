@@ -18,6 +18,7 @@
 		<result property="recognitionName" column="RECOGNITION_NAME" jdbcType="VARCHAR" />
 		<result property="suffix" column="SUFFIX" jdbcType="VARCHAR" />
 		<result property="title" column="TITLE" jdbcType="VARCHAR" />
+		<result property="byPassDuplicateDetection" column="BYPASS_DUPLICATE" jdbcType="CHAR" />
 		<result property="updateDate" column="UPDATE_DATE" jdbcType="TIMESTAMP" />
 		<result property="accountNumber" column="ACCOUNT_NUMBER" jdbcType="BIGINT" />
         <result property="site" resultMap="SITE.SITE_NAME_RESULT" />
@@ -28,7 +29,8 @@
     	p.CONSTITUENT_ID, 
 		p.CONSTITUENT_TYPE, p.CREATE_DATE, p.FIRST_NAME, p.LAST_NAME, p.LEGAL_NAME,
 		p.LOGIN_ID, p.MARITAL_STATUS, p.MIDDLE_NAME, p.NAICS_CODE, p.ORGANIZATION_NAME,
-		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.UPDATE_DATE, p.SITE_NAME, p.ACCOUNT_NUMBER
+		p.PREFERRED_PHONE_TYPE, p.RECOGNITION_NAME, p.SUFFIX, p.TITLE, p.BYPASS_DUPLICATE,  
+		p.UPDATE_DATE, p.SITE_NAME, p.ACCOUNT_NUMBER
     </sql>
     
 	<sql id="SELECT_CONSTITUENT_FRAGMENT">
@@ -100,11 +102,11 @@
 
 	<insert id="INSERT_CONSTITUENT" parameterClass="com.orangeleap.tangerine.domain.Constituent">
 		insert into CONSTITUENT (
-		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME,
+		CONSTITUENT_TYPE, FIRST_NAME, LAST_NAME, LEGAL_NAME, BYPASS_DUPLICATE, 
 		LOGIN_ID, MARITAL_STATUS, MIDDLE_NAME, NAICS_CODE, ORGANIZATION_NAME,
 		PREFERRED_PHONE_TYPE, RECOGNITION_NAME, SUFFIX, TITLE, CREATE_DATE, UPDATE_DATE, SITE_NAME, ACCOUNT_NUMBER)
 		values (
-		#constituentType#, #firstName#, #lastName#, #legalName#,
+		#constituentType#, #firstName#, #lastName#, #legalName#, #byPassDuplicateDetection#, 
 		#loginId#, #maritalStatus#, #middleName#,	#naicsCode#, #organizationName#,
 		#preferredPhoneType#, #recognitionName#, #suffix#, #title#, now(), now(), #site.name#, if(#accountNumber# is null, GENERATEID(#site.name#), #accountNumber#) )
 		<selectKey keyProperty="id" resultClass="long">
@@ -128,6 +130,7 @@
 		RECOGNITION_NAME = #recognitionName#,
 		SUFFIX = #suffix#,
 		TITLE = #title#,
+		BYPASS_DUPLICATE = #byPassDuplicateDetection#, 
 		ACCOUNT_NUMBER = #accountNumber#,
 		UPDATE_DATE = now()
 		where CONSTITUENT_ID = #id# and SITE_NAME = #site.name#

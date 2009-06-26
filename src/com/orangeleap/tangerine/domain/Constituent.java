@@ -484,6 +484,13 @@ public class Constituent extends AbstractCommunicatorEntity {
     	return getFullName();
     }
 
+	public Boolean getByPassDuplicateDetection() {
+		return byPassDuplicateDetection;
+	}
+
+	public void setByPassDuplicateDetection(Boolean byPassDuplicateDetection) {
+		this.byPassDuplicateDetection = byPassDuplicateDetection;
+	}
 
     @Override
     public void setDefaults() {
@@ -608,12 +615,4 @@ public class Constituent extends AbstractCommunicatorEntity {
         removeCustomField(ORGANIZATION_SALES_CONTACTS);
         removeCustomField(ORGANIZATION_PUBLIC_RELATIONS_CONTACTS);
     }
-
-	public Boolean getByPassDuplicateDetection() {
-		return byPassDuplicateDetection;
-	}
-
-	public void setByPassDuplicateDetection(Boolean byPassDuplicateDetection) {
-		this.byPassDuplicateDetection = byPassDuplicateDetection;
-	}
 }

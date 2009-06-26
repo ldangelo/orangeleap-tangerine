@@ -24,9 +24,8 @@
 		        <select id="exportEntity" name="entity"  onchange="Export_hideShow( $('#exportEntity').val() );"  >
 		          <option value="">Select...</option>
 		          <option value="constituent">Constituents</option>
-		          <option value="address">NCOA Addresses</option>   
+		          <option value="address">Address Cleansing</option>
 		          <option value="gift">Gift Summary</option> 
-		          <!--  <option value="distributionLine">Gift Detail</option>    -->
 		        </select>    
 		                
 		        <input type="submit" value="Export" onclick="if ( $('#exportEntity').val() === '' ) return false; else return true; "/>
@@ -111,9 +110,9 @@
 		        <select id="importEntity" name="entity" onchange="Import_hideShow( $('#importEntity').val() );" >
 		          <option value="">Select...</option>
 		          <option value="constituent">Constituents</option>
+                    <option value="address">Address Cleansing</option>
  		          <option value="gift">Gifts</option> 
- 		          <option value="address">NCOA Addresses</option>   
-		        </select>            
+		        </select>
 	            <input type="file" name="file"/>
 	            <input type="submit" value="Import" onclick="$('#importResult').html(''); return true;" />
 	            

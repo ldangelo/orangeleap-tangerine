@@ -118,3 +118,6 @@ p.enterNew {
 .whiteFont { color: #FFF; }
 div.errorDiv { font-size: 1.2em; font-family: arial; padding-top: 15px; } 
 /* input field borders are #7f9db9 by default in firefox */
+
+/* Used in ExtJS forms to space out entries */
+div.spaced { padding-bottom: 10px; }

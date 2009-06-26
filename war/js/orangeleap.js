@@ -22,6 +22,10 @@ $(document).ready(function() {
 	    }
 	});
 
+    // initialize the dialog used for password changes
+    var pwdChg = new PasswordChange();
+    pwdChg.init();
+
 	$.ajaxSetup({
 		timeout: 30000, // 30 seconds before the request times out
 		error: function(xhr, errorType, exception) {
@@ -1484,3 +1488,81 @@ var MultiSelect = {
 if (typeof console == "undefined" || typeof console.log == "undefined") var console = { log: function() {} };
 // Initialize the console (workaround for current Firebug defect)
 console.log();
+
+// Class for handling password change
+function PasswordChange() {
+
+    var that = this;
+
+    this.init = function() {
+        // add a click handler to the Change Password link
+        Ext.fly('sec-changepwd').on('click',function(){that.passwordWindow.show(); return false;});
+
+        that.passwordForm = new Ext.form.FormPanel({
+            labelWidth: 120,
+            frame:true,
+            bodyStyle:'padding:10px',
+            width: 370,
+            itemCls: 'spaced',
+            defaults: {width: 180},
+            defaultType: 'textfield',
+            monitorValid: true,
+            keys: [{key : [10,13],
+                    fn: function() { if (that.passwordForm.getForm().isValid()) that.submit();}
+            }],
+            items: [
+                {fieldLabel: 'New Password', name: 'password', allowBlank:false, inputType: 'password', minLength: 3},
+                {fieldLabel: 'Confirm Password', name: 'confirm', allowBlank:false, inputType: 'password', minLength: 3,
+                    invalidText: 'Value does not match the New Password',validator: this.passwordValidator}
+            ],
+            buttons: [{text: 'Change Password', type: 'submit', formBind: true, handler: that.submit},
+            {text: 'Cancel', handler: function() {that.passwordWindow.hide(); that.passwordForm.getForm().reset();}}]
+        });
+
+        that.passwordWindow = new Ext.Window({
+            layout:'fit',
+            height: 170,
+            title: 'Change Password',
+            closeAction:'hide',
+            modal: true,
+            resizable: false,
+            items: that.passwordForm
+        });
+
+        that.passwordWindow.on('show', function(win){
+            var form = that.passwordForm.getForm();
+            form.findField('password').focus(false,600);
+        });
+    };
+
+    this.submit = function() {
+
+        that.passwordWindow.hide();
+        var form = that.passwordForm.getForm();
+        // form validation won't allow submit unless the new and confirm values match,
+        // so we only need to grab the new one
+        var newpass = form.findField('password').getValue();
+        form.reset();
+        
+
+        Ext.Ajax.request({
+            url: 'changePassword.json',
+            params: {password: newpass},
+            callback: function(options, success, response) {
+                var obj = Ext.decode(response.responseText);
+
+                if (obj.success === true) {
+                    Ext.MessageBox.alert('Success', 'Your password was changed');
+                } else {
+                    Ext.MessageBox.alert('Password Change Failed', obj.error);
+                }
+            }
+        });
+
+    };
+
+    this.passwordValidator = function(val) {
+        var pass = that.passwordForm.getForm().findField('password').getValue();
+        return (val === pass);
+    };
+}

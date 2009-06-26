@@ -45,18 +45,18 @@
     <select id="SELECT_BY_PICKLIST_ID" resultMap="PICKLIST_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and P.PICKLIST_ID = #picklistId#
-        order by P.SITE_NAME
+        order by P.SITE_NAME, ENTITY_TYPE, ITEM_ORDER
     </select>
 
     <select id="SELECT_BY_PICKLIST_NAME_ID" resultMap="PICKLIST_RESULT" parameterClass="map" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
         and P.PICKLIST_NAME_ID = #picklistNameId#
-        order by P.SITE_NAME
+        order by P.SITE_NAME, ENTITY_TYPE, ITEM_ORDER
     </select>
 
     <select id="SELECT_PICKLIST_BY_SITE_NAME" resultMap="PICKLIST_RESULT" parameterClass="string" >
         <include refid="SELECT_PICKLIST_FRAGMENT"/>
-        order by SITE_NAME, ENTITY_TYPE, P.PICKLIST_DESC
+        order by SITE_NAME, ENTITY_TYPE, P.PICKLIST_DESC, ITEM_ORDER
     </select>
 
     <select id="SELECT_PICKLIST_BY_SITE_AND_FIELD_NAME" resultMap="PICKLIST_RESULT" parameterClass="map" >

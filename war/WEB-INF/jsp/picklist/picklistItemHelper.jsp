@@ -23,7 +23,13 @@
  							     <c:param name="picklistDesc" value="${picklistDesc}" />
 							      <c:param name="view" value="customize" />
 							    </c:url>
-							<td class="action"><a class="editInPlace" href="${picklistItemCustomizeUrl}">+</a></td>
+                            <td class="action"><a class="editInPlace" href="${picklistItemCustomizeUrl}">+</a></td>
+                            <c:url var="picklistItemReorderUrl" value="picklistItem.json">
+                              <c:param name="picklistId" value="${picklistItem.picklistId}" />
+                              <c:param name="picklistItemId" value="${picklistItem.id}" />
+                              <c:param name="reorder" value="up" />
+                            </c:url>
+                            <td class="action"><a class="editInPlace" href="#" onclick="$.post('${picklistItemReorderUrl}', null, function(data){ window.location.reload();} );">^</a></td>
 						</tr>
 					</c:forEach>
 				</table>

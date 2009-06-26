@@ -282,19 +282,21 @@ var Picklist = {
 				var $myPicklist = $(this);
 				var selectors = $myPicklist.attr("references");
 				var selectedRefs = jQuery.trim($("div#selectedRef-" + $myPicklist.attr("id")).text());
-				if (selectors) {
-					var $targets = $(selectors, "form");
-					$targets.each(function() {
-						var $myTarget = $(this);
-						var optionSelected = $myTarget.is(selectedRefs);
-						var parentChildSet = false;
-						parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
-						parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
-						if (parentChildSet) {
-							// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
-							$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
-						}
-					});
+				if (selectors && $.trim(selectors) != '') {
+					var $targets = $(selectors, "form"); 
+					if ($targets) {
+						$targets.each(function() {
+							var $myTarget = $(this);
+							var optionSelected = $myTarget.is(selectedRefs);
+							var parentChildSet = false;
+							parentChildSet |= Picklist.setChildForParent($parentNode, $myTarget);
+							parentChildSet |= Picklist.setParentForChild($myTarget, $parentNode, optionSelected);
+							if (parentChildSet) {
+								// To prevent the same node from being evaluated again and again, check if a change was made; if so, add to recursive targets, else, no need to recursively evaluate further
+								$recursiveTargets = $recursiveTargets ? $recursiveTargets.add($myTarget) : $myTarget;
+							}
+						});
+					}
 				}
 			});	
 			if (tree.isRoot) {

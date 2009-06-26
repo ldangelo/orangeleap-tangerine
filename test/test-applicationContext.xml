@@ -105,5 +105,12 @@
 	<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
 	  <property name="checkService" ref="checkService"/>
 	</bean>
+
+    <bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+        <property name="anonymousReadOnly" value="false"/>
+        <property name="userDn" value="${ldap.userDn}"/>
+        <property name="password" value="${ldap.password}"/>
+        <property name="url" value="ldap://${ldap.host}:${ldap.port}/${ldap.root}"/>
+    </bean>
 	
 </beans>

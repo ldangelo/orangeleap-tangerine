@@ -9,7 +9,7 @@
 		<script type="text/javascript" src="js/gift/pledgeRecurringGiftSelector.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$("#clickButtonTop, #clickButtonButton").click(function() {
+				$("#clickButtonTop, #clickButtonBottom").click(function() {
 					$("div.mainForm form").eq(0).append("<input type='hidden' name='doReprocess' id='doReprocess' value='true'/>").submit();
 				});
 			});

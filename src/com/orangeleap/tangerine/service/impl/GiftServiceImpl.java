@@ -93,11 +93,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
     }
 
     private final static String MAINTAIN_METHOD = "GiftServiceImpl.maintainGift";
-    
+
     // Used for create only.
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
-    public Gift maintainGift(Gift gift) throws BindException  {
+    public Gift maintainGift(Gift gift) throws BindException {
     	boolean reentrant = RulesStack.push(MAINTAIN_METHOD);
         try {
             if (logger.isTraceEnabled()) {
@@ -105,32 +105,12 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
             }
             
             if (gift.getFieldLabelMap() != null && !gift.isSuppressValidation()) {
-
-    	        BindingResult br = new BeanPropertyBindingResult(gift, "gift");
-    	        BindException errors = new BindException(br);
-    	      
-    	        codeValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) {
-					throw errors;
-				}
-    	        distributionLinesValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) {
-					throw errors;
-				}
-    	        
-    	        entityValidator.validate(gift, errors);
-    	        if (errors.getAllErrors().size() > 0) {
-					throw errors;
-				}
+            	validateGift(gift);
             }
             
-	        maintainEntityChildren(gift, gift.getConstituent());
-	        setDefaultDates(gift);
-	        gift = giftDao.maintainGift(gift);
-	        pledgeService.updatePledgeForGift(gift);
-	        recurringGiftService.updateRecurringGiftForGift(gift);
-	        auditService.auditObject(gift, gift.getConstituent());
-	
+            setDefaultDates(gift);
+            gift = saveAuditGift(gift);
+            
 	        //
 	        // this needs to go last because we need the gift in the database
 	        // in order for rules to work properly.
@@ -143,6 +123,35 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         finally {
         	RulesStack.pop(MAINTAIN_METHOD);
         }
+    }
+    
+    private void validateGift(Gift gift) 
+    	throws BindException {
+        BindingResult br = new BeanPropertyBindingResult(gift, StringConstants.GIFT);
+        BindException errors = new BindException(br);
+      
+        codeValidator.validate(gift, errors);
+        if (errors.getAllErrors().size() > 0) {
+			throw errors;
+		}
+        distributionLinesValidator.validate(gift, errors);
+        if (errors.getAllErrors().size() > 0) {
+			throw errors;
+		}
+        
+        entityValidator.validate(gift, errors);
+        if (errors.getAllErrors().size() > 0) {
+			throw errors;
+		}
+    }
+    
+    private Gift saveAuditGift(Gift gift) {
+        maintainEntityChildren(gift, gift.getConstituent());
+        gift = giftDao.maintainGift(gift);
+        pledgeService.updatePledgeForGift(gift);
+        recurringGiftService.updateRecurringGiftForGift(gift);
+        auditService.auditObject(gift, gift.getConstituent());
+        return gift;
     }
     
     private void setDefaultDates(Gift gift) {
@@ -164,14 +173,11 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
 	            logger.trace("editGift: giftId = " + gift.getId());
 	        }
 	        
-	        maintainEntityChildren(gift, gift.getConstituent());
-	        gift = giftDao.maintainGift(gift);
-            pledgeService.updatePledgeForGift(gift);
-            recurringGiftService.updateRecurringGiftForGift(gift);
+            gift = saveAuditGift(gift);
+
 	        if (!reentrant) {
 	        	routeGift(gift);
 	        }
-	        auditService.auditObject(gift, gift.getConstituent());
 	
 	        return gift;
         } 
@@ -180,13 +186,29 @@ public class GiftServiceImpl extends AbstractPaymentService implements GiftServi
         }
     }
     
+    private final static String REPROCESS_METHOD = "GiftServiceImpl.reprocessGift";
+
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public Gift reprocessGift(Gift gift) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("reprocessGift: giftId = " + gift.getId());
         }
-    	gift.clearPaymentStatusInfo();
-    	return maintainGift(gift);
+    	boolean reentrant = RulesStack.push(REPROCESS_METHOD);
+        try {
+        	validateGift(gift);
+        	gift.clearPaymentStatusInfo();
+        	gift = saveAuditGift(gift);
+	
+	        if (!reentrant) {
+	        	routeGift(gift);
+	        	paymentHistoryService.addPaymentHistory(createPaymentHistoryForGift(gift));
+	        }
+	        return gift;
+        } 
+        finally {
+        	RulesStack.pop(REPROCESS_METHOD);
+        }
     }
     
     private final static String ROUTE_METHOD = "GiftServiceImpl.routeGift";

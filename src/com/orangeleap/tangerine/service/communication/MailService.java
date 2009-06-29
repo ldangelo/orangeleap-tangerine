@@ -44,7 +44,7 @@ public class MailService {
 	private String labelTemplateName = null;
 
 	
-	@Autowired
+//	@Autowired
 	private ConstituentService constituentService;
 	
 	private CommunicationHistoryService communicationHistoryService;
@@ -128,24 +128,7 @@ public class MailService {
 		for (Constituent constituent : list) {
 			ids.add(constituent.getId());
 			
-			//
-			// Add touchpoint for this constituent so rule will not fire again...
-			CommunicationHistory ch = new CommunicationHistory();
-			ch.setConstituent(constituent);
-			ch.setSystemGenerated(true);
-			ch.setComments("Generated mailing using template named " + getTemplateName());
-			ch.setEntryType("Mail");
-			ch.setRecordDate(new Date());
-			ch.setCustomFieldValue("template", getTemplateName());
-			ch.setSelectedAddress(constituent.getPrimaryAddress());
 
-			ch.setSuppressValidation(true);
-			try {
-				communicationHistoryService.maintainCommunicationHistory(ch);
-			} catch (BindException e1) {
-				// Should not happen when setSuppressValidation = true;
-				logger.error(e1);
-			}
 
 		}
 		//
@@ -159,6 +142,16 @@ public class MailService {
 		
 		File tempLabelFile = runLabels();
 		File tempFile = runReport();
+
+        if (tempLabelFile == null) {
+            logger.error("Failed to generate Label File");
+            return;
+        }
+
+        if (tempFile == null) {
+            logger.error("Failed to generate report File.");
+            return;
+        }
 		
 		//
 		// now put this report into the "Content files" directory of the repository
@@ -204,7 +197,27 @@ public class MailService {
 				attachments = new RequestAttachment[]{attachment};
 				jserver.getWSClient().putResource(reportRD, attachments);
 			}
-			
+
+            for (Constituent constituent : list) {
+            //
+            // Add touchpoint for this constituent so rule will not fire again...
+            CommunicationHistory ch = new CommunicationHistory();
+            ch.setConstituent(constituent);
+            ch.setSystemGenerated(true);
+            ch.setComments("Generated mailing using template named " + getTemplateName());
+            ch.setEntryType("Mail");
+            ch.setRecordDate(new Date());
+            ch.setCustomFieldValue("template", getTemplateName());
+            ch.setSelectedAddress(constituent.getPrimaryAddress());
+
+            ch.setSuppressValidation(true);
+            try {
+                communicationHistoryService.maintainCommunicationHistory(ch);
+            } catch (BindException e1) {
+                // Should not happen when setSuppressValidation = true;
+                logger.error(e1);
+            }
+            }
 			tempLabelFile.delete();
 			tempFile.delete();
 		} catch (Exception ex) {

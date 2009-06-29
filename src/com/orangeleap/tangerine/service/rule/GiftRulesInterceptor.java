@@ -5,6 +5,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.agent.RuleAgent;
 import org.drools.event.DebugAgendaEventListener;
 import org.drools.event.DebugWorkingMemoryEventListener;
 import org.springframework.beans.BeansException;
@@ -40,7 +41,8 @@ public class GiftRulesInterceptor extends RulesInterceptor {
         String site = null;
         site =gift.getSite().getName();
 
-		RuleBase ruleBase = ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site).getRuleBase();
+        RuleAgent agent = (RuleAgent) ((DroolsRuleAgent)applicationContext.getBean("DroolsRuleAgent")).getRuleAgent(site);
+		RuleBase ruleBase = agent.getRuleBase();
 
 		StatefulSession session = ruleBase.newStatefulSession();
 		WorkingMemory workingMemory = (WorkingMemory) session;

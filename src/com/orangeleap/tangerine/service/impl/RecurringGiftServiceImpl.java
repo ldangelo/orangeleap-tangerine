@@ -323,20 +323,26 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    private void processRecurringGift(RecurringGift recurringGift)
-    {
+    private void processRecurringGift(RecurringGift recurringGift) {
         Date nextDate = null;
 
         nextDate = getNextGiftDate(recurringGift);
 
         if (nextDate != null) {
-	    createAutoGift(recurringGift);  
-	    
-	    recurringGift.setNextRunDate(nextDate);
+            createAutoGift(recurringGift);
+
+            recurringGift.setNextRunDate(nextDate);
 
             // Update the Next Run Date ONLY
             recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
         }
+
+        if (recurringGift.getEndDate() != null && recurringGift.getEndDate().after(nextDate)) {
+            recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
+            recurringGift.setNextRunDate(null);
+            recurringGiftDao.maintainRecurringGift(recurringGift);
+        }
+        
     }
 
     @Override

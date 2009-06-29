@@ -174,11 +174,11 @@ public abstract class AbstractCommitmentService<T extends Commitment> extends Ab
 	    nextRun = null;
 	}
    
-        if (nextRun == null || (commitment.getEndDate() != null && nextRun.getTime().after(commitment.getEndDate()))) {
-            nextRun = null;
-            logger.debug("no next run scheduled");
-            return null;
-        }
+//        if (nextRun == null || (commitment.getEndDate() != null && nextRun.getTime().after(commitment.getEndDate()))) {
+//            nextRun = null;
+//            logger.debug("no next run scheduled");
+//            return null;
+//        }
         return nextRun.getTime();
     }
 

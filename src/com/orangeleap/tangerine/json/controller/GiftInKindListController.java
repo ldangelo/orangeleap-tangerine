@@ -11,13 +11,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.paymentInfo.GiftInKind;
 import com.orangeleap.tangerine.service.GiftInKindService;
+import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -54,7 +55,7 @@ public class GiftInKindListController {
 		map.put("currencycode", gik.getCurrencyCode());
 		map.put("donationdate", formatter.format(gik.getDonationDate()));
 		map.put("motivationcode", gik.getMotivationCode());
-		map.put("othermotivation", gik.getOther_motivationCode());
+		map.put("othermotivation", HttpUtil.jsEscape(gik.getOther_motivationCode()));
 
 		return map;
 

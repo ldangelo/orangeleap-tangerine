@@ -11,19 +11,16 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.WebUtils;
 
-import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.domain.ErrorLog;
-import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.ErrorLogService;
 import com.orangeleap.tangerine.type.AccessType;
-import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -65,7 +62,9 @@ public class LogViewController {
     @RequestMapping("/logView.json")
     public ModelMap getLogEvents(HttpServletRequest request, SortInfo sortInfo) {
 
-    	if (!accessAllowed(request)) return null;
+    	if (!accessAllowed(request)) {
+			return null;
+		}
 
         List<Map> rows = new ArrayList<Map>();
 
@@ -103,19 +102,13 @@ public class LogViewController {
         map.put("createdate", formatter.format(errorLog.getCreateDate()) );
         map.put("constituentid", errorLog.getConstituentId());
         String message = errorLog.getMessage();
-        if (message.length() > MAX_MESSAGE_LENGTH) message = message.substring(0,MAX_MESSAGE_LENGTH);
-        message = jsEscape(message);
+        if (message.length() > MAX_MESSAGE_LENGTH) {
+			message = message.substring(0,MAX_MESSAGE_LENGTH);
+		}
+        message = HttpUtil.jsEscape(message);
         map.put("message", message);
 
         return map;
 
     }
-
-    private String jsEscape(String s) {
-        s = s.replace("\\", "\\\\");
-        return s.replace("\"", "\\\"").replace("\'", "\\\'").replace("\r","").replace("\n","\\n");
-    }
-
-
-
 }

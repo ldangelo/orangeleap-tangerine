@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 
 public class HttpUtil {
 
@@ -41,5 +40,12 @@ public class HttpUtil {
 
     public static String getUserIpAddress(HttpServletRequest request) {
         return request.getRemoteAddr();
+    }
+
+    public static String jsEscape(String s) {
+    	if (s != null) {
+			s = s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\'", "\\\'").replace("\r","").replace("\n","\\n");
+    	}
+    	return s;
     }
 }

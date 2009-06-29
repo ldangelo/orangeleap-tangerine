@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.PaymentHistory;
 import com.orangeleap.tangerine.service.PaymentHistoryService;
+import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -58,7 +59,7 @@ public class PaymentHistoryListController {
         map.put("type", ph.getPaymentHistoryType().name());
         map.put("paymenttype", ph.getPaymentType());
         map.put("paymentstatus", ph.getPaymentStatus());
-        map.put("description", ExtUtil.scrub(ph.getDescription()));
+        map.put("description", HttpUtil.jsEscape(ph.getDescription()));
         map.put("amount", ph.getAmount());
         map.put("currencycode", ph.getCurrencyCode());
 

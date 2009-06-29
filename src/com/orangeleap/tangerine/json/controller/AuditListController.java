@@ -11,7 +11,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,6 +21,8 @@ import com.orangeleap.tangerine.domain.Audit;
 import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.type.AccessType;
 import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -61,7 +62,9 @@ public class AuditListController {
     @RequestMapping("/auditList.json")
     public ModelMap getAuditEvents(HttpServletRequest request, SortInfo sortInfo) {
     	
-    	if (!accessAllowed(request)) return null; 
+    	if (!accessAllowed(request)) {
+			return null;
+		} 
 
         List<Map> rows = new ArrayList<Map>();
 
@@ -110,7 +113,7 @@ public class AuditListController {
         map.put("date", formatter.format(audit.getDate()) );
         map.put("user", audit.getUser());
         map.put("type", audit.getAuditType().name());
-        map.put("description", audit.getDescription());
+        map.put("description", HttpUtil.jsEscape(audit.getDescription()));
         map.put("objectType", "communicationhistory".equals(audit.getEntityType()) ? "touch point" : audit.getEntityType());
         map.put("objectId", audit.getObjectId());
         map.put("constituentId", audit.getConstituentId());

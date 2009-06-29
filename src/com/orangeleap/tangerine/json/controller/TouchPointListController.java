@@ -11,13 +11,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.orangeleap.tangerine.domain.CommunicationHistory;
 import com.orangeleap.tangerine.service.CommunicationHistoryService;
+import com.orangeleap.tangerine.util.HttpUtil;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 
@@ -51,7 +52,7 @@ public class TouchPointListController {
         map.put("date", formatter.format(ch.getRecordDate()) );
         map.put("constituentId", ch.getConstituent().getId());
         map.put("type", ch.getEntryType());
-        map.put("comments", ch.getComments());
+        map.put("comments", HttpUtil.jsEscape(ch.getComments()));
     
         return map;
 

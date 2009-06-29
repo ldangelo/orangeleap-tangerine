@@ -16,6 +16,7 @@ import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
 import com.orangeleap.tangerine.service.ConstituentService;
+import com.orangeleap.tangerine.util.HttpUtil;
 
 /**
  * Retrieves the JSON data used for populating the constituent
@@ -110,7 +111,7 @@ public class ContactInfoController {
             Map<String,Object> map = new HashMap<String,Object>();
             map.put("id", email.getId());
             map.put("address", email.getEmailAddress());
-            map.put("comment", (email.getComments() == null ? "None" : email.getComments()));
+            map.put("comment", (email.getComments() == null ? "None" : HttpUtil.jsEscape(email.getComments())));
             map.put("active", !email.isInactive());
             map.put("primary", email.isPrimary()); 
             map.put("type", email.getCustomFieldValue("emailType"));

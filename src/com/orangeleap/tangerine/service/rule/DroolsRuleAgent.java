@@ -1,6 +1,8 @@
 package com.orangeleap.tangerine.service.rule;
 
 import java.util.Properties;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import com.orangeleap.tangerine.util.OLLogger;
@@ -15,7 +17,8 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
 	private Properties droolsProperties;
-	private RuleAgent ruleAgent = null;
+	private Map<String,RuleAgent> agentMap;
+
     private String pollInterval;
     private String cacheDir;
     private String packageDir;
@@ -28,6 +31,7 @@ public class DroolsRuleAgent implements ApplicationContextAware {
         this.cacheDir = cacheDir;
         this.packageDir = packageDir;
         this.droolsProperties = null;
+        agentMap = new HashMap<String,RuleAgent>();
 	}
 
     public Properties getDroolsProperties(String siteName) {
@@ -47,7 +51,15 @@ public class DroolsRuleAgent implements ApplicationContextAware {
 	}
 
     public RuleAgent getRuleAgent(String siteName) {
-        return RuleAgent.newRuleAgent(getDroolsProperties(siteName));
+        RuleAgent agent = null;
+
+        agent = agentMap.get(siteName);
+        if (agent != null) return agent;
+
+        agent = RuleAgent.newRuleAgent(getDroolsProperties(siteName));
+        agentMap.put(siteName,agent);
+        
+        return agent;
     }
 
 

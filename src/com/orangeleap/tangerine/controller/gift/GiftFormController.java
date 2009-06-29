@@ -21,6 +21,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.type.PaymentType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 
@@ -48,13 +49,19 @@ public class GiftFormController extends AbstractGiftController {
     	return isEnteredGift(gift) && (Gift.STATUS_NOT_PAID.equals(gift.getGiftStatus()) || Commitment.STATUS_PENDING.equals(gift.getGiftStatus())) && 
 			(Gift.PAY_STATUS_DECLINED.equals(gift.getPaymentStatus()) || Gift.PAY_STATUS_ERROR.equals(gift.getPaymentStatus()));
     }
+    
+    private boolean showGiftView(Gift gift) {
+    	return isEnteredGift(gift) && (PaymentType.CASH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CHECK.getPaymentName().equals(gift.getPaymentType()) || 
+    			((PaymentType.ACH.getPaymentName().equals(gift.getPaymentType()) || PaymentType.CREDIT_CARD.getPaymentName().equals(gift.getPaymentType())) && 
+    					Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())));
+    }
 
 	@Override
 	protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
 		ModelAndView mav = super.showForm(request, response, errors);
         Gift gift = (Gift) formBackingObject(request);
 
-        if (isEnteredGift(gift) && Gift.STATUS_PAID.equals(gift.getGiftStatus()) && Gift.PAY_STATUS_APPROVED.equals(gift.getPaymentStatus())) {
+        if (showGiftView(gift)) {
         	mav = new ModelAndView(appendGiftParameters(request, giftViewUrl, gift));
         }
 		return mav;

@@ -97,7 +97,7 @@
 		<antcall target="4. Start Tomcat - Debug Mode"/>
 	</target>
 
-	<target name="9. Load Data">
+	<target name="9. Load Data" depends="resolve">
 		 <ant antfile="${load.base.data.file}" target="load.base.data" />
 		
 	     <sql driver="${mysql.db.driver}"
@@ -105,7 +105,7 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 	     	<!-- Add development data -->
 	     	<!-- TODO add sample project codes -->
 	     	<transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
@@ -129,28 +129,28 @@
 	     </sql>
 	</target>
 	
-	<target name="9.1. Clear Schema">
+	<target name="9.1. Clear Schema" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 	          url="${mysql.db.url}"
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 	     	<transaction src="${basedir}/db/clearSchema.sql"/>
 		 </sql>
 	</target>
 
-	<target name="9.2 Load Base Data Only">
+	<target name="9.2 Load Base Data Only" depends="resolve">
 		 <ant antfile="${load.base.data.file}" target="load.base.data" />
 	</target>
 
-	<target name="9.3 Load Schema">
+	<target name="9.3 Load Schema" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${compile.lib}"
  	              delimiter=";">
 		    <transaction src="${basedir}/db/prod/tangerine.ddl"/>
 	    </sql>
@@ -160,19 +160,19 @@
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${compile.lib}"
 		     	  delimiter="$$">
 		    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
 		</sql>		
 	</target>
 
-	<target name="9.4 Load Extra Schema">
+	<target name="9.4 Load Extra Schema" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${compile.lib}"
  	              delimiter=";">
 		    <transaction src="${basedir}/db/prod/tangerine-extra.ddl"/>
 	    </sql>
@@ -181,19 +181,19 @@
                   userid="${mysql.db.user}"
                   password="${mysql.db.pw}"
                   encoding="UTF-8"
-                  classpath="${mysql.db.classpath}"
+                  classpath="${compile.lib}"
                    delimiter="$$">
             <transaction src="${basedir}/db/prod/tangerine-extra-functions.sql"/>
         </sql>
 	</target>
 
-	<target name="9.4 Load Sample Merchant Ids">
+	<target name="9.4 Load Sample Merchant Ids" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 		          url="${mysql.db.url}"
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${compile.lib}"
  	              delimiter=";">
 	        <transaction src="${basedir}/db/dev/devSetup/siteSetup.sql"/>
 	    </sql>
@@ -220,7 +220,6 @@
 	</target>
 
 	<target name="reloadSandboxDb">
-		<!--<antcall target="9.1. Clear Schema"/>-->
 		<antcall target="9.3 Load Schema"/>
 		<antcall target="9.2 Load Base Data Only"/>
 		<antcall target="9.4 Load Sample Merchant Ids"/>

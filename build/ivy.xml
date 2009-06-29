@@ -131,7 +131,7 @@
 		</dependency>
 		
 		<!-- JDBC / MySQL / DB-->
-		<dependency org="mysql" name="mysql-connector-java" rev="5.0.8" transitive="false" conf="compile->default"> 
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.7" transitive="false" conf="compile->default"> 
 			<artifact name="mysql-connector-java" type="jar" />
 		</dependency>
 		

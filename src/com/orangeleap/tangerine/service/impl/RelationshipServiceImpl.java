@@ -762,7 +762,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	boolean isMultiValued = checkIsMultiValued(masters, details, fieldDefinition);
     	
     	Map<String, List<CustomField>> groupedCustomFields = groupCustomFieldsByValue(newCustomFields, isMultiValued);
-    	checkDateOverlapRelationships(groupedCustomFields, validationErrors, "errorDateRangesSingleValueRelationship");
+    	checkDateOverlapRelationships(groupedCustomFields, validationErrors, "errorDateRangesSingleValueRelationship", false);
 
     	validateCorrespondingRelationship(fieldDefinition, masters, details, newCustomFields, validationErrors);
     }
@@ -808,22 +808,28 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
     	return groupedCustomFields;
     }
     
-    private void checkDateOverlapRelationships(Map<String, List<CustomField>> newCustomFields, Map<String, String> validationErrors, String errorMessageKey) {
+    private void checkDateOverlapRelationships(Map<String, List<CustomField>> newCustomFields, Map<String, String> validationErrors, String errorMessageKey, boolean isCorresponding) {
     	for (Map.Entry<String, List<CustomField>> thisEntry : newCustomFields.entrySet()) {
     		List<CustomField> aList = thisEntry.getValue();
     		
     		sortByStartDate(aList);
-        	Date thisDate = null;
+        	CustomField prevCustomField = null;
         	for (CustomField custFld : aList) {
         		if (!custFld.getEndDate().after(custFld.getStartDate())) {
-        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getEndDate()).toString(), 
+        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getDisplayEndDate()).toString(), 
         					errorMessageKey);
         		}
-        		if (thisDate != null && !custFld.getStartDate().after(thisDate)) {
-        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getStartDate()).toString(), 
-        					errorMessageKey);
+        		if (prevCustomField != null && !custFld.getStartDate().after(prevCustomField.getEndDate())) {
+        			if (isCorresponding) {
+	        			validationErrors.put(new StringBuilder(prevCustomField.getName()).append("-").append(prevCustomField.getDisplayEndDate()).toString(), 
+	        					errorMessageKey);
+        			}
+        			else {
+	        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getDisplayStartDate()).toString(), 
+	        					errorMessageKey);
+        			}
         		}
-        		thisDate = custFld.getEndDate();
+        		prevCustomField = custFld;
         	}
     	}
 
@@ -872,7 +878,7 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
 		        	refList.add(newCustFld);
 				}
 				
-		    	checkDateOverlapRelationships(groupCustomFieldsByValue(refList, isMultiValued), validationErrors, "errorDateRangesCorrespondingRelationship");
+		    	checkDateOverlapRelationships(groupCustomFieldsByValue(refList, isMultiValued), validationErrors, "errorDateRangesCorrespondingRelationship", true);
 			}
 		}
     }

@@ -120,16 +120,14 @@ public class RelationshipsController extends SimpleFormController {
 			List<RelationshipCustomField> newRelationshipCustomFields = customFieldMap.get(fieldName);
 			findRelationshipCustomizations(fieldRelationshipForm, request, newRelationshipCustomFields);
 			
-			String fieldDefinitionId = fieldRelationshipForm.getFieldDefinitionId();
-			String masterFieldDefinitionId = fieldRelationshipForm.getMasterFieldDefinitionId();
     		List<CustomField> existingCustomFields = relationshipService.readCustomFieldsByConstituentAndFieldName(constituentId, fieldName);
     		
-    		Map<String, String> fieldValidationErrors = relationshipService.validateConstituentRelationshipCustomFields(constituentId, newRelationshipCustomFields, masterFieldDefinitionId);
+    		Map<String, String> fieldValidationErrors = relationshipService.validateConstituentRelationshipCustomFields(constituentId, newRelationshipCustomFields, fieldRelationshipForm.getFieldDefinitionId());
     		if (fieldValidationErrors != null && fieldValidationErrors.isEmpty() == false) {
     			validationErrors.putAll(fieldValidationErrors);
     		}
     		else {
-	    		relationshipService.maintainRelationshipCustomFields(constituentId, fieldDefinitionId, existingCustomFields, newRelationshipCustomFields, masterFieldDefinitionId);
+	    		relationshipService.maintainRelationshipCustomFields(constituentId, fieldRelationshipForm.getFieldDefinitionId(), existingCustomFields, newRelationshipCustomFields, fieldRelationshipForm.getMasterFieldDefinitionId());
     		}
 		}
 		if (validationErrors.isEmpty()) {
@@ -333,14 +331,14 @@ public class RelationshipsController extends SimpleFormController {
 								constituentName, constituentName }));
 					}
 
-					custFldNameVal = new StringBuilder(newRelationshipCtmFld.getCustomField().getName()).append("-").append(newRelationshipCtmFld.getCustomField().getStartDate()).toString();
+					custFldNameVal = new StringBuilder(newRelationshipCtmFld.getCustomField().getName()).append("-").append(newRelationshipCtmFld.getCustomField().getDisplayStartDate()).toString();
 					messageKey = validationErrorKeys.get(custFldNameVal);
 					if ("errorDateRangesSingleValueRelationship".equals(messageKey) || "errorDateRangesCorrespondingRelationship".equals(messageKey)) {
 						validationErrorMessages.put(custFldNameVal, TangerineMessageAccessor.getMessage(messageKey, new String[] { fieldRelationshipForm.getFieldLabel(), 
 								constituentName }));
 					}
 
-					custFldNameVal = new StringBuilder(newRelationshipCtmFld.getCustomField().getName()).append("-").append(newRelationshipCtmFld.getCustomField().getEndDate()).toString();
+					custFldNameVal = new StringBuilder(newRelationshipCtmFld.getCustomField().getName()).append("-").append(newRelationshipCtmFld.getCustomField().getDisplayEndDate()).toString();
 					messageKey = validationErrorKeys.get(custFldNameVal);
 					if ("errorDateRangesSingleValueRelationship".equals(messageKey) || "errorDateRangesCorrespondingRelationship".equals(messageKey)) {
 						validationErrorMessages.put(custFldNameVal, TangerineMessageAccessor.getMessage(messageKey, new String[] { fieldRelationshipForm.getFieldLabel(), 

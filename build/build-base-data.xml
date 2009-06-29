@@ -3,13 +3,13 @@
 
 	
 	<!-- This loads the contents of the 'prod' db scripts.  'prod' should be reserved for only non-site-specific data. -->
-	<target name="load.base.data">
+	<target name="load.base.data" depends="resolve" >
 	     <sql driver="${mysql.db.driver}"
 	          url="${mysql.db.url}"
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 	     	
 	     	<transaction src="${basedir}/db/prod/clearTable.sql"/>
 

@@ -36,7 +36,7 @@
 		          userid="${mysql.db.user}"
 		          password="${mysql.db.pw}"
 		          encoding="UTF-8"
-		          classpath="${mysql.db.classpath}"
+		          classpath="${compile.lib}"
  	              delimiter=";"
 	     	>
 		    <transaction src="${basedir}/db/clearSchema.sql"/>

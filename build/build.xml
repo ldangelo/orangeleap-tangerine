@@ -83,7 +83,7 @@
 		<antcall target="generate-javadocs" />
 	</target>
 
-	<target name="7. Deploy and Start Tomcat" depends="clean, 3. Undeploy War, 2. Deploy War, 4. Start Tomcat - Debug Mode"/>
+	<target name="7. Deploy and Start Tomcat" depends="3. Undeploy War, 2. Deploy War, 4. Start Tomcat - Debug Mode"/>
 
 	<target name="8. Redeploy and Restart Tomcat">
 		<trycatch>
@@ -220,7 +220,7 @@
 	</target>
 
 	<target name="reloadSandboxDb">
-		<antcall target="9.1. Clear Schema"/>
+		<!--<antcall target="9.1. Clear Schema"/>-->
 		<antcall target="9.3 Load Schema"/>
 		<antcall target="9.2 Load Base Data Only"/>
 		<antcall target="9.4 Load Sample Merchant Ids"/>

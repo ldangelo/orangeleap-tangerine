@@ -23,7 +23,7 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 
 	     	<transaction src="${basedir}/db/test/clearTestSchema.sql"/>
 	     </sql>
@@ -32,7 +32,7 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 
 	     	<transaction src="${basedir}/db/prod/tangerine.ddl"/>
 	     </sql>
@@ -41,7 +41,7 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}"
+	          classpath="${compile.lib}"
               delimiter="$$">
 			    <transaction src="${basedir}/db/prod/tangerine-functions.sql"/>
 		 </sql>
@@ -50,19 +50,27 @@
 	          userid="${mysql.db.user}"
 	          password="${mysql.db.pw}"
 	          encoding="UTF-8"
-	          classpath="${mysql.db.classpath}">
+	          classpath="${compile.lib}">
 
 	     	<transaction src="${basedir}/db/test/testData.sql"/>
 	     </sql>
-
-
-
 	</target>
 	
 	<target name="buildall" depends="init">
-		<antcall target="build">
-			<param name="build.env" value="unit-test"/>
-		</antcall>
+		<if>
+			<equals arg1="${environment}" arg2="ci"/>
+			<then>
+				<antcall target="build">
+					<param name="build.env" value="unit-test"/>
+				</antcall>
+			</then>
+			<else>
+				<antcall target="local-unit-build">
+					<param name="build.env" value="unit-test"/>
+				</antcall>
+			</else>
+		</if>
+		
 		<mkdir dir="${stage.dir}/test-folder"/>
 
 		<path id="compile-lib">

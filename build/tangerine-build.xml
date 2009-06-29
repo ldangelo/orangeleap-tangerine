@@ -16,13 +16,15 @@
 	<!-- Integrated targets -->
 	<target name="build" depends="resolve, clean-build, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a clean build including precompiling JSPs"/>
 
+	<target name="local-unit-build" depends="resolve, setup, compile, jar" description="Used ONLY for local unit test builds"/>
+	
 	<target name="dirty" depends="resolve, setup, compile, setup-war, optimize-release, jspc, jar, copy-jars-to-war, build-integrated-war" description="Does a build of only changed Java files"/>
 
 	<target name="deploy-integrated-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-integrated-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}" file="${stage.dir}/${war.name}.war" />
 	</target>
 
-	<target name="deploy-exploded-war" depends="resolve, clean-build, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-exploded-war, copy-tangerine.properties">
+	<target name="deploy-exploded-war" depends="resolve, setup, compile, setup-war, jar, copy-jars-to-war, optimize-dev, build-exploded-war, copy-tangerine.properties">
 		<copy todir="${deploy.path}/${war.name}">
 			<fileset dir="${stage.dir}/${war.name}.war" />
 		</copy>
@@ -140,7 +142,7 @@
 			<include name="META-INF/**" />
 			<exclude name="**/test/**/*.class" />
 		</jar>
-		<delete dir="${classes.dir}" />
+		<!--<delete dir="${classes.dir}" />-->
 	</target>
 
 	<target name="copy-jars-to-war">

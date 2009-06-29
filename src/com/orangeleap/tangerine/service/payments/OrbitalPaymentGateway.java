@@ -186,11 +186,13 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 //			gift.setPaymentStatus(response.getStatus());
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
+            gift.setAvsMessage(response.getAVSResponseCode());
 		} else {
 			gift.setGiftStatus(Gift.STATUS_NOT_PAID);
 			gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
 			gift.setPaymentMessage(response.getMessage());
 //			gift.setComments(response.getMessage());
+            gift.setAvsMessage(response.getAVSResponseCode());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 
@@ -427,10 +429,12 @@ public class OrbitalPaymentGateway implements CreditCardPaymentGateway {
 			gift.setGiftStatus(Gift.STATUS_PAID);
 			gift.setPaymentStatus(Gift.PAY_STATUS_APPROVED);
 			gift.setPaymentMessage(response.getMessage());
+            gift.setAvsMessage(response.getAVSResponseCode());
 		} else {
 			gift.setGiftStatus(Gift.STATUS_NOT_PAID);
 			gift.setPaymentStatus(Gift.PAY_STATUS_DECLINED);
 			gift.setPaymentMessage(response.getMessage());
+            gift.setAvsMessage(response.getAVSResponseCode());
 		}
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 	

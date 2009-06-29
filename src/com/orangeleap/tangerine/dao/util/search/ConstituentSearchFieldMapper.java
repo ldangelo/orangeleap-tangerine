@@ -30,7 +30,8 @@ public class ConstituentSearchFieldMapper extends SearchFieldMapper {
 
     	// Phone
     	MAP.put("number", "NUMBER");
-    
+
+        MAP.put("byPassDuplicateDetection","BYPASS_DUPLICATE");
     }
     
 }

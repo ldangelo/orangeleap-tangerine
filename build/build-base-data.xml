@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="orangeleap" basedir="." default="load.base.data">
-
+<project name="orangeleap" basedir=".." default="load.base.data">
+	<property file="${basedir}/build/build.properties" />
+    <property file="${commonBuild.dir}/commonBuild.properties"/>
+	<import file="${commonBuild.dir}/ivyBuild.xml"/>
 	
 	<!-- This loads the contents of the 'prod' db scripts.  'prod' should be reserved for only non-site-specific data. -->
-	<target name="load.base.data" depends="resolve" >
+	<target name="load.base.data" depends="resolve">
 	     <sql driver="${mysql.db.driver}"
 	          url="${mysql.db.url}"
 	          userid="${mysql.db.user}"

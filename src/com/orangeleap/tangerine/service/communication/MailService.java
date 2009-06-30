@@ -79,7 +79,7 @@ public class MailService {
 			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage()+ " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		}
 		return temp;
@@ -88,6 +88,11 @@ public class MailService {
 	private File runLabels() {
 		File temp = null;
 		jserver = new JServer();
+
+        if (site.getJasperUserId() == null) {
+            logger.error("Something went horribly wrong.  Jasper userId is NULL!");
+            return null;
+        }
 		jserver.setUsername(site.getJasperUserId());
 		jserver.setPassword(site.getJasperPassword());
 		jserver.setUrl(uri);
@@ -108,7 +113,7 @@ public class MailService {
 			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		}
 		return temp;

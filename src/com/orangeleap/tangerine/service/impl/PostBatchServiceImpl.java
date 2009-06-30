@@ -1,41 +1,38 @@
 package com.orangeleap.tangerine.service.impl;
 
-import com.orangeleap.tangerine.domain.*;
-import com.orangeleap.tangerine.domain.customization.CustomField;
+import com.orangeleap.tangerine.dao.JournalDao;
+import com.orangeleap.tangerine.dao.PostBatchDao;
+import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
+import com.orangeleap.tangerine.domain.Journal;
+import com.orangeleap.tangerine.domain.PostBatch;
+import com.orangeleap.tangerine.domain.PostBatchReviewSetItem;
 import com.orangeleap.tangerine.domain.customization.Picklist;
 import com.orangeleap.tangerine.domain.customization.PicklistItem;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
+import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
+import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
+import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.*;
-import org.apache.commons.logging.Log;
-import org.apache.xbean.spring.context.impl.DateEditor;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.dao.PledgeDao;
-import com.orangeleap.tangerine.dao.PostBatchDao;
-import com.orangeleap.tangerine.dao.JournalDao;
-import com.orangeleap.tangerine.dao.PaymentSourceDao;
-import com.orangeleap.tangerine.dao.util.QueryUtil;
+import org.apache.commons.logging.Log;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
 import java.math.BigDecimal;
-import java.beans.PropertyEditor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class PostBatchServiceImpl extends AbstractTangerineService implements PostBatchService {
+
+    public final static String DATE_FORMAT = "MM/dd/yyyy";
 
 
     /** Logger for this class and subclasses */
@@ -117,15 +114,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
-        Map<String, Object> map = new HashMap();
+        Map<String, Object> searchmap = new HashMap();
         for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
-            map.put(me.getKey(), me.getValue());
+            searchmap.put(me.getKey(), me.getValue());
         }
 
         //  TODO change to use INSERT INTO table (field) SELECT field2 from table2
         List list = new ArrayList<AbstractPaymentInfoEntity>();
         if (GIFT.equals(postbatch.getEntity())) {
-            list = giftService.searchGifts(map);
+            list = giftService.searchGifts(searchmap);
         } else if (ADJUSTED_GIFT.equals(postbatch.getEntity())) {
             // list = adjustedGiftService.searchAdjustedGifts(map);
         }
@@ -265,7 +262,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             BeanWrapperImpl bw = new BeanWrapperImpl(apie);
 
             bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
-                private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
                 public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
                     try {

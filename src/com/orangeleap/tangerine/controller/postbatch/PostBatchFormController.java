@@ -2,19 +2,15 @@ package com.orangeleap.tangerine.controller.postbatch;
 
 import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.PostBatch;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.Pledge;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PostBatchService;
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.service.impl.PostBatchServiceImpl;
 import com.orangeleap.tangerine.type.AccessType;
-import org.apache.commons.lang.StringUtils;
+import com.orangeleap.tangerine.util.OLLogger;
+import org.apache.commons.logging.Log;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.util.WebUtils;
@@ -23,9 +19,10 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class PostBatchFormController extends SimpleFormController {
 
@@ -74,7 +71,7 @@ public class PostBatchFormController extends SimpleFormController {
     private PostBatch getNewPostBatch() {
         PostBatch postbatch =  new PostBatch();
         postbatch.setEntity("gift");
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
         String sdate = formatter.format(new java.util.Date());
         postbatch.setPostBatchDesc("Batch for " + sdate);
         // Add some default field settings...
@@ -110,34 +107,31 @@ public class PostBatchFormController extends SimpleFormController {
         boolean post = "true".equals(request.getParameter("post"));
 
         PostBatch requestPostbatch = (PostBatch)command;
-        
-        // TODO validate and support ranges?
-        // if any of the 'where' values start with ^(=|!=|<|>) then validate it matches one of the regexes:
-        //       ^(=|!=|<|>)([\s])*([0-9]{2,2}-[0-9]{2,2}-[0-9]{4,4})$   (date)  or ^(=|!=|<|>)([\s])*-{0,1}\d*\.{0,1}\d+$   (number)   or  ^!=([\s])*null$
-
         // Read existing
         Long batchId = requestPostbatch.getId();
         PostBatch postbatch = postBatchService.readBatch(batchId);
         if (postbatch == null) postbatch = getNewPostBatch();
 
-        
-        // User can only edit the description/type and the list of select/update fields - the rest of the fields are read-only
-        postbatch.setPostBatchDesc(requestPostbatch.getPostBatchDesc());
-        postbatch.setEntity(requestPostbatch.getEntity());
-
-        readFields(request, postbatch.getWhereConditions(), "sf");
-        readFields(request, postbatch.getUpdateFields(), "uf");
-
-        // TODO validate fields are on allowed select lists.  May allow duplicate fields in list, for example date > and < for a range.
-
         String errormessage = "";
         List<AbstractPaymentInfoEntity> gifts = new ArrayList<AbstractPaymentInfoEntity>();
+                        
         try {
+
+            // User can only edit the description/type and the list of select/update fields - the rest of the fields are read-only
+            postbatch.setPostBatchDesc(requestPostbatch.getPostBatchDesc());
+            postbatch.setEntity(requestPostbatch.getEntity());
+
+            readFields(request, postbatch.getWhereConditions(), "sf");
+            readFields(request, postbatch.getUpdateFields(), "uf");
+            validatesFields(postbatch);
+            validateRanges(postbatch);
             postbatch = postBatchService.maintainBatch(postbatch);
+
             gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
             if (post) {
                 postbatch = postBatchService.postBatch(postbatch);
             } 
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e);
@@ -153,6 +147,53 @@ public class PostBatchFormController extends SimpleFormController {
 
         return mav;
 
+    }
+
+    // Validate fields are on allowed select lists.  May allow duplicate fields in list, for example date > and < for a range.
+    private void validatesFields(PostBatch postbatch) {
+        Map<String, String> select = postBatchService.readAllowedGiftSelectFields();
+        Map<String, String> update = postBatchService.readAllowedGiftUpdateFields();
+        for (Map.Entry<String, String> me : postbatch.getWhereConditions().entrySet()) {
+            if (select.get(me.getKey()) == null) throw new RuntimeException("Invalid request."); // this would require a hacked form field.
+        }
+        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
+            if (update.get(me.getKey()) == null) throw new RuntimeException("Invalid request."); // this would require a hacked form field.
+        }
+    }
+
+
+    // Allow some basic range matching formats     
+    // TODO check based on specific field type
+    private void validateRanges(PostBatch postbatch) {
+        for (Map.Entry<String, String> me: postbatch.getWhereConditions().entrySet()) {
+            String value = me.getValue();
+            if (value.startsWith("=") || value.startsWith("!=") || value.startsWith("<") || value.startsWith(">")) {
+
+                String avalue = value.startsWith("!=") ? value.substring(2) : value.substring(1);
+                
+                boolean isNull = avalue.equalsIgnoreCase("null");
+
+                boolean isDate = false;
+                try {
+                    DateFormat formatter = new SimpleDateFormat(PostBatchServiceImpl.DATE_FORMAT);
+                    Date adate = formatter.parse(avalue);
+                    isDate = avalue.length() == PostBatchServiceImpl.DATE_FORMAT.length();
+                } catch (Exception e) {
+                }
+
+                boolean isNumber = false;
+                try {
+                    Double.parseDouble(avalue);
+                    isNumber = true;                    
+                } catch (Exception e) {
+                }
+
+                if (!(isDate || isNumber || isNull)) {
+                    throw new RuntimeException("Invalid matching value \""+value+"\"");
+                }
+
+            }
+        }
     }
 
     private void readFields(HttpServletRequest request, Map conditions, String type) {

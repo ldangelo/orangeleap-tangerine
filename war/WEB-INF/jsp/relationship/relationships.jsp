@@ -164,14 +164,14 @@
 										<td>
 											<c:set var="validationKey" scope="page" value="${fieldRelationship.fieldName}-${customField.startDate}"/>
 											<input id="startDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>" name="startDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>" 
-												value="<c:out value="${customField.startDate}"/>" 
+												value="<c:out value="${customField.displayStartDate}"/>" 
 												class="date <c:if test='${not empty requestScope.validationErrors[validationKey]}'> textError</c:if>" 
 												type="text" size="10" maxlength="10" />
 										</td>
 										<td>
 											<c:set var="validationKey" scope="page" value="${fieldRelationship.fieldName}-${customField.endDate}"/>
 											<input id="endDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>" name="endDt-${status.count}-<c:out value="${fieldRelationship.fieldName}"/>" 
-												value="<c:out value="${customField.endDate}"/>" 
+												value="<c:out value="${customField.displayEndDate}"/>" 
 												class="date <c:if test='${not empty requestScope.validationErrors[validationKey]}'> textError</c:if>" 
 												type="text" size="10" maxlength="10" />
 										</td>

@@ -816,16 +816,16 @@ public class RelationshipServiceImpl extends AbstractTangerineService implements
         	CustomField prevCustomField = null;
         	for (CustomField custFld : aList) {
         		if (!custFld.getEndDate().after(custFld.getStartDate())) {
-        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getDisplayEndDate()).toString(), 
+        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getEndDate()).toString(), 
         					errorMessageKey);
         		}
         		if (prevCustomField != null && !custFld.getStartDate().after(prevCustomField.getEndDate())) {
         			if (isCorresponding) {
-	        			validationErrors.put(new StringBuilder(prevCustomField.getName()).append("-").append(prevCustomField.getDisplayEndDate()).toString(), 
+	        			validationErrors.put(new StringBuilder(prevCustomField.getName()).append("-").append(prevCustomField.getEndDate()).toString(), 
 	        					errorMessageKey);
         			}
         			else {
-	        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getDisplayStartDate()).toString(), 
+	        			validationErrors.put(new StringBuilder(custFld.getName()).append("-").append(custFld.getStartDate()).toString(), 
 	        					errorMessageKey);
         			}
         		}

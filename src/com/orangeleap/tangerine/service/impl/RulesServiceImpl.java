@@ -115,6 +115,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 if (updated) {
                     p.setGifts(giftList);
                     ss.populateDefaultEntityEditorMaps(p);
+                    p.setSite(s);
                     FactHandle pfh = workingMemory.insert(p);
                 }
 
@@ -202,6 +203,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 if (updated) {
                     p.setGifts(giftList);
                     ss.populateDefaultEntityEditorMaps(p);
+                    p.setSite(s);
                     FactHandle pfh = workingMemory.insert(p);
                 }
 
@@ -285,6 +287,7 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 if (updated) {
                     p.setGifts(giftList);
                     ss.populateDefaultEntityEditorMaps(p);
+                    p.setSite(s);
                     FactHandle pfh = workingMemory.insert(p);
                 }
 

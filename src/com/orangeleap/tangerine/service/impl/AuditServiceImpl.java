@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.PropertyAccessorUtils;
@@ -33,6 +32,8 @@ import com.orangeleap.tangerine.service.AuditService;
 import com.orangeleap.tangerine.service.RelationshipService;
 import com.orangeleap.tangerine.service.relationship.RelationshipUtil;
 import com.orangeleap.tangerine.type.AuditType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
@@ -107,7 +108,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
         BeanWrapper bean = PropertyAccessorFactory.forBeanPropertyAccess(entity);
         if (entity.getFieldValueMap() == null || entity.getFieldValueMap().get("id") == null) {
             String name = tangerineUserHelper.lookupUserName();
-            String desc = entity.getAuditShortDesc();
+            String desc = replaceCustomFieldSeparatorWithComma(entity.getAuditShortDesc());
             if (StringUtils.trimToNull(desc) == null) {
                 desc =  "" + entity.getId();
             }
@@ -152,14 +153,14 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                         continue;
                     } 
                     else if (originalBeanProperty == null && beanProperty != null) {
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + beanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Add " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": added " + fieldLabels.get(key) + " " + beanProperty.toString());
                         }
                     } 
                     else if (originalBeanProperty != null && beanProperty == null) {
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Delete " + fieldLabels.get(key) + " " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": delete " + fieldLabels.get(key) + " " + originalBeanProperty.toString());
@@ -182,7 +183,7 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                             }
                         }
 
-                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString(), 
+                        audits.add(new Audit(AuditType.UPDATE, tangerineUserHelper.lookupUserName(), date, "Id " + entity.getId() + ": Change " + fieldLabels.get(key) + " from " + replaceCustomFieldSeparatorWithComma(originalBeanProperty.toString()) + " to " + replaceCustomFieldSeparatorWithComma(beanProperty.toString()), 
                                 siteName, getClassName(entity), entity.getId(), userId));
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + entity.getId() + ": change field " + fieldLabels.get(key) + " from " + originalBeanProperty.toString() + " to " + beanProperty.toString());
@@ -286,21 +287,21 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": added " + fieldName + " " + newFieldValue);
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Add " + fieldName + " " + newFieldValue, 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Add " + fieldName + " " + replaceCustomFieldSeparatorWithComma(newFieldValue), 
                                 siteName, getClassName(auditable), auditable.getId(), userId));
                     } 
                     else if (newFieldValue != null && oldFieldValue == null) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": delete " + fieldName + " " + oldFieldValue);
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + oldFieldValue, 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Delete " + fieldName + " " + replaceCustomFieldSeparatorWithComma(oldFieldValue), 
                                 siteName, getClassName(auditable), auditable.getId(), userId));
                     } 
                     else if (!newFieldValue.toString().equals(oldFieldValue.toString())) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("audit site " + siteName + ", id " + auditable.getId() + ": change field " + fieldName + " from " + oldFieldValue.toString() + " to " + newFieldValue.toString());
                         }
-                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + oldFieldValue + " to " + newFieldValue, 
+                        audits.add(new Audit(AuditType.UPDATE, authName, date, "Id " + auditable.getId() + ": Change " + fieldName + " from " + replaceCustomFieldSeparatorWithComma(oldFieldValue) + " to " + replaceCustomFieldSeparatorWithComma(newFieldValue), 
                                 siteName, getClassName(auditable), auditable.getId(), userId));
                     }
                 }
@@ -404,5 +405,15 @@ public class AuditServiceImpl extends AbstractTangerineService implements AuditS
     private String getClassName(Object object) {
         String name = object.getClass().getSimpleName();
         return StringUtils.lowerCase(name);
+    }
+    
+    private String replaceCustomFieldSeparatorWithComma(Object text) {
+    	if (text != null) {
+	    	if (text instanceof String) {
+	    		return ((String)text).replaceAll(StringConstants.CUSTOM_FIELD_SEPARATOR, ",");
+	    	}
+	    	return text.toString();
+    	}
+    	return StringConstants.EMPTY;
     }
 }

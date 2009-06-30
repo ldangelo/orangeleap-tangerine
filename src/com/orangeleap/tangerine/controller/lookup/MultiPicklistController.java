@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
+
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class MultiPicklistController extends ParameterizableViewController {
 
@@ -57,9 +59,8 @@ public class MultiPicklistController extends ParameterizableViewController {
         List<String> additionalOptions = new ArrayList<String>();
         String additionalOptionsStr = request.getParameter("additionalFieldOptions");
         if (StringUtils.hasText(additionalOptionsStr)) {
-            String[] s = StringUtils.commaDelimitedListToStringArray(additionalOptionsStr);
+            String[] s = StringUtils.delimitedListToStringArray(additionalOptionsStr, StringConstants.CUSTOM_FIELD_SEPARATOR);
             for (String str : s) {
-                // TODO: unescape commas?
                 additionalOptions.add(str + "\n");
             }
         }

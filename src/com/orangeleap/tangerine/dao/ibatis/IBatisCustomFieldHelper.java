@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
@@ -16,9 +15,9 @@ import com.orangeleap.tangerine.dao.FieldDao;
 import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
 import com.orangeleap.tangerine.domain.customization.CustomField;
 import com.orangeleap.tangerine.domain.customization.FieldDefinition;
-import com.orangeleap.tangerine.service.ConstituentCustomFieldRelationshipService;
-import com.orangeleap.tangerine.service.CustomFieldRelationshipService;
 import com.orangeleap.tangerine.type.FieldType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 
 /**
  * This class abstracts out the base methods used for working
@@ -33,16 +32,11 @@ public class IBatisCustomFieldHelper {
 
     private SqlMapClientTemplate template;
     private FieldDao fieldDao;  
-    private CustomFieldRelationshipService customFieldRelationshipService;
-    private ConstituentCustomFieldRelationshipService constituentCustomFieldRelationshipService;
-
 
     public IBatisCustomFieldHelper(SqlMapClientTemplate template, ApplicationContext applicationContext) {
         this.template = template;
         if (applicationContext != null) {
         	fieldDao = (FieldDao)applicationContext.getBean("fieldDAO");
-        	customFieldRelationshipService = (CustomFieldRelationshipService)applicationContext.getBean("customFieldRelationshipService");
-        	constituentCustomFieldRelationshipService = (ConstituentCustomFieldRelationshipService)applicationContext.getBean("constituentCustomFieldRelationshipService");
         }
     }
 
@@ -101,7 +95,7 @@ public class IBatisCustomFieldHelper {
                 // start at index 1, since we already grabbed zero above
                 for(int i=1; i<values.size(); i++) {
                     record = values.get(i);
-                    fieldValue.append(",").append( record.get("value") );
+                    fieldValue.append(StringConstants.CUSTOM_FIELD_SEPARATOR).append( record.get("value") );
                 }
             }
 
@@ -129,18 +123,18 @@ public class IBatisCustomFieldHelper {
 
             // if value is null or zero-length on a new custom field,
             // don't even bother to save it.
-            if (value == null || value.trim().equals("")) {
+            if (value == null || value.trim().equals(StringConstants.EMPTY)) {
                 continue;
             }
 
-            String[] values = value.split(",");
+            String[] values = value.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
             Long firstValue = null;
             // run through each value and insert it with the correct sequence
-            // number. If there is only one value (no commas), this still works just fine
+            // number. If there is only one value (no separators), this still works just fine
             for (String splitValue : values) {
 
                 String trimmedValue = splitValue.trim();
-                if (!trimmedValue.equals("")) {
+                if (!trimmedValue.equals(StringConstants.EMPTY)) {
                 	CustomField cf = new CustomField();
                 	cf.setEntityId(entity.getId());
                 	cf.setEntityType(entity.getType());
@@ -176,11 +170,11 @@ public class IBatisCustomFieldHelper {
         params.put("entityId", entity.getId());
         params.put("entityType", entity.getType());
 
-		List<CustomField> allOldCustomFields = (List<CustomField>)template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
+		List<CustomField> allOldCustomFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
 
         params.put("asOfDate", new java.util.Date());
         
-        List<CustomField> currentOldCustomFields = (List<CustomField>)template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
+        List<CustomField> currentOldCustomFields = template.queryForList("SELECT_CUSTOM_FIELD_BY_ENTITY", params);
         
         List<CustomField> adds = subtract(currentNewCustomFields, currentOldCustomFields);
         List<CustomField> deletes = subtract(currentOldCustomFields, currentNewCustomFields);
@@ -206,7 +200,9 @@ public class IBatisCustomFieldHelper {
     }
     
     private FieldDefinition getFieldDefinition(CustomField cf) {
-    	if (fieldDao == null) return new FieldDefinition();
+    	if (fieldDao == null) {
+			return new FieldDefinition();
+		}
     	return fieldDao.readFieldDefinition("constituent.customFieldMap["+cf.getName()+"]");
     }
     
@@ -227,7 +223,9 @@ public class IBatisCustomFieldHelper {
             		break;
             	}
             } 
-            if (!found) result.add(acf);
+            if (!found) {
+				result.add(acf);
+			}
         }
         return result;
     }
@@ -265,7 +263,9 @@ public class IBatisCustomFieldHelper {
 			// Need to fit in between existing date ranged values.
 			customField.setStartDate(stripTime(new java.util.Date()));
 			existingFields = filterByName(existingFields, customField);
-			if (existingFields.size() > 0) customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));
+			if (existingFields.size() > 0) {
+				customField.setEndDate(addDay(getEarliestStartDateAfter(existingFields),-1));
+			}
 		}
         template.insert("INSERT_CUSTOM_FIELD", customField);
 	}
@@ -274,7 +274,9 @@ public class IBatisCustomFieldHelper {
 		Date result = addDay(CustomField.PAST_DATE,-1);
 		Date today = stripTime(new java.util.Date());
 		for (CustomField cf : existingFields) {
-			if (cf.getEndDate().after(result) && cf.getEndDate().before(today)) result = cf.getEndDate();
+			if (cf.getEndDate().after(result) && cf.getEndDate().before(today)) {
+				result = cf.getEndDate();
+			}
 		}
 		return result;
 	}
@@ -282,7 +284,9 @@ public class IBatisCustomFieldHelper {
 		Date result = addDay(CustomField.FUTURE_DATE,1);
 		Date today = stripTime(new java.util.Date());
 		for (CustomField cf : existingFields) {
-			if (cf.getStartDate().before(result) && cf.getStartDate().after(today)) result = cf.getStartDate();
+			if (cf.getStartDate().before(result) && cf.getStartDate().after(today)) {
+				result = cf.getStartDate();
+			}
 		}
 		return result;
 	}

@@ -8,11 +8,12 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.util.CollectionUtils;
 
 import com.orangeleap.tangerine.type.FieldType;
 import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
 
 public class FieldVO {
 
@@ -21,7 +22,6 @@ public class FieldVO {
 
     // TODO: move elsewhere
     public static final String NORMAL_DELIMITER = ",";
-    public static final String DISPLAY_VALUE_DELIMITER = "|"; // To be used ONLY on display values that may have commas
     public static final String OTHER_PREFIX = "other_";
     public static final String ADDITIONAL_PREFIX = "additional_";
     private static final String DOT_VALUE = ".value";
@@ -77,8 +77,12 @@ public class FieldVO {
     		// This picklist item's previously saved value has been deleted from the list of available picklist values.  
     		// Add it back in as a temporary option so that it doesn't get reset when saving some other change from the gui.  
     		// We no longer have a display value, so use the code value for the display value in just this case.
-            if (codes == null) codes = new ArrayList<String>();
-            if (displayValues == null) displayValues = new ArrayList<Object>();
+            if (codes == null) {
+				codes = new ArrayList<String>();
+			}
+            if (displayValues == null) {
+				displayValues = new ArrayList<Object>();
+			}
     		codes.add(""+getFieldValue());
     		displayValues.add(""+getFieldValue());
     	}
@@ -94,14 +98,15 @@ public class FieldVO {
 
     public String getFieldName() {
         return fieldName;
+//        return new StringBuilder(StringConstants.FIELD_MAP_START).append(escapeChars(fieldName)).append(StringConstants.FIELD_MAP_END).toString();
     }
     
-    public static String escapeChars(String str) {
+    public static String escapeChars(String str) { // TODO: fix
         return str == null ? "" : str.replace('.', '_').replace('[', '-').replace(']', '-');
     }
 
     public String getFieldId() {
-        return escapeChars(fieldName);
+        return escapeChars(getFieldName());
     }
     
     public String getAdditionalFieldId() {
@@ -137,7 +142,8 @@ public class FieldVO {
     public static String getOtherFieldName(String aFieldName) {
         return getPrefixedFieldName(OTHER_PREFIX, aFieldName);
     }
-    
+
+    // TODO: fix for form bean
     public static String getPrefixedFieldName(String prefix, String aFieldName) {
         String prefixedFieldName = null;
         
@@ -245,7 +251,7 @@ public class FieldVO {
     public void setFieldValue(Object fieldValue) {
         if (fieldValue != null) {
             if (fieldValue instanceof String) {
-                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(StringUtils.trimToNull((String) fieldValue), NORMAL_DELIMITER);
+                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(StringUtils.trimToNull((String) fieldValue), StringConstants.CUSTOM_FIELD_SEPARATOR);
                 if (vals != null) {
                     for (String thisVal : vals) {
                         addFieldValue(thisVal);
@@ -265,7 +271,7 @@ public class FieldVO {
     @SuppressWarnings("unchecked")
     public String getUniqueReferenceValues() {
         if (referenceValues == null) {
-            return "";
+            return StringConstants.EMPTY;
         }
         Set<String> s = new TreeSet<String>();
         for (int i = 0; i < referenceValues.size(); i++) {
@@ -311,7 +317,7 @@ public class FieldVO {
     public void setDisplayValue(Object displayValue) {
         if (displayValue != null) {
             if (displayValue instanceof String) {
-                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), DISPLAY_VALUE_DELIMITER);
+                String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(displayValue.toString(), StringConstants.CUSTOM_FIELD_SEPARATOR);
                 if (vals != null) {
                     for (String thisVal : vals) {
                         addDisplayValue(thisVal);
@@ -400,7 +406,7 @@ public class FieldVO {
 
     @SuppressWarnings("unchecked")
     public void setAdditionalDisplayValues(String additionalDisplayValueStr) {
-        String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(additionalDisplayValueStr, NORMAL_DELIMITER);
+        String[] vals = org.springframework.util.StringUtils.delimitedListToStringArray(additionalDisplayValueStr, StringConstants.CUSTOM_FIELD_SEPARATOR);
         if (vals != null) {
             this.additionalDisplayValues = new ArrayList<String>(CollectionUtils.arrayToList(vals));
         }
@@ -411,15 +417,15 @@ public class FieldVO {
     }
 
     public String getCodesString() {
-        return getDelimitedString(getCodes(), NORMAL_DELIMITER);
+        return getDelimitedString(getCodes(), StringConstants.CUSTOM_FIELD_SEPARATOR);
     }
 
     public String getDisplayValuesString() {
-        return getDelimitedString(getDisplayValues(), DISPLAY_VALUE_DELIMITER);
+        return getDelimitedString(getDisplayValues(), StringConstants.CUSTOM_FIELD_SEPARATOR);
     }
 
     public String getFieldValuesString() {
-        return getDelimitedString(getFieldValues(), NORMAL_DELIMITER);
+        return getDelimitedString(getFieldValues(), StringConstants.CUSTOM_FIELD_SEPARATOR);
     }
 
     public String getReferenceValuesString() {
@@ -427,7 +433,7 @@ public class FieldVO {
     }
 
     public String getIdsString() {
-        return getDelimitedString(getIds(), NORMAL_DELIMITER);
+        return getDelimitedString(getIds(), StringConstants.CUSTOM_FIELD_SEPARATOR);
     }
 
     public boolean isHasField() {

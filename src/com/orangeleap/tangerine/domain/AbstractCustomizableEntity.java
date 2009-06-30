@@ -158,16 +158,16 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
     	//
     	// if the existing value is equal to the value we are removing
     	// then set the field value to an empty string (remove it)
-    	if (!existingValue.contains(",")) {
+    	if (!existingValue.contains(StringConstants.CUSTOM_FIELD_SEPARATOR)) {
     		if (existingValue.compareTo(value) == 0) {
                 setCustomFieldValue(fieldName, StringConstants.EMPTY);
             }
     	} else {
     		//
-    		// if the existing value is a comma separated list of values
+    		// if the existing value is a custom-field-separator separated list of values
     		// then find the value we are removing in the string and remove it
     		// then reset the field value
-    		String[] values = existingValue.split(",");
+    		String[] values = existingValue.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
 
     		StringBuilder sb = new StringBuilder();
     		for (int i = 0; i < values.length; i++) {
@@ -176,11 +176,11 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
                 }
 
     			if (i != (values.length - 1)) {
-                    sb.append(",");
+                    sb.append(StringConstants.CUSTOM_FIELD_SEPARATOR);
                 }
     		}
 
-    			setCustomFieldValue(fieldName,sb.toString());
+    		setCustomFieldValue(fieldName,sb.toString());
     	}
     }
     
@@ -196,13 +196,13 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
             setCustomFieldValue(fieldName, value);
         }
         else {
-            setCustomFieldValue(fieldName, existingValue + "," + value); 
+            setCustomFieldValue(fieldName, existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + value); 
         }
     }
     
     /**
      * Check if a value for a fieldName has the specified value.  If this is a multi-valued custom field,
-     * split the values by ',' and check each individually against the specified value 
+     * split the values by the custom field separator and check each individually against the specified value 
      * @param fieldName - name of the custom field to test
      * @param value specified value to compare against.
      * @return  true or false
@@ -211,8 +211,8 @@ public abstract class AbstractCustomizableEntity extends AbstractEntity {
         boolean hasValue = false;
         String val = getCustomFieldValue(fieldName);
         if (val != null) {
-            if (val.indexOf(",") > -1) {
-                String values[] = val.split(",");
+            if (val.indexOf(StringConstants.CUSTOM_FIELD_SEPARATOR) > -1) {
+                String values[] = val.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
                 for (String thisValue : values) {
                     if (thisValue.equals(value)) {
                         hasValue = true;

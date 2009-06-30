@@ -6,18 +6,19 @@ $(document).ready(function() {
 	
 	// Fix IE8 Date Menu being cut off 
 	Ext.override(Ext.menu.Menu, {
-	    autoWidth : function(){
+	    autoWidth : function() {
 	        var el = this.el, ul = this.ul;
-	        if(!el){
+	        if (!el){
 	            return;
 	        }
 	        var w = this.width;
-	        if(w){
+	        if (w) {
 	            el.setWidth(w);
-	        }else if(Ext.isIE && !Ext.isIE8){
+	        } 
+	        else if (Ext.isIE && !Ext.isIE8) {
 	            el.setWidth(this.minWidth);
 	            var t = el.dom.offsetWidth; // force recalc
-	            el.setWidth(ul.getWidth()+el.getFrameWidth("lr"));
+	            el.setWidth(ul.getWidth() + el.getFrameWidth("lr"));
 	        }
 	    }
 	});
@@ -594,6 +595,9 @@ var Picklist = {
 	}
 };
 var OrangeLeap = {
+
+	customFieldSeparator: String.fromCharCode(167),
+	
 	expandCollapse: function(elem) {
 		$elem = $(elem);
 		if ($elem.hasClass("plus")) {
@@ -824,10 +828,10 @@ var Lookup = {
 	getMultiCodeData: function() {
 		var selectedCodesStr = "";
 		$("ul#selectedOptions li :checkbox").each(function() {
-			selectedCodesStr += $(this).attr("id") + ",";
+			selectedCodesStr += $(this).attr("id") + OrangeLeap.customFieldSeparator;
 		});
 		if (selectedCodesStr.length > 0) {
-			selectedCodesStr = selectedCodesStr.substring(0, selectedCodesStr.length - 1); // remove the last ','
+			selectedCodesStr = selectedCodesStr.substring(0, selectedCodesStr.length - 1); // remove the last customFieldSeparator
 		}
 		return { view: "resultsOnly", type: $("div.modalSearch input#type").val(), selectedCodes: selectedCodesStr };
 	},
@@ -866,11 +870,11 @@ var Lookup = {
 		$("ul#selectedOptions :checkbox", $("#dialog")).each(function() {
 			var $chkboxElem = $(this);
 			var thisCode = $chkboxElem.val();
-			codesStr += thisCode + ",";
+			codesStr += thisCode + OrangeLeap.customFieldSeparator;
 			codes[codes.length] = thisCode;
 			descriptions[descriptions.length] = $chkboxElem.attr("displayvalue");
 		});
-		codesStr = (codesStr.length > 0 ? codesStr.substring(0, codesStr.length - 1) : codesStr); // remove the trailing comma
+		codesStr = (codesStr.length > 0 ? codesStr.substring(0, codesStr.length - 1) : codesStr); // remove the trailing customFieldSeparator
 
 		var $hiddenElem = Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0);
 		$hiddenElem.val(codesStr);
@@ -915,11 +919,11 @@ var Lookup = {
 						$cloned.removeClass("clone").removeClass("noDisplay");
 						$cloned.prependTo($additionalOptionsContainerElem);
 						$cloned.vkfade(true);
-						additionalCodesStr += additionalCodesValues[x] + ","; // TODO: escape commas
+						additionalCodesStr += additionalCodesValues[x] + OrangeLeap.customFieldSeparator; 
 					}
 				}
 				if (additionalCodesStr.length > 0) {
-					additionalCodesStr = additionalCodesStr.substring(0, additionalCodesStr.length - 1); // truncate the last comma
+					additionalCodesStr = additionalCodesStr.substring(0, additionalCodesStr.length - 1); // truncate the last customFieldSeparator
 				}
 				var additionalFieldId = $hiddenElem.attr("additionalFieldId");
 				if (additionalFieldId) {
@@ -1162,7 +1166,7 @@ var Lookup = {
 		if (showAdditionalField) {
 			var additionalFieldId = Lookup.lookupCaller.parent().children("input[type=hidden]").attr("additionalFieldId");
 			if (additionalFieldId) {
-				queryString += "&additionalFieldOptions=" + escape($("#" + additionalFieldId).val()); // TODO: escape commas?
+				queryString += "&additionalFieldOptions=" + escape($("#" + additionalFieldId).val());
 			}				
 		}
 		return queryString;
@@ -1175,10 +1179,10 @@ var Lookup = {
 			$("ul#selectedOptions li", $("#dialog")).each(function() {
 				var $chkBox = $(this).children("input[type=checkbox]").eq(0);
 				var thisId = $chkBox.attr("id");
-				idsStr += thisId + ",";
+				idsStr += thisId + OrangeLeap.customFieldSeparator;
 				selectedNames[$.trim($chkBox.attr("name"))] = true;
 			});
-			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
+			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing customFieldSeparator
 
 			var $hiddenElem = Lookup.lookupCaller.parent().children("input[type=hidden]");
 			$hiddenElem.val(idsStr);
@@ -1217,12 +1221,12 @@ var Lookup = {
 						$newClone.find("span").text(newOption);
 						$newClone.prependTo($additionalOptionsContainer);
 						$newClone.vkfade(true);
-						hiddenAdditionalOptionsVal += newOption + ","; // TODO: escape commas
+						hiddenAdditionalOptionsVal += newOption + OrangeLeap.customFieldSeparator; 
 					}
 				}
 			}
 			if (hiddenAdditionalOptionsVal.length > 0) {
-				hiddenAdditionalOptionsVal = hiddenAdditionalOptionsVal.substring(0, hiddenAdditionalOptionsVal.length - 1); // truncate the last comma
+				hiddenAdditionalOptionsVal = hiddenAdditionalOptionsVal.substring(0, hiddenAdditionalOptionsVal.length - 1); // truncate the last customFieldSeparator
 			}
 			var additionalHiddenElemId = $hiddenElem.attr("additionalFieldId");
 			if (additionalHiddenElemId) {
@@ -1314,12 +1318,12 @@ var Lookup = {
 			$("ul#selectedOptions :checkbox", $("#dialog")).each(function() {
 				var $chkboxElem = $(this);
 				var thisId = $chkboxElem.attr("id");
-				idsStr += thisId + ",";
+				idsStr += thisId + OrangeLeap.customFieldSeparator;
 				ids[ids.length] = thisId;
 				names[names.length] = $.trim($chkboxElem.parent("li").text());
 				hrefs[hrefs.length] = $chkboxElem.siblings("a[href]").attr("href");
 			});
-			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing comma
+			idsStr = (idsStr.length > 0 ? idsStr.substring(0, idsStr.length - 1) : idsStr); // remove the trailing customFieldSeparator
 
 			Lookup.lookupCaller.parent().children("input[type=hidden]").eq(0).val(idsStr);
 			
@@ -1442,12 +1446,12 @@ var Lookup = {
 	},
 	
 	removeSelectedVal: function($elem, valueToCompare) {
-		var vals = $elem.val().split(",");
+		var vals = $elem.val().split(OrangeLeap.customFieldSeparator);
 		var valsLen = vals.length;
 		var newVals = "";
 		for (var x = 0; x < valsLen; x++) {
 			if (vals[x] != valueToCompare) {
-				newVals += vals[x] + ",";
+				newVals += vals[x] + OrangeLeap.customFieldSeparator;
 			}
 		}
 		if (newVals.length > 0) {

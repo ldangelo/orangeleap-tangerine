@@ -533,7 +533,8 @@ tr.hiddenRow td table ul.width350 div.multiLookupField { width: 233px; }
 tr.hiddenRow td table ul.width350 div.lookupScrollContainer { width: 246px; }
 tr.hiddenRow td table ul.width350 div.lookupScrollContainer div.multiOption { width: 88.5%; }
 tr.hiddenRow td table ul.width350 div.lookupScrollRight { left: 232px; }
-tr.hiddenRow td table ul.width350 li.side input { width: 65.5%; } 
+tr.hiddenRow td table ul.width350 li.side input { width: 65.5%; }
+tr.hiddenRow td table ul.width350 li.side input.checkbox { width: auto; } 
 tr.hiddenRow td table ul.width350 a.multiLookupLink { right: 24px; top: 6px; }
 tr.hiddenRow td table ul.width350 .readOnlyField { width: 63.8%; } 
 tr.hiddenRow td table td { border-bottom: 0; }

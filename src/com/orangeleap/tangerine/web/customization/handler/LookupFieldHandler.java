@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.context.ApplicationContext;
 
 import com.orangeleap.tangerine.domain.Constituent;
@@ -17,6 +16,7 @@ import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.PledgeService;
 import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.ReferenceType;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.web.customization.FieldVO;
 
@@ -45,12 +45,12 @@ public class LookupFieldHandler extends GenericFieldHandler {
         if (propertyValue != null && isCustom && propertyValue instanceof String) {
             ReferenceType referenceType = currentField.getFieldDefinition().getReferenceType();
 
-            String[] ids = ((String)propertyValue).split(",");
+            String[] ids = ((String)propertyValue).split(StringConstants.CUSTOM_FIELD_SEPARATOR); // TODO: safe to do?
             StringBuffer sb = new StringBuffer();
             for (String id : ids) {
                 if (id.length() > 0) {
                     if (sb.length() > 0) {
-                        sb.append(FieldVO.DISPLAY_VALUE_DELIMITER);
+                        sb.append(StringConstants.CUSTOM_FIELD_SEPARATOR);
                     }
                     if (NumberUtils.isDigits(id)) {
                         Long longId = Long.valueOf(id);

@@ -18,6 +18,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.util.StringConstants;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 
 /**
@@ -54,7 +55,7 @@ public class MyAccountsController {
         String acctString = constituent.getCustomFieldValue("individual.accountManagerFor");
 
         if (acctString != null) {
-            String[] accounts = acctString.split(",");
+            String[] accounts = acctString.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
 
             for (String account : accounts) {
 

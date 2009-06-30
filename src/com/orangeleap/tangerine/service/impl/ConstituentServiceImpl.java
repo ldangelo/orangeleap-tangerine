@@ -457,8 +457,6 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
     	if (args.toString().equals("YEAR")) {
     		cal.add(Calendar.YEAR, -(number));
     	}
-
-
     	
     	sortInfo.setSort("p.CONSTITUENT_ID");
     	

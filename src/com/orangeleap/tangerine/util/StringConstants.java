@@ -99,6 +99,7 @@ public final class StringConstants {
     public static final String INDIVIDUAL = "individual";
     public final static String BOTH = "both";
     
+    public static final String ID = "id";
     public static final String USD = "USD";
     public static final String HIDE_ADJUST_GIFT_BUTTON = "hideAdjustGiftButton";
     public static final String ERROR_CLASS = "errorClass";
@@ -115,4 +116,9 @@ public final class StringConstants {
     public final static String START_DT = "startDt-";
     public final static String END_DT = "endDt-";
     public final static String CUSTOM_FLD_ID = "customFldId-";
+    
+    public static final String FIELD_MAP_START = "fieldMap[";
+    public static final String FIELD_MAP_END = "]";
+    
+    public static final String CUSTOM_FIELD_SEPARATOR = "\u00A7"; //"¤" symbol 
 }

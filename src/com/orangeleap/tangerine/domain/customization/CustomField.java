@@ -2,10 +2,13 @@ package com.orangeleap.tangerine.domain.customization;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlType;
 
+import org.joda.time.DateMidnight;
 import org.springframework.core.style.ToStringCreator;
 
 import com.orangeleap.tangerine.domain.GeneratedId;
@@ -15,17 +18,15 @@ import com.orangeleap.tangerine.domain.GeneratedId;
  * is associated with via the Enitity ID and Type.
  */
 @XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-@SuppressWarnings("deprecation")
 public class CustomField implements GeneratedId, Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String BEGINNING_OF_TIME = "01/01/1900";
-    public static final String END_OF_TIME = "01/01/3000";
-    public static final Date PAST_DATE = new java.util.Date(BEGINNING_OF_TIME);
-    public static final Date FUTURE_DATE = new java.util.Date(END_OF_TIME);
+    public static final Date PAST_DATE = new DateMidnight(1900, 1, 1).toDate();
+    public static final Date FUTURE_DATE = new DateMidnight(3000, 1, 1).toDate();
 
     private Long id;
     private String name;
+    private List<String> values = new ArrayList<String>();
     private String value;
 
     private String entityType;
@@ -63,7 +64,28 @@ public class CustomField implements GeneratedId, Serializable {
         this.name = name;
     }
 
-    public String getValue() {
+    public List<String> getValues() {
+		return values;
+	}
+
+	public void setValues(List<String> values) {
+		this.values = values;
+	}
+	
+	public void addValue(String value) {
+		if (this.values == null) {
+			this.values = new ArrayList<String>();
+		}
+		this.values.add(value);
+	}
+	
+	public void clearValues() {
+		if (this.values != null) {
+			this.values.clear();
+		}
+	}
+
+	public String getValue() {
         return value;
     }
 
@@ -149,27 +171,30 @@ public class CustomField implements GeneratedId, Serializable {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
 		if (s == null || s.trim().length() == 0) {
 			this.startDate = PAST_DATE;
-		} else {
+		} 
+		else {
 			try {
 				this.startDate = sdf.parse(s);
-			} catch (Exception e) {
+			} 
+			catch (Exception e) {
 				throw new RuntimeException("Invalid date format " + s);
 			}
 		}
 	}
 	
 	public void setDisplayEndDate(String s) {
-			SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
-			if (s == null || s.trim().length() == 0) {
-				this.endDate = FUTURE_DATE;
-			} else {
-				try {
-					this.endDate = sdf.parse(s);
-				} catch (Exception e) {
-					throw new RuntimeException("Invalid date format " + s);
-				}
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		if (s == null || s.trim().length() == 0) {
+			this.endDate = FUTURE_DATE;
+		} 
+		else {
+			try {
+				this.endDate = sdf.parse(s);
+			} 
+			catch (Exception e) {
+				throw new RuntimeException("Invalid date format " + s);
 			}
-		
+		}
 	}
 
 	public void setDataType(Long dataType) {
@@ -179,7 +204,6 @@ public class CustomField implements GeneratedId, Serializable {
 	public Long getDataType() {
 		return dataType;
 	}
-
 }
 
 

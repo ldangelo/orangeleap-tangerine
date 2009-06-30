@@ -341,7 +341,7 @@ public class Constituent extends AbstractCommunicatorEntity {
     }
 
     public void removeConstituentIndividualRoles(String role) {
-   	String existingValue = getConstituentIndividualRoles();
+    	String existingValue = getConstituentIndividualRoles();
     	
     	//
     	// if the custom field value does not contain the value
@@ -353,16 +353,16 @@ public class Constituent extends AbstractCommunicatorEntity {
     	//
     	// if the existing value is equal to the value we are removing
     	// then set the field value to an empty string (remove it)
-    	if (existingValue.contains(",") == false) {
+    	if (existingValue.contains(StringConstants.CUSTOM_FIELD_SEPARATOR) == false) {
     		if (existingValue.compareTo(role) == 0) {
-                setConstituentIndividualRoles("");
+                setConstituentIndividualRoles(StringConstants.EMPTY);
             }
     	} else {
     		//
-    		// if the existing value is a comma separated list of values
+    		// if the existing value is a custom-field-separator separated list of values
     		// then find the value we are removing in the string and remove it
     		// then reset the field value
-    		String[] values = existingValue.split(",");
+    		String[] values = existingValue.split(StringConstants.CUSTOM_FIELD_SEPARATOR);
     		
     		StringBuilder sb = new StringBuilder();
     		for (int i = 0; i < values.length; i++) {
@@ -371,7 +371,7 @@ public class Constituent extends AbstractCommunicatorEntity {
                 }
     			
     			if (i != (values.length - 1)) {
-                    sb.append(",");
+                    sb.append(StringConstants.CUSTOM_FIELD_SEPARATOR);
                 }
     		}
     		
@@ -385,7 +385,7 @@ public class Constituent extends AbstractCommunicatorEntity {
             setConstituentOrganizationRoles(role);
         }
         else {
-            setConstituentOrganizationRoles(existingValue + "," + role); 
+            setConstituentOrganizationRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role); 
         }
     	
     }
@@ -395,7 +395,7 @@ public class Constituent extends AbstractCommunicatorEntity {
             setConstituentIndividualRoles(role);
         }
         else {
-            setConstituentIndividualRoles(existingValue + "," + role); 
+            setConstituentIndividualRoles(existingValue + StringConstants.CUSTOM_FIELD_SEPARATOR + role); 
         }
     }
     
@@ -413,11 +413,11 @@ public class Constituent extends AbstractCommunicatorEntity {
 
     private String addToList(String list, String s) {
         if (list == null) {
-            list = "";
+            list = StringConstants.EMPTY;
         }
         if (!list.contains(s)) {
             if (list.length() > 0) {
-                list += ",";
+                list += StringConstants.CUSTOM_FIELD_SEPARATOR;
             }
             list += s;
         }
@@ -434,14 +434,14 @@ public class Constituent extends AbstractCommunicatorEntity {
             constituentAttributes = ORGANIZATION;
             String constituentOrganizationRoles = this.getConstituentOrganizationRoles();
             if (constituentOrganizationRoles != null && constituentOrganizationRoles.length() > 0) {
-                constituentAttributes = constituentAttributes + "," + constituentOrganizationRoles;
+                constituentAttributes = constituentAttributes + StringConstants.CUSTOM_FIELD_SEPARATOR + constituentOrganizationRoles;
             }
         } 
         else {
             constituentAttributes = INDIVIDUAL;
             String constituentIndividualRoles = this.getConstituentIndividualRoles();
             if (constituentIndividualRoles != null && constituentIndividualRoles.length() > 0) {
-                constituentAttributes = constituentAttributes + "," + constituentIndividualRoles;
+                constituentAttributes = constituentAttributes + StringConstants.CUSTOM_FIELD_SEPARATOR + constituentIndividualRoles;
             }
         }
         return constituentAttributes;

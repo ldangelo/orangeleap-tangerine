@@ -10,6 +10,7 @@ import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
 import com.orangeleap.tangerine.domain.paymentInfo.AbstractPaymentInfoEntity;
 import com.orangeleap.tangerine.service.*;
 import org.apache.commons.logging.Log;
+import org.apache.xbean.spring.context.impl.DateEditor;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.dao.PledgeDao;
@@ -28,6 +29,9 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.*;
 import java.math.BigDecimal;
+import java.beans.PropertyEditor;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Service("postBatchService")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -260,11 +264,28 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             BeanWrapperImpl bw = new BeanWrapperImpl(apie);
 
+            bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
+                private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
+                    try {
+                        this.setValue(dateFormat.parse(s));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                public java.lang.String getAsText() {
+                    return  dateFormat.format((Date)this.getValue());
+                }
+
+            });
+
             bw.setPropertyValue("posted", true);
             bw.setPropertyValue("postedDate", postDate);
 
             for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-                bw.setPropertyValue(me.getKey(), me.getValue());    // TODO make work for dates
+                bw.setPropertyValue(me.getKey(), me.getValue());    
             }
 
             try {

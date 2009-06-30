@@ -76,7 +76,7 @@ public class MailService {
 			
 		} catch (JRException e) {
 
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -105,7 +105,7 @@ public class MailService {
 			
 		} catch (JRException e) {
 
-			logger.error(e.getMessage());
+			logger.error(e.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 			return null;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -221,7 +221,7 @@ public class MailService {
 			tempLabelFile.delete();
 			tempFile.delete();
 		} catch (Exception ex) {
-			logger.error(ex.getMessage());
+			logger.error(ex.getMessage() + " " + uri + " " + site.getJasperUserId() + " " + site.getJasperPassword());
 		}
 
 	}

@@ -119,45 +119,17 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             searchmap.put(me.getKey(), me.getValue());
         }
 
-        //  TODO change to use INSERT INTO table (field) SELECT field2 from table2
-        List list = new ArrayList<AbstractPaymentInfoEntity>();
-        if (GIFT.equals(postbatch.getEntity())) {
-            list = giftService.searchGifts(searchmap);
-        } else if (ADJUSTED_GIFT.equals(postbatch.getEntity())) {
-            // list = adjustedGiftService.searchAdjustedGifts(map);
-        }
+        // TODO support adjusted gifts
+        // TODO support search params
+        postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
 
-        // if (list.size() == 200) throw new RuntimeException("Too many items selected"); // see gift.xml for search limit
-        // TODO raise this limit from 200 to ?
-        Iterator<AbstractPaymentInfoEntity> it = list.iterator();
-        while (it.hasNext()) {
-            AbstractPaymentInfoEntity apie = it.next();
-            if (!isPosted(apie) && hasProjectCodes(apie)) {
-                PostBatchReviewSetItem item = new PostBatchReviewSetItem();
-                item.setEntityId(apie.getId());
-                item.setPostBatchId(postbatch.getId());
-                postBatchDao.maintainPostBatchReviewSetItem(item);
-            } else {
-                it.remove();
-                logger.debug("Excluding item from search results - Missing bank or project codes on id "+apie.getId());
-            }
-        }
+
         postbatch.setReviewSetGenerated(true);
         postbatch.setReviewSetGeneratedDate(new java.util.Date());
         postbatch.setReviewSetGeneratedById(tangerineUserHelper.lookupUserId());
         postBatchDao.maintainPostBatch(postbatch);
-        return list;
-    }
 
-    private boolean isPosted(AbstractPaymentInfoEntity apie) {
-        return "true".equals(""+new BeanWrapperImpl(apie).getPropertyValue("posted"));
-    }
-
-    private boolean hasProjectCodes(AbstractPaymentInfoEntity apie) {
-        for (DistributionLine dl : apie.getDistributionLines()) {
-            if (dl.getProjectCode() == null || dl.getProjectCode().trim().length() == 0) return false;
-        }
-        return true;
+        return getBatchSelectionList(postbatch);
     }
 
 

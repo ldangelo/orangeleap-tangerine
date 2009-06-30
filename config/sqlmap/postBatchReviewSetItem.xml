@@ -39,13 +39,11 @@
 
     <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM" parameterClass="com.orangeleap.tangerine.domain.PostBatchReviewSetItem">
         insert into POST_BATCH_REVIEW_SET_ITEM (
-        	POST_BATCH_REVIEW_SET_ITEM_ID,
         	POST_BATCH_ID,
         	ENTITY_ID,
         	CREATE_DATE,
         	UPDATE_DATE        )
         values (
-        	#id# ,
         	#postBatchId# ,
         	#entityId# ,
         	now(),
@@ -64,6 +62,30 @@
         	UPDATE_DATE = now()
         where POST_BATCH_REVIEW_SET_ITEM_ID = #id#
     </update>
+
+
+    <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_GIFT_SELECT" parameterClass="map">
+        insert into POST_BATCH_REVIEW_SET_ITEM (
+        	POST_BATCH_ID,
+        	ENTITY_ID,
+        	CREATE_DATE,
+        	UPDATE_DATE
+        )
+        select
+        	#postBatchId#,
+        	g.GIFT_ID,
+        	now(),
+        	now()
+        from GIFT g
+        where
+        exists (select dl.PROJECT_CODE from DISTRO_LINE dl where g.GIFT_ID = dl.GIFT_ID and dl.PROJECT_CODE is not null)
+        and g.POSTED = FALSE
+        ;
+    </insert>
+
+
+
+
 
 </sqlMap>
 

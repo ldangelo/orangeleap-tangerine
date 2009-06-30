@@ -261,6 +261,8 @@ public class RelationshipsController extends SimpleFormController {
 				customFieldRelationshipForm.setFieldName(thisField.getCustomFieldName());
 				customFieldRelationshipForm.setCustomFieldId(thisCustomField.getId());
 				customFieldRelationshipForm.setFieldValue(thisCustomField.getValue());
+				customFieldRelationshipForm.setStartDate(thisCustomField.getStartDate());
+				customFieldRelationshipForm.setEndDate(thisCustomField.getEndDate());
 				customFieldRelationshipForm.setDisplayStartDate(thisCustomField.getDisplayStartDate());
 				customFieldRelationshipForm.setDisplayEndDate(thisCustomField.getDisplayEndDate());
 				customFieldRelationshipForm.setConstituentName(relationshipService.resolveConstituentRelationship(thisCustomField));
@@ -360,9 +362,21 @@ public class RelationshipsController extends SimpleFormController {
     	Collections.sort(list, new Comparator<CustomFieldRelationshipForm>() {
 			@Override
 			public int compare(CustomFieldRelationshipForm o1, CustomFieldRelationshipForm o2) {
-				int result = o1.getStartDate().compareTo(o2.getStartDate());
-				if (result == 0) {
-					result = o1.getConstituentName().compareTo(o2.getConstituentName());
+				int result;
+				if (o1.getStartDate() == null && o2.getStartDate() != null) {
+					result = 1;
+				}
+				else if (o1.getStartDate() == null && o2.getStartDate() == null) {
+					result = 0;
+				}
+				else if (o2.getStartDate() == null && o1.getStartDate() != null) {
+					result = -1;
+				}
+				else {
+					result = o1.getStartDate().compareTo(o2.getStartDate());
+					if (result == 0) {
+						result = o1.getConstituentName().compareTo(o2.getConstituentName());
+					}
 				}
 				return result;
 			}

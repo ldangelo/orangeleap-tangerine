@@ -17,6 +17,7 @@ import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,7 +123,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             searchmap.put(me.getKey(), me.getValue());
         }
 
-        // TODO support adjusted gifts
         // TODO support search params
         if (isGift) {
             postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
@@ -199,6 +199,13 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             codemap.put(getKey(item.getDefaultDisplayValue(), ACCOUNT_STRING_2), item.getCustomFieldValue(ACCOUNT_STRING_2));
             codemap.put(getKey(item.getDefaultDisplayValue(), GL_ACCOUNT_CODE), item.getCustomFieldValue(GL_ACCOUNT_CODE));
         }
+        if (projectCodes.getPicklistItems().size() > 0) {
+            PicklistItem defaultItem = projectCodes.getPicklistItems().get(0);
+            codemap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
+            codemap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
+            codemap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
+            codemap.put(DEFAULT, defaultItem.getItemName());
+        }
 
 
     }
@@ -211,6 +218,26 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private void saveAdjustedGift(AdjustedGift adjustedGift) throws BindException {
         // TODO uncomment once complete TANGERINE-816 adjustedGift domain/form object separation
         //adjustedGiftService.maintainAdjustedGift(adjustedGift);
+    }
+
+    private BeanWrapper addPropertyEditors(BeanWrapper bw) {
+        bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
+            private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+            public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
+                try {
+                    this.setValue(dateFormat.parse(s));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public java.lang.String getAsText() {
+                return  dateFormat.format((Date)this.getValue());
+            }
+
+        });
+        return bw;
     }
 
     // Sets fields on gifts/adjusted gifts in reviewed batch list
@@ -238,43 +265,36 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
             siteService.populateDefaultEntityEditorMaps(apie);
 
-            BeanWrapperImpl bw = new BeanWrapperImpl(apie);
-
-            bw.registerCustomEditor(java.util.Date.class, new java.beans.PropertyEditorSupport() {
-                private DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-                public void setAsText(java.lang.String s) throws java.lang.IllegalArgumentException {
-                    try {
-                        this.setValue(dateFormat.parse(s));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                public java.lang.String getAsText() {
-                    return  dateFormat.format((Date)this.getValue());
-                }
-
-            });
-
-            bw.setPropertyValue("posted", true);
-            bw.setPropertyValue("postedDate", postDate);
-
-            for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-                bw.setPropertyValue(me.getKey(), me.getValue());    
-            }
+            BeanWrapper bw = addPropertyEditors(new BeanWrapperImpl(apie));
 
             try {
 
+                // Don't allow double (re-)posting or any updating values after item was posted (?).
+                boolean wasPreviouslyPosted = (Boolean)bw.getPropertyValue("posted");
+                if (wasPreviouslyPosted) {
+                    String msg = "Item "+apie.getId()+" previously posted - cannot re-post or change values.";
+                    throw new RuntimeException(msg);
+                }
+
+                bw.setPropertyValue("posted", true);
+                bw.setPropertyValue("postedDate", postDate);
+
+
+                // Set update values.  Allows override of posted date.
+                for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
+                    bw.setPropertyValue(me.getKey(), me.getValue());
+                }
+
+                // Update record.
                 if (isGift) {
                     Gift gift = (Gift)apie;
                     saveGift(gift);
-                    createJournalEntries(gift, null, postbatch, codemap, bankmap);
+                    if (!wasPreviouslyPosted) createJournalEntries(gift, null, postbatch, codemap, bankmap);
                 } else {
                     AdjustedGift ag = (AdjustedGift)apie;
                     saveAdjustedGift(ag);
                     Gift gift = giftService.readGiftById(ag.getOriginalGiftId());
-                    createJournalEntries(gift, ag, postbatch, codemap, bankmap);
+                    if (!wasPreviouslyPosted) createJournalEntries(gift, ag, postbatch, codemap, bankmap);
                 }
 
             } catch (Exception e) {
@@ -389,7 +409,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             journal.setMasterEntityId(isGift ? gift.getId() : ag.getId());
 
             journal.setAmount(dl.getAmount());
-            journal.setCode(getProjectCode(dl));
+            journal.setCode(getProjectCode(dl, codemap));
 
             if (isGift) {
                 journal.setDescription("Associated with gift ID " + gift.getId() + " from " + gift.getConstituent().getRecognitionName());
@@ -413,8 +433,10 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return bank;
     }
 
-    private String getProjectCode(DistributionLine dl) {
+    private String getProjectCode(DistributionLine dl, Map<String, String> codemap) {
+        String defaultcode = codemap.get(DEFAULT);
         String pc = dl.getProjectCode();
+        if (pc == null) pc = defaultcode;
         pc = (pc == null ? "" : pc.trim());
         if (pc.equalsIgnoreCase("none")) pc = "";
         return pc;

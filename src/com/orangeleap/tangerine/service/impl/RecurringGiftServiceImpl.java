@@ -1,22 +1,19 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.controller.validator.CodeValidator;
+import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.dao.RecurringGiftDao;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.paymentInfo.*;
+import com.orangeleap.tangerine.service.RecurringGiftService;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
 import org.joda.time.DateMidnight;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,21 +23,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.CodeValidator;
-import com.orangeleap.tangerine.controller.validator.DistributionLinesValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.dao.RecurringGiftDao;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.paymentInfo.AdjustedGift;
-import com.orangeleap.tangerine.domain.paymentInfo.Commitment;
-import com.orangeleap.tangerine.domain.paymentInfo.DistributionLine;
-import com.orangeleap.tangerine.domain.paymentInfo.Gift;
-import com.orangeleap.tangerine.domain.paymentInfo.RecurringGift;
-import com.orangeleap.tangerine.service.RecurringGiftService;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service("recurringGiftService")
 public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService {
@@ -324,12 +309,13 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
     @Transactional(propagation = Propagation.REQUIRED)
     private void processRecurringGift(RecurringGift recurringGift) {
-        Date nextDate = null;
-
-        nextDate = getNextGiftDate(recurringGift);
+        Date nextDate = getNextGiftDate(recurringGift);
 
         if (nextDate != null) {
             createAutoGift(recurringGift);
+
+	        /* Re-read the Recurring Gift from the DB as fields may have changed */
+	        recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
 
             recurringGift.setNextRunDate(nextDate);
 
@@ -371,10 +357,11 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         
         gift.setSuppressValidation(true);
         try {
-	    gift = giftService.maintainGift(gift);
-        } catch (BindException e) {
-	    // Should not happen with suppressValidation = true.
-	    logger.error(e);
+	        gift = giftService.maintainGift(gift);
+        }
+        catch (BindException e) {
+	        // Should not happen with suppressValidation = true.
+	        logger.error(e);
         }
         
     }

@@ -323,7 +323,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             recurringGiftDao.maintainRecurringGiftNextRunDate(recurringGift);
         }
 
-        if (recurringGift.getEndDate() != null && recurringGift.getEndDate().after(nextDate)) {
+        if (recurringGift.getEndDate() != null && recurringGift.getEndDate().before(nextDate)) {
             recurringGift.setRecurringGiftStatus(RecurringGift.STATUS_FULFILLED);
             recurringGift.setNextRunDate(null);
             recurringGiftDao.maintainRecurringGift(recurringGift);

@@ -1,13 +1,28 @@
 package com.orangeleap.tangerine.service.impl;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
+import com.orangeleap.tangerine.controller.validator.EntityValidator;
+import com.orangeleap.tangerine.dao.ConstituentDao;
+import com.orangeleap.tangerine.dao.GiftDao;
+import com.orangeleap.tangerine.dao.SiteDao;
+import com.orangeleap.tangerine.domain.CommunicationHistory;
+import com.orangeleap.tangerine.domain.Constituent;
+import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Email;
+import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.domain.customization.EntityDefault;
+import com.orangeleap.tangerine.integration.NewConstituent;
+import com.orangeleap.tangerine.service.*;
+import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
+import com.orangeleap.tangerine.type.EntityType;
+import com.orangeleap.tangerine.type.PageType;
+import com.orangeleap.tangerine.util.OLLogger;
+import com.orangeleap.tangerine.util.RulesStack;
+import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.beans.BeanWrapper;
@@ -22,36 +37,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import com.orangeleap.tangerine.controller.validator.ConstituentValidator;
-import com.orangeleap.tangerine.controller.validator.EntityValidator;
-import com.orangeleap.tangerine.dao.ConstituentDao;
-import com.orangeleap.tangerine.dao.GiftDao;
-import com.orangeleap.tangerine.dao.SiteDao;
-import com.orangeleap.tangerine.domain.CommunicationHistory;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Email;
-import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.domain.customization.EntityDefault;
-import com.orangeleap.tangerine.integration.NewConstituent;
-import com.orangeleap.tangerine.service.AddressService;
-import com.orangeleap.tangerine.service.AuditService;
-import com.orangeleap.tangerine.service.CommunicationHistoryService;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.EmailService;
-import com.orangeleap.tangerine.service.ErrorLogService;
-import com.orangeleap.tangerine.service.PhoneService;
-import com.orangeleap.tangerine.service.RelationshipService;
-import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
-import com.orangeleap.tangerine.service.exception.DuplicateConstituentException;
-import com.orangeleap.tangerine.type.EntityType;
-import com.orangeleap.tangerine.type.PageType;
-import com.orangeleap.tangerine.util.OLLogger;
-import com.orangeleap.tangerine.util.RulesStack;
-import com.orangeleap.tangerine.util.StringConstants;
-import com.orangeleap.tangerine.util.TangerineUserHelper;
-import com.orangeleap.tangerine.web.common.PaginatedResult;
-import com.orangeleap.tangerine.web.common.SortInfo;
+import javax.annotation.Resource;
+import java.util.*;
 
 
 @Service("constituentService")
@@ -140,15 +127,15 @@ public class ConstituentServiceImpl extends AbstractTangerineService implements 
         Phone phone = constituent.getPrimaryPhone();
         Email email = constituent.getPrimaryEmail();
         
-        if (address != null) {
+        if (address != null && address.isAddressEntered()) {
         	address.setConstituentId(constituent.getId());
         	addressService.save(address);
         }
-        if (phone != null) {
+        if (phone != null && phone.isPhoneEntered()) {
         	phone.setConstituentId(constituent.getId());
         	phoneService.save(phone);
         }
-        if (email != null) {
+        if (email != null && email.isEmailEntered()) {
         	email.setConstituentId(constituent.getId());
         	emailService.save(email);
         }

@@ -112,6 +112,9 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     // Evaluates criteria to create list of matching gifts (snapshot at this moment in time).
     @Override
     public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch) {
+
+        boolean isGift = GIFT.equals(postbatch.getEntity());
+
         postBatchDao.deletePostBatchItems(postbatch.getId());
         
         Map<String, Object> searchmap = new HashMap();
@@ -121,7 +124,11 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         // TODO support adjusted gifts
         // TODO support search params
-        postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
+        if (isGift) {
+            postBatchDao.insertIntoPostBatchFromGiftSelect(postbatch, searchmap); 
+        } else {
+            postBatchDao.insertIntoPostBatchFromAdjustedGiftSelect(postbatch, searchmap);
+        }
 
 
         postbatch.setReviewSetGenerated(true);

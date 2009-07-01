@@ -94,7 +94,7 @@
             
             <table cellspacing="8" border="0" >
                 <tr>
-                  <th>Gift Id</th>
+                  <th>Id</th>
                   <th>Constituent Id</th>
                   <th>Description</th>
                   <th>TX Reference Number</th>

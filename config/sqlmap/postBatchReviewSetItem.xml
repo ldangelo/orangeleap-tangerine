@@ -84,6 +84,25 @@
     </insert>
 
 
+    <insert id="INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_ADJUSTED_GIFT_SELECT" parameterClass="map">
+        insert into POST_BATCH_REVIEW_SET_ITEM (
+        	POST_BATCH_ID,
+        	ENTITY_ID,
+        	CREATE_DATE,
+        	UPDATE_DATE
+        )
+        select
+        	#postBatchId#,
+        	ag.ADJUSTED_GIFT_ID,
+        	now(),
+        	now()
+        from ADJUSTED_GIFT ag
+        where
+        exists (select dl.PROJECT_CODE from DISTRO_LINE dl where ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID and dl.PROJECT_CODE is not null)
+        and ag.POSTED = FALSE
+        ;
+    </insert>
+
 
 
 

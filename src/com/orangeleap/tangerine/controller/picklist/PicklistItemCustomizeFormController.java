@@ -32,7 +32,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
         PicklistItem item = getPicklistItem(picklist, new Long(picklistItemId));
         
         Map<String, String> stringmap = getMap(item.getCustomFieldMap());
-		if (stringmap.size() < 1 || (isGLCoded(picklist) && stringmap.size() < 2)) {
+		if (stringmap.size() < 1 || isGLCoded(picklist)) {
 	        addDefaultFields(picklist, stringmap);
 		}
 		
@@ -82,7 +82,7 @@ public class PicklistItemCustomizeFormController extends PicklistCustomizeBaseCo
     			name = name.substring(ITEM_TEMPLATE.length());
 	    		String value = e.getValue().getValue();
 	    		if (value.equalsIgnoreCase(BLANK)) value = "";
-	    		map.put(name, value);
+	    		if (!map.containsKey(name)) map.put(name, value);
     		}
     	}
     }

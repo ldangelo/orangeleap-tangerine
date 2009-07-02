@@ -53,6 +53,10 @@
 			</table>
             <input type="button" value="Add" class="saveButton" onclick="BatchCustomizer.addNewRow('selectFieldsTable');" />   <br/><br/>
 
+            <br/>
+            Letter values are case-sensitive.  &gt;, =, and &lt; can be used with numeric and date selection values.
+            <br/><br/>
+
 			<br/>
             <h4>Batch field update values:</h4>
             <table class="updateFieldsTable">
@@ -78,15 +82,15 @@
             <input type="button" value="Add" class="saveButton" onclick="BatchCustomizer.addNewRow('updateFieldsTable');" />   
             <br/>
 
-            <br/>
-            Letter values are case-sensitive.  &gt;, =, and &lt; can be used with numeric and date selection values.   
             <br/><br/>
 
-			<input type="button" value="Select records for update" class="saveButton" onclick="$('#post').val('false'); submit();" />
             <input type="hidden" id="post" name="post" value="false"  />
-            
-            <!-- TODO add 'Are you sure' confirmation: -->
-            <input type="button" value="Post Batch" class="saveButton" onclick="  $('#post').val('true'); submit();" />
+            <input type="hidden" id="update" name="post" value="false"  />
+
+			<input type="button" value="Select records for update" class="saveButton" onclick="$('#update').val('false'); $('#post').val('false'); submit();" />
+            <!-- TODO add 'Are you sure' confirmations: -->
+            <input type="button" value="Update Batch" class="saveButton" onclick=" $('#update').val('true'); $('#post').val('false'); submit();" />
+            <input type="button" value="Post Batch" class="saveButton" onclick=" $('#update').val('false'); $('#post').val('true'); submit();" />
 
 
 

@@ -105,6 +105,7 @@ public class PostBatchFormController extends SimpleFormController {
         if (!accessAllowed(request)) return null;
 
         boolean post = "true".equals(request.getParameter("post"));
+        boolean update = "true".equals(request.getParameter("update"));
 
         PostBatch requestPostbatch = (PostBatch)command;
         // Read existing
@@ -128,8 +129,8 @@ public class PostBatchFormController extends SimpleFormController {
             postbatch = postBatchService.maintainBatch(postbatch);
 
             gifts = postBatchService.createBatchSelectionList(postbatch);  // will throw exception if selection set too large.
-            if (post) {
-                postbatch = postBatchService.postBatch(postbatch);
+            if (update || post) {
+                postbatch = postBatchService.updateBatch(postbatch, post);
             } 
 
         } catch (Exception e) {

@@ -140,22 +140,6 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     }
 
 
-    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
-    @Override
-    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
-         List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
-         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
-         boolean isGift = GIFT.equals(postbatch.getEntity());
-         for (PostBatchReviewSetItem item : list) {
-             if (isGift) {
-                 result.add(giftService.readGiftById(item.getEntityId()));
-             } else {
-                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
-             }
-         }
-         return result;
-    }
-
     private void createMaps(Map<String, String> bankmap, Map<String, String> codemap) {
 
         Picklist bankCodes = picklistItemService.getPicklist("customFieldMap[bank]");
@@ -204,7 +188,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             codemap.put(getKey("", ACCOUNT_STRING_1), defaultItem.getCustomFieldValue(ACCOUNT_STRING_1));
             codemap.put(getKey("", ACCOUNT_STRING_2), defaultItem.getCustomFieldValue(ACCOUNT_STRING_2));
             codemap.put(getKey("", GL_ACCOUNT_CODE), defaultItem.getCustomFieldValue(GL_ACCOUNT_CODE));
-            codemap.put(DEFAULT, defaultItem.getItemName());
+            codemap.put(DEFAULT, defaultItem.getDefaultDisplayValue());
         }
 
 
@@ -240,66 +224,112 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         return bw;
     }
 
-    // Sets fields on gifts/adjusted gifts in reviewed batch list
+    // Reads previous list of matched gifts. Does not re-evaluate any criteria.
     @Override
-    public PostBatch postBatch(PostBatch postbatch) {
+    public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch) {
+         List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+         List<AbstractPaymentInfoEntity> result = new ArrayList<AbstractPaymentInfoEntity>();
+         boolean isGift = GIFT.equals(postbatch.getEntity());
+         for (PostBatchReviewSetItem item : list) {
+             if (isGift) {
+                 result.add(giftService.readGiftById(item.getEntityId()));
+             } else {
+                 result.add(adjustedGiftService.readAdjustedGiftById(item.getEntityId()));
+             }
+         }
+         return result;
+    }
 
+
+
+    private void processUpdate(PostBatchReviewSetItem item, PostBatch postbatch, boolean post, Map<String, String> codemap, Map<String, String> bankmap) throws Exception {
 
         boolean isGift = GIFT.equals(postbatch.getEntity());
+        AbstractPaymentInfoEntity apie;
 
-        Date postDate = new java.util.Date();
+        if (isGift) {
+            apie = giftService.readGiftById(item.getEntityId());
+        } else {
+            apie = adjustedGiftService.readAdjustedGiftById(item.getEntityId());
+        }
 
-        Map<String, String> bankmap = new HashMap<String, String>();
-        Map<String, String> codemap = new HashMap<String, String>();
-        createMaps(bankmap, codemap);
+        // Record previous values for audit trail
+        siteService.populateDefaultEntityEditorMaps(apie);
 
-        postbatch.getUpdateErrors().clear();
-        List<AbstractPaymentInfoEntity> list = getBatchSelectionList(postbatch);
-        for (AbstractPaymentInfoEntity apie: list) {
-            
-            if (isGift) {
-                apie = giftService.readGiftById(apie.getId());
-            } else {
-                apie = adjustedGiftService.readAdjustedGiftById(apie.getId());
+        BeanWrapper bw = addPropertyEditors(new BeanWrapperImpl(apie));
+
+        boolean wasPreviouslyPosted = (Boolean)bw.getPropertyValue(POSTED);
+
+        if (post) {
+
+            // Don't allow double posting.
+            if (wasPreviouslyPosted) {
+                String msg = "Item "+apie.getId()+" previously posted - cannot re-post.";
+                throw new RuntimeException(msg);
             }
 
-            siteService.populateDefaultEntityEditorMaps(apie);
+            bw.setPropertyValue(POSTED, true);
 
-            BeanWrapper bw = addPropertyEditors(new BeanWrapperImpl(apie));
+        }
 
+        // Set update values.  
+        for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
+            bw.setPropertyValue(me.getKey(), me.getValue());
+        }
+        
+        // Update record.
+        if (isGift) {
+            Gift gift = (Gift)apie;
+            saveGift(gift);
+            if (post) createJournalEntries(gift, null, postbatch, codemap, bankmap);
+        } else {
+            AdjustedGift ag = (AdjustedGift)apie;
+            saveAdjustedGift(ag);
+            Gift gift = giftService.readGiftById(ag.getOriginalGiftId());
+            if (post) createJournalEntries(gift, ag, postbatch, codemap, bankmap);
+        }
+
+    }
+
+    // Sets fields on gifts/adjusted gifts in reviewed batch list
+    @Override
+    public PostBatch updateBatch(PostBatch postbatch, boolean post) {
+
+        postbatch.getUpdateErrors().clear();
+
+        Date postedDate = null;
+        Map<String, String> bankmap = new HashMap<String, String>();
+        Map<String, String> codemap = new HashMap<String, String>();
+
+        // Set properties 'posted' and optionally 'postedDate' if posting.
+        if (post) {
+            postbatch.getUpdateFields().put(POSTED, "true");
+            if (postbatch.getUpdateFields().get(POSTED_DATE) == null) {
+                DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+                postbatch.getUpdateFields().put(POSTED_DATE, dateFormat.format(new java.util.Date()));
+            }
+            createMaps(bankmap, codemap);
+        } else {
+           // Can't update these fields if not posting.
+           postbatch.getUpdateFields().remove(POSTED);
+           postbatch.getUpdateFields().remove(POSTED_DATE);
+        }
+        
+
+        // Get list to update
+        // TODO process in single transactions and support partial batch updates.
+        List<PostBatchReviewSetItem> list = postBatchDao.readPostBatchReviewSetItems(postbatch.getId());
+        if (list.size() > 1000) throw new RuntimeException("Batch size limit exceeded.");   // TODO remove size limit
+
+        for (PostBatchReviewSetItem item: list) {
+            
             try {
 
-                // Don't allow double (re-)posting or any updating values after item was posted (?).
-                boolean wasPreviouslyPosted = (Boolean)bw.getPropertyValue("posted");
-                if (wasPreviouslyPosted) {
-                    String msg = "Item "+apie.getId()+" previously posted - cannot re-post or change values.";
-                    throw new RuntimeException(msg);
-                }
-
-                bw.setPropertyValue("posted", true);
-                bw.setPropertyValue("postedDate", postDate);
-
-
-                // Set update values.  Allows override of posted date.
-                for (Map.Entry<String, String> me : postbatch.getUpdateFields().entrySet()) {
-                    bw.setPropertyValue(me.getKey(), me.getValue());
-                }
-
-                // Update record.
-                if (isGift) {
-                    Gift gift = (Gift)apie;
-                    saveGift(gift);
-                    if (!wasPreviouslyPosted) createJournalEntries(gift, null, postbatch, codemap, bankmap);
-                } else {
-                    AdjustedGift ag = (AdjustedGift)apie;
-                    saveAdjustedGift(ag);
-                    Gift gift = giftService.readGiftById(ag.getOriginalGiftId());
-                    if (!wasPreviouslyPosted) createJournalEntries(gift, ag, postbatch, codemap, bankmap);
-                }
+                processUpdate(item, postbatch, post, codemap, bankmap);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                String msg = apie.getId() + ": " + e.getMessage();
+                String msg = item.getEntityId() + ": " + e.getMessage();
                 logger.error(msg);
                 postbatch.getUpdateErrors().add(msg);
             }
@@ -311,12 +341,19 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             throw new PostBatchUpdateException(postbatch.getUpdateErrors());   
         }
 
-        postbatch.setPosted(true);
-        postbatch.setPostedDate(postDate);
-        postbatch.setPostedById(tangerineUserHelper.lookupUserId());
-        postBatchDao.maintainPostBatch(postbatch);
+        if (post) {
+            postbatch.setPosted(true);
+            postbatch.setPostedDate(postedDate);
+            postbatch.setPostedById(tangerineUserHelper.lookupUserId());
+        } else {
+            // TODO add these fields
+//            postbatch.setUpdated(true);
+//            postbatch.setUpdatedDate(new java.util.Date());
+//            postbatch.setUpdatedById(tangerineUserHelper.lookupUserId());
+        }
         
-        postBatchDao.deletePostBatchItems(postbatch.getId());
+        // Update
+        postBatchDao.maintainPostBatch(postbatch);
         
         return postbatch;
         
@@ -352,6 +389,8 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private static String ADJUSTED_GIFT = "adjustedgift";
     private static String DISTRO_LINE = "distributionline";
     private static String DEFAULT = "_default";
+    private static String POSTED_DATE = "postedDate";
+    private static String POSTED = "posted";
 
 
     private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {

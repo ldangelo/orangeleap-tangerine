@@ -77,9 +77,6 @@
         	now(),
         	now()
         from GIFT g
-        where
-        exists (select dl.PROJECT_CODE from DISTRO_LINE dl where g.GIFT_ID = dl.GIFT_ID and dl.PROJECT_CODE is not null)
-        and g.POSTED = FALSE
         ;
     </insert>
 
@@ -97,9 +94,6 @@
         	now(),
         	now()
         from ADJUSTED_GIFT ag
-        where
-        exists (select dl.PROJECT_CODE from DISTRO_LINE dl where ag.ADJUSTED_GIFT_ID = dl.ADJUSTED_GIFT_ID and dl.PROJECT_CODE is not null)
-        and ag.POSTED = FALSE
         ;
     </insert>
 

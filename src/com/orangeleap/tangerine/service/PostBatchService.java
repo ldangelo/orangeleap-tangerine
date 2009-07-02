@@ -21,6 +21,6 @@ public interface PostBatchService {
     public PostBatch maintainBatch(PostBatch postbatch);
     public List<AbstractPaymentInfoEntity> createBatchSelectionList(PostBatch postbatch);
     public List<AbstractPaymentInfoEntity> getBatchSelectionList(PostBatch postbatch);
-	public PostBatch postBatch(PostBatch postbatch);
+	public PostBatch updateBatch(PostBatch postbatch, boolean post);
 
 }

@@ -95,6 +95,12 @@ public class IBatisPostBatchDao extends AbstractIBatisDao implements PostBatchDa
         getSqlMapClientTemplate().insert("INSERT_POST_BATCH_REVIEW_SET_ITEM_FROM_ADJUSTED_GIFT_SELECT", params);
     }
 
+    public Long getReviewSetSize(Long postBatchId) {
+        Map<String, Object> params = setupParams();
+        params.put("postBatchId", postBatchId);
+        return (Long)getSqlMapClientTemplate().queryForObject("SELECT_POST_BATCH_REVIEW_SET_SIZE", params);
+    }
+    
 
 
     private static final String WHERE = "where";

@@ -10,6 +10,9 @@
         <result property="reviewSetGeneratedById" column="POST_BATCH_REVIEW_SET_GENERATED_BY_ID" />
         <result property="reviewSetGeneratedDate" column="POST_BATCH_REVIEW_SET_GENERATED_DATE" />
         <result property="reviewSetSize" column="POST_BATCH_REVIEW_SET_SIZE" />
+        <result property="batchUpdated" column="POST_BATCH_BATCH_UPDATED" />
+        <result property="batchUpdatedById" column="POST_BATCH_BATCH_UPDATED_BY_ID" />
+        <result property="batchUpdatedDate" column="POST_BATCH_BATCH_UPDATED_DATE" />
         <result property="posted" column="POST_BATCH_POSTED" />
         <result property="postedById" column="POST_BATCH_POSTED_BY_ID" />
         <result property="postedDate" column="POST_BATCH_POSTED_DATE" />
@@ -26,6 +29,9 @@
         post_batch.REVIEW_SET_GENERATED_BY_ID as POST_BATCH_REVIEW_SET_GENERATED_BY_ID,
         post_batch.REVIEW_SET_GENERATED_DATE as POST_BATCH_REVIEW_SET_GENERATED_DATE,
         post_batch.REVIEW_SET_SIZE as POST_BATCH_REVIEW_SET_SIZE,
+        post_batch.BATCH_UPDATED as POST_BATCH_BATCH_UPDATED,
+        post_batch.BATCH_UPDATED_BY_ID as POST_BATCH_BATCH_UPDATED_BY_ID,
+        post_batch.BATCH_UPDATED_DATE as POST_BATCH_BATCH_UPDATED_DATE,
         post_batch.POSTED as POST_BATCH_POSTED,
         post_batch.POSTED_BY_ID as POST_BATCH_POSTED_BY_ID,
         post_batch.POSTED_DATE as POST_BATCH_POSTED_DATE,
@@ -55,6 +61,9 @@
         	REVIEW_SET_GENERATED_BY_ID,
         	REVIEW_SET_GENERATED_DATE,
         	REVIEW_SET_SIZE,
+            BATCH_UPDATED,
+            BATCH_UPDATED_BY_ID,
+            BATCH_UPDATED_DATE,
         	POSTED,
         	POSTED_BY_ID,
         	POSTED_DATE,
@@ -69,6 +78,9 @@
         	#reviewSetGeneratedById# ,
         	#reviewSetGeneratedDate# ,
         	#reviewSetSize# ,
+            #batchUpdated# ,
+            #batchUpdatedById# ,
+            #batchUpdatedDate# ,
         	#posted# ,
         	#postedById# ,
         	#postedDate# ,
@@ -90,6 +102,9 @@
         	REVIEW_SET_GENERATED_BY_ID = #reviewSetGeneratedById# ,
         	REVIEW_SET_GENERATED_DATE = #reviewSetGeneratedDate# ,
         	REVIEW_SET_SIZE = #reviewSetSize# ,
+            BATCH_UPDATED = #batchUpdated# ,
+            BATCH_UPDATED_BY_ID = #batchUpdatedById# ,
+            BATCH_UPDATED_DATE = #batchUpdatedDate# ,
         	POSTED = #posted# ,
         	POSTED_BY_ID = #postedById# ,
         	POSTED_DATE = #postedDate# ,

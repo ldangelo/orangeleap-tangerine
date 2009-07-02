@@ -20,6 +20,9 @@ public class PostBatch extends AbstractCustomizableEntity  {
     private Long reviewSetGeneratedById;
     private Date reviewSetGeneratedDate;
     private Long reviewSetSize;
+    private boolean batchUpdated;
+    private Long batchUpdatedById;
+    private Date batchUpdatedDate;
     private boolean posted;
     private Long postedById;
     private Date postedDate;
@@ -97,6 +100,29 @@ public class PostBatch extends AbstractCustomizableEntity  {
         this.reviewSetSize = reviewSetSize;
     }
 
+    public boolean isBatchUpdated() {
+        return batchUpdated;
+    }
+
+    public void setBatchUpdated(boolean batchUpdated) {
+        this.batchUpdated = batchUpdated;
+    }
+
+    public Long getBatchUpdatedById() {
+        return batchUpdatedById;
+    }
+
+    public void setBatchUpdatedById(Long batchUpdatedById) {
+        this.batchUpdatedById = batchUpdatedById;
+    }
+
+    public Date getBatchUpdatedDate() {
+        return batchUpdatedDate;
+    }
+
+    public void setBatchUpdatedDate(Date batchUpdatedDate) {
+        this.batchUpdatedDate = batchUpdatedDate;
+    }
 
     public boolean getPosted() {
         return posted;
@@ -201,6 +227,9 @@ public class PostBatch extends AbstractCustomizableEntity  {
         .append(reviewSetGeneratedById, a.getReviewSetGeneratedById())
         .append(reviewSetGeneratedDate, a.getReviewSetGeneratedDate())
         .append(reviewSetSize, a.getReviewSetSize())
+        .append(batchUpdated, a.isBatchUpdated())
+        .append(batchUpdatedById, a.getBatchUpdatedById())
+        .append(batchUpdatedDate, a.getBatchUpdatedDate())
         .append(posted, a.getPosted())
         .append(postedById, a.getPostedById())
         .append(postedDate, a.getPostedDate())
@@ -220,6 +249,9 @@ public class PostBatch extends AbstractCustomizableEntity  {
         .append(""+reviewSetGeneratedById)
         .append(""+reviewSetGeneratedDate)
         .append(""+reviewSetSize)
+        .append(""+batchUpdated)
+        .append(""+batchUpdatedById)
+        .append(""+batchUpdatedDate)
         .append(""+posted)
         .append(""+postedById)
         .append(""+postedDate)
@@ -239,6 +271,9 @@ public class PostBatch extends AbstractCustomizableEntity  {
         .append("reviewSetGeneratedById", ""+reviewSetGeneratedById)
         .append("reviewSetGeneratedDate", ""+reviewSetGeneratedDate)
         .append("reviewSetSize", ""+reviewSetSize)
+        .append("batchUpdated", ""+batchUpdated)
+        .append("batchUpdatedById", ""+batchUpdatedById)
+        .append("batchUpdatedDate", ""+batchUpdatedDate)
         .append("posted", ""+posted)
         .append("postedById", ""+postedById)
         .append("postedDate", ""+postedDate)
@@ -253,4 +288,5 @@ public class PostBatch extends AbstractCustomizableEntity  {
     public void setUpdateErrors(List<String> updateErrors) {
         this.updateErrors = updateErrors;
     }
+
 }

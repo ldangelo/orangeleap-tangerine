@@ -18,4 +18,6 @@ public interface PostBatchDao {
     public void deletePostBatchItems(Long postBatchId);
     public void insertIntoPostBatchFromGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);
     public void insertIntoPostBatchFromAdjustedGiftSelect(PostBatch postbatch, Map<String, Object> searchmap);
+    public Long getReviewSetSize(Long postBatchId);
+    
 }

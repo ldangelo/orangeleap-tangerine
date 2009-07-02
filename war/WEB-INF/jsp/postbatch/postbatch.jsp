@@ -85,7 +85,7 @@
             <br/><br/>
 
             <input type="hidden" id="post" name="post" value="false"  />
-            <input type="hidden" id="update" name="post" value="false"  />
+            <input type="hidden" id="update" name="update" value="false"  />
 
 			<input type="button" value="Select records for update" class="saveButton" onclick="$('#update').val('false'); $('#post').val('false'); submit();" />
             <!-- TODO add 'Are you sure' confirmations: -->

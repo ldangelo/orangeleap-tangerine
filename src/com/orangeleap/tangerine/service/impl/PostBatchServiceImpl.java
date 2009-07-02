@@ -27,6 +27,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 @Service("postBatchService")
@@ -134,6 +135,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         postbatch.setReviewSetGenerated(true);
         postbatch.setReviewSetGeneratedDate(new java.util.Date());
         postbatch.setReviewSetGeneratedById(tangerineUserHelper.lookupUserId());
+        postbatch.setReviewSetSize(postBatchDao.getReviewSetSize(postbatch.getId()));
         postBatchDao.maintainPostBatch(postbatch);
 
         return getBatchSelectionList(postbatch);
@@ -303,10 +305,15 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
 
         // Set properties 'posted' and optionally 'postedDate' if posting.
         if (post) {
+            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             postbatch.getUpdateFields().put(POSTED, "true");
             if (postbatch.getUpdateFields().get(POSTED_DATE) == null) {
-                DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
                 postbatch.getUpdateFields().put(POSTED_DATE, dateFormat.format(new java.util.Date()));
+            }
+            try {
+                postedDate = dateFormat.parse(postbatch.getUpdateFields().get(POSTED_DATE));
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid posted date.");
             }
             createMaps(bankmap, codemap);
         } else {
@@ -346,15 +353,14 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
             postbatch.setPostedDate(postedDate);
             postbatch.setPostedById(tangerineUserHelper.lookupUserId());
         } else {
-            // TODO add these fields
-//            postbatch.setUpdated(true);
-//            postbatch.setUpdatedDate(new java.util.Date());
-//            postbatch.setUpdatedById(tangerineUserHelper.lookupUserId());
+            postbatch.setBatchUpdated(true);
+            postbatch.setBatchUpdatedDate(new java.util.Date());
+            postbatch.setBatchUpdatedById(tangerineUserHelper.lookupUserId());
         }
         
         // Update
         postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
-        postBatchDao.maintainPostBatch(postbatch);
+        postbatch = postBatchDao.maintainPostBatch(postbatch);
         
         return postbatch;
         

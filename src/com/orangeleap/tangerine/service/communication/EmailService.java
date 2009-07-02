@@ -61,8 +61,10 @@ public class EmailService implements ApplicationContextAware {
 		File temp = null;
 		TangerineUserHelper tuh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
 		jserver = new JServer();
-		jserver.setUsername(tuh.lookupUserName() + "@" + site.getName());
-		jserver.setPassword(tuh.lookupUserPassword());
+//		jserver.setUsername(tuh.lookupUserName() + "@" + site.getName());
+		jserver.setUsername(site.getJasperUserId());
+//		jserver.setPassword(tuh.lookupUserPassword());
+		jserver.setPassword(site.getJasperPassword());
 		jserver.setUrl(uri);
 		try {
 			WSClient client = jserver.getWSClient();

@@ -353,6 +353,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         }
         
         // Update
+        postbatch.getUpdateFields().remove(POSTED);  // This is a hidden update field for posting - don't show in list.
         postBatchDao.maintainPostBatch(postbatch);
         
         return postbatch;
@@ -391,6 +392,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
     private static String DEFAULT = "_default";
     private static String POSTED_DATE = "postedDate";
     private static String POSTED = "posted";
+    private static String NONE = "none";
 
 
     private void createJournalEntry(Gift gift, AdjustedGift ag, DistributionLine dl, PostBatch postbatch, Map<String, String> codemap, Map<String, String> bankmap) {
@@ -468,7 +470,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         String bank = e.getCustomFieldValue(BANK);
         if (bank == null) bank = defaultbank;
         bank = (bank == null ? "" : bank.trim());
-        if (bank.equalsIgnoreCase("none")) bank = "";
+        if (bank.equalsIgnoreCase(NONE)) bank = "";
         return bank;
     }
 
@@ -477,7 +479,7 @@ public class PostBatchServiceImpl extends AbstractTangerineService implements Po
         String pc = dl.getProjectCode();
         if (pc == null) pc = defaultcode;
         pc = (pc == null ? "" : pc.trim());
-        if (pc.equalsIgnoreCase("none")) pc = "";
+        if (pc.equalsIgnoreCase(NONE)) pc = "";
         return pc;
     }
 

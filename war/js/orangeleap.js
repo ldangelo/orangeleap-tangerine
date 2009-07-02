@@ -1517,7 +1517,7 @@ function PasswordChange() {
             items: [
                 {fieldLabel: 'New Password', name: 'password', allowBlank:false, inputType: 'password', minLength: 3},
                 {fieldLabel: 'Confirm Password', name: 'confirm', allowBlank:false, inputType: 'password', minLength: 3,
-                    invalidText: 'Value does not match the New Password',validator: this.passwordValidator}
+                    invalidText: 'Value does not match the New Password',validator: that.passwordValidator}
             ],
             buttons: [{text: 'Change Password', type: 'submit', formBind: true, handler: that.submit},
             {text: 'Cancel', handler: function() {that.passwordWindow.hide(); that.passwordForm.getForm().reset();}}]

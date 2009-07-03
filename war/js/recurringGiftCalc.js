@@ -72,7 +72,7 @@ RecurringGift.GiftCalculator = function() {
 
     // PRIVATE: map of time span labels to number of days
     var interval = {'weekly': 7, 'twice monthly': 14, 'monthly': 30, 'quarterly': 90,
-        'twice annually': 180, 'annually': 365};
+        'twice annually': 183, 'annually': 365};
 };
 
 

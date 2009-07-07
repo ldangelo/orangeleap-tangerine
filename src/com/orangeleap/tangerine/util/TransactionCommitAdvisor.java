@@ -37,12 +37,14 @@ public class TransactionCommitAdvisor implements MethodInterceptor {
     private Log logger = LogFactory.getLog(TransactionCommitAdvisor.class);
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        Object rval =  invocation.proceed();
+
         if (invocation.getMethod().getName().equals("commit")) {
             // unwind the taskstack and execute the tasks on the stack
             logger.info("===== executing task stack!");
             TaskStack.execute();
         }
-        Object rval =  invocation.proceed();
+
         logger.debug("======= After: " + invocation.getMethod().getName());
         return rval;
     }

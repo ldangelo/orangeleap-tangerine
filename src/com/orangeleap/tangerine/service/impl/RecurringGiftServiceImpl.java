@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
 
 import com.orangeleap.tangerine.controller.validator.CodeValidator;
@@ -10,14 +28,22 @@ import com.orangeleap.tangerine.service.RecurringGiftService;
 import com.orangeleap.tangerine.type.EntityType;
 import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.StringConstants;
+import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.PaginatedResult;
 import com.orangeleap.tangerine.web.common.SortInfo;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.joda.time.DateMidnight;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
@@ -28,23 +54,25 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service("recurringGiftService")
-public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService {
+public class RecurringGiftServiceImpl extends AbstractCommitmentService<RecurringGift> implements RecurringGiftService, ApplicationContextAware {
 
-    /** Logger for this class and subclasses */
+    /**
+     * Logger for this class and subclasses
+     */
     protected final Log logger = OLLogger.getLog(getClass());
 
     @Resource(name = "recurringGiftDAO")
     private RecurringGiftDao recurringGiftDao;
- 
-    @Resource(name="recurringGiftEntityValidator")
+
+    @Resource(name = "recurringGiftEntityValidator")
     protected EntityValidator entityValidator;
 
-    @Resource(name="codeValidator")
+    @Resource(name = "codeValidator")
     protected CodeValidator codeValidator;
-    
-    @Resource(name="distributionLinesValidator")
-    protected DistributionLinesValidator distributionLinesValidator;
 
+    @Resource(name = "distributionLinesValidator")
+    protected DistributionLinesValidator distributionLinesValidator;
+    private ApplicationContext applicationContext;
 
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -63,7 +91,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return recurringGiftDao.readRecurringGiftById(recurringGiftId);
     }
-    
+
     @Override
     public RecurringGift readRecurringGiftByIdCreateIfNull(String recurringGiftId, Constituent constituent) {
         if (logger.isTraceEnabled()) {
@@ -74,13 +102,12 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             if (constituent != null) {
                 recurringGift = this.createDefaultRecurringGift(constituent);
             }
-        } 
-        else {
+        } else {
             recurringGift = this.readRecurringGiftById(Long.valueOf(recurringGiftId));
         }
         return recurringGift;
     }
-    
+
     @Override
     public RecurringGift createDefaultRecurringGift(Constituent constituent) {
         if (logger.isTraceEnabled()) {
@@ -91,32 +118,32 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
 
         return recurringGift;
     }
-    
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {BindException.class})
     public RecurringGift maintainRecurringGift(RecurringGift recurringGift) throws BindException {
         if (logger.isTraceEnabled()) {
             logger.trace("maintainRecurringGift: recurringGift = " + recurringGift);
         }
-        
+
         if (recurringGift.getFieldLabelMap() != null && !recurringGift.isSuppressValidation()) {
 
-	        BindingResult br = new BeanPropertyBindingResult(recurringGift, "recurringGift");
-	        BindException errors = new BindException(br);
-	      
-	        codeValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) {
-				throw errors;
-			}
-	        distributionLinesValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) {
-				throw errors;
-			}
-	        
-	        entityValidator.validate(recurringGift, errors);
-	        if (errors.getAllErrors().size() > 0) {
-				throw errors;
-			}
+            BindingResult br = new BeanPropertyBindingResult(recurringGift, "recurringGift");
+            BindException errors = new BindException(br);
+
+            codeValidator.validate(recurringGift, errors);
+            if (errors.getAllErrors().size() > 0) {
+                throw errors;
+            }
+            distributionLinesValidator.validate(recurringGift, errors);
+            if (errors.getAllErrors().size() > 0) {
+                throw errors;
+            }
+
+            entityValidator.validate(recurringGift, errors);
+            if (errors.getAllErrors().size() > 0) {
+                throw errors;
+            }
         }
 
 
@@ -138,14 +165,14 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return save(recurringGift);
     }
-    
+
     private RecurringGift save(RecurringGift recurringGift) {
         maintainEntityChildren(recurringGift, recurringGift.getConstituent());
         recurringGift = recurringGiftDao.maintainRecurringGift(recurringGift);
         auditService.auditObject(recurringGift, recurringGift.getConstituent());
         return recurringGift;
     }
-    
+
     @Override
     public List<RecurringGift> readRecurringGiftsForConstituent(Constituent constituent) {
         if (logger.isTraceEnabled()) {
@@ -161,7 +188,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return recurringGiftDao.readRecurringGiftsByConstituentId(constituentId);
     }
-    
+
     @Override
     public PaginatedResult readPaginatedRecurringGiftsByConstituentId(Long constituentId, SortInfo sortinfo) {
         if (logger.isTraceEnabled()) {
@@ -177,7 +204,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return recurringGiftDao.searchRecurringGifts(params);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, List<RecurringGift>> findGiftAppliableRecurringGiftsForConstituent(Long constituentId, String selectedRecurringGiftIds) {
@@ -185,11 +212,11 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             logger.trace("findGiftAppliableRecurringGiftsForConstituent: constituentId = " + constituentId + " selectedRecurringGiftIds = " + selectedRecurringGiftIds);
         }
         List<RecurringGift> rGifts = recurringGiftDao.readRecurringGiftsByConstituentId(constituentId);
-        
+
         Set<String> selectedRecurringGiftIdsSet = StringUtils.commaDelimitedListToSet(selectedRecurringGiftIds);
         List<RecurringGift> notSelectedRecurringGifts = filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime());
         List<RecurringGift> selectedRecurringGifts = new ArrayList<RecurringGift>();
-        
+
         if (selectedRecurringGiftIdsSet.isEmpty() == false) {
             for (Iterator<RecurringGift> iter = notSelectedRecurringGifts.iterator(); iter.hasNext();) {
                 RecurringGift aRecurringGift = iter.next();
@@ -204,7 +231,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         recurringGiftMap.put("notSelectedRecurringGifts", notSelectedRecurringGifts);
         return recurringGiftMap;
     }
-    
+
     @Override
     public List<RecurringGift> filterApplicableRecurringGiftsForConstituent(List<RecurringGift> gifts, Date nowDt) {
         DateMidnight now = new DateMidnight(nowDt);
@@ -212,13 +239,11 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             RecurringGift recurringGift = recIter.next();
             if (Commitment.STATUS_EXPIRED.equals(recurringGift.getRecurringGiftStatus()) || Commitment.STATUS_CANCELLED.equals(recurringGift.getRecurringGiftStatus())) {
                 recIter.remove();
-            }
-            else {
+            } else {
                 DateMidnight startDt = new DateMidnight(recurringGift.getStartDate());
                 if (startDt.isAfter(now)) {
                     recIter.remove();
-                }
-                else if (recurringGift.getEndDate() != null) {
+                } else if (recurringGift.getEndDate() != null) {
                     if (new DateMidnight(recurringGift.getEndDate()).isBefore(now)) {
                         recIter.remove();
                     }
@@ -227,7 +252,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return gifts;
     }
-    
+
     @Override
     public List<DistributionLine> findDistributionLinesForRecurringGifts(Set<String> recurringGiftIds) {
         if (logger.isTraceEnabled()) {
@@ -238,7 +263,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         return null;
     }
-    
+
     @Override
     public boolean canApplyPayment(RecurringGift recurringGift) {
         if (logger.isTraceEnabled()) {
@@ -248,7 +273,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         rGifts.add(recurringGift);
         return recurringGift.getId() != null && recurringGift.getId() > 0 && filterApplicableRecurringGiftsForConstituent(rGifts, Calendar.getInstance().getTime()).size() == 1;
     }
-    
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateRecurringGiftForGift(Gift gift) {
@@ -257,7 +282,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         updateRecurringGiftStatusAmountPaid(gift.getDistributionLines());
     }
-    
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateRecurringGiftForAdjustedGift(AdjustedGift adjustedGift) {
@@ -266,7 +291,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         }
         updateRecurringGiftStatusAmountPaid(adjustedGift.getDistributionLines());
     }
-    
+
     @Transactional(propagation = Propagation.REQUIRED)
     private void updateRecurringGiftStatusAmountPaid(List<DistributionLine> lines) {
         Set<Long> recurringGiftIds = new HashSet<Long>();
@@ -277,7 +302,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
                     recurringGiftIds.add(recurringGiftId);
                 }
             }
-    
+
             if (recurringGiftIds.isEmpty() == false) {
                 for (Long recurringGiftId : recurringGiftIds) {
                     RecurringGift recurringGift = readRecurringGiftById(recurringGiftId);
@@ -291,7 +316,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             }
         }
     }
-    
+
     private void setRecurringGiftAmounts(RecurringGift recurringGift, BigDecimal amountPaid) {
         if (amountPaid == null || amountPaid.compareTo(BigDecimal.ZERO) == -1) {
             amountPaid = BigDecimal.ZERO;
@@ -301,7 +326,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             recurringGift.setAmountRemaining(recurringGift.getAmountTotal().subtract(recurringGift.getAmountPaid()));
         }
     }
-    
+
     @Override
     public void setRecurringGiftStatus(RecurringGift recurringGift) {
         setCommitmentStatus(recurringGift, "recurringGiftStatus");
@@ -314,8 +339,8 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (nextDate != null) {
             createAutoGift(recurringGift);
 
-	        /* Re-read the Recurring Gift from the DB as fields may have changed */
-	        recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
+            /* Re-read the Recurring Gift from the DB as fields may have changed */
+            recurringGift = recurringGiftDao.readRecurringGiftById(recurringGift.getId());
 
             recurringGift.setNextRunDate(nextDate);
 
@@ -328,7 +353,7 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
             recurringGift.setNextRunDate(null);
             recurringGiftDao.maintainRecurringGift(recurringGift);
         }
-        
+
     }
 
     @Override
@@ -336,33 +361,60 @@ public class RecurringGiftServiceImpl extends AbstractCommitmentService<Recurrin
         if (logger.isTraceEnabled()) {
             logger.trace("processRecurringGifts:");
         }
-        
+
         Calendar cal = Calendar.getInstance();
 
-        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[] { Commitment.STATUS_PENDING,Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/ }));
+        List<RecurringGift> recurringGifts = recurringGiftDao.readRecurringGifts(cal.getTime(), Arrays.asList(new String[]{Commitment.STATUS_PENDING, Commitment.STATUS_IN_PROGRESS /*, Commitment.STATUS_FULFILLED*/}));
         if (recurringGifts != null) {
             for (RecurringGift recurringGift : recurringGifts) {
                 logger.debug("processRecurringGifts: id =" + recurringGift.getId() + ", nextRun =" + recurringGift.getNextRunDate());
                 Date nextDate = null;
                 if (recurringGift.getEndDate() == null || recurringGift.getEndDate().after(getToday().getTime())) {
-                    processRecurringGift(recurringGift);  
+                    PlatformTransactionManager txManager = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
+
+                    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                    def.setName("TxName");
+                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+                    TransactionStatus status = null;
+                    try {
+                        status = txManager.getTransaction(def);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+
+                    processRecurringGift(recurringGift);
+
+                    try {
+                        txManager.commit(status);
+
+                        TaskStack.execute();
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                    }
                 }
             }
         }
     }
-    
+
     protected void createAutoGift(RecurringGift recurringGift) {
         Gift gift = new Gift(recurringGift);
         recurringGift.addGift(gift);
-        
+
         gift.setSuppressValidation(true);
         try {
-	        gift = giftService.maintainGift(gift);
+            gift = giftService.maintainGift(gift);
         }
         catch (BindException e) {
-	        // Should not happen with suppressValidation = true.
-	        logger.error(e);
+            // Should not happen with suppressValidation = true.
+            logger.error(e);
         }
-        
+
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

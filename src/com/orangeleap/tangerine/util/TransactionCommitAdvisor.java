@@ -22,7 +22,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.aop.AfterReturningAdvice;
 
 import java.lang.reflect.Method;
 
@@ -37,7 +36,7 @@ public class TransactionCommitAdvisor implements MethodInterceptor {
     private Log logger = LogFactory.getLog(TransactionCommitAdvisor.class);
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        Object rval =  invocation.proceed();
+        Object rval = invocation.proceed();
 
         if (invocation.getMethod().getName().equals("commit")) {
             // unwind the taskstack and execute the tasks on the stack
@@ -48,7 +47,7 @@ public class TransactionCommitAdvisor implements MethodInterceptor {
         logger.debug("======= After: " + invocation.getMethod().getName());
         return rval;
     }
-    
+
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
 
         logger.debug("=========== After: " + method.getName());

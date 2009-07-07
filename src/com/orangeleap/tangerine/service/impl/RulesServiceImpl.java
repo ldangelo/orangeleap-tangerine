@@ -1,24 +1,22 @@
+/*
+ * Copyright (c) 2009. Orange Leap Inc. Active Constituent
+ * Relationship Management Platform.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.orangeleap.tangerine.service.impl;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.logging.Log;
-import com.orangeleap.tangerine.util.OLLogger;
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.agent.RuleAgent;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
 
 import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.Site;
@@ -29,8 +27,29 @@ import com.orangeleap.tangerine.service.RulesService;
 import com.orangeleap.tangerine.service.SiteService;
 import com.orangeleap.tangerine.service.communication.MailService;
 import com.orangeleap.tangerine.service.rule.DroolsRuleAgent;
+import com.orangeleap.tangerine.util.OLLogger;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
+import com.orangeleap.tangerine.util.TaskStack;
 import com.orangeleap.tangerine.web.common.SortInfo;
+import org.apache.commons.logging.Log;
+import org.drools.FactHandle;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import javax.annotation.Resource;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service("rulesService")
 public class RulesServiceImpl extends AbstractTangerineService implements RulesService, ApplicationContextAware {
@@ -83,16 +102,29 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                 workingMemory.addEventListener(new DebugWorkingMemoryEventListener());
             }
 
-
-            workingMemory.setGlobal("giftService", gs);
-            workingMemory.setGlobal("constituentService", ps);
-            workingMemory.setGlobal("mailService", ms);
-            workingMemory.setGlobal("applicationContext", applicationContext);
-            workingMemory.setFocus(getSiteName() + "scheduleddaily");
-            Site s = ss.readSite(tuh.lookupUserSiteName());
-
-            workingMemory.insert(s);
             for (Constituent p : peopleList) {
+                PlatformTransactionManager txManager = (PlatformTransactionManager) applicationContext.getBean("transactionManager");
+
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setName("TxName");
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+                TransactionStatus status = null;
+                try {
+                    status = txManager.getTransaction(def);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+
+                workingMemory.setGlobal("giftService", gs);
+                workingMemory.setGlobal("constituentService", ps);
+                workingMemory.setGlobal("mailService", ms);
+                workingMemory.setGlobal("applicationContext", applicationContext);
+                workingMemory.setFocus(getSiteName() + "scheduleddaily");
+                Site s = ss.readSite(tuh.lookupUserSiteName());
+
+                workingMemory.insert(s);
                 Boolean updated = false;
 
                 //
@@ -119,9 +151,20 @@ public class RulesServiceImpl extends AbstractTangerineService implements RulesS
                     FactHandle pfh = workingMemory.insert(p);
                 }
 
+                workingMemory.fireAllRules();
+                workingMemory.dispose();
+
+                try {
+                    txManager.commit(status);
+
+                    TaskStack.execute();
+
+
+                } catch (Exception e) {
+                    // Don't generally log transactions marked as rollback only by service or validation exceptions; logged elsewhere.
+                    logger.debug(e);
+                }
             }
-            workingMemory.fireAllRules();
-            workingMemory.dispose();
 
         } catch (Throwable t) {
             logger.error(t);

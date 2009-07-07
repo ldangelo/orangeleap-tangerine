@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ Copyright (c) 2009. Orange Leap Inc. Active Constituent
+  ~ Relationship Management Platform.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
            http://www.springframework.org/schema/aop
            http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
@@ -13,28 +31,28 @@
            http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-           
-	<bean id="PropertyPlaceholderConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="order" value="1" />
-		<property name="locations">
-			<list>
-				<value>classpath:tangerine.properties</value>
-			</list>
-		</property>
-	</bean>
-       
-	<import resource="contexts/validator-context.xml"/>
-	<import resource="contexts/quartz-context.xml"/>
 
-	<context:component-scan base-package="com.orangeleap.tangerine">
-		<context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
-	</context:component-scan>
+    <bean id="PropertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="order" value="1"/>
+        <property name="locations">
+            <list>
+                <value>classpath:tangerine.properties</value>
+            </list>
+        </property>
+    </bean>
 
-	<aop:aspectj-autoproxy />
+    <import resource="contexts/validator-context.xml"/>
+    <import resource="contexts/quartz-context.xml"/>
 
-	<tx:annotation-driven proxy-target-class="true"
-		transaction-manager="transactionManager" />
+    <context:component-scan base-package="com.orangeleap.tangerine">
+        <context:exclude-filter type="annotation" expression="java.lang.Deprecated"/>
+    </context:component-scan>
+
+    <aop:aspectj-autoproxy/>
+
+    <tx:annotation-driven proxy-target-class="true"
+                          transaction-manager="transactionManager"/>
 
 
     <!-- Load EHCache bean here, since it is needed by messageSource -->
@@ -46,148 +64,130 @@
           class="org.springframework.cache.ehcache.EhCacheFactoryBean"
           p:cacheManager-ref="cacheManager"
           p:cacheName="messageResourceCache"
-          />
+            />
 
     <bean id="pageCustomizationCache"
           class="org.springframework.cache.ehcache.EhCacheFactoryBean"
           p:cacheManager-ref="cacheManager"
           p:cacheName="pageCustomizationCache"
-          />
+            />
 
     <bean id="picklistCache"
           class="org.springframework.cache.ehcache.EhCacheFactoryBean"
           p:cacheManager-ref="cacheManager"
           p:cacheName="picklistCache"
-          />
+            />
 
-	<!--
-	- The message source for this context, loaded from localized message files in the classpath (first) and then the database 
-	-->
+    <!--
+     - The message source for this context, loaded from localized message files in the classpath (first) and then the database
+     -->
     <bean id="messageSource" class="com.orangeleap.tangerine.controller.validator.TangerineMessageSource">
         <property name="messageService" ref="messageService"/>
         <property name="bundleMessageSource" ref="bundleMessageSource"/>
-	</bean>
-	
-	<bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
- 		<property name="basename" value="tangerine-messages" />
-		<property name="useCodeAsDefaultMessage" value="false" />
-	</bean>
+    </bean>
 
-	<!-- this is not a bean, this is a static library initialization -->
-	<bean id="tangerineMessageAccessor" class="com.orangeleap.tangerine.util.TangerineMessageAccessor" factory-method="setMessageSource">
-		<constructor-arg>
-			<ref local="bundleMessageSource"/>
-		</constructor-arg>
-	</bean>
+    <bean id="bundleMessageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="tangerine-messages"/>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+    </bean>
 
-    <bean id="txAdvisor" class="com.orangeleap.tangerine.util.TransactionCommitAdvisor"/>
-	<bean id="transactionManagerTarget" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource">
-			<ref local="dataSource"/>
-		</property>
-	</bean>
+    <!-- this is not a bean, this is a static library initialization -->
+    <bean id="tangerineMessageAccessor" class="com.orangeleap.tangerine.util.TangerineMessageAccessor"
+          factory-method="setMessageSource">
+        <constructor-arg>
+            <ref local="bundleMessageSource"/>
+        </constructor-arg>
+    </bean>
 
-    <!--<bean id="advisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">-->
-        <!--<property name="advice" ref="txAdvisor"/>-->
-        <!--<property name="pointcut">-->
-            <!--<bean class="org.springframework.aop.support.JdkRegexpMethodPointcut">-->
-                <!--<property name="pattern">-->
-                    <!--<value>org.springframework.transaction.PlatformTransactionManager.commit*</value>-->
-                <!--</property>-->
-            <!--</bean>-->
-        <!--</property>-->
-    <!--</bean>-->
-    
-    <bean id="transactionManager" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="proxyInterfaces" value="org.springframework.transaction.PlatformTransactionManager" />
-        <property name="target" ref="transactionManagerTarget"/>
-        <property name="interceptorNames">
-            <list>
-                <value>txAdvisor</value>
-            </list>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="dataSource"/>
         </property>
     </bean>
 
-	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
-		<property name="dataSource" ref="dataSource"/>
-	</bean>
-	
-	<bean id="dataSource" class="com.orangeleap.tangerine.util.TangerineDataSource">
-		<property name="dataSource" ref="dataSource-pooled" />
-		<property name="tangerineUserHelper" ref="tangerineUserHelper" />
-		<property name="splitDatabases" value="${mysql.splitDatabases}" />
-	</bean>
-	
-	<bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://${mysql.host}:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8"/>
-		<property name="username" value="${mysql.user}"/>
-		<property name="password" value="${mysql.password}"/>
-		<property name="maxActive" value="100"/>
-		<property name="maxIdle" value="30"/>
-		<property name="maxWait" value="10000"/>
-		<property name="defaultAutoCommit" value="false"/>
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 
-<!--		<property name="testOnBorrow"><value>true</value></property>-->
-<!--		<property name="validationQuery"><value>select 1</value></property>-->
-<!--		<property name="testWhileIdle"><value>true</value></property>-->
-	</bean> 
-	
+    <bean id="dataSource" class="com.orangeleap.tangerine.util.TangerineDataSource">
+        <property name="dataSource" ref="dataSource-pooled"/>
+        <property name="tangerineUserHelper" ref="tangerineUserHelper"/>
+        <property name="splitDatabases" value="${mysql.splitDatabases}"/>
+    </bean>
+
+    <bean id="dataSource-pooled" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://${mysql.host}:${mysql.port}/orangeleap?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8"/>
+        <property name="username" value="${mysql.user}"/>
+        <property name="password" value="${mysql.password}"/>
+        <property name="maxActive" value="100"/>
+        <property name="maxIdle" value="30"/>
+        <property name="maxWait" value="10000"/>
+        <property name="defaultAutoCommit" value="false"/>
+
+        <!--		<property name="testOnBorrow"><value>true</value></property>-->
+        <!--		<property name="validationQuery"><value>select 1</value></property>-->
+        <!--		<property name="testWhileIdle"><value>true</value></property>-->
+    </bean>
+
     <bean id="dataSource-pooled-jndi" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName">
-			<value>java:/comp/env/jdbc/MPowerOpen</value>
-		</property>
-	</bean>
+        <property name="jndiName">
+            <value>java:/comp/env/jdbc/MPowerOpen</value>
+        </property>
+    </bean>
 
-	<bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
+    <bean id="tangerineUserHelper" class="com.orangeleap.tangerine.util.TangerineUserHelperImpl"/>
     <bean id="tableLogger" class="com.orangeleap.tangerine.util.TableLoggerImpl"/>
 
-	<!--
-		The following beans were created and used in the JMS/MOM poc shown
-		during Iteration 6. These beans can be removed but are being left
-		right now as an example of how to use Spring with JMS/MOM
-	-->
+    <!--
+         The following beans were created and used in the JMS/MOM poc shown
+         during Iteration 6. These beans can be removed but are being left
+         right now as an example of how to use Spring with JMS/MOM
+     -->
 
-<!-- 		<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"> 
-			<property name="brokerURL" value="tcp://localhost:61616" /> 
-		</bean> 
-		<bean	id="testDestination"	class="org.apache.activemq.command.ActiveMQQueue"> 
-			<constructor-arg index="0" value="test.orangeleap.queue" /> 
-		</bean> 
-		
-		<bean id="jmsTemplate"	class="org.springframework.jms.core.JmsTemplate"> 
-			<property	name="connectionFactory" ref="connectionFactory" /> 
-			<property	name="defaultDestination" ref="testDestination" /> 
-			<property	name="messageConverter" ref="giftConverter" /> 
-		</bean> 
+    <!-- 		<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="tcp://localhost:61616" />
+            </bean>
+            <bean	id="testDestination"	class="org.apache.activemq.command.ActiveMQQueue">
+                <constructor-arg index="0" value="test.orangeleap.queue" />
+            </bean>
 
-		<bean	id="giftConverter"	class="com.orangeleap.tangerine.service.jms.GiftMessageConverter"> 
-		</bean> 
+            <bean id="jmsTemplate"	class="org.springframework.jms.core.JmsTemplate">
+                <property	name="connectionFactory" ref="connectionFactory" />
+                <property	name="defaultDestination" ref="testDestination" />
+                <property	name="messageConverter" ref="giftConverter" />
+            </bean>
 
-		<bean	id="creditGateway"	class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl"> 
-			<property	name="jmsTemplate" ref="jmsTemplate" /> 
-		</bean>
--->
-		<bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
-			<property name="configFile" value="/usr/local/paymentech/config/linehandler.properties"/>
-		</bean>
+            <bean	id="giftConverter"	class="com.orangeleap.tangerine.service.jms.GiftMessageConverter">
+            </bean>
 
-		<bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
-		  <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
-		</bean>
+            <bean	id="creditGateway"	class="com.orangeleap.tangerine.service.jms.TangerineCreditGatewayImpl">
+                <property	name="jmsTemplate" ref="jmsTemplate" />
+            </bean>
+    -->
+    <bean id="paymentGateway" class="com.orangeleap.tangerine.service.payments.OrbitalPaymentGateway">
+        <property name="configFile" value="/usr/local/paymentech/config/linehandler.properties"/>
+    </bean>
 
-		<bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
-		  <property name="checkService" ref="checkService"/>
-		</bean>
+    <bean id="checkService" class="com.orangeleap.tangerine.service.impl.CheckServiceImpl">
+        <property name="url" value="http://www.echex.net/wsv/batch102.cfc"/>
+    </bean>
 
-	<bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
-		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="uri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
-	</bean>
-	
-	<bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
-		<property name="communicationHistoryService" ref="communicationHistoryService"/>
-		<property name="uri" value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
-	</bean>
+    <bean id="achGateway" class="com.orangeleap.tangerine.service.payments.EchexPaymentGateway">
+        <property name="checkService" ref="checkService"/>
+    </bean>
+
+    <bean id="emailSendingService" class="com.orangeleap.tangerine.service.communication.EmailService">
+        <property name="communicationHistoryService" ref="communicationHistoryService"/>
+        <property name="uri"
+                  value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
+    </bean>
+
+    <bean id="mailService" class="com.orangeleap.tangerine.service.communication.MailService">
+        <property name="communicationHistoryService" ref="communicationHistoryService"/>
+        <property name="uri"
+                  value="http://${jasper.host}:${jasper.port}/${contextPrefix}jasperserver/services/repository"/>
+    </bean>
 </beans>

@@ -1,16 +1,14 @@
 package com.orangeleap.tangerine.service.ws;
 
 
+import com.orangeleap.tangerine.service.CommunicationHistoryService;
 import com.orangeleap.tangerine.service.ConstituentService;
 import com.orangeleap.tangerine.service.GiftService;
 import com.orangeleap.tangerine.service.exception.ConstituentValidationException;
+import com.orangeleap.tangerine.web.common.PaginatedResult;
+import com.orangeleap.tangerine.web.common.SortInfo;
 import com.orangeleap.tangerine.ws.schema.*;
 import com.orangeleap.tangerine.ws.util.ObjectConverter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
-import javax.naming.spi.ObjectFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.providers.ldap.LdapAuthenticationProvider;
@@ -18,35 +16,39 @@ import org.springframework.validation.BindException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@Endpoint
 
 /**
  * Describe class <code>OrangeLeapWS</code> here.
- *
+ * <p/>
  * This class is the entry point for all of the java soap requests to orangeleap.
  *
  * @author <a href="mailto:ldangelo@orangeleap.com">Leo A. D'Angelo</a>
  * @version $Id: prj.el,v 1.4 2003/04/23 14:28:25 kobit Exp $
  */
+@Endpoint
 public class OrangeLeapWS {
 
     private static final Log logger = LogFactory.getLog(LdapAuthenticationProvider.class);
 
-    @Resource(name = "giftService")
-    private GiftService gs;
 
-    
+    private GiftService giftService;
+
+
     private ConstituentService cs;
 
-
+    @Resource(name = "communicationHistoryService")
+    private CommunicationHistoryService communicationHistory;
 
     /**
      * Creates a new <code>OrangeLeapWS</code> instance.
-     *
      */
     public OrangeLeapWS() {
-	cs = null;
+        cs = null;
 
     }
 
@@ -55,17 +57,19 @@ public class OrangeLeapWS {
      *
      * @param service a <code>ConstituentService</code> value
      */
-    public OrangeLeapWS(ConstituentService service) {
-	cs = service;
+    public OrangeLeapWS(ConstituentService service, GiftService gs, CommunicationHistoryService chs) {
+        cs = service;
+        giftService = gs;
+        communicationHistory = chs;
     }
-	
+
     /**
      * Describe <code>getCs</code> method here.
      *
      * @return a <code>com.orangeleap.tangerine.service.ConstituentService</code> value
      */
     public com.orangeleap.tangerine.service.ConstituentService getCs() {
-	return cs;
+        return cs;
     }
 
     /**
@@ -74,10 +78,10 @@ public class OrangeLeapWS {
      * @param cs a <code>com.orangeleap.tangerine.service.ConstituentService</code> value
      */
     public void setCs(com.orangeleap.tangerine.service.ConstituentService cs) {
-	this.cs = cs;
+        this.cs = cs;
     }
-	
-    @PayloadRoot(localPart="CreateDefaultConstituentRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+
+    @PayloadRoot(localPart = "CreateDefaultConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     /**
      * Describe <code>createDefaultConstituent</code> method here.
      *
@@ -85,105 +89,148 @@ public class OrangeLeapWS {
      * @return a <code>CreateDefaultConstituentResponse</code> value
      */
     public CreateDefaultConstituentResponse createDefaultConstituent(CreateDefaultConstituentRequest cdcr) {
-	CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
-	com.orangeleap.tangerine.domain.Constituent p = cs.createDefaultConstituent();
-	com.orangeleap.tangerine.ws.schema.Constituent c = new com.orangeleap.tangerine.ws.schema.Constituent();
+        CreateDefaultConstituentResponse cr = new CreateDefaultConstituentResponse();
+        com.orangeleap.tangerine.domain.Constituent p = cs.createDefaultConstituent();
+        com.orangeleap.tangerine.ws.schema.Constituent c = new com.orangeleap.tangerine.ws.schema.Constituent();
 
-	c.setFirstName("Test");
+        cr.getConstituent().add(c);
 
-	cr.getConstituent().add(c);
-	
-	return cr;
+        return cr;
     }
-    
-    @PayloadRoot(localPart="SaveOrUpdateConstituentRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+
+    @PayloadRoot(localPart = "SaveOrUpdateConstituentRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public void maintainConstituent(SaveOrUpdateConstituentRequest p) throws ConstituentValidationException, BindException {
-	com.orangeleap.tangerine.domain.Constituent c = cs.createDefaultConstituent();
+        com.orangeleap.tangerine.domain.Constituent c = cs.createDefaultConstituent();
         ObjectConverter converter = new ObjectConverter();
 
-	converter.ConvertFromJAXB(p.getConstituent(),c);
+        converter.ConvertFromJAXB(p.getConstituent(), c);
 
-	cs.maintainConstituent(c);
+        cs.maintainConstituent(c);
     }
 
-    
-    @PayloadRoot(localPart="FindConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public FindConstituentsResponse findConstituent(FindConstituentsRequest request) {
-	FindConstituentsResponse cr = new FindConstituentsResponse();
-	com.orangeleap.tangerine.ws.schema.Constituent c = request.getConstituent();
-        ObjectConverter converter = new ObjectConverter();
-	
-        Map<String,Object> params = new HashMap<String,Object>();
 
-        if (c.getFirstName() != null && c.getFirstName() != "")
-            params.put("firstName",c.getFirstName());
-        if (c.getLastName() != null && c.getLastName() != "")
-            params.put("lastName",c.getLastName());
-	
-	
-        List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.findConstituents(params,null);
+    @PayloadRoot(localPart = "FindConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public FindConstituentsResponse findConstituent(FindConstituentsRequest request) {
+        FindConstituentsResponse cr = new FindConstituentsResponse();
+        ObjectConverter converter = new ObjectConverter();
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (request.getFirstName() != null && !request.getFirstName().isEmpty())
+            params.put("firstName", request.getFirstName());
+        if (request.getLastName() != null && !request.getLastName().isEmpty())
+            params.put("lastName", request.getLastName());
+        if (request.getPrimaryAddress() != null) {
+            com.orangeleap.tangerine.ws.schema.Address primaryAddress = request.getPrimaryAddress();
+            if (!primaryAddress.getAddressLine1().isEmpty())
+                params.put("primaryAddress.addressLine1", primaryAddress.getAddressLine1());
+            if (!primaryAddress.getAddressLine2().isEmpty())
+                params.put("primaryAddress.addressLine2", primaryAddress.getAddressLine2());
+            if (!primaryAddress.getAddressLine3().isEmpty())
+                params.put("primaryAddress.addressLine3", primaryAddress.getAddressLine3());
+            if (!primaryAddress.getCity().isEmpty()) params.put("primaryAddress.city", primaryAddress.getCity());
+            if (!primaryAddress.getStateProvince().isEmpty())
+                params.put("primaryAddress.state", primaryAddress.getStateProvince());
+            if (!primaryAddress.getCountry().isEmpty())
+                params.put("primaryAddress.country", primaryAddress.getCountry());
+        }
+
+        if (request.getPrimaryEmail() != null) {
+            com.orangeleap.tangerine.ws.schema.Email primaryEmail = request.getPrimaryEmail();
+            if (!primaryEmail.getEmailAddress().isEmpty())
+                params.put("primaryEmail.emailAddress", primaryEmail.getEmailAddress());
+        }
+
+        if (request.getPrimaryPhone() != null) {
+            com.orangeleap.tangerine.ws.schema.Phone primaryPhone = request.getPrimaryPhone();
+            if (!primaryPhone.getNumber().isEmpty()) params.put("primaryPhone.number", primaryPhone.getNumber());
+        }
+
+
+        List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.findConstituents(params, null);
         for (com.orangeleap.tangerine.domain.Constituent co : constituents) {
             com.orangeleap.tangerine.ws.schema.Constituent sc = new Constituent();
-            converter.ConvertToJAXB(co,sc);
-	    
+            converter.ConvertToJAXB(co, sc);
+
             cr.getConstituent().add(sc);
         }
-	return cr;
+        return cr;
     }
 
-    @PayloadRoot(localPart="SearchConstituentsRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+    @PayloadRoot(localPart = "SearchConstituentsRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public SearchConstituentsResponse searchConstituent(SearchConstituentsRequest request) {
-		SearchConstituentsResponse cr = new SearchConstituentsResponse();
-		com.orangeleap.tangerine.ws.schema.Constituent c = request.getConstituent();
+        SearchConstituentsResponse cr = new SearchConstituentsResponse();
         ObjectConverter converter = new ObjectConverter();
 
-        Map<String,Object> params = new HashMap<String,Object>();
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (request.getFirstName() != null && !request.getFirstName().isEmpty())
+            params.put("firstName", request.getFirstName());
+        if (request.getLastName() != null && !request.getLastName().isEmpty())
+            params.put("lastName", request.getLastName());
+        if (request.getPrimaryAddress() != null) {
+            com.orangeleap.tangerine.ws.schema.Address primaryAddress = request.getPrimaryAddress();
+            if (!primaryAddress.getAddressLine1().isEmpty())
+                params.put("primaryAddress.addressLine1", primaryAddress.getAddressLine1());
+            if (!primaryAddress.getAddressLine2().isEmpty())
+                params.put("primaryAddress.addressLine2", primaryAddress.getAddressLine2());
+            if (!primaryAddress.getAddressLine3().isEmpty())
+                params.put("primaryAddress.addressLine3", primaryAddress.getAddressLine3());
+            if (!primaryAddress.getCity().isEmpty()) params.put("primaryAddress.city", primaryAddress.getCity());
+            if (!primaryAddress.getStateProvince().isEmpty())
+                params.put("primaryAddress.state", primaryAddress.getStateProvince());
+            if (!primaryAddress.getCountry().isEmpty())
+                params.put("primaryAddress.country", primaryAddress.getCountry());
+        }
 
-        if (c.getFirstName() != null && c.getFirstName() != "")
-            params.put("firstName",c.getFirstName());
-        if (c.getLastName() != null && c.getLastName() != "")
-            params.put("lastName",c.getLastName());
+        if (request.getPrimaryEmail() != null) {
+            com.orangeleap.tangerine.ws.schema.Email primaryEmail = request.getPrimaryEmail();
+            if (!primaryEmail.getEmailAddress().isEmpty())
+                params.put("primaryEmail.emailAddress", primaryEmail.getEmailAddress());
+        }
 
+        if (request.getPrimaryPhone() != null) {
+            com.orangeleap.tangerine.ws.schema.Phone primaryPhone = request.getPrimaryPhone();
+            if (!primaryPhone.getNumber().isEmpty()) params.put("primaryPhone.number", primaryPhone.getNumber());
+        }
 
         List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.searchConstituents(params);
         for (com.orangeleap.tangerine.domain.Constituent co : constituents) {
             com.orangeleap.tangerine.ws.schema.Constituent sc = new Constituent();
-            converter.ConvertToJAXB(co,sc);
+            converter.ConvertToJAXB(co, sc);
 
             cr.getConstituent().add(sc);
         }
-		return cr;
+        return cr;
     }
 
-    @PayloadRoot(localPart="SaveOrUpdateGiftRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+    @PayloadRoot(localPart = "SaveOrUpdateGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public void maintainGift(SaveOrUpdateGiftRequest request) {
         com.orangeleap.tangerine.domain.Constituent c = cs.readConstituentById(request.getConstituentId());
-        com.orangeleap.tangerine.domain.paymentInfo.Gift g = gs.createDefaultGift(c);
+        com.orangeleap.tangerine.domain.paymentInfo.Gift g = giftService.createDefaultGift(c);
 
 
         ObjectConverter converter = new ObjectConverter();
 
-        converter.ConvertFromJAXB(request.getGift(),g);
+        converter.ConvertFromJAXB(request.getGift(), g);
 
         try {
-            gs.maintainGift(g);
+            giftService.maintainGift(g);
         } catch (BindException e) {
             logger.error(e.getMessage());
         }
 
     }
 
-    @PayloadRoot(localPart="GetConstituentGiftRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
+    @PayloadRoot(localPart = "GetConstituentGiftRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
     public GetConstituentGiftResponse getConstituentsGifts(GetConstituentGiftRequest request) {
-        List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = gs.readMonetaryGifts(request.getConstituentId());
+        List<com.orangeleap.tangerine.domain.paymentInfo.Gift> gifts = giftService.readMonetaryGifts(request.getConstituentId());
 
         GetConstituentGiftResponse response = new GetConstituentGiftResponse();
         ObjectConverter converter = new ObjectConverter();
 
-        for (com.orangeleap.tangerine.domain.paymentInfo.Gift g: gifts) {
+        for (com.orangeleap.tangerine.domain.paymentInfo.Gift g : gifts) {
             Gift sg = new Gift();
 
-            converter.ConvertToJAXB(g,sg);
+            converter.ConvertToJAXB(g, sg);
             response.getGift().add(sg);
         }
 
@@ -191,10 +238,8 @@ public class OrangeLeapWS {
     }
 
 
-
-    private GetSegmentationResponse getLapsedDonors()
-    {
-               List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.readAllConstituentsBySite();
+    private GetSegmentationResponse getLapsedDonors() {
+        List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.readAllConstituentsBySite();
         GetSegmentationResponse response = new GetSegmentationResponse();
         ObjectConverter converter = new ObjectConverter();
 
@@ -202,15 +247,14 @@ public class OrangeLeapWS {
             if (c.isLapsedDonor()) {
                 Constituent sc = new Constituent();
 
-                converter.ConvertToJAXB(c,sc);
+                converter.ConvertToJAXB(c, sc);
                 response.getConstituent().add(sc);
             }
         }
         return response;
     }
 
-    private GetSegmentationResponse getMajorDonors()
-    {
+    private GetSegmentationResponse getMajorDonors() {
         List<com.orangeleap.tangerine.domain.Constituent> constituents = cs.readAllConstituentsBySite();
         GetSegmentationResponse response = new GetSegmentationResponse();
         ObjectConverter converter = new ObjectConverter();
@@ -219,16 +263,15 @@ public class OrangeLeapWS {
             if (c.isMajorDonor()) {
                 Constituent sc = new Constituent();
 
-                converter.ConvertToJAXB(c,sc);
+                converter.ConvertToJAXB(c, sc);
                 response.getConstituent().add(sc);
             }
         }
         return response;
     }
 
-    @PayloadRoot(localPart="GetSegmentationRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public GetSegmentationResponse getSegmentation(GetSegmentationRequest req)
-    {
+    @PayloadRoot(localPart = "GetSegmentationRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetSegmentationResponse getSegmentation(GetSegmentationRequest req) {
 
         if (req.getSegmentation().equals("Lapsed Donor"))
             return getLapsedDonors();
@@ -238,26 +281,52 @@ public class OrangeLeapWS {
         return null;
     }
 
-    @PayloadRoot(localPart="GetSegmentationListRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public GetSegmentationListResponse getSegmentationList(GetSegmentationListRequest req)
-    {
+    @PayloadRoot(localPart = "GetSegmentationListRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetSegmentationListResponse getSegmentationList(GetSegmentationListRequest req) {
         GetSegmentationListResponse response = new GetSegmentationListResponse();
 
         response.getSegmentation().add("Major Donor");
         response.getSegmentation().add("Lapsed Donor");
-        
+
         return response;
     }
 
-    @PayloadRoot(localPart="AddCommunicationHistoryRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public void addCommunicationHistory(AddCommunicationHistoryRequest req)
-    {
+    @PayloadRoot(localPart = "AddCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public void addCommunicationHistory(AddCommunicationHistoryRequest req) {
+        ObjectConverter converter = new ObjectConverter();
+
+        com.orangeleap.tangerine.domain.CommunicationHistory ch = new com.orangeleap.tangerine.domain.CommunicationHistory();
+
+        converter.ConvertFromJAXB(req.getCommunicationHistory(), ch);
+        ch.setConstituent(cs.readConstituentById(req.getConstituentId()));
+
+        try {
+            communicationHistory.maintainCommunicationHistory(ch);
+        } catch (BindException ex) {
+            logger.error(ex.getMessage());
+        }
 
     }
 
-    @PayloadRoot(localPart="GetCommunicationHistoryRequest",namespace="http://www.orangeleap.com/orangeleap/services/1.0")
-    public GetCommunicationHistoryResponse getCommunicationHistory(GetCommunicationHistoryRequest req)
-    {
-        return null;
+    @PayloadRoot(localPart = "GetCommunicationHistoryRequest", namespace = "http://www.orangeleap.com/orangeleap/services/1.0")
+    public GetCommunicationHistoryResponse getCommunicationHistory(GetCommunicationHistoryRequest req) {
+        SortInfo sortInfo = new SortInfo();
+        sortInfo.setSort("ch.COMMUNICATION_HISTORY_ID");
+
+        PaginatedResult result = communicationHistory.readCommunicationHistoryByConstituent(req.getConstituentId(), sortInfo);
+        ObjectConverter converter = new ObjectConverter();
+        List<com.orangeleap.tangerine.domain.CommunicationHistory> list = result.getRows();
+        GetCommunicationHistoryResponse response = new GetCommunicationHistoryResponse();
+
+        for (com.orangeleap.tangerine.domain.CommunicationHistory ch : list) {
+            CommunicationHistory sch = new CommunicationHistory();
+
+            converter.ConvertToJAXB(ch, sch);
+            response.getCommunicationHistory().add(sch);
+
+
+        }
+        return response;
     }
+
 }

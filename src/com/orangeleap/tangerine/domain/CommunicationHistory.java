@@ -1,7 +1,5 @@
 package com.orangeleap.tangerine.domain;
 
-import java.util.Date;
-
 import com.orangeleap.tangerine.domain.communication.Address;
 import com.orangeleap.tangerine.domain.communication.Email;
 import com.orangeleap.tangerine.domain.communication.Phone;
@@ -10,12 +8,14 @@ import com.orangeleap.tangerine.type.FormBeanType;
 import com.orangeleap.tangerine.util.StringConstants;
 
 import javax.xml.bind.annotation.XmlType;
+import java.util.Date;
 
 /*
  * Communication history (including generated correspondence) for Constituent
  */
+
 // recordedBy and assignedTo have been moved to custom fields
-@XmlType(namespace="http://www.orangeleap.com/orangeleap/schemas")
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
 public class CommunicationHistory extends AbstractCustomizableEntity implements AddressAware, PhoneAware, EmailAware {
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +25,7 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private boolean systemGenerated = false;
     private String comments = StringConstants.EMPTY;
     private Constituent constituent;
+    private Long constituentId; // this is used by SOAP API's so we don't have to embed an entire constituent
     private Long giftId;
     private Long pledgeId;
     private Long recurringGiftId;
@@ -35,45 +36,46 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     private Phone selectedPhone;
     private Email selectedEmail;
 
-	public Site getSite() {
-		return getConstituent().getSite();
-	}
+    public Site getSite() {
+        return getConstituent().getSite();
+    }
 
     public Constituent getConstituent() {
         return constituent;
     }
 
-	public void setConstituent(Constituent constituent) {
-		this.constituent = constituent;
-	}
-	
-	public CommunicationHistoryType getCommunicationHistoryType() {
-	    return communicationHistoryType;
-	}
-	
-	public void setCommunicationHistoryType(CommunicationHistoryType communicationHistoryType) {
-		this.communicationHistoryType = communicationHistoryType;
-	}
-	
-	public boolean isSystemGenerated() {
-	    return systemGenerated;
-	}
+    public void setConstituent(Constituent constituent) {
+        this.constituent = constituent;
+        if (constituent != null) constituentId = constituent.getId();
+    }
 
-	public void setSystemGenerated(boolean systemGenerated) {
-		this.systemGenerated = systemGenerated;
-	}
+    public CommunicationHistoryType getCommunicationHistoryType() {
+        return communicationHistoryType;
+    }
 
-	public String getComments() {
-		return comments;
-	}
+    public void setCommunicationHistoryType(CommunicationHistoryType communicationHistoryType) {
+        this.communicationHistoryType = communicationHistoryType;
+    }
+
+    public boolean isSystemGenerated() {
+        return systemGenerated;
+    }
+
+    public void setSystemGenerated(boolean systemGenerated) {
+        this.systemGenerated = systemGenerated;
+    }
+
+    public String getComments() {
+        return comments;
+    }
 
     public void setComments(String comments) {
         this.comments = comments;
     }
 
-	public Date getRecordDate() {
-		return recordDate;
-	}
+    public Date getRecordDate() {
+        return recordDate;
+    }
 
     public void setRecordDate(Date recordDate) {
         this.recordDate = recordDate;
@@ -103,13 +105,13 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
         this.recurringGiftId = recurringGiftId;
     }
 
-	public void setEntryType(String entryType) {
-		this.entryType = entryType;
-	}
+    public void setEntryType(String entryType) {
+        this.entryType = entryType;
+    }
 
-	public String getEntryType() {
-		return entryType;
-	}
+    public String getEntryType() {
+        return entryType;
+    }
 
     public Address getSelectedAddress() {
         return selectedAddress;
@@ -163,5 +165,13 @@ public class CommunicationHistory extends AbstractCustomizableEntity implements 
     @Override
     public void setEmailType(FormBeanType type) {
         this.emailType = type;
+    }
+
+    public Long getConstituentId() {
+        return constituentId;
+    }
+
+    public void setConstituentId(Long id) {
+        constituentId = id;
     }
 }

@@ -1,40 +1,34 @@
 package com.orangeleap.tangerine.domain.paymentInfo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlType;
-
+import com.orangeleap.tangerine.domain.*;
+import com.orangeleap.tangerine.domain.communication.Address;
+import com.orangeleap.tangerine.domain.communication.Phone;
+import com.orangeleap.tangerine.type.FormBeanType;
+import com.orangeleap.tangerine.util.StringConstants;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.core.style.ToStringCreator;
 
-import com.orangeleap.tangerine.domain.AbstractCustomizableEntity;
-import com.orangeleap.tangerine.domain.NewAddressAware;
-import com.orangeleap.tangerine.domain.NewPhoneAware;
-import com.orangeleap.tangerine.domain.PaymentSource;
-import com.orangeleap.tangerine.domain.PaymentSourceAware;
-import com.orangeleap.tangerine.domain.Constituent;
-import com.orangeleap.tangerine.domain.Site;
-import com.orangeleap.tangerine.domain.communication.Address;
-import com.orangeleap.tangerine.domain.communication.Phone;
-import com.orangeleap.tangerine.type.FormBeanType;
-import com.orangeleap.tangerine.util.StringConstants;
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-@XmlType (namespace="http://www.orangeleap.com/orangeleap/schemas")
-@SuppressWarnings({ "unchecked" })
-public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware  {
+@XmlType(namespace = "http://www.orangeleap.com/orangeleap/schemas")
+@SuppressWarnings({"unchecked"})
+public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEntity implements PaymentSourceAware, NewAddressAware, NewPhoneAware {
     private static final long serialVersionUID = 1L;
 
     protected String comments;
     protected String currencyCode = StringConstants.USD;
     protected String paymentType;
     protected String checkNumber;
-    
+    protected Long constituentId; // This variable is used by webservices instead of passing the entire constituent object
     protected Constituent constituent;
-    /** Form bean representation of the DistributionLines */
+    /**
+     * Form bean representation of the DistributionLines
+     */
     protected List<DistributionLine> mutableDistributionLines = LazyList.decorate(new ArrayList<DistributionLine>(), new Factory() {
         public Object create() {
             DistributionLine line = new DistributionLine(getConstituent());
@@ -42,10 +36,12 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             return line;
         }
     });
-    
-    /** Domain object representation of the DistributionLines */
+
+    /**
+     * Domain object representation of the DistributionLines
+     */
     protected List<DistributionLine> distributionLines;
-    
+
     /* Used by the form for cloning */
     protected List<DistributionLine> dummyDistributionLines;
 
@@ -56,7 +52,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     protected Address address = new Address();
     protected Phone phone = new Phone();
     protected PaymentSource paymentSource = new PaymentSource(constituent);
-    
+
     protected Address selectedAddress = new Address();
     protected Phone selectedPhone = new Phone();
     protected PaymentSource selectedPaymentSource = new PaymentSource(constituent);
@@ -78,6 +74,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             if (selectedPaymentSource != null) {
                 selectedPaymentSource.setConstituent(constituent);
             }
+            constituentId = constituent.getId();
         }
         List<DistributionLine> lines = new ArrayList<DistributionLine>();
         DistributionLine line = new DistributionLine(constituent);
@@ -147,8 +144,7 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             if (line != null) {
                 if (line.isFieldEntered() == false) {
                     mutableLinesIter.remove();
-                }
-                else {
+                } else {
                     distributionLines.add(line);
                 }
             }
@@ -277,14 +273,14 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
             paymentSource.setPaymentType(getPaymentType());
         }
     }
-    
+
     @Override
     public void setPaymentSourceAwarePaymentType() {
         if (selectedPaymentSource != null) {
             setPaymentType(selectedPaymentSource.getPaymentType());
         }
     }
-    
+
     public List<DistributionLine> getDummyDistributionLines() {
         return dummyDistributionLines;
     }
@@ -307,9 +303,17 @@ public abstract class AbstractPaymentInfoEntity extends AbstractCustomizableEnti
     @Override
     public String toString() {
         return new ToStringCreator(this).append(super.toString()).append("paymentType", paymentType).append("currencyCode", currencyCode).
-            append("checkNumber", checkNumber).append("comments", comments).
-            append("paymentSourceType", paymentSourceType).
-            append("phoneType", phoneType).append("addressType", addressType).
-            toString();
+                append("checkNumber", checkNumber).append("comments", comments).
+                append("paymentSourceType", paymentSourceType).
+                append("phoneType", phoneType).append("addressType", addressType).
+                toString();
+    }
+
+    public void setConstituentId(Long Id) {
+        constituentId = id;
+    }
+
+    public Long getConstituentId() {
+        return constituentId;
     }
 }

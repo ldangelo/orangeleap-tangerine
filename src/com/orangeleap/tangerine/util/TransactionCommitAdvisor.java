@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  * To change this template use File | Settings | File Templates.
  */
 public class TransactionCommitAdvisor implements MethodInterceptor {
-    private Log logger = LogFactory.getLog(TransactionAdvisor.class);
+    private Log logger = LogFactory.getLog(TransactionCommitAdvisor.class);
 
     public Object invoke(MethodInvocation invocation) throws Throwable {
         if (invocation.getMethod().getName().equals("commit")) {

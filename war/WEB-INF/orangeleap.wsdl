@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:schema="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:schema="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
   <wsdl:types>
     <xs:schema xmlns:tns="http://www.orangeleap.com/orangeleap/services/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.orangeleap.com/orangeleap/services/1.0">
   
@@ -9,13 +8,13 @@
         <xs:sequence>
           <xs:element minOccurs="0" name="addressType" type="xs:string"/>
           <xs:element minOccurs="0" name="comments" type="xs:string"/>
-          <xs:element minOccurs="0" name="communicationHistoryType" type="xs:string"/>
+          <xs:element minOccurs="1" name="communicationHistoryType" type="xs:string"/>
           <xs:element minOccurs="0" name="emailType" type="xs:string"/>
-          <xs:element minOccurs="0" name="entryType" type="xs:string"/>
+          <xs:element minOccurs="1" name="entryType" type="xs:string"/>
           <xs:element minOccurs="0" name="giftId" type="xs:long"/>
-          <xs:element minOccurs="0" name="constituent" type="tns:constituent"/>
+          <xs:element minOccurs="1" name="constituentId" type="xs:long"/>
           <xs:element minOccurs="0" name="pledgeId" type="xs:long"/>
-          <xs:element minOccurs="0" name="recordDate" type="xs:dateTime"/>
+          <xs:element minOccurs="1" name="recordDate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="recurringGiftId" type="xs:long"/>
           <xs:element minOccurs="0" name="selectedAddress" type="tns:address"/>
           <xs:element minOccurs="0" name="selectedEmail" type="tns:email"/>
@@ -44,8 +43,8 @@
 
   <xs:complexType abstract="true" name="abstractCustomizableEntity">
     <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="1" name="createDate" type="xs:dateTime"/>
-        <xs:element maxOccurs="1" minOccurs="1" name="updateDate" type="xs:dateTime"/>
+<!--        <xs:element name="createDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="updateDate" type="xs:dateTime" minOccurs="1" maxOccurs="1"/> -->
         <xs:element name="customFieldMap">
 	  <xs:complexType>
 	    <xs:sequence>
@@ -283,7 +282,11 @@
 <xs:element name="FindConstituentsRequest">
   <xs:complexType>
     <xs:sequence>
-      <xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -299,7 +302,11 @@
 <xs:element name="SearchConstituentsRequest">
   <xs:complexType>
     <xs:sequence>
-      <xs:element maxOccurs="1" minOccurs="1" name="constituent" type="tns:constituent"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="firstName" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="lastName" type="xs:string"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryAddress" type="tns:address"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryPhone" type="tns:phone"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="primaryEmail" type="tns:email"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -307,7 +314,7 @@
 <xs:element name="SearchConstituentsResponse">
   <xs:complexType>
   	<xs:sequence>
-  		<xs:element maxOccurs="unbounded" minOccurs="0" name="constituent" type="tns:constituent"/>
+    <xs:element maxOccurs="unbounded" minOccurs="1" name="constituent" type="tns:constituent"/>
   	</xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -365,7 +372,7 @@
 <xs:element name="GetSegmentationListResponse">
     <xs:complexType>
     <xs:sequence>
-        <xs:element name="segmentation" type="xs:string"/>
+        <xs:element maxOccurs="unbounded" minOccurs="0" name="segmentation" type="xs:string"/>
     </xs:sequence>
     </xs:complexType>
 </xs:element>

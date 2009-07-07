@@ -31,6 +31,9 @@
     <bean id="constituentEndpoint" class="com.orangeleap.tangerine.service.ws.OrangeLeapWS">
     	
         <constructor-arg ref="constituentService"/>
+        <constructor-arg ref="giftService"/>
+        <constructor-arg ref="communicationHistoryService"/>
+
     </bean>
 
     <security:global-method-security secured-annotations="enabled"/>
@@ -63,7 +66,8 @@
      <sws:marshalling-endpoints/>
  
     <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="classesToBeBound">
+        <property name="contextPath" value="com.orangeleap.tangerine.ws.schema"/>
+ <!--       <property name="classesToBeBound">
             <list>
                 <value>com.orangeleap.tangerine.ws.schema.SaveOrUpdateConstituentRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.ConstituentResponse</value>
@@ -77,15 +81,25 @@
                 <value>com.orangeleap.tangerine.ws.schema.FindConstituentsRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListRequest</value>
                 <value>com.orangeleap.tangerine.ws.schema.GetSegmentationListResponse</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetConstituentGiftResponse</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetCommunicationHistoryRequest</value>
+                <value>com.orangeleap.tangerine.ws.schema.GetCommunicationHistoryResponse</value>
+                <value>com.orangeleap.tangerine.ws.schema.AddCommunicationHistoryRequest</value>
             </list>
-        </property> 
+        </property> -->
     </bean>
 
+     <bean id="validatingInterceptor" class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+         <property name="schema" value="/WEB-INF/orangeleap.xsd"/>
+         <property name="validateRequest" value="true"/>
+         <property name="validateResponse" value="true"/>
+     </bean>
 
      <bean class="org.springframework.ws.server.endpoint.mapping.PayloadRootAnnotationMethodEndpointMapping">
      <property name="interceptors">
          <list>
              <ref bean="wsSecurityInterceptor" />
+             <ref bean="validatingInterceptor" />
          </list>
      </property>
      </bean>

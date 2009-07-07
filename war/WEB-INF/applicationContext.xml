@@ -79,13 +79,35 @@
 			<ref local="bundleMessageSource"/>
 		</constructor-arg>
 	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+
+    <bean id="txAdvisor" class="com.orangeleap.tangerine.util.TransactionCommitAdvisor"/>
+	<bean id="transactionManagerTarget" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource">
 			<ref local="dataSource"/>
 		</property>
 	</bean>
-	
+
+    <!--<bean id="advisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">-->
+        <!--<property name="advice" ref="txAdvisor"/>-->
+        <!--<property name="pointcut">-->
+            <!--<bean class="org.springframework.aop.support.JdkRegexpMethodPointcut">-->
+                <!--<property name="pattern">-->
+                    <!--<value>org.springframework.transaction.PlatformTransactionManager.commit*</value>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+    
+    <bean id="transactionManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces" value="org.springframework.transaction.PlatformTransactionManager" />
+        <property name="target" ref="transactionManagerTarget"/>
+        <property name="interceptorNames">
+            <list>
+                <value>txAdvisor</value>
+            </list>
+        </property>
+    </bean>
+
 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation" value="classpath:tangerine-sqlmap-config.xml"/>
 		<property name="dataSource" ref="dataSource"/>

@@ -16,10 +16,7 @@ import com.orangeleap.tangerine.domain.Constituent;
 import com.orangeleap.tangerine.domain.paymentInfo.Gift;
 import com.orangeleap.tangerine.event.GiftEvent;
 import com.orangeleap.tangerine.event.NewGiftEvent;
-import com.orangeleap.tangerine.service.ConstituentService;
-import com.orangeleap.tangerine.service.ErrorLogService;
-import com.orangeleap.tangerine.service.GiftService;
-import com.orangeleap.tangerine.service.SiteService;
+import com.orangeleap.tangerine.service.*;
 import com.orangeleap.tangerine.util.RuleTask;
 import com.orangeleap.tangerine.util.TangerineUserHelper;
 import com.orangeleap.tangerine.util.TaskStack;
@@ -58,6 +55,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 		GiftService gs = (GiftService) applicationContext.getBean("giftService");
 		SiteService ss = (SiteService) applicationContext.getBean("siteService");
 		TangerineUserHelper uh = (TangerineUserHelper) applicationContext.getBean("tangerineUserHelper");
+        EmailService es = (EmailService) applicationContext.getBean("emailService");
 		ErrorLogService errorLogService = (ErrorLogService) applicationContext.getBean("errorLogService");
 		
 
@@ -85,7 +83,7 @@ public class GiftRulesInterceptor extends RulesInterceptor {
 				
 				constituent.setGifts(gs.readMonetaryGifts(constituent));
 				constituent.setSite(ss.readSite(constituent.getSite().getName()));
-				
+				constituent.setEmails(es.readByConstituentId(constituent.getId()));
 				ss.populateDefaultEntityEditorMaps(constituent);
 				constituent.setSuppressValidation(true);
 

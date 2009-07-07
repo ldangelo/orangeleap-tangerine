@@ -14,11 +14,15 @@ import com.orangeleap.tangerine.util.OLLogger;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.AopProxy;
+import org.springframework.aop.framework.ProxyFactory;
 
 import com.orangeleap.tangerine.util.RulesStack;
 import com.orangeleap.tangerine.util.TaskStack;
@@ -56,8 +60,8 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 		    	logger.error("RulesStack not previously cleared.");
 		    	RulesStack.getStack().clear();
 		    }
-		    
-			DataSourceTransactionManager txManager = (DataSourceTransactionManager) getBean(request, "transactionManager");
+
+			PlatformTransactionManager txManager = (PlatformTransactionManager) getBean(request,"transactionManager");
 		    logger.debug(request.getRequestURL() + ", txManager = " + txManager);
 		    
 			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -87,7 +91,7 @@ public class OpenSpringTransactionInViewFilter extends OncePerRequestFilter {
 			try {
 				txManager.commit(status);
 				
-				TaskStack.execute();
+//				TaskStack.execute();
 				
 				
 			} catch (Exception e) {

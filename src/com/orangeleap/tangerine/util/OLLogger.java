@@ -4,9 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.orangeleap.tangerine.util.OLLogger;
 
-public class OLLogger implements Log {
+public class OLLogger implements Log, java.io.Serializable {
 
-    private static boolean enableTableLogging = ( null == System.getProperty("ol.disable.table.logging"));
+	private static final long serialVersionUID = 1L;
+
+	private static boolean enableTableLogging = ( null == System.getProperty("ol.disable.table.logging"));
 
     private static TableLogger tablelogger;
 
